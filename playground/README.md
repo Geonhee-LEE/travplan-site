@@ -52,6 +52,10 @@ MPPI Controller, 스워브 운동학이 한 폐루프로 돈다. 목표와 장�
 점마다 칸 높이를 칼만으로 융합하고 분산을 유지한다. 지형에 닿기 전에 칸 위를 지나간 레이 높이는 상한이 된다. 파란 점이 마지막 스캔이다.
 LiDAR 링 사이와 근거리(약 0.6 m 안)가 비어, 로봇 1.5 m 안의 미관측이 L0 가림(최대 약 120칸)보다 열 배 넘게 많다(약 1,400칸). TP-0100이 L1에서 본 것과 같은 모습이다.
 
+**전면 스테레오(TP-0065).** L1 간이에서 '전면 스테레오'를 켜면 로봇 앞 0.25 m에 달린 스테레오 카메라(90°×60°, 30° 숙임, 기선 12 cm)의 깊이를
+같은 칼만 융합에 넣는다. 깊이 잡음은 $Z^2 \Delta d/(fB)$로 3 m에서 2.9 cm다. LiDAR의 근거리 사각(약 0.7 m 안)과 링 사이를 앞쪽에서 메운다.
+근거리 미관측 1.5 m와 함께 켜면 L1 간이의 느려짐이 거의 사라진다(bumps_potholes 39.0 s → 17.6 s, down_curb 44.2 s → 17.6 s).
+
 **근거리 미관측(TP-0101).** 로봇 둘레(몸체 0.35 m ~ 슬라이더 반경)의 못 본 칸을 치명으로 둔다. L1 간이에서 켜면 로봇이 더 조심스러워진다
 (bumps_potholes에서 도달 19 s → 39 s). L0 가림에서는 근처의 못 본 칸이 대개 이미 치명 링으로 둘러싸인 포트홀 바닥이라 주행이 거의 달라지지 않는다.
 
@@ -74,6 +78,7 @@ LiDAR 링 사이와 근거리(약 0.6 m 안)가 비어, 로봇 1.5 m 안의 미�
 | `TP-0082` | TP-0082 | slope_crossfall, 층 = 차체 기하 기준 | 둔덕 양옆 가파른 곳이 '자세로 못 들어감', 둘레는 '일부 방향만 막힘' | RSL 필터의 MISS가 이 경사에 몰림 |
 | `TP-0100` | TP-0100 | bumps_potholes s4, L1 간이, 층 = 로봇이 본 높이 | 도달(L0보다 느림), LiDAR 링 사이가 비어 있다 | L1 근거리 MISS 38.8%(L0 가림 17.2%) |
 | `TP-0101` | TP-0101 | bumps_potholes s4, L0 가림 + 상한 + 깊이 prior, 근거리 미관측 1.5 m | 도달 | 도달 가능 근거리 MISS 2,204 → 0 |
+| `TP-0065` | TP-0065 | down_curb, L1 간이 + 전면 스테레오 + 근거리 미관측 1.5 m | 도달, 스테레오 없이는 44 s 걸리던 것이 18 s | 스테레오가 TP-0101 옵션의 L1 대가를 줄이는지(A.13.8) |
 | `TP-0039` | TP-0039 | curb_ramp 레벨 3(연석 0.24 m, 경사로 1.1 m) | 도달 | guidance+mppi 12/12 |
 | `planner-vs-controller` | — | Planner를 직선으로 | 60 s 시간 초과 | Planner가 필요한 이유 |
 | `TP-0027` | TP-0027 | 보행자 3명(GT 경로에 배치) | 도달 | 보행자 2명 조건 40/40, 충돌 0 |
@@ -120,7 +125,7 @@ LiDAR 링 사이와 근거리(약 0.6 m 안)가 비어, 로봇 1.5 m 안의 미�
 - **Python을 바꾸면 JS도 고친다.** 4절 표의 원본에서 식·한계값·기본값을 바꿨다면 대응하는 JS 파일도 같이 고친다(CLAUDE.md 규칙).
 - **시연 추가:** `js/main.js`의 `PRESETS`에 `{ id, tp, label, set }` 한 줄을 넣는다. `set`은 `defaultOptions()`를 덮어쓴다.
   `automation/dashboard_links.py`가 이 목록을 읽어, 같은 TP의 TODO 항목에 ▶ 시뮬레이션 링크를 저절로 단다. 대시보드는 다시 생성한다.
-- **검사:** `./scripts/check_playground.sh`가 `check.html`을 헤드리스 Chrome으로 열어 기본 주행 4개, 시연 6개, L1 간이 2개, TP-0101 1개를 판정한다(약 35초).
+- **검사:** `./scripts/check_playground.sh`가 `check.html`을 헤드리스 Chrome으로 열어 기본 주행 4개, 시연 6개, L1 간이 2개, TP-0065 1개, TP-0101 1개를 판정한다(약 35초).
   코어 파일을 고친 뒤에는 꼭 돌린다. 시연 결과가 바뀌어 기대와 달라지면 `check.html`의 기대값과 3절 표를 같이 고친다.
 - **게시:** 연구 저장소 main에 push하면 GitHub Actions(`publish-site`)가 `docs/`를 공개 저장소 `travplan-site`로 복사하고, 그 저장소의 GitHub Pages가 서비스한다. claude.ai 게시본은 `index.html`을 `file_path`,
   `docs/playground`를 `root`, `js/*.js`를 `files`로 주고 위 URL에 publish한다. `index.html`에 `<!doctype>`·`<head>`가 없는 것은

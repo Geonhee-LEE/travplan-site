@@ -76,6 +76,7 @@ export class World {
     if (o.perception === "l1lite") {
       const [cr, cc] = g.cell(x, y);
       this.emap.scan(z, this.pose, z[cr * g.W + cc] + o.sensorHeight, R, this.rng);
+      if (o.stereo) this.emap.stereo(z, this.pose, z[cr * g.W + cc], 0.30, this.rng);   // TP-0065 전면 스테레오
       this.lastVis = null;
       this.belief = buildMap(this.emap.h, g, {
         ceiling: o.shadowCeiling ? this.emap.upper : null,
@@ -206,6 +207,7 @@ export function defaultOptions() {
     perception: "occlusion", sensorHeight: 0.3, sensorRange: 5.0,
     shadowCeiling: true, depthPrior: true, evidence: true,
     unknownNear: 0, unknownNearCost: 1.0,
+    stereo: false,
     planner: "guidance", controller: "mppi",
     mppi: { K: 256, T: 40, lambda: 0.5, noise: [0.4, 0.25, 0.6], w: { trav: 6.0, risk: 3.0, attitude: 20.0 } },
   };

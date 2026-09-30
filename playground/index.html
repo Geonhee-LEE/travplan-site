@@ -215,6 +215,7 @@ footer code { font: 12px var(--mono); }
           <label class="check"><input type="checkbox" id="shadowCeiling"> 그림자 상한</label>
           <label class="check"><input type="checkbox" id="depthPrior"> 깊이 prior</label>
           <label class="check"><input type="checkbox" id="evidence"> 관측 증거로 제한</label>
+          <label class="check" title="TP-0065: L1 간이에 전면 스테레오 깊이를 두 번째 입력으로"><input type="checkbox" id="stereo"> 전면 스테레오</label>
         </div>
         <div class="row"><label for="unknownNear" title="TP-0101: 로봇 둘레(몸체 0.35 m ~ 이 반경) 못 본 칸을 치명으로 둔다">근거리 미관측</label><input type="range" id="unknownNear" min="0" max="2" step="0.25" value="0"><output id="unknownNearOut"></output></div>
       </section>

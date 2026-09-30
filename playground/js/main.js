@@ -28,6 +28,7 @@ const PRESETS = [
   { id: "TP-0082", tp: "TP-0082", label: "차체 기준 층: 둔덕 경사", set: { scenario: "slope_crossfall", level: 0, seed: 0, perception: "range" }, layer: "chassis" },
   { id: "TP-0100", tp: "TP-0100", label: "L1 간이: 못 본 칸이 위험", set: { scenario: "bumps_potholes", level: 0, seed: 4, perception: "l1lite", shadowCeiling: true, depthPrior: true }, layer: "belief_elev" },
   { id: "TP-0101", tp: "TP-0101", label: "근거리 미관측을 치명으로(1.5 m)", set: { scenario: "bumps_potholes", level: 0, seed: 4, perception: "occlusion", shadowCeiling: true, depthPrior: true, unknownNear: 1.5 } },
+  { id: "TP-0065", tp: "TP-0065", label: "L1 간이 + 전면 스테레오 + 미관측 1.5 m", set: { scenario: "down_curb", level: 0, seed: 0, perception: "l1lite", shadowCeiling: true, depthPrior: true, stereo: true, unknownNear: 1.5 }, layer: "belief_elev" },
   { id: "TP-0039", tp: "TP-0039", label: "연석 L3 (경사로 1.1 m)", set: { scenario: "curb_ramp", level: 3, seed: 0, perception: "range" } },
   { id: "planner-vs-controller", tp: "P/C", label: "Planner 없이 MPPI만", set: { scenario: "bumps_potholes", level: 0, seed: 0, perception: "range", planner: "straight" } },
   { id: "TP-0027", tp: "TP-0027", label: "보행자 3명", set: { scenario: "bumps_potholes", level: 0, seed: 1, perception: "range" }, peds: 3 },
@@ -111,7 +112,7 @@ const setWT = slider("wTrav", (v) => v.toFixed(1), (v) => { opts.mppi.w.trav = v
 const setWR = slider("wRisk", (v) => v.toFixed(1), (v) => { opts.mppi.w.risk = v; });
 const setWA = slider("wAtt", (v) => `${v}`, (v) => { opts.mppi.w.attitude = v; });
 
-for (const id of ["shadowCeiling", "depthPrior", "evidence"]) {
+for (const id of ["shadowCeiling", "depthPrior", "evidence", "stereo"]) {
   $(id).checked = opts[id];
   $(id).addEventListener("change", () => { opts[id] = $(id).checked; restart(); });
 }
@@ -158,7 +159,8 @@ function syncPanel() {
   const occl = opts.perception === "occlusion" || opts.perception === "l1lite";
   $("sensorHeight").disabled = !occl;
   $("sensorRange").disabled = opts.perception === "gt";
-  for (const id of ["shadowCeiling", "depthPrior", "evidence"]) { $(id).checked = opts[id]; $(id).disabled = !occl; }
+  for (const id of ["shadowCeiling", "depthPrior", "evidence", "stereo"]) { $(id).checked = opts[id]; $(id).disabled = !occl; }
+  $("stereo").checked = !!opts.stereo; $("stereo").disabled = opts.perception !== "l1lite";
   $("depthPrior").disabled = !occl || !opts.shadowCeiling;
   $("evidence").disabled = !occl || !opts.shadowCeiling || !opts.depthPrior;
   setK(opts.mppi.K); setT(opts.mppi.T); setL(opts.mppi.lambda); setN(opts.mppi.noise[0] / 0.4);
@@ -298,6 +300,7 @@ function banner() {
       sc: `${opts.scenario}${DIFFICULTY[opts.scenario] ? "@L" + opts.level : ""} s${opts.seed}${world.edited ? " (편집)" : ""}`,
       per: ({ gt: "완전", range: "L0", occlusion: `가림 ${opts.sensorHeight.toFixed(1)} m`, l1lite: `L1 간이 ${opts.sensorHeight.toFixed(1)} m` }[opts.perception])
         + (opts.perception === "occlusion" || opts.perception === "l1lite" ? `${opts.shadowCeiling ? " +상한" : ""}${opts.shadowCeiling && opts.depthPrior ? " +prior" : ""}` : "")
+        + (opts.perception === "l1lite" && opts.stereo ? " +스테레오" : "")
         + (opts.unknownNear ? ` +미관측 ${opts.unknownNear} m` : ""),
       stack: `${opts.planner}+${opts.controller}`, ok: world.status === "reached", res: world.status === "reached" ? "도달" : world.failure,
       t: world.t, pitch: world.stats.maxPitch, cost: world.stats.gtCostSum / Math.max(1, world.stats.steps),

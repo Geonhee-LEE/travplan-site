@@ -1,7 +1,24 @@
 {
- "generated": "2026-10-01 06:22",
+ "generated": "2026-10-01 06:58",
  "repo": "Geonhee-LEE/travplan",
  "items": {
+  "99": {
+   "kind": "pr",
+   "state": "open",
+   "title": "TP-0065: 전면 스테레오 깊이를 elevation mapping 두 번째 입력으로 (진행 중)",
+   "url": "https://github.com/Geonhee-LEE/travplan/pull/99",
+   "branch": "p2/tp0065-stereo-depth",
+   "closed_at": "",
+   "issues": []
+  },
+  "98": {
+   "kind": "issue",
+   "state": "open",
+   "title": "전면 스테레오 깊이를 elevation mapping 두 번째 입력으로: LiDAR 근거리 사각 메우기 (TP-0065)",
+   "url": "https://github.com/Geonhee-LEE/travplan/issues/98",
+   "branch": "",
+   "closed_at": ""
+  },
   "97": {
    "kind": "pr",
    "state": "merged",
@@ -23,20 +40,22 @@
   },
   "95": {
    "kind": "pr",
-   "state": "open",
-   "title": "TP-0101: 근거리 미관측 칸의 cost 재검토 (진행 중)",
+   "state": "merged",
+   "title": "TP-0101: 로봇 둘레 못 본 칸을 치명으로 — L0 도달 가능 MISS 0·폐루프 40/40, L1은 25% 느려짐",
    "url": "https://github.com/Geonhee-LEE/travplan/pull/95",
    "branch": "p2/tp0101-unknown-near",
-   "closed_at": "",
-   "issues": []
+   "closed_at": "2026-09-30",
+   "issues": [
+    94
+   ]
   },
   "94": {
    "kind": "issue",
-   "state": "open",
+   "state": "closed",
    "title": "근거리 미관측 칸의 cost 재검토 (TP-0101)",
    "url": "https://github.com/Geonhee-LEE/travplan/issues/94",
    "branch": "",
-   "closed_at": ""
+   "closed_at": "2026-09-30"
   },
   "93": {
    "kind": "pr",
@@ -978,8 +997,7 @@
   "TP-0048": [
    37,
    38,
-   39,
-   46
+   39
   ],
   "TP-0049": [
    17,
@@ -998,6 +1016,10 @@
    29,
    30,
    31
+  ],
+  "TP-0065": [
+   98,
+   99
   ],
   "TP-0066": [
    34,
