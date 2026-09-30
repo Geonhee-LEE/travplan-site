@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-30 21:51",
+ "generated": "2026-09-30 21:52",
  "repo": "Geonhee-LEE/travplan",
  "items": {
   "90": {
@@ -108,12 +108,14 @@
   },
   "79": {
    "kind": "pr",
-   "state": "open",
+   "state": "merged",
    "title": "TP-0082: 학습 traversability 필터 기준선 — 평가 기반의 순환을 찾고 독립 기준을 만들었다",
    "url": "https://github.com/Geonhee-LEE/travplan/pull/79",
    "branch": "p2/tp0082-rsl-filter-baseline",
-   "closed_at": "",
-   "issues": []
+   "closed_at": "2026-09-30",
+   "issues": [
+    89
+   ]
   },
   "78": {
    "kind": "pr",

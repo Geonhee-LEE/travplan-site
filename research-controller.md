@@ -1153,7 +1153,7 @@ RL이 필요 없다. 그런데도 이 계열을 여기 두는 이유가 셋이�
 | 연도 | 이름 | 핵심 | travplan과 닿는 곳 |
 |---|---|---|---|
 | 2019 | Hwangbo 외, *Learning agile and dynamic motor skills* (Science Robotics) | **actuator net**으로 모터·감속기 동역학을 학습해 sim-to-real 격차를 메움 | 잔차 학습의 원조(E.9) |
-| 2020 | [Lee 외](https://arxiv.org/abs/2010.11251), *Learning quadrupedal locomotion over challenging terrain* (Science Robotics) | 특권 정보 교사 → 고유수용 학생 증류, 험지 | 배경 0.x의 증류 |
+| 2020 | [Lee 외](https://arxiv.org/abs/2010.11251), *Learning quadrupedal locomotion over challenging terrain* (Science Robotics) | 특권 정보 교사 → 고유수용 학생 증류, 험지 | 배경 0.12의 증류 |
 | 2021 | [Rudin 외](https://arxiv.org/abs/2109.11978), *Learning to Walk in Minutes* (CoRL 2022) | GPU 대규모 병렬 + **게임식 지형 커리큘럼**(잘하면 올리고 못하면 내린다) | 지형 난이도 레벨(TP-0039) |
 | 2022 | Miki 외 (Science Robotics) | 고유수용 + 외수용을 합치는 belief encoder | 인식 A.7.1 |
 | 2023 | [Hoeller 외](https://arxiv.org/abs/2306.14874), *ANYmal Parkour* (Science Robotics 2024) | 기술별 정책 + 항법, 지각 기반 민첩 주행 | Planner 문서 B.14 |
