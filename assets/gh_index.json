@@ -1,7 +1,24 @@
 {
- "generated": "2026-09-30 22:26",
+ "generated": "2026-10-01 05:26",
  "repo": "Geonhee-LEE/travplan",
  "items": {
+  "96": {
+   "kind": "issue",
+   "state": "open",
+   "title": "Playground: 높이 지도·elevation mapping·traversability 층과 L1 간이 인식",
+   "url": "https://github.com/Geonhee-LEE/travplan/issues/96",
+   "branch": "",
+   "closed_at": ""
+  },
+  "95": {
+   "kind": "pr",
+   "state": "open",
+   "title": "TP-0101: 근거리 미관측 칸의 cost 재검토 (진행 중)",
+   "url": "https://github.com/Geonhee-LEE/travplan/pull/95",
+   "branch": "p2/tp0101-unknown-near",
+   "closed_at": "",
+   "issues": []
+  },
   "94": {
    "kind": "issue",
    "state": "open",
@@ -12,20 +29,22 @@
   },
   "93": {
    "kind": "pr",
-   "state": "open",
-   "title": "TP-0100: belief TravMap을 차체 기하 기준으로 채점 (진행 중)",
+   "state": "merged",
+   "title": "TP-0100: belief TravMap을 차체 기하 기준으로 채점 — 위험은 못 본 칸, 깊이 prior는 그것을 막지 않는다",
    "url": "https://github.com/Geonhee-LEE/travplan/pull/93",
    "branch": "p2/tp0100-belief-chassis",
-   "closed_at": "",
-   "issues": []
+   "closed_at": "2026-09-30",
+   "issues": [
+    92
+   ]
   },
   "92": {
    "kind": "issue",
-   "state": "open",
+   "state": "closed",
    "title": "belief TravMap을 차체 기하 기준으로 채점: L0 가림·그림자 상한·깊이 prior·L1 (TP-0100)",
    "url": "https://github.com/Geonhee-LEE/travplan/issues/92",
    "branch": "",
-   "closed_at": ""
+   "closed_at": "2026-09-30"
   },
   "91": {
    "kind": "pr",
@@ -1026,7 +1045,8 @@
    93
   ],
   "TP-0101": [
-   94
+   94,
+   95
   ]
  }
 }

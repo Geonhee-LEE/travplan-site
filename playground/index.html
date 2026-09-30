@@ -89,6 +89,9 @@ button { cursor: pointer; }
 .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; padding: 8px 12px; border-top: 1px solid var(--line); font-size: 12px; color: var(--muted); }
 .legend i { display: inline-block; width: 18px; height: 8px; border-radius: 2px; vertical-align: middle; margin-right: 5px; }
 .legend i.line { height: 2px; }
+.legend-layer { display: contents; }
+.layer-note { flex-basis: 100%; margin: 2px 0 0; font-size: 12px; color: var(--muted); }
+.sel { font: inherit; font-size: 12.5px; color: var(--fg); background: var(--panel-2); border: 1px solid var(--line); border-radius: 8px; padding: 4px 8px; margin-left: 4px; }
 .transport { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 10px 12px; border-top: 1px solid var(--line); }
 .btn { border: 1px solid var(--line); background: var(--panel-2); border-radius: 8px; padding: 6px 12px; font-weight: 600; font-size: 13px; }
 .btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); min-width: 92px; }
@@ -151,14 +154,19 @@ footer code { font: 12px var(--mono); }
         <div class="seg" id="view" role="group" aria-label="보기">
           <button data-val="2d" aria-pressed="true">2D</button><button data-val="3d" aria-pressed="false">3D</button>
         </div>
-        <div class="seg" id="layer" role="group" aria-label="지도 층">
-          <button data-val="belief" aria-pressed="true">로봇이 본 cost</button><button data-val="gt" aria-pressed="false">실제 cost</button><button data-val="height" aria-pressed="false">높이</button>
-        </div>
+        <label class="check" for="layerSel">층
+          <select id="layerSel" class="sel" aria-label="지도 층">
+            <optgroup label="지형"><option value="height">실제 높이</option></optgroup>
+            <optgroup label="elevation mapping"><option value="belief_elev">로봇이 본 높이</option><option value="sigma">높이 분산 σ</option><option value="ceiling">상한(upper bound)</option></optgroup>
+            <optgroup label="traversability"><option value="slope">경사</option><option value="step">턱</option><option value="rough">거칠기</option><option value="belief" selected>로봇이 본 cost</option><option value="gt">실제 cost</option><option value="chassis">차체 기하 기준</option></optgroup>
+          </select>
+        </label>
         <div class="seg tools" id="tool" role="group" aria-label="클릭 도구">
           <button data-val="goal" aria-pressed="true">목표</button><button data-val="box" aria-pressed="false">상자</button><button data-val="pothole" aria-pressed="false">포트홀</button><button data-val="ped" aria-pressed="false">보행자</button><button data-val="erase" aria-pressed="false">지우기</button>
         </div>
         <label class="check"><input type="checkbox" id="showRoute" checked> 경로</label>
         <label class="check"><input type="checkbox" id="showSamples" checked> MPPI 샘플</label>
+        <label class="check"><input type="checkbox" id="showPoints" checked> LiDAR 점</label>
       </div>
       <div class="canvas-wrap" id="wrap">
         <canvas id="map2d" aria-label="위에서 본 지도. 클릭하면 선택한 도구가 적용된다."></canvas>
@@ -167,20 +175,15 @@ footer code { font: 12px var(--mono); }
         <div class="hint3d" id="hint3d" hidden>드래그 회전 · 휠 확대 · 우클릭 이동</div>
       </div>
       <div class="legend" aria-label="범례">
-        <span data-layer="cost"><i style="background:#3a4846"></i>지면(cost 0)</span>
-        <span data-layer="cost"><i style="background:linear-gradient(90deg,#627054,#c4983a,#e8702e)"></i>cost 0.3 → 0.95</span>
-        <span data-layer="cost"><i style="background:#e53e3e"></i>치명 셀(≥ 0.95)</span>
-        <span data-layer="belief"><i style="background:#181c20;border:1px solid #444"></i>아직 못 본 칸</span>
-        <span data-layer="belief"><i style="background:#96469a"></i>상한·prior로 채운 칸</span>
-        <span data-layer="belief"><i style="background:#c83c8c"></i>상한·prior가 치명으로 본 칸</span>
-        <span data-layer="height"><i style="background:linear-gradient(90deg,#283c6e,#465c58,#848e60,#c4aa6e,#ece2c8)"></i>높이 −0.15 → 1.0 m</span>
+        <span id="legendLayer" class="legend-layer"></span>
         <span><i class="line" style="background:var(--route)"></i>Planner 경로</span>
         <span><i class="line" style="background:var(--accent)"></i>MPPI 계획(<span id="legHorizon">4.0</span> s)</span>
-        <span><i class="line" style="background:#8fd6e6"></i>MPPI 샘플(밝을수록 비용 낮음)</span>
+        <span><i class="line" style="background:#8fd6e6"></i>MPPI 샘플</span>
         <span><i class="line" style="background:#ffffff;box-shadow:0 0 0 1px #6b7773"></i>지나온 길</span>
         <span><i style="background:#ff8fb8;border-radius:50%;width:8px;height:8px"></i>보행자와 4 s 예측</span>
-      </div>
-      <div class="transport">
+        <span data-l1><i style="background:#78dcff;border-radius:50%;width:6px;height:6px"></i>LiDAR 점</span>
+        <p id="layerNote" class="layer-note"></p>
+      </div>      <div class="transport">
         <button class="btn primary" id="play">일시정지</button>
         <button class="btn" id="stepBtn">한 스텝</button>
         <button class="btn" id="restart">다시 달리기</button>
@@ -203,7 +206,7 @@ footer code { font: 12px var(--mono); }
       <section class="card">
         <h2>인식</h2>
         <div class="seg full" id="perception" role="group" aria-label="인식">
-          <button data-val="gt">완전 관측</button><button data-val="range">L0 원형</button><button data-val="occlusion">L0 + 가림</button>
+          <button data-val="gt">완전</button><button data-val="range">L0 원형</button><button data-val="occlusion">L0 가림</button><button data-val="l1lite">L1 간이</button>
         </div>
         <p class="note" id="perNote"></p>
         <div class="row"><label for="sensorHeight">센서 높이</label><input type="range" id="sensorHeight" min="0.2" max="1.2" step="0.05" value="0.3"><output id="sensorHeightOut"></output></div>
@@ -213,6 +216,7 @@ footer code { font: 12px var(--mono); }
           <label class="check"><input type="checkbox" id="depthPrior"> 깊이 prior</label>
           <label class="check"><input type="checkbox" id="evidence"> 관측 증거로 제한</label>
         </div>
+        <div class="row"><label for="unknownNear" title="TP-0101: 로봇 둘레(몸체 0.35 m ~ 이 반경) 못 본 칸을 치명으로 둔다">근거리 미관측</label><input type="range" id="unknownNear" min="0" max="2" step="0.25" value="0"><output id="unknownNearOut"></output></div>
       </section>
       <section class="card">
         <h2>Planner</h2>

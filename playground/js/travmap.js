@@ -110,6 +110,16 @@ export function buildMap(elev, g, opts = {}) {
     if (known[i]) cost[i] = gc;
     else { cost[i] = bounded[i] ? Math.max(TRAV.unknownCost, gc) : TRAV.unknownCost; sigma[i] = 1; }
   }
+  // TP-0101: 로봇 둘레(몸체 0.35 m ~ unknownNear) 미관측 칸은 최소 unknownNearCost
+  if (opts.unknownNear && opts.robotXY) {
+    const [rx, ry] = opts.robotXY, R = opts.unknownNear, rin = 0.35, cn = opts.unknownNearCost ?? 1.0;
+    const r0 = Math.max(0, Math.floor((ry - R) / g.res)), r1 = Math.min(g.H - 1, Math.ceil((ry + R) / g.res));
+    const c0 = Math.max(0, Math.floor((rx - R) / g.res)), c1 = Math.min(g.W - 1, Math.ceil((rx + R) / g.res));
+    for (let r = r0; r <= r1; r++) for (let c = c0; c <= c1; c++) {
+      const i = r * g.W + c, d2 = (c * g.res - rx) ** 2 + (r * g.res - ry) ** 2;
+      if (!known[i] && d2 <= R * R && d2 > rin * rin && cost[i] < cn) cost[i] = cn;
+    }
+  }
   return { grid: g, elev: e, gx: f.gx, gy: f.gy, slope: f.slope, step: f.step, rough: f.rough, cost, sigma, known, bounded };
 }
 

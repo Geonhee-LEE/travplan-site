@@ -4,6 +4,7 @@ import { Rng, clamp } from "./core.js";
 import { makeTerrain } from "./terrain.js";
 import { buildMap, lineOfSight, TRAV } from "./travmap.js";
 import { PLANNERS, costToGo, extractRoute } from "./planner.js";
+import { ElevationMap } from "./perception.js";
 import { MPPI, trackCommand, clampAccel, clampTwist, stepPose, sampleMap, attitude } from "./control.js";
 
 export const SIM = { dt: 0.1, rollLimit: 0.30, pitchLimit: 0.35, goalTol: 0.3, maxTime: 60, replanEvery: 10, noise: 0.01, pedRadius: 0.55 };
@@ -12,6 +13,7 @@ export const PERCEPTION = {
   gt: { label: "완전 관측", note: "지도 전체를 처음부터 안다. 인식 오차가 없을 때의 상한." },
   range: { label: "L0 원형 시야", note: "로봇 주변 반경 안의 칸은 모두 보인다(가림 없음). 벤치마크 기본값." },
   occlusion: { label: "L0 + 가림", note: "센서 높이에서 2.5D 시선 검사. 턱·상자 뒤와 포트홀 바닥이 가려진다(TP-0031)." },
+  l1lite: { label: "L1 간이", note: "합성 LiDAR(16채널, 10° 숙임)의 점을 칸마다 칼만으로 융합한다(elevation mapping). 링 사이가 비어 근거리 미관측이 L0보다 많다(TP-0053, TP-0100)." },
 };
 
 export class World {
@@ -40,6 +42,7 @@ export class World {
     this.rng = new Rng(o.seed * 31 + 7);
     this.beliefElev = new Float32Array(g.N).fill(NaN);
     this.beliefCeil = new Float32Array(g.N).fill(Infinity);
+    this.emap = new ElevationMap(g);
     this.lastVis = null;
     this.trail = [[x, y]];
     this.status = "running"; this.failure = "";
@@ -67,7 +70,22 @@ export class World {
     const t0 = performance.now();
     this.mapVersion = (this.mapVersion || 0) + 1;
     if (o.perception === "gt") { this.belief = this.gt; this.lastVis = null; this.ms.map = performance.now() - t0; return; }
+
     const R = o.sensorRange, [x, y] = this.pose;
+    const near = { unknownNear: o.unknownNear || 0, unknownNearCost: o.unknownNearCost ?? 1.0, robotXY: [x, y] };
+    if (o.perception === "l1lite") {
+      const [cr, cc] = g.cell(x, y);
+      this.emap.scan(z, this.pose, z[cr * g.W + cc] + o.sensorHeight, R, this.rng);
+      this.lastVis = null;
+      this.belief = buildMap(this.emap.h, g, {
+        ceiling: o.shadowCeiling ? this.emap.upper : null,
+        shadowDepth: o.shadowCeiling && o.depthPrior ? 0.10 : null,
+        evidence: o.evidence, ...near,
+      });
+      this.beliefCeil = this.emap.upper;
+      this.ms.map = performance.now() - t0;
+      return;
+    }
     let vis = new Uint8Array(g.N);
     const r0 = Math.max(0, Math.floor((y - R) / g.res)), r1 = Math.min(g.H - 1, Math.ceil((y + R) / g.res));
     const c0 = Math.max(0, Math.floor((x - R) / g.res)), c1 = Math.min(g.W - 1, Math.ceil((x + R) / g.res));
@@ -90,7 +108,7 @@ export class World {
     this.belief = buildMap(e, g, {
       ceiling: useCeil ? this.beliefCeil : null,
       shadowDepth: useCeil && o.depthPrior ? 0.10 : null,
-      evidence: o.evidence,
+      evidence: o.evidence, ...near,
     });
     this.ms.map = performance.now() - t0;
   }
@@ -187,6 +205,7 @@ export function defaultOptions() {
     scenario: "curb_ramp", level: 0, seed: 0,
     perception: "occlusion", sensorHeight: 0.3, sensorRange: 5.0,
     shadowCeiling: true, depthPrior: true, evidence: true,
+    unknownNear: 0, unknownNearCost: 1.0,
     planner: "guidance", controller: "mppi",
     mppi: { K: 256, T: 40, lambda: 0.5, noise: [0.4, 0.25, 0.6], w: { trav: 6.0, risk: 3.0, attitude: 20.0 } },
   };

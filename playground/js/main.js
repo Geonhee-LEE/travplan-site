@@ -2,12 +2,13 @@ import { World, defaultOptions, PERCEPTION, SIM } from "./sim.js";
 import { SCENARIOS, DIFFICULTY } from "./terrain.js";
 import { PLANNERS } from "./planner.js";
 import { CONTROLLERS, sampleMap } from "./control.js";
-import { Map2D } from "./render2d.js";
+import { Map2D, LAYERS } from "./render2d.js";
+import { chassisFeasibility } from "./chassis.js";
 import { Map3D } from "./render3d.js";
 
 const $ = (id) => document.getElementById(id);
 const opts = defaultOptions();
-const view = { layer: "belief", tool: "goal", route: true, samples: true, exag: 2.0, mode: "2d", cursor: null, drag: null };
+const view = { layer: "belief", tool: "goal", route: true, samples: true, points: true, exag: 2.0, mode: "2d", cursor: null, drag: null };
 let world = new World(opts);
 world.terrainVersion = 0;
 let paused = false, speed = 1, acc = 0, last = performance.now(), logged = false;
@@ -24,6 +25,9 @@ const PRESETS = [
   { id: "TP-0046", tp: "TP-0046", label: "가림 + 그림자 상한만", set: { scenario: "bumps_potholes", level: 0, seed: 4, perception: "occlusion", shadowCeiling: true, depthPrior: false } },
   { id: "TP-0047", tp: "TP-0047", label: "+ 깊이 prior", set: { scenario: "bumps_potholes", level: 0, seed: 4, perception: "occlusion", shadowCeiling: true, depthPrior: true, evidence: true } },
   { id: "TP-0048", tp: "TP-0048", label: "내림 턱 오탐(증거 제한 끔)", set: { scenario: "down_curb", level: 0, seed: 1, perception: "occlusion", shadowCeiling: true, depthPrior: true, evidence: false } },
+  { id: "TP-0082", tp: "TP-0082", label: "차체 기준 층: 둔덕 경사", set: { scenario: "slope_crossfall", level: 0, seed: 0, perception: "range" }, layer: "chassis" },
+  { id: "TP-0100", tp: "TP-0100", label: "L1 간이: 못 본 칸이 위험", set: { scenario: "bumps_potholes", level: 0, seed: 4, perception: "l1lite", shadowCeiling: true, depthPrior: true }, layer: "belief_elev" },
+  { id: "TP-0101", tp: "TP-0101", label: "근거리 미관측을 치명으로(1.5 m)", set: { scenario: "bumps_potholes", level: 0, seed: 4, perception: "occlusion", shadowCeiling: true, depthPrior: true, unknownNear: 1.5 } },
   { id: "TP-0039", tp: "TP-0039", label: "연석 L3 (경사로 1.1 m)", set: { scenario: "curb_ramp", level: 3, seed: 0, perception: "range" } },
   { id: "planner-vs-controller", tp: "P/C", label: "Planner 없이 MPPI만", set: { scenario: "bumps_potholes", level: 0, seed: 0, perception: "range", planner: "straight" } },
   { id: "TP-0027", tp: "TP-0027", label: "보행자 3명", set: { scenario: "bumps_potholes", level: 0, seed: 1, perception: "range" }, peds: 3 },
@@ -73,7 +77,23 @@ for (const p of PRESETS) {
 const syncPer = segment("perception", opts.perception, (v) => { opts.perception = v; restart(); });
 const syncPl = segment("planner", opts.planner, (v) => { opts.planner = v; restart(); });
 const syncCo = segment("controller", opts.controller, (v) => { opts.controller = v; restart(); });
-segment("layer", view.layer, (v) => { view.layer = v; });
+$("layerSel").addEventListener("change", (e) => { setLayer(e.target.value); });
+function setLayer(v) {
+  view.layer = v; $("layerSel").value = v; uiKey = "";
+  ensureChassis();
+}
+// 차체 기하 기준은 지형이 바뀔 때만 한 번 계산한다(약 1 s). 층을 고를 때 필요하면 시작한다.
+function ensureChassis() {
+  if (view.layer !== "chassis" || world.chassisVer === world.terrainVersion || world.chassisBusy) return;
+  world.chassisBusy = true;
+  $("probe").textContent = "차체 기하 기준을 계산하는 중이다(방위각 8개 × 모든 칸, 약 1 s)…";
+  const w = world;
+  setTimeout(() => {
+    w.chassis = chassisFeasibility(w.terrain.z, w.terrain.grid);
+    w.chassisVer = w.terrainVersion; w.chassisBusy = false;
+    if (w === world) $("probe").textContent = "차체 기하 기준: 빨강·보라·파랑·주황 칸은 어느 방향으로도 차체가 들어가지 못한다.";
+  }, 30);
+}
 segment("tool", view.tool, (v) => { view.tool = v; });
 segment("speed", 1, (v) => { speed = +v; });
 const syncView = segment("view", "2d", (v) => setMode(v));
@@ -81,6 +101,7 @@ const syncView = segment("view", "2d", (v) => setMode(v));
 const setLevel = slider("level", (v) => `L${v}`, (v) => { opts.level = v; newWorld(); });
 const setSeed = slider("seed", (v) => `${v}`, (v) => { opts.seed = v; newWorld(); });
 const setSH = slider("sensorHeight", (v) => `${v.toFixed(2)} m`, (v) => { opts.sensorHeight = v; restart(); });
+const setUN = slider("unknownNear", (v) => (v ? `${v.toFixed(2)} m` : "끔"), (v) => { opts.unknownNear = v; restart(); });
 const setSR = slider("sensorRange", (v) => `${v.toFixed(1)} m`, (v) => { opts.sensorRange = v; restart(); });
 const setK = slider("K", (v) => `${v}`, (v) => { opts.mppi.K = v; });
 const setT = slider("T", (v) => `${(v * 0.1).toFixed(1)} s`, (v) => { opts.mppi.T = v; });
@@ -96,6 +117,7 @@ for (const id of ["shadowCeiling", "depthPrior", "evidence"]) {
 }
 $("showRoute").addEventListener("change", (e) => { view.route = e.target.checked; });
 $("showSamples").addEventListener("change", (e) => { view.samples = e.target.checked; });
+$("showPoints").addEventListener("change", (e) => { view.points = e.target.checked; });
 
 $("play").addEventListener("click", () => {
   if (world.status !== "running") { restart(); return; }
@@ -126,13 +148,14 @@ function syncPanel() {
   $("level").disabled = !hasLv;
   const d = DIFFICULTY[opts.scenario];
   $("scNote").textContent = hasLv ? Object.entries(d).map(([k, v]) => `${k} ${v[opts.level]}`).join(" · ") : "레벨 없음";
-  setLevel(opts.level); setSeed(opts.seed); setSH(opts.sensorHeight); setSR(opts.sensorRange);
+  setLevel(opts.level); setSeed(opts.seed); setSH(opts.sensorHeight); setSR(opts.sensorRange); setUN(opts.unknownNear || 0);
+  $("unknownNear").disabled = opts.perception === "gt";
   syncPer(opts.perception); syncPl(opts.planner); syncCo(opts.controller);
   $("perNote").textContent = PERCEPTION[opts.perception].note;
   $("plNote").textContent = PLANNERS[opts.planner].note;
   $("coNote").textContent = CONTROLLERS[opts.controller].note;
   $("mppiParams").hidden = opts.controller !== "mppi";
-  const occl = opts.perception === "occlusion";
+  const occl = opts.perception === "occlusion" || opts.perception === "l1lite";
   $("sensorHeight").disabled = !occl;
   $("sensorRange").disabled = opts.perception === "gt";
   for (const id of ["shadowCeiling", "depthPrior", "evidence"]) { $(id).checked = opts[id]; $(id).disabled = !occl; }
@@ -152,12 +175,13 @@ function restart() {
   world.opts = opts; world.reset();
   onNewRun();
 }
-function onNewRun() { paused = false; logged = false; acc = 0; uiKey = ""; syncPanel(); syncPlay(); }
+function onNewRun() { paused = false; logged = false; acc = 0; uiKey = ""; syncPanel(); syncPlay(); ensureChassis(); }
 
 function applyPreset(p) {
   Object.assign(opts, defaultOptions(), p.set);          // 시연은 MPPI도 기본값에서 시작한다
   world.clearPeds();
   newWorld();
+  setLayer(p.layer || "belief");
   if (p.peds) { world.spawnCrossing(p.peds); restart(); }
 }
 
@@ -165,7 +189,7 @@ function applyPreset(p) {
 const cv = $("map2d");
 function evWorld(e) { const r = cv.getBoundingClientRect(); return map2d.toWorld(e.clientX - r.left, e.clientY - r.top); }
 function editTerrain(fn) {
-  fn(); world.terrainVersion++; world.edited = true; world.rebuildGT();
+  fn(); world.terrainVersion++; world.edited = true; world.rebuildGT(); ensureChassis();
   world.observe(); world.replan();
 }
 cv.addEventListener("pointerdown", (e) => {
@@ -206,7 +230,15 @@ function probe(x, y) {
   if (!g.inside(x, y)) { $("probe").textContent = ""; return; }
   const [r, c] = g.cell(x, y), i = r * g.W + c, gt = world.gt, b = world.belief;
   const state = b.known[i] ? "관측" : b.bounded[i] ? "미관측(상한·prior)" : "미관측";
-  $("probe").textContent = `x ${x.toFixed(2)} y ${y.toFixed(2)} m · 높이 ${(world.terrain.z[i] * 100).toFixed(1)} cm · 경사 ${(gt.slope[i] * 57.3).toFixed(1)}° · 턱 ${(gt.step[i] * 100).toFixed(1)} cm · 거칠기 ${(gt.rough[i] * 100).toFixed(1)} cm · 실제 cost ${gt.cost[i].toFixed(2)} · 로봇이 본 cost ${b.cost[i].toFixed(2)} (${state})`;
+  const cm = (v) => (v * 100).toFixed(1);
+  const seen = b.known[i] ? `로봇이 본 높이 ${cm(b.elev[i])} cm` : "로봇은 못 봄";
+  const sig = opts.perception === "l1lite" && Number.isFinite(world.emap.v[i]) ? ` · σ ${cm(Math.sqrt(world.emap.v[i]))} cm` : "";
+  const ceil = !b.known[i] && world.beliefCeil && Number.isFinite(world.beliefCeil[i]) ? ` · 상한 ${cm(world.beliefCeil[i])} cm` : "";
+  const ch = world.chassis && world.chassisVer === world.terrainVersion
+    ? ` · 차체: ${world.chassis.lethalAll[i] ? ["", "자세로", "바퀴 들뜸으로", "배 밑 간섭으로"][world.chassis.reason[i]] + " 못 들어감" : world.chassis.lethalAny[i] ? "일부 방향 막힘" : "들어감"}` : "";
+  $("probe").textContent = `x ${x.toFixed(2)} y ${y.toFixed(2)} m · 실제 높이 ${cm(world.terrain.z[i])} cm · ${seen}${sig}${ceil}`
+    + ` · 경사 ${(b.slope[i] * 57.3).toFixed(1)}° · 턱 ${cm(b.step[i])} cm · 거칠기 ${cm(b.rough[i])} cm`
+    + ` · 로봇이 본 cost ${b.cost[i].toFixed(2)} (${state}) · 실제 cost ${gt.cost[i].toFixed(2)}${ch}`;
 }
 
 // ------------------------------------------------------------------ 3D
@@ -264,7 +296,9 @@ function banner() {
     logged = true;
     history.unshift({
       sc: `${opts.scenario}${DIFFICULTY[opts.scenario] ? "@L" + opts.level : ""} s${opts.seed}${world.edited ? " (편집)" : ""}`,
-      per: { gt: "완전", range: "L0", occlusion: `가림 ${opts.sensorHeight.toFixed(1)} m${opts.shadowCeiling ? " +상한" : ""}${opts.shadowCeiling && opts.depthPrior ? " +prior" : ""}` }[opts.perception],
+      per: ({ gt: "완전", range: "L0", occlusion: `가림 ${opts.sensorHeight.toFixed(1)} m`, l1lite: `L1 간이 ${opts.sensorHeight.toFixed(1)} m` }[opts.perception])
+        + (opts.perception === "occlusion" || opts.perception === "l1lite" ? `${opts.shadowCeiling ? " +상한" : ""}${opts.shadowCeiling && opts.depthPrior ? " +prior" : ""}` : "")
+        + (opts.unknownNear ? ` +미관측 ${opts.unknownNear} m` : ""),
       stack: `${opts.planner}+${opts.controller}`, ok: world.status === "reached", res: world.status === "reached" ? "도달" : world.failure,
       t: world.t, pitch: world.stats.maxPitch, cost: world.stats.gtCostSum / Math.max(1, world.stats.steps),
     });
@@ -276,11 +310,10 @@ function banner() {
 
 // ------------------------------------------------------------------ 표시 보조
 function syncLegend() {
-  const cost = view.layer !== "height";
-  document.querySelectorAll(".legend [data-layer]").forEach((el) => {
-    const l = el.dataset.layer;
-    el.hidden = l === "cost" ? !cost : l === "belief" ? view.layer !== "belief" : !(l === "height" && !cost);
-  });
+  const L = LAYERS[view.layer];
+  $("legendLayer").innerHTML = L.legend();
+  $("layerNote").textContent = `${L.group} · ${L.label}: ${L.note}`;
+  document.querySelectorAll(".legend [data-l1]").forEach((el) => { el.hidden = opts.perception !== "l1lite"; });
   $("legHorizon").textContent = (opts.mppi.T * SIM.dt).toFixed(1);
 }
 
