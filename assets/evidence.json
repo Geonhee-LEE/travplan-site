@@ -57,6 +57,10 @@
   "tp0065_stereo": {
    "caption": "전면 스테레오를 L1 두 번째 입력으로: 미관측 1.5 m와 함께 쓰면 L1 느려짐(+23% → +2%)과 음의 지형 오탐(-58%)이 사라지고 MISS는 거의 0을 지킨다",
    "results": "results/tp0065_stereo"
+  },
+  "tp0095_rules": {
+   "caption": "깊이 prior 후보에 잡음 필터: ohm·CMU 모두 내림 턱 오탐(28.9 → 18.3칸)을 되돌리고, CMU(1,2)가 포트홀 재현율 0.86을 지킨다",
+   "results": "results/tp0095_rules"
   }
  },
  "tp": {
@@ -118,6 +122,7 @@
   ]
  },
  "featured": [
+  "tp0095_rules",
   "tp0065_stereo",
   "tp0101_unknown_near",
   "tp0100_belief_chassis",
