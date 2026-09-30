@@ -45,6 +45,10 @@
   "tp0082_estimators": {
    "caption": "섀시 기하 기준(추정기와 독립)으로 잰 추정기 비교. emap의 RSL 발디딤 필터는 배포 운용점(gate 0.15)에서 차체가 못 들어가는 칸 4,425개를 주행 가능이라 부르고, 거의 전부 slope_crossfall 경사다. 기하·TravNet은 0",
    "results": "results/p2-estimators.tsv"
+  },
+  "tp0100_belief_chassis": {
+   "caption": "belief TravMap 대 차체 기하 기준. MISS의 99% 이상이 못 본 칸이고, 그림자 상한·깊이 prior는 도달 가능한 근거리 MISS를 줄이지 않는다(2,206 → 2,204). 센서 0.8 m는 3.4배 줄이고 L1은 2.8배 나쁘다",
+   "results": "results/tp0100_belief_chassis"
   }
  },
  "tp": {
@@ -100,9 +104,13 @@
   ],
   "TP-0077": [
    "ev_tp0073_levels"
+  ],
+  "TP-0101": [
+   "tp0100_belief_chassis"
   ]
  },
  "featured": [
+  "tp0100_belief_chassis",
   "tp0082_estimators",
   "ev_tp0073_levels",
   "ev_benchmark_progress",

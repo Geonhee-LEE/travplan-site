@@ -1,7 +1,41 @@
 {
- "generated": "2026-09-30 21:53",
+ "generated": "2026-09-30 22:26",
  "repo": "Geonhee-LEE/travplan",
  "items": {
+  "94": {
+   "kind": "issue",
+   "state": "open",
+   "title": "근거리 미관측 칸의 cost 재검토 (TP-0101)",
+   "url": "https://github.com/Geonhee-LEE/travplan/issues/94",
+   "branch": "",
+   "closed_at": ""
+  },
+  "93": {
+   "kind": "pr",
+   "state": "open",
+   "title": "TP-0100: belief TravMap을 차체 기하 기준으로 채점 (진행 중)",
+   "url": "https://github.com/Geonhee-LEE/travplan/pull/93",
+   "branch": "p2/tp0100-belief-chassis",
+   "closed_at": "",
+   "issues": []
+  },
+  "92": {
+   "kind": "issue",
+   "state": "open",
+   "title": "belief TravMap을 차체 기하 기준으로 채점: L0 가림·그림자 상한·깊이 prior·L1 (TP-0100)",
+   "url": "https://github.com/Geonhee-LEE/travplan/issues/92",
+   "branch": "",
+   "closed_at": ""
+  },
+  "91": {
+   "kind": "pr",
+   "state": "merged",
+   "title": "대시보드 재생성: 다른 PC PR 4개 merge와 이슈 종료 반영",
+   "url": "https://github.com/Geonhee-LEE/travplan/pull/91",
+   "branch": "chore/index-sync-0930",
+   "closed_at": "2026-09-30",
+   "issues": []
+  },
   "90": {
    "kind": "issue",
    "state": "closed",
@@ -986,6 +1020,13 @@
   "TP-0097": [
    80,
    81
+  ],
+  "TP-0100": [
+   92,
+   93
+  ],
+  "TP-0101": [
+   94
   ]
  }
 }
