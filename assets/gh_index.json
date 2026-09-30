@@ -1,22 +1,22 @@
 {
- "generated": "2026-09-30 21:52",
+ "generated": "2026-09-30 21:53",
  "repo": "Geonhee-LEE/travplan",
  "items": {
   "90": {
    "kind": "issue",
-   "state": "open",
+   "state": "closed",
    "title": "리서치: 배경·수식(§0) 14개 절 확장과 보행 로봇 탭 사실 정정",
    "url": "https://github.com/Geonhee-LEE/travplan/issues/90",
    "branch": "",
-   "closed_at": ""
+   "closed_at": "2026-09-30"
   },
   "89": {
    "kind": "issue",
-   "state": "open",
+   "state": "closed",
    "title": "학습 traversability 필터 기준선 평가 (TP-0082)",
    "url": "https://github.com/Geonhee-LEE/travplan/issues/89",
    "branch": "",
-   "closed_at": ""
+   "closed_at": "2026-09-30"
   },
   "88": {
    "kind": "pr",
@@ -80,12 +80,14 @@
   },
   "82": {
    "kind": "pr",
-   "state": "open",
+   "state": "merged",
    "title": "리서치: 배경·수식(§0) 14개 절 확장 + 보행 로봇 탭 사실 정정 52건",
    "url": "https://github.com/Geonhee-LEE/travplan/pull/82",
    "branch": "docs/background-and-legged-factcheck",
-   "closed_at": "",
-   "issues": []
+   "closed_at": "2026-09-30",
+   "issues": [
+    90
+   ]
   },
   "81": {
    "kind": "pr",
@@ -100,11 +102,11 @@
   },
   "80": {
    "kind": "issue",
-   "state": "open",
+   "state": "closed",
    "title": "TP-0097: 벤더링 elevation_mapping에 학습 traversability 필터 가드 backport",
    "url": "https://github.com/Geonhee-LEE/travplan/issues/80",
    "branch": "",
-   "closed_at": ""
+   "closed_at": "2026-09-30"
   },
   "79": {
    "kind": "pr",
@@ -350,11 +352,11 @@
   },
   "53": {
    "kind": "issue",
-   "state": "open",
+   "state": "closed",
    "title": "curb_ramp 레벨 3 잔여 실패 진단 (TP-0077)",
    "url": "https://github.com/Geonhee-LEE/travplan/issues/53",
    "branch": "",
-   "closed_at": ""
+   "closed_at": "2026-09-30"
   },
   "52": {
    "kind": "issue",
