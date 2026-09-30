@@ -1,0 +1,108 @@
+{
+ "_readme": "TODO 항목(TP-XXXX)에 붙는 결과 그림. src는 docs/assets/figs/ 기준, results는 근거 결과 폴더. bottleneck 그림은 진행 현황 '현재 병목' 카드에, featured에 든 그림은 진행 현황 탭 '주요 결과'에 나온다. 그림은 scripts/make_evidence_figures.py·make_doc_figures.py로 다시 만든다. docs/assets/figs/tpNNNN_*.webp는 여기 적지 않아도 TP-NNNN에 자동으로 붙는다.",
+ "figs": {
+  "ev_benchmark_progress": {
+   "caption": "운동학 벤치마크 성공률 추이(4 시나리오 × 10 seed). 가림·L1 인식으로 떨어지고 그림자 상한·깊이 prior로 회복",
+   "results": "results/tp0047_bp"
+  },
+  "ev_tp0025_tracks": {
+   "caption": "Planner D(주황)와 Guidance(파랑)의 경로, 레벨 0 seed 0. 둘 다 도달",
+   "results": "results/tp0025_v2"
+  },
+  "ev_tp0047_potholes": {
+   "caption": "▶ 가림 켠 포트홀 주행. 상한만이면 치명 셀 진입, 깊이 prior를 켜면 돌아서 도달",
+   "results": "results/tp0047_bp"
+  },
+  "ev_tp0050_curb_l3": {
+   "caption": "▶ curb_ramp 레벨 3. Guidance는 25.9 s에 도달, Planner D는 경사로를 못 찾고 60 s 시간 초과(현재 병목)",
+   "results": "results/tp0050"
+  },
+  "ev_tp0067_false_alarm": {
+   "caption": "깊이 prior 오탐: 통로 안 오탐 9.1 → 1.3칸, 포트홀 재현율 0.88 유지",
+   "results": "results/tp0067_falsealarm"
+  },
+  "sensor_layout": {
+   "caption": "권장 센서 배치(전면 3D LiDAR 1 + 카메라 5)의 시야"
+  },
+  "sensor_sweep": {
+   "caption": "LiDAR 높이·기울기별 지도 품질(L1)",
+   "results": "results/tp0060"
+  },
+  "front_vs_crab": {
+   "caption": "▶ 앞으로 주행과 옆 주행의 관측 차이"
+  },
+  "travnet_shift": {
+   "caption": "TravNet 잔차가 바꾼 cost 분포"
+  },
+  "ev_tp0073_curb_l3": {
+   "caption": "▶ curb_ramp 레벨 3 seed 0. 레벨 0 시연만 배운 Planner D는 60 s 시간 초과, 레벨 0–3 시연 + DAgger 뒤에는 24.9 s에 도달",
+   "results": "results/tp0073_levels"
+  },
+  "ev_tp0073_levels": {
+   "caption": "planner_d+mppi 성공 수: 벤치마크 레벨 3이 11/12 → 12/12, curb_ramp 레벨 3 seed 0–9는 7/10 → 8/10",
+   "results": "results/tp0073_levels"
+  }
+ },
+ "tp": {
+  "TP-0022": [
+   "travnet_shift"
+  ],
+  "TP-0025": [
+   "ev_tp0025_tracks"
+  ],
+  "TP-0027": [
+   "ev_benchmark_progress"
+  ],
+  "TP-0031": [
+   "ev_benchmark_progress"
+  ],
+  "TP-0039": [
+   "ev_tp0050_curb_l3"
+  ],
+  "TP-0044": [
+   "ev_tp0047_potholes"
+  ],
+  "TP-0046": [
+   "ev_tp0047_potholes"
+  ],
+  "TP-0047": [
+   "ev_tp0047_potholes",
+   "ev_benchmark_progress"
+  ],
+  "TP-0048": [
+   "ev_tp0067_false_alarm"
+  ],
+  "TP-0050": [
+   "ev_tp0050_curb_l3"
+  ],
+  "TP-0053": [
+   "ev_benchmark_progress"
+  ],
+  "TP-0060": [
+   "sensor_layout",
+   "sensor_sweep",
+   "front_vs_crab"
+  ],
+  "TP-0067": [
+   "ev_tp0067_false_alarm"
+  ],
+  "TP-0073": [
+   "ev_tp0073_levels",
+   "ev_tp0073_curb_l3"
+  ],
+  "TP-0075": [
+   "ev_tp0073_levels",
+   "ev_tp0073_curb_l3"
+  ],
+  "TP-0077": [
+   "ev_tp0073_levels"
+  ]
+ },
+ "featured": [
+  "ev_tp0073_levels",
+  "ev_benchmark_progress",
+  "ev_tp0047_potholes",
+  "ev_tp0025_tracks"
+ ],
+ "bottleneck": "ev_tp0073_curb_l3"
+}

@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ETH RSL 계보</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@500;800&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+:root{
+  --ground:#F2F2F0; --surface:#FFFFFF; --ink:#1B1C1F; --ink-2:#44474D; --muted:#72757B;
+  --rule:#D9D9D5; --signal:#D2362C; --signal-soft:#D2362C14; --steel:#2E5B7A; --steel-soft:#2E5B7A14;
+  --display:"Gothic A1","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --sans:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#141517; --surface:#1C1D20; --ink:#ECECEA; --ink-2:#BFC0C3; --muted:#8C8E93;
+    --rule:#2E3034; --signal:#FF6B5E; --signal-soft:#FF6B5E1F; --steel:#7FB2D4; --steel-soft:#7FB2D41F; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#141517; --surface:#1C1D20; --ink:#ECECEA; --ink-2:#BFC0C3; --muted:#8C8E93;
+  --rule:#2E3034; --signal:#FF6B5E; --signal-soft:#FF6B5E1F; --steel:#7FB2D4; --steel-soft:#7FB2D41F; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body,h1,h2,h3,p,td,li{word-break:keep-all;overflow-wrap:anywhere}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--ground);color:var(--ink);font:16px/1.75 var(--sans);padding-inline:20px;padding-block:0 64px}
+.wrap{max-width:1000px;margin:0 auto}
+a{color:var(--steel);text-underline-offset:3px}
+a:focus-visible{outline:2px solid var(--signal);outline-offset:2px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;line-height:1.25;margin:0}
+h1{font-size:clamp(30px,5.4vw,50px);font-weight:800;letter-spacing:-.02em}
+h2{font-size:clamp(22px,3.2vw,30px);font-weight:800;letter-spacing:-.01em}
+h3{font-size:18px;font-weight:800}
+p{margin:0;max-width:68ch}
+code{font-family:var(--mono);font-size:.9em}
+.tag{font:600 11px/1.4 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.tag.red{color:var(--signal)}
+header.hero{padding-block:56px 36px;display:grid;gap:18px;border-bottom:2px solid var(--ink)}
+header.hero .sub{font-size:17px;color:var(--ink-2)}
+.hero-facts{display:flex;flex-wrap:wrap;gap:10px 28px;font:500 13px var(--mono);color:var(--ink-2)}
+.hero-facts b{color:var(--signal);font-weight:600}
+section{display:grid;gap:22px;padding-block:44px;border-bottom:1px solid var(--rule)}
+.intro{display:grid;gap:10px}
+/* layer map */
+.layers{display:grid;gap:0;border:1px solid var(--rule);border-radius:6px;background:var(--surface);overflow:hidden}
+.layer{display:grid;grid-template-columns:150px 1fr;border-top:1px solid var(--rule)}
+.layer:first-child{border-top:0}
+.layer .name{padding:16px;font:800 15px var(--display);background:var(--steel-soft);display:grid;align-content:start;gap:4px}
+.layer .name small{font:500 12px var(--sans);color:var(--muted)}
+.layer .items{padding:14px 16px;display:flex;flex-wrap:wrap;gap:8px}
+.w{display:inline-flex;gap:6px;align-items:baseline;border:1px solid var(--rule);border-radius:4px;padding:5px 9px;font-size:14px;background:var(--ground)}
+.w .s{font:500 11px var(--mono);color:var(--muted)}
+.w.new{border-color:var(--signal);background:var(--signal-soft)}
+.w.new .s{color:var(--signal)}
+.legend{font-size:13px;color:var(--ink-2);display:flex;gap:18px;flex-wrap:wrap}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px;border:1px solid var(--rule);background:var(--ground)}
+.legend span.n::before{border-color:var(--signal);background:var(--signal-soft)}
+/* timeline */
+.tl-box{overflow-x:auto}
+.tl{display:grid;grid-template-columns:repeat(7,minmax(128px,1fr));min-width:900px;border-top:2px solid var(--ink)}
+.tl .y{padding:10px 12px 0;border-left:1px solid var(--rule);display:grid;gap:8px;align-content:start}
+.tl .y:first-child{border-left:0}
+.tl .yr{font:600 14px var(--mono)}
+.tl .e{overflow-wrap:anywhere;font-size:13px;line-height:1.5;color:var(--ink-2)}
+.tl .e.hot{color:var(--signal);font-weight:500}
+/* feature blocks */
+.feature{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}
+.feature .txt{display:grid;gap:12px}
+.fit{border-left:3px solid var(--signal);padding-left:12px;color:var(--ink-2)}
+figure{margin:0;display:grid;gap:8px}
+figure img{width:100%;height:auto;border-radius:4px;border:1px solid var(--rule)}
+figcaption{font-size:13px;color:var(--muted)}
+.nums{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--rule);border-radius:6px;background:var(--surface)}
+.nums div{padding:14px 16px;border-left:1px solid var(--rule);display:grid;gap:2px}
+.nums div:first-child{border-left:0}
+.nums b{font:600 22px var(--mono);font-variant-numeric:tabular-nums}
+.nums span{font-size:13px;color:var(--ink-2)}
+.eq{font:14px/1.6 var(--mono);background:var(--surface);border:1px solid var(--rule);border-radius:4px;padding:12px 14px;overflow-x:auto;white-space:nowrap}
+.svg-box{overflow-x:auto}
+.svg-box svg{display:block;width:100%;min-width:560px;height:auto}
+/* compare stacks */
+.stacks{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.stack{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:16px;display:grid;gap:8px}
+.stack ol{margin:0;padding:0;list-style:none;display:grid;gap:6px}
+.stack li{border:1px solid var(--rule);border-radius:4px;padding:8px 10px;font-size:14px;display:grid;grid-template-columns:70px 1fr;gap:8px}
+.stack li .k{font:600 12px var(--mono);color:var(--muted)}
+.stack li.diff{border-color:var(--signal)}
+/* spec sheet */
+.spec-box{overflow-x:auto;border:1px solid var(--rule);border-radius:6px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:560px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font:600 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+tr:last-child td{border-bottom:0}
+td.v{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.pair article{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:18px;display:grid;gap:10px;align-content:start}
+ol.steps{margin:0;padding:0;list-style:none;display:grid;gap:14px;counter-reset:s}
+ol.steps li{display:grid;grid-template-columns:36px 1fr;gap:12px;counter-increment:s}
+ol.steps li::before{content:counter(s);font:800 22px var(--display);color:var(--signal)}
+.sources{font-size:13px;color:var(--ink-2)}
+.sources ul{margin:0;padding-left:18px;display:grid;gap:4px}
+footer{padding-top:28px;font-size:13px;color:var(--muted)}
+@media (max-width:780px){
+  .feature,.stacks,.pair{grid-template-columns:1fr}
+  .layer{grid-template-columns:1fr}
+  .nums{grid-template-columns:1fr 1fr}
+  .nums div:nth-child(3){border-left:0}
+  .nums div:nth-child(n+3){border-top:1px solid var(--rule)}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <div class="tag red">ETH Zürich · Robotic Systems Lab · Marco Hutter</div>
+  <h1>travplan이 쓰는 지도는 이 연구실에서 왔다</h1>
+  <p class="sub">elevation_mapping_cupy, traversability_estimation, WVN이 모두 RSL 코드다. 연구실은 ANYmal 4족 로봇에서 시작해 바퀴 달린 다리 로봇과 도시 배송까지 왔다. 스핀오프 RIVR는 보도 배달로봇을 상용화했고 2026-03-19 Amazon에 인수됐다.</p>
+  <div class="hero-facts"><span>travplan 문서 <b>Planner B.14</b></span><span>새로 다룬 연구 <b>FDM · 바퀴·다리 내비 · RIVR · SRU · DTC</b></span><span>조사일 <b>2026-09-28</b></span></div>
+</header>
+
+<section>
+  <div class="intro">
+    <div class="tag">층별 지도</div>
+    <h2>travplan의 층으로 다시 묶은 RSL 연구</h2>
+    <p>흩어져 다뤄 온 연구를 인식, Planner, Controller, 시뮬레이션 층에 놓았다. 오른쪽 작은 글자는 travplan 문서의 절 번호다.</p>
+  </div>
+  <div class="layers">
+    <div class="layer"><div class="name">인식<small>지도·traversability</small></div><div class="items">
+      <span class="w">elevation_mapping_cupy <span class="s">A.2b</span></span>
+      <span class="w">traversability_estimation <span class="s">A.7</span></span>
+      <span class="w">Wild Visual Navigation <span class="s">A.7 · TP-0010</span></span>
+      <span class="w">Miki 2022 belief encoder <span class="s">A.7.1</span></span>
+    </div></div>
+    <div class="layer"><div class="name">Planner<small>경로·로컬 정책</small></div><div class="items">
+      <span class="w">ArtPlanner <span class="s">B.12.2</span></span>
+      <span class="w">ViPlanner <span class="s">B.4b</span></span>
+      <span class="w">Path-conditioned RL <span class="s">B.9</span></span>
+      <span class="w new">SRU <span class="s">B.14</span></span>
+    </div></div>
+    <div class="layer"><div class="name">Planner + Controller<small>둘을 잇는 층</small></div><div class="items">
+      <span class="w new">학습 전방 동역학 FDM <span class="s">B.14</span></span>
+      <span class="w new">바퀴·다리 도시 내비 <span class="s">B.14</span></span>
+    </div></div>
+    <div class="layer"><div class="name">Controller<small>추종·보행</small></div><div class="items">
+      <span class="w new">DTC <span class="s">B.14</span></span>
+    </div></div>
+    <div class="layer"><div class="name">시뮬레이션<small>병렬 학습</small></div><div class="items">
+      <span class="w">legged_gym <span class="s">S.5.1</span></span>
+      <span class="w">Isaac Lab <span class="s">S.1.1</span></span>
+    </div></div>
+    <div class="layer"><div class="name">상용화<small>스핀오프</small></div><div class="items">
+      <span class="w new">RIVR (구 Swiss-Mile) <span class="s">B.14</span></span>
+    </div></div>
+  </div>
+  <div class="legend"><span>이미 다룬 연구</span><span class="n">이번에 새로 다룬 연구</span></div>
+</section>
+
+<section>
+  <div class="intro">
+    <div class="tag">연표</div>
+    <h2>높이 지도에서 배달로봇까지</h2>
+  </div>
+  <div class="tl-box"><div class="tl">
+    <div class="y"><span class="yr">2014–18</span><span class="e">로봇 중심 elevation mapping (CLAWAR 2014, RA-L 2018)</span></div>
+    <div class="y"><span class="yr">2020–21</span><span class="e">험지 4족 보행 RL (Science Robotics 2020)</span><span class="e">legged_gym, Learning to Walk in Minutes</span></div>
+    <div class="y"><span class="yr">2022</span><span class="e">Miki 인식 기반 보행 (Science Robotics)</span><span class="e">elevation_mapping_cupy</span></div>
+    <div class="y"><span class="yr">2023</span><span class="e">ArtPlanner (DARPA SubT 우승)</span><span class="e">WVN (RSS 2023)</span><span class="e">DTC</span></div>
+    <div class="y"><span class="yr">2024</span><span class="e hot">바퀴·다리 도시 내비 (Science Robotics)</span><span class="e">ViPlanner (ICRA)</span><span class="e">Swiss-Mile 2,200만 달러 시드</span></div>
+    <div class="y"><span class="yr">2025</span><span class="e hot">FDM (RSS)</span><span class="e">SRU (IJRR)</span><span class="e">RIVR로 개명, 오스틴·취리히 시범 배송</span></div>
+    <div class="y"><span class="yr">2026</span><span class="e">Path-conditioned RL</span><span class="e hot">03-19 Amazon, RIVR 인수</span></div>
+  </div></div>
+</section>
+
+<section>
+  <div class="intro">
+    <div class="tag red">핵심 1 · RSS 2025</div>
+    <h2>FDM: 이 명령을 내면 어디로 가고, 실패할 확률은 얼마인가</h2>
+  </div>
+  <div class="feature">
+    <div class="txt">
+      <p>MPPI 비용을 사람이 경사·step·거칠기로 짜는 대신, 로봇이 실제로 어떻게 움직이는지를 배운다. 입력은 높이 스캔, proprioception 이력 10개(20 Hz), 속도 명령열이다. 출력은 앞 10스텝의 2D 자세와 스텝별 실패 확률이다.</p>
+      <p>MPPI는 이 모델로 명령열 2048개를 굴리고, 목표 자세 보상과 실패 위험 벌점으로 고른다. 학습은 Isaac Lab 병렬 환경 1만 개에서 모은 120만 샘플로 RTX 4090 한 장, 약 8시간이다.</p>
+      <p class="fit">travplan TP-0068(GP 잔차)과 같은 자리를 다른 방식으로 채운다. travplan 시뮬레이터에는 GT cost가 있어서 "치명 셀에 닿았는가"가 실패 라벨로 바로 나온다. 이 실패 확률을 Planner D 선택기의 후보 채점에 붙인다.</p>
+      <p style="font-size:14px">Roth·Frey·Cadena·Hutter · <a href="https://arxiv.org/abs/2504.19322">arXiv:2504.19322</a> · <a href="https://github.com/leggedrobotics/fdm">코드 ★354</a></p>
+    </div>
+    <figure>
+      <img src="../assets/thumbs/0a6ff35acc14.webp" alt="FDM 개요 그림. ANYmal이 옥상과 실내에서 목표로 가는 궤적 샘플과, 인코더와 전방 적분이 미래 상태와 위험을 내고 MPPI가 보상 최대 명령을 고르는 구조도" loading="lazy">
+      <figcaption>FDM 개요. 인코더가 proprioception·높이 스캔·과거 상태를 읽고, 예측한 미래 상태와 위험으로 MPPI가 명령을 고른다. 출처: <a href="https://github.com/leggedrobotics/fdm">leggedrobotics/fdm</a></figcaption>
+    </figure>
+  </div>
+  <div class="nums">
+    <div><b>−41%</b><span>최종 위치 오차 (학습 동역학 기준선 대비)</span></div>
+    <div><b>89%+</b><span>충돌 판별 정확도</span></div>
+    <div><b>+27%</b><span>거친 시뮬레이션 내비 성공률</span></div>
+    <div><b>7 Hz</b><span>Jetson Orin AGX 계획 주기 (추론 40.6 ms)</span></div>
+  </div>
+  <div class="eq">J(a) = λ_pose · R_pose(p̂_{t+10}, g) − λ_risk · Σ_{k=1..10} ĉ_{t+k}&nbsp;&nbsp;&nbsp;// p̂: 예측 자세, ĉ: 예측 실패 확률</div>
+</section>
+
+<section>
+  <div class="intro">
+    <div class="tag red">핵심 2 · Science Robotics 2024</div>
+    <h2>바퀴·다리 로봇의 도시 내비게이션: travplan과 같은 3층</h2>
+    <p>라스트마일 배송을 목표로 걷기와 주행을 오가는 로봇의 자율 주행 전체를 만들었다. 취리히 Glattpark와 세비야에서 킬로미터 단위 임무를 돌았고, 취리히에서는 목표 13곳을 임의 순서로 방문했다. Lee·Bjelonic·Reske·Wellhausen·Miki·Hutter · <a href="https://arxiv.org/abs/2405.01792">arXiv:2405.01792</a></p>
+  </div>
+  <div class="stacks">
+    <div class="stack"><span class="tag">RSL 바퀴·다리 로봇</span><ol>
+      <li><span class="k">전역</span><span>레이저 스캔으로 미리 만든 내비 그래프</span></li>
+      <li><span class="k">로컬</span><span>높이 스캔 + 목표 → 속도 명령 (학습 정책)</span></li>
+      <li class="diff"><span class="k">추종</span><span>특권 학습 RL 보행 정책, 걷기·주행 전환</span></li>
+    </ol></div>
+    <div class="stack"><span class="tag">travplan</span><ol>
+      <li><span class="k">전역</span><span>GuidancePlanner (Dijkstra)</span></li>
+      <li><span class="k">로컬</span><span>Planner D (flow matching 시간 인덱스 궤적)</span></li>
+      <li class="diff"><span class="k">추종</span><span>MPPI Controller</span></li>
+    </ol></div>
+  </div>
+  <div class="pair">
+    <article><span class="tag">바로 가져올 것 1</span><h3>비대칭 traversability</h3><p>같은 턱도 내려갈 때가 올라갈 때보다 쉽다. travplan의 step 채널은 방향이 없다. 진행 방향에 따라 step 비용을 달리하면, TP-0067의 내림 턱 오탐을 인식 규칙이 아니라 비용 쪽에서도 다룰 수 있다.</p></article>
+    <article><span class="tag">바로 가져올 것 2</span><h3>사람을 높이 채널에 쓴다</h3><p>사람을 검출하면 그 자리의 높이 스캔 값을 덮어써 장애물로 만든다. 별도 모듈 없이 지형 표현 안에서 피한다. travplan의 시간가변 비용 레이어(TP-0012)보다 단순한 형태가 실물 km 주행에서 충분했다는 근거다.</p></article>
+  </div>
+</section>
+
+<section>
+  <div class="intro">
+    <div class="tag red">핵심 3 · 상용화</div>
+    <h2>RIVR: 같은 과제, 다른 폼팩터</h2>
+    <p>보도 배달이라는 과제는 travplan과 같다. 차이는 다리다. RIVR는 계단과 높은 턱을 걷고, travplan의 스워브 로봇은 0.08 m를 넘는 턱을 피해야 한다. 옮길 것은 "학습 스택과 시뮬레이션 데이터로 상용 배송까지 갔다"는 사실이고, 경로 선택 기준은 옮기지 않는다.</p>
+  </div>
+  <div class="spec-box"><table>
+    <thead><tr><th>항목</th><th>RIVR</th><th>travplan 로봇</th></tr></thead>
+    <tbody>
+      <tr><td>구동</td><td>바퀴 달린 다리 (걷기·주행 전환)</td><td>비동축 스워브</td></tr>
+      <tr><td>턱·계단</td><td>계단을 걸어 오른다</td><td class="v">max_step 0.08 m, 넘는 턱은 회피</td></tr>
+      <tr><td>최고 속도 (평지)</td><td class="v">15 km/h</td><td>—</td></tr>
+      <tr><td>적재</td><td class="v">40 L</td><td>—</td></tr>
+      <tr><td>주행 거리 (1회 충전)</td><td class="v">약 30 km</td><td>—</td></tr>
+      <tr><td>자율 스택</td><td>RL·지도학습·대규모 시뮬레이션으로 학습한 신경망 (발표 기준)</td><td>TravMap + 학습 Planner + MPPI</td></tr>
+      <tr><td>창업자</td><td>Bjelonic, Valsecchi, Wellhausen, Reske (모두 RSL)</td><td>—</td></tr>
+      <tr><td>투자</td><td>2024 시드 2,200만 달러 (Bezos Expeditions·HongShan), 누적 약 2,500만 달러</td><td>—</td></tr>
+      <tr><td>시범 배송</td><td>2025 오스틴 (Veho, 소포), 취리히 Oerlikon (Just Eat Takeaway.com, 음식)</td><td>—</td></tr>
+      <tr><td>인수</td><td class="v">2026-03-19 Amazon, 인수가 비공개</td><td>—</td></tr>
+    </tbody>
+  </table></div>
+  <p style="font-size:14px;color:var(--ink-2)">바퀴형 보도 배달의 기준 사례는 Coco Robotics(Planner B.6d)이고, 다리형은 RIVR다.</p>
+</section>
+
+<section>
+  <div class="intro">
+    <div class="tag">그 밖의 두 연구</div>
+    <h2>기억과 추종</h2>
+  </div>
+  <div class="pair">
+    <article><span class="tag">IJRR 2025 · <a href="https://arxiv.org/abs/2506.05997">arXiv:2506.05997</a></span><h3>SRU: RNN에 공간 변환을 넣는다</h3><p>LSTM·GRU·Mamba는 시간 의존은 잡지만 시점이 바뀌는 관측을 한 공간으로 합치지 못한다. 원소별 곱 하나를 더해 이를 배우게 했고, 장거리 내비에서 기존 RNN보다 23.5% 좋았다.</p><p class="fit">travplan의 한계인 "센서 범위 밖 미관측 영역"과 닿는다. travplan은 지도로 풀고, 지도가 비는 곳에서 Planner D에 기억을 붙일 때 참고한다.</p></article>
+    <article><span class="tag">Science Robotics 2024 · <a href="https://arxiv.org/abs/2309.15462">arXiv:2309.15462</a></span><h3>DTC: 최적화가 계획하고 RL이 추종한다</h3><p>궤적 최적화가 발 궤적을 내고 RL 정책이 강건하게 추종한다. 층의 경계가 travplan의 Planner(궤적)와 Controller(추종)와 같다.</p><p class="fit">travplan은 MPPI를 유지하기로 했다(2026-09-25). Controller를 학습 정책으로 바꿀 때 볼 참고로 둔다.</p></article>
+  </div>
+</section>
+
+<section>
+  <div class="intro">
+    <div class="tag">travplan 순서</div>
+    <h2>RSL에서 가져올 순서</h2>
+  </div>
+  <ol class="steps">
+    <li><div><strong>FDM식 실패 확률을 Planner D 선택기에.</strong> 라벨은 시뮬레이터 GT cost에서 공짜로 나온다.</div></li>
+    <li><div><strong>진행 방향이 들어간 step 비용.</strong> 비대칭 traversability로 내림 턱 오탐(TP-0067)을 비용 쪽에서 다룬다.</div></li>
+    <li><div><strong>P1 Isaac 데이터 계획.</strong> FDM의 "병렬 수집 + 실물 미세 조정" 절차를 그대로 쓴다.</div></li>
+  </ol>
+  <p>같은 문제를 제어 이론 쪽에서 푼 결과는 <a href="zeilinger-lab.html">Zeilinger 학습 MPC 설명 페이지</a>에 있다. Zeilinger 그룹은 불확실성을 σ로 재서 제약을 조이고, RSL은 실패를 직접 예측해 비용에 넣는다.</p>
+</section>
+
+<section class="sources">
+  <div class="tag">출처</div>
+  <ul>
+    <li><a href="https://arxiv.org/abs/2504.19322">Learned Perceptive Forward Dynamics Model for Safe and Platform-aware Robotic Navigation</a>, RSS 2025</li>
+    <li><a href="https://arxiv.org/abs/2405.01792">Learning Robust Autonomous Navigation and Locomotion for Wheeled-Legged Robots</a>, Science Robotics 2024 · <a href="https://junja94.github.io/learning_robust_autonomous_navigation_and_locomotion_for_wheeled_legged_robots/">프로젝트</a></li>
+    <li><a href="https://deeptechnation.ch/dtn-news/amazon-acquires-rivr-how-an-eth-zurich-lab-built-the-robot-that-delivers-your-packages/">Deep Tech Nation: Amazon acquires RIVR</a> · <a href="https://www.therobotreport.com/swiss-mile-rebrands-to-rivr-continues-developing-wheeled-quadrupeds/">The Robot Report: Swiss-Mile → RIVR</a></li>
+    <li><a href="https://arxiv.org/abs/2506.05997">Spatially-Enhanced Recurrent Memory</a>, IJRR 2025 · <a href="https://arxiv.org/abs/2309.15462">DTC</a>, Science Robotics 2024</li>
+    <li>travplan 문서: <code>docs/research-planner.md</code> B.14, <code>docs/research-perception.md</code> A.2b·A.7</li>
+  </ul>
+</section>
+
+<footer>travplan 리서치 설명판 · 2026-09-29</footer>
+</div>
+</body>
+</html>

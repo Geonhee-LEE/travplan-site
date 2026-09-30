@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Playground 검사</title>
+<style>
+:root { color-scheme: light dark; --bg: #f6f7f3; --fg: #152024; --muted: #5a6964; --ok: #1f8a57; --bad: #c9372c; --line: #cfd6d0; }
+@media (prefers-color-scheme: dark) { :root { --bg: #0d1113; --fg: #e4e9e6; --muted: #8b9893; --ok: #4cc38a; --bad: #ef5b5b; --line: #29333a; } }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 14px/1.55 system-ui, "IBM Plex Sans KR", sans-serif; }
+main { max-width: 980px; margin: 0 auto; padding: 24px 16px 40px; }
+h1 { font-size: 22px; margin: 0 0 6px; }
+p { color: var(--muted); margin: 0 0 14px; }
+.table { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+td.ok { color: var(--ok); font-weight: 600; } td.bad { color: var(--bad); font-weight: 600; }
+#summary { font: 600 15px ui-monospace, monospace; margin: 14px 0; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Playground 검사</h1>
+  <p>Playground 코어(js/)가 저장소 결과와 같은 방향으로 도는지 확인한다. 각 줄은 한 번의 주행이고, 기대 결과와 다르면 빨갛게 표시한다.
+    <code>scripts/check_playground.sh</code>가 이 페이지를 헤드리스 Chrome으로 열어 판정한다. 약 1분 걸린다.</p>
+  <div id="summary">실행 중…</div>
+  <div class="table"><table>
+    <thead><tr><th>검사</th><th>설정</th><th>기대</th><th>결과</th><th>시뮬 시간</th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table></div>
+</main>
+<script type="module">
+import { World, defaultOptions } from "./js/sim.js";
+
+// 기대값은 docs/playground/README.md의 "검증" 절과 같다. 한 줄 = 한 주행.
+const CASES = [
+  ["기본 주행", { scenario: "curb_ramp", perception: "occlusion" }, "reached"],
+  ["기본 주행", { scenario: "bumps_potholes", perception: "occlusion" }, "reached"],
+  ["기본 주행", { scenario: "slope_crossfall", perception: "range" }, "reached"],
+  ["기본 주행", { scenario: "random_mix", perception: "range" }, "reached"],
+  ["TP-0031 센서 0.3 m", { scenario: "bumps_potholes", seed: 4, perception: "occlusion", sensorHeight: 0.3, shadowCeiling: false, depthPrior: false }, "failed"],
+  ["TP-0031 센서 1.0 m", { scenario: "bumps_potholes", seed: 4, perception: "occlusion", sensorHeight: 1.0, shadowCeiling: false, depthPrior: false }, "reached"],
+  ["TP-0046 상한만", { scenario: "bumps_potholes", seed: 4, perception: "occlusion", shadowCeiling: true, depthPrior: false }, "failed"],
+  ["TP-0047 + 깊이 prior", { scenario: "bumps_potholes", seed: 4, perception: "occlusion", shadowCeiling: true, depthPrior: true }, "reached"],
+  ["TP-0039 연석 L3", { scenario: "curb_ramp", level: 3, perception: "range" }, "reached"],
+  ["Planner 없이 MPPI만", { scenario: "bumps_potholes", perception: "range", planner: "straight" }, "failed"],
+];
+
+const rows = document.getElementById("rows");
+let pass = 0;
+const results = [];
+for (const [name, set, expect] of CASES) {
+  await new Promise((r) => setTimeout(r, 0));   // 화면이 한 줄씩 갱신되게
+  const o = Object.assign(defaultOptions(), set);
+  const w = new World(o);
+  let n = 0;
+  while (w.status === "running") { w.step(); n++; }
+  const ok = w.status === expect;
+  if (ok) pass++;
+  results.push({ name, ok, status: w.status, failure: w.failure, t: w.t });
+  const cfg = `${o.scenario}${o.level ? "@L" + o.level : ""} s${o.seed} · ${o.perception}${o.perception === "occlusion" ? ` ${o.sensorHeight} m${o.shadowCeiling ? " +상한" : ""}${o.shadowCeiling && o.depthPrior ? " +prior" : ""}` : ""} · ${o.planner}+${o.controller}`;
+  rows.insertAdjacentHTML("beforeend", `<tr><td>${name}</td><td>${cfg}</td><td>${expect === "reached" ? "도달" : "실패"}</td>` +
+    `<td class="${ok ? "ok" : "bad"}">${w.status === "reached" ? "도달" : w.failure}</td><td>${w.t.toFixed(1)} s</td></tr>`);
+}
+const s = document.getElementById("summary");
+s.textContent = `${pass === CASES.length ? "PASS" : "FAIL"} ${pass}/${CASES.length}`;
+s.style.color = pass === CASES.length ? "var(--ok)" : "var(--bad)";
+document.body.dataset.result = s.textContent;   // scripts/check_playground.sh가 읽는다
+</script>
+</body>
+</html>

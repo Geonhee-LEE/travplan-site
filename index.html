@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>travplan</title>
+<meta name="description" content="실외 보도 배달로봇(비동축 스워브)을 위한 2.5D traversability 기반 학습 Planner 연구. 진행 대시보드와 브라우저 시뮬레이션 Playground.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans+KR:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* 첫 화면: 프로젝트 한 줄 소개 + 들어가는 곳 둘(대시보드, Playground) + 저장소 구조 요약.
+   색은 Playground와 같은 아스팔트 + 연석 도색 노랑. */
+:root {
+  color-scheme: light;
+  --bg: #e9ece7; --panel: #f6f7f3; --line: #cfd6d0; --fg: #152024; --muted: #5a6964; --accent: #b88700; --accent-ink: #fffaf0; --route: #0f8c80;
+  --display: "Bricolage Grotesque", "IBM Plex Sans KR", system-ui, sans-serif;
+  --body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root { color-scheme: dark; --bg: #0d1113; --panel: #141a1d; --line: #29333a; --fg: #e4e9e6; --muted: #8b9893; --accent: #f2b705; --accent-ink: #1a1400; --route: #5fd3c6; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.6 var(--body); }
+.wrap { max-width: 1080px; margin: 0 auto; padding-inline: 16px; padding-block: 40px 56px; display: grid; gap: 28px; }
+header { display: grid; gap: 10px; }
+.eyebrow { font: 600 12px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+h1 { font: 800 clamp(40px, 7vw, 72px)/0.95 var(--display); letter-spacing: -0.03em; margin: 0; }
+h1 span { color: var(--accent); }
+.lede { margin: 0; max-width: 68ch; font-size: 17px; color: var(--fg); }
+.lede b { color: var(--accent); font-weight: 600; }
+.doors { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 18px; }
+a.door { display: grid; gap: 10px; text-decoration: none; color: inherit; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 14px; transition: border-color .15s, transform .15s; }
+a.door:hover { border-color: var(--accent); transform: translateY(-2px); }
+a.door:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+a.door img { width: 100%; max-width: 100%; aspect-ratio: 1000 / 691; object-fit: cover; object-position: top; border-radius: 8px; border: 1px solid var(--line); display: block; background: #0a0d0f; }
+.door h2 { margin: 4px 2px 0; font: 700 22px/1.2 var(--display); display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.door h2 small { font: 600 12px var(--mono); color: var(--accent); }
+.door p { margin: 0 2px 4px; color: var(--muted); font-size: 14px; }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 12px; }
+.fact { border-top: 2px solid var(--line); padding-top: 10px; }
+.fact b { display: block; font: 600 12px var(--mono); letter-spacing: .06em; color: var(--muted); text-transform: uppercase; margin-bottom: 4px; }
+.fact code, footer code { font: 12.5px var(--mono); }
+footer { color: var(--muted); font-size: 13px; display: flex; flex-wrap: wrap; gap: 6px 16px; border-top: 1px solid var(--line); padding-top: 16px; }
+footer a { color: var(--muted); }
+@media (prefers-reduced-motion: reduce) { a.door { transition: none; } a.door:hover { transform: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">sidewalk delivery robot · 2.5D traversability · learned planner</div>
+    <h1>travplan<span>.</span></h1>
+    <p class="lede">실외 보도 배달로봇(비동축 스워브)이 costmap 대신 <b>2.5D 지형 표현</b>(높이, 경사, 턱, 거칠기, 불확실성)만으로
+      턱·경사·포트홀을 피해 목적지까지 가게 하는 연구다. <b>학습 Planner</b>가 경로를 내고 MPPI·NMPC <b>Controller</b>가 따라간다.</p>
+  </header>
+
+  <nav class="doors" aria-label="들어가는 곳">
+    <a class="door" href="dashboard.html">
+      <img src="assets/figs/dashboard_preview.webp" alt="대시보드 진행 현황 탭: 요약 숫자, 현재 병목, 결과 그림" loading="lazy">
+      <h2>대시보드 <small>진행 현황 · TODO · PRD · 리서치</small></h2>
+      <p>지금의 병목과 다음 작업, 모든 TODO의 GitHub 이슈·PR과 결과 그림, 로드맵, 리서치 문서를 한 곳에서 본다. 시뮬레이션 탭에서 Playground도 바로 돌린다.</p>
+    </a>
+    <a class="door" href="playground/">
+      <img src="assets/figs/playground_preview.webp" alt="Playground: 포트홀 지형 위 로봇, MPPI 샘플과 경로" loading="lazy">
+      <h2>Playground <small>브라우저 시뮬레이션</small></h2>
+      <p>지형, TravMap, 2.5D 가림, Dijkstra, MPPI, 스워브를 브라우저에서 실시간으로 돌린다. 목표·상자·포트홀·보행자를 놓고 저장소 결과를 시연 버튼으로 다시 본다.</p>
+    </a>
+  </nav>
+
+  <section class="facts" aria-label="구조">
+    <div class="fact"><b>표현</b><code>TravMap[8,H,W]</code>: elev, grad, slope, step, rough, cost, sigma. 치명 셀은 cost ≥ 0.95.</div>
+    <div class="fact"><b>Planner</b>Planner D(flow matching 4 s 궤적)가 개발 대상이고, Guidance(Dijkstra)는 비학습 기준선이다.</div>
+    <div class="fact"><b>Controller</b>MPPI(비평활 비용)와 acados NMPC(hard 제약)를 함께 개발해 같은 벤치마크에서 비교한다.</div>
+    <div class="fact"><b>평가</b>운동학 벤치마크 4 시나리오 × 난이도 레벨 0–3 × seed, L0 가림과 L1 elevation mapping 인식.</div>
+  </section>
+
+  <footer>
+    <a href="https://github.com/Geonhee-LEE/travplan-site">사이트 저장소 · Geonhee-LEE/travplan-site</a>
+    <a href="https://github.com/Geonhee-LEE/travplan-site/tree/main/playground">Playground 소스와 문서</a>
+    <span>연구 저장소(비공개)의 <code>docs/</code>가 바뀌면 자동으로 이 사이트에 동기화된다. 페이지 안의 이슈·PR·원본 문서 링크는 연구 저장소를 가리켜 권한이 있어야 열린다.</span>
+  </footer>
+</div>
+</body>
+</html>
