@@ -47,6 +47,10 @@ const CASES = [
   ["L1 간이 주행", { scenario: "curb_ramp", perception: "l1lite" }, "reached"],
   ["L1 간이 주행", { scenario: "bumps_potholes", perception: "l1lite" }, "reached"],
   ["TP-0065 L1 간이 + 스테레오 + 미관측 1.5 m", { scenario: "down_curb", perception: "l1lite", stereo: true, unknownNear: 1.5 }, "reached"],
+  ["TP-0102 스워브 L1: 범프에서 몸체가 들려 포트홀을 놓친다", { scenario: "bumps_potholes", seed: 4, perception: "l1lite" }, "failed"],
+  ["TP-0102 사족 보행 L1, 자세 보상", { robot: "quadruped", scenario: "bumps_potholes", seed: 4, perception: "l1lite", sensorHeight: 0.45, poseComp: true }, "reached"],
+  ["TP-0102 사족 보행 L1, 자세 보상 끔", { robot: "quadruped", scenario: "bumps_potholes", seed: 4, perception: "l1lite", sensorHeight: 0.45, poseComp: false }, "failed"],
+  ["TP-0102 바퀴 사족 L1, 연석", { robot: "wheelLeg", scenario: "curb_ramp", perception: "l1lite", sensorHeight: 0.45, poseComp: true }, "reached"],
   ["TP-0101 근거리 미관측 1.5 m", { scenario: "bumps_potholes", seed: 4, perception: "occlusion", shadowCeiling: true, depthPrior: true, unknownNear: 1.5 }, "reached"],
 ];
 
@@ -62,7 +66,7 @@ for (const [name, set, expect] of CASES) {
   const ok = w.status === expect;
   if (ok) pass++;
   results.push({ name, ok, status: w.status, failure: w.failure, t: w.t });
-  const cfg = `${o.scenario}${o.level ? "@L" + o.level : ""} s${o.seed} · ${o.perception}${o.perception === "occlusion" ? ` ${o.sensorHeight} m${o.shadowCeiling ? " +상한" : ""}${o.shadowCeiling && o.depthPrior ? " +prior" : ""}` : ""} · ${o.planner}+${o.controller}`;
+  const cfg = `${o.robot !== "swerve" ? o.robot + (o.poseComp ? "" : " 보상 끔") + " · " : ""}${o.scenario}${o.level ? "@L" + o.level : ""} s${o.seed} · ${o.perception}${o.perception === "occlusion" ? ` ${o.sensorHeight} m${o.shadowCeiling ? " +상한" : ""}${o.shadowCeiling && o.depthPrior ? " +prior" : ""}` : ""} · ${o.planner}+${o.controller}`;
   rows.insertAdjacentHTML("beforeend", `<tr><td>${name}</td><td>${cfg}</td><td>${expect === "reached" ? "도달" : "실패"}</td>` +
     `<td class="${ok ? "ok" : "bad"}">${w.status === "reached" ? "도달" : w.failure}</td><td>${w.t.toFixed(1)} s</td></tr>`);
 }

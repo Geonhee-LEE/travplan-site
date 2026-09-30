@@ -157,7 +157,7 @@ footer code { font: 12px var(--mono); }
         <label class="check" for="layerSel">층
           <select id="layerSel" class="sel" aria-label="지도 층">
             <optgroup label="지형"><option value="height">실제 높이</option></optgroup>
-            <optgroup label="elevation mapping"><option value="belief_elev">로봇이 본 높이</option><option value="sigma">높이 분산 σ</option><option value="ceiling">상한(upper bound)</option></optgroup>
+            <optgroup label="elevation mapping"><option value="belief_elev">로봇이 본 높이</option><option value="sigma">높이 분산 σ</option><option value="ceiling">상한(upper bound)</option><option value="elev_err">높이 오차(본 − 실제)</option></optgroup>
             <optgroup label="traversability"><option value="slope">경사</option><option value="step">턱</option><option value="rough">거칠기</option><option value="belief" selected>로봇이 본 cost</option><option value="gt">실제 cost</option><option value="chassis">차체 기하 기준</option></optgroup>
           </select>
         </label>
@@ -202,6 +202,17 @@ footer code { font: 12px var(--mono); }
         <p class="note" id="scDesc"></p>
         <div class="row"><label for="level">난이도</label><input type="range" id="level" min="0" max="3" step="1" value="0"><output id="levelOut">L0</output></div>
         <div class="row"><label for="seed">seed</label><input type="range" id="seed" min="0" max="19" step="1" value="0"><output id="seedOut">0</output></div>
+      </section>
+      <section class="card">
+        <h2>로봇 <em id="robotNote"></em></h2>
+        <div class="seg full" id="robot" role="group" aria-label="로봇 종류">
+          <button data-val="swerve">스워브</button><button data-val="quadruped">사족 보행</button><button data-val="wheelLeg">바퀴 사족</button>
+        </div>
+        <p class="note" id="robotDesc"></p>
+        <div class="toggles">
+          <label class="check" title="매퍼가 IMU·다리 기구학으로 몸체 pitch·roll·높이를 알고 점을 그 자세로 놓는다. 끄면 몸체가 수평이고 흔들리지 않는다고 믿는다."><input type="checkbox" id="poseComp"> 자세 보상</label>
+        </div>
+        <div class="row"><label for="poseNoise" title="자세 보상을 켰을 때 추정 자세의 잡음(pitch·roll σ, 1°당 높이 5 mm). 시정수 약 1 s로 천천히 변한다.">자세 추정 잡음</label><input type="range" id="poseNoise" min="0" max="3" step="0.25" value="0"><output id="poseNoiseOut"></output></div>
       </section>
       <section class="card">
         <h2>인식</h2>
@@ -258,15 +269,15 @@ footer code { font: 12px var(--mono); }
     <section class="card">
       <h2>주행 기록 <em>최근 10회</em></h2>
       <div class="table-wrap"><table>
-        <thead><tr><th>지형</th><th>인식</th><th>스택</th><th>결과</th><th>시간</th><th>최대 pitch</th><th>평균 GT cost</th></tr></thead>
-        <tbody id="history"><tr><td colspan="7" class="empty">주행이 끝나면 여기 쌓인다.</td></tr></tbody>
+        <thead><tr><th>로봇</th><th>지형</th><th>인식</th><th>스택</th><th>결과</th><th>시간</th><th>최대 pitch</th><th>평균 GT cost</th><th>평균 높이 오차</th></tr></thead>
+        <tbody id="history"><tr><td colspan="9" class="empty">주행이 끝나면 여기 쌓인다.</td></tr></tbody>
       </table></div>
     </section>
   </div>
 
   <footer>
-    <div>travplan 저장소의 <code>sim/terrain.py</code>, <code>representation/</code>, <code>sim/visibility.py</code>, <code>planners/guidance.py</code>, <code>control/mppi/</code>, <code>robot/swerve.py</code>를 JS로 옮긴 간이 시뮬레이터다. 지형 규칙과 비용 식, 한계값(경사 15°, 턱 0.08 m, 거칠기 0.04 m, 치명 cost 0.95)은 같다.</div>
-    <div>난수 생성기가 달라 seed가 같아도 Python 벤치마크와 지형이 똑같지는 않다. 시연 버튼의 결과와 표의 수치는 이 페이지(JS)에서 돈 결과이고, 저장소 결과와는 방향만 같다. MPPI 샘플 수 기본값은 브라우저 속도에 맞춰 256이다(Python 768). 학습 Planner(Planner D)는 아직 브라우저에서 돌리지 않는다. 판정은 실제 지형으로 한다: 치명 셀 진입, pitch 0.35 rad·roll 0.30 rad 초과, 보행자 접촉, 60 s 초과가 실패다.</div>
+    <div>travplan 저장소의 <code>sim/terrain.py</code>, <code>representation/</code>, <code>sim/visibility.py</code>, <code>planners/guidance.py</code>, <code>control/mppi/</code>, <code>robot/swerve.py</code>를 JS로 옮긴 간이 시뮬레이터다. 지형 규칙과 비용 식, 스워브의 한계값(경사 15°, 턱 0.08 m, 거칠기 0.04 m, 치명 cost 0.95)은 같다. 사족 보행과 바퀴 사족은 이 Playground에만 있는 비교용 가정이다(한계·흔들림은 공개 제원을 참고한 대표값).</div>
+    <div>난수 생성기가 달라 seed가 같아도 Python 벤치마크와 지형이 똑같지는 않다. 시연 버튼의 결과와 표의 수치는 이 페이지(JS)에서 돈 결과이고, 저장소 결과와는 방향만 같다. MPPI 샘플 수 기본값은 브라우저 속도에 맞춰 256이다(Python 768). 학습 Planner(Planner D)는 아직 브라우저에서 돌리지 않는다. 판정은 실제 지형으로 한다: 치명 셀 진입, 로봇별 전복 한계(스워브 pitch 0.35 rad·roll 0.30 rad) 초과, 보행자 접촉, 60 s 초과가 실패다.</div>
   </footer>
 </div>
 

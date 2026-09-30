@@ -5,6 +5,7 @@ import { CONTROLLERS, sampleMap } from "./control.js";
 import { Map2D, LAYERS } from "./render2d.js";
 import { chassisFeasibility } from "./chassis.js";
 import { Map3D } from "./render3d.js";
+import { ROBOTS } from "./robots.js";
 
 const $ = (id) => document.getElementById(id);
 const opts = defaultOptions();
@@ -29,6 +30,10 @@ const PRESETS = [
   { id: "TP-0100", tp: "TP-0100", label: "L1 간이: 못 본 칸이 위험", set: { scenario: "bumps_potholes", level: 0, seed: 4, perception: "l1lite", shadowCeiling: true, depthPrior: true }, layer: "belief_elev" },
   { id: "TP-0101", tp: "TP-0101", label: "근거리 미관측을 치명으로(1.5 m)", set: { scenario: "bumps_potholes", level: 0, seed: 4, perception: "occlusion", shadowCeiling: true, depthPrior: true, unknownNear: 1.5 } },
   { id: "TP-0065", tp: "TP-0065", label: "L1 간이 + 전면 스테레오 + 미관측 1.5 m", set: { scenario: "down_curb", level: 0, seed: 0, perception: "l1lite", shadowCeiling: true, depthPrior: true, stereo: true, unknownNear: 1.5 }, layer: "belief_elev" },
+  { id: "TP-0102", tp: "TP-0102", label: "사족 보행 + L1 간이(자세 보상)", set: { robot: "quadruped", scenario: "bumps_potholes", level: 0, seed: 4, perception: "l1lite", sensorHeight: 0.45, poseComp: true }, layer: "elev_err" },
+  { id: "TP-0102-nocomp", tp: "TP-0102", label: "사족: 자세 보상 끔", set: { robot: "quadruped", scenario: "bumps_potholes", level: 0, seed: 4, perception: "l1lite", sensorHeight: 0.45, poseComp: false }, layer: "elev_err" },
+  { id: "TP-0102-noise", tp: "TP-0102", label: "사족: 자세 추정 잡음 1°", set: { robot: "quadruped", scenario: "bumps_potholes", level: 0, seed: 4, perception: "l1lite", sensorHeight: 0.45, poseComp: true, poseNoise: 1 }, layer: "elev_err" },
+  { id: "TP-0102-wheelleg", tp: "TP-0102", label: "바퀴 사족: 연석을 바로 오른다", set: { robot: "wheelLeg", scenario: "curb_ramp", level: 0, seed: 0, perception: "l1lite", sensorHeight: 0.45, poseComp: true }, layer: "elev_err" },
   { id: "TP-0039", tp: "TP-0039", label: "연석 L3 (경사로 1.1 m)", set: { scenario: "curb_ramp", level: 3, seed: 0, perception: "range" } },
   { id: "planner-vs-controller", tp: "P/C", label: "Planner 없이 MPPI만", set: { scenario: "bumps_potholes", level: 0, seed: 0, perception: "range", planner: "straight" } },
   { id: "TP-0027", tp: "TP-0027", label: "보행자 3명", set: { scenario: "bumps_potholes", level: 0, seed: 1, perception: "range" }, peds: 3 },
@@ -75,6 +80,10 @@ for (const p of PRESETS) {
   prBar.appendChild(b);
 }
 
+// 로봇을 바꾸면 한계가 바뀌어 GT 지도부터 다시 만든다. 센서 높이는 그 로봇의 기본 장착 높이로 맞춘다.
+const syncRobot = segment("robot", opts.robot, (v) => { opts.robot = v; opts.sensorHeight = ROBOTS[v].sensorH; newWorld(); });
+$("poseComp").addEventListener("change", (e) => { opts.poseComp = e.target.checked; restart(); });
+const setPN = slider("poseNoise", (v) => (v ? `${v.toFixed(2)}°` : "없음"), (v) => { opts.poseNoise = v; restart(); });
 const syncPer = segment("perception", opts.perception, (v) => { opts.perception = v; restart(); });
 const syncPl = segment("planner", opts.planner, (v) => { opts.planner = v; restart(); });
 const syncCo = segment("controller", opts.controller, (v) => { opts.controller = v; restart(); });
@@ -152,6 +161,11 @@ function syncPanel() {
   setLevel(opts.level); setSeed(opts.seed); setSH(opts.sensorHeight); setSR(opts.sensorRange); setUN(opts.unknownNear || 0);
   $("unknownNear").disabled = opts.perception === "gt";
   syncPer(opts.perception); syncPl(opts.planner); syncCo(opts.controller);
+  const R = ROBOTS[opts.robot];
+  syncRobot(opts.robot); $("robotDesc").textContent = R.note;
+  $("robotNote").textContent = `턱 ${Math.round(R.trav.maxStep * 100)} cm · 경사 ${Math.round(R.trav.maxSlope * 57.3)}° · ${R.vmax[0]} m/s`;
+  $("poseComp").checked = opts.poseComp; setPN(opts.poseNoise || 0);
+  $("poseComp").disabled = opts.perception !== "l1lite"; $("poseNoise").disabled = opts.perception !== "l1lite" || !opts.poseComp;
   $("perNote").textContent = PERCEPTION[opts.perception].note;
   $("plNote").textContent = PLANNERS[opts.planner].note;
   $("coNote").textContent = CONTROLLERS[opts.controller].note;
@@ -233,7 +247,7 @@ function probe(x, y) {
   const [r, c] = g.cell(x, y), i = r * g.W + c, gt = world.gt, b = world.belief;
   const state = b.known[i] ? "관측" : b.bounded[i] ? "미관측(상한·prior)" : "미관측";
   const cm = (v) => (v * 100).toFixed(1);
-  const seen = b.known[i] ? `로봇이 본 높이 ${cm(b.elev[i])} cm` : "로봇은 못 봄";
+  const seen = b.known[i] ? `로봇이 본 높이 ${cm(b.elev[i])} cm(오차 ${cm(b.elev[i] - world.terrain.z[i])})` : "로봇은 못 봄";
   const sig = opts.perception === "l1lite" && Number.isFinite(world.emap.v[i]) ? ` · σ ${cm(Math.sqrt(world.emap.v[i]))} cm` : "";
   const ceil = !b.known[i] && world.beliefCeil && Number.isFinite(world.beliefCeil[i]) ? ` · 상한 ${cm(world.beliefCeil[i])} cm` : "";
   const ch = world.chassis && world.chassisVer === world.terrainVersion
@@ -269,6 +283,9 @@ function telemetry() {
     `<span class="${cls(c.pitch, SIM.pitchLimit)}">pitch <b>${deg(c.pitch)}°</b></span>`,
     `<span class="${cls(c.roll, SIM.rollLimit)}">roll <b>${deg(c.roll)}°</b></span>`,
     `<span class="${c.gtCost > 0.7 ? "warn" : ""}">실제 cost <b>${c.gtCost.toFixed(2)}</b></span>`,
+    world.mapErr && opts.perception !== "gt" ? `<span class="${world.mapErr.rmse > 0.03 ? "warn" : ""}" title="로봇 3 m 안 관측 칸: 본 높이와 실제 높이의 RMSE">높이 오차 <b>${(world.mapErr.rmse * 100).toFixed(1)} cm</b></span>` : "",
+    world.mapErr && opts.perception !== "gt" ? `<span class="${world.mapErr.falseBlocked > 20 ? "warn" : ""}" title="로봇 3 m 안: 로봇 지도는 치명인데 실제 cost는 치명이 아닌 관측 칸">거짓 치명 <b>${world.mapErr.falseBlocked}칸</b></span>` : "",
+    world.R && world.R.gait ? `<span title="걸음새로 흔들린 몸체 pitch(지형 기울기 제외)">흔들림 <b>${deg(world.body.gait.pitch)}°</b></span>` : "",
     world.peds.length ? `<span class="${clear < 0.3 ? "warn" : ""}">보행자 여유 <b>${Number.isFinite(clear) ? clear.toFixed(2) + " m" : "-"}</b></span>` : "",
     `<span>지도 <b>${world.ms.map.toFixed(0)}</b> · 계획 <b>${world.ms.plan.toFixed(0)}</b> · 제어 <b>${world.ms.ctrl.toFixed(0)} ms</b></span>`,
     !paused && world.status === "running" ? `<span class="${rt.factor < 0.9 * speed ? "warn" : ""}">실시간 <b>×${rt.factor.toFixed(2)}</b></span>` : "",
@@ -296,7 +313,11 @@ function banner() {
   $("bannerText").textContent = world.status === "reached" ? `도달 · ${world.t.toFixed(1)} s · ${world.stats.len.toFixed(1)} m` : `실패 · ${world.failure} · ${world.t.toFixed(1)} s`;
   if (!logged) {
     logged = true;
+    const s = world.stats;
     history.unshift({
+      robot: ({ swerve: "스워브", quadruped: "사족", wheelLeg: "바퀴 사족" }[opts.robot])
+        + (opts.perception === "l1lite" && opts.robot !== "swerve" ? (opts.poseComp ? ` 보상${opts.poseNoise ? " ±" + opts.poseNoise + "°" : ""}` : " 보상 끔") : ""),
+      err: s.errN ? `${((100 * s.errSum) / s.errN).toFixed(1)} cm` : "-",
       sc: `${opts.scenario}${DIFFICULTY[opts.scenario] ? "@L" + opts.level : ""} s${opts.seed}${world.edited ? " (편집)" : ""}`,
       per: ({ gt: "완전", range: "L0", occlusion: `가림 ${opts.sensorHeight.toFixed(1)} m`, l1lite: `L1 간이 ${opts.sensorHeight.toFixed(1)} m` }[opts.perception])
         + (opts.perception === "occlusion" || opts.perception === "l1lite" ? `${opts.shadowCeiling ? " +상한" : ""}${opts.shadowCeiling && opts.depthPrior ? " +prior" : ""}` : "")
@@ -306,7 +327,7 @@ function banner() {
       t: world.t, pitch: world.stats.maxPitch, cost: world.stats.gtCostSum / Math.max(1, world.stats.steps),
     });
     history.length = Math.min(history.length, 10);
-    $("history").innerHTML = history.map((h) => `<tr><td>${h.sc}</td><td>${h.per}</td><td>${h.stack}</td><td class="${h.ok ? "ok" : "bad"}">${h.res}</td><td>${h.t.toFixed(1)} s</td><td>${deg(h.pitch)}°</td><td>${h.cost.toFixed(3)}</td></tr>`).join("");
+    $("history").innerHTML = history.map((h) => `<tr><td>${h.robot}</td><td>${h.sc}</td><td>${h.per}</td><td>${h.stack}</td><td class="${h.ok ? "ok" : "bad"}">${h.res}</td><td>${h.t.toFixed(1)} s</td><td>${deg(h.pitch)}°</td><td>${h.cost.toFixed(3)}</td><td>${h.err}</td></tr>`).join("");
     syncPlay();
   }
 }

@@ -61,6 +61,10 @@
   "tp0095_rules": {
    "caption": "깊이 prior 후보에 잡음 필터: ohm·CMU 모두 내림 턱 오탐(28.9 → 18.3칸)을 되돌리고, CMU(1,2)가 포트홀 재현율 0.86을 지킨다",
    "results": "results/tp0095_rules"
+  },
+  "tp0102_robot_pose": {
+   "caption": "사족 보행, 몸체에 붙은 LiDAR: 자세 보상 켬(왼쪽)은 높이 오차 1 cm대, 끔(가운데)·추정 잡음 1°(오른쪽)는 먼 링이 줄무늬로 틀려 거짓 치명이 앞을 막는다",
+   "results": "results/tp0102_playground_robots"
   }
  },
  "tp": {
@@ -122,6 +126,7 @@
   ]
  },
  "featured": [
+  "tp0102_robot_pose",
   "tp0095_rules",
   "tp0065_stereo",
   "tp0101_unknown_near",

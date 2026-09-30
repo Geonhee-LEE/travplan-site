@@ -4,7 +4,8 @@ import { Rng, clamp } from "./core.js";
 import { makeTerrain } from "./terrain.js";
 import { buildMap, lineOfSight, TRAV } from "./travmap.js";
 import { PLANNERS, costToGo, extractRoute } from "./planner.js";
-import { ElevationMap } from "./perception.js";
+import { ElevationMap, bodyFrame } from "./perception.js";
+import { applyRobot, gaitOffset } from "./robots.js";
 import { MPPI, trackCommand, clampAccel, clampTwist, stepPose, sampleMap, attitude } from "./control.js";
 
 export const SIM = { dt: 0.1, rollLimit: 0.30, pitchLimit: 0.35, goalTol: 0.3, maxTime: 60, replanEvery: 10, noise: 0.01, pedRadius: 0.55 };
@@ -24,10 +25,17 @@ export class World {
 
   newTerrain() {
     const o = this.opts;
+    this.applyRobot();
     this.terrain = makeTerrain(o.scenario, o.seed, o.level);
     this.goal = this.terrain.goal.slice();
     this.rebuildGT();
     this.reset();
+  }
+
+  // 로봇 종류가 운동 한계·traversability 한계·전복 한계를 정한다. 바꾸면 GT 지도를 다시 만들어야 한다.
+  applyRobot() {
+    this.R = applyRobot(this.opts.robot);
+    SIM.rollLimit = this.R.tip.roll; SIM.pitchLimit = this.R.tip.pitch;
   }
 
   rebuildGT() {
@@ -40,13 +48,15 @@ export class World {
     const o = this.opts, g = this.terrain.grid, [x, y, yaw] = this.terrain.start;
     this.pose = [x, y, yaw]; this.twist = [0, 0, 0]; this.t = 0; this.k = 0;
     this.rng = new Rng(o.seed * 31 + 7);
+    this.poseRng = new Rng(o.seed * 131 + 5); this.poseErr = [0, 0, 0];   // 자세 추정 오차(pitch, roll, z)
+    this.mapErr = null;
     this.beliefElev = new Float32Array(g.N).fill(NaN);
     this.beliefCeil = new Float32Array(g.N).fill(Infinity);
     this.emap = new ElevationMap(g);
     this.lastVis = null;
     this.trail = [[x, y]];
     this.status = "running"; this.failure = "";
-    this.stats = { len: 0, maxPitch: 0, maxRoll: 0, gtCostSum: 0, minClear: Infinity, steps: 0 };
+    this.stats = { len: 0, maxPitch: 0, maxRoll: 0, gtCostSum: 0, minClear: Infinity, steps: 0, errSum: 0, errN: 0, falseMax: 0 };
     this.ms = { map: 0, plan: 0, ctrl: 0 };
     this.plan = null; this.ctrl = null;
     this.peds = (this.pedsInit || []).map((p) => ({ ...p }));
@@ -69,14 +79,14 @@ export class World {
     const o = this.opts, g = this.terrain.grid, z = this.terrain.z;
     const t0 = performance.now();
     this.mapVersion = (this.mapVersion || 0) + 1;
-    if (o.perception === "gt") { this.belief = this.gt; this.lastVis = null; this.ms.map = performance.now() - t0; return; }
+    const [bodyT, bodyE] = this.sensorPoses();
+    if (o.perception === "gt") { this.belief = this.gt; this.lastVis = null; this.mapErr = null; this.ms.map = performance.now() - t0; return; }
 
     const R = o.sensorRange, [x, y] = this.pose;
     const near = { unknownNear: o.unknownNear || 0, unknownNearCost: o.unknownNearCost ?? 1.0, robotXY: [x, y] };
     if (o.perception === "l1lite") {
-      const [cr, cc] = g.cell(x, y);
-      this.emap.scan(z, this.pose, z[cr * g.W + cc] + o.sensorHeight, R, this.rng);
-      if (o.stereo) this.emap.stereo(z, this.pose, z[cr * g.W + cc], 0.30, this.rng);   // TP-0065 전면 스테레오
+      this.emap.scan(z, bodyT, bodyE, o.sensorHeight, R, this.rng);
+      if (o.stereo) this.emap.stereo(z, bodyT, bodyE, this.R.sensorH, this.rng);   // TP-0065 전면 스테레오(몸체에 붙은 카메라)
       this.lastVis = null;
       this.belief = buildMap(this.emap.h, g, {
         ceiling: o.shadowCeiling ? this.emap.upper : null,
@@ -84,6 +94,7 @@ export class World {
         evidence: o.evidence, ...near,
       });
       this.beliefCeil = this.emap.upper;
+      this.measureMap();
       this.ms.map = performance.now() - t0;
       return;
     }
@@ -93,7 +104,7 @@ export class World {
     for (let r = r0; r <= r1; r++) for (let c = c0; c <= c1; c++) if ((c * g.res - x) ** 2 + (r * g.res - y) ** 2 <= R * R) vis[r * g.W + c] = 1;
     if (o.perception === "occlusion") {
       const [cr, cc] = g.cell(x, y);
-      const los = lineOfSight(z, g, x, y, z[cr * g.W + cc] + o.sensorHeight, R);
+      const los = lineOfSight(z, g, x, y, z[cr * g.W + cc] + o.sensorHeight + this.body.gait.dz, R);
       for (let i = 0; i < g.N; i++) vis[i] &= los.vis[i];
       if (o.shadowCeiling) for (let i = 0; i < g.N; i++) if (los.ceil[i] < this.beliefCeil[i]) this.beliefCeil[i] = los.ceil[i];
     }
@@ -111,7 +122,45 @@ export class World {
       shadowDepth: useCeil && o.depthPrior ? 0.10 : null,
       evidence: o.evidence, ...near,
     });
+    this.measureMap();
     this.ms.map = performance.now() - t0;
+  }
+
+  // 몸체 자세: 지면 높이·지형 기울기(GT 지도의 기울기) + 걸음새 흔들림. -> [참 자세, 매퍼가 믿는 자세]
+  // 보상 켬: 매퍼가 IMU·다리 기구학으로 참 자세를 알되 추정 잡음(1차 저역, 시정수 약 1 s)이 있다.
+  // 보상 끔: 매퍼는 yaw와 지면 높이만 안다(몸체가 수평이고 흔들리지 않는다고 믿는다).
+  sensorPoses() {
+    const o = this.opts, g = this.terrain.grid, [x, y, yaw] = this.pose;
+    // 지형 자세는 3D 보기와 같이 앞뒤(±0.3 m)·좌우(±0.2 m) 접지 높이차로 잡는다.
+    const zs = this.terrain.z, c = Math.cos(yaw), sn = Math.sin(yaw), at = (dx, dy) => g.sample(zs, x + dx, y + dy, 0);
+    const zf = at(0.3 * c, 0.3 * sn), zb = at(-0.3 * c, -0.3 * sn), zl = at(-0.2 * sn, 0.2 * c), zr = at(0.2 * sn, -0.2 * c);
+    const z0 = (zf + zb + zl + zr) / 4, pa = Math.atan2(zf - zb, 0.6), ra = Math.atan2(zl - zr, 0.4);
+    const gait = gaitOffset(this.R, this.t, Math.hypot(this.twist[0], this.twist[1]));
+    const pitch = pa + gait.pitch, roll = ra + gait.roll, zB = z0 + gait.dz;
+    this.body = { z: zB, pitch, roll, gait };
+    const T = bodyFrame(x, y, zB, yaw, pitch, roll);
+    if (!o.poseComp) return [T, bodyFrame(x, y, z0, yaw, 0, 0)];
+    const s = ((o.poseNoise || 0) * Math.PI) / 180, e = this.poseErr, a = 0.9, b = Math.sqrt(1 - a * a);
+    e[0] = a * e[0] + b * s * this.poseRng.normal(); e[1] = a * e[1] + b * s * this.poseRng.normal();
+    e[2] = a * e[2] + b * 0.005 * (o.poseNoise || 0) * this.poseRng.normal();   // 1°당 높이 5 mm
+    return [T, bodyFrame(x, y, zB + e[2], yaw, pitch + e[0], roll + e[1])];
+  }
+
+  // 지도 품질: 로봇 3 m 안 관측 칸의 높이 RMSE와 '거짓 치명'(로봇 지도는 치명, 실제 cost는 아님) 칸 수.
+  measureMap() {
+    const g = this.terrain.grid, b = this.belief, z = this.terrain.z, [x, y] = this.pose, R = 3.0;
+    let se = 0, n = 0, fb = 0;
+    const r0 = Math.max(0, Math.floor((y - R) / g.res)), r1 = Math.min(g.H - 1, Math.ceil((y + R) / g.res));
+    const c0 = Math.max(0, Math.floor((x - R) / g.res)), c1 = Math.min(g.W - 1, Math.ceil((x + R) / g.res));
+    for (let r = r0; r <= r1; r++) for (let c = c0; c <= c1; c++) {
+      const i = r * g.W + c;
+      if (!b.known[i] || (c * g.res - x) ** 2 + (r * g.res - y) ** 2 > R * R) continue;
+      const d = b.elev[i] - z[i]; se += d * d; n++;
+      if (b.cost[i] >= TRAV.lethal && this.gt.cost[i] < TRAV.lethal) fb++;
+    }
+    this.mapErr = { rmse: n ? Math.sqrt(se / n) : 0, falseBlocked: fb, n };
+    const s = this.stats;
+    if (s && n) { s.errSum += this.mapErr.rmse; s.errN++; s.falseMax = Math.max(s.falseMax, fb); }
   }
 
   replan() {
@@ -204,6 +253,7 @@ export class World {
 export function defaultOptions() {
   return {
     scenario: "curb_ramp", level: 0, seed: 0,
+    robot: "swerve", poseComp: true, poseNoise: 0,
     perception: "occlusion", sensorHeight: 0.3, sensorRange: 5.0,
     shadowCeiling: true, depthPrior: true, evidence: true,
     unknownNear: 0, unknownNearCost: 1.0,

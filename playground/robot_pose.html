@@ -1,0 +1,19 @@
+<!doctype html><meta charset="utf-8"><title>로봇 자세 비교</title>
+<!-- TP-0102 그림(docs/assets/figs/tp0102_robot_pose.webp)을 만드는 페이지. ?t=8&layer=elev_err 또는 layer=belief. 헤드리스 Chrome --screenshot으로 찍는다. -->
+<style>body{margin:0;background:#0d1113;color:#e4e9e6;font:14px system-ui,sans-serif}.g{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:8px}canvas{width:100%;height:330px;display:block}h3{margin:4px 0;font-size:14px}</style>
+<div class="g" id="g"></div>
+<script type="module">
+import { World, defaultOptions } from "./js/sim.js";
+import { Map2D } from "./js/render2d.js";
+const css={line:"#29333a",muted:"#8b9893",fg:"#e4e9e6",accent:"#f2b705",route:"#3fb6a8",ok:"#4cc38a",bad:"#ef5b5b",mapBg:"#0d1113"};
+const cfgs=[["자세 보상 켬",{poseComp:true}],["자세 보상 끔",{poseComp:false}],["보상 켬 + 추정 잡음 1°",{poseComp:true,poseNoise:1}]];
+const T=+(new URLSearchParams(location.search).get("t")||8), layer=new URLSearchParams(location.search).get("layer")||"elev_err";
+for(const [lab,set] of cfgs){
+  const d=document.createElement("div");const h=document.createElement("h3");const cv=document.createElement("canvas");d.append(h,cv);document.getElementById("g").append(d);
+  const w=new World(Object.assign(defaultOptions(),{robot:"quadruped",scenario:"bumps_potholes",seed:4,perception:"l1lite",sensorHeight:0.45},set));
+  while(w.status==="running"&&w.t<T) w.step();
+  new Map2D(cv).draw(w,{layer,route:true,samples:false,points:false,exag:2,mode:"2d",cursor:null,drag:null},css);
+  h.textContent=`사족 보행 · ${lab} · t=${w.t.toFixed(1)} s · 3 m 안 높이 RMSE ${(w.mapErr.rmse*100).toFixed(1)} cm · 거짓 치명 ${w.mapErr.falseBlocked}칸`;
+}
+document.body.dataset.done=1;
+</script>

@@ -19,6 +19,7 @@ function ramp(stops, v) {
 const FEAT_STOPS = [[0.0, [58, 72, 70]], [0.3, [98, 112, 84]], [0.65, [196, 152, 58]], [0.99, [232, 112, 46]], [1.0, [229, 62, 62]]];
 const SIGMA_STOPS = [[0, [40, 120, 150]], [1, [80, 170, 160]], [3, [210, 190, 90]], [6, [232, 112, 46]]];   // cm
 const UNKNOWN = [24, 28, 32];
+const ERR_STOPS = [[-0.1, [70, 110, 230]], [-0.03, [80, 140, 170]], [0, [58, 72, 70]], [0.03, [200, 150, 60]], [0.1, [229, 62, 62]]];   // m
 const gradCss = (stops, lo, hi) => `linear-gradient(90deg,${stops.map(([v, c]) => `rgb(${c.join(",")}) ${Math.round((100 * (v - lo)) / (hi - lo))}%`).join(",")})`;
 
 // 지도 층. value가 null이면 '모르는 칸'으로 칠한다. legend는 범례 HTML.
@@ -50,20 +51,25 @@ export const LAYERS = {
     },
     legend: () => `<span><i style="background:${gradCss(HEIGHT_STOPS, -0.15, 1.0)}"></i>못 본 칸의 상한 −0.15 → 1.0 m</span><span><i style="background:#2e3638"></i>관측한 칸</span><span><i style="background:#181c20;border:1px solid #444"></i>상한도 없는 칸</span>`,
   },
+  elev_err: {
+    group: "elevation mapping", label: "높이 오차(본 − 실제)", note: "로봇이 본 높이에서 참 높이를 뺀 값. 몸체가 흔들리는데 매퍼가 자세를 모르면 먼 링일수록 크게 틀린다(pitch 1°면 4 m에서 7 cm).",
+    color: (w, i) => (w.belief.known && !w.belief.known[i] ? UNKNOWN : ramp(ERR_STOPS, w.belief.elev[i] - w.terrain.z[i])),
+    legend: () => `<span><i style="background:${gradCss(ERR_STOPS, -0.1, 0.1)}"></i>오차 −10 → +10 cm</span><span><i style="background:#181c20;border:1px solid #444"></i>못 본 칸</span>`,
+  },
   slope: {
     group: "traversability", label: "경사", note: "몸체 크기(0.35 m)로 평활한 면의 기울기를 로봇 반폭(0.3 m)만큼 팽창했다. 한계 15°(0.26 rad).",
     color: (w, i) => (w.belief.known && !w.belief.known[i] ? UNKNOWN : ramp(FEAT_STOPS, w.belief.slope[i] / TRAV.maxSlope)),
-    legend: () => `<span><i style="background:${gradCss(FEAT_STOPS, 0, 1)}"></i>경사 0 → 15°(한계)</span>`,
+    legend: () => `<span><i style="background:${gradCss(FEAT_STOPS, 0, 1)}"></i>경사 0 → ${Math.round(TRAV.maxSlope * 57.3)}°(한계)</span>`,
   },
   step: {
     group: "traversability", label: "턱", note: "0.30 m 창 안의 높이 범위에서 큰 경사로 설명되는 몫을 뺀 값. 한계 8 cm.",
     color: (w, i) => (w.belief.known && !w.belief.known[i] ? UNKNOWN : ramp(FEAT_STOPS, w.belief.step[i] / TRAV.maxStep)),
-    legend: () => `<span><i style="background:${gradCss(FEAT_STOPS, 0, 1)}"></i>턱 0 → 8 cm(한계)</span>`,
+    legend: () => `<span><i style="background:${gradCss(FEAT_STOPS, 0, 1)}"></i>턱 0 → ${Math.round(TRAV.maxStep * 100)} cm(한계)</span>`,
   },
   rough: {
     group: "traversability", label: "거칠기", note: "0.25 m 창의 평활면에서 벗어난 높이의 RMS. 한계 4 cm.",
     color: (w, i) => (w.belief.known && !w.belief.known[i] ? UNKNOWN : ramp(FEAT_STOPS, w.belief.rough[i] / TRAV.maxRough)),
-    legend: () => `<span><i style="background:${gradCss(FEAT_STOPS, 0, 1)}"></i>거칠기 0 → 4 cm(한계)</span>`,
+    legend: () => `<span><i style="background:${gradCss(FEAT_STOPS, 0, 1)}"></i>거칠기 0 → ${Math.round(TRAV.maxRough * 100)} cm(한계)</span>`,
   },
   belief: {
     group: "traversability", label: "로봇이 본 cost", note: "Planner와 Controller가 쓰는 지도. cost = max(경사, 턱, 거칠기 각각을 한계로 나눈 램프).",
@@ -232,14 +238,25 @@ export class Map2D {
     ctx.beginPath(); ctx.moveTo(a, b - 22); ctx.lineTo(a + 12, b - 18); ctx.lineTo(a, b - 14); ctx.closePath(); ctx.fillStyle = css.ok; ctx.fill();
   }
 
-  // 로봇: 0.7 × 0.5 m 차체, 모듈 4개는 그 순간 모듈 속도 방향으로 조향한 바퀴로 그린다.
+  // 로봇: 스워브는 0.7 × 0.5 m 차체와 그 순간 모듈 속도 방향으로 조향한 바퀴 4개. 사족은 몸통과 걸음새에 맞춰 흔드는 다리 4개.
   robot(world, css) {
     const { ctx } = this, s = this.L.s, [x, y, yaw] = world.pose, [a, b] = this.toScreen(x, y);
-    const u = world.twist, Lx = 0.35, Ly = 0.25;
+    const R = world.R || { kind: "wheel", body: [0.7, 0.5] }, u = world.twist, Lx = R.body[0] / 2, Ly = R.body[1] / 2;
     ctx.save(); ctx.translate(a, b); ctx.rotate(-yaw);
+    if (R.kind !== "wheel") {
+      // 다리: 대각선 쌍(트롯)이 번갈아 앞뒤로 흔든다. 바퀴 사족은 다리 끝에 바퀴.
+      const ph = 2 * Math.PI * (R.gait?.freq || 1) * world.t, sp = Math.min(1, Math.hypot(u[0], u[1]) / 0.6);
+      ctx.strokeStyle = "#d9dfdc"; ctx.lineWidth = Math.max(2, 0.05 * s); ctx.lineCap = "round";
+      for (const [k, mx, my] of [[0, 0.26, 0.15], [1, 0.26, -0.15], [1, -0.26, 0.15], [0, -0.26, -0.15]]) {
+        const sw = (R.kind === "legs" ? 0.09 : 0.03) * sp * Math.sin(ph + k * Math.PI), fx = mx + sw, fy = my + Math.sign(my) * 0.1;
+        ctx.beginPath(); ctx.moveTo(mx * s, -my * s); ctx.lineTo(fx * s, -fy * s); ctx.stroke();
+        if (R.kind === "wheellegs") { ctx.fillStyle = "#d9dfdc"; ctx.fillRect((fx - 0.06) * s, (-fy - 0.02) * s, 0.12 * s, 0.04 * s); }
+        else { ctx.beginPath(); ctx.arc(fx * s, -fy * s, 0.025 * s, 0, 7); ctx.fillStyle = "#d9dfdc"; ctx.fill(); }
+      }
+    }
     ctx.fillStyle = "rgba(10,14,16,0.85)"; ctx.strokeStyle = css.accent; ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.roundRect(-Lx * s, -Ly * s, 2 * Lx * s, 2 * Ly * s, 4); ctx.fill(); ctx.stroke();
-    for (const [mx, my] of [[0.25, 0.18], [0.25, -0.18], [-0.25, 0.18], [-0.25, -0.18]]) {
+    ctx.beginPath(); ctx.roundRect(-Lx * s, -Ly * s, 2 * Lx * s, 2 * Ly * s, R.kind === "wheel" ? 4 : 10); ctx.fill(); ctx.stroke();
+    if (R.kind === "wheel") for (const [mx, my] of [[0.25, 0.18], [0.25, -0.18], [-0.25, 0.18], [-0.25, -0.18]]) {
       const vx = u[0] - u[2] * my, vy = u[1] + u[2] * mx, ang = Math.hypot(vx, vy) > 0.02 ? Math.atan2(vy, vx) : 0;
       ctx.save(); ctx.translate(mx * s, -my * s); ctx.rotate(-ang);
       ctx.fillStyle = "#d9dfdc"; ctx.fillRect(-0.07 * s, -0.025 * s, 0.14 * s, 0.05 * s); ctx.restore();

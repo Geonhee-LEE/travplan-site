@@ -44,6 +44,26 @@ export class Map3D {
         wgrp.add(w); this.robot.add(wgrp); this.wheels.push([wgrp, mx, my]);
       }
       this.scene.add(this.robot);
+      this.wheelParts = this.robot.children.slice();
+      // 사족 몸통·다리(바퀴 사족은 다리 끝에 바퀴). 종류에 따라 보이는 부분을 바꾼다.
+      const mat = new T.MeshStandardMaterial({ color: 0xd9dfdc, roughness: 0.5 });
+      this.legBody = new T.Group();
+      const torso = new T.Mesh(new T.BoxGeometry(0.7, 0.36, 0.16), new T.MeshStandardMaterial({ color: 0x1b2226, roughness: 0.6 }));
+      torso.position.z = 0.36; this.legBody.add(torso);
+      const stripe = new T.Mesh(new T.BoxGeometry(0.72, 0.38, 0.02), new T.MeshStandardMaterial({ color: 0xf2b705 }));
+      stripe.position.z = 0.45; this.legBody.add(stripe);
+      const head = new T.Mesh(new T.CylinderGeometry(0.05, 0.05, 0.07, 16), new T.MeshStandardMaterial({ color: 0x9aa4a0 }));
+      head.rotation.x = Math.PI / 2; head.position.set(0.2, 0, 0.5); this.legBody.add(head);
+      this.legs = [];
+      for (const [k, mx, my] of [[0, 0.26, 0.2], [1, 0.26, -0.2], [1, -0.26, 0.2], [0, -0.26, -0.2]]) {
+        const hip = new T.Group(); hip.position.set(mx, my, 0.33);
+        const leg = new T.Mesh(new T.CylinderGeometry(0.025, 0.02, 0.33, 8), mat);
+        leg.rotation.x = Math.PI / 2; leg.position.z = -0.165; hip.add(leg);
+        const foot = new T.Mesh(new T.CylinderGeometry(0.07, 0.07, 0.04, 16), mat);
+        foot.position.z = -0.29; hip.add(foot);
+        this.legBody.add(hip); this.legs.push([hip, k, foot]);
+      }
+      this.legBody.visible = false; this.robot.add(this.legBody);
       this.goalMark = new T.Mesh(new T.CylinderGeometry(0.3, 0.3, 0.02, 32), new T.MeshBasicMaterial({ color: 0x4cc38a, transparent: true, opacity: 0.8 }));
       this.goalMark.rotation.x = Math.PI / 2; this.scene.add(this.goalMark);
       this.lines = {};
@@ -93,7 +113,20 @@ export class Map3D {
     this.robot.position.set(x, y, (zf + zb + zl + zr) / 4);
     this.robot.rotation.set(0, 0, 0); this.robot.rotateZ(yaw);
     this.robot.rotateY(-Math.atan2(zf - zb, 0.6)); this.robot.rotateX(Math.atan2(zl - zr, 0.4));
-    const u = world.twist;
+    const u = world.twist, R = world.R || { kind: "wheel" };
+    // 걸음새 흔들림(높이·pitch·roll)을 지형 기울기 위에 더한다
+    if (world.body) { const gt = world.body.gait; this.robot.position.z += gt.dz; this.robot.rotateY(-gt.pitch); this.robot.rotateX(gt.roll); }
+    const legged = R.kind !== "wheel";
+    for (const p of this.wheelParts) p.visible = !legged;
+    this.legBody.visible = legged;
+    if (legged) {
+      const ph = 2 * Math.PI * (R.gait?.freq || 1) * world.t, sp = Math.min(1, Math.hypot(u[0], u[1]) / 0.6), amp = R.kind === "legs" ? 0.35 : 0.1;
+      for (const [hip, k, foot] of this.legs) {
+        hip.rotation.y = amp * sp * Math.sin(ph + k * Math.PI);
+        foot.rotation.x = R.kind === "wheellegs" ? 0 : Math.PI / 2;   // 바퀴는 축이 몸체 y, 발은 바닥에 눕힌 원판
+        foot.scale.set(R.kind === "wheellegs" ? 1 : 0.4, R.kind === "wheellegs" ? 1 : 0.4, R.kind === "wheellegs" ? 1 : 0.6);
+      }
+    }
     for (const [wg, mx, my] of this.wheels) { const vx = u[0] - u[2] * my, vy = u[1] + u[2] * mx; wg.rotation.z = Math.hypot(vx, vy) > 0.02 ? Math.atan2(vy, vx) : 0; }
     this.goalMark.position.set(world.goal[0], world.goal[1], this.zAt(world, world.goal[0], world.goal[1]) + 0.03);
 
