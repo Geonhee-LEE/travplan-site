@@ -165,7 +165,7 @@ footer { max-width: 1000px; margin: 0 auto; padding: 0 16px 40px; color: var(--m
 </style>
 <header>
   <h1>travplan 대시보드</h1>
-  <div class="meta">생성: 2026-10-01 05:26 KST · 원본: <code>TODO.md</code> / <code>STATE.md</code> / <code>docs/prd*.md</code> ·
+  <div class="meta">생성: 2026-10-01 06:22 KST · 원본: <code>TODO.md</code> / <code>STATE.md</code> / <code>docs/prd*.md</code> ·
     직접 수정하지 마세요 — <code>python3 automation/render_dashboard.py</code>로 재생성 (<a href="https://github.com/Geonhee-LEE/travplan/blob/main/CLAUDE.md">CLAUDE.md</a> 참고)</div>
   <div class="meta"><a href="index.html">← travplan 홈</a> · ▶ <a href="#sim">Playground: 브라우저에서 시뮬레이션 돌려 보기</a> · 저장소에서는 <code>./scripts/open_dashboard.sh</code>로 열면 '시뮬레이션' 탭 안에서 돈다</div>
 </header>
@@ -181,11 +181,11 @@ footer { max-width: 1000px; margin: 0 auto; padding: 0 16px 40px; color: var(--m
 <main>
   <section class="tab active" id="tab-state">
     <div class="kpis">
-<div class="kpi"><div class="kpi-label">TODO 완료</div><div class="kpi-val">20/73</div><div class="progress-bar"><div class="progress-fill" style="width:27%"></div></div></div>
-<div class="kpi"><div class="kpi-label">진행 중·오늘</div><div class="kpi-val">2</div></div>
+<div class="kpi"><div class="kpi-label">TODO 완료</div><div class="kpi-val">20/72</div><div class="progress-bar"><div class="progress-fill" style="width:28%"></div></div></div>
+<div class="kpi"><div class="kpi-label">진행 중·오늘</div><div class="kpi-val">1</div></div>
 <div class="kpi"><div class="kpi-label">사용자 실행 대기</div><div class="kpi-val">6</div></div>
 <div class="kpi"><div class="kpi-label">열린 PR</div><div class="kpi-val">1</div></div>
-<div class="kpi"><div class="kpi-label">최근 7일 merge</div><div class="kpi-val">61</div></div>
+<div class="kpi"><div class="kpi-label">최근 7일 merge</div><div class="kpi-val">62</div></div>
 </div>
 <div class="card md"><h2>현재 병목</h2><p><mark>Planner D는 레벨 3 연석에서 경사로를 지나친 뒤 되돌아가 찾지 못해 10번 중 2번 실패한다.</mark></p>
 <ul>
@@ -244,7 +244,7 @@ footer { max-width: 1000px; margin: 0 auto; padding: 0 16px 40px; color: var(--m
 <td>L0 가림과 음의 장애물 대책</td>
 <td>완료</td>
 <td>가림 켬 40/40(그림자 상한 + 깊이 prior, 기본 끔)</td>
-<td><a class="tp tp-unknown" href="#todo" data-tp="TP-0031" title="TODO.md에 없는 번호 · 이슈 #8(닫힘) · PR #15(merge됨)">TP-0031 ◉</a>, <a class="tp tp-done" href="#todo" data-tp="TP-0047" title="완료 · 가림+그림자 상한에서 남은 포트홀 실패 진단: belief 치명 링이 GT보다 1칸 얇아 상자-포트홀 좁은 통로에서 경계를 스침(seed 7). 링 여유(팽창·MPPI 마진)... · 이슈 #9(닫힘) · PR #16(merge됨)">✓ TP-0047 ◉</a>, <a class="tp tp-done" href="#todo" data-tp="TP-0067" title="완료 · TP-0048 후속: 깊이 prior 발동 조건 좁히기 — 0.07 m 내림 턱에서 2 m 앞 폭 전체 오탐. 상한 낙차가 max_step(0.08 m)을 넘을 때만 또는 그... · PR #39(merge됨) · PR #46(merge됨)">✓ TP-0067 ◉</a></td>
+<td><a class="tp tp-unknown" href="#todo" data-tp="TP-0031" title="TODO.md에 없는 번호 · 이슈 #8(닫힘) · PR #15(merge됨)">TP-0031 ◉</a>, <a class="tp tp-unknown" href="#todo" data-tp="TP-0047" title="TODO.md에 없는 번호 · 이슈 #9(닫힘) · PR #16(merge됨)">TP-0047 ◉</a>, <a class="tp tp-done" href="#todo" data-tp="TP-0067" title="완료 · TP-0048 후속: 깊이 prior 발동 조건 좁히기 — 0.07 m 내림 턱에서 2 m 앞 폭 전체 오탐. 상한 낙차가 max_step(0.08 m)을 넘을 때만 또는 그... · PR #39(merge됨) · PR #46(merge됨)">✓ TP-0067 ◉</a></td>
 </tr>
 <tr>
 <td>L1 인식 루프 (실제 elevation mapping)</td>
@@ -291,10 +291,16 @@ footer { max-width: 1000px; margin: 0 auto; padding: 0 16px 40px; color: var(--m
 <td><strong>완료</strong> — Key results</td>
 </tr>
 <tr>
+<td>✅</td>
+<td><a class="tp tp-done" href="#todo" data-tp="TP-0101" title="완료 · TP-0100 후속: 근거리 미관측 칸의 cost 재검토 — 정지 거리 안의 미관측 칸을 치명·높은 cost로 두면 도달 가능 근거리 MISS(L0 가림 2,206, L1 6... · 이슈 #94(열림) · PR #95(열림)">✓ TP-0101 ◉</a></td>
+<td>로봇 둘레 못 본 칸을 치명으로(<code>--unknown-near</code>). L0 1.5 m 권장, L1은 근거리 덮개부터</td>
+<td><strong>완료</strong> — Key results</td>
+</tr>
+<tr>
 <td>1</td>
-<td><a class="tp tp-today" href="#todo" data-tp="TP-0101" title="오늘 · TP-0100 후속: 근거리 미관측 칸의 cost 재검토 — 정지 거리 안의 미관측 칸을 치명·높은 cost로 두면 도달 가능 근거리 MISS(L0 가림 2,206, L1 6... · 이슈 #94(열림) · PR #95(열림)">▶ TP-0101 ◉</a></td>
-<td><a class="tp tp-done" href="#todo" data-tp="TP-0100" title="완료 · TP-0082 후속: 섀시 기하 기준(sim/ground_truth.py)을 L0/L1 인식 경로에도 적용 — 지금은 참 고도에서만 잰다. 가림·그림자 상한이 켜진 belie... · 이슈 #92(닫힘) · PR #93(merge됨)">✓ TP-0100 ◉</a> 후속: 근거리(정지 거리 안) 미관측 칸의 cost를 올리면 도달 가능 MISS·보수성·폐루프 성공률이 어떻게 변하나</td>
-<td>오늘</td>
+<td><a class="tp tp-backlog" href="#todo" data-tp="TP-0065" title="백로그 · 전면 스테레오 깊이를 elevation_mapping 두 번째 점군 입력으로 넣어 LiDAR 근거리 사각 메우기 (TP-0060 D2, Isaac 카메라 TP-0019 선행)">TP-0065</a></td>
+<td>전면 스테레오 깊이를 두 번째 점군 입력으로(LiDAR 근거리 사각). <a class="tp tp-done" href="#todo" data-tp="TP-0101" title="완료 · TP-0100 후속: 근거리 미관측 칸의 cost 재검토 — 정지 거리 안의 미관측 칸을 치명·높은 cost로 두면 도달 가능 근거리 MISS(L0 가림 2,206, L1 6... · 이슈 #94(열림) · PR #95(열림)">✓ TP-0101 ◉</a>에서 L1의 근거리 미관측이 옵션을 비싸게 만든다는 것이 드러났다</td>
+<td>앞당김</td>
 </tr>
 <tr>
 <td>1b</td>
@@ -319,12 +325,6 @@ footer { max-width: 1000px; margin: 0 auto; padding: 0 16px 40px; color: var(--m
 <td><a class="tp tp-backlog" href="#todo" data-tp="TP-0040" title="백로그 · P1 인식 격차: L0 belief와 L1(RTX LiDAR → elevation mapping) TravMap의 비용 오차 분포 비교 (P1 R-F-010)">TP-0040</a></td>
 <td>L0 belief와 L1 TravMap의 비용 오차 분포 비교</td>
 <td><a class="tp tp-done" href="#todo" data-tp="TP-0083" title="완료 · L1 파이프라인 시간 예산 측정: 합성 LiDAR → elevation_mapping_cupy → TravMapBuilder 각 단계 시간을 재고 Orin 목표(PRD R-N... · PR #63(merge됨)">✓ TP-0083</a> 완료로 해제</td>
-</tr>
-<tr>
-<td>5</td>
-<td><a class="tp tp-backlog" href="#todo" data-tp="TP-0065" title="백로그 · 전면 스테레오 깊이를 elevation_mapping 두 번째 점군 입력으로 넣어 LiDAR 근거리 사각 메우기 (TP-0060 D2, Isaac 카메라 TP-0019 선행)">TP-0065</a></td>
-<td>전면 스테레오 깊이를 두 번째 점군 입력으로(LiDAR 근거리 사각)</td>
-<td><a class="tp tp-backlog" href="#todo" data-tp="TP-0054" title="백로그 · TP-0053 후속: L1 variance → σ — elevation_mapping sensor_noise_factor를 LiDAR에 맞게 보정하고, σ를 쓰는 RiskCo...">TP-0054</a> 뒤</td>
 </tr>
 </tbody>
 </table>
@@ -477,7 +477,11 @@ python scripts/diagnose_planner_d_level.py --levels 0 1 2 3 --seeds 0 1 2 3 4 5 
 python scripts/run_benchmark.py --stacks guidance+mppi planner_d+mppi --levels 0 1 2 3 \
     --seeds 0 1 2 3 4 5 6 7 8 9 --out results/tp0039_levels
 </code></pre></div>
-<div class="card md"><h2>주요 결과</h2><div class="ev-grid"><figure class="ev big"><a class="thumb" href="assets/figs/tp0100_belief_chassis.webp" title="원본 보기"><img alt="belief TravMap 대 차체 기하 기준. MISS의 99% 이상이 못 본 칸이고, 그림자 상한·깊이 prior는 도달 가능한 근거리 MISS를 줄이지 않는다(2,206 → 2,204). 센서 0.8 m는 3.4배 줄이고 L1은 2.8배 나쁘다" src="assets/figs/tp0100_belief_chassis.webp" loading="lazy"></a><figcaption>belief TravMap 대 차체 기하 기준. MISS의 99% 이상이 못 본 칸이고, 그림자 상한·깊이 prior는 도달 가능한 근거리 MISS를 줄이지 않는다(2,206 → 2,204). 센서 0.8 m는 3.4배 줄이고 L1은 2.8배 나쁘다 · <a href="https://github.com/Geonhee-LEE/travplan/tree/main/results/tp0100_belief_chassis">결과 폴더</a> <a class="tp tp-today" href="#todo" data-tp="TP-0101" title="오늘 · TP-0100 후속: 근거리 미관측 칸의 cost 재검토 — 정지 거리 안의 미관측 칸을 치명·높은 cost로 두면 도달 가능 근거리 MISS(L0 가림 2,206, L1 6... · 이슈 #94(열림) · PR #95(열림)">▶ TP-0101 ◉</a><a class="tp tp-done" href="#todo" data-tp="TP-0100" title="완료 · TP-0082 후속: 섀시 기하 기준(sim/ground_truth.py)을 L0/L1 인식 경로에도 적용 — 지금은 참 고도에서만 잰다. 가림·그림자 상한이 켜진 belie... · 이슈 #92(닫힘) · PR #93(merge됨)">✓ TP-0100 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/tp0082_estimators.webp" title="원본 보기"><img alt="섀시 기하 기준(추정기와 독립)으로 잰 추정기 비교. emap의 RSL 발디딤 필터는 배포 운용점(gate 0.15)에서 차체가 못 들어가는 칸 4,425개를 주행 가능이라 부르고, 거의 전부 slope_crossfall 경사다. 기하·TravNet은 0" src="assets/figs/tp0082_estimators.webp" loading="lazy"></a><figcaption>섀시 기하 기준(추정기와 독립)으로 잰 추정기 비교. emap의 RSL 발디딤 필터는 배포 운용점(gate 0.15)에서 차체가 못 들어가는 칸 4,425개를 주행 가능이라 부르고, 거의 전부 slope_crossfall 경사다. 기하·TravNet은 0 · <a href="https://github.com/Geonhee-LEE/travplan/tree/main/results/p2-estimators.tsv">결과 폴더</a> <a class="tp tp-done" href="#todo" data-tp="TP-0082" title="완료 · elevation_mapping_cupy의 학습 traversability 필터를 기준선으로 평가: 같은 패키지에 이미 들어 있다(인식 A.7.2). TP-0022 평가에 기... · PR #63(merge됨) · PR #79(merge됨) · 이슈 #89(닫힘)">✓ TP-0082 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/ev_tp0073_levels.webp" title="원본 보기"><img alt="planner_d+mppi 성공 수: 벤치마크 레벨 3이 11/12 → 12/12, curb_ramp 레벨 3 seed 0–9는 7/10 → 8/10" src="assets/figs/ev_tp0073_levels.webp" loading="lazy"></a><figcaption>planner_d+mppi 성공 수: 벤치마크 레벨 3이 11/12 → 12/12, curb_ramp 레벨 3 seed 0–9는 7/10 → 8/10 · <a href="https://github.com/Geonhee-LEE/travplan/tree/main/results/tp0073_levels">결과 폴더</a> <a class="tp tp-done" href="#todo" data-tp="TP-0073" title="완료 · TP-0050 후속: Planner D 시연을 레벨 무작위 지형(0–3)으로 다시 만들어 재학습 — curb_ramp@L3 치명 샘플 비율(실패 0.82–0.88)을 L0 수... · 이슈 #44(닫힘) · PR #45(merge됨) · PR #54(merge됨)">✓ TP-0073 ◉</a><a class="tp tp-done" href="#todo" data-tp="TP-0075" title="완료 · TP-0073 후속: DAgger(scripts/dagger_planner_d.py)도 레벨 무작위 지형에서 방문 상태를 모으게 한다 — 재학습 결과(PR #45 사용자 실행... · PR #45(merge됨) · 이슈 #52(닫힘) · PR #54(merge됨)">✓ TP-0075 ◉</a><a class="tp tp-done" href="#todo" data-tp="TP-0077" title="완료 · TP-0073·TP-0075 후속: 레벨 0–3 시연 + 레벨 무작위 DAgger 뒤 남은 curb_ramp@L3 실패 진단. seed 0–9 중 8/10(s6·s7 시간 초... · 이슈 #53(닫힘) · PR #54(merge됨) · PR #61(merge됨)">✓ TP-0077 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/ev_benchmark_progress.webp" title="원본 보기"><img alt="운동학 벤치마크 성공률 추이(4 시나리오 × 10 seed). 가림·L1 인식으로 떨어지고 그림자 상한·깊이 prior로 회복" src="assets/figs/ev_benchmark_progress.webp" loading="lazy"></a><figcaption>운동학 벤치마크 성공률 추이(4 시나리오 × 10 seed). 가림·L1 인식으로 떨어지고 그림자 상한·깊이 prior로 회복 · <a href="https://github.com/Geonhee-LEE/travplan/tree/main/results/tp0047_bp">결과 폴더</a> <a class="tp tp-unknown" href="#todo" data-tp="TP-0027" title="TODO.md에 없는 번호 · 이슈 #7(닫힘) · 이슈 #8(닫힘) · PR #14(merge됨) · PR #15(merge됨)">TP-0027 ◉</a><a class="tp tp-unknown" href="#todo" data-tp="TP-0031" title="TODO.md에 없는 번호 · 이슈 #8(닫힘) · PR #15(merge됨)">TP-0031 ◉</a><a class="tp tp-done" href="#todo" data-tp="TP-0047" title="완료 · 가림+그림자 상한에서 남은 포트홀 실패 진단: belief 치명 링이 GT보다 1칸 얇아 상자-포트홀 좁은 통로에서 경계를 스침(seed 7). 링 여유(팽창·MPPI 마진)... · 이슈 #9(닫힘) · PR #16(merge됨)">✓ TP-0047 ◉</a><a class="tp tp-done" href="#todo" data-tp="TP-0053" title="완료 · L1 인식 루프(운동학 시뮬): 합성 LiDAR → elevation_mapping_cupy 코어 → TravMap, L0 대비 지도 오차(PRD P1.5 지표)·폐루프 비교... · 이슈 #21(닫힘) · PR #26(merge됨)">✓ TP-0053 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/ev_tp0047_potholes.webp" title="원본 보기"><img alt="▶ 가림 켠 포트홀 주행. 상한만이면 치명 셀 진입, 깊이 prior를 켜면 돌아서 도달" src="assets/figs/ev_tp0047_potholes.webp" loading="lazy"></a><figcaption>▶ 가림 켠 포트홀 주행. 상한만이면 치명 셀 진입, 깊이 prior를 켜면 돌아서 도달 · <a href="https://github.com/Geonhee-LEE/travplan/tree/main/results/tp0047_bp">결과 폴더</a> <a class="tp tp-unknown" href="#todo" data-tp="TP-0044" title="TODO.md에 없는 번호 · 이슈 #9(닫힘) · PR #16(merge됨)">TP-0044 ◉</a><a class="tp tp-unknown" href="#todo" data-tp="TP-0046" title="TODO.md에 없는 번호 · 이슈 #9(닫힘) · PR #16(merge됨)">TP-0046 ◉</a><a class="tp tp-done" href="#todo" data-tp="TP-0047" title="완료 · 가림+그림자 상한에서 남은 포트홀 실패 진단: belief 치명 링이 GT보다 1칸 얇아 상자-포트홀 좁은 통로에서 경계를 스침(seed 7). 링 여유(팽창·MPPI 마진)... · 이슈 #9(닫힘) · PR #16(merge됨)">✓ TP-0047 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/ev_tp0025_tracks.webp" title="원본 보기"><img alt="Planner D(주황)와 Guidance(파랑)의 경로, 레벨 0 seed 0. 둘 다 도달" src="assets/figs/ev_tp0025_tracks.webp" loading="lazy"></a><figcaption>Planner D(주황)와 Guidance(파랑)의 경로, 레벨 0 seed 0. 둘 다 도달 · <a href="https://github.com/Geonhee-LEE/travplan/tree/main/results/tp0025_v2">결과 폴더</a> <a class="tp tp-unknown" href="#todo" data-tp="TP-0025" title="TODO.md에 없는 번호 · 이슈 #6(닫힘) · PR #13(merge됨)">TP-0025 ◉</a></figcaption></figure></div><details><summary>수치 표: 인식 설정별 성공 수, 깊이 prior 오탐, 센서 높이, L1 지도 품질</summary><p>최신 수치만 모았다. 따로 적지 않으면 운동학 벤치마크, 4 시나리오 × 10 seed, 센서 높이 0.3 m다.</p>
+<div class="card md"><h2>주요 결과</h2><div class="ev-grid"><figure class="ev big"><a class="thumb" href="assets/figs/tp0101_unknown_near.webp" title="원본 보기"><img alt="로봇 둘레 1.5 m 못 본 칸을 치명으로: L0에서 도달 가능 근거리 MISS 2,204 → 0, 폐루프 성공·시간 그대로. L1에서는 MISS 6,048 → 4 대신 음의 지형 오탐 13배" src="assets/figs/tp0101_unknown_near.webp" loading="lazy"></a><figcaption>로봇 둘레 1.5 m 못 본 칸을 치명으로: L0에서 도달 가능 근거리 MISS 2,204 → 0, 폐루프 성공·시간 그대로. L1에서는 MISS 6,048 → 4 대신 음의 지형 오탐 13배 · <a href="https://github.com/Geonhee-LEE/travplan/tree/main/results/tp0101_unknown_near">결과 폴더</a> <a class="tp tp-done" href="#todo" data-tp="TP-0101" title="완료 · TP-0100 후속: 근거리 미관측 칸의 cost 재검토 — 정지 거리 안의 미관측 칸을 치명·높은 cost로 두면 도달 가능 근거리 MISS(L0 가림 2,206, L1 6... · 이슈 #94(열림) · PR #95(열림)">✓ TP-0101 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/tp0100_belief_chassis.webp" title="원본 보기"><img alt="belief TravMap 대 차체 기하 기준. MISS의 99% 이상이 못 본 칸이고, 그림자 상한·깊이 prior는 도달 가능한 근거리 MISS를 줄이지 않는다(2,206 → 2,204). 센서 0.8 m는 3.4배 줄이고 L1은 2.8배 나쁘다" src="assets/figs/tp0100_belief_chassis.webp" loading="lazy"></a><figcaption>belief TravMap 대 차체 기하 기준. MISS의 99% 이상이 못 본 칸이고, 그림자 상한·깊이 prior는 도달 가능한 근거리 MISS를 줄이지 않는다(2,206 → 2,204). 센서 0.8 m는 3.4배 줄이고 L1은 2.8배 나쁘다 · <a href="https://github.com/Geonhee-LEE/travplan/tree/main/results/tp0100_belief_chassis">결과 폴더</a> <a class="tp tp-done" href="#todo" data-tp="TP-0101" title="완료 · TP-0100 후속: 근거리 미관측 칸의 cost 재검토 — 정지 거리 안의 미관측 칸을 치명·높은 cost로 두면 도달 가능 근거리 MISS(L0 가림 2,206, L1 6... · 이슈 #94(열림) · PR #95(열림)">✓ TP-0101 ◉</a><a class="tp tp-done" href="#todo" data-tp="TP-0100" title="완료 · TP-0082 후속: 섀시 기하 기준(sim/ground_truth.py)을 L0/L1 인식 경로에도 적용 — 지금은 참 고도에서만 잰다. 가림·그림자 상한이 켜진 belie... · 이슈 #92(닫힘) · PR #93(merge됨)">✓ TP-0100 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/tp0082_estimators.webp" title="원본 보기"><img alt="섀시 기하 기준(추정기와 독립)으로 잰 추정기 비교. emap의 RSL 발디딤 필터는 배포 운용점(gate 0.15)에서 차체가 못 들어가는 칸 4,425개를 주행 가능이라 부르고, 거의 전부 slope_crossfall 경사다. 기하·TravNet은 0" src="assets/figs/tp0082_estimators.webp" loading="lazy"></a><figcaption>섀시 기하 기준(추정기와 독립)으로 잰 추정기 비교. emap의 RSL 발디딤 필터는 배포 운용점(gate 0.15)에서 차체가 못 들어가는 칸 4,425개를 주행 가능이라 부르고, 거의 전부 slope_crossfall 경사다. 기하·TravNet은 0 · <a href="https://github.com/Geonhee-LEE/travplan/tree/main/results/p2-estimators.tsv">결과 폴더</a> <a class="tp tp-done" href="#todo" data-tp="TP-0082" title="완료 · elevation_mapping_cupy의 학습 traversability 필터를 기준선으로 평가: 같은 패키지에 이미 들어 있다(인식 A.7.2). TP-0022 평가에 기... · PR #63(merge됨) · PR #79(merge됨) · 이슈 #89(닫힘)">✓ TP-0082 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/ev_tp0073_levels.webp" title="원본 보기"><img alt="planner_d+mppi 성공 수: 벤치마크 레벨 3이 11/12 → 12/12, curb_ramp 레벨 3 seed 0–9는 7/10 → 8/10" src="assets/figs/ev_tp0073_levels.webp" loading="lazy"></a><figcaption>planner_d+mppi 성공 수: 벤치마크 레벨 3이 11/12 → 12/12, curb_ramp 레벨 3 seed 0–9는 7/10 → 8/10 · <a href="https://github.com/Geonhee-LEE/travplan/tree/main/results/tp0073_levels">결과 폴더</a> <a class="tp tp-done" href="#todo" data-tp="TP-0073" title="완료 · TP-0050 후속: Planner D 시연을 레벨 무작위 지형(0–3)으로 다시 만들어 재학습 — curb_ramp@L3 치명 샘플 비율(실패 0.82–0.88)을 L0 수... · 이슈 #44(닫힘) · PR #45(merge됨) · PR #54(merge됨)">✓ TP-0073 ◉</a><a class="tp tp-done" href="#todo" data-tp="TP-0075" title="완료 · TP-0073 후속: DAgger(scripts/dagger_planner_d.py)도 레벨 무작위 지형에서 방문 상태를 모으게 한다 — 재학습 결과(PR #45 사용자 실행... · PR #45(merge됨) · 이슈 #52(닫힘) · PR #54(merge됨)">✓ TP-0075 ◉</a><a class="tp tp-done" href="#todo" data-tp="TP-0077" title="완료 · TP-0073·TP-0075 후속: 레벨 0–3 시연 + 레벨 무작위 DAgger 뒤 남은 curb_ramp@L3 실패 진단. seed 0–9 중 8/10(s6·s7 시간 초... · 이슈 #53(닫힘) · PR #54(merge됨) · PR #61(merge됨)">✓ TP-0077 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/ev_benchmark_progress.webp" title="원본 보기"><img alt="운동학 벤치마크 성공률 추이(4 시나리오 × 10 seed). 가림·L1 인식으로 떨어지고 그림자 상한·깊이 prior로 회복" src="assets/figs/ev_benchmark_progress.webp" loading="lazy"></a><figcaption>운동학 벤치마크 성공률 추이(4 시나리오 × 10 seed). 가림·L1 인식으로 떨어지고 그림자 상한·깊이 prior로 회복 · <a href="https://github.com/Geonhee-LEE/travplan/tree/main/results/tp0047_bp">결과 폴더</a> <a class="tp tp-unknown" href="#todo" data-tp="TP-0027" title="TODO.md에 없는 번호 · 이슈 #7(닫힘) · 이슈 #8(닫힘) · PR #14(merge됨) · PR #15(merge됨)">TP-0027 ◉</a><a class="tp tp-unknown" href="#todo" data-tp="TP-0031" title="TODO.md에 없는 번호 · 이슈 #8(닫힘) · PR #15(merge됨)">TP-0031 ◉</a><a class="tp tp-unknown" href="#todo" data-tp="TP-0047" title="TODO.md에 없는 번호 · 이슈 #9(닫힘) · PR #16(merge됨)">TP-0047 ◉</a><a class="tp tp-done" href="#todo" data-tp="TP-0053" title="완료 · L1 인식 루프(운동학 시뮬): 합성 LiDAR → elevation_mapping_cupy 코어 → TravMap, L0 대비 지도 오차(PRD P1.5 지표)·폐루프 비교... · 이슈 #21(닫힘) · PR #26(merge됨)">✓ TP-0053 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/ev_tp0047_potholes.webp" title="원본 보기"><img alt="▶ 가림 켠 포트홀 주행. 상한만이면 치명 셀 진입, 깊이 prior를 켜면 돌아서 도달" src="assets/figs/ev_tp0047_potholes.webp" loading="lazy"></a><figcaption>▶ 가림 켠 포트홀 주행. 상한만이면 치명 셀 진입, 깊이 prior를 켜면 돌아서 도달 · <a href="https://github.com/Geonhee-LEE/travplan/tree/main/results/tp0047_bp">결과 폴더</a> <a class="tp tp-unknown" href="#todo" data-tp="TP-0044" title="TODO.md에 없는 번호 · 이슈 #9(닫힘) · PR #16(merge됨)">TP-0044 ◉</a><a class="tp tp-unknown" href="#todo" data-tp="TP-0046" title="TODO.md에 없는 번호 · 이슈 #9(닫힘) · PR #16(merge됨)">TP-0046 ◉</a><a class="tp tp-unknown" href="#todo" data-tp="TP-0047" title="TODO.md에 없는 번호 · 이슈 #9(닫힘) · PR #16(merge됨)">TP-0047 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/ev_tp0025_tracks.webp" title="원본 보기"><img alt="Planner D(주황)와 Guidance(파랑)의 경로, 레벨 0 seed 0. 둘 다 도달" src="assets/figs/ev_tp0025_tracks.webp" loading="lazy"></a><figcaption>Planner D(주황)와 Guidance(파랑)의 경로, 레벨 0 seed 0. 둘 다 도달 · <a href="https://github.com/Geonhee-LEE/travplan/tree/main/results/tp0025_v2">결과 폴더</a> <a class="tp tp-unknown" href="#todo" data-tp="TP-0025" title="TODO.md에 없는 번호 · 이슈 #6(닫힘) · PR #13(merge됨)">TP-0025 ◉</a></figcaption></figure></div><details><summary>수치 표: 인식 설정별 성공 수, 깊이 prior 오탐, 센서 높이, L1 지도 품질</summary><p>최신 수치만 모았다. 따로 적지 않으면 운동학 벤치마크, 4 시나리오 × 10 seed, 센서 높이 0.3 m다.</p>
+<p><strong>로봇 둘레 못 본 칸을 치명으로(<a class="tp tp-done" href="#todo" data-tp="TP-0101" title="완료 · TP-0100 후속: 근거리 미관측 칸의 cost 재검토 — 정지 거리 안의 미관측 칸을 치명·높은 cost로 두면 도달 가능 근거리 MISS(L0 가림 2,206, L1 6... · 이슈 #94(열림) · PR #95(열림)">✓ TP-0101 ◉</a>).</strong> L0 가림 + 상한 + 깊이 prior에서 반경 1.5 m를 켜면 도달 가능 근거리 MISS가 2,204 → 0이고,
+폐루프는 guidance 40/40, planner_d 38 → 40/40, 도달 시간과 보행자 충돌(0)은 그대로다(planner_d 보행자 최소 여유 0.23 → 0.16 m).
+L1에서는 MISS 6,048 → 4지만 음의 지형 오탐이 13배, 도달 시간이 25% 늘어난다(멈춤은 없음). cost 0.8은 치명 문턱 아래라 효과가 없다.
+<code>results/tp0101_unknown_near</code>, 인식 문서 A.13.7. 옵션 기본값은 끄고 L0에는 1.5 m를 권한다.</p>
 <p><strong>belief 대 차체 기하 기준(<a class="tp tp-done" href="#todo" data-tp="TP-0100" title="완료 · TP-0082 후속: 섀시 기하 기준(sim/ground_truth.py)을 L0/L1 인식 경로에도 적용 — 지금은 참 고도에서만 잰다. 가림·그림자 상한이 켜진 belie... · 이슈 #92(닫힘) · PR #93(merge됨)">✓ TP-0100 ◉</a>).</strong> 위험은 못 본 칸에 있다. MISS(차체가 못 들어가는데 belief가 주행 가능이라 함)의 99% 이상이 미관측 칸이다.
 그림자 상한·깊이 prior는 로봇이 도달할 수 있는 근거리 MISS를 줄이지 않고, 센서 높이는 3.4배 줄인다. 시나리오 4개 × seed 0–2, GT 경로 0.5 m마다 관측,
 지상고 0.10 m(0.08–0.15 m에서 결론 같음), <code>results/tp0100_belief_chassis</code>, 인식 문서 A.13.6.</p>
@@ -743,7 +747,7 @@ LiDAR 링 사이가 비어 로봇 주변 3 m 안의 10–12%가 미관측으로 
 <td>필터 가드 backport 완료, merge 대기</td>
 </tr>
 </tbody>
-</table><h3>열린 PR</h3><ul class='prs'><li><a class="gh gh-open gh-pr" href="https://github.com/Geonhee-LEE/travplan/pull/95">⇄ #95</a> TP-0101: 근거리 미관측 칸의 cost 재검토 (진행 중) <a class="tp tp-today" href="#todo" data-tp="TP-0101" title="오늘 · TP-0100 후속: 근거리 미관측 칸의 cost 재검토 — 정지 거리 안의 미관측 칸을 치명·높은 cost로 두면 도달 가능 근거리 MISS(L0 가림 2,206, L1 6... · 이슈 #94(열림) · PR #95(열림)">▶ TP-0101 ◉</a> </li></ul><h3>최근 merge된 PR</h3><ul class='prs'><li><a class="gh gh-merged gh-pr" href="https://github.com/Geonhee-LEE/travplan/pull/93">⇄ #93</a> TP-0100: belief TravMap을 차체 기하 기준으로 채점 — 위험은 못 본 칸, 깊이 prior는 그것을 막지 않는다 <a class="tp tp-done" href="#todo" data-tp="TP-0100" title="완료 · TP-0082 후속: 섀시 기하 기준(sim/ground_truth.py)을 L0/L1 인식 경로에도 적용 — 지금은 참 고도에서만 잰다. 가림·그림자 상한이 켜진 belie... · 이슈 #92(닫힘) · PR #93(merge됨)">✓ TP-0100 ◉</a> <span class="date">2026-09-30</span></li><li><a class="gh gh-merged gh-pr" href="https://github.com/Geonhee-LEE/travplan/pull/91">⇄ #91</a> 대시보드 재생성: 다른 PC PR 4개 merge와 이슈 종료 반영  <span class="date">2026-09-30</span></li><li><a class="gh gh-merged gh-pr" href="https://github.com/Geonhee-LEE/travplan/pull/88">⇄ #88</a> 사이트 저장소 README와 publish-site checkout@v7  <span class="date">2026-09-30</span></li><li><a class="gh gh-merged gh-pr" href="https://github.com/Geonhee-LEE/travplan/pull/87">⇄ #87</a> 공개 사이트를 전용 저장소 travplan-site로: docs/ 자동 동기화  <span class="date">2026-09-30</span></li><li><a class="gh gh-merged gh-pr" href="https://github.com/Geonhee-LEE/travplan/pull/86">⇄ #86</a> GitHub Pages 공개: 첫 화면, Playground 문서·검사, 사이트용 링크  <span class="date">2026-09-30</span></li><li><a class="gh gh-merged gh-pr" href="https://github.com/Geonhee-LEE/travplan/pull/84">⇄ #84</a> Playground와 대시보드 연동: 시뮬레이션 탭, TODO ▶ 시뮬레이션 링크, 해시 프리셋  <span class="date">2026-09-30</span></li><li><a class="gh gh-merged gh-pr" href="https://github.com/Geonhee-LEE/travplan/pull/82">⇄ #82</a> 리서치: 배경·수식(§0) 14개 절 확장 + 보행 로봇 탭 사실 정정 52건  <span class="date">2026-09-30</span></li><li><a class="gh gh-merged gh-pr" href="https://github.com/Geonhee-LEE/travplan/pull/81">⇄ #81</a> [auto] TP-0097: 벤더링 elevation_mapping에 학습 필터 가드 backport <a class="tp tp-done" href="#todo" data-tp="TP-0097" title="완료 · TP-0088 후속: core의 선택적 필터 가드를 벤더링 트리에 backport — weight_file이 비면 traversability_filter를 만들지 않는다. 지... · 이슈 #80(닫힘) · PR #81(merge됨)">✓ TP-0097</a> <span class="date">2026-09-30</span></li></ul><p class="note">GitHub 인덱스 갱신: 2026-10-01 05:26 · <code>python3 automation/gh_index.py</code></p></div>
+</table><h3>열린 PR</h3><ul class='prs'><li><a class="gh gh-open gh-pr" href="https://github.com/Geonhee-LEE/travplan/pull/95">⇄ #95</a> TP-0101: 근거리 미관측 칸의 cost 재검토 (진행 중) <a class="tp tp-done" href="#todo" data-tp="TP-0101" title="완료 · TP-0100 후속: 근거리 미관측 칸의 cost 재검토 — 정지 거리 안의 미관측 칸을 치명·높은 cost로 두면 도달 가능 근거리 MISS(L0 가림 2,206, L1 6... · 이슈 #94(열림) · PR #95(열림)">✓ TP-0101 ◉</a> </li></ul><h3>최근 merge된 PR</h3><ul class='prs'><li><a class="gh gh-merged gh-pr" href="https://github.com/Geonhee-LEE/travplan/pull/97">⇄ #97</a> Playground: 높이·elevation mapping·traversability 층, L1 간이 인식, 차체 기준, 근거리 미관측  <span class="date">2026-09-30</span></li><li><a class="gh gh-merged gh-pr" href="https://github.com/Geonhee-LEE/travplan/pull/93">⇄ #93</a> TP-0100: belief TravMap을 차체 기하 기준으로 채점 — 위험은 못 본 칸, 깊이 prior는 그것을 막지 않는다 <a class="tp tp-done" href="#todo" data-tp="TP-0100" title="완료 · TP-0082 후속: 섀시 기하 기준(sim/ground_truth.py)을 L0/L1 인식 경로에도 적용 — 지금은 참 고도에서만 잰다. 가림·그림자 상한이 켜진 belie... · 이슈 #92(닫힘) · PR #93(merge됨)">✓ TP-0100 ◉</a> <span class="date">2026-09-30</span></li><li><a class="gh gh-merged gh-pr" href="https://github.com/Geonhee-LEE/travplan/pull/91">⇄ #91</a> 대시보드 재생성: 다른 PC PR 4개 merge와 이슈 종료 반영  <span class="date">2026-09-30</span></li><li><a class="gh gh-merged gh-pr" href="https://github.com/Geonhee-LEE/travplan/pull/88">⇄ #88</a> 사이트 저장소 README와 publish-site checkout@v7  <span class="date">2026-09-30</span></li><li><a class="gh gh-merged gh-pr" href="https://github.com/Geonhee-LEE/travplan/pull/87">⇄ #87</a> 공개 사이트를 전용 저장소 travplan-site로: docs/ 자동 동기화  <span class="date">2026-09-30</span></li><li><a class="gh gh-merged gh-pr" href="https://github.com/Geonhee-LEE/travplan/pull/86">⇄ #86</a> GitHub Pages 공개: 첫 화면, Playground 문서·검사, 사이트용 링크  <span class="date">2026-09-30</span></li><li><a class="gh gh-merged gh-pr" href="https://github.com/Geonhee-LEE/travplan/pull/84">⇄ #84</a> Playground와 대시보드 연동: 시뮬레이션 탭, TODO ▶ 시뮬레이션 링크, 해시 프리셋  <span class="date">2026-09-30</span></li><li><a class="gh gh-merged gh-pr" href="https://github.com/Geonhee-LEE/travplan/pull/82">⇄ #82</a> 리서치: 배경·수식(§0) 14개 절 확장 + 보행 로봇 탭 사실 정정 52건  <span class="date">2026-09-30</span></li></ul><p class="note">GitHub 인덱스 갱신: 2026-10-01 06:22 · <code>python3 automation/gh_index.py</code></p></div>
 <div class="card md"><h2>작업 환경</h2><details><summary>체크포인트, 가상환경, 그림·인덱스 재생성</summary><ul>
 <li><strong>브랜치.</strong> 두 PC 모두 main에서 이어간다.</li>
 <li><strong>체크포인트.</strong> <code>checkpoints/</code>는 git에 없다. 릴리스에서 받는다.
@@ -759,16 +763,15 @@ LiDAR 링 사이가 비어 로봇 주변 3 m 안의 10–12%가 미관측으로 
   </section>
   <section class="tab" id="tab-todo">
     <div class="card"><div class="progress-wrap">
-  <div class="progress-label">전체 진행률: <strong>20/73</strong> (27%)</div>
-  <div class="progress-bar"><div class="progress-fill" style="width:27%"></div></div>
+  <div class="progress-label">전체 진행률: <strong>20/72</strong> (28%)</div>
+  <div class="progress-bar"><div class="progress-fill" style="width:28%"></div></div>
 </div>
 <p class="note">● 이슈, ⇄ PR(보라 merge됨, 초록 열림, 회색 닫힘). 그림이 붙은 항목은 결과 그림을 함께 보여 준다. 제목 안의 TP 번호는 상태 칩이다.</p>
 <h3 class="status-h status-doing">진행 중 <span class="count">0</span></h3>
 <p class="empty">없음</p>
-<h3 class="status-h status-today">오늘 <span class="count">2</span></h3>
+<h3 class="status-h status-today">오늘 <span class="count">1</span></h3>
 <ul class="todo-list">
 <li class="todo-item" id="todo-TP-0066"><label><input type="checkbox" disabled > <span class="id">TP-0066</span> <span class="badge prio">P1</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> Planner D 폐루프 강화학습 후학습(PPO/GRPO + 모방 정규화, RAD·DriveZero식): 운동학 시뮬 폐루프, 보상=도달·치명/충돌 벌점·진행·부드러움, 대상... <span class=gh-row><a class="gh gh-open gh-issue" href="https://github.com/Geonhee-LEE/travplan/issues/34" title="이슈 #34 · 열림 · Planner D 폐루프 강화학습 후학습 (TP-0066, RAD·DriveZero식, 리서치 B.13)">● #34</a><a class="gh gh-merged gh-pr" href="https://github.com/Geonhee-LEE/travplan/pull/35" title="PR #35 · merge됨 · TP-0066 등록 + 문서 시각화 + 리서치 보강(현대차그룹·BotBrain·RoM-Nav 계열) + 월간 리서치 자동화">⇄ #35</a></span></label></li>
-<li class="todo-item" id="todo-TP-0101"><label><input type="checkbox" disabled > <span class="id">TP-0101</span> <span class="badge prio">P1</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-done" href="#todo" data-tp="TP-0100" title="완료 · TP-0082 후속: 섀시 기하 기준(sim/ground_truth.py)을 L0/L1 인식 경로에도 적용 — 지금은 참 고도에서만 잰다. 가림·그림자 상한이 켜진 belie... · 이슈 #92(닫힘) · PR #93(merge됨)">✓ TP-0100 ◉</a> 후속: 근거리 미관측 칸의 cost 재검토 — 정지 거리 안의 미관측 칸을 치명·높은 cost로 두면 도달 가능 근거리 MISS(L0 가림 2,206, L1 6... <span class=gh-row><a class="gh gh-open gh-issue" href="https://github.com/Geonhee-LEE/travplan/issues/94" title="이슈 #94 · 열림 · 근거리 미관측 칸의 cost 재검토 (TP-0101)">● #94</a><a class="gh gh-open gh-pr" href="https://github.com/Geonhee-LEE/travplan/pull/95" title="PR #95 · 열림 · TP-0101: 근거리 미관측 칸의 cost 재검토 (진행 중)">⇄ #95</a></span><a class="sim" href="playground/index.html#TP-0101" target="_blank" rel="noopener" title="Playground에서 이 설정으로 달려 보기">▶ 시뮬레이션 · 근거리 미관측을 치명으로(1.5 m)</a></label><div class="ev-row"><figure class="ev"><a class="thumb" href="assets/figs/tp0100_belief_chassis.webp" title="원본 보기"><img alt="belief TravMap 대 차체 기하 기준. MISS의 99% 이상이 못 본 칸이고, 그림자 상한·깊이 prior는 도달 가능한 근거리 MISS를 줄이지 않는다(2,206 → 2,204). 센서 0.8 m는 3.4배 줄이고 L1은 2.8배 나쁘다" src="assets/figs/tp0100_belief_chassis.webp" loading="lazy"></a><figcaption>belief TravMap 대 차체 기하 기준. MISS의 99% 이상이 못 본 칸이고, 그림자 상한·깊이 prior는 도달 가능한 근거리 MISS를 줄이지 않는다(2,206 → 2,204). 센서 0.8 m는 3.4배 줄이고 L1은 2.8배 나쁘다 · <a href="https://github.com/Geonhee-LEE/travplan/tree/main/results/tp0100_belief_chassis">결과 폴더</a></figcaption></figure></div></li>
 </ul>
 <h3 class="status-h status-blocked">막힘 <span class="count">6</span></h3>
 <ul class="todo-list">
@@ -829,6 +832,7 @@ LiDAR 링 사이가 비어 로봇 주변 3 m 안의 10–12%가 미관측으로 
 </ul>
 <h3 class="status-h status-done">완료 <span class="count">20</span></h3>
 <ul class="todo-list">
+<li class="todo-item" id="todo-TP-0101"><label><input type="checkbox" disabled checked> <span class="id">TP-0101</span> <span class="badge prio">P1</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-done" href="#todo" data-tp="TP-0100" title="완료 · TP-0082 후속: 섀시 기하 기준(sim/ground_truth.py)을 L0/L1 인식 경로에도 적용 — 지금은 참 고도에서만 잰다. 가림·그림자 상한이 켜진 belie... · 이슈 #92(닫힘) · PR #93(merge됨)">✓ TP-0100 ◉</a> 후속: 근거리 미관측 칸의 cost 재검토 — 정지 거리 안의 미관측 칸을 치명·높은 cost로 두면 도달 가능 근거리 MISS(L0 가림 2,206, L1 6... · <code class="branch">p2/tp0101-unknown-near</code> <span class=gh-row><a class="gh gh-open gh-issue" href="https://github.com/Geonhee-LEE/travplan/issues/94" title="이슈 #94 · 열림 · 근거리 미관측 칸의 cost 재검토 (TP-0101)">● #94</a><a class="gh gh-open gh-pr" href="https://github.com/Geonhee-LEE/travplan/pull/95" title="PR #95 · 열림 · TP-0101: 근거리 미관측 칸의 cost 재검토 (진행 중)">⇄ #95</a></span><a class="sim" href="playground/index.html#TP-0101" target="_blank" rel="noopener" title="Playground에서 이 설정으로 달려 보기">▶ 시뮬레이션 · 근거리 미관측을 치명으로(1.5 m)</a></label><div class="ev-row"><figure class="ev"><a class="thumb" href="assets/figs/tp0100_belief_chassis.webp" title="원본 보기"><img alt="belief TravMap 대 차체 기하 기준. MISS의 99% 이상이 못 본 칸이고, 그림자 상한·깊이 prior는 도달 가능한 근거리 MISS를 줄이지 않는다(2,206 → 2,204). 센서 0.8 m는 3.4배 줄이고 L1은 2.8배 나쁘다" src="assets/figs/tp0100_belief_chassis.webp" loading="lazy"></a><figcaption>belief TravMap 대 차체 기하 기준. MISS의 99% 이상이 못 본 칸이고, 그림자 상한·깊이 prior는 도달 가능한 근거리 MISS를 줄이지 않는다(2,206 → 2,204). 센서 0.8 m는 3.4배 줄이고 L1은 2.8배 나쁘다 · <a href="https://github.com/Geonhee-LEE/travplan/tree/main/results/tp0100_belief_chassis">결과 폴더</a></figcaption></figure><figure class="ev"><a class="thumb" href="assets/figs/tp0101_unknown_near.webp" title="원본 보기"><img alt="로봇 둘레 1.5 m 못 본 칸을 치명으로: L0에서 도달 가능 근거리 MISS 2,204 → 0, 폐루프 성공·시간 그대로. L1에서는 MISS 6,048 → 4 대신 음의 지형 오탐 13배" src="assets/figs/tp0101_unknown_near.webp" loading="lazy"></a><figcaption>로봇 둘레 1.5 m 못 본 칸을 치명으로: L0에서 도달 가능 근거리 MISS 2,204 → 0, 폐루프 성공·시간 그대로. L1에서는 MISS 6,048 → 4 대신 음의 지형 오탐 13배 · <a href="https://github.com/Geonhee-LEE/travplan/tree/main/results/tp0101_unknown_near">결과 폴더</a></figcaption></figure></div></li>
 <li class="todo-item" id="todo-TP-0100"><label><input type="checkbox" disabled checked> <span class="id">TP-0100</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-done" href="#todo" data-tp="TP-0082" title="완료 · elevation_mapping_cupy의 학습 traversability 필터를 기준선으로 평가: 같은 패키지에 이미 들어 있다(인식 A.7.2). TP-0022 평가에 기... · PR #63(merge됨) · PR #79(merge됨) · 이슈 #89(닫힘)">✓ TP-0082 ◉</a> 후속: 섀시 기하 기준(sim/ground_truth.py)을 L0/L1 인식 경로에도 적용 — 지금은 참 고도에서만 잰다. 가림·그림자 상한이 켜진 belie... · <code class="branch">p2/tp0100-belief-chassis</code> <span class=gh-row><a class="gh gh-closed gh-issue" href="https://github.com/Geonhee-LEE/travplan/issues/92" title="이슈 #92 · 닫힘 · belief TravMap을 차체 기하 기준으로 채점: L0 가림·그림자 상한·깊이 prior·L1 (TP-0100)">● #92</a><a class="gh gh-merged gh-pr" href="https://github.com/Geonhee-LEE/travplan/pull/93" title="PR #93 · merge됨 · TP-0100: belief TravMap을 차체 기하 기준으로 채점 — 위험은 못 본 칸, 깊이 prior는 그것을 막지 않는다">⇄ #93</a></span><a class="sim" href="playground/index.html#TP-0100" target="_blank" rel="noopener" title="Playground에서 이 설정으로 달려 보기">▶ 시뮬레이션 · L1 간이: 못 본 칸이 위험</a></label><div class="ev-row"><figure class="ev"><a class="thumb" href="assets/figs/tp0100_belief_chassis.webp" title="원본 보기"><img alt="belief TravMap 대 차체 기하 기준. MISS의 99% 이상이 못 본 칸이고, 그림자 상한·깊이 prior는 도달 가능한 근거리 MISS를 줄이지 않는다(2,206 → 2,204). 센서 0.8 m는 3.4배 줄이고 L1은 2.8배 나쁘다" src="assets/figs/tp0100_belief_chassis.webp" loading="lazy"></a><figcaption>belief TravMap 대 차체 기하 기준. MISS의 99% 이상이 못 본 칸이고, 그림자 상한·깊이 prior는 도달 가능한 근거리 MISS를 줄이지 않는다(2,206 → 2,204). 센서 0.8 m는 3.4배 줄이고 L1은 2.8배 나쁘다 · <a href="https://github.com/Geonhee-LEE/travplan/tree/main/results/tp0100_belief_chassis">결과 폴더</a></figcaption></figure></div></li>
 <li class="todo-item" id="todo-TP-0097"><label><input type="checkbox" disabled checked> <span class="id">TP-0097</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-done" href="#todo" data-tp="TP-0088" title="완료 · elevation_mapping_cupy_core(ROS 의존 0, MIT)로 이전 검토 — 벤더링 트리 제거, 학습 traversability 필터를 weight_file ...">✓ TP-0088</a> 후속: core의 선택적 필터 가드를 벤더링 트리에 backport — weight_file이 비면 traversability_filter를 만들지 않는다. 지... · <code class="branch">p2/tp0097-filter-guard-backport</code> <span class=gh-row><a class="gh gh-closed gh-issue" href="https://github.com/Geonhee-LEE/travplan/issues/80" title="이슈 #80 · 닫힘 · TP-0097: 벤더링 elevation_mapping에 학습 traversability 필터 가드 backport">● #80</a><a class="gh gh-merged gh-pr" href="https://github.com/Geonhee-LEE/travplan/pull/81" title="PR #81 · merge됨 · [auto] TP-0097: 벤더링 elevation_mapping에 학습 필터 가드 backport">⇄ #81</a></span></label></li>
 <li class="todo-item" id="todo-TP-0096"><label><input type="checkbox" disabled checked> <span class="id">TP-0096</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-done" href="#todo" data-tp="TP-0086" title="완료 · FastDEM(BSD-3, Orin 100+Hz CPU)을 TP-0084 GPU TravMapBuilder의 CPU 비교 기준선으로 세운다 — 레이어가 TravMap[8]과 ... · PR #75(merge됨) · PR #77(merge됨)">✓ TP-0086</a> 후속: FastDEM 출력 비교 — travplan 지형에서 뽑은 합성 LiDAR 점군을 FastDEM에 먹이고 step/slope/roughness를 Trav...</label></li>
@@ -847,8 +851,7 @@ LiDAR 링 사이가 비어 로봇 주변 3 m 안의 10–12%가 미관측으로 
 <li class="todo-item" id="todo-TP-0053"><label><input type="checkbox" disabled checked> <span class="id">TP-0053</span> <span class="badge prio">P1</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> L1 인식 루프(운동학 시뮬): 합성 LiDAR → elevation_mapping_cupy 코어 → TravMap, L0 대비 지도 오차(PRD P1.5 지표)·폐루프 비교... · <code class="branch">p2/l1-emap-loop</code> <span class=gh-row><a class="gh gh-closed gh-issue" href="https://github.com/Geonhee-LEE/travplan/issues/21" title="이슈 #21 · 닫힘 · L1 인식 루프: 합성 LiDAR → elevation_mapping_cupy → TravMap, L0 대비 지도 오차·폐루프 (TP-0053)">● #21</a><a class="gh gh-merged gh-pr" href="https://github.com/Geonhee-LEE/travplan/pull/26" title="PR #26 · merge됨 · L1 인식 루프: 합성 LiDAR → elevation_mapping_cupy → TravMap, 지도 품질 지표 (TP-0053)">⇄ #26</a></span></label><div class="ev-row"><figure class="ev"><a class="thumb" href="assets/figs/ev_benchmark_progress.webp" title="원본 보기"><img alt="운동학 벤치마크 성공률 추이(4 시나리오 × 10 seed). 가림·L1 인식으로 떨어지고 그림자 상한·깊이 prior로 회복" src="assets/figs/ev_benchmark_progress.webp" loading="lazy"></a><figcaption>운동학 벤치마크 성공률 추이(4 시나리오 × 10 seed). 가림·L1 인식으로 떨어지고 그림자 상한·깊이 prior로 회복 · <a href="https://github.com/Geonhee-LEE/travplan/tree/main/results/tp0047_bp">결과 폴더</a></figcaption></figure></div></li>
 <li class="todo-item" id="todo-TP-0050"><label><input type="checkbox" disabled checked> <span class="id">TP-0050</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-blocked" href="#todo" data-tp="TP-0039" title="사용자 실행 대기 · 지형 난이도 파라미터화: 연석 높이·램프 폭·포트홀 간격·경사각 레벨, 스택별 실패 경계 측정 (P2 R-F-009) · 이슈 #19(닫힘) · PR #20(merge됨)">⏸ TP-0039 ◉</a> 후속: planner_d+mppi가 curb_ramp@L3(경사로 1.1 m·11.3°)에서 timeout — 원인 진단(분포 밖 지형 vs 시간 참조 추종) ... · <code class="branch">p2/planner-d-l3-diagnosis</code> <span class=gh-row><a class="gh gh-closed gh-issue" href="https://github.com/Geonhee-LEE/travplan/issues/42" title="이슈 #42 · 닫힘 · Planner D 레벨 3 실패 진단: 분포 밖 지형 vs 시간 참조 추종 (TP-0050)">● #42</a><a class="gh gh-merged gh-pr" href="https://github.com/Geonhee-LEE/travplan/pull/43" title="PR #43 · merge됨 · [auto] Planner D 레벨 3 실패 진단: 원인은 생성기의 치명 샘플이다 (TP-0050)">⇄ #43</a></span></label><div class="ev-row"><figure class="ev"><a class="thumb" href="assets/figs/ev_tp0050_curb_l3.webp" title="원본 보기"><img alt="▶ curb_ramp 레벨 3. Guidance는 25.9 s에 도달, Planner D는 경사로를 못 찾고 60 s 시간 초과(현재 병목)" src="assets/figs/ev_tp0050_curb_l3.webp" loading="lazy"></a><figcaption>▶ curb_ramp 레벨 3. Guidance는 25.9 s에 도달, Planner D는 경사로를 못 찾고 60 s 시간 초과(현재 병목) · <a href="https://github.com/Geonhee-LEE/travplan/tree/main/results/tp0050">결과 폴더</a></figcaption></figure></div></li>
 <li class="todo-item" id="todo-TP-0049"><label><input type="checkbox" disabled checked> <span class="id">TP-0049</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> Joint Planner (JPPD-style): ego+pedestrian 공동 궤적 생성 — AgentTokenizer, CDiT, JointFlowPolicy 구현. 학... · <code class="branch">p2/joint-planner</code> <span class=gh-row><a class="gh gh-closed gh-issue" href="https://github.com/Geonhee-LEE/travplan/issues/17" title="이슈 #17 · 닫힘 · TP-0049: Joint Planner (JPPD-style ego+pedestrian 공동 생성)">● #17</a><a class="gh gh-merged gh-pr" href="https://github.com/Geonhee-LEE/travplan/pull/18" title="PR #18 · merge됨 · TP-0049: Joint Planner (JPPD-style ego+pedestrian 공동 생성)">⇄ #18</a></span></label></li>
-<li class="todo-item" id="todo-TP-0048"><label><input type="checkbox" disabled checked> <span class="id">TP-0048</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-done" href="#todo" data-tp="TP-0047" title="완료 · 가림+그림자 상한에서 남은 포트홀 실패 진단: belief 치명 링이 GT보다 1칸 얇아 상자-포트홀 좁은 통로에서 경계를 스침(seed 7). 링 여유(팽창·MPPI 마진)... · 이슈 #9(닫힘) · PR #16(merge됨)">✓ TP-0047 ◉</a> 후속: 그림자 깊이 prior(--shadow-depth) 오탐 점검 — 하향 램프·배수구·내리막 연석 시나리오와 L1(RTX LiDAR) belief에서 멀쩡... · <code class="branch">p2/shadow-depth-narrow</code> <span class="badge usertest">UserTest</span> <span class=gh-row><a class="gh gh-closed gh-issue" href="https://github.com/Geonhee-LEE/travplan/issues/37" title="이슈 #37 · 닫힘 · 깊이 prior 오탐 점검: 내려갈 수 있는 음의 지형 (TP-0048)">● #37</a><a class="gh gh-merged gh-pr" href="https://github.com/Geonhee-LEE/travplan/pull/38" title="PR #38 · merge됨 · [auto] 깊이 prior 오탐 점검: 내려갈 수 있는 음의 지형 3종">⇄ #38</a><a class="gh gh-merged gh-pr" href="https://github.com/Geonhee-LEE/travplan/pull/39" title="PR #39 · merge됨 · TP-0067: 깊이 prior를 관측 증거로 묶다 (+ TP-0048 종료, 리서치 5편)">⇄ #39</a><a class="gh gh-merged gh-pr" href="https://github.com/Geonhee-LEE/travplan/pull/46" title="PR #46 · merge됨 · 리서치: Zeilinger 그룹 E.7과 ETH RSL 계보 B.14 (#41을 main에 반영)">⇄ #46</a></span><a class="sim" href="playground/index.html#TP-0048" target="_blank" rel="noopener" title="Playground에서 이 설정으로 달려 보기">▶ 시뮬레이션 · 내림 턱 오탐(증거 제한 끔)</a></label><div class="ev-row"><figure class="ev"><a class="thumb" href="assets/figs/ev_tp0067_false_alarm.webp" title="원본 보기"><img alt="깊이 prior 오탐: 통로 안 오탐 9.1 → 1.3칸, 포트홀 재현율 0.88 유지" src="assets/figs/ev_tp0067_false_alarm.webp" loading="lazy"></a><figcaption>깊이 prior 오탐: 통로 안 오탐 9.1 → 1.3칸, 포트홀 재현율 0.88 유지 · <a href="https://github.com/Geonhee-LEE/travplan/tree/main/results/tp0067_falsealarm">결과 폴더</a></figcaption></figure></div></li>
-<li class="todo-item" id="todo-TP-0047"><label><input type="checkbox" disabled checked> <span class="id">TP-0047</span> <span class="badge prio">P1</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> 가림+그림자 상한에서 남은 포트홀 실패 진단: belief 치명 링이 GT보다 1칸 얇아 상자-포트홀 좁은 통로에서 경계를 스침(seed 7). 링 여유(팽창·MPPI 마진)... · <code class="branch">p2/negative-obstacle-shadow-ceiling</code> <span class=gh-row><a class="gh gh-closed gh-issue" href="https://github.com/Geonhee-LEE/travplan/issues/9" title="이슈 #9 · 닫힘 · 음의 장애물: 그림자 상한·깊이 prior (TP-0044/0046/0047)">● #9</a><a class="gh gh-merged gh-pr" href="https://github.com/Geonhee-LEE/travplan/pull/16" title="PR #16 · merge됨 · 음의 장애물: 그림자 상한·깊이 prior, 가림 40/40 (TP-0044/0046/0047)">⇄ #16</a></span><a class="sim" href="playground/index.html#TP-0047" target="_blank" rel="noopener" title="Playground에서 이 설정으로 달려 보기">▶ 시뮬레이션 · + 깊이 prior</a></label><div class="ev-row"><figure class="ev"><a class="thumb" href="assets/figs/ev_tp0047_potholes.webp" title="원본 보기"><img alt="▶ 가림 켠 포트홀 주행. 상한만이면 치명 셀 진입, 깊이 prior를 켜면 돌아서 도달" src="assets/figs/ev_tp0047_potholes.webp" loading="lazy"></a><figcaption>▶ 가림 켠 포트홀 주행. 상한만이면 치명 셀 진입, 깊이 prior를 켜면 돌아서 도달 · <a href="https://github.com/Geonhee-LEE/travplan/tree/main/results/tp0047_bp">결과 폴더</a></figcaption></figure><figure class="ev"><a class="thumb" href="assets/figs/ev_benchmark_progress.webp" title="원본 보기"><img alt="운동학 벤치마크 성공률 추이(4 시나리오 × 10 seed). 가림·L1 인식으로 떨어지고 그림자 상한·깊이 prior로 회복" src="assets/figs/ev_benchmark_progress.webp" loading="lazy"></a><figcaption>운동학 벤치마크 성공률 추이(4 시나리오 × 10 seed). 가림·L1 인식으로 떨어지고 그림자 상한·깊이 prior로 회복 · <a href="https://github.com/Geonhee-LEE/travplan/tree/main/results/tp0047_bp">결과 폴더</a></figcaption></figure></div></li>
+<li class="todo-item" id="todo-TP-0048"><label><input type="checkbox" disabled checked> <span class="id">TP-0048</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-unknown" href="#todo" data-tp="TP-0047" title="TODO.md에 없는 번호 · 이슈 #9(닫힘) · PR #16(merge됨)">TP-0047 ◉</a> 후속: 그림자 깊이 prior(--shadow-depth) 오탐 점검 — 하향 램프·배수구·내리막 연석 시나리오와 L1(RTX LiDAR) belief에서 멀쩡... · <code class="branch">p2/shadow-depth-narrow</code> <span class="badge usertest">UserTest</span> <span class=gh-row><a class="gh gh-closed gh-issue" href="https://github.com/Geonhee-LEE/travplan/issues/37" title="이슈 #37 · 닫힘 · 깊이 prior 오탐 점검: 내려갈 수 있는 음의 지형 (TP-0048)">● #37</a><a class="gh gh-merged gh-pr" href="https://github.com/Geonhee-LEE/travplan/pull/38" title="PR #38 · merge됨 · [auto] 깊이 prior 오탐 점검: 내려갈 수 있는 음의 지형 3종">⇄ #38</a><a class="gh gh-merged gh-pr" href="https://github.com/Geonhee-LEE/travplan/pull/39" title="PR #39 · merge됨 · TP-0067: 깊이 prior를 관측 증거로 묶다 (+ TP-0048 종료, 리서치 5편)">⇄ #39</a><a class="gh gh-merged gh-pr" href="https://github.com/Geonhee-LEE/travplan/pull/46" title="PR #46 · merge됨 · 리서치: Zeilinger 그룹 E.7과 ETH RSL 계보 B.14 (#41을 main에 반영)">⇄ #46</a></span><a class="sim" href="playground/index.html#TP-0048" target="_blank" rel="noopener" title="Playground에서 이 설정으로 달려 보기">▶ 시뮬레이션 · 내림 턱 오탐(증거 제한 끔)</a></label><div class="ev-row"><figure class="ev"><a class="thumb" href="assets/figs/ev_tp0067_false_alarm.webp" title="원본 보기"><img alt="깊이 prior 오탐: 통로 안 오탐 9.1 → 1.3칸, 포트홀 재현율 0.88 유지" src="assets/figs/ev_tp0067_false_alarm.webp" loading="lazy"></a><figcaption>깊이 prior 오탐: 통로 안 오탐 9.1 → 1.3칸, 포트홀 재현율 0.88 유지 · <a href="https://github.com/Geonhee-LEE/travplan/tree/main/results/tp0067_falsealarm">결과 폴더</a></figcaption></figure></div></li>
 </ul></div>
   </section>
   <section class="tab" id="tab-prd">
@@ -1483,7 +1486,7 @@ Cartken과 Serve 모두 Jetson <strong>AGX Orin</strong>급을 쓴다는 선례�
 <tr>
 <td>음의 장애물(포트홀)이 가림으로 절반만 보임</td>
 <td>포트홀 둘레 치명 셀 진입(L0 가림, 센서 0.3 m에서 4/10)</td>
-<td>LiDAR를 높이 달고 숙인다(R-F-005, <a class="tp tp-done" href="#todo" data-tp="TP-0060" title="완료 · 배달로봇 센서 구성(전면 3D LiDAR 1, 카메라 전면 2·측면 2·후면 1, 낮은 차체) 설계 권장안과 시뮬 검증: LiDAR 높이·시야·기울기, 전면 단일 LiDAR와... · 이슈 #28(닫힘) · PR #29(merge됨) · 이슈 #30(닫힘) · PR #31(merge됨)">✓ TP-0060 ◉</a>). 그림자 상한과 깊이 prior를 켠다(<a class="tp tp-unknown" href="#todo" data-tp="TP-0044" title="TODO.md에 없는 번호 · 이슈 #9(닫힘) · PR #16(merge됨)">TP-0044 ◉</a>, <a class="tp tp-done" href="#todo" data-tp="TP-0047" title="완료 · 가림+그림자 상한에서 남은 포트홀 실패 진단: belief 치명 링이 GT보다 1칸 얇아 상자-포트홀 좁은 통로에서 경계를 스침(seed 7). 링 여유(팽창·MPPI 마진)... · 이슈 #9(닫힘) · PR #16(merge됨)">✓ TP-0047 ◉</a>)</td>
+<td>LiDAR를 높이 달고 숙인다(R-F-005, <a class="tp tp-done" href="#todo" data-tp="TP-0060" title="완료 · 배달로봇 센서 구성(전면 3D LiDAR 1, 카메라 전면 2·측면 2·후면 1, 낮은 차체) 설계 권장안과 시뮬 검증: LiDAR 높이·시야·기울기, 전면 단일 LiDAR와... · 이슈 #28(닫힘) · PR #29(merge됨) · 이슈 #30(닫힘) · PR #31(merge됨)">✓ TP-0060 ◉</a>). 그림자 상한과 깊이 prior를 켠다(<a class="tp tp-unknown" href="#todo" data-tp="TP-0044" title="TODO.md에 없는 번호 · 이슈 #9(닫힘) · PR #16(merge됨)">TP-0044 ◉</a>, <a class="tp tp-unknown" href="#todo" data-tp="TP-0047" title="TODO.md에 없는 번호 · 이슈 #9(닫힘) · PR #16(merge됨)">TP-0047 ◉</a>)</td>
 </tr>
 <tr>
 <td>전면 단일 LiDAR라 옆·뒤 지형이 기억뿐</td>
@@ -4646,7 +4649,120 @@ Planner가 포트홀에서 먼 경로를 고르게 한다. TP-0047의 폐루프 
    대가는 보수성이다. 이 균형을 잴 후속을 TP-0101로 둔다.</li>
 <li><strong>센서 높이가 가장 싼 해결책이다.</strong> TP-0031의 "LiDAR 0.8 m 이상" 권장이 순환 없는 기준에서도 선다.</li>
 <li><strong>L1을 쓰려면 덮는 범위부터 보강해야 한다.</strong> 근거리 사각을 전면 스테레오로 메우는 TP-0065, 분산을 σ로 옮기는 TP-0054가 그 자리다.</li>
-</ol></div><div class="card md subpanel" id="sub-research-d1-3"><h3>A.10 Traversability 추정: 사람 라벨 없이, 불확실성과 함께</h3>
+</ol>
+<h3>A.13.7 TP-0101 — 로봇 둘레 못 본 칸을 치명으로 두면, L0에서는 거의 공짜이고 L1에서는 느려진다</h3>
+<p><strong>결론 먼저.</strong> <mark>로봇 둘레 1.5 m 안의 못 본 칸을 치명으로 두면, L0 가림에서 로봇이 도달할 수 있는 근거리 MISS가 2,204칸에서 0이 된다.</mark>
+보수성(과하게 막은 칸, 음의 지형 오탐)은 거의 늘지 않고, 폐루프 성공률과 도달 시간도 그대로다. <mark>L1에서는 같은 옵션이 MISS를 6,048칸에서 4칸으로 없애지만,
+음의 지형 오탐이 13배 늘고 도달이 25% 느려진다.</mark> L1은 로봇 근처에도 못 본 칸이 많기 때문이다(A.13.6). cost를 0.8로만 올리면 치명 문턱 0.95 아래라 효과가 없다.
+옵션(<code>TravMapBuilder(unknown_near_m=...)</code>, <code>run_benchmark.py --unknown-near</code>)은 기본값을 끈 채로 두고, L0에는 1.5 m를 권한다.</p>
+<p><a class="thumb" href="assets/figs/tp0101_unknown_near.webp" title="원본 보기"><img alt="TP-0101" src="assets/figs/tp0101_unknown_near.webp" loading="lazy"></a></p>
+<p><em>그림 — TP-0101 (Fig. 1): 차체 기준의 안전(도달 가능 근거리 MISS)과 보수성(음의 지형 오탐)의 맞바꿈(왼쪽), L0 폐루프 성공률과 도달 시간(오른쪽). 출처: <code>results/tp0101_unknown_near</code></em></p>
+<h4>무엇을 바꿨나</h4>
+<p><code>TravMapBuilder.build(..., robot_xy=)</code>에 로봇 위치를 넘기면, 몸체(0.35 m)부터 <code>unknown_near_m</code>까지의 고리 안에서 σ가 1인(못 본) 칸의 cost를
+최소 <code>unknown_near_cost</code>(기본 1.0)로 올린다. 몸체 안쪽을 빼는 것은 로봇이 자기 발밑을 못 봐도 치명 칸 위에 서 있지 않게 하려는 것이다.
+시뮬레이터는 <code>belief_map()</code>에서 현재 위치를 넘긴다. 실제 스택에서도 TravMap은 로봇 중심 지도라 위치를 안다.</p>
+<h4>결과</h4>
+<p><strong>차체 기준(A.13.6과 같은 방법, 시나리오 4개 × seed 0–2, 지상고 0.10 m).</strong></p>
+<table>
+<thead>
+<tr>
+<th>설정</th>
+<th>도달 가능 근거리 MISS</th>
+<th>과하게 막은 칸</th>
+<th>음의 지형 오탐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>L0 가림 + 상한 + 깊이 prior</td>
+<td>2,204</td>
+<td>741k</td>
+<td>25,708</td>
+</tr>
+<tr>
+<td>+ 미관측 1.0 m</td>
+<td>1,875</td>
+<td>742k</td>
+<td>25,793</td>
+</tr>
+<tr>
+<td>+ 미관측 1.5 m</td>
+<td><strong>0</strong></td>
+<td>742k</td>
+<td>26,204</td>
+</tr>
+<tr>
+<td>+ 미관측 2.0 m</td>
+<td>0</td>
+<td>744k</td>
+<td>27,052</td>
+</tr>
+<tr>
+<td>+ 미관측 cost 0.8(반경 무관)</td>
+<td>2,204</td>
+<td>741k</td>
+<td>25,708</td>
+</tr>
+<tr>
+<td>L1 + 상한 + 깊이 prior</td>
+<td>6,048</td>
+<td>376k</td>
+<td>5,780</td>
+</tr>
+<tr>
+<td>L1 + 미관측 1.5 m</td>
+<td><strong>4</strong></td>
+<td>460k</td>
+<td><strong>73,065</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>폐루프, L0 가림 + 상한 + 깊이 prior, 4 시나리오 × seed 0–9.</strong></p>
+<table>
+<thead>
+<tr>
+<th>설정</th>
+<th>guidance+mppi</th>
+<th>planner_d+mppi</th>
+<th>평균 도달 시간</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>옵션 끔</td>
+<td>40/40</td>
+<td>38/40</td>
+<td>16.4 / 16.7 s</td>
+</tr>
+<tr>
+<td>미관측 1.0 m</td>
+<td>40/40</td>
+<td>39/40</td>
+<td>16.4 / 16.7 s</td>
+</tr>
+<tr>
+<td>미관측 1.5 m</td>
+<td>40/40</td>
+<td><strong>40/40</strong></td>
+<td>16.4 / 16.8 s</td>
+</tr>
+</tbody>
+</table>
+<p>보행자 3명(seed 0–2)은 두 설정 모두 12/12, 충돌 0이다. planner_d+mppi의 보행자 최소 여유는 0.23 m에서 0.16 m로 줄었다.</p>
+<p><strong>폐루프, L1 + 상한 + 깊이 prior, guidance+mppi, seed 0–2.</strong> 둘 다 12/12이고 멈춤은 없다. 평균 도달 시간은 15.0 s에서 18.7 s로 늘었다.
+내려갈 수 있는 0.07 m 턱(<code>down_curb</code>)에서 13.3 s에서 19.0 s로 가장 크게 늘었다. 차체 기준의 오탐 13배가 폐루프에서는 멈춤이 아니라 느려짐으로 나타난다.</p>
+<details>
+<summary>자세히: 해석과 한계</summary>
+<ul>
+<li><strong>planner_d의 38 → 40은 작은 차이로 읽는다.</strong> 옵션을 끈 쪽의 실패 둘은 모두 치명 셀이 아니라 60 s 시간 초과(curb_ramp s5, bumps_potholes s6)였다.
+  curb_ramp s5는 못 본 칸과 직접 관련이 없어 보이고, 경로가 조금 바뀐 효과가 섞였을 수 있다. 확실히 말할 수 있는 것은 퇴행이 없다는 것이다.</li>
+<li><strong>L0에서 공짜인 이유.</strong> L0 가림에서 로봇 근처의 못 본 칸은 대개 포트홀 바닥이고, 깊이 prior가 이미 가장자리를 치명으로 둘러싸 두었다.
+  치명으로 바꿔도 경로가 거의 달라지지 않는다. Playground(L0 가림)에서도 주행이 같았다.</li>
+<li><strong>L1에서 비싼 이유.</strong> LiDAR 링 사이와 근거리 사각(숙인 LiDAR의 가장 낮은 링 안쪽)이 비어, 평평한 길도 한동안 못 본 칸으로 남는다.
+  그래서 L1에 이 옵션을 쓰려면 먼저 근거리 덮개를 늘려야 한다(TP-0065 전면 스테레오, TP-0054 분산).</li>
+<li>보행자 최소 여유가 준 것은 보행자 3명 × seed 3개의 한 번 측정이다. DAgger 뒤 여유 감소(TP-0079)와 함께 본다.</li>
+</ul>
+</details></div><div class="card md subpanel" id="sub-research-d1-3"><h3>A.10 Traversability 추정: 사람 라벨 없이, 불확실성과 함께</h3>
 <p><mark><strong>traversability 추정은 "이 땅을 이 로봇이 지나갈 수 있는가"를 비용으로 바꾸는 일이다.</strong></mark> travplan은 지금 기하
 특징(경사·턱·거칠기)으로 비용을 계산하고, TP-0010에서 이를 로봇이 몸으로 느낀 경험으로 학습하는 TravNet으로 바꾸려 한다.
 이 절은 같은 문제를 먼저 푼 오프로드 연구들을 정리한다. A.10.1과 A.10.2는 분야를 바꾼 마일스톤과 2026년 최신 연구다.

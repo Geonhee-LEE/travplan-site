@@ -1,14 +1,25 @@
 {
- "generated": "2026-10-01 05:26",
+ "generated": "2026-10-01 06:22",
  "repo": "Geonhee-LEE/travplan",
  "items": {
+  "97": {
+   "kind": "pr",
+   "state": "merged",
+   "title": "Playground: 높이·elevation mapping·traversability 층, L1 간이 인식, 차체 기준, 근거리 미관측",
+   "url": "https://github.com/Geonhee-LEE/travplan/pull/97",
+   "branch": "feat/playground-layers",
+   "closed_at": "2026-09-30",
+   "issues": [
+    96
+   ]
+  },
   "96": {
    "kind": "issue",
-   "state": "open",
+   "state": "closed",
    "title": "Playground: 높이 지도·elevation mapping·traversability 층과 L1 간이 인식",
    "url": "https://github.com/Geonhee-LEE/travplan/issues/96",
    "branch": "",
-   "closed_at": ""
+   "closed_at": "2026-09-30"
   },
   "95": {
    "kind": "pr",

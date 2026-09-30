@@ -49,6 +49,10 @@
   "tp0100_belief_chassis": {
    "caption": "belief TravMap 대 차체 기하 기준. MISS의 99% 이상이 못 본 칸이고, 그림자 상한·깊이 prior는 도달 가능한 근거리 MISS를 줄이지 않는다(2,206 → 2,204). 센서 0.8 m는 3.4배 줄이고 L1은 2.8배 나쁘다",
    "results": "results/tp0100_belief_chassis"
+  },
+  "tp0101_unknown_near": {
+   "caption": "로봇 둘레 1.5 m 못 본 칸을 치명으로: L0에서 도달 가능 근거리 MISS 2,204 → 0, 폐루프 성공·시간 그대로. L1에서는 MISS 6,048 → 4 대신 음의 지형 오탐 13배",
+   "results": "results/tp0101_unknown_near"
   }
  },
  "tp": {
@@ -110,6 +114,7 @@
   ]
  },
  "featured": [
+  "tp0101_unknown_near",
   "tp0100_belief_chassis",
   "tp0082_estimators",
   "ev_tp0073_levels",
