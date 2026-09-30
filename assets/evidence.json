@@ -41,6 +41,10 @@
   "ev_tp0073_levels": {
    "caption": "planner_d+mppi 성공 수: 벤치마크 레벨 3이 11/12 → 12/12, curb_ramp 레벨 3 seed 0–9는 7/10 → 8/10",
    "results": "results/tp0073_levels"
+  },
+  "tp0082_estimators": {
+   "caption": "섀시 기하 기준(추정기와 독립)으로 잰 추정기 비교. emap의 RSL 발디딤 필터는 배포 운용점(gate 0.15)에서 차체가 못 들어가는 칸 4,425개를 주행 가능이라 부르고, 거의 전부 slope_crossfall 경사다. 기하·TravNet은 0",
+   "results": "results/p2-estimators.tsv"
   }
  },
  "tp": {
@@ -99,6 +103,7 @@
   ]
  },
  "featured": [
+  "tp0082_estimators",
   "ev_tp0073_levels",
   "ev_benchmark_progress",
   "ev_tp0047_potholes",

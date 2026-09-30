@@ -1,7 +1,120 @@
 {
- "generated": "2026-09-30 18:29",
+ "generated": "2026-09-30 21:51",
  "repo": "Geonhee-LEE/travplan",
  "items": {
+  "90": {
+   "kind": "issue",
+   "state": "open",
+   "title": "리서치: 배경·수식(§0) 14개 절 확장과 보행 로봇 탭 사실 정정",
+   "url": "https://github.com/Geonhee-LEE/travplan/issues/90",
+   "branch": "",
+   "closed_at": ""
+  },
+  "89": {
+   "kind": "issue",
+   "state": "open",
+   "title": "학습 traversability 필터 기준선 평가 (TP-0082)",
+   "url": "https://github.com/Geonhee-LEE/travplan/issues/89",
+   "branch": "",
+   "closed_at": ""
+  },
+  "88": {
+   "kind": "pr",
+   "state": "merged",
+   "title": "사이트 저장소 README와 publish-site checkout@v7",
+   "url": "https://github.com/Geonhee-LEE/travplan/pull/88",
+   "branch": "chore/site-readme",
+   "closed_at": "2026-09-30",
+   "issues": [
+    85
+   ]
+  },
+  "87": {
+   "kind": "pr",
+   "state": "merged",
+   "title": "공개 사이트를 전용 저장소 travplan-site로: docs/ 자동 동기화",
+   "url": "https://github.com/Geonhee-LEE/travplan/pull/87",
+   "branch": "feat/site-repo",
+   "closed_at": "2026-09-30",
+   "issues": [
+    85
+   ]
+  },
+  "86": {
+   "kind": "pr",
+   "state": "merged",
+   "title": "GitHub Pages 공개: 첫 화면, Playground 문서·검사, 사이트용 링크",
+   "url": "https://github.com/Geonhee-LEE/travplan/pull/86",
+   "branch": "feat/github-pages",
+   "closed_at": "2026-09-30",
+   "issues": [
+    85
+   ]
+  },
+  "85": {
+   "kind": "issue",
+   "state": "closed",
+   "title": "GitHub Pages로 대시보드·Playground 공개",
+   "url": "https://github.com/Geonhee-LEE/travplan/issues/85",
+   "branch": "",
+   "closed_at": "2026-09-30"
+  },
+  "84": {
+   "kind": "pr",
+   "state": "merged",
+   "title": "Playground와 대시보드 연동: 시뮬레이션 탭, TODO ▶ 시뮬레이션 링크, 해시 프리셋",
+   "url": "https://github.com/Geonhee-LEE/travplan/pull/84",
+   "branch": "feat/playground-dashboard",
+   "closed_at": "2026-09-30",
+   "issues": [
+    83
+   ]
+  },
+  "83": {
+   "kind": "issue",
+   "state": "closed",
+   "title": "Playground와 대시보드 연동: 시뮬레이션 탭, TODO 프리셋 링크, 되돌아가기 링크",
+   "url": "https://github.com/Geonhee-LEE/travplan/issues/83",
+   "branch": "",
+   "closed_at": "2026-09-30"
+  },
+  "82": {
+   "kind": "pr",
+   "state": "open",
+   "title": "리서치: 배경·수식(§0) 14개 절 확장 + 보행 로봇 탭 사실 정정 52건",
+   "url": "https://github.com/Geonhee-LEE/travplan/pull/82",
+   "branch": "docs/background-and-legged-factcheck",
+   "closed_at": "",
+   "issues": []
+  },
+  "81": {
+   "kind": "pr",
+   "state": "merged",
+   "title": "[auto] TP-0097: 벤더링 elevation_mapping에 학습 필터 가드 backport",
+   "url": "https://github.com/Geonhee-LEE/travplan/pull/81",
+   "branch": "p2/tp0097-filter-guard-backport",
+   "closed_at": "2026-09-30",
+   "issues": [
+    80
+   ]
+  },
+  "80": {
+   "kind": "issue",
+   "state": "open",
+   "title": "TP-0097: 벤더링 elevation_mapping에 학습 traversability 필터 가드 backport",
+   "url": "https://github.com/Geonhee-LEE/travplan/issues/80",
+   "branch": "",
+   "closed_at": ""
+  },
+  "79": {
+   "kind": "pr",
+   "state": "open",
+   "title": "TP-0082: 학습 traversability 필터 기준선 — 평가 기반의 순환을 찾고 독립 기준을 만들었다",
+   "url": "https://github.com/Geonhee-LEE/travplan/pull/79",
+   "branch": "p2/tp0082-rsl-filter-baseline",
+   "closed_at": "",
+   "issues": []
+  },
   "78": {
    "kind": "pr",
    "state": "merged",
@@ -157,11 +270,11 @@
   },
   "61": {
    "kind": "pr",
-   "state": "open",
+   "state": "merged",
    "title": "[auto] TP-0077 curb_ramp L3 잔여 실패 진단: 경사로 지나친 뒤 되돌아 찾기가 병목",
    "url": "https://github.com/Geonhee-LEE/travplan/pull/61",
    "branch": "p2/curb-ramp-l3-residual-diagnosis",
-   "closed_at": "",
+   "closed_at": "2026-09-30",
    "issues": [
     53
    ]
@@ -845,7 +958,9 @@
    61
   ],
   "TP-0082": [
-   63
+   63,
+   79,
+   89
   ],
   "TP-0083": [
    63
@@ -863,6 +978,10 @@
   ],
   "TP-0089": [
    67
+  ],
+  "TP-0097": [
+   80,
+   81
   ]
  }
 }
