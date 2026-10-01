@@ -189,8 +189,7 @@ L0는 5 m 원 안을 가림 없이 보고, 지연·슬립·조향 지연이 없�
 얕은 오목만 남는 탓이다. 화분 같은 양의 장애물은 실패를 만들지 않았다. 센서를 0.8 m 이상으로 올리면 실패가 1/10 수준으로 준다
 (R-F-005). 남은 위험은 음의 장애물 대응(TP-0044)으로 다룬다.
 
-스워브 모듈 모델은 ROBOTIS AI Worker `ffw_swerve_drive_controller`의 Python 이식본
-(`~/Representation-Aware-MPPI/aiworker-mj-lab/src/ffw_sh5_grasp/control/base.py`)을 참고한다. 파라미터는 배달로봇 값(TP-0035, 사용자 제공)을
+스워브 모듈 모델은 ROBOTIS AI Worker `ffw_swerve_drive_controller`의 Python 이식본(로컬 참고 사본)을 참고한다. 파라미터는 배달로봇 값(TP-0035, 사용자 제공)을
 쓴다. 그 전에는 AI Worker 값(3모듈, 조향 속도 한계 8 rad/s, 정렬 임계 0.1 rad)을 임시로 쓰고 결과에 그렇게 적는다.
 
 각 옵션은 켰을 때와 껐을 때의 스택별 성공률, 도달 시간, 충돌을 `results/`에 남긴다. Controller(MPPI)의 rollout 모델을 모듈 모델로 바꿀지는

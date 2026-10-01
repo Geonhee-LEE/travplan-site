@@ -1,23 +1,127 @@
 {
- "generated": "2026-10-01 06:58",
+ "generated": "2026-10-01 10:06",
  "repo": "Geonhee-LEE/travplan",
  "items": {
-  "99": {
+  "110": {
    "kind": "pr",
    "state": "open",
-   "title": "TP-0065: 전면 스테레오 깊이를 elevation mapping 두 번째 입력으로 (진행 중)",
-   "url": "https://github.com/Geonhee-LEE/travplan/pull/99",
-   "branch": "p2/tp0065-stereo-depth",
+   "title": "UX 개선 계획 등록(TP-0103–0116): taekyung.me 데모 참조, 공개 경로 정리",
+   "url": "https://github.com/Geonhee-LEE/travplan/pull/110",
+   "branch": "docs/ux-plan-taekyung",
+   "closed_at": "",
+   "issues": [
+    109
+   ]
+  },
+  "109": {
+   "kind": "issue",
+   "state": "open",
+   "title": "Playground·사이트 UX 개선 추적 (TP-0103–0116, taekyung.me 데모 참조)",
+   "url": "https://github.com/Geonhee-LEE/travplan/issues/109",
+   "branch": "",
+   "closed_at": ""
+  },
+  "108": {
+   "kind": "pr",
+   "state": "open",
+   "title": "TP-0093/0071/0068/0076: MPC 제약 구멍·보행자 반평면·GP 명령 수정, MPPI 확률 제약",
+   "url": "https://github.com/Geonhee-LEE/travplan/pull/108",
+   "branch": "p2/mpc-mppi-constraints",
    "closed_at": "",
    "issues": []
   },
+  "107": {
+   "kind": "pr",
+   "state": "open",
+   "title": "감사 정정 44건: 2026-09-30 작업 전수 검토 — 섀시 기준의 4배 오차 포함",
+   "url": "https://github.com/Geonhee-LEE/travplan/pull/107",
+   "branch": "fix/tp0082-chassis-audit",
+   "closed_at": "",
+   "issues": []
+  },
+  "106": {
+   "kind": "pr",
+   "state": "open",
+   "title": "Planner 문서 재편: 방법 5탭 + 현황 2탭으로 대분류를 하나로",
+   "url": "https://github.com/Geonhee-LEE/travplan/pull/106",
+   "branch": "docs/planner-tab-restructure",
+   "closed_at": "",
+   "issues": []
+  },
+  "105": {
+   "kind": "pr",
+   "state": "open",
+   "title": "TP-0098: elevation_mapping 비결정성의 원인 커널 둘 — 결정적 모드와, 아직 남은 것",
+   "url": "https://github.com/Geonhee-LEE/travplan/pull/105",
+   "branch": "p2/tp0098-emap-determinism",
+   "closed_at": "",
+   "issues": []
+  },
+  "104": {
+   "kind": "pr",
+   "state": "open",
+   "title": "Playground: 기본 보기를 3D로",
+   "url": "https://github.com/Geonhee-LEE/travplan/pull/104",
+   "branch": "feat/playground-3d-default",
+   "closed_at": "",
+   "issues": []
+  },
+  "103": {
+   "kind": "pr",
+   "state": "merged",
+   "title": "TP-0102: Playground 사족 보행·바퀴 사족 — 몸체 흔들림 아래 elevation mapping(자세 보상 켬/끔)",
+   "url": "https://github.com/Geonhee-LEE/travplan/pull/103",
+   "branch": "feat/playground-robots",
+   "closed_at": "2026-09-30",
+   "issues": [
+    102
+   ]
+  },
+  "102": {
+   "kind": "issue",
+   "state": "closed",
+   "title": "Playground: 사족 보행·바퀴 달린 사족 로봇과 몸체 움직임에 따른 elevation mapping 검증",
+   "url": "https://github.com/Geonhee-LEE/travplan/issues/102",
+   "branch": "",
+   "closed_at": "2026-09-30"
+  },
+  "101": {
+   "kind": "pr",
+   "state": "merged",
+   "title": "TP-0095: 깊이 prior 후보에 ohm·CMU 잡음 필터 — 내림 턱 오탐 제거, 포트홀 재현율 0.86",
+   "url": "https://github.com/Geonhee-LEE/travplan/pull/101",
+   "branch": "p2/tp0095-ohm-cmu-rules",
+   "closed_at": "2026-09-30",
+   "issues": [
+    100
+   ]
+  },
+  "100": {
+   "kind": "issue",
+   "state": "closed",
+   "title": "그림자 판정: ohm·CMU 잡음 필터 측정 (TP-0095)",
+   "url": "https://github.com/Geonhee-LEE/travplan/issues/100",
+   "branch": "",
+   "closed_at": "2026-09-30"
+  },
+  "99": {
+   "kind": "pr",
+   "state": "merged",
+   "title": "TP-0065: 전면 스테레오를 elevation mapping 두 번째 입력으로 — 미관측 옵션의 L1 대가가 사라진다",
+   "url": "https://github.com/Geonhee-LEE/travplan/pull/99",
+   "branch": "p2/tp0065-stereo-depth",
+   "closed_at": "2026-09-30",
+   "issues": [
+    98
+   ]
+  },
   "98": {
    "kind": "issue",
-   "state": "open",
+   "state": "closed",
    "title": "전면 스테레오 깊이를 elevation mapping 두 번째 입력으로: LiDAR 근거리 사각 메우기 (TP-0065)",
    "url": "https://github.com/Geonhee-LEE/travplan/issues/98",
    "branch": "",
-   "closed_at": ""
+   "closed_at": "2026-09-30"
   },
   "97": {
    "kind": "pr",
@@ -1029,6 +1133,12 @@
    39,
    46
   ],
+  "TP-0068": [
+   108
+  ],
+  "TP-0071": [
+   108
+  ],
   "TP-0073": [
    44,
    45,
@@ -1040,7 +1150,8 @@
    54
   ],
   "TP-0076": [
-   55
+   55,
+   108
   ],
   "TP-0077": [
    53,
@@ -1069,9 +1180,19 @@
   "TP-0089": [
    67
   ],
+  "TP-0093": [
+   108
+  ],
+  "TP-0095": [
+   100,
+   101
+  ],
   "TP-0097": [
    80,
    81
+  ],
+  "TP-0098": [
+   105
   ],
   "TP-0100": [
    92,
@@ -1080,6 +1201,65 @@
   "TP-0101": [
    94,
    95
+  ],
+  "TP-0102": [
+   103
+  ],
+  "TP-0103": [
+   109,
+   110
+  ],
+  "TP-0104": [
+   109,
+   110
+  ],
+  "TP-0105": [
+   109,
+   110
+  ],
+  "TP-0106": [
+   109,
+   110
+  ],
+  "TP-0107": [
+   109,
+   110
+  ],
+  "TP-0108": [
+   109,
+   110
+  ],
+  "TP-0109": [
+   109,
+   110
+  ],
+  "TP-0110": [
+   109,
+   110
+  ],
+  "TP-0111": [
+   109,
+   110
+  ],
+  "TP-0112": [
+   109,
+   110
+  ],
+  "TP-0113": [
+   109,
+   110
+  ],
+  "TP-0114": [
+   109,
+   110
+  ],
+  "TP-0115": [
+   109,
+   110
+  ],
+  "TP-0116": [
+   109,
+   110
   ]
  }
 }
