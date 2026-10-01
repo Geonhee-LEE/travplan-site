@@ -9,7 +9,7 @@ import { ROBOTS } from "./robots.js";
 
 const $ = (id) => document.getElementById(id);
 const opts = defaultOptions();
-const view = { layer: "belief", tool: "goal", route: true, samples: true, points: true, exag: 2.0, mode: "2d", cursor: null, drag: null };
+const view = { layer: "belief", tool: "goal", route: true, samples: true, points: true, exag: 2.0, mode: "3d", cursor: null, drag: null };
 let world = new World(opts);
 world.terrainVersion = 0;
 let paused = false, speed = 1, acc = 0, last = performance.now(), logged = false;
@@ -106,7 +106,7 @@ function ensureChassis() {
 }
 segment("tool", view.tool, (v) => { view.tool = v; });
 segment("speed", 1, (v) => { speed = +v; });
-const syncView = segment("view", "2d", (v) => setMode(v));
+const syncView = segment("view", view.mode, (v) => setMode(v));
 
 const setLevel = slider("level", (v) => `L${v}`, (v) => { opts.level = v; newWorld(); });
 const setSeed = slider("seed", (v) => `${v}`, (v) => { opts.seed = v; newWorld(); });
@@ -387,4 +387,5 @@ const DASHBOARD_ARTIFACT = "https://claude.ai/artifact/QMumSBE3kBQMqAyu1oPxHG";
 
 syncPanel(); syncPlay();
 presetFromHash();
+setMode(view.mode);   // 기본은 3D. WebGL이 없거나 three.js를 못 받으면 2D로 돌아간다
 requestAnimationFrame(frame);
