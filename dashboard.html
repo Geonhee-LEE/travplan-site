@@ -196,9 +196,9 @@ footer { max-width: 1000px; margin: 0 auto; padding: 0 16px 40px; color: var(--m
   nav.subtabs button { min-height: 32px; }
 }
 </style>
-<header data-generated="2026-10-01 14:55 KST">
+<header data-generated="2026-10-01 15:02 KST">
   <h1>travplan 대시보드</h1>
-  <div class="meta" data-site-meta><a href="index.html">← travplan 홈</a> · 갱신 2026-10-01 14:55 KST</div>
+  <div class="meta" data-site-meta><a href="index.html">← travplan 홈</a> · 갱신 2026-10-01 15:02 KST</div>
 </header>
 <nav class="tabs" role="tablist" aria-label="대시보드 탭"><button role="tab" id="tabbtn-state" aria-controls="tab-state" aria-selected="true" tabindex="0" data-tab="state" class="active">진행 현황</button><button role="tab" id="tabbtn-todo" aria-controls="tab-todo" aria-selected="false" tabindex="-1" data-tab="todo">TODO</button><button role="tab" id="tabbtn-prd" aria-controls="tab-prd" aria-selected="false" tabindex="-1" data-tab="prd">PRD</button><button role="tab" id="tabbtn-arch" aria-controls="tab-arch" aria-selected="false" tabindex="-1" data-tab="arch">아키텍처 · 기능 설명</button><button role="tab" id="tabbtn-research" aria-controls="tab-research" aria-selected="false" tabindex="-1" data-tab="research">리서치</button><button role="tab" id="tabbtn-design" aria-controls="tab-design" aria-selected="false" tabindex="-1" data-tab="design">설계 · PoC</button><button role="tab" id="tabbtn-sim" aria-controls="tab-sim" aria-selected="false" tabindex="-1" data-tab="sim">시뮬레이션 ▶</button></nav>
 <main>
@@ -208,7 +208,7 @@ footer { max-width: 1000px; margin: 0 auto; padding: 0 16px 40px; color: var(--m
 <div class="kpi"><div class="kpi-label">진행 중·오늘</div><div class="kpi-val">1</div></div>
 <div class="kpi"><div class="kpi-label">사용자 실행 대기</div><div class="kpi-val">8</div></div>
 <div class="kpi"><div class="kpi-label">열린 PR</div><div class="kpi-val">4</div></div>
-<div class="kpi"><div class="kpi-label">최근 7일 merge</div><div class="kpi-val">72</div></div>
+<div class="kpi"><div class="kpi-label">최근 7일 merge</div><div class="kpi-val">74</div></div>
 </div>
 <div class="card md"><h2>현재 병목</h2><p><mark>Planner D는 레벨 3 연석에서 경사로를 지나친 뒤 되돌아가 찾지 못해 10번 중 2번 실패한다.</mark></p>
 <ul>
@@ -222,7 +222,8 @@ footer { max-width: 1000px; margin: 0 auto; padding: 0 16px 40px; color: var(--m
 </ul><figure class="ev wide"><a class="thumb" href="assets/figs/ev_tp0073_curb_l3.webp" title="원본 보기"><img alt="▶ curb_ramp 레벨 3 seed 0. 레벨 0 시연만 배운 Planner D는 60 s 시간 초과, 레벨 0–3 시연 + DAgger 뒤에는 24.9 s에 도달" src="assets/figs/ev_tp0073_curb_l3.webp" loading="lazy"></a><figcaption>▶ curb_ramp 레벨 3 seed 0. 레벨 0 시연만 배운 Planner D는 60 s 시간 초과, 레벨 0–3 시연 + DAgger 뒤에는 24.9 s에 도달 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span></figcaption></figure></div>
 <div class="card md"><h2>전체 진행</h2><p>travplan은 <strong>학습 Planner를 키우는 단계</strong>다. 레벨 0 지형에서는 학습 Planner(Planner D)가 비학습 기준선과 같은 성공률에 도달했다.
 남은 일은 어려운 지형과 실제 인식에서도 그 성공률을 지키는 것이다.</p>
-<p>2026-09-25부터 Planner는 학습 기반으로 개발하고, MPPI는 Planner의 경로·궤적을 따라가는 Controller로 둔다. MPPI 개선은 계획에서 뺐다.</p>
+<p>2026-09-25부터 Planner는 학습 기반으로 개발하고, MPPI는 Planner의 경로·궤적을 따라가는 Controller로 둔다.
+2026-09-30부터 Controller는 MPPI와 acados NMPC 두 갈래를 함께 개발하고 같은 벤치마크에서 비교한다.</p>
 <table>
 <thead>
 <tr>
@@ -240,10 +241,16 @@ footer { max-width: 1000px; margin: 0 auto; padding: 0 16px 40px; color: var(--m
 <td><a class="tp tp-done" href="#todo" data-tp="TP-0024" title="완료 · 기록에서 복원 · 이슈 #5(닫힘) · PR #12(merge됨)">✓ TP-0024</a></td>
 </tr>
 <tr>
+<td>Controller 두 갈래 (MPPI·acados NMPC)</td>
+<td>1단계 완료</td>
+<td>MPC 정적 38/40·보행자 23/24, GP 평균으로 plant 37 → 44/48, 제어 6.6 ms</td>
+<td><a class="tp tp-done" href="#todo" data-tp="TP-0070" title="완료 · 기록에서 복원">✓ TP-0070 ◉</a>, <a class="tp tp-done" href="#todo" data-tp="TP-0071" title="완료 · 기록에서 복원 · PR #108(열림)">✓ TP-0071 ◉</a>, <a class="tp tp-done" href="#todo" data-tp="TP-0093" title="완료 · acados MPC의 장애물 제약을 여유 비례 형태로: 단순 거리 제약은 매끄러워도 가까워질 때까지 활성화되지 않아 늦게 밟는다. CBF 형태(hdot &gt;= -alpha(h)... · PR #108(열림)">✓ TP-0093 ◉</a>, <a class="tp tp-done" href="#todo" data-tp="TP-0068" title="완료 · 기록에서 복원 · PR #108(열림)">✓ TP-0068</a>, <a class="tp tp-done" href="#todo" data-tp="TP-0076" title="완료 · MPPI에 확률 제약 붙이기: GP 잔차 분산을 비용이 아니라 chance constraint로 세워 치명 셀·보행자 여유를 조인다(Trivedi ICRA 2025식). NM... · PR #55(merge됨) · PR #108(열림)">✓ TP-0076 ◉</a></td>
+</tr>
+<tr>
 <td>Planner D (flow matching 궤적)</td>
 <td>완료</td>
 <td>레벨 0·3 모두 12/12(레벨 0–3 시연 + DAgger), 계획 4.1 ms</td>
-<td><a class="tp tp-done" href="#todo" data-tp="TP-0025" title="완료 · 기록에서 복원 · 이슈 #6(닫힘) · PR #13(merge됨)">✓ TP-0025 ◉</a>, <a class="tp tp-done" href="#todo" data-tp="TP-0073" title="완료 · TP-0050 후속: Planner D 시연을 레벨 무작위 지형(0–3)으로 다시 만들어 재학습 — curb_ramp@L3 치명 샘플 비율(실패 0.82–0.88)을 L0 수... · 이슈 #44(닫힘) · PR #45(merge됨) · PR #54(merge됨)">✓ TP-0073 ◉</a>, <a class="tp tp-done" href="#todo" data-tp="TP-0075" title="완료 · TP-0073 후속: DAgger(scripts/dagger_planner_d.py)도 레벨 무작위 지형에서 방문 상태를 모으게 한다 — 재학습 결과(PR #45 사용자 실행... · PR #45(merge됨) · 이슈 #52(닫힘) · PR #54(merge됨)">✓ TP-0075 ◉</a></td>
+<td><a class="tp tp-done" href="#todo" data-tp="TP-0025" title="완료 · 기록에서 복원 · 이슈 #6(닫힘) · PR #13(merge됨)">✓ TP-0025 ◉</a>, <a class="tp tp-done" href="#todo" data-tp="TP-0073" title="완료 · 기록에서 복원 · 이슈 #44(닫힘) · PR #45(merge됨) · PR #54(merge됨)">✓ TP-0073 ◉</a>, <a class="tp tp-done" href="#todo" data-tp="TP-0075" title="완료 · 기록에서 복원 · 이슈 #52(닫힘)">✓ TP-0075 ◉</a></td>
 </tr>
 <tr>
 <td>Joint Planner (ego + 보행자 공동 생성)</td>
@@ -449,7 +456,8 @@ cost가 <code>max_slope_rad</code> 0.26에서 포화해 구조적으로 지배�
 <li>L0 충실도: <a class="tp tp-backlog" href="#todo" data-tp="TP-0032" title="백로그 · L0 지연·자기 위치 잡음: 센서·계획·제어 지연과 위치 드리프트를 SimConfig 옵션으로 무작위화 (P2 R-F-010)">TP-0032</a>(지연·위치 잡음), <a class="tp tp-done" href="#todo" data-tp="TP-0033" title="완료 · 기록에서 복원">✓ TP-0033</a>(슬립), <a class="tp tp-done" href="#todo" data-tp="TP-0034" title="완료 · 기록에서 복원">✓ TP-0034</a>(스워브 모듈 모델), <a class="tp tp-backlog" href="#todo" data-tp="TP-0029" title="백로그 · TP-0027 후속: 미관측 영역 시나리오(센서 범위 밖 가림 지형) — sim/terrain.py에 추가하고 guidance vs planner_d 비교">TP-0029</a>(미관측 영역 시나리오).</li>
 <li>Isaac 카메라: <a class="tp tp-backlog" href="#todo" data-tp="TP-0019" title="백로그 · Isaac Sim 로봇(TP-0004 챠시스+LiDAR)에 RGB 카메라 prim + ROS2CameraHelper(OmniGraph) 퍼블리시 노드 추가 — TP-0011(... · 이슈 #3(닫힘) · PR #10(merge됨)">TP-0019</a>(카메라 prim), <a class="tp tp-backlog" href="#todo" data-tp="TP-0011" title="백로그 · 동적 장애물 탐지+추적 PoC — YOLO+ByteTrack, Isaac Sim 카메라 스트림 대상(실물 센서 없이 착수 가능) · 이슈 #3(닫힘) · PR #10(merge됨)">TP-0011</a>(YOLO + ByteTrack).</li>
 <li>선행 조건이 있는 것: <a class="tp tp-backlog" href="#todo" data-tp="TP-0028" title="백로그 · TP-0027 후속: PlanRequest에 동적 장애물 예측 전달(TP-0017 규칙 예외 결정 후) — Planner D가 보행자를 보고 시간 인덱스 궤적으로 비켜 가는지...">TP-0028</a>(<a class="tp tp-done" href="#todo" data-tp="TP-0017" title="완료 · 기록에서 복원">✓ TP-0017</a> 결정 뒤), <a class="tp tp-backlog" href="#todo" data-tp="TP-0040" title="백로그 · P1 인식 격차: L0 belief와 L1(RTX LiDAR → elevation mapping) TravMap의 비용 오차 분포 비교 (P1 R-F-010)">TP-0040</a>(<a class="tp tp-blocked" href="#todo" data-tp="TP-0005" title="사용자 실행 대기 · TP-0001 완료 후: 지형 USD 로드 + 스워브/LiDAR 로봇 배치 + ROS2 브릿지 폐루프 재현, P0 운동학 벤치마크와 성공률 비교">⏸ TP-0005</a> 뒤).</li>
-<li>Controller 트랙(2026-09-30 결정: MPPI와 NMPC를 함께 개발하고 같은 벤치마크에서 비교): <a class="tp tp-backlog" href="#todo" data-tp="TP-0068" title="백로그 · GP 잔차 동역학: 명목 모듈 모델(TP-0034) 위의 잔차를 GP로 학습 — DD·동축·비동축 비교, 입력은 명령·직전 twist·모듈각·지형, 지표는 RMSE 감소와 9... · PR #108(열림)">TP-0068</a>(GP 잔차), <a class="tp tp-backlog" href="#todo" data-tp="TP-0069" title="백로그 · GP σ로 보수성 조절(cautious): 예측 표준편차만큼 치명 셀 여유를 키워 Planner D rollout·선택기에 반영, 성공률 대 과보수 트레이드오프 측정 (Zei...">TP-0069</a>(GP σ 보수성), <a class="tp tp-backlog" href="#todo" data-tp="TP-0070" title="백로그 · acados NMPC Controller 추가: 상태 6(x,y,θ,vx,vy,ω)·입력 3(twist 변화율), 지평 40×0.1로 MPPI와 동일, 참조 추종 2모드(시간...">TP-0070 ◉</a>(acados NMPC), <a class="tp tp-backlog" href="#todo" data-tp="TP-0071" title="백로그 · 치명도를 비용에서 제약으로: 치명 셀 ESDF를 MPC hard 제약으로 + 보행자 타원 제약, 지형 비용에는 매끄러운 항(경사·거칠기)만 남김. GP 분산·튜브가 조일 대상... · PR #108(열림)">TP-0071 ◉</a>(치명 셀 제약), <a class="tp tp-backlog" href="#todo" data-tp="TP-0076" title="백로그 · MPPI에 확률 제약 붙이기: GP 잔차 분산을 비용이 아니라 chance constraint로 세워 치명 셀·보행자 여유를 조인다(Trivedi ICRA 2025식). NM... · PR #55(merge됨) · PR #108(열림)">TP-0076</a>(MPPI 확률 제약).</li>
+<li>Controller 트랙(2026-09-30 결정: MPPI와 NMPC를 함께 개발하고 같은 벤치마크에서 비교): <a class="tp tp-done" href="#todo" data-tp="TP-0070" title="완료 · 기록에서 복원">✓ TP-0070 ◉</a>·0071·0093·0068·0076은 완료(위 Key results).
+  다음은 <a class="tp tp-backlog" href="#todo" data-tp="TP-0069" title="백로그 · GP σ로 보수성 조절(cautious): 예측 표준편차만큼 치명 셀 여유를 키워 Planner D rollout·선택기에 반영, 성공률 대 과보수 트레이드오프 측정 (Zei...">TP-0069</a>(MPC 제약을 GP 분산으로 조이기)와 <a class="tp tp-backlog" href="#todo" data-tp="TP-0117" title="백로그 · TP-0093 후속: MPC 비용에 매끄러운 지형 항(M.1.1) — 지금 MPC 비용엔 지형이 없어 램프 모서리를 고정 여유로만 피한다. 여유 0–0.15 m 스윕에서 모서...">TP-0117</a>–0121(지형 비용·Planner 여유·확률 제약 0선·GP 평균 rollout·Planner D 조합).</li>
 <li>낮은 우선순위: <a class="tp tp-backlog" href="#todo" data-tp="TP-0041" title="백로그 · (조사·PoC) URBAN-SIM·UrbanVerse 장면 활용성: 에셋 라이선스, Isaac Sim 5.x 요구, RTX 5080 실행 (P2 R-F-011)">TP-0041</a>, <a class="tp tp-backlog" href="#todo" data-tp="TP-0042" title="백로그 · Isaac Lab 3.0 정식판(2026-10 말 목표) 뒤 kit-less 경로(Newton·OVPhysX)로 Planner D 학습 루프 이식 검토">TP-0042</a>, <a class="tp tp-backlog" href="#todo" data-tp="TP-0043" title="백로그 · sim-to-real 예측력 프로토콜 문서: 스택·실외 코스·지표·SRCC 판정 기준, 첫 주행 보정 기록 항목 (P2 R-F-012)">TP-0043</a>, <a class="tp tp-backlog" href="#todo" data-tp="TP-0007" title="백로그 · LiDAR 프로파일(Velodyne_VLS128 등) 조회가 &#x27;not found&#x27; 경고를 냄 — Isaac Sim 6.0에서 omni.sensors.nv.common 데이터 ...">TP-0007</a>, <a class="tp tp-backlog" href="#todo" data-tp="TP-0014" title="백로그 · (연구) CBF-QP/OcclusionCBF류 안전필터를 OSQP 등 오픈소스 QP로 대체 가능한지 조사 (Gurobi 상용 라이선스 회피)">TP-0014</a>.</li>
 </ul></div>
 <div class="card md"><h2>사용자 실행 대기</h2><table>
@@ -506,7 +514,51 @@ python scripts/diagnose_planner_d_level.py --levels 0 1 2 3 --seeds 0 1 2 3 4 5 
 python scripts/run_benchmark.py --stacks guidance+mppi planner_d+mppi --levels 0 1 2 3 \
     --seeds 0 1 2 3 4 5 6 7 8 9 --out results/tp0039_levels
 </code></pre></div>
-<div class="card md"><h2>주요 결과</h2><div class="ev-grid"><figure class="ev big"><a class="thumb" href="assets/figs/tp0102_robot_pose.webp" title="원본 보기"><img alt="사족 보행, 몸체에 붙은 LiDAR: 자세 보상 켬(왼쪽)은 높이 오차 1 cm대, 끔(가운데)·추정 잡음 1°(오른쪽)는 먼 링이 줄무늬로 틀려 거짓 치명이 앞을 막는다" src="assets/figs/tp0102_robot_pose.webp" loading="lazy"></a><figcaption>사족 보행, 몸체에 붙은 LiDAR: 자세 보상 켬(왼쪽)은 높이 오차 1 cm대, 끔(가운데)·추정 잡음 1°(오른쪽)는 먼 링이 줄무늬로 틀려 거짓 치명이 앞을 막는다 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0102" title="완료 · Playground 로봇 종류(스워브·사족 보행·바퀴 사족)와 몸체에 붙은 센서: 걸음새 흔들림 아래 elevation mapping 품질(자세 보상 켬/끔, 추정 잡음) 확... · PR #103(merge됨)">✓ TP-0102 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/tp0095_rules.webp" title="원본 보기"><img alt="깊이 prior 후보에 잡음 필터: ohm·CMU 모두 내림 턱 오탐(28.9 → 18.3칸)을 되돌리고, CMU(1,2)가 포트홀 재현율 0.86을 지킨다" src="assets/figs/tp0095_rules.webp" loading="lazy"></a><figcaption>깊이 prior 후보에 잡음 필터: ohm·CMU 모두 내림 턱 오탐(28.9 → 18.3칸)을 되돌리고, CMU(1,2)가 포트홀 재현율 0.86을 지킨다 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0095" title="완료 · TP-0085 후속: 남은 판정 규칙 둘 측정 — ohm virtualSurfaceFilterThreshold, CMU noDataBlockShrink/Expand. 기울기 ... · 이슈 #100(닫힘) · PR #101(merge됨)">✓ TP-0095 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/tp0065_stereo.webp" title="원본 보기"><img alt="전면 스테레오를 L1 두 번째 입력으로: 미관측 1.5 m와 함께 쓰면 L1 느려짐(+23% → +2%)과 음의 지형 오탐(-58%)이 사라지고 MISS는 거의 0을 지킨다" src="assets/figs/tp0065_stereo.webp" loading="lazy"></a><figcaption>전면 스테레오를 L1 두 번째 입력으로: 미관측 1.5 m와 함께 쓰면 L1 느려짐(+23% → +2%)과 음의 지형 오탐(-58%)이 사라지고 MISS는 거의 0을 지킨다 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0065" title="완료 · 기록에서 복원 · 이슈 #98(닫힘) · PR #99(merge됨)">✓ TP-0065 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/tp0101_unknown_near.webp" title="원본 보기"><img alt="로봇 둘레 1.5 m 못 본 칸을 치명으로: L0에서 도달 가능 근거리 MISS 2,204 → 0, 폐루프 성공·시간 그대로. L1에서는 MISS 6,048 → 4 대신 음의 지형 오탐 13배" src="assets/figs/tp0101_unknown_near.webp" loading="lazy"></a><figcaption>로봇 둘레 1.5 m 못 본 칸을 치명으로: L0에서 도달 가능 근거리 MISS 2,204 → 0, 폐루프 성공·시간 그대로. L1에서는 MISS 6,048 → 4 대신 음의 지형 오탐 13배 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0101" title="완료 · TP-0100 후속: 근거리 미관측 칸의 cost 재검토 — 정지 거리 안의 미관측 칸을 치명·높은 cost로 두면 도달 가능 근거리 MISS(L0 가림 2,206, L1 6... · 이슈 #94(닫힘) · PR #95(merge됨)">✓ TP-0101 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/tp0100_belief_chassis.webp" title="원본 보기"><img alt="belief TravMap 대 차체 기하 기준. MISS의 99% 이상이 못 본 칸이고, 그림자 상한·깊이 prior는 도달 가능한 근거리 MISS를 줄이지 않는다(2,206 → 2,204). 센서 0.8 m는 3.4배 줄이고 L1은 2.8배 나쁘다" src="assets/figs/tp0100_belief_chassis.webp" loading="lazy"></a><figcaption>belief TravMap 대 차체 기하 기준. MISS의 99% 이상이 못 본 칸이고, 그림자 상한·깊이 prior는 도달 가능한 근거리 MISS를 줄이지 않는다(2,206 → 2,204). 센서 0.8 m는 3.4배 줄이고 L1은 2.8배 나쁘다 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0101" title="완료 · TP-0100 후속: 근거리 미관측 칸의 cost 재검토 — 정지 거리 안의 미관측 칸을 치명·높은 cost로 두면 도달 가능 근거리 MISS(L0 가림 2,206, L1 6... · 이슈 #94(닫힘) · PR #95(merge됨)">✓ TP-0101 ◉</a> <a class="tp tp-done" href="#todo" data-tp="TP-0100" title="완료 · TP-0082 후속: 섀시 기하 기준(sim/ground_truth.py)을 L0/L1 인식 경로에도 적용 — 지금은 참 고도에서만 잰다. 가림·그림자 상한이 켜진 belie... · 이슈 #92(닫힘) · PR #93(merge됨)">✓ TP-0100 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/tp0082_estimators.webp" title="원본 보기"><img alt="섀시 기하 기준(추정기와 독립)으로 잰 추정기 비교. emap의 RSL 발디딤 필터는 배포 운용점(gate 0.15)에서 차체가 못 들어가는 칸 4,425개를 주행 가능이라 부르고, 거의 전부 slope_crossfall 경사다. 기하·TravNet은 0" src="assets/figs/tp0082_estimators.webp" loading="lazy"></a><figcaption>섀시 기하 기준(추정기와 독립)으로 잰 추정기 비교. emap의 RSL 발디딤 필터는 배포 운용점(gate 0.15)에서 차체가 못 들어가는 칸 4,425개를 주행 가능이라 부르고, 거의 전부 slope_crossfall 경사다. 기하·TravNet은 0 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0082" title="완료 · elevation_mapping_cupy의 학습 traversability 필터를 기준선으로 평가: 같은 패키지에 이미 들어 있다(인식 A.7.2). TP-0022 평가에 기... · PR #63(merge됨) · PR #79(merge됨) · 이슈 #89(닫힘)">✓ TP-0082 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/ev_tp0073_levels.webp" title="원본 보기"><img alt="planner_d+mppi 성공 수: 벤치마크 레벨 3이 11/12 → 12/12, curb_ramp 레벨 3 seed 0–9는 7/10 → 8/10" src="assets/figs/ev_tp0073_levels.webp" loading="lazy"></a><figcaption>planner_d+mppi 성공 수: 벤치마크 레벨 3이 11/12 → 12/12, curb_ramp 레벨 3 seed 0–9는 7/10 → 8/10 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0073" title="완료 · TP-0050 후속: Planner D 시연을 레벨 무작위 지형(0–3)으로 다시 만들어 재학습 — curb_ramp@L3 치명 샘플 비율(실패 0.82–0.88)을 L0 수... · 이슈 #44(닫힘) · PR #45(merge됨) · PR #54(merge됨)">✓ TP-0073 ◉</a> <a class="tp tp-done" href="#todo" data-tp="TP-0075" title="완료 · TP-0073 후속: DAgger(scripts/dagger_planner_d.py)도 레벨 무작위 지형에서 방문 상태를 모으게 한다 — 재학습 결과(PR #45 사용자 실행... · PR #45(merge됨) · 이슈 #52(닫힘) · PR #54(merge됨)">✓ TP-0075 ◉</a> <a class="tp tp-done" href="#todo" data-tp="TP-0077" title="완료 · TP-0073·TP-0075 후속: 레벨 0–3 시연 + 레벨 무작위 DAgger 뒤 남은 curb_ramp@L3 실패 진단. seed 0–9 중 8/10(s6·s7 시간 초... · 이슈 #53(닫힘) · PR #61(merge됨)">✓ TP-0077 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/ev_benchmark_progress.webp" title="원본 보기"><img alt="운동학 벤치마크 성공률 추이(4 시나리오 × 10 seed). 가림·L1 인식으로 떨어지고 그림자 상한·깊이 prior로 회복" src="assets/figs/ev_benchmark_progress.webp" loading="lazy"></a><figcaption>운동학 벤치마크 성공률 추이(4 시나리오 × 10 seed). 가림·L1 인식으로 떨어지고 그림자 상한·깊이 prior로 회복 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0027" title="완료 · 기록에서 복원 · 이슈 #7(닫힘) · 이슈 #8(닫힘) · PR #14(merge됨) · PR #15(merge됨)">✓ TP-0027 ◉</a> <a class="tp tp-done" href="#todo" data-tp="TP-0031" title="완료 · 기록에서 복원 · 이슈 #8(닫힘) · PR #15(merge됨)">✓ TP-0031 ◉</a> <a class="tp tp-done" href="#todo" data-tp="TP-0047" title="완료 · 기록에서 복원 · 이슈 #9(닫힘) · PR #16(merge됨)">✓ TP-0047 ◉</a> <a class="tp tp-done" href="#todo" data-tp="TP-0053" title="완료 · 기록에서 복원 · 이슈 #21(닫힘) · PR #26(merge됨)">✓ TP-0053 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/ev_tp0047_potholes.webp" title="원본 보기"><img alt="▶ 가림 켠 포트홀 주행. 상한만이면 치명 셀 진입, 깊이 prior를 켜면 돌아서 도달" src="assets/figs/ev_tp0047_potholes.webp" loading="lazy"></a><figcaption>▶ 가림 켠 포트홀 주행. 상한만이면 치명 셀 진입, 깊이 prior를 켜면 돌아서 도달 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0044" title="완료 · 기록에서 복원 · 이슈 #9(닫힘) · PR #16(merge됨)">✓ TP-0044 ◉</a> <a class="tp tp-done" href="#todo" data-tp="TP-0046" title="완료 · 기록에서 복원 · 이슈 #9(닫힘) · PR #16(merge됨)">✓ TP-0046 ◉</a> <a class="tp tp-done" href="#todo" data-tp="TP-0047" title="완료 · 기록에서 복원 · 이슈 #9(닫힘) · PR #16(merge됨)">✓ TP-0047 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/ev_tp0025_tracks.webp" title="원본 보기"><img alt="Planner D(주황)와 Guidance(파랑)의 경로, 레벨 0 seed 0. 둘 다 도달" src="assets/figs/ev_tp0025_tracks.webp" loading="lazy"></a><figcaption>Planner D(주황)와 Guidance(파랑)의 경로, 레벨 0 seed 0. 둘 다 도달 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0025" title="완료 · 기록에서 복원 · 이슈 #6(닫힘) · PR #13(merge됨)">✓ TP-0025 ◉</a></figcaption></figure></div><details><summary>수치 표: 인식 설정별 성공 수, 깊이 prior 오탐, 센서 높이, L1 지도 품질</summary><p>최신 수치만 모았다. 따로 적지 않으면 운동학 벤치마크, 4 시나리오 × 10 seed, 센서 높이 0.3 m다.</p>
+<div class="card md"><h2>주요 결과</h2><div class="ev-grid"><figure class="ev big"><a class="thumb" href="assets/figs/tp0102_robot_pose.webp" title="원본 보기"><img alt="사족 보행, 몸체에 붙은 LiDAR: 자세 보상 켬(왼쪽)은 높이 오차 1 cm대, 끔(가운데)·추정 잡음 1°(오른쪽)는 먼 링이 줄무늬로 틀려 거짓 치명이 앞을 막는다" src="assets/figs/tp0102_robot_pose.webp" loading="lazy"></a><figcaption>사족 보행, 몸체에 붙은 LiDAR: 자세 보상 켬(왼쪽)은 높이 오차 1 cm대, 끔(가운데)·추정 잡음 1°(오른쪽)는 먼 링이 줄무늬로 틀려 거짓 치명이 앞을 막는다 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0102" title="완료 · Playground 로봇 종류(스워브·사족 보행·바퀴 사족)와 몸체에 붙은 센서: 걸음새 흔들림 아래 elevation mapping 품질(자세 보상 켬/끔, 추정 잡음) 확... · PR #103(merge됨)">✓ TP-0102 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/tp0095_rules.webp" title="원본 보기"><img alt="깊이 prior 후보에 잡음 필터: ohm·CMU 모두 내림 턱 오탐(28.9 → 18.3칸)을 되돌리고, CMU(1,2)가 포트홀 재현율 0.86을 지킨다" src="assets/figs/tp0095_rules.webp" loading="lazy"></a><figcaption>깊이 prior 후보에 잡음 필터: ohm·CMU 모두 내림 턱 오탐(28.9 → 18.3칸)을 되돌리고, CMU(1,2)가 포트홀 재현율 0.86을 지킨다 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0095" title="완료 · TP-0085 후속: 남은 판정 규칙 둘 측정 — ohm virtualSurfaceFilterThreshold, CMU noDataBlockShrink/Expand. 기울기 ... · 이슈 #100(닫힘) · PR #101(merge됨)">✓ TP-0095 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/tp0065_stereo.webp" title="원본 보기"><img alt="전면 스테레오를 L1 두 번째 입력으로: 미관측 1.5 m와 함께 쓰면 L1 느려짐(+23% → +2%)과 음의 지형 오탐(-58%)이 사라지고 MISS는 거의 0을 지킨다" src="assets/figs/tp0065_stereo.webp" loading="lazy"></a><figcaption>전면 스테레오를 L1 두 번째 입력으로: 미관측 1.5 m와 함께 쓰면 L1 느려짐(+23% → +2%)과 음의 지형 오탐(-58%)이 사라지고 MISS는 거의 0을 지킨다 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0065" title="완료 · 기록에서 복원 · 이슈 #98(닫힘) · PR #99(merge됨)">✓ TP-0065 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/tp0101_unknown_near.webp" title="원본 보기"><img alt="로봇 둘레 1.5 m 못 본 칸을 치명으로: L0에서 도달 가능 근거리 MISS 2,204 → 0, 폐루프 성공·시간 그대로. L1에서는 MISS 6,048 → 4 대신 음의 지형 오탐 13배" src="assets/figs/tp0101_unknown_near.webp" loading="lazy"></a><figcaption>로봇 둘레 1.5 m 못 본 칸을 치명으로: L0에서 도달 가능 근거리 MISS 2,204 → 0, 폐루프 성공·시간 그대로. L1에서는 MISS 6,048 → 4 대신 음의 지형 오탐 13배 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0101" title="완료 · TP-0100 후속: 근거리 미관측 칸의 cost 재검토 — 정지 거리 안의 미관측 칸을 치명·높은 cost로 두면 도달 가능 근거리 MISS(L0 가림 2,206, L1 6... · 이슈 #94(닫힘) · PR #95(merge됨)">✓ TP-0101 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/tp0100_belief_chassis.webp" title="원본 보기"><img alt="belief TravMap 대 차체 기하 기준. MISS의 99% 이상이 못 본 칸이고, 그림자 상한·깊이 prior는 도달 가능한 근거리 MISS를 줄이지 않는다(2,206 → 2,204). 센서 0.8 m는 3.4배 줄이고 L1은 2.8배 나쁘다" src="assets/figs/tp0100_belief_chassis.webp" loading="lazy"></a><figcaption>belief TravMap 대 차체 기하 기준. MISS의 99% 이상이 못 본 칸이고, 그림자 상한·깊이 prior는 도달 가능한 근거리 MISS를 줄이지 않는다(2,206 → 2,204). 센서 0.8 m는 3.4배 줄이고 L1은 2.8배 나쁘다 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0101" title="완료 · TP-0100 후속: 근거리 미관측 칸의 cost 재검토 — 정지 거리 안의 미관측 칸을 치명·높은 cost로 두면 도달 가능 근거리 MISS(L0 가림 2,206, L1 6... · 이슈 #94(닫힘) · PR #95(merge됨)">✓ TP-0101 ◉</a> <a class="tp tp-done" href="#todo" data-tp="TP-0100" title="완료 · TP-0082 후속: 섀시 기하 기준(sim/ground_truth.py)을 L0/L1 인식 경로에도 적용 — 지금은 참 고도에서만 잰다. 가림·그림자 상한이 켜진 belie... · 이슈 #92(닫힘) · PR #93(merge됨)">✓ TP-0100 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/tp0082_estimators.webp" title="원본 보기"><img alt="섀시 기하 기준(추정기와 독립)으로 잰 추정기 비교. emap의 RSL 발디딤 필터는 배포 운용점(gate 0.15)에서 차체가 못 들어가는 칸 4,425개를 주행 가능이라 부르고, 거의 전부 slope_crossfall 경사다. 기하·TravNet은 0" src="assets/figs/tp0082_estimators.webp" loading="lazy"></a><figcaption>섀시 기하 기준(추정기와 독립)으로 잰 추정기 비교. emap의 RSL 발디딤 필터는 배포 운용점(gate 0.15)에서 차체가 못 들어가는 칸 4,425개를 주행 가능이라 부르고, 거의 전부 slope_crossfall 경사다. 기하·TravNet은 0 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0082" title="완료 · elevation_mapping_cupy의 학습 traversability 필터를 기준선으로 평가: 같은 패키지에 이미 들어 있다(인식 A.7.2). TP-0022 평가에 기... · PR #63(merge됨) · PR #79(merge됨) · 이슈 #89(닫힘)">✓ TP-0082 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/ev_tp0073_levels.webp" title="원본 보기"><img alt="planner_d+mppi 성공 수: 벤치마크 레벨 3이 11/12 → 12/12, curb_ramp 레벨 3 seed 0–9는 7/10 → 8/10" src="assets/figs/ev_tp0073_levels.webp" loading="lazy"></a><figcaption>planner_d+mppi 성공 수: 벤치마크 레벨 3이 11/12 → 12/12, curb_ramp 레벨 3 seed 0–9는 7/10 → 8/10 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0073" title="완료 · 기록에서 복원 · 이슈 #44(닫힘) · PR #45(merge됨) · PR #54(merge됨)">✓ TP-0073 ◉</a> <a class="tp tp-done" href="#todo" data-tp="TP-0075" title="완료 · 기록에서 복원 · 이슈 #52(닫힘)">✓ TP-0075 ◉</a> <a class="tp tp-done" href="#todo" data-tp="TP-0077" title="완료 · TP-0073·TP-0075 후속: 레벨 0–3 시연 + 레벨 무작위 DAgger 뒤 남은 curb_ramp@L3 실패 진단. seed 0–9 중 8/10(s6·s7 시간 초... · 이슈 #53(닫힘) · PR #61(merge됨)">✓ TP-0077 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/ev_benchmark_progress.webp" title="원본 보기"><img alt="운동학 벤치마크 성공률 추이(4 시나리오 × 10 seed). 가림·L1 인식으로 떨어지고 그림자 상한·깊이 prior로 회복" src="assets/figs/ev_benchmark_progress.webp" loading="lazy"></a><figcaption>운동학 벤치마크 성공률 추이(4 시나리오 × 10 seed). 가림·L1 인식으로 떨어지고 그림자 상한·깊이 prior로 회복 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0027" title="완료 · 기록에서 복원 · 이슈 #7(닫힘) · 이슈 #8(닫힘) · PR #14(merge됨) · PR #15(merge됨)">✓ TP-0027 ◉</a> <a class="tp tp-done" href="#todo" data-tp="TP-0031" title="완료 · 기록에서 복원 · 이슈 #8(닫힘) · PR #15(merge됨)">✓ TP-0031 ◉</a> <a class="tp tp-done" href="#todo" data-tp="TP-0047" title="완료 · 기록에서 복원 · 이슈 #9(닫힘) · PR #16(merge됨)">✓ TP-0047 ◉</a> <a class="tp tp-done" href="#todo" data-tp="TP-0053" title="완료 · 기록에서 복원 · 이슈 #21(닫힘) · PR #26(merge됨)">✓ TP-0053 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/ev_tp0047_potholes.webp" title="원본 보기"><img alt="▶ 가림 켠 포트홀 주행. 상한만이면 치명 셀 진입, 깊이 prior를 켜면 돌아서 도달" src="assets/figs/ev_tp0047_potholes.webp" loading="lazy"></a><figcaption>▶ 가림 켠 포트홀 주행. 상한만이면 치명 셀 진입, 깊이 prior를 켜면 돌아서 도달 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0044" title="완료 · 기록에서 복원 · 이슈 #9(닫힘) · PR #16(merge됨)">✓ TP-0044 ◉</a> <a class="tp tp-done" href="#todo" data-tp="TP-0046" title="완료 · 기록에서 복원 · 이슈 #9(닫힘) · PR #16(merge됨)">✓ TP-0046 ◉</a> <a class="tp tp-done" href="#todo" data-tp="TP-0047" title="완료 · 기록에서 복원 · 이슈 #9(닫힘) · PR #16(merge됨)">✓ TP-0047 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/ev_tp0025_tracks.webp" title="원본 보기"><img alt="Planner D(주황)와 Guidance(파랑)의 경로, 레벨 0 seed 0. 둘 다 도달" src="assets/figs/ev_tp0025_tracks.webp" loading="lazy"></a><figcaption>Planner D(주황)와 Guidance(파랑)의 경로, 레벨 0 seed 0. 둘 다 도달 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0025" title="완료 · 기록에서 복원 · 이슈 #6(닫힘) · PR #13(merge됨)">✓ TP-0025 ◉</a></figcaption></figure></div><details><summary>수치 표: 인식 설정별 성공 수, 깊이 prior 오탐, 센서 높이, L1 지도 품질</summary><p>최신 수치만 모았다. 따로 적지 않으면 운동학 벤치마크, 4 시나리오 × 10 seed, 센서 높이 0.3 m다.</p>
+<p><strong>Controller 두 갈래(<a class="tp tp-done" href="#todo" data-tp="TP-0093" title="완료 · acados MPC의 장애물 제약을 여유 비례 형태로: 단순 거리 제약은 매끄러워도 가까워질 때까지 활성화되지 않아 늦게 밟는다. CBF 형태(hdot &gt;= -alpha(h)... · PR #108(열림)">✓ TP-0093 ◉</a>·0071·0068·0076).</strong> 같은 Guidance 경로를 MPPI와 acados MPC가 따라간다. <code>results/p2-mpc-mppi-constraints.tsv</code>, MPC 문서 M.3.10–M.3.13.</p>
+<table>
+<thead>
+<tr>
+<th>스택</th>
+<th>정적 (seed 0–9)</th>
+<th>보행자 3명 (seed 0–5)</th>
+<th>plant 지연·슬립 (seed 0–11)</th>
+<th>제어 시간</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>guidance+mppi</code></td>
+<td>40/40</td>
+<td>24/24, 충돌 0</td>
+<td>44/48</td>
+<td>13.0 ms</td>
+</tr>
+<tr>
+<td><code>guidance+mppi_ccgp</code> (확률 제약 + GP 튜브)</td>
+<td>—</td>
+<td>—</td>
+<td>42/48</td>
+<td>35.9 ms</td>
+</tr>
+<tr>
+<td><code>guidance+mpc</code></td>
+<td>38/40</td>
+<td>23/24, 충돌 0</td>
+<td>37/48</td>
+<td>6.6 ms</td>
+</tr>
+<tr>
+<td><code>guidance+mpc_gp</code> (GP 평균)</td>
+<td>—</td>
+<td>—</td>
+<td><strong>44/48</strong></td>
+<td>9.2 ms</td>
+</tr>
+</tbody>
+</table>
+<p>MPC가 남긴 정적 실패 둘은 Guidance가 고른 좁은 틈 앞의 <code>timeout</code>이다. 고정 여유 하나로는 램프 모서리와 좁은 틈을 함께 못 맞춘다(여유 0–0.15 m 스윕).
+GP 평균은 지연을 미리 갚아 MPC의 plant 성공을 7건 늘렸다. MPPI의 GP 튜브는 아직 이득이 없다. 남은 실패는 확률 제약의 0선이 램프 벽 옆에서 실패 경계보다 반 칸 느슨한 데서 온다.</p>
 <p><strong>몸체 흔들림과 elevation mapping(<a class="tp tp-done" href="#todo" data-tp="TP-0102" title="완료 · Playground 로봇 종류(스워브·사족 보행·바퀴 사족)와 몸체에 붙은 센서: 걸음새 흔들림 아래 elevation mapping 품질(자세 보상 켬/끔, 추정 잡음) 확... · PR #103(merge됨)">✓ TP-0102 ◉</a>, Playground).</strong> 센서를 몸체에 붙여 걸음새로 흔들어도, 매퍼가 몸체 자세를 알면 3 m 안 높이 RMSE가 0.8–1.6 cm이고
 사족 보행·바퀴 사족이 세 지형 모두 도달한다. 자세를 모르면 사족 보행은 0/3이다. 스치듯 닿은 레이의 10–20 cm 이상치가 턱으로 읽혀 앞을 막는다.
 자세 추정 잡음은 사족에서 0.5°까지 견디고 1°부터 무너진다. 스워브도 몸체가 5° 들리면 LiDAR가 포트홀을 놓친다(bumps_potholes s4). 인식 문서 A.13.10.</p>
@@ -596,7 +648,7 @@ L1에서는 MISS 6,048 → 4지만 음의 지형 오탐이 13배, 도달 시간�
 </tr>
 </tbody>
 </table>
-<p><strong>레벨 무작위 학습(<a class="tp tp-done" href="#todo" data-tp="TP-0073" title="완료 · TP-0050 후속: Planner D 시연을 레벨 무작위 지형(0–3)으로 다시 만들어 재학습 — curb_ramp@L3 치명 샘플 비율(실패 0.82–0.88)을 L0 수... · 이슈 #44(닫힘) · PR #45(merge됨) · PR #54(merge됨)">✓ TP-0073 ◉</a>·0075).</strong> planner_d+mppi만 바꿨다. 벤치마크는 4 시나리오 × seed 0–2이고, guidance+mppi는 레벨 0·3 모두 12/12다.
+<p><strong>레벨 무작위 학습(<a class="tp tp-done" href="#todo" data-tp="TP-0073" title="완료 · 기록에서 복원 · 이슈 #44(닫힘) · PR #45(merge됨) · PR #54(merge됨)">✓ TP-0073 ◉</a>·0075).</strong> planner_d+mppi만 바꿨다. 벤치마크는 4 시나리오 × seed 0–2이고, guidance+mppi는 레벨 0·3 모두 12/12다.
 DAgger 뒤 보행자 3명 조건도 12/12, 충돌 0이지만 최소 여유가 0.22 m에서 0.14 m로 줄었다.</p>
 <table>
 <thead>
@@ -785,7 +837,7 @@ LiDAR 링 사이가 비어 로봇 주변 3 m 안의 10–12%가 미관측으로 
 <td>필터 가드 backport 완료, merge 대기</td>
 </tr>
 </tbody>
-</table><h3>열린 PR</h3><ul class='prs'><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #108</span> TP-0093/0071/0068/0076: MPC 제약 구멍·보행자 반평면·GP 명령 수정, MPPI 확률 제약 <a class="tp tp-backlog" href="#todo" data-tp="TP-0068" title="백로그 · GP 잔차 동역학: 명목 모듈 모델(TP-0034) 위의 잔차를 GP로 학습 — DD·동축·비동축 비교, 입력은 명령·직전 twist·모듈각·지형, 지표는 RMSE 감소와 9... · PR #108(열림)">TP-0068</a> <a class="tp tp-backlog" href="#todo" data-tp="TP-0071" title="백로그 · 치명도를 비용에서 제약으로: 치명 셀 ESDF를 MPC hard 제약으로 + 보행자 타원 제약, 지형 비용에는 매끄러운 항(경사·거칠기)만 남김. GP 분산·튜브가 조일 대상... · PR #108(열림)">TP-0071 ◉</a> <a class="tp tp-backlog" href="#todo" data-tp="TP-0076" title="백로그 · MPPI에 확률 제약 붙이기: GP 잔차 분산을 비용이 아니라 chance constraint로 세워 치명 셀·보행자 여유를 조인다(Trivedi ICRA 2025식). NM... · PR #55(merge됨) · PR #108(열림)">TP-0076</a> <a class="tp tp-backlog" href="#todo" data-tp="TP-0093" title="백로그 · acados MPC의 장애물 제약을 여유 비례 형태로: 단순 거리 제약은 매끄러워도 가까워질 때까지 활성화되지 않아 늦게 밟는다. CBF 형태(hdot &gt;= -alpha(h)... · PR #108(열림)">TP-0093</a> </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #107</span> 감사 정정 44건: 2026-09-30 작업 전수 검토 — 섀시 기준의 4배 오차 포함  </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #106</span> Planner 문서 재편: 방법 5탭 + 현황 2탭으로 대분류를 하나로  </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #105</span> TP-0098: elevation_mapping 비결정성의 원인 커널 둘 — 결정적 모드와, 아직 남은 것 <a class="tp tp-backlog" href="#todo" data-tp="TP-0098" title="백로그 · TP-0097 후속: 벤더링 elevation_mapping 실행 간 비결정성 — 같은 점군 두 번에 upper_bound 623/3875칸이 최대 0.15 m 다르고, L1... · PR #105(열림)">TP-0098</a> </li></ul><h3>최근 merge된 PR</h3><ul class='prs'><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #114</span> TP-0103: 공개 사이트 위생 검사·공개 사본 후처리, 대시보드 MathJax 지연 조판, 폰 기본기·OG (UX W1) <a class="tp tp-done" href="#todo" data-tp="TP-0103" title="완료 · 사이트: 공개 위생 검사·공개 사본 후처리, 대시보드 MathJax 지연 조판(폰 load 25.6 s), 폰 기본기·OG (UX W1) · 이슈 #109(열림) · PR #110(merge됨) · PR #114(merge됨)">✓ TP-0103</a> <span class="date">2026-10-01</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #113</span> TP-0106: Playground 로봇이 본 지형 보기, 높이 과장 ×1·×2·×3, 3D에 MPPI 샘플·LiDAR 점·센서 원 (UX W4) <a class="tp tp-done" href="#todo" data-tp="TP-0106" title="완료 · Playground: 로봇이 본 지형만 그리는 보기, 높이 과장 표시, 3D에도 MPPI 샘플·LiDAR 점·센서 원 (UX W4) · 이슈 #109(열림) · PR #110(merge됨) · PR #113(merge됨)">✓ TP-0106</a> <span class="date">2026-10-01</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #112</span> TP-0105: Playground 설정 전체를 담는 링크 복사·주행 기록 재현, 시연 카드 (UX W3) <a class="tp tp-done" href="#todo" data-tp="TP-0105" title="완료 · Playground: 설정 전체를 담는 링크 복사·주행 기록 재현(metrics.csv 열), 프리셋 카드(볼 것·기대 결과) (UX W3) · 이슈 #109(열림) · PR #110(merge됨) · PR #112(merge됨)">✓ TP-0105</a> <span class="date">2026-10-01</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #111</span> TP-0104: 진행 원장 — TP별 기록 파일, TODO 이력에서 잘려 나간 TP 되살리기 (UX W2) <a class="tp tp-done" href="#todo" data-tp="TP-0104" title="완료 · 진행 원장: 잘려 나간 완료 TP 되살리기, TP별 기록 파일(전체 제목·상태 이력), 대시보드 점선 칩 0 (UX W2) · 이슈 #109(열림) · PR #110(merge됨) · PR #111(merge됨)">✓ TP-0104</a> <span class="date">2026-10-01</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #110</span> UX 개선 계획 등록(TP-0103–0116): taekyung.me 데모 참조, 공개 경로 정리 <a class="tp tp-done" href="#todo" data-tp="TP-0103" title="완료 · 사이트: 공개 위생 검사·공개 사본 후처리, 대시보드 MathJax 지연 조판(폰 load 25.6 s), 폰 기본기·OG (UX W1) · 이슈 #109(열림) · PR #110(merge됨) · PR #114(merge됨)">✓ TP-0103</a> <a class="tp tp-done" href="#todo" data-tp="TP-0104" title="완료 · 진행 원장: 잘려 나간 완료 TP 되살리기, TP별 기록 파일(전체 제목·상태 이력), 대시보드 점선 칩 0 (UX W2) · 이슈 #109(열림) · PR #110(merge됨) · PR #111(merge됨)">✓ TP-0104</a> <a class="tp tp-done" href="#todo" data-tp="TP-0105" title="완료 · Playground: 설정 전체를 담는 링크 복사·주행 기록 재현(metrics.csv 열), 프리셋 카드(볼 것·기대 결과) (UX W3) · 이슈 #109(열림) · PR #110(merge됨) · PR #112(merge됨)">✓ TP-0105</a> <a class="tp tp-done" href="#todo" data-tp="TP-0106" title="완료 · Playground: 로봇이 본 지형만 그리는 보기, 높이 과장 표시, 3D에도 MPPI 샘플·LiDAR 점·센서 원 (UX W4) · 이슈 #109(열림) · PR #110(merge됨) · PR #113(merge됨)">✓ TP-0106</a> <a class="tp tp-blocked" href="#todo" data-tp="TP-0107" title="사용자 실행 대기 · 사이트 결정: 생성물 CI 빌드(D1)·검색 노출(D2)·claude.ai 게시본 범위(D3)·공개된 로컬 경로 정리(D4) (UX D) · 이슈 #109(열림) · PR #110(merge됨)">⏸ TP-0107</a> <a class="tp tp-backlog" href="#todo" data-tp="TP-0108" title="백로그 · Playground: 실패 순간 되감기(결정적 재계산)·타임라인 지표 추이, 칸 cost·MPPI 판정 검사기 (UX W5) · 이슈 #109(열림) · PR #110(merge됨)">TP-0108</a> <a class="tp tp-backlog" href="#todo" data-tp="TP-0109" title="백로그 · Playground: 같은 seed 나란히 달리기(모듈 Worker·유령 로봇·비교 프리셋 5), seed sweep으로 README 성공률 재현 (UX W6) · 이슈 #109(열림) · PR #110(merge됨)">TP-0109</a> <a class="tp tp-blocked" href="#todo" data-tp="TP-0110" title="사용자 실행 대기 · 사이트: 생성물을 CI에서 빌드하고 커밋하지 않기(D1이 CI일 때), CLAUDE.md·cron 지시문 함께 고침 (UX W7) · 이슈 #109(열림) · PR #110(merge됨)">⏸ TP-0110</a> <a class="tp tp-backlog" href="#todo" data-tp="TP-0111" title="백로그 · 사이트: TP별 결과 페이지(결론·전후 그림·재현 버튼), 소식 타임라인(저널·merge PR, 더 보기·Atom) (UX W8) · 이슈 #109(열림) · PR #110(merge됨)">TP-0111</a> <a class="tp tp-backlog" href="#todo" data-tp="TP-0112" title="백로그 · 사이트: 숫자 먼저 결과 카드·시연 데모 갤러리·첫 화면 재구성(포스터 먼저, 보일 때 재생) (UX W9) · 이슈 #109(열림) · PR #110(merge됨)">TP-0112</a> <a class="tp tp-backlog" href="#todo" data-tp="TP-0113" title="백로그 · 사이트: 대시보드 절 주소(제목 id·해시 라우터·링크 복사), § 참조 자동 링크, 숨은 탭 찾기 (UX W10) · 이슈 #109(열림) · PR #110(merge됨)">TP-0113</a> <a class="tp tp-backlog" href="#todo" data-tp="TP-0114" title="백로그 · 사이트: 리서치 문서별 페이지 분할·절 검색(MiniSearch), claude.ai 대시보드 게시본 줄이기(D3) (UX W11) · 이슈 #109(열림) · PR #110(merge됨)">TP-0114</a> <a class="tp tp-backlog" href="#todo" data-tp="TP-0115" title="백로그 · Playground: 3D 카메라 모드·picking·입력 미니맵, 못 본 칸 위 가림 부피와 로봇 눈 카메라 (UX W12) · 이슈 #109(열림) · PR #110(merge됨)">TP-0115</a> <a class="tp tp-backlog" href="#todo" data-tp="TP-0116" title="백로그 · Playground: Python 궤적 가져오기, 저장소 지형과 planner_d+mppi 주행 재생, 같은 지형에서 JS 스택 나란히 (UX W13) · 이슈 #109(열림) · PR #110(merge됨)">TP-0116</a> <span class="date">2026-10-01</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #104</span> Playground: 기본 보기를 3D로  <span class="date">2026-10-01</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #103</span> TP-0102: Playground 사족 보행·바퀴 사족 — 몸체 흔들림 아래 elevation mapping(자세 보상 켬/끔) <a class="tp tp-done" href="#todo" data-tp="TP-0102" title="완료 · Playground 로봇 종류(스워브·사족 보행·바퀴 사족)와 몸체에 붙은 센서: 걸음새 흔들림 아래 elevation mapping 품질(자세 보상 켬/끔, 추정 잡음) 확... · PR #103(merge됨)">✓ TP-0102 ◉</a> <span class="date">2026-09-30</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #101</span> TP-0095: 깊이 prior 후보에 ohm·CMU 잡음 필터 — 내림 턱 오탐 제거, 포트홀 재현율 0.86 <a class="tp tp-done" href="#todo" data-tp="TP-0095" title="완료 · TP-0085 후속: 남은 판정 규칙 둘 측정 — ohm virtualSurfaceFilterThreshold, CMU noDataBlockShrink/Expand. 기울기 ... · 이슈 #100(닫힘) · PR #101(merge됨)">✓ TP-0095 ◉</a> <span class="date">2026-09-30</span></li></ul><p class="note">GitHub 인덱스 갱신: 2026-10-01 14:50 · <code>python3 automation/gh_index.py</code></p></div>
+</table><h3>열린 PR</h3><ul class='prs'><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #108</span> TP-0093/0071/0068/0076: MPC 제약 구멍·보행자 반평면·GP 명령 수정, MPPI 확률 제약 <a class="tp tp-done" href="#todo" data-tp="TP-0068" title="완료 · 기록에서 복원 · PR #108(열림)">✓ TP-0068</a> <a class="tp tp-done" href="#todo" data-tp="TP-0071" title="완료 · 기록에서 복원 · PR #108(열림)">✓ TP-0071 ◉</a> <a class="tp tp-done" href="#todo" data-tp="TP-0076" title="완료 · MPPI에 확률 제약 붙이기: GP 잔차 분산을 비용이 아니라 chance constraint로 세워 치명 셀·보행자 여유를 조인다(Trivedi ICRA 2025식). NM... · PR #55(merge됨) · PR #108(열림)">✓ TP-0076 ◉</a> <a class="tp tp-done" href="#todo" data-tp="TP-0093" title="완료 · acados MPC의 장애물 제약을 여유 비례 형태로: 단순 거리 제약은 매끄러워도 가까워질 때까지 활성화되지 않아 늦게 밟는다. CBF 형태(hdot &gt;= -alpha(h)... · PR #108(열림)">✓ TP-0093 ◉</a> </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #107</span> 감사 정정 44건: 2026-09-30 작업 전수 검토 — 섀시 기준의 4배 오차 포함  </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #106</span> Planner 문서 재편: 방법 5탭 + 현황 2탭으로 대분류를 하나로  </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #105</span> TP-0098: elevation_mapping 비결정성의 원인 커널 둘 — 결정적 모드와, 아직 남은 것 <a class="tp tp-backlog" href="#todo" data-tp="TP-0098" title="백로그 · TP-0097 후속: 벤더링 elevation_mapping 실행 간 비결정성 — 같은 점군 두 번에 upper_bound 623/3875칸이 최대 0.15 m 다르고, L1... · PR #105(열림)">TP-0098</a> </li></ul><h3>최근 merge된 PR</h3><ul class='prs'><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #116</span> journal: TP-0106 W4 툴바 조작 수 고침(22 → 23가지) <a class="tp tp-done" href="#todo" data-tp="TP-0106" title="완료 · Playground: 로봇이 본 지형만 그리는 보기, 높이 과장 표시, 3D에도 MPPI 샘플·LiDAR 점·센서 원 (UX W4) · 이슈 #109(열림) · PR #110(merge됨) · PR #113(merge됨) · PR #115(merge됨) · PR #116(merge됨)">✓ TP-0106</a> <span class="date">2026-10-01</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #115</span> UX P2 정리: TP-0103–0106 Done, 진행 기록·journal, gh_index가 추적 이슈의 TP 범위를 PR에 물려주지 않게 <a class="tp tp-done" href="#todo" data-tp="TP-0103" title="완료 · 사이트: 공개 위생 검사·공개 사본 후처리, 대시보드 MathJax 지연 조판(폰 load 25.6 s), 폰 기본기·OG (UX W1) · 이슈 #109(열림) · PR #110(merge됨) · PR #114(merge됨) · PR #115(merge됨)">✓ TP-0103</a> <a class="tp tp-done" href="#todo" data-tp="TP-0104" title="완료 · 진행 원장: 잘려 나간 완료 TP 되살리기, TP별 기록 파일(전체 제목·상태 이력), 대시보드 점선 칩 0 (UX W2) · 이슈 #109(열림) · PR #110(merge됨) · PR #111(merge됨) · PR #115(merge됨)">✓ TP-0104</a> <a class="tp tp-done" href="#todo" data-tp="TP-0105" title="완료 · Playground: 설정 전체를 담는 링크 복사·주행 기록 재현(metrics.csv 열), 프리셋 카드(볼 것·기대 결과) (UX W3) · 이슈 #109(열림) · PR #110(merge됨) · PR #112(merge됨) · PR #115(merge됨)">✓ TP-0105</a> <a class="tp tp-done" href="#todo" data-tp="TP-0106" title="완료 · Playground: 로봇이 본 지형만 그리는 보기, 높이 과장 표시, 3D에도 MPPI 샘플·LiDAR 점·센서 원 (UX W4) · 이슈 #109(열림) · PR #110(merge됨) · PR #113(merge됨) · PR #115(merge됨) · PR #116(merge됨)">✓ TP-0106</a> <span class="date">2026-10-01</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #114</span> TP-0103: 공개 사이트 위생 검사·공개 사본 후처리, 대시보드 MathJax 지연 조판, 폰 기본기·OG (UX W1) <a class="tp tp-done" href="#todo" data-tp="TP-0103" title="완료 · 사이트: 공개 위생 검사·공개 사본 후처리, 대시보드 MathJax 지연 조판(폰 load 25.6 s), 폰 기본기·OG (UX W1) · 이슈 #109(열림) · PR #110(merge됨) · PR #114(merge됨) · PR #115(merge됨)">✓ TP-0103</a> <span class="date">2026-10-01</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #113</span> TP-0106: Playground 로봇이 본 지형 보기, 높이 과장 ×1·×2·×3, 3D에 MPPI 샘플·LiDAR 점·센서 원 (UX W4) <a class="tp tp-done" href="#todo" data-tp="TP-0106" title="완료 · Playground: 로봇이 본 지형만 그리는 보기, 높이 과장 표시, 3D에도 MPPI 샘플·LiDAR 점·센서 원 (UX W4) · 이슈 #109(열림) · PR #110(merge됨) · PR #113(merge됨) · PR #115(merge됨) · PR #116(merge됨)">✓ TP-0106</a> <span class="date">2026-10-01</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #112</span> TP-0105: Playground 설정 전체를 담는 링크 복사·주행 기록 재현, 시연 카드 (UX W3) <a class="tp tp-done" href="#todo" data-tp="TP-0105" title="완료 · Playground: 설정 전체를 담는 링크 복사·주행 기록 재현(metrics.csv 열), 프리셋 카드(볼 것·기대 결과) (UX W3) · 이슈 #109(열림) · PR #110(merge됨) · PR #112(merge됨) · PR #115(merge됨)">✓ TP-0105</a> <span class="date">2026-10-01</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #111</span> TP-0104: 진행 원장 — TP별 기록 파일, TODO 이력에서 잘려 나간 TP 되살리기 (UX W2) <a class="tp tp-done" href="#todo" data-tp="TP-0104" title="완료 · 진행 원장: 잘려 나간 완료 TP 되살리기, TP별 기록 파일(전체 제목·상태 이력), 대시보드 점선 칩 0 (UX W2) · 이슈 #109(열림) · PR #110(merge됨) · PR #111(merge됨) · PR #115(merge됨)">✓ TP-0104</a> <span class="date">2026-10-01</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #110</span> UX 개선 계획 등록(TP-0103–0116): taekyung.me 데모 참조, 공개 경로 정리 <a class="tp tp-done" href="#todo" data-tp="TP-0103" title="완료 · 사이트: 공개 위생 검사·공개 사본 후처리, 대시보드 MathJax 지연 조판(폰 load 25.6 s), 폰 기본기·OG (UX W1) · 이슈 #109(열림) · PR #110(merge됨) · PR #114(merge됨) · PR #115(merge됨)">✓ TP-0103</a> <a class="tp tp-done" href="#todo" data-tp="TP-0104" title="완료 · 진행 원장: 잘려 나간 완료 TP 되살리기, TP별 기록 파일(전체 제목·상태 이력), 대시보드 점선 칩 0 (UX W2) · 이슈 #109(열림) · PR #110(merge됨) · PR #111(merge됨) · PR #115(merge됨)">✓ TP-0104</a> <a class="tp tp-done" href="#todo" data-tp="TP-0105" title="완료 · Playground: 설정 전체를 담는 링크 복사·주행 기록 재현(metrics.csv 열), 프리셋 카드(볼 것·기대 결과) (UX W3) · 이슈 #109(열림) · PR #110(merge됨) · PR #112(merge됨) · PR #115(merge됨)">✓ TP-0105</a> <a class="tp tp-done" href="#todo" data-tp="TP-0106" title="완료 · Playground: 로봇이 본 지형만 그리는 보기, 높이 과장 표시, 3D에도 MPPI 샘플·LiDAR 점·센서 원 (UX W4) · 이슈 #109(열림) · PR #110(merge됨) · PR #113(merge됨) · PR #115(merge됨) · PR #116(merge됨)">✓ TP-0106</a> <a class="tp tp-blocked" href="#todo" data-tp="TP-0107" title="사용자 실행 대기 · 사이트 결정: 생성물 CI 빌드(D1)·검색 노출(D2)·claude.ai 게시본 범위(D3)·공개된 로컬 경로 정리(D4) (UX D) · 이슈 #109(열림) · PR #110(merge됨)">⏸ TP-0107</a> <a class="tp tp-backlog" href="#todo" data-tp="TP-0108" title="백로그 · Playground: 실패 순간 되감기(결정적 재계산)·타임라인 지표 추이, 칸 cost·MPPI 판정 검사기 (UX W5) · 이슈 #109(열림) · PR #110(merge됨)">TP-0108</a> <a class="tp tp-backlog" href="#todo" data-tp="TP-0109" title="백로그 · Playground: 같은 seed 나란히 달리기(모듈 Worker·유령 로봇·비교 프리셋 5), seed sweep으로 README 성공률 재현 (UX W6) · 이슈 #109(열림) · PR #110(merge됨)">TP-0109</a> <a class="tp tp-blocked" href="#todo" data-tp="TP-0110" title="사용자 실행 대기 · 사이트: 생성물을 CI에서 빌드하고 커밋하지 않기(D1이 CI일 때), CLAUDE.md·cron 지시문 함께 고침 (UX W7) · 이슈 #109(열림) · PR #110(merge됨)">⏸ TP-0110</a> <a class="tp tp-backlog" href="#todo" data-tp="TP-0111" title="백로그 · 사이트: TP별 결과 페이지(결론·전후 그림·재현 버튼), 소식 타임라인(저널·merge PR, 더 보기·Atom) (UX W8) · 이슈 #109(열림) · PR #110(merge됨)">TP-0111</a> <a class="tp tp-backlog" href="#todo" data-tp="TP-0112" title="백로그 · 사이트: 숫자 먼저 결과 카드·시연 데모 갤러리·첫 화면 재구성(포스터 먼저, 보일 때 재생) (UX W9) · 이슈 #109(열림) · PR #110(merge됨)">TP-0112</a> <a class="tp tp-backlog" href="#todo" data-tp="TP-0113" title="백로그 · 사이트: 대시보드 절 주소(제목 id·해시 라우터·링크 복사), § 참조 자동 링크, 숨은 탭 찾기 (UX W10) · 이슈 #109(열림) · PR #110(merge됨)">TP-0113</a> <a class="tp tp-backlog" href="#todo" data-tp="TP-0114" title="백로그 · 사이트: 리서치 문서별 페이지 분할·절 검색(MiniSearch), claude.ai 대시보드 게시본 줄이기(D3) (UX W11) · 이슈 #109(열림) · PR #110(merge됨)">TP-0114</a> <a class="tp tp-backlog" href="#todo" data-tp="TP-0115" title="백로그 · Playground: 3D 카메라 모드·picking·입력 미니맵, 못 본 칸 위 가림 부피와 로봇 눈 카메라 (UX W12) · 이슈 #109(열림) · PR #110(merge됨)">TP-0115</a> <a class="tp tp-backlog" href="#todo" data-tp="TP-0116" title="백로그 · Playground: Python 궤적 가져오기, 저장소 지형과 planner_d+mppi 주행 재생, 같은 지형에서 JS 스택 나란히 (UX W13) · 이슈 #109(열림) · PR #110(merge됨)">TP-0116</a> <span class="date">2026-10-01</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #104</span> Playground: 기본 보기를 3D로  <span class="date">2026-10-01</span></li></ul><p class="note">GitHub 인덱스 갱신: 2026-10-01 15:02 · <code>python3 automation/gh_index.py</code></p></div>
 <div class="card md"><h2>작업 환경</h2><details><summary>체크포인트, 가상환경, 그림·인덱스 재생성</summary><ul>
 <li><strong>브랜치.</strong> 두 PC 모두 main에서 이어간다.</li>
 <li><strong>체크포인트.</strong> <code>checkpoints/</code>는 git에 없다. 릴리스에서 받는다.
@@ -850,11 +902,7 @@ LiDAR 링 사이가 비어 로봇 주변 3 m 안의 10–12%가 미관측으로 
 <li class="todo-item" id="todo-TP-0061"><label><input type="checkbox" disabled > <span class="id">TP-0061</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> 합성 센서 배치 완성: 카메라 다섯 대(전면 스테레오, 측면, 후면)의 시야와 거리 오차 모델을 운동학 시뮬에 추가, 사람 검출 범위 평가 (<a class="tp tp-done" href="#todo" data-tp="TP-0060" title="완료 · 기록에서 복원 · 이슈 #28(닫힘) · PR #29(merge됨) · 이슈 #30(닫힘) · PR #31(merge됨)">✓ TP-0060 ◉</a> D2·D3)</label></li>
 <li class="todo-item" id="todo-TP-0062"><label><input type="checkbox" disabled > <span class="id">TP-0062</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> 시야 인지 움직임: 관측 나이로 σ 키우기(D4), 시야 밖·오래된 칸으로 가는 움직임 비용 CostTerm(D5), 음의 장애물 탐지 거리 속도 제한(D6), 옆·뒤 이동 ...</label></li>
 <li class="todo-item" id="todo-TP-0063"><label><input type="checkbox" disabled > <span class="id">TP-0063</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> 단안 바닥 평면 거리의 IMU 자세 보정 + 센서별 측정 잡음(R∝Z²)으로 측면·후면 카메라 사람을 odom 추적기에 합치기 (<a class="tp tp-done" href="#todo" data-tp="TP-0060" title="완료 · 기록에서 복원 · 이슈 #28(닫힘) · PR #29(merge됨) · 이슈 #30(닫힘) · PR #31(merge됨)">✓ TP-0060 ◉</a> D3, <a class="tp tp-backlog" href="#todo" data-tp="TP-0056" title="백로그 · 합성 LiDAR에 보행자 원기둥을 넣고 LiDAR 클러스터 + odom 좌표 칼만 추적으로 DynamicObstacles 생성, 참값 대비 위치·속도 오차와 폐루프 비교 (리...">TP-0056</a>과 함께)</label></li>
-<li class="todo-item" id="todo-TP-0068"><label><input type="checkbox" disabled > <span class="id">TP-0068</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> GP 잔차 동역학: 명목 모듈 모델(<a class="tp tp-done" href="#todo" data-tp="TP-0034" title="완료 · 기록에서 복원">✓ TP-0034</a>) 위의 잔차를 GP로 학습 — DD·동축·비동축 비교, 입력은 명령·직전 twist·모듈각·지형, 지표는 RMSE 감소와 9... <span class=gh-row><span class="private-ref gh gh-open gh-pr" title="PR #108 · 열림 · TP-0093/0071/0068/0076: MPC 제약 구멍·보행자 반평면·GP 명령 수정, MPPI 확률 제약">⇄ #108</span></span></label></li>
 <li class="todo-item" id="todo-TP-0069"><label><input type="checkbox" disabled > <span class="id">TP-0069</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> GP σ로 보수성 조절(cautious): 예측 표준편차만큼 치명 셀 여유를 키워 Planner D rollout·선택기에 반영, 성공률 대 과보수 트레이드오프 측정 (Zei...</label></li>
-<li class="todo-item" id="todo-TP-0070"><label><input type="checkbox" disabled > <span class="id">TP-0070</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> acados NMPC Controller 추가: 상태 6(x,y,θ,vx,vy,ω)·입력 3(twist 변화율), 지평 40×0.1로 MPPI와 동일, 참조 추종 2모드(시간...</label><div class="ev-row"><figure class="ev"><a class="thumb" href="assets/figs/tp0070_curb_ramp.webp" title="원본 보기"><img alt="tp0070 curb ramp" src="assets/figs/tp0070_curb_ramp.webp" loading="lazy"></a><figcaption>tp0070 curb ramp</figcaption></figure><figure class="ev"><a class="thumb" href="assets/figs/tp0070_mpc_vs_mppi.webp" title="원본 보기"><img alt="tp0070 mpc vs mppi" src="assets/figs/tp0070_mpc_vs_mppi.webp" loading="lazy"></a><figcaption>tp0070 mpc vs mppi</figcaption></figure></div></li>
-<li class="todo-item" id="todo-TP-0071"><label><input type="checkbox" disabled > <span class="id">TP-0071</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> 치명도를 비용에서 제약으로: 치명 셀 ESDF를 MPC hard 제약으로 + 보행자 타원 제약, 지형 비용에는 매끄러운 항(경사·거칠기)만 남김. GP 분산·튜브가 조일 대상... <span class=gh-row><span class="private-ref gh gh-open gh-pr" title="PR #108 · 열림 · TP-0093/0071/0068/0076: MPC 제약 구멍·보행자 반평면·GP 명령 수정, MPPI 확률 제약">⇄ #108</span></span></label><div class="ev-row"><figure class="ev"><a class="thumb" href="assets/figs/tp0071_curb_ramp.webp" title="원본 보기"><img alt="tp0071 curb ramp" src="assets/figs/tp0071_curb_ramp.webp" loading="lazy"></a><figcaption>tp0071 curb ramp</figcaption></figure><figure class="ev"><a class="thumb" href="assets/figs/tp0071_mpc_vs_mppi.webp" title="원본 보기"><img alt="tp0071 mpc vs mppi" src="assets/figs/tp0071_mpc_vs_mppi.webp" loading="lazy"></a><figcaption>tp0071 mpc vs mppi</figcaption></figure></div></li>
-<li class="todo-item" id="todo-TP-0076"><label><input type="checkbox" disabled > <span class="id">TP-0076</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> MPPI에 확률 제약 붙이기: GP 잔차 분산을 비용이 아니라 chance constraint로 세워 치명 셀·보행자 여유를 조인다(Trivedi ICRA 2025식). NM... <span class=gh-row><span class="private-ref gh gh-merged gh-pr" title="PR #55 · merge됨 · chore: TP 번호 충돌 해소(TP-0076 중복) + gh_index 갱신">⇄ #55</span><span class="private-ref gh gh-open gh-pr" title="PR #108 · 열림 · TP-0093/0071/0068/0076: MPC 제약 구멍·보행자 반평면·GP 명령 수정, MPPI 확률 제약">⇄ #108</span></span></label></li>
 <li class="todo-item" id="todo-TP-0078"><label><input type="checkbox" disabled > <span class="id">TP-0078</span> <span class="badge prio">P1</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-done" href="#todo" data-tp="TP-0077" title="완료 · TP-0073·TP-0075 후속: 레벨 0–3 시연 + 레벨 무작위 DAgger 뒤 남은 curb_ramp@L3 실패 진단. seed 0–9 중 8/10(s6·s7 시간 초... · 이슈 #53(닫힘) · PR #61(merge됨)">✓ TP-0077 ◉</a> 후속: Planner D 경사로 재탐색 — 도로 위 계획의 치명 샘플이 0.9 이상 연속되면 Guidance 경로를 조건·폴백으로 써서 되돌아가 경사로를 찾게 ...</label></li>
 <li class="todo-item" id="todo-TP-0079"><label><input type="checkbox" disabled > <span class="id">TP-0079</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-done" href="#todo" data-tp="TP-0077" title="완료 · TP-0073·TP-0075 후속: 레벨 0–3 시연 + 레벨 무작위 DAgger 뒤 남은 curb_ramp@L3 실패 진단. seed 0–9 중 8/10(s6·s7 시간 초... · 이슈 #53(닫힘) · PR #61(merge됨)">✓ TP-0077 ◉</a> 후속: 레벨 무작위 DAgger 뒤 보행자 최소 여유 감소(0.22→0.14 m) 진단 — planner_d_L0123.pt 대 _dagger.pt, 보행자 3...</label></li>
 <li class="todo-item" id="todo-TP-0080"><label><input type="checkbox" disabled > <span class="id">TP-0080</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> MuJoCo plant: AntBot URDF를 MJCF로 옮기고(접촉 마찰·액추에이터·관성은 손으로 저작) SimConfig에서 고를 수 있는 plant로 연결. 운동학 p...</label></li>
@@ -863,7 +911,6 @@ LiDAR 링 사이가 비어 로봇 주변 3 m 안의 10–12%가 미관측으로 
 <li class="todo-item" id="todo-TP-0090"><label><input type="checkbox" disabled > <span class="id">TP-0090</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> 반응형 보행자 예측을 후보 궤적마다 다시 굴린다(SFM) — 등속 예측은 Trautman의 freezing robot 구조 그 자체다. social_force_window_p...</label></li>
 <li class="todo-item" id="todo-TP-0091"><label><input type="checkbox" disabled > <span class="id">TP-0091</span> <span class="badge prio">P3</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> 소셜 내비 지표 추가: Stalled time·PSC·jerk·Aggregated Time — 현재 게이트는 &#x27;얼어붙어서 안 부딪힌 것&#x27;과 &#x27;양보해서 안 부딪힌 것&#x27;을 구분 ...</label></li>
 <li class="todo-item" id="todo-TP-0092"><label><input type="checkbox" disabled > <span class="id">TP-0092</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> 속도 프로파일 단계 도입 검토(Autoware 구조): 회피 로직은 &#x27;호 길이 위치에 속도 상한&#x27;만 내고 저크 제한 QP 하나가 거꾸로 전파해 부드럽게 만든다 — 지금은 &#x27;비...</label></li>
-<li class="todo-item" id="todo-TP-0093"><label><input type="checkbox" disabled > <span class="id">TP-0093</span> <span class="badge prio">P3</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> acados MPC의 장애물 제약을 여유 비례 형태로: 단순 거리 제약은 매끄러워도 가까워질 때까지 활성화되지 않아 늦게 밟는다. CBF 형태(hdot &gt;= -alpha(h)... <span class=gh-row><span class="private-ref gh gh-open gh-pr" title="PR #108 · 열림 · TP-0093/0071/0068/0076: MPC 제약 구멍·보행자 반평면·GP 명령 수정, MPPI 확률 제약">⇄ #108</span></span></label></li>
 <li class="todo-item" id="todo-TP-0094"><label><input type="checkbox" disabled > <span class="id">TP-0094</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> 정면 3m 보행자 조우 시나리오 추가 + Freezing Rate 지표(Frozone 정의: 10초 넘게 정지·진동한 비율) — 현재 게이트는 얼어붙은 로봇을 네 지표 중 셋...</label></li>
 <li class="todo-item" id="todo-TP-0098"><label><input type="checkbox" disabled > <span class="id">TP-0098</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-done" href="#todo" data-tp="TP-0097" title="완료 · TP-0088 후속: core의 선택적 필터 가드를 벤더링 트리에 backport — weight_file이 비면 traversability_filter를 만들지 않는다. 지... · 이슈 #80(닫힘) · PR #81(merge됨)">✓ TP-0097</a> 후속: 벤더링 elevation_mapping 실행 간 비결정성 — 같은 점군 두 번에 upper_bound 623/3875칸이 최대 0.15 m 다르고, L1... <span class=gh-row><span class="private-ref gh gh-open gh-pr" title="PR #105 · 열림 · TP-0098: elevation_mapping 비결정성의 원인 커널 둘 — 결정적 모드와, 아직 남은 것">⇄ #105</span></span></label></li>
 <li class="todo-item" id="todo-TP-0099"><label><input type="checkbox" disabled > <span class="id">TP-0099</span> <span class="badge prio">P3</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> emap dilation tie-break 상류 버그 보고: custom_kernels.py:463이 거리가 아니라 부호 있는 dx+dy를 최소화해 frontier 채움 칸 ...</label></li>
@@ -875,19 +922,25 @@ LiDAR 링 사이가 비어 로봇 주변 3 m 안의 10–12%가 미관측으로 
 <li class="todo-item" id="todo-TP-0114"><label><input type="checkbox" disabled > <span class="id">TP-0114</span> <span class="badge prio">P3</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> 사이트: 리서치 문서별 페이지 분할·절 검색(MiniSearch), claude.ai 대시보드 게시본 줄이기(D3) (UX W11) <span class=gh-row><span class="private-ref gh gh-open gh-issue" title="이슈 #109 · 열림 · Playground·사이트 UX 개선 추적 (TP-0103–0116, taekyung.me 데모 참조)">● #109</span><span class="private-ref gh gh-merged gh-pr" title="PR #110 · merge됨 · UX 개선 계획 등록(TP-0103–0116): taekyung.me 데모 참조, 공개 경로 정리">⇄ #110</span></span></label></li>
 <li class="todo-item" id="todo-TP-0115"><label><input type="checkbox" disabled > <span class="id">TP-0115</span> <span class="badge prio">P3</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> Playground: 3D 카메라 모드·picking·입력 미니맵, 못 본 칸 위 가림 부피와 로봇 눈 카메라 (UX W12) <span class=gh-row><span class="private-ref gh gh-open gh-issue" title="이슈 #109 · 열림 · Playground·사이트 UX 개선 추적 (TP-0103–0116, taekyung.me 데모 참조)">● #109</span><span class="private-ref gh gh-merged gh-pr" title="PR #110 · merge됨 · UX 개선 계획 등록(TP-0103–0116): taekyung.me 데모 참조, 공개 경로 정리">⇄ #110</span></span></label></li>
 <li class="todo-item" id="todo-TP-0116"><label><input type="checkbox" disabled > <span class="id">TP-0116</span> <span class="badge prio">P3</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> Playground: Python 궤적 가져오기, 저장소 지형과 planner_d+mppi 주행 재생, 같은 지형에서 JS 스택 나란히 (UX W13) <span class=gh-row><span class="private-ref gh gh-open gh-issue" title="이슈 #109 · 열림 · Playground·사이트 UX 개선 추적 (TP-0103–0116, taekyung.me 데모 참조)">● #109</span><span class="private-ref gh gh-merged gh-pr" title="PR #110 · merge됨 · UX 개선 계획 등록(TP-0103–0116): taekyung.me 데모 참조, 공개 경로 정리">⇄ #110</span></span></label></li>
+<li class="todo-item" id="todo-TP-0117"><label><input type="checkbox" disabled > <span class="id">TP-0117</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-done" href="#todo" data-tp="TP-0093" title="완료 · acados MPC의 장애물 제약을 여유 비례 형태로: 단순 거리 제약은 매끄러워도 가까워질 때까지 활성화되지 않아 늦게 밟는다. CBF 형태(hdot &gt;= -alpha(h)... · PR #108(열림)">✓ TP-0093 ◉</a> 후속: MPC 비용에 매끄러운 지형 항(M.1.1) — 지금 MPC 비용엔 지형이 없어 램프 모서리를 고정 여유로만 피한다. 여유 0–0.15 m 스윕에서 모서...</label></li>
+<li class="todo-item" id="todo-TP-0118"><label><input type="checkbox" disabled > <span class="id">TP-0118</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> Guidance 경로의 여유를 Controller와 맞추기: Dijkstra가 한두 칸 틈·지도 가장자리로 경로를 내 MPC 여유 0.15 m·MPPI 튜브와 충돌한다(bum...</label></li>
+<li class="todo-item" id="todo-TP-0119"><label><input type="checkbox" disabled > <span class="id">TP-0119</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-done" href="#todo" data-tp="TP-0076" title="완료 · MPPI에 확률 제약 붙이기: GP 잔차 분산을 비용이 아니라 chance constraint로 세워 치명 셀·보행자 여유를 조인다(Trivedi ICRA 2025식). NM... · PR #55(merge됨) · PR #108(열림)">✓ TP-0076 ◉</a> 후속: 확률 제약의 0선을 실패 경계에 맞추기 — 이웃 칸 cost가 0.9에 가까운 램프 벽 옆에서 치명 칸 중심 기준 0선이 실패(이중선형 cost ≥ 0....</label></li>
+<li class="todo-item" id="todo-TP-0120"><label><input type="checkbox" disabled > <span class="id">TP-0120</span> <span class="badge prio">P3</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-done" href="#todo" data-tp="TP-0076" title="완료 · MPPI에 확률 제약 붙이기: GP 잔차 분산을 비용이 아니라 chance constraint로 세워 치명 셀·보행자 여유를 조인다(Trivedi ICRA 2025식). NM... · PR #55(merge됨) · PR #108(열림)">✓ TP-0076 ◉</a> 후속: MPPI 확률 제약 rollout에 GP 평균(지연 편향) 반영 — 지금은 명목 rollout이라 분산만 쓴다. SwerveModel 하위 클래스로 평균...</label></li>
+<li class="todo-item" id="todo-TP-0121"><label><input type="checkbox" disabled > <span class="id">TP-0121</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> planner_d+mpc·planner_d+mpc_gp·planner_d+mppi_ccgp 평가(시간 참조 모드) — Planner D 체크포인트가 있는 데스크톱에서. 정적·...</label></li>
 </ul>
 <h3 class="status-h status-done">완료 <span class="count">20</span></h3>
 <ul class="todo-list">
-<li class="todo-item" id="todo-TP-0106"><label><input type="checkbox" disabled checked> <span class="id">TP-0106</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> Playground: 로봇이 본 지형만 그리는 보기, 높이 과장 표시, 3D에도 MPPI 샘플·LiDAR 점·센서 원 (UX W4) <span class=gh-row><span class="private-ref gh gh-open gh-issue" title="이슈 #109 · 열림 · Playground·사이트 UX 개선 추적 (TP-0103–0116, taekyung.me 데모 참조)">● #109</span><span class="private-ref gh gh-merged gh-pr" title="PR #110 · merge됨 · UX 개선 계획 등록(TP-0103–0116): taekyung.me 데모 참조, 공개 경로 정리">⇄ #110</span><span class="private-ref gh gh-merged gh-pr" title="PR #113 · merge됨 · TP-0106: Playground 로봇이 본 지형 보기, 높이 과장 ×1·×2·×3, 3D에 MPPI 샘플·LiDAR 점·센서 원 (UX W4)">⇄ #113</span></span></label></li>
-<li class="todo-item" id="todo-TP-0105"><label><input type="checkbox" disabled checked> <span class="id">TP-0105</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> Playground: 설정 전체를 담는 링크 복사·주행 기록 재현(metrics.csv 열), 프리셋 카드(볼 것·기대 결과) (UX W3) <span class=gh-row><span class="private-ref gh gh-open gh-issue" title="이슈 #109 · 열림 · Playground·사이트 UX 개선 추적 (TP-0103–0116, taekyung.me 데모 참조)">● #109</span><span class="private-ref gh gh-merged gh-pr" title="PR #110 · merge됨 · UX 개선 계획 등록(TP-0103–0116): taekyung.me 데모 참조, 공개 경로 정리">⇄ #110</span><span class="private-ref gh gh-merged gh-pr" title="PR #112 · merge됨 · TP-0105: Playground 설정 전체를 담는 링크 복사·주행 기록 재현, 시연 카드 (UX W3)">⇄ #112</span></span></label></li>
-<li class="todo-item" id="todo-TP-0104"><label><input type="checkbox" disabled checked> <span class="id">TP-0104</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> 진행 원장: 잘려 나간 완료 TP 되살리기, TP별 기록 파일(전체 제목·상태 이력), 대시보드 점선 칩 0 (UX W2) <span class=gh-row><span class="private-ref gh gh-open gh-issue" title="이슈 #109 · 열림 · Playground·사이트 UX 개선 추적 (TP-0103–0116, taekyung.me 데모 참조)">● #109</span><span class="private-ref gh gh-merged gh-pr" title="PR #110 · merge됨 · UX 개선 계획 등록(TP-0103–0116): taekyung.me 데모 참조, 공개 경로 정리">⇄ #110</span><span class="private-ref gh gh-merged gh-pr" title="PR #111 · merge됨 · TP-0104: 진행 원장 — TP별 기록 파일, TODO 이력에서 잘려 나간 TP 되살리기 (UX W2)">⇄ #111</span></span></label></li>
-<li class="todo-item" id="todo-TP-0103"><label><input type="checkbox" disabled checked> <span class="id">TP-0103</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> 사이트: 공개 위생 검사·공개 사본 후처리, 대시보드 MathJax 지연 조판(폰 load 25.6 s), 폰 기본기·OG (UX W1) <span class=gh-row><span class="private-ref gh gh-open gh-issue" title="이슈 #109 · 열림 · Playground·사이트 UX 개선 추적 (TP-0103–0116, taekyung.me 데모 참조)">● #109</span><span class="private-ref gh gh-merged gh-pr" title="PR #110 · merge됨 · UX 개선 계획 등록(TP-0103–0116): taekyung.me 데모 참조, 공개 경로 정리">⇄ #110</span><span class="private-ref gh gh-merged gh-pr" title="PR #114 · merge됨 · TP-0103: 공개 사이트 위생 검사·공개 사본 후처리, 대시보드 MathJax 지연 조판, 폰 기본기·OG (UX W1)">⇄ #114</span></span></label></li>
+<li class="todo-item" id="todo-TP-0106"><label><input type="checkbox" disabled checked> <span class="id">TP-0106</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> Playground: 로봇이 본 지형만 그리는 보기, 높이 과장 표시, 3D에도 MPPI 샘플·LiDAR 점·센서 원 (UX W4) <span class=gh-row><span class="private-ref gh gh-open gh-issue" title="이슈 #109 · 열림 · Playground·사이트 UX 개선 추적 (TP-0103–0116, taekyung.me 데모 참조)">● #109</span><span class="private-ref gh gh-merged gh-pr" title="PR #110 · merge됨 · UX 개선 계획 등록(TP-0103–0116): taekyung.me 데모 참조, 공개 경로 정리">⇄ #110</span><span class="private-ref gh gh-merged gh-pr" title="PR #113 · merge됨 · TP-0106: Playground 로봇이 본 지형 보기, 높이 과장 ×1·×2·×3, 3D에 MPPI 샘플·LiDAR 점·센서 원 (UX W4)">⇄ #113</span><span class="private-ref gh gh-merged gh-pr" title="PR #115 · merge됨 · UX P2 정리: TP-0103–0106 Done, 진행 기록·journal, gh_index가 추적 이슈의 TP 범위를 PR에 물려주지 않게">⇄ #115</span><span class="private-ref gh gh-merged gh-pr" title="PR #116 · merge됨 · journal: TP-0106 W4 툴바 조작 수 고침(22 → 23가지)">⇄ #116</span></span></label></li>
+<li class="todo-item" id="todo-TP-0105"><label><input type="checkbox" disabled checked> <span class="id">TP-0105</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> Playground: 설정 전체를 담는 링크 복사·주행 기록 재현(metrics.csv 열), 프리셋 카드(볼 것·기대 결과) (UX W3) <span class=gh-row><span class="private-ref gh gh-open gh-issue" title="이슈 #109 · 열림 · Playground·사이트 UX 개선 추적 (TP-0103–0116, taekyung.me 데모 참조)">● #109</span><span class="private-ref gh gh-merged gh-pr" title="PR #110 · merge됨 · UX 개선 계획 등록(TP-0103–0116): taekyung.me 데모 참조, 공개 경로 정리">⇄ #110</span><span class="private-ref gh gh-merged gh-pr" title="PR #112 · merge됨 · TP-0105: Playground 설정 전체를 담는 링크 복사·주행 기록 재현, 시연 카드 (UX W3)">⇄ #112</span><span class="private-ref gh gh-merged gh-pr" title="PR #115 · merge됨 · UX P2 정리: TP-0103–0106 Done, 진행 기록·journal, gh_index가 추적 이슈의 TP 범위를 PR에 물려주지 않게">⇄ #115</span></span></label></li>
+<li class="todo-item" id="todo-TP-0104"><label><input type="checkbox" disabled checked> <span class="id">TP-0104</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> 진행 원장: 잘려 나간 완료 TP 되살리기, TP별 기록 파일(전체 제목·상태 이력), 대시보드 점선 칩 0 (UX W2) <span class=gh-row><span class="private-ref gh gh-open gh-issue" title="이슈 #109 · 열림 · Playground·사이트 UX 개선 추적 (TP-0103–0116, taekyung.me 데모 참조)">● #109</span><span class="private-ref gh gh-merged gh-pr" title="PR #110 · merge됨 · UX 개선 계획 등록(TP-0103–0116): taekyung.me 데모 참조, 공개 경로 정리">⇄ #110</span><span class="private-ref gh gh-merged gh-pr" title="PR #111 · merge됨 · TP-0104: 진행 원장 — TP별 기록 파일, TODO 이력에서 잘려 나간 TP 되살리기 (UX W2)">⇄ #111</span><span class="private-ref gh gh-merged gh-pr" title="PR #115 · merge됨 · UX P2 정리: TP-0103–0106 Done, 진행 기록·journal, gh_index가 추적 이슈의 TP 범위를 PR에 물려주지 않게">⇄ #115</span></span></label></li>
+<li class="todo-item" id="todo-TP-0103"><label><input type="checkbox" disabled checked> <span class="id">TP-0103</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> 사이트: 공개 위생 검사·공개 사본 후처리, 대시보드 MathJax 지연 조판(폰 load 25.6 s), 폰 기본기·OG (UX W1) <span class=gh-row><span class="private-ref gh gh-open gh-issue" title="이슈 #109 · 열림 · Playground·사이트 UX 개선 추적 (TP-0103–0116, taekyung.me 데모 참조)">● #109</span><span class="private-ref gh gh-merged gh-pr" title="PR #110 · merge됨 · UX 개선 계획 등록(TP-0103–0116): taekyung.me 데모 참조, 공개 경로 정리">⇄ #110</span><span class="private-ref gh gh-merged gh-pr" title="PR #114 · merge됨 · TP-0103: 공개 사이트 위생 검사·공개 사본 후처리, 대시보드 MathJax 지연 조판, 폰 기본기·OG (UX W1)">⇄ #114</span><span class="private-ref gh gh-merged gh-pr" title="PR #115 · merge됨 · UX P2 정리: TP-0103–0106 Done, 진행 기록·journal, gh_index가 추적 이슈의 TP 범위를 PR에 물려주지 않게">⇄ #115</span></span></label></li>
 <li class="todo-item" id="todo-TP-0102"><label><input type="checkbox" disabled checked> <span class="id">TP-0102</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> Playground 로봇 종류(스워브·사족 보행·바퀴 사족)와 몸체에 붙은 센서: 걸음새 흔들림 아래 elevation mapping 품질(자세 보상 켬/끔, 추정 잡음) 확... · <code class="branch">feat/playground-robots</code> <span class=gh-row><span class="private-ref gh gh-merged gh-pr" title="PR #103 · merge됨 · TP-0102: Playground 사족 보행·바퀴 사족 — 몸체 흔들림 아래 elevation mapping(자세 보상 켬/끔)">⇄ #103</span></span><a class="sim" href="playground/index.html#TP-0102" target="_blank" rel="noopener" title="Playground에서 이 설정으로 달려 보기">▶ 시뮬레이션 · 사족 보행 + L1 간이(자세 보상)</a><a class="sim" href="playground/index.html#TP-0102-nocomp" target="_blank" rel="noopener" title="Playground에서 이 설정으로 달려 보기">▶ 시뮬레이션 · 사족: 자세 보상 끔</a><a class="sim" href="playground/index.html#TP-0102-noise" target="_blank" rel="noopener" title="Playground에서 이 설정으로 달려 보기">▶ 시뮬레이션 · 사족: 자세 추정 잡음 1°</a><a class="sim" href="playground/index.html#TP-0102-wheelleg" target="_blank" rel="noopener" title="Playground에서 이 설정으로 달려 보기">▶ 시뮬레이션 · 바퀴 사족: 연석을 바로 오른다</a></label><div class="ev-row"><figure class="ev"><a class="thumb" href="assets/figs/tp0102_robot_pose.webp" title="원본 보기"><img alt="사족 보행, 몸체에 붙은 LiDAR: 자세 보상 켬(왼쪽)은 높이 오차 1 cm대, 끔(가운데)·추정 잡음 1°(오른쪽)는 먼 링이 줄무늬로 틀려 거짓 치명이 앞을 막는다" src="assets/figs/tp0102_robot_pose.webp" loading="lazy"></a><figcaption>사족 보행, 몸체에 붙은 LiDAR: 자세 보상 켬(왼쪽)은 높이 오차 1 cm대, 끔(가운데)·추정 잡음 1°(오른쪽)는 먼 링이 줄무늬로 틀려 거짓 치명이 앞을 막는다 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span></figcaption></figure></div></li>
 <li class="todo-item" id="todo-TP-0101"><label><input type="checkbox" disabled checked> <span class="id">TP-0101</span> <span class="badge prio">P1</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-done" href="#todo" data-tp="TP-0100" title="완료 · TP-0082 후속: 섀시 기하 기준(sim/ground_truth.py)을 L0/L1 인식 경로에도 적용 — 지금은 참 고도에서만 잰다. 가림·그림자 상한이 켜진 belie... · 이슈 #92(닫힘) · PR #93(merge됨)">✓ TP-0100 ◉</a> 후속: 근거리 미관측 칸의 cost 재검토 — 정지 거리 안의 미관측 칸을 치명·높은 cost로 두면 도달 가능 근거리 MISS(L0 가림 2,206, L1 6... · <code class="branch">p2/tp0101-unknown-near</code> <span class=gh-row><span class="private-ref gh gh-closed gh-issue" title="이슈 #94 · 닫힘 · 근거리 미관측 칸의 cost 재검토 (TP-0101)">● #94</span><span class="private-ref gh gh-merged gh-pr" title="PR #95 · merge됨 · TP-0101: 로봇 둘레 못 본 칸을 치명으로 — L0 도달 가능 MISS 0·폐루프 40/40, L1은 25% 느려짐">⇄ #95</span></span><a class="sim" href="playground/index.html#TP-0101" target="_blank" rel="noopener" title="Playground에서 이 설정으로 달려 보기">▶ 시뮬레이션 · 근거리 미관측을 치명으로(1.5 m)</a></label><div class="ev-row"><figure class="ev"><a class="thumb" href="assets/figs/tp0100_belief_chassis.webp" title="원본 보기"><img alt="belief TravMap 대 차체 기하 기준. MISS의 99% 이상이 못 본 칸이고, 그림자 상한·깊이 prior는 도달 가능한 근거리 MISS를 줄이지 않는다(2,206 → 2,204). 센서 0.8 m는 3.4배 줄이고 L1은 2.8배 나쁘다" src="assets/figs/tp0100_belief_chassis.webp" loading="lazy"></a><figcaption>belief TravMap 대 차체 기하 기준. MISS의 99% 이상이 못 본 칸이고, 그림자 상한·깊이 prior는 도달 가능한 근거리 MISS를 줄이지 않는다(2,206 → 2,204). 센서 0.8 m는 3.4배 줄이고 L1은 2.8배 나쁘다 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span></figcaption></figure><figure class="ev"><a class="thumb" href="assets/figs/tp0101_unknown_near.webp" title="원본 보기"><img alt="로봇 둘레 1.5 m 못 본 칸을 치명으로: L0에서 도달 가능 근거리 MISS 2,204 → 0, 폐루프 성공·시간 그대로. L1에서는 MISS 6,048 → 4 대신 음의 지형 오탐 13배" src="assets/figs/tp0101_unknown_near.webp" loading="lazy"></a><figcaption>로봇 둘레 1.5 m 못 본 칸을 치명으로: L0에서 도달 가능 근거리 MISS 2,204 → 0, 폐루프 성공·시간 그대로. L1에서는 MISS 6,048 → 4 대신 음의 지형 오탐 13배 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span></figcaption></figure></div></li>
 <li class="todo-item" id="todo-TP-0100"><label><input type="checkbox" disabled checked> <span class="id">TP-0100</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-done" href="#todo" data-tp="TP-0082" title="완료 · elevation_mapping_cupy의 학습 traversability 필터를 기준선으로 평가: 같은 패키지에 이미 들어 있다(인식 A.7.2). TP-0022 평가에 기... · PR #63(merge됨) · PR #79(merge됨) · 이슈 #89(닫힘)">✓ TP-0082 ◉</a> 후속: 섀시 기하 기준(sim/ground_truth.py)을 L0/L1 인식 경로에도 적용 — 지금은 참 고도에서만 잰다. 가림·그림자 상한이 켜진 belie... · <code class="branch">p2/tp0100-belief-chassis</code> <span class=gh-row><span class="private-ref gh gh-closed gh-issue" title="이슈 #92 · 닫힘 · belief TravMap을 차체 기하 기준으로 채점: L0 가림·그림자 상한·깊이 prior·L1 (TP-0100)">● #92</span><span class="private-ref gh gh-merged gh-pr" title="PR #93 · merge됨 · TP-0100: belief TravMap을 차체 기하 기준으로 채점 — 위험은 못 본 칸, 깊이 prior는 그것을 막지 않는다">⇄ #93</span></span><a class="sim" href="playground/index.html#TP-0100" target="_blank" rel="noopener" title="Playground에서 이 설정으로 달려 보기">▶ 시뮬레이션 · L1 간이: 못 본 칸이 위험</a></label><div class="ev-row"><figure class="ev"><a class="thumb" href="assets/figs/tp0100_belief_chassis.webp" title="원본 보기"><img alt="belief TravMap 대 차체 기하 기준. MISS의 99% 이상이 못 본 칸이고, 그림자 상한·깊이 prior는 도달 가능한 근거리 MISS를 줄이지 않는다(2,206 → 2,204). 센서 0.8 m는 3.4배 줄이고 L1은 2.8배 나쁘다" src="assets/figs/tp0100_belief_chassis.webp" loading="lazy"></a><figcaption>belief TravMap 대 차체 기하 기준. MISS의 99% 이상이 못 본 칸이고, 그림자 상한·깊이 prior는 도달 가능한 근거리 MISS를 줄이지 않는다(2,206 → 2,204). 센서 0.8 m는 3.4배 줄이고 L1은 2.8배 나쁘다 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span></figcaption></figure></div></li>
 <li class="todo-item" id="todo-TP-0097"><label><input type="checkbox" disabled checked> <span class="id">TP-0097</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-done" href="#todo" data-tp="TP-0088" title="완료 · elevation_mapping_cupy_core(ROS 의존 0, MIT)로 이전 검토 — 벤더링 트리 제거, 학습 traversability 필터를 weight_file ...">✓ TP-0088</a> 후속: core의 선택적 필터 가드를 벤더링 트리에 backport — weight_file이 비면 traversability_filter를 만들지 않는다. 지... · <code class="branch">p2/tp0097-filter-guard-backport</code> <span class=gh-row><span class="private-ref gh gh-closed gh-issue" title="이슈 #80 · 닫힘 · TP-0097: 벤더링 elevation_mapping에 학습 traversability 필터 가드 backport">● #80</span><span class="private-ref gh gh-merged gh-pr" title="PR #81 · merge됨 · [auto] TP-0097: 벤더링 elevation_mapping에 학습 필터 가드 backport">⇄ #81</span></span></label></li>
 <li class="todo-item" id="todo-TP-0096"><label><input type="checkbox" disabled checked> <span class="id">TP-0096</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-done" href="#todo" data-tp="TP-0086" title="완료 · FastDEM(BSD-3, Orin 100+Hz CPU)을 TP-0084 GPU TravMapBuilder의 CPU 비교 기준선으로 세운다 — 레이어가 TravMap[8]과 ... · PR #75(merge됨) · PR #77(merge됨)">✓ TP-0086</a> 후속: FastDEM 출력 비교 — travplan 지형에서 뽑은 합성 LiDAR 점군을 FastDEM에 먹이고 step/slope/roughness를 Trav...</label></li>
 <li class="todo-item" id="todo-TP-0095"><label><input type="checkbox" disabled checked> <span class="id">TP-0095</span> <span class="badge prio">P3</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-done" href="#todo" data-tp="TP-0085" title="완료 · TP-0048 판정 규칙 4종 도입: emap 논문의 상한 기울기 검정(가려진 평지 vs 낙차), ArtPlanner의 센서 높이 게이팅, ohm virtualSurfaceF... · PR #74(merge됨) · PR #76(merge됨)">✓ TP-0085 ◉</a> 후속: 남은 판정 규칙 둘 측정 — ohm virtualSurfaceFilterThreshold, CMU noDataBlockShrink/Expand. 기울기 ... · <code class="branch">p2/tp0095-ohm-cmu-rules</code> <span class=gh-row><span class="private-ref gh gh-closed gh-issue" title="이슈 #100 · 닫힘 · 그림자 판정: ohm·CMU 잡음 필터 측정 (TP-0095)">● #100</span><span class="private-ref gh gh-merged gh-pr" title="PR #101 · merge됨 · TP-0095: 깊이 prior 후보에 ohm·CMU 잡음 필터 — 내림 턱 오탐 제거, 포트홀 재현율 0.86">⇄ #101</span></span></label><div class="ev-row"><figure class="ev"><a class="thumb" href="assets/figs/tp0095_rules.webp" title="원본 보기"><img alt="깊이 prior 후보에 잡음 필터: ohm·CMU 모두 내림 턱 오탐(28.9 → 18.3칸)을 되돌리고, CMU(1,2)가 포트홀 재현율 0.86을 지킨다" src="assets/figs/tp0095_rules.webp" loading="lazy"></a><figcaption>깊이 prior 후보에 잡음 필터: ohm·CMU 모두 내림 턱 오탐(28.9 → 18.3칸)을 되돌리고, CMU(1,2)가 포트홀 재현율 0.86을 지킨다 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span></figcaption></figure></div></li>
+<li class="todo-item" id="todo-TP-0093"><label><input type="checkbox" disabled checked> <span class="id">TP-0093</span> <span class="badge prio">P3</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> acados MPC의 장애물 제약을 여유 비례 형태로: 단순 거리 제약은 매끄러워도 가까워질 때까지 활성화되지 않아 늦게 밟는다. CBF 형태(hdot &gt;= -alpha(h)... · <code class="branch">p2/mpc-mppi-constraints</code> <span class=gh-row><span class="private-ref gh gh-open gh-pr" title="PR #108 · 열림 · TP-0093/0071/0068/0076: MPC 제약 구멍·보행자 반평면·GP 명령 수정, MPPI 확률 제약">⇄ #108</span></span></label><div class="ev-row"><figure class="ev"><a class="thumb" href="assets/figs/tp0093_mpc_vs_mppi.webp" title="원본 보기"><img alt="tp0093 mpc vs mppi" src="assets/figs/tp0093_mpc_vs_mppi.webp" loading="lazy"></a><figcaption>tp0093 mpc vs mppi</figcaption></figure></div></li>
 <li class="todo-item" id="todo-TP-0089"><label><input type="checkbox" disabled checked> <span class="id">TP-0089</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-done" href="#todo" data-tp="TP-0089" title="완료 · TP-0089 양보 행동 측정: 보행자 유무 쌍대 비교로 travplan이 시간이 아니라 공간으로 낸다는 것을 확인(궤적 참조가 지연 -2.44s, 감속폭 -0.20m/s, ... · PR #67(merge됨)">✓ TP-0089 ◉</a> 양보 행동 측정: 보행자 유무 쌍대 비교로 travplan이 시간이 아니라 공간으로 낸다는 것을 확인(궤적 참조가 지연 -2.44s, 감속폭 -0.20m/s, ... <span class=gh-row><span class="private-ref gh gh-merged gh-pr" title="PR #67 · merge됨 · 리서치 A.12.5: 예측이 주행으로 이어지는 자리 + TP-0089 양보 측정">⇄ #67</span></span></label><div class="ev-row"><figure class="ev"><a class="thumb" href="assets/figs/tp0089_yield.webp" title="원본 보기"><img alt="tp0089 yield" src="assets/figs/tp0089_yield.webp" loading="lazy"></a><figcaption>tp0089 yield</figcaption></figure></div></li>
 <li class="todo-item" id="todo-TP-0088"><label><input type="checkbox" disabled checked> <span class="id">TP-0088</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> elevation_mapping_cupy_core(ROS 의존 0, MIT)로 이전 검토 — 벤더링 트리 제거, 학습 traversability 필터를 weight_file ...</label></li>
 <li class="todo-item" id="todo-TP-0086"><label><input type="checkbox" disabled checked> <span class="id">TP-0086</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> FastDEM(BSD-3, Orin 100+Hz CPU)을 <a class="tp tp-done" href="#todo" data-tp="TP-0084" title="완료 · TravMapBuilder.build를 GPU에서: 입력 텐서를 GPU에 올리면 31.4 -&gt; 0.88 ms(36배)이고 출력은 동일하다(유한 셀 오차 3e-07, 비유한 패... · PR #64(merge됨)">✓ TP-0084</a> GPU TravMapBuilder의 CPU 비교 기준선으로 세운다 — 레이어가 TravMap[8]과 ... <span class=gh-row><span class="private-ref gh gh-merged gh-pr" title="PR #75 · merge됨 · TP-0086: FastDEM CPU 기준선 — README의 10 ms는 특징 추출이 빠진 숫자였다">⇄ #75</span><span class="private-ref gh gh-merged gh-pr" title="PR #77 · merge됨 · TP-0086 캐비엇 정밀화: 루프는 격자 전체, 비용은 측정된 칸 비례">⇄ #77</span></span></label></li>
@@ -895,9 +948,8 @@ LiDAR 링 사이가 비어 로봇 주변 3 m 안의 10–12%가 미관측으로 
 <li class="todo-item" id="todo-TP-0084"><label><input type="checkbox" disabled checked> <span class="id">TP-0084</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> TravMapBuilder.build를 GPU에서: 입력 텐서를 GPU에 올리면 31.4 -&gt; 0.88 ms(36배)이고 출력은 동일하다(유한 셀 오차 3e-07, 비유한 패... <span class=gh-row><span class="private-ref gh gh-merged gh-pr" title="PR #64 · merge됨 · TP-0084: TravMapBuilder를 GPU에서 (26–44배, 출력 동일)">⇄ #64</span></span></label></li>
 <li class="todo-item" id="todo-TP-0083"><label><input type="checkbox" disabled checked> <span class="id">TP-0083</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> L1 파이프라인 시간 예산 측정: 합성 LiDAR → elevation_mapping_cupy → TravMapBuilder 각 단계 시간을 재고 Orin 목표(PRD R-N... <span class=gh-row><span class="private-ref gh gh-merged gh-pr" title="PR #63 · merge됨 · 초점: traversability·elevation — L1 환경 설치, 시간 예산 측정(TP-0083), 학습 필터 근거(TP-0082)">⇄ #63</span></span></label></li>
 <li class="todo-item" id="todo-TP-0082"><label><input type="checkbox" disabled checked> <span class="id">TP-0082</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> elevation_mapping_cupy의 학습 traversability 필터를 기준선으로 평가: 같은 패키지에 이미 들어 있다(인식 A.7.2). <a class="tp tp-done" href="#todo" data-tp="TP-0022" title="완료 · 기록에서 복원 · 이슈 #22(닫힘) · PR #27(merge됨)">✓ TP-0022 ◉</a> 평가에 기... <span class=gh-row><span class="private-ref gh gh-merged gh-pr" title="PR #63 · merge됨 · 초점: traversability·elevation — L1 환경 설치, 시간 예산 측정(TP-0083), 학습 필터 근거(TP-0082)">⇄ #63</span><span class="private-ref gh gh-merged gh-pr" title="PR #79 · merge됨 · TP-0082: 학습 traversability 필터 기준선 — 평가 기반의 순환을 찾고 독립 기준을 만들었다">⇄ #79</span><span class="private-ref gh gh-closed gh-issue" title="이슈 #89 · 닫힘 · 학습 traversability 필터 기준선 평가 (TP-0082)">● #89</span></span><a class="sim" href="playground/index.html#TP-0082" target="_blank" rel="noopener" title="Playground에서 이 설정으로 달려 보기">▶ 시뮬레이션 · 차체 기준 층: 둔덕 경사</a></label><div class="ev-row"><figure class="ev"><a class="thumb" href="assets/figs/tp0082_estimators.webp" title="원본 보기"><img alt="섀시 기하 기준(추정기와 독립)으로 잰 추정기 비교. emap의 RSL 발디딤 필터는 배포 운용점(gate 0.15)에서 차체가 못 들어가는 칸 4,425개를 주행 가능이라 부르고, 거의 전부 slope_crossfall 경사다. 기하·TravNet은 0" src="assets/figs/tp0082_estimators.webp" loading="lazy"></a><figcaption>섀시 기하 기준(추정기와 독립)으로 잰 추정기 비교. emap의 RSL 발디딤 필터는 배포 운용점(gate 0.15)에서 차체가 못 들어가는 칸 4,425개를 주행 가능이라 부르고, 거의 전부 slope_crossfall 경사다. 기하·TravNet은 0 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span></figcaption></figure></div></li>
-<li class="todo-item" id="todo-TP-0077"><label><input type="checkbox" disabled checked> <span class="id">TP-0077</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-done" href="#todo" data-tp="TP-0073" title="완료 · TP-0050 후속: Planner D 시연을 레벨 무작위 지형(0–3)으로 다시 만들어 재학습 — curb_ramp@L3 치명 샘플 비율(실패 0.82–0.88)을 L0 수... · 이슈 #44(닫힘) · PR #45(merge됨) · PR #54(merge됨)">✓ TP-0073 ◉</a>·<a class="tp tp-done" href="#todo" data-tp="TP-0075" title="완료 · TP-0073 후속: DAgger(scripts/dagger_planner_d.py)도 레벨 무작위 지형에서 방문 상태를 모으게 한다 — 재학습 결과(PR #45 사용자 실행... · PR #45(merge됨) · 이슈 #52(닫힘) · PR #54(merge됨)">✓ TP-0075 ◉</a> 후속: 레벨 0–3 시연 + 레벨 무작위 DAgger 뒤 남은 curb_ramp@L3 실패 진단. seed 0–9 중 8/10(s6·s7 시간 초... · <code class="branch">p2/curb-ramp-l3-residual-diagnosis</code> <span class=gh-row><span class="private-ref gh gh-closed gh-issue" title="이슈 #53 · 닫힘 · curb_ramp 레벨 3 잔여 실패 진단 (TP-0077)">● #53</span><span class="private-ref gh gh-merged gh-pr" title="PR #61 · merge됨 · [auto] TP-0077 curb_ramp L3 잔여 실패 진단: 경사로 지나친 뒤 되돌아 찾기가 병목">⇄ #61</span></span></label><div class="ev-row"><figure class="ev"><a class="thumb" href="assets/figs/ev_tp0073_levels.webp" title="원본 보기"><img alt="planner_d+mppi 성공 수: 벤치마크 레벨 3이 11/12 → 12/12, curb_ramp 레벨 3 seed 0–9는 7/10 → 8/10" src="assets/figs/ev_tp0073_levels.webp" loading="lazy"></a><figcaption>planner_d+mppi 성공 수: 벤치마크 레벨 3이 11/12 → 12/12, curb_ramp 레벨 3 seed 0–9는 7/10 → 8/10 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span></figcaption></figure></div></li>
-<li class="todo-item" id="todo-TP-0075"><label><input type="checkbox" disabled checked> <span class="id">TP-0075</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-done" href="#todo" data-tp="TP-0073" title="완료 · TP-0050 후속: Planner D 시연을 레벨 무작위 지형(0–3)으로 다시 만들어 재학습 — curb_ramp@L3 치명 샘플 비율(실패 0.82–0.88)을 L0 수... · 이슈 #44(닫힘) · PR #45(merge됨) · PR #54(merge됨)">✓ TP-0073 ◉</a> 후속: DAgger(scripts/dagger_planner_d.py)도 레벨 무작위 지형에서 방문 상태를 모으게 한다 — 재학습 결과(PR #45 사용자 실행... · <code class="branch">p2/planner-d-level-random-demos</code> <span class=gh-row><span class="private-ref gh gh-merged gh-pr" title="PR #45 · merge됨 · Planner D 레벨 무작위 재학습 + DAgger: 벤치마크 레벨 3 12/12 (TP-0073·0075)">⇄ #45</span><span class="private-ref gh gh-closed gh-issue" title="이슈 #52 · 닫힘 · DAgger 레벨 무작위 방문 상태 수집 (TP-0075)">● #52</span><span class="private-ref gh gh-merged gh-pr" title="PR #54 · merge됨 · TP-0073·0075 결과: Planner D 레벨 무작위 재학습 + DAgger, 벤치마크 레벨 3 12/12">⇄ #54</span></span></label><div class="ev-row"><figure class="ev"><a class="thumb" href="assets/figs/ev_tp0073_levels.webp" title="원본 보기"><img alt="planner_d+mppi 성공 수: 벤치마크 레벨 3이 11/12 → 12/12, curb_ramp 레벨 3 seed 0–9는 7/10 → 8/10" src="assets/figs/ev_tp0073_levels.webp" loading="lazy"></a><figcaption>planner_d+mppi 성공 수: 벤치마크 레벨 3이 11/12 → 12/12, curb_ramp 레벨 3 seed 0–9는 7/10 → 8/10 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span></figcaption></figure><figure class="ev"><a class="thumb" href="assets/figs/ev_tp0073_curb_l3.webp" title="원본 보기"><img alt="▶ curb_ramp 레벨 3 seed 0. 레벨 0 시연만 배운 Planner D는 60 s 시간 초과, 레벨 0–3 시연 + DAgger 뒤에는 24.9 s에 도달" src="assets/figs/ev_tp0073_curb_l3.webp" loading="lazy"></a><figcaption>▶ curb_ramp 레벨 3 seed 0. 레벨 0 시연만 배운 Planner D는 60 s 시간 초과, 레벨 0–3 시연 + DAgger 뒤에는 24.9 s에 도달 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span></figcaption></figure></div></li>
-<li class="todo-item" id="todo-TP-0073"><label><input type="checkbox" disabled checked> <span class="id">TP-0073</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-done" href="#todo" data-tp="TP-0050" title="완료 · 기록에서 복원 · 이슈 #42(닫힘) · PR #43(merge됨)">✓ TP-0050 ◉</a> 후속: Planner D 시연을 레벨 무작위 지형(0–3)으로 다시 만들어 재학습 — curb_ramp@L3 치명 샘플 비율(실패 0.82–0.88)을 L0 수... · <code class="branch">p2/planner-d-level-random-demos</code> <span class=gh-row><span class="private-ref gh gh-closed gh-issue" title="이슈 #44 · 닫힘 · Planner D 레벨 무작위 시연 재학습 (TP-0073)">● #44</span><span class="private-ref gh gh-merged gh-pr" title="PR #45 · merge됨 · Planner D 레벨 무작위 재학습 + DAgger: 벤치마크 레벨 3 12/12 (TP-0073·0075)">⇄ #45</span><span class="private-ref gh gh-merged gh-pr" title="PR #54 · merge됨 · TP-0073·0075 결과: Planner D 레벨 무작위 재학습 + DAgger, 벤치마크 레벨 3 12/12">⇄ #54</span></span></label><div class="ev-row"><figure class="ev"><a class="thumb" href="assets/figs/ev_tp0073_levels.webp" title="원본 보기"><img alt="planner_d+mppi 성공 수: 벤치마크 레벨 3이 11/12 → 12/12, curb_ramp 레벨 3 seed 0–9는 7/10 → 8/10" src="assets/figs/ev_tp0073_levels.webp" loading="lazy"></a><figcaption>planner_d+mppi 성공 수: 벤치마크 레벨 3이 11/12 → 12/12, curb_ramp 레벨 3 seed 0–9는 7/10 → 8/10 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span></figcaption></figure><figure class="ev"><a class="thumb" href="assets/figs/ev_tp0073_curb_l3.webp" title="원본 보기"><img alt="▶ curb_ramp 레벨 3 seed 0. 레벨 0 시연만 배운 Planner D는 60 s 시간 초과, 레벨 0–3 시연 + DAgger 뒤에는 24.9 s에 도달" src="assets/figs/ev_tp0073_curb_l3.webp" loading="lazy"></a><figcaption>▶ curb_ramp 레벨 3 seed 0. 레벨 0 시연만 배운 Planner D는 60 s 시간 초과, 레벨 0–3 시연 + DAgger 뒤에는 24.9 s에 도달 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span></figcaption></figure></div></li>
+<li class="todo-item" id="todo-TP-0077"><label><input type="checkbox" disabled checked> <span class="id">TP-0077</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-done" href="#todo" data-tp="TP-0073" title="완료 · 기록에서 복원 · 이슈 #44(닫힘) · PR #45(merge됨) · PR #54(merge됨)">✓ TP-0073 ◉</a>·<a class="tp tp-done" href="#todo" data-tp="TP-0075" title="완료 · 기록에서 복원 · 이슈 #52(닫힘)">✓ TP-0075 ◉</a> 후속: 레벨 0–3 시연 + 레벨 무작위 DAgger 뒤 남은 curb_ramp@L3 실패 진단. seed 0–9 중 8/10(s6·s7 시간 초... · <code class="branch">p2/curb-ramp-l3-residual-diagnosis</code> <span class=gh-row><span class="private-ref gh gh-closed gh-issue" title="이슈 #53 · 닫힘 · curb_ramp 레벨 3 잔여 실패 진단 (TP-0077)">● #53</span><span class="private-ref gh gh-merged gh-pr" title="PR #61 · merge됨 · [auto] TP-0077 curb_ramp L3 잔여 실패 진단: 경사로 지나친 뒤 되돌아 찾기가 병목">⇄ #61</span></span></label><div class="ev-row"><figure class="ev"><a class="thumb" href="assets/figs/ev_tp0073_levels.webp" title="원본 보기"><img alt="planner_d+mppi 성공 수: 벤치마크 레벨 3이 11/12 → 12/12, curb_ramp 레벨 3 seed 0–9는 7/10 → 8/10" src="assets/figs/ev_tp0073_levels.webp" loading="lazy"></a><figcaption>planner_d+mppi 성공 수: 벤치마크 레벨 3이 11/12 → 12/12, curb_ramp 레벨 3 seed 0–9는 7/10 → 8/10 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span></figcaption></figure></div></li>
+<li class="todo-item" id="todo-TP-0076"><label><input type="checkbox" disabled checked> <span class="id">TP-0076</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> MPPI에 확률 제약 붙이기: GP 잔차 분산을 비용이 아니라 chance constraint로 세워 치명 셀·보행자 여유를 조인다(Trivedi ICRA 2025식). NM... · <code class="branch">p2/mpc-mppi-constraints</code> <span class=gh-row><span class="private-ref gh gh-merged gh-pr" title="PR #55 · merge됨 · chore: TP 번호 충돌 해소(TP-0076 중복) + gh_index 갱신">⇄ #55</span><span class="private-ref gh gh-open gh-pr" title="PR #108 · 열림 · TP-0093/0071/0068/0076: MPC 제약 구멍·보행자 반평면·GP 명령 수정, MPPI 확률 제약">⇄ #108</span></span></label><div class="ev-row"><figure class="ev"><a class="thumb" href="assets/figs/tp0076_controller_matrix.webp" title="원본 보기"><img alt="tp0076 controller matrix" src="assets/figs/tp0076_controller_matrix.webp" loading="lazy"></a><figcaption>tp0076 controller matrix</figcaption></figure></div></li>
 </ul></div>
   </section>
   <section class="tab" id="tab-prd" role="tabpanel" aria-labelledby="tabbtn-prd" data-math="3">
@@ -1221,7 +1273,7 @@ RTX LiDAR 점군을 <code>elevation_mapping_gpu_ros2</code>로 쌓는다. 같은
 <tr>
 <td>P2.5</td>
 <td>샘플링 제어기의 확률 제약: GP 분산을 비용이 아니라 제약으로(RA-MPPI·DRA-MPPI 계열) — <strong>2026-09-30 재개</strong>(§7)</td>
-<td>claude(<a class="tp tp-backlog" href="#todo" data-tp="TP-0076" title="백로그 · MPPI에 확률 제약 붙이기: GP 잔차 분산을 비용이 아니라 chance constraint로 세워 치명 셀·보행자 여유를 조인다(Trivedi ICRA 2025식). NM... · PR #55(merge됨) · PR #108(열림)">TP-0076</a>)</td>
+<td>claude(<a class="tp tp-done" href="#todo" data-tp="TP-0076" title="완료 · MPPI에 확률 제약 붙이기: GP 잔차 분산을 비용이 아니라 chance constraint로 세워 치명 셀·보행자 여유를 조인다(Trivedi ICRA 2025식). NM... · PR #55(merge됨) · PR #108(열림)">✓ TP-0076 ◉</a>)</td>
 <td>MPPI가 GP 분산으로 여유를 조이는 것을 벤치마크에서 확인</td>
 </tr>
 <tr>
@@ -15793,13 +15845,13 @@ E.9의 스키드 스티어 운동 모델과 같은 연구실)는 동적 유니�
 <td>(a) acados NMPC + 조인 제약</td>
 <td>잔차 평균을 파라미터로, 분산으로 제약을 조인다</td>
 <td><strong>hard 제약·튜브·0차 GP</strong></td>
-<td>TP-0070·0071 진행 중, 9/12</td>
+<td>정적 38/40, GP 평균으로 plant 37 → 44/48(MPC 문서 M.3.10–M.3.12). 분산 조임(TP-0069)이 다음</td>
 </tr>
 <tr>
 <td>(b) MPPI + chance constraint</td>
 <td>샘플 비용에 확률 제약을 세운다</td>
 <td><strong>비평활 비용</strong>(치명 셀, 이진 충돌)을 그대로</td>
-<td>TP-0076</td>
+<td>구현(TP-0076). 정적·보행자는 기준과 같고 plant 42/48(기준 44/48). 0선이 실패 경계보다 느슨한 곳이 남았다(MPC 문서 M.3.13)</td>
 </tr>
 </tbody>
 </table>
@@ -23541,8 +23593,11 @@ TP-0036에 바로 들어간다)다.</p>
 <p><strong>MPPI를 대체하지 않고 형제로 MPC를 더한다.</strong> 벤치마크가 <code>"&lt;planner&gt;+&lt;controller&gt;"</code> 문자열이라 <code>guidance+mpc</code>·<code>planner_d+mpc</code>
 스택이 그대로 생기고, 기존 12/12·40/40이 기준선으로 남는다. 목적은 성능이 아니라 <strong>세 기법을 얹을 자리를 만드는 것</strong>이다 —
 GP 잔차(TP-0068), 0차 근사, 튜브·SLP는 모두 "제약을 조이는" 장치인데 지금 Controller에는 조일 제약이 없다.</p>
-<p>이 문서는 연구 정리가 아니라 <strong>작업 기록</strong>이다. 단계마다 무엇을 했고 무엇이 나왔는지 M.3에 한 줄씩 쌓는다.</p>
-<p><strong>지금 어디.</strong> 0단계 착수 전. 환경은 확인했고 <strong>두 툴체인 다 이 랩탑에서 돈다</strong>(M.3, 2026-09-29).</p></div><div class="card md subpanel" id="sub-research-d8-1" role="tabpanel" aria-labelledby="subbtn-research-d8-1" data-math="7"><h2>M.1 OCP를 어떻게 세우나</h2>
+<p>이 문서는 연구 정리가 아니라 <strong>작업 기록</strong>이다. 단계마다 무엇을 했고 무엇이 나왔는지 M.3에 한 줄씩 쌓는다.
+MPPI 쪽 확률 제약(TP-0076)도 여기 적는다. 두 Controller가 잔차 GP와 치명 거리장을 함께 쓰기 때문이다(M.3.13).</p>
+<p><strong>지금 어디(2026-10-01).</strong> 1단계(치명 셀 제약, TP-0071·0093)와 보행자 제약을 마쳤다. 정적 38/40, 보행자 3명 23/24·충돌 0이다.
+GP 평균(TP-0068)은 plant 조건에서 37/48을 44/48로 올렸다. MPPI 확률 제약(TP-0076)도 붙였지만 plant에서 이득은 아직 없다.
+다음은 분산으로 MPC 제약을 조이는 3단계(TP-0069)와, 고정 여유 대신 지형 비용·Planner 여유를 맞추는 일이다(M.3.10).</p></div><div class="card md subpanel" id="sub-research-d8-1" role="tabpanel" aria-labelledby="subbtn-research-d8-1" data-math="7"><h2>M.1 OCP를 어떻게 세우나</h2>
 <table>
 <thead>
 <tr>
@@ -23703,7 +23758,7 @@ GP 잔차(TP-0068), 0차 근사, 튜브·SLP는 모두 "제약을 조이는" 장
 </tbody>
 </table>
 <p>그래서 1단계 목표는 "정확한 AntBot"이 아니라 <strong>"명목 모델과 다른, 접촉이 있는 plant"</strong>다. 관성이 임시값이어도 MPC가
-모델 오차를 만났을 때 어떻게 되는지는 그대로 드러난다.</p></div><div class="card md subpanel" id="sub-research-d8-3" role="tabpanel" aria-labelledby="subbtn-research-d8-3" data-math="49"><h2>M.3 진행 기록</h2>
+모델 오차를 만났을 때 어떻게 되는지는 그대로 드러난다.</p></div><div class="card md subpanel" id="sub-research-d8-3" role="tabpanel" aria-labelledby="subbtn-research-d8-3" data-math="84"><h2>M.3 진행 기록</h2>
 <table>
 <thead>
 <tr>
@@ -23792,6 +23847,42 @@ GP 잔차(TP-0068), 0차 근사, 튜브·SLP는 모두 "제약을 조이는" 장
 <td>SGPR(Titsias VFE)과 RFF(sparse spectrum)를 구현해 같은 데이터로 비교</td>
 <td><strong>SGPR 유도점 64가 권장.</strong> 예측 0.30 ms, 보수적 보정, 분포 밖 유계</td>
 </tr>
+<tr>
+<td>2026-09-30</td>
+<td>1 진단</td>
+<td>1단계 실패 세 에피소드를 스텝마다 계측</td>
+<td>셋 다 제약의 구멍(덩어리 안 노드, 칸 중심 여유, 지도 경계). M.3.10</td>
+</tr>
+<tr>
+<td>2026-09-30</td>
+<td>1 CBF</td>
+<td>이산 CBF 감쇠를 반평면 하한에(γ = 0.2)</td>
+<td>칸 조회를 고치기 전 기준 seed 0–9 40/40</td>
+</tr>
+<tr>
+<td>2026-09-30</td>
+<td>1 보행자</td>
+<td>노드별 보행자 반평면, 자라는 원판은 앞 2 s에만</td>
+<td>보행자 3명 23/24, 충돌 0. M.3.11</td>
+</tr>
+<tr>
+<td>2026-10-01</td>
+<td>1 리뷰</td>
+<td>칸 조회를 반올림으로(반 칸 어긋나 있었다)</td>
+<td>정확한 기하로 38/40. 여유 하나로는 모서리와 틈을 함께 못 맞춘다</td>
+</tr>
+<tr>
+<td>2026-10-01</td>
+<td>2 GP</td>
+<td>명령 출력 수정 + 가진 데이터로 SGPR 재적합</td>
+<td>plant seed 0–11: <code>mpc</code> 37/48, <code>mpc_gp</code> 44/48. M.3.12</td>
+</tr>
+<tr>
+<td>2026-10-01</td>
+<td>MPPI</td>
+<td>확률 제약 <code>ChanceConstraintCost</code>(TP-0076)</td>
+<td>정적 40/40, 보행자 24/24, plant 42/48(기준 44/48). M.3.13</td>
+</tr>
 </tbody>
 </table>
 <h3>M.3.1 환경 메모 — 다시 밟지 않도록</h3>
@@ -23801,7 +23892,9 @@ GP 잔차(TP-0068), 0차 근사, 튜브·SLP는 모두 "제약을 조이는" 장
 <li><strong>acados v0.3.4는 <code>ocp.dims.N</code>이다.</strong> 최신 문서의 <code>solver_options.N_horizon</code>을 쓰면 <code>tf / None</code> 오류가 난다.</li>
 <li><strong>MuJoCo는 움직이는 body에 질량을 요구한다.</strong> 조향 링크처럼 geom이 없는 중간 body에는 <code>&lt;inertial&gt;</code>을 명시해야
   <code>mass and inertia of moving bodies must be larger than mjMINVAL</code>을 피한다.</li>
-<li><code>pyproject.toml</code>에 <code>casadi</code>·<code>mujoco</code>를 아직 넣지 않았다. TP-0070을 시작할 때 <code>[dev]</code>에 추가한다.</li>
+<li>casadi는 <code>pip install -e ".[mpc]"</code>로 깐다(3.6.x로 고정돼 있다). acados 자체는 소스 빌드다.</li>
+<li><strong>병렬로 돌릴 때는 <code>TRAVPLAN_ACADOS_BUILD</code>로 프로세스마다 생성 폴더를 나눈다.</strong> 같은 폴더에 동시에 코드를 생성하면 빌드가 엉킨다.</li>
+<li><strong>casadi 함수 이름에는 점(<code>.</code>)을 쓸 수 없다.</strong> <code>MPCConfig.name</code>에 <code>0.05</code> 같은 태그를 넣으면 <code>Function name is not valid</code>로 죽는다.</li>
 </ul>
 <h3>M.3.2 단계와 게이트</h3>
 <table>
@@ -23816,17 +23909,17 @@ GP 잔차(TP-0068), 0차 근사, 튜브·SLP는 모두 "제약을 조이는" 장
 <tr>
 <td>0</td>
 <td>TP-0070</td>
-<td>명목 MPC가 기존 벤치마크에서 <strong>MPPI와 동률</strong>(40/40), 계산 &lt; 20 ms — <strong>2026-09-29 미달(6/12), M.3.3 참조</strong></td>
+<td>명목 MPC가 기존 벤치마크에서 <strong>MPPI와 동률</strong>(40/40), 계산 &lt; 20 ms — 2026-09-29 미달(6/12, M.3.3). <strong>2026-10-01 38/40, 6.6 ms</strong>(M.3.10). 동률은 고정 여유로는 닿지 않는다</td>
 </tr>
 <tr>
 <td>1</td>
 <td>TP-0071</td>
-<td>치명 셀을 제약으로. <strong>2026-09-29 부분 달성(9/12), M.3.5</strong> — 보행자 타원은 아직</td>
+<td>치명 셀을 제약으로 + 보행자. 2026-09-29 부분(9/12, M.3.5). <strong>2026-10-01 달성: 정적 38/40, 보행자 23/24·충돌 0</strong>(M.3.10·M.3.11)</td>
 </tr>
 <tr>
 <td>2</td>
 <td>TP-0068</td>
-<td>GP 잔차 평균을 모델에. 1초 예측 오차 50% 감소</td>
+<td>GP 잔차 평균을 모델에. 1초 예측 오차 50% 감소 — <strong>2026-10-01 달성: RMSE 66–78% 감소, plant 37/48 → 44/48</strong>(M.3.12)</td>
 </tr>
 <tr>
 <td>3</td>
@@ -23939,6 +24032,7 @@ slope_crossfall에서만 MPPI와 같다. 그림은 <code>python scripts/make_doc
 <p><mark>이 $\rho_k$가 GP 분산(TP-0069)과 튜브·SLP가 조일 바로 그 양이다.</mark> 0단계에 이 제약이 없어서 세 기법을 얹을 자리도
 아직 없다는 뜻이기도 하다.</p>
 <h3>M.3.5 TP-0071 결과 — 6/12에서 9/12로, 남은 셋은 형태가 아니라 솔버 문제다</h3>
+<p><em>2026-10-01 정정 — 남은 셋은 솔버가 아니라 제약의 구멍이었다(M.3.10).</em></p>
 <p><strong>무엇을 넣었나.</strong> 노드마다 <strong>접평면 하나</strong>다. 매 제어 스텝에 치명 셀의 거리 변환(EDT)을 구하고, 이전 iterate가 놓인 자리에서
 가장 가까운 치명 셀을 <strong>수치로</strong> 찾아 그 접평면을 파라미터로 넘긴다. 원으로 덮지 않은 이유는 travplan의 치명 기하가 대부분
 <strong>벽</strong>(연석 면)이라 원이 지나치게 크게 잡기 때문이다. 노드마다 따로 걸리므로 <strong>좁은 틈도 표현된다</strong> — 램프 양옆 벽을 서로 다른
@@ -24158,6 +24252,7 @@ $\mu_d$가 그대로 들어간다. <mark>따로 구현할 것이 없다 — TP-0
 <p><strong>온라인 적응.</strong> 매 제어 스텝에 직전 명령이 실제로 만든 잔차를 딕셔너리에 밀어 넣고, <code>gp_refresh_every</code>(기본 5) 스텝마다
 Cholesky를 다시 푼다. 용량 400에서 3.9 ms이므로 5스텝에 한 번이면 평균 0.8 ms다.</p>
 <h3>M.3.7 폐루프는 아직 안 된다 — 여기까지 좁혔다</h3>
+<p><em>2026-10-01 정정 — 원인은 명령 출력과 학습 데이터의 속도 범위였다(M.3.12).</em></p>
 <p><mark>오프라인 GP는 게이트를 넘었지만, 그 평균을 MPC에 넣으면 폐루프가 무너진다.</mark> 숨기지 않고 적는다.</p>
 <table>
 <thead>
@@ -24345,6 +24440,7 @@ SQP-RTI 한 걸음이 감당할 섭동을 넘는 것으로 보인다. 다음에 
 <p><strong>참고로 정확 GP 200/400은 데이터를 버린 결과다.</strong> M.3.6의 "용량" 스윕은 활성 집합을 그만큼으로 <strong>자른</strong> 것이고,
 여기 SGPR·RFF 행은 1,400점을 <strong>다 쓰면서</strong> 요약한 것이다. 같은 refresh 예산에서 후자가 낫다.</p>
 <h3>M.3.9 희소화가 폐루프 발산을 고쳤다</h3>
+<p><em>2026-10-01 정정 — curb_ramp가 남은 것도 명령 출력 탓이 컸다. 고친 뒤 plant curb_ramp는 10/12다(M.3.12).</em></p>
 <p>M.3.7에 적은 0/12을 SGPR로 다시 해 봤다. <strong>정확 GP를 SGPR 유도점 64로 바꾼 것 말고는 아무것도 바꾸지 않았다.</strong></p>
 <table>
 <thead>
@@ -24390,7 +24486,421 @@ SQP-RTI 한 걸음이 감당할 섭동을 넘는 것으로 보인다. 다음에 
 curb_ramp가 어려운 것</strong>이다. 지연과 슬립이 붙으면 램프 진입이 크게 어려워진다. 다음은 여기다.</p>
 <p><strong>정리.</strong> GP-MPC를 붙일 때 고를 것은 커널이 아니라 <strong>근사</strong>다. 정확 GP는 오프라인 지표가 가장 좋지만 제어 주기 안에
 못 들어오고(121 ms), 분포 밖에서 위험하다. RFF는 가장 빠르지만 분포 밖이 가장 나쁘다(1.9). <mark>SGPR 유도점 64가 셋
-가운데 유일하게 네 축을 모두 통과한다.</mark></p></div></div>
+가운데 유일하게 네 축을 모두 통과한다.</mark></p>
+<h3>M.3.10 1단계 마무리 — 남은 셋은 솔버가 아니라 제약의 구멍이었다 (TP-0093)</h3>
+<p><strong>정적 4 시나리오 × seed 10에서 <code>guidance+mpc</code>가 38/40이다.</strong> 1단계(M.3.5)는 seed 0–2에서 9/12였다. 기준 <code>guidance+mppi</code>는 40/40이다.
+남은 둘(bumps_potholes s6·s7)은 Guidance 경로가 지나가는 좁은 틈 앞에서 멈춘 <code>timeout</code>이다.</p>
+<p>M.3.5에 "남은 셋은 형태가 아니라 솔버 문제"라고 적었다. <mark>틀렸다. 세 실패는 모두 제약에 난 구멍 때문이었고, QP 반복 한계(status 3)는
+원인이 아니라 증상이었다.</mark> 실패한 에피소드를 스텝마다 계측해서 찾았다.</p>
+<table>
+<thead>
+<tr>
+<th>구멍</th>
+<th>무엇이 일어났나</th>
+<th>고침</th>
+<th>풀린 장면</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>덩어리 안의 노드</td>
+<td>노드가 치명 덩어리 안에 들어가면 가장 가까운 치명 칸이 자기 자신이라 법선이 없다. 그래서 그 행을 껐다. 위반한 바로 그 노드에서 제약이 사라지고, 추종 비용이 예측을 덩어리 너머로 끌었다(예측 노드 3–11개가 치명 칸 안)</td>
+<td>덩어리 안 노드는 가장 가까운 자유 칸 쪽으로 법선을 세운다</td>
+<td>bumps_potholes s1</td>
+</tr>
+<tr>
+<td>칸 중심에서 잰 여유</td>
+<td>여유 0.15 m를 치명 칸 중심에서 쟀다. 가장자리 기준으로는 0.125 m였다(칸 0.05 m). 벽에 붙은 Guidance 경로를 따라가다 예측과 실행이 몇 cm 어긋나자 닿았다</td>
+<td>여유를 칸 가장자리에서 잰다(반 칸 더함)</td>
+<td>random_mix s2</td>
+</tr>
+<tr>
+<td>지도 경계</td>
+<td>시뮬레이터는 지도 밖을 COST 1로 본다. <code>LethalField</code>는 격자 안의 치명 칸만 봤다. 블록과 지도 끝 사이 0.6 m 통로에서 예측이 지도 밖으로 나갔다</td>
+<td>가장 바깥 한 칸을 치명으로 둔다</td>
+<td>random_mix s6</td>
+</tr>
+</tbody>
+</table>
+<p>구멍만 막아서는 부족했다. curb_ramp에서 새로 관측한 연석 때문에 Guidance 경로가 뒤로 뒤집히면, 벽을 따라 1 m/s로 달리던 로봇은
+RTI 세 번 안에 U턴 해를 찾지 못했다. 단순 거리 제약은 노드가 여유에 닿은 뒤에야 걸리기 때문이다(TP-0093이 적어 둔 문제).
+그래서 <strong>이산 CBF 감쇠</strong>를 넣었다. 노드 $k$의 여유 하한을 로봇 자신의 여유 $h_0$에서 기하급수로 줄여 간다.</p>
+<p>$$ n_k^\top p_k \ \ge\ n_k^\top c_k + \tfrac{1}{2}\Delta + m + (1-\gamma)^k \max(h_0 - m,\ 0) $$</p>
+<p>$h_{k+1} \ge (1-\gamma)\, h_k$를 측정한 상태에서 펼친 식이다($\Delta$는 칸 크기, $m$은 여유). 벽 쪽으로 다가가는 속도가 남은 여유에 비례해
+묶이므로 붙기 전에 감속한다. acados v0.3.4는 경로 제약을 노드 1부터 $N-1$까지만 걸므로, $x_0$에 고정된 노드 0과 부딪히지 않는다.
+같은 이유로 종단 노드에는 장애물 제약이 없다. 구현은 <code>MPCConfig.cbf_gamma</code>다. 제약을 hard로 두면(<code>hard_obstacle</code>) 감쇠를 끈다.
+노드 1은 $u_0$로 5 mm밖에 못 움직여서, 빠르게 다가가는 중이면 그 하한을 지킬 수 없기 때문이다.</p>
+<table>
+<thead>
+<tr>
+<th>γ</th>
+<th>seed 0–2</th>
+<th>seed 3–9</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0 (감쇠 없음)</td>
+<td>10/12</td>
+<td>—</td>
+<td>curb_ramp s0·s1 <code>lethal</code></td>
+</tr>
+<tr>
+<td>0.05</td>
+<td>10/12</td>
+<td>—</td>
+<td>너무 보수적이다. bumps_potholes s2가 <code>timeout</code></td>
+</tr>
+<tr>
+<td>0.1</td>
+<td>12/12</td>
+<td>26/28</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>0.2</strong> (기본값)</td>
+<td><strong>12/12</strong></td>
+<td><strong>27/28</strong></td>
+<td>남은 random_mix s6이 세 번째 구멍(지도 경계)이었다</td>
+</tr>
+</tbody>
+</table>
+<p><em>표의 스윕은 지도 경계와 아래 네 번째 구멍을 고치기 전에 돌렸다.</em></p>
+<p><strong>네 번째 구멍은 코드 리뷰가 찾았다.</strong> <code>LethalField</code>가 칸을 내림으로 찾고 있었다. <code>GridSpec</code>은 칸 중심을 <code>origin + i·res</code>에 두고
+반올림하므로, 칸마다 중심 너머 반쪽에서 이웃 칸을 읽었다. 그래서 +x·+y 면 바깥 반 칸은 덩어리 안으로 잡혀 법선이 벽을 따라
+누웠고(0.1 m 칸 시험 지도에서 실제 여유 +0.04 m를 −0.04 m로), −x·−y 면에서는 여유를 낙관했다(0.040 m를 0.077 m로). 반올림으로 고쳤다.
+이 구멍을 막기 전에는 정적 조건이 40/40이었다. −x·−y 면의 낙관 덕분에 좁은 틈이 실제보다 넓어 보였던 것이고, 정확한 기하로는 38/40이다.</p>
+<p>고치는 김에 덩어리 안 노드의 법선을 칸 중심에서 재도록 바꿨다가 되돌렸다. 축에 정렬된 법선은 덩어리 모서리에서 가장 가까운
+자유 칸이 면을 바꿀 때 90° 뒤집힌다. RTI iterate가 스텝마다 진동했고 bumps_potholes s1이 다시 덩어리로 들어갔다. 노드 위치에서
+잰 법선은 연속적으로 변한다. 네 조합(내림·반올림 × 노드·칸 중심)을 같은 네 장면에 돌려, 반올림 + 칸 중심만 실패하는 것을 확인했다.</p>
+<p><strong>여유 하나로는 램프 모서리와 좁은 틈을 함께 맞추지 못한다.</strong> 정확한 기하에서 여유를 스윕했다.</p>
+<table>
+<thead>
+<tr>
+<th>여유 (칸 가장자리부터)</th>
+<th>정적, seed 0–9</th>
+<th>plant, seed 0–5</th>
+<th>정적 실패</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>31/40</td>
+<td>21/24</td>
+<td>램프 모서리 <code>lethal</code> 6, bumps 3</td>
+</tr>
+<tr>
+<td>0.05 m</td>
+<td>37/40</td>
+<td>21/24</td>
+<td>curb_ramp s1 <code>lethal</code>, bumps s6·s7</td>
+</tr>
+<tr>
+<td>0.10 m</td>
+<td>38/40</td>
+<td>21/24</td>
+<td>curb_ramp s0·s6 <code>lethal</code></td>
+</tr>
+<tr>
+<td>0.125 m</td>
+<td>39/40</td>
+<td>21/24</td>
+<td>curb_ramp s5 <code>lethal</code></td>
+</tr>
+<tr>
+<td><strong>0.15 m</strong> (기본값)</td>
+<td>38/40</td>
+<td>21/24</td>
+<td>bumps s6·s7 <code>timeout</code>(틈)</td>
+</tr>
+</tbody>
+</table>
+<p>여유가 작으면 램프 모서리를 베어 치명 칸에 닿고, 크면 Guidance가 고른 틈을 지나가지 못한다. plant 조건은 여유와 상관없이 21/24다.
+40/40을 내는 여유는 없으므로 기본값은 0.15 m로 둔다. 0.125 m와의 한 건 차이는 잡음 수준이다. 처방은 고정 여유가 아니라 두 가지다.
+하나는 MPC 비용에 매끄러운 지형 항을 넣어 모서리 쪽 고비용 칸을 스스로 피하게 하는 것이다(M.1.1에 적었지만 아직 없다).
+다른 하나는 Guidance가 Controller의 여유를 아는 경로를 내게 하는 것이다. 같은 불일치가 MPPI 확률 제약도 세웠다(M.3.13).</p>
+<table>
+<thead>
+<tr>
+<th>스택 (정적, 4 시나리오 × seed 10)</th>
+<th>성공</th>
+<th>GT cost</th>
+<th>jerk</th>
+<th>제어 시간</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1단계 <code>guidance+mpc</code> (seed 0–2)</td>
+<td>9/12</td>
+<td>0.031</td>
+<td>2.8</td>
+<td>13.5 ms</td>
+</tr>
+<tr>
+<td><strong><code>guidance+mpc</code></strong></td>
+<td><strong>38/40</strong></td>
+<td>0.025</td>
+<td>3.1</td>
+<td>6.6 ms</td>
+</tr>
+<tr>
+<td><code>guidance+mppi</code></td>
+<td>40/40</td>
+<td>0.020</td>
+<td>4.4</td>
+<td>13.0 ms</td>
+</tr>
+</tbody>
+</table>
+<p>제어 시간은 한 프로세스에서 컨트롤러를 차례로 돌려 잰 중앙값이다(M.3.13 표). 벤치마크 실행 중에 잰 값은 다른 작업의 부하에 따라
+두세 배까지 흔들려서 쓰지 않았다.</p>
+<div class="fig-grid"><figure class="fig"><a class="thumb" href="assets/figs/tp0093_mpc_vs_mppi.webp" title="원본 보기"><img alt="TP-0093 네 장면" src="assets/figs/tp0093_mpc_vs_mppi.webp" loading="lazy"></a><figcaption>그림 — 1단계에서 MPC가 죽던 세 장면(curb_ramp s1, bumps_potholes s1, random_mix s2)과 지도 경계 장면(random_mix s6). 노란 선이 MPC, 파란 선이 MPPI, 빨간 칸이 치명 셀이다. 네 장면 모두 둘 다 도달한다. curb_ramp s1에서 MPC는 램프를 지나쳤다가 되돌아와 오르고, bumps_potholes s1에서는 블록 사이 틈 앞에서 한 번 머뭇거린다. random_mix s6에서는 블록과 지도 위쪽 끝 사이 통로를 지난다. 그림은 <code>python scripts/make_doc_figures.py --mpc-cbf</code>로 다시 만든다.</figcaption></figure>
+</div><h3>M.3.11 보행자도 반평면 하나로, 다만 앞 2초에만 건다 (TP-0071 나머지)</h3>
+<p><strong>보행자 3명이 가로지르는 조건(seed 0–5)에서 <code>guidance+mpc</code>가 23/24, 충돌 0이다.</strong> 최소 여유는 0.08 m다. TP-0071에 남아 있던
+보행자 제약이다.</p>
+<p>지형과 같은 방식으로 넣었다. 노드마다 그 시각에 예측한 보행자 원판 가운데 가장 가까운 것을 고르고, 원판 중심에서 노드로 향하는
+접평면을 두 번째 제약 행으로 건다(<code>obstacles.py::pedestrian_half_planes</code>). 원판 반경에는 로봇 반경이 들어 있고,
+<code>DynamicObstacles</code>가 예측 시간에 따라 0.15 m/s씩 키운다.</p>
+<p>처음에는 지평 4초 전체에 걸었고 seed 0–2에서 11/12였다. 실패한 bumps_potholes s2가 이 구조의 약점을 그대로 보여 줬다.
+<mark>폭 1 m 통로에서 마주 오는 보행자의 원판은 4초 뒤 반경 1.15 m가 되어 통로를 막는다. 앞으로 가는 해가 없어진 MPC는 물러났고,
+물러나다 블록에 닿았다.</mark> 예측 불확실성이 지평을 따라 커지면 가능 영역이 사라진다는 Trautman의 freezing robot 구조다(TP-0090).
+MPPI는 같은 원판을 비용으로만 쓰므로 그 장면을 스치며 지나간다(최소 여유 0.24 m).</p>
+<table>
+<thead>
+<tr>
+<th>설정 (보행자 3명, seed 0–5)</th>
+<th>성공</th>
+<th>충돌</th>
+<th>최소 여유</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>앞 2 s만, slack 1e4 (지형 우선)</td>
+<td>22/24</td>
+<td><strong>2</strong></td>
+<td>−0.04 m</td>
+</tr>
+<tr>
+<td><strong>앞 2 s만, slack 1e6</strong> (기본값)</td>
+<td><strong>23/24</strong></td>
+<td><strong>0</strong></td>
+<td>0.08 m</td>
+</tr>
+<tr>
+<td><code>guidance+mppi</code></td>
+<td>24/24</td>
+<td>0</td>
+<td>0.24 m</td>
+</tr>
+</tbody>
+</table>
+<p><em>slack 1e4 행은 칸 조회를 고치기 전에 쟀다. 남은 실패는 bumps_potholes s3의 <code>lethal</code>이다.</em></p>
+<p>지형을 우선하려고 보행자 slack을 낮추면 로봇이 보행자를 스친다. 그래서 가중치는 지형과 같게 두고, <strong>자라는 원판은 앞 2초에만 제약으로
+건다</strong>(<code>MPCConfig.ped_horizon_s</code>). 그 너머는 매 스텝의 재계획에 맡긴다. 근본 처방은 로봇의 움직임에 반응하는 예측이다(TP-0090).
+MPC는 MPPI보다 보행자에게 훨씬 바짝 붙는다(0.08 대 0.24 m). 여유 0.15 m 제약을 경계까지 쓰기 때문이다.</p>
+<h3>M.3.12 GP 평균의 폐루프를 무너뜨린 원인은 둘이었다 (TP-0068)</h3>
+<p><strong>plant를 켠 seed 0–11에서 <code>guidance+mpc_gp</code>가 44/48이다. GP가 없는 <code>guidance+mpc</code>는 37/48이다.</strong> 성공한 에피소드의 평균 도달
+시간도 35.8 s에서 23.2 s로 줄었다. 대신 jerk가 2.5에서 4.5로 커졌다. M.3.7(0/12)과 M.3.9(curb_ramp 전패)에 남겨 둔 문제의
+원인을 둘 찾았다.</p>
+<p><strong>① 명령을 잘못 냈다.</strong> GP 평균을 넣은 모델에서 상태 twist $Z_k$는 plant가 <strong>실현할</strong> twist다. 지연 때문에 잔차 $\mu_k$는 명령과
+반대쪽을 향한다.</p>
+<p>$$ Z_{k+1} = Z_k + u_k \Delta t + \mu_k $$</p>
+<p>그런데 컨트롤러는 GP가 없을 때처럼 $Z$의 구간 평균을 명령으로 보냈다. 이미 지연을 반영한 twist를 명령하니 plant가 한 번 더
+지연시켰다. <mark>GP가 학습한 대상은 잔차를 더하기 전의 명령이다. 보내야 할 것도 그것이다.</mark> 그 명령은 $Z_k + u_k \Delta t$이고,
+<code>_features</code>가 GP에 넣는 값도 이것이다. 온라인 학습에 넣는 입력도 실제로 보낸(속도 한계로 자른) 명령으로 맞췄다.</p>
+<p><strong>② 데이터가 계획 속도를 덮지 못했다.</strong> 잔차는 plant를 켜고 <code>guidance+mppi</code>로 모았다. 지연 때문에 그 폐루프는 명령 $v_x$가
+0.93 m/s를 넘은 적이 없다(99% 분위 0.86). MPC와 MPPI는 지평 뒤쪽에서 1.1–1.5 m/s를 계획한다. 그 노드들은 분포 밖이라 평균은
+믿을 수 없고, 분산은 prior로 돌아간다($d\omega$ 0.68 rad/s, 실제 잔차는 0.05 안팎).</p>
+<p>그래서 <strong>가진(excitation) 주행</strong>을 더했다. 같은 폐루프에서 2초 구간마다 실행 $v_x$를 1.0–1.7배로 키우고 $v_y$·$\omega_z$에 매끄러운 잡음을
+얹어, 명령이 twist 상자 전체를 덮게 했다(<code>scripts/fit_residual_gp.py</code>). 학습은 seed 0·1(MPPI 2,000 + 가진 998 샘플), 보류는 seed 2다.</p>
+<table>
+<thead>
+<tr>
+<th>보류 데이터</th>
+<th>모델</th>
+<th>RMSE dvx / dvy / dωz</th>
+<th>dωz 예측 sd</th>
+<th>95% 적중</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MPPI 주행</td>
+<td>기존 (MPPI 데이터만)</td>
+<td>0.0181 / 0.0078 / 0.0219</td>
+<td>0.026</td>
+<td>0.96 / 0.99 / 0.99</td>
+</tr>
+<tr>
+<td>MPPI 주행</td>
+<td><strong>새 (MPPI + 가진)</strong></td>
+<td>0.0181 / <strong>0.0043</strong> / <strong>0.0159</strong></td>
+<td>0.024</td>
+<td>0.97 / 1.00 / 1.00</td>
+</tr>
+<tr>
+<td>가진 주행</td>
+<td>기존</td>
+<td>0.0248 / 0.0073 / 0.0661</td>
+<td>0.120</td>
+<td>0.90 / 0.99 / 0.95</td>
+</tr>
+<tr>
+<td>가진 주행</td>
+<td><strong>새</strong></td>
+<td>0.0213 / 0.0071 / <strong>0.0376</strong></td>
+<td><strong>0.058</strong></td>
+<td>0.95 / 0.97 / 0.98</td>
+</tr>
+</tbody>
+</table>
+<p>명목 모델(잔차 0)의 RMSE는 MPPI 주행에서 0.055 / 0.023 / 0.060, 가진 주행에서 0.076 / 0.046 / 0.115다. 새 GP는 기존 분포에서
+나빠지지 않았고, 빠른 영역에서 $d\omega$ 오차와 예측 sd를 절반으로 줄였다. bumps_potholes s0를 plant로 달리며 세 시점에서 잰 MPPI rollout의
+지평 끝 위치 σ(중앙값)는 0.17–0.20 m에서 0.06–0.09 m로 줄었다.</p>
+<p><strong>두 원인을 차례로 고친 효과(plant, <code>guidance+mpc_gp</code>).</strong></p>
+<table>
+<thead>
+<tr>
+<th>변형</th>
+<th>curb_ramp</th>
+<th>bumps_potholes</th>
+<th>slope_crossfall</th>
+<th>random_mix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>기존 GP, 구간 평균 명령 (seed 0–2)</td>
+<td>0/3</td>
+<td>1/3</td>
+<td>3/3</td>
+<td>3/3</td>
+</tr>
+<tr>
+<td>새 GP, 구간 평균 명령 (seed 0–2)</td>
+<td>0/3</td>
+<td>1/3</td>
+<td>3/3</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>새 GP + 명령 수정</strong> (seed 0–11)</td>
+<td><strong>10/12</strong></td>
+<td><strong>10/12</strong></td>
+<td>12/12</td>
+<td>12/12</td>
+</tr>
+<tr>
+<td>GP 없음 <code>guidance+mpc</code> (seed 0–11)</td>
+<td>6/12</td>
+<td>8/12</td>
+<td>11/12</td>
+<td>12/12</td>
+</tr>
+</tbody>
+</table>
+<p>데이터만 바꿔서는 curb_ramp가 하나도 풀리지 않았다. 명령을 고치자 풀렸다. 즉 ①이 주된 원인이고 ②는 그 위에서 분산을 믿을 만하게
+만든 것이다. GP 없는 MPC가 curb_ramp에서 6/12인 것은 지연 때문에 램프를 지나친 뒤 되돌아오다 시간이 다 가기 때문이다(<code>timeout</code> 5).
+GP가 지연을 미리 알면 덜 지나친다.</p>
+<h3>M.3.13 MPPI에도 확률 제약을 세웠다 (TP-0076)</h3>
+<p><strong>확률 제약을 얹을 자리는 만들었지만, 이 plant에서 GP 튜브의 이득은 아직 보이지 않는다.</strong> plant를 켠 seed 0–11에서
+<code>guidance+mppi_ccgp</code>가 42/48, 기준 <code>guidance+mppi</code>가 44/48이다. 튜브 없는 <code>guidance+mppi_cc</code>는 정적 40/40, 보행자 3명 24/24로 기준과 같다.</p>
+<p>Controller 문서 E.10의 (b) 갈래다(Trivedi 외, ICRA 2025). 비용이 아니라 제약으로 세운다. rollout의 스텝 $k$마다 로봇 위치가 치명 경계나
+보행자 원판을 넘을 확률을 $\epsilon$ 이하로 묶고, 위치 오차를 가우시안으로 보면 결정론적 조임이 된다.</p>
+<p>$$ \Pr\big[\,d(p_k) &lt; 0\,\big] \le \epsilon \quad\Longleftrightarrow\quad d(\bar p_k) \ \ge\ \Phi^{-1}(1-\epsilon)\,\sigma_{p,k} $$</p>
+<p>$d$는 부호 있는 거리(치명 경계까지, 또는 보행자 원판까지)이고 $\sigma_{p,k}$는 <strong>그 샘플의</strong> 위치 표준편차다. 샘플마다 GP로 스텝별
+twist 잔차 분산을 구하고 rollout을 따라 쌓는다. 그래서 빠르고 낯선 샘플은 넓은 튜브를, 익숙한 샘플은 좁은 튜브를 받는다.
+<mark>샘플마다 튜브가 다르다는 것이 MPC가 가질 수 없는 점이다. MPC는 명목 해 하나를 조인다.</mark> 구현은 <code>CostTerm</code> 하나
+(<code>control/mppi/chance.py</code>)다. 위반한 샘플에 상수 벌점을 줘 사실상 버리고, 모든 샘플이 위반하면 덜 위반한 쪽이 이기도록 선형 항을 더한다.
+<code>mppi.py</code>는 바꾸지 않았다. 그래서 rollout은 명목 모델로 돌고, GP는 분산만 쓰고 평균(지연 편향)은 쓰지 않는다.</p>
+<p>쌓는 방식은 되먹임을 반영한다. 로봇은 매 스텝 다시 풀어 밀린 위치를 되돌리므로, 스텝 $j$의 오차는 $\tau$(1 s) 뒤에는 대부분 지워진다.
+그래서 분산을 $a = e^{-\Delta t/\tau}$로 감쇠시키며 더한다. 이것이 없으면 조금만 낯선 샘플도 1초 안에 튜브가 상한(0.5 m)에 붙었다.
+GP는 4스텝마다 평가해 사이를 채운다(스텝마다 평가 대비 σ 오차 99% 분위 2.7 cm, 64 → 10 ms). 공유 GP 커널을 $\lVert a\rVert^2 + \lVert b\rVert^2 - 2a^\top b$
+전개로 바꿔 7,680개 질의가 45 ms에서 18 ms로 줄었다. MPC 쪽도 같이 빨라진다.</p>
+<p><strong>처음 넣은 버전은 로봇을 세웠다. 원인은 셋이었다.</strong></p>
+<ol>
+<li><strong>고정 여유 0.15 m.</strong> MPC와 맞추려고 튜브 위에 0.15 m를 더 얹었더니 정적 조건에서 37/40이었다. 세 실패 모두 틈 앞에서 멈춘
+   <code>timeout</code>이다. 기준 MPPI는 Guidance 경로를 따라 가장 좁은 곳을 0.04–0.07 m 여유(칸 가장자리 기준)로 지나간다. 지평 4초가 그 틈에 닿는
+   순간 앞으로 가는 샘플이 모두 위반이 되고, 위반하지 않는 샘플은 "정지" 하나뿐이다. 넓은 길이 없어서가 아니다. 출발–목표를 잇는
+   경로 가운데 가장 넓은 것의 병목 여유는 bumps_potholes s1에서 0.68 m였다. Guidance가 최단 경로로 좁은 틈을 고른 것이다. 치명 칸은 이미
+   로봇 반폭(0.30 m)만큼 팽창돼 있으므로(<code>FeatureConfig.inflate_radius_m</code>) 고정 여유는 0으로 두고, 추종 오차 몫은 튜브에 맡겼다.</li>
+<li><strong>가장자리까지 잰 거리.</strong> 여유 0으로도 bumps_potholes s6이 멈췄다(39/40). Guidance가 블록 사이 한두 칸짜리 틈으로 경로를 냈는데,
+   거리를 치명 칸 가장자리까지 재니 틈 안이 0 이하로 나왔다. 막아야 할 사건은 시뮬레이터가 실패로 보는 사건, 즉 중심에서 이중선형으로
+   샘플한 cost ≥ 0.95다. 이웃 칸 cost가 $c$이면 이 경계는 치명 칸 중심에서 $0.05\,\Delta/(1-c)$ 떨어진 곳이다(0.05 m 칸에서 $c = 0.3$이면 0.4 cm).
+   그래서 거리를 치명 칸 <strong>중심</strong>까지 잰다. 0선이 실패 경계보다 엄격하지 않고 한 칸 넘게 느슨하지 않다는 것을 테스트로 고정했다.</li>
+<li><strong>분포 밖 분산.</strong> M.3.12의 ②와 같은 원인이다. 기존 GP로는 지평 끝 σ가 0.17–0.20 m여서 튜브가 0.3 m를 넘었다. 고정 여유
+   0.15 m와 기존 GP를 함께 쓴 첫 버전은 plant 조건 seed 0–2에서 9/12였다.</li>
+</ol>
+<p><strong>남은 plant 실패가 가르쳐 준 것.</strong> curb_ramp s5(<code>mppi_ccgp</code>, <code>lethal</code>)를 스텝마다 뜯어봤다. 실패 직전 믿음 지도와 실제 지도의 여유는
+같았다(σ 0, 다 관측). 1스텝 위치 예측 오차는 중앙값 6 mm였다. 제약을 지키는 샘플도 768개 가운데 94–216개 남아 있었다. 실행한 평균 계획은
+0선에서 1.5–5 cm 떨어져 있었는데, 그 자리의 cost가 0.89였다. <strong>이웃 칸 cost가 0.9에 가까우면 실패 경계는 치명 칸 중심에서 반 칸(2.5 cm)
+바깥이다.</strong> 2번에서 고른 0선은 낮은 cost 이웃을 가정한 것이라, 램프 벽 옆에서는 실패 경계보다 반 칸까지 느슨했다. 다음 할 일은 둘이다.
+0선을 실패 경계에 정확히 맞추는 것(cost 기울기 방향으로 $z\sigma$만큼 옮긴 점의 이중선형 cost로 판정), 그리고 rollout에 GP 평균을 넣는 것이다.</p>
+<p><strong>전체 결과.</strong> 제어 시간은 bumps_potholes s0를 plant로 달리며 한 프로세스에서 컨트롤러를 차례로 돌려 잰 중앙값이다.</p>
+<table>
+<thead>
+<tr>
+<th>스택</th>
+<th>정적 (seed 0–9)</th>
+<th>보행자 3명 (seed 0–5)</th>
+<th>plant (seed 0–11)</th>
+<th>제어 시간</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>guidance+mppi</code></td>
+<td>40/40</td>
+<td>24/24, 충돌 0</td>
+<td>44/48</td>
+<td>13.0 ms</td>
+</tr>
+<tr>
+<td><code>guidance+mppi_cc</code> (튜브 없음, 여유 0)</td>
+<td>40/40</td>
+<td>24/24, 충돌 0</td>
+<td>41/48</td>
+<td>16.1 ms</td>
+</tr>
+<tr>
+<td><code>guidance+mppi_ccgp</code> (GP 튜브)</td>
+<td>—</td>
+<td>—</td>
+<td>42/48</td>
+<td>35.9 ms</td>
+</tr>
+<tr>
+<td><code>guidance+mpc</code></td>
+<td>38/40</td>
+<td>23/24, 충돌 0</td>
+<td>37/48</td>
+<td>6.6 ms</td>
+</tr>
+<tr>
+<td><strong><code>guidance+mpc_gp</code></strong> (GP 평균)</td>
+<td>—</td>
+<td>—</td>
+<td><strong>44/48</strong></td>
+<td>9.2 ms</td>
+</tr>
+</tbody>
+</table>
+<div class="fig-grid"><figure class="fig"><a class="thumb" href="assets/figs/tp0076_controller_matrix.webp" title="원본 보기"><img alt="TP-0076 컨트롤러별 성공" src="assets/figs/tp0076_controller_matrix.webp" loading="lazy"></a><figcaption>그림 — 세 조건에서 컨트롤러별 성공 비율. 파란 막대가 MPPI 계열, 주황 막대가 MPC 계열이고 막대 끝 숫자가 성공 수다. GP를 쓰는 두 스택은 잔차가 있는 plant 조건에서만 돌렸다. 그림은 <code>python scripts/make_doc_figures.py --controllers</code>로 다시 만든다(원자료 <code>results/p2-mpc-mppi-constraints.tsv</code>).</figcaption></figure>
+</div><p>세 가지를 읽는다. 첫째, plant에서 이득을 본 것은 MPC의 <strong>GP 평균</strong>이다(37 → 44/48). 지연이라는 체계적 오차는 평균으로 갚는 것이다.
+둘째, MPPI의 GP 튜브는 이 plant에서 1스텝 오차가 6 mm라 쓸 몫이 작고, 남은 실패는 0선의 느슨함에서 온다. 셋째, MPC는 정적·보행자에서
+MPPI보다 한두 건 뒤지지만 계산은 절반이고 jerk가 낮다(정적 3.1 대 4.4). CLAUDE.md 기준표로는 다섯 스택 모두 통과다
+(보행자 3명 seed 0–2에서 12/12, 충돌 0, 최대 pitch 8° 아래, GT cost 0.06 아래).</p>
+<p><strong>다음.</strong></p>
+<ul>
+<li>MPC에 분산을 넣는다(TP-0069). 반평면의 $\rho_k$ 자리에 $\Phi^{-1}(1-\epsilon)\,\sigma_{p,k}$를 넣으면 된다. 배관은 이미 있다.</li>
+<li>MPC 비용에 매끄러운 지형 항(M.1.1)을 넣고, Guidance 경로의 여유를 Controller와 맞춘다. 고정 여유로 모서리와 틈을 함께 못 맞춘 문제다.</li>
+<li>확률 제약의 0선을 실패 경계에 맞추고, rollout에 GP 평균을 넣는다.</li>
+<li><code>planner_d+mpc</code>·<code>planner_d+mpc_gp</code>를 Planner D 체크포인트가 있는 데스크톱에서 돌린다(시간 참조 모드).</li>
+</ul></div></div>
   </section>
   <section class="tab" id="tab-design" role="tabpanel" aria-labelledby="tabbtn-design" data-math="17">
     <div class="card md"><h1>TP-0068 설계: GP 잔차 동역학 (DD · 동축 스워브 · 비동축 스워브)</h1>
