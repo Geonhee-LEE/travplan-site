@@ -89,6 +89,10 @@
   },
   "tp0071_curb_ramp": {
    "caption": "TP-0071: curb_ramp seed 0, 굵은 선이 그 순간의 4초 예측"
+  },
+  "tp0098_determinism": {
+   "caption": "매퍼의 순서 의존 넷을 닫으니 같은 점군에서 모든 층이 비트 단위로 같고, L1 폐루프가 재현된다(상한 + prior로 두 스택 12/12)",
+   "results": "results/tp0098_fixed"
   }
  },
  "tp": {
@@ -150,6 +154,7 @@
   ]
  },
  "featured": [
+  "tp0098_determinism",
   "tp0102_robot_pose",
   "tp0095_rules",
   "tp0065_stereo",
