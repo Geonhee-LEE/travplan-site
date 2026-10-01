@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>찾는 페이지가 없다 · travplan</title>
+<meta name="description" content="travplan 공개 사이트에 없는 주소다. 첫 화면, 대시보드, Playground로 간다.">
+<!-- GitHub Pages는 없는 주소마다 이 파일을 낸다. 어느 깊이의 주소에서 떠도 맞도록 링크는 /travplan-site/부터 쓴다. -->
+<link rel="icon" type="image/png" sizes="32x32" href="/travplan-site/assets/site/favicon.png">
+<link rel="apple-touch-icon" href="/travplan-site/assets/site/apple-touch-icon.png">
+<meta name="theme-color" content="#e9ece7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d1113" media="(prefers-color-scheme: dark)">
+<style>
+:root {
+  color-scheme: light;
+  --bg: #e9ece7; --panel: #f6f7f3; --line: #cfd6d0; --fg: #152024; --muted: #5a6964; --accent: #b88700; --route: #0f8c80;
+  --body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root { color-scheme: dark; --bg: #0d1113; --panel: #141a1d; --line: #29333a; --fg: #e4e9e6; --muted: #8b9893; --accent: #f2b705; --route: #5fd3c6; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.6 var(--body); }
+main { max-width: 640px; margin: 0 auto; padding: 64px 16px 48px; display: grid; gap: 18px; }
+.code { font: 600 13px var(--mono); letter-spacing: .1em; color: var(--muted); }
+h1 { margin: 0; font-size: clamp(30px, 7vw, 44px); line-height: 1.1; letter-spacing: -0.02em; }
+h1 span { color: var(--accent); }
+p { margin: 0; color: var(--muted); }
+nav { display: grid; gap: 10px; }
+nav a { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 14px 16px; min-height: 48px;
+  border: 1px solid var(--line); border-radius: 12px; background: var(--panel); color: var(--fg); text-decoration: none; font-weight: 600; }
+nav a small { font: 12px var(--mono); color: var(--muted); font-weight: 400; }
+nav a:hover { border-color: var(--accent); }
+nav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+</style>
+</head>
+<body>
+<main>
+  <div class="code">404 · NOT FOUND</div>
+  <h1>찾는 페이지가 없다<span>.</span></h1>
+  <p>주소가 바뀌었거나 아직 공개되지 않은 페이지다. 아래에서 다시 들어간다.</p>
+  <nav aria-label="들어가는 곳">
+    <a href="/travplan-site/">travplan 첫 화면 <small>/travplan-site/</small></a>
+    <a href="/travplan-site/dashboard.html">대시보드 <small>진행 현황 · TODO · 리서치</small></a>
+    <a href="/travplan-site/playground/">Playground <small>브라우저 시뮬레이션</small></a>
+  </nav>
+</main>
+</body>
+</html>

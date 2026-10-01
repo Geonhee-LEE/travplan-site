@@ -92,7 +92,7 @@ GP는 확률이고 튜브는 유계 외란이라 그대로 잇지 못한다. 다
 
 | 날짜 | 단계 | 한 일 | 결과 |
 |---|---|---|---|
-| 2026-09-29 | 0 준비 | 툴체인 실측 | **acados v0.3.4가 이 랩탑에 이미 빌드돼 있다**(`~/acados`, `libacados.so`, `t_renderer`, `ACADOS_SOURCE_DIR` 설정됨). 빠진 것은 casadi 하나뿐이었다 |
+| 2026-09-29 | 0 준비 | 툴체인 실측 | **acados v0.3.4가 이 랩탑에 이미 빌드돼 있다**(홈 디렉터리의 `acados` 소스 빌드, `libacados.so`, `t_renderer`, `ACADOS_SOURCE_DIR` 설정됨). 빠진 것은 casadi 하나뿐이었다 |
 | 2026-09-29 | 0 준비 | acados 폐루프 smoke | 20스텝 이중적분기 OCP 생성·해결 성공. `status=0`, **0.087 ms/해**(SQP-RTI, HPIPM) |
 | 2026-09-29 | 0 준비 | MuJoCo 비동축 모듈 smoke | 조향 힌지 + 0.0555 m 오프셋 바퀴 힌지 + 평면 접촉. 5,000스텝 11 ms = **실시간의 938배**(CPU 1스레드), 접촉 2개 |
 | 2026-09-29 | 0 구현 | `travplan/control/acados_mpc/`(model·ocp·controller) + 벤치마크에 `mpc` 등록 + 테스트 5개 | 첫 폐루프 주행 성공. 솔버 빌드 포함 7 s |

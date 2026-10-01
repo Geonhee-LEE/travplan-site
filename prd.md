@@ -53,12 +53,12 @@ ROS 2 Jazzy를 네이티브로 지원한다. IsaacLab 2.3.2가 의존하는 기�
 설치이므로 daily_executor가 자동으로 하지 않는다(담당: 사용자).**
 
 ### R-F-002 지형 heightfield → USD mesh 변환
-`heightfield_to_mesh()`는 `(verts, faces)` numpy 배열을 낸다. `~/IsaacLab/source/isaaclab/isaaclab/terrains/utils.py::create_prim_from_mesh`
+`heightfield_to_mesh()`는 `(verts, faces)` numpy 배열을 낸다. IsaacLab 저장소의 `source/isaaclab/isaaclab/terrains/utils.py::create_prim_from_mesh`
 (trimesh → `UsdGeom.Mesh` prim)를 참고해 USD prim을 만드는 함수를 더한다. `pxr`는 `usd-core` pip 패키지로 Isaac Sim 없이 import·테스트할 수
 있어서, 6.0 설치(R-F-001)를 기다리지 않고 시작할 수 있다.
 
 ### R-F-003 LiDAR 부착
-`~/Downloads/isaac-go2-ros2/go2/go2_sensors.py::add_rtx_lidar()`의 `omni.kit.commands.execute("IsaacSensorCreateRtxLidar", ...)` 패턴을 따라
+isaac-go2-ros2 저장소 `go2/go2_sensors.py::add_rtx_lidar()`의 `omni.kit.commands.execute("IsaacSensorCreateRtxLidar", ...)` 패턴을 따라
 로봇 prim에 RTX LiDAR를 단다.
 
 ### R-F-004 스워브 운동학 프록시
@@ -67,8 +67,8 @@ ROS 2 Jazzy를 네이티브로 지원한다. IsaacLab 2.3.2가 의존하는 기�
 `kinematic_sim.py`와 같고 물리 백엔드만 다르다.
 
 ### R-F-005 ROS 2 Jazzy 브릿지 노드
-`travplan_ws/src/travplan_bridge` colcon 패키지다. `~/Downloads/isaac-go2-ros2/ros2/go2_ros2_bridge.py`(odom·LiDAR PointCloud2 발행, cmd_vel 구독)
-패턴을 따르되, diff-drive cmd_vel 대신 body twist(vx, vy, wz)를 쓴다. 워크스페이스 구조는 `~/IsaacSim-ros_workspaces/jazzy_ws`를 참고한다.
+`travplan_ws/src/travplan_bridge` colcon 패키지다. isaac-go2-ros2 저장소의 `ros2/go2_ros2_bridge.py`(odom·LiDAR PointCloud2 발행, cmd_vel 구독)
+패턴을 따르되, diff-drive cmd_vel 대신 body twist(vx, vy, wz)를 쓴다. 워크스페이스 구조는 IsaacSim-ros_workspaces 저장소의 `jazzy_ws`를 참고한다.
 
 **구조 결정(2026-09-24, issue #1).** rclpy를 Isaac Sim 프로세스(`.venv-isaac6`, miniforge Python 3.12)에 직접 import하는 방식(A)은
 `rclpy.init()`과 `Node()` 생성까지는 동작했다(SOABI `cp312` 일치). 하지만 실제 토픽 발행·구독과, 서로 다르게 빌드된 numpy·tf2 C 확장의
@@ -119,7 +119,7 @@ cycle 안의 시뮬레이션 실행(Isaac Sim GUI·헤드리스, 대규모 벤�
 - 저장소 밖 `rm -rf`와 사용자 dotfile 수정을 금지한다.
 
 ### R-NF-004 관측 가능성
-로그는 `~/.local/share/travplan/logs/{daily_executor,daily_wrap}-YYYY-MM-DD.log`, 상태는 `~/.local/state/travplan/*.lock`이다. cycle마다
+로그는 XDG 데이터 디렉터리 아래 `travplan/logs/{daily_executor,daily_wrap}-YYYY-MM-DD.log`, 상태는 XDG 상태 디렉터리 아래 `travplan/*.lock`이다. cycle마다
 `journal/YYYY-MM/DD-HH-<slug>.md`, `JOURNAL.md`(최근 20개), `STATE.md`(전체 재작성, `docs/WRITING.md` 기준), `research/cron_activity.md`(한 줄)를 남긴다.
 
 ### R-NF-005 재현성

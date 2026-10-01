@@ -231,4 +231,7 @@ L1 간이, 시나리오 3개(curb_ramp s0, bumps_potholes s4, slope_crossfall s0
   지금은 15열을 모두 계산한다. JS에 없는 값이 생기면 빈 칸으로 둔다. 지형을 편집한 주행은 `scenario` 끝에 `+edit`를 붙인다. 로봇·인식 설정은 CSV에 없고 기록 행의 주소에 있다.
 - **게시:** 연구 저장소 main에 push하면 GitHub Actions(`publish-site`)가 `docs/`를 공개 저장소 `travplan-site`로 복사하고, 그 저장소의 GitHub Pages가 서비스한다. claude.ai 게시본은 `index.html`을 `file_path`,
   `docs/playground`를 `root`, `js/*.js`를 `files`로 주고 위 URL에 publish한다. `index.html`에 `<!doctype>`·`<head>`가 없는 것은
-  claude.ai 게시 규칙 때문이다. 브라우저는 그대로 연다. 새 JS 파일은 `js/` 아래에 두어야 게시본에 함께 올라간다.
+  claude.ai 게시 규칙 때문이다. 로컬 브라우저는 그대로 연다. 새 JS 파일은 `js/` 아래에 두어야 게시본에 함께 올라간다.
+- **공개 사본:** 동기화 때 `automation/site_public.py`가 공개 사본의 `index.html` 앞에 문서 골격(`<!doctype html>`, viewport)과
+  공유 미리보기 메타(description, OG 그림, 파비콘)를 붙인다. 그래서 폰에서도 쿼크 모드 980 px가 아니라 표준 모드로 기기 폭에 맞춰 뜬다.
+  저장소의 `index.html`은 본문 전용으로 둔다. 공개 사본은 위생 검사(`automation/site_lint.py`)를 통과해야 올라간다(TP-0103).
