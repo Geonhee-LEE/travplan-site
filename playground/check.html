@@ -98,8 +98,9 @@ for (const [name, x] of [...PRESETS.map((p) => [p.id, baseState(p.id)]), ...USER
   row(`주소 왕복: ${name}`, `#${h}`, "parse(serialize(x)) = x", ok ? "같다" : "다르다 " + y.notes.join(" "), ok);
 }
 // 나쁜 주소: 예외 없이 읽고, 쓸 수 없는 값은 바탕(기본 설정) 그대로 두고 알린다. 상속 이름(constructor)과 상한을 넘는 목록도 본다.
+// 없는 시연은 "#TP-" + "9999"로 나눠 쓴다. 붙여 쓰면 진행 원장 점검(tp_registry.py check)이 문서의 TP 번호로 읽는다.
 const BAD = ["#pg?layer=constructor", "#pg?layer=__proto__", "#pg?ed=constructor,1,1", "#pg?ed=b,99,1", "#pg?goal=100,100", "#pg?ped=0,0,9,9",
-  "#pg?s=abc", "#pg?v=4d", "#TP-9999", "#%E0%A4%A", "#pg?ped=" + Array(101).fill("1,1,0,0").join(";"), "#pg?geo=constructor", "#pg?ex=5", "#pg?ex="];
+  "#pg?s=abc", "#pg?v=4d", "#TP-" + "9999", "#%E0%A4%A", "#pg?ped=" + Array(101).fill("1,1,0,0").join(";"), "#pg?geo=constructor", "#pg?ex=5", "#pg?ex="];
 const badWrong = BAD.filter((h) => {
   try { const r = parse(h); return !(r.notes.length && same(r.state, canon(baseState(null)))); } catch { return true; }
 });
