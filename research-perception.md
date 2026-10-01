@@ -1837,6 +1837,115 @@ L1의 실패 셋은 모두 bumps_potholes의 포트홀(s0·s1 guidance, s1 plann
 - 고정소수점 범위는 칸당 |합| < 2.1×10⁹이다. 맵 중심 기준 높이 10 m에서 칸당 점 2억 개까지 안전하다.
 - `.venv-emap`에 pytest를 넣어 `tests/test_emap_determinism.py`와 `tests/test_l1_perception.py`가 돈다(10 passed). 기본 venv에서는 cupy가 없어 건너뛴다.
 
+### A.13.13 TP-0054 — 매퍼 분산은 σ가 되지 못하고, cost 민감도 σ는 오차를 맞히지만 폐루프를 바꾸지 못한다
+
+**결론 먼저.** ==L1 매퍼(elevation_mapping)의 칸별 높이 분산은 TravMap σ로 쓸 수 없다.== 배포 설정에서 평지 칸의 분산은 실제 오차보다 표준편차로 130배 크다.
+분산이 큰 칸이 실제로 더 틀린 칸인 것도 아니다(순위 상관 −0.11). 높이 오차의 대부분은 점 잡음이 아니라 5 cm 칸 하나가 턱의 위아래를 섞는 데서 생기는데,
+매퍼의 잡음 모델에는 그 항이 없다. 그래서 `sensor_noise_factor` 하나로는 평지와 모서리를 함께 맞출 수 없다.
+==관측 칸의 cost 오차를 맞히는 것은 그 칸 cost의 높이 민감도와 주변의 미관측 비율이다(AUROC 0.886).== 이것을 σ로 넣는 `sigma_mode="sensitivity"`를 만들었다.
+하지만 L1·L0 폐루프(4 지형 × seed 0–9)의 성공 수는 σ를 누구에게 주든 이진 σ와 같은 범위다.
+겉보기 차이는 bumps_potholes의 혼돈 안에 있다(σ = 1e-6만 줘도 20회 중 4회가 바뀐다). 그래서 기본값은 이진 σ로 둔다.
+
+![TP-0054](assets/figs/tp0054_sigma.webp)
+
+*그림 — TP-0054 (Fig. 1): (a) 매퍼가 낸 높이 std 대 실제 높이 오차, (b) 관측 칸의 cost 오차를 맞히는 정도(AUROC), (c) L1 폐루프 성공 수. 출처: `results/tp0054_sigma`, `results/tp0054_l1`*
+
+#### 1. 매퍼 분산은 보정되지도, 순위를 맞히지도 않는다
+
+`scripts/eval_l1_sigma.py`: TP-0100과 같은 고정 자세(GT 경로 0.5 m 간격), 4 지형 × seed 0–2. 매 관측 뒤 로봇 5 m 안 관측 칸 439만 개(칸 × 스냅샷)를 썼다.
+매퍼의 점 분산은 `sensor_noise_factor · r²`(배포값 0.05)이다. 합성 LiDAR의 거리 잡음은 1 cm다.
+
+| 설정 | 평지 칸 실제 RMSE | 평지 칸 예측 std(중앙값) | 평지 mean z² | 모서리 칸 실제 RMSE | 모서리 mean z² | 순위 상관(평지/모서리) |
+|---|---|---|---|---|---|---|
+| 배포(factor 0.05) | 0.20 cm | 26.6 cm | 0.0001 | 3.33 cm(p99 19.7 cm) | 0.03 | −0.11 / −0.04 |
+| factor 1e-4 | 0.23 cm | 3.3 cm | 0.007 | 3.43 cm | 1.0 | 0.01 / 0.14 |
+| factor 1e-5, 시간·이상치 분산 끔 | 0.22 cm | 0.68 cm | 0.21 | 3.50 cm | **19.6** | −0.19 / 0.12 |
+
+보정된 분산이면 mean z²가 1이다. factor만 낮추면 std가 2.7 cm 아래로 내려가지 않는다. 매퍼가 게이트를 넘지 못한 점과 칸을 통과한 광선마다
+`outlier_variance`(0.01 m², std 10 cm)를 더하기 때문이다. 이 항과 시간 분산을 끄면 평지는 보정에 가까워진다(±1σ 안 95%).
+대신 모서리 칸이 z²로 20배 과신한다. factor를 바꿔도 지도 품질(3 m 원판 cost MAE 0.0225–0.0233, 치명 재현율 0.561–0.564, AUROC 0.898–0.900)은 그대로다.
+그래서 factor는 배포값 0.05를 유지한다.
+
+#### 2. cost 오차를 맞히는 것은 cost의 높이 민감도다
+
+`scripts/eval_l1_sigma_cost.py`: 같은 자세, 권장 L1 belief(매퍼 상한 + 깊이 prior). 관측 칸에서 belief cost가 GT cost와 얼마나 다른지를 맞히는 후보를 비교했다.
+MISS는 GT가 치명인데 belief가 주행 가능이라 한 칸(관측 칸의 1.55%)이다. AUROC는 무작위 15% 표본(66만 칸)에서 쟀다.
+매퍼 std를 전파한 줄만 같은 설정의 별도 실행(전체)이다.
+
+| 후보(실행 중 쓸 수 있나) | AUROC MISS | AUROC cost 오차 > 0.25 |
+|---|---|---|
+| 매퍼 높이 std (○) | 0.669 | 0.678 |
+| 매퍼 std를 cost로 몬테카를로 전파 (○) | 0.844 | 0.717 |
+| 상수 std 0.2 cm를 전파 (○) | 0.847 | 0.748 |
+| 민감도 margin: 높이가 0.5 cm 틀렸을 때 cost가 오르는 양 (○) | 0.838 | 0.735 |
+| 0.5 m 안 미관측 비율 (○) | 0.673 | 0.688 |
+| **σ = tanh(2(0.55·margin + 0.04·미관측 비율))** (○) | **0.886** | **0.817** |
+| cost 자체 (○) | 0.696 | 0.749 |
+| 참 턱 높이 (×, 기준) | 0.910 | 0.625 |
+
+매퍼 std를 전파한 것과 상수를 전파한 것이 같다. 정보는 분산이 아니라 **cost 함수가 그 칸에서 높이에 얼마나 민감한가**에 있다.
+특징이 안전 문턱이나 램프 구간 바로 안팎에 있는 칸이다. 전파한 cost std 상위 1%의 MISS 비율은 25%로, 하위 70%(0.3%)의 80배다.
+그런데 그 상위 1%의 평균 cost는 0.30이라 cost 값만으로는 알 수 없는 정보다. σ의 계수는 |cost 오차|를 두 항에 최소제곱으로 맞춘 값이다. 치명이 아닌 관측 칸의 σ는 중앙값 0.03, 99% 0.24, 최대 0.27이다(TravNet의 σ = tanh(2·std)와 같은 뜻).
+
+#### 3. 폐루프는 바뀌지 않는다
+
+`TravMapBuilder(sigma_mode="sensitivity")`, `run_benchmark.py --sigma-mode sensitivity [--sigma-gain A B] [--sigma-to all|planner|controller]`.
+`--sigma-to`는 σ를 받는 쪽을 가른다. 나머지 쪽은 이진 σ를 받는다. `planner`는 Guidance와 Planner이고, `controller`는 MPPI의 RiskCost다.
+강한 σ는 계수 (2.0, 0.5)로, 관측 칸 σ가 중앙값 0.24, 최대 0.93이다.
+
+| σ | L1 (guidance / planner_d) | L1 + 상한 + prior (guidance / planner_d) |
+|---|---|---|
+| 이진(지금) | 36 / 35 (71/80) | 39 / 38 (77/80) |
+| 강한 σ, 모두에게 | 36 / 35 (71/80, +4/−4) | 39 / 39 (78/80, +1/−0) |
+| 강한 σ, Controller만 | 35 / 35 (70/80, +2/−3) | 39 / 39 (78/80, +2/−1) |
+| 보정 σ, Controller만 | 33 / 32 (65/80, +0/−6) | 39 / 38 (77/80, +1/−1) |
+| 강한 σ, Planner만 | 34 / 32 (66/80, +2/−7) | — |
+
+괄호 안 +/−는 이진 σ 대비 같은 에피소드에서 성공으로 바뀐 수와 실패로 바뀐 수다. 권장 설정(오른쪽)에서는 모든 변형이 이진 σ와 한두 에피소드 안이다.
+
+**L0에서도 같다**(같은 4 지형 × seed 0–9, `results/tp0054_l0`). 가림 + 상한 + prior는 이진 78/80, σ 변형 78–80/80이다(Controller에 주면 +2/−0).
+그림자 처리 없는 가림은 이진 74/80, σ 변형 68–71/80이다. 차이는 전부 bumps_potholes에서 났다.
+
+**그 차이는 σ의 효과가 아니라 혼돈이다.** 결정적 시뮬이라도 bumps_potholes는 작은 비용 차이가 몇 초 뒤의 궤적을 바꾸는 구간이다.
+Controller에 σ = 1e-6(사실상 0)만 줘서 잡음 바닥을 쟀다.
+
+| bumps_potholes, seed 0–9, 두 스택(20회), Controller에 σ | L1(상한·prior 없음) | L0 가림 |
+|---|---|---|
+| 이진 | 11 | 14 |
+| **σ = 1e-6 (잡음 바닥)** | **9 (+1/−3)** | **10 (+0/−4)** |
+| margin만 | 8 (+2/−5) | 9 (+0/−5) |
+| 미관측 비율만 | 6 (+3/−8) | 11 (+2/−5) |
+| 보정 σ | 5 (+0/−6) | 9 (+1/−6) |
+| 강한 σ | 10 (+2/−3) | 8 (+0/−6) |
+
+'margin만'과 '미관측 비율만'은 L1에서 보정 계수(0.55, 0.04), L0에서 강한 계수(2.0, 0.5)를 썼다.
+이진 σ 실행이 마침 운 좋은 한 번이었다. 어떤 섭동을 줘도 성공 수가 절반 안팎으로 돌아온다. σ 변형들의 5–12회는 σ = 1e-6의 9–10회와 구별되지 않는다.
+그래서 L0 가림의 −6(p = 0.03)도 σ의 해로 읽지 않는다. 같은 이유로 권장 설정의 +2도 이득으로 읽지 않는다.
+==결정적 벤치마크에서도 혼돈 구간의 비교는 이진 기준 한 번이 아니라 잡음 바닥과 해야 한다.== 이 비교법은 TP-0055 이후의 Planner 비교에도 쓴다.
+
+최대 pitch(7.8–8.1°), Planner D 계획 시간(6.6–7.4 ms, 병렬 실행 부하 차이 포함), 평균 GT cost(0.025–0.029)도 모든 변형에서 같은 범위다.
+
+#### 재현
+
+```bash
+# 1. 매퍼 분산의 보정과 순위(.venv-emap). factor 6개 × 시간 분산 2개, 그리고 이상치 분산을 끈 셋
+PYTHONPATH=. .venv-emap/bin/python scripts/eval_l1_sigma.py --out results/tp0054_sigma/sweep
+PYTHONPATH=. .venv-emap/bin/python scripts/eval_l1_sigma.py --variants f0.0001_tv0_ov1e-06 f1e-05_tv0_ov1e-06 f0.05_tv0_ov1e-06 \
+    --out results/tp0054_sigma/floor
+# 2. cost 오차를 맞히는 후보(권장 belief, 상수 std 전파)
+PYTHONPATH=. .venv-emap/bin/python scripts/eval_l1_sigma_cost.py --builder ub_sd --std-mode const --mc 8 --dump 0.15
+# 3. 폐루프: 한 시나리오씩 나눠 병렬로 돌렸다(results/tp0054_l1/jobs_*.log)
+PYTHONPATH=. .venv-emap/bin/python scripts/run_benchmark.py --stacks guidance+mppi planner_d+mppi --perception l1 \
+    --shadow-ceiling --shadow-depth 0.10 --sigma-mode sensitivity --sigma-to controller --seeds 0 1 2 3 4 5 6 7 8 9
+```
+
+#### 바꾼 것과 남긴 것
+
+- **기본값은 그대로다.** `sigma_mode="binary"`가 기본이라 기존 벤치마크·Playground·Planner D 학습은 비트 단위로 같다.
+- **`_unknown_near`(TP-0101)는 σ = 1을 '못 본 칸'으로 판정한다.** 전에는 σ ≥ 0.5였다. 그 조건이면 TravNet이나 민감도 σ의 관측 칸이 0.5를 넘을 때 못 본 칸처럼 치명이 됐다.
+- **민감도 σ는 선택 기능으로 둔다.** 관측 칸의 오차를 맞히는 유일한 실행 중 신호라 진단 층으로 쓸모가 있다. Planner D는 이진 σ로만 학습했다.
+  L1 belief로 다시 학습할 때(TP-0055) 이 σ를 입력으로 넣을지는 그때 정한다.
+
 <!-- tab: Traversability -->
 
 ### A.10 Traversability 추정: 사람 라벨 없이, 불확실성과 함께

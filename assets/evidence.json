@@ -93,6 +93,10 @@
   "tp0098_determinism": {
    "caption": "매퍼의 순서 의존 넷을 닫으니 같은 점군에서 모든 층이 비트 단위로 같고, L1 폐루프가 재현된다(상한 + prior로 두 스택 12/12)",
    "results": "results/tp0098_fixed"
+  },
+  "tp0054_sigma": {
+   "caption": "매퍼 분산은 실제 높이 오차와 따로 놀고(a), 관측 칸의 cost 오차는 cost의 높이 민감도가 맞힌다(b, AUROC 0.886). 그래도 L1 폐루프 성공은 이진 σ와 같다(c)",
+   "results": "results/tp0054_sigma"
   }
  },
  "tp": {
@@ -154,6 +158,7 @@
   ]
  },
  "featured": [
+  "tp0054_sigma",
   "tp0098_determinism",
   "tp0102_robot_pose",
   "tp0095_rules",
