@@ -3,7 +3,8 @@
 //   #TP-0047?v=3d&layer=belief_elev            시연 + 덮어쓰기
 //   #pg?sc=bumps_potholes&s=4&per=occlusion    사용자 설정(기본값과 같은 키는 생략)
 // 값은 화이트리스트와 범위로 자르고, 모르는 값은 기본값(시연이면 시연의 값)으로 돌린다.
-// 상태는 { base, o, layer, view, goal, peds, edits }다. o는 defaultOptions()와 같은 모양이고,
+// 상태는 { base, o, layer, view, geo, ex, goal, peds, edits }다. o는 defaultOptions()와 같은 모양이고,
+// geo·ex는 그릴 높이와 높이 과장(view.js, TP-0106)이다.
 // goal·peds가 null이면 지형·시연이 정한 것을 쓴다. 주행 중에 바꾼 것은 여기 담지 않는다(main.js가 기록 행에 표시).
 import { World, defaultOptions, PERCEPTION } from "./sim.js";
 import { SCENARIOS } from "./terrain.js";
@@ -12,6 +13,7 @@ import { CONTROLLERS } from "./control.js";
 import { ROBOTS } from "./robots.js";
 import { LAYERS } from "./render2d.js";
 import { PRESETS } from "./presets.js";
+import { GEO, EXAG } from "./view.js";
 
 // 코어 버전 키: 코어 모듈 9개(chassis·control·core·perception·planner·robots·sim·terrain·travmap .js)를 이름순으로 이은
 // 내용의 sha256 앞 8자. scripts/check_playground.sh가 다시 계산해 다르면 실패한다. 코어를 고치면 이 값도 바꾼다.
@@ -62,7 +64,7 @@ const OPT_KEYS = [
   ["wr", ...at(["mppi", "w", "risk"]), num(0, 10, 0.5)],
   ["wa", ...at(["mppi", "w", "attitude"]), num(0, 60, 1)],
 ];
-const VIEW_KEYS = ["v", "layer"];
+const VIEW_KEYS = ["v", "layer", "geo", "ex"];   // 결과를 바꾸지 않는 키(보기, 층, 그릴 높이, 높이 과장)
 // 결과를 바꾸는 키. 이것이 기본과 다르면 시연은 '수정됨'이고 주소에 cv를 붙인다.
 export const RUN_KEYS = new Set([...OPT_KEYS.map((k) => k[0]), "goal", "ped", "ed"]);
 
@@ -115,7 +117,7 @@ export function presetById(id) { return PRESETS.find((p) => p.id === id) || null
 export function baseState(id = null) {
   const p = presetById(id), o = defaultOptions();
   if (p) Object.assign(o, structuredClone(p.set));
-  return { base: p ? p.id : null, o, layer: p?.layer || "belief", view: "3d", goal: null, peds: null, edits: [] };
+  return { base: p ? p.id : null, o, layer: p?.layer || "belief", view: "3d", geo: "belief", ex: 2, goal: null, peds: null, edits: [] };
 }
 
 // 같은 뜻의 상태를 한 모양으로: 시연 보행자가 없는 바탕의 빈 보행자 목록은 null(없음)과 같다.
@@ -124,6 +126,7 @@ export function canon(st) {
   const peds = st.peds === null || (st.peds.length === 0 && !p?.peds) ? null : st.peds.map((q) => q.slice());
   return {
     base: p ? p.id : null, o: structuredClone(st.o), layer: st.layer, view: st.view,
+    geo: own(GEO, st.geo) ? st.geo : "belief", ex: EXAG.includes(st.ex) ? st.ex : 2,   // 옛 상태(geo·ex 없음)는 기본값
     goal: st.goal ? st.goal.slice() : null, peds, edits: st.edits.map((e) => e.slice()),
   };
 }
@@ -137,6 +140,8 @@ export function diff(st) {
   if (s.edits.length) out.push(["ed", encEdits(s.edits)]);
   if (s.view !== b.view) out.push(["v", s.view]);
   if (s.layer !== b.layer) out.push(["layer", s.layer]);
+  if (s.geo !== b.geo) out.push(["geo", s.geo]);
+  if (s.ex !== b.ex) out.push(["ex", String(s.ex)]);
   return out;
 }
 
@@ -178,6 +183,8 @@ export function parse(hash) {
     else if (k === "ed") { const e = decEdits(v); if (e === undefined) bad(k, v); else st.edits = e; }
     else if (k === "v") { if (v === "2d" || v === "3d") st.view = v; else bad(k, v); }
     else if (k === "layer") { if (own(LAYERS, v)) st.layer = v; else bad(k, v); }
+    else if (k === "geo") { if (own(GEO, v)) st.geo = v; else bad(k, v); }
+    else if (k === "ex") { const n = v.trim() === "" ? NaN : Number(v); if (EXAG.includes(n)) st.ex = n; else bad(k, v); }
     else if (k === "cv") cv = v;
     else notes.push(`모르는 키 '${clip(k)}'는 무시한다.`);
   }

@@ -118,6 +118,7 @@ button { cursor: pointer; }
 .legend i { display: inline-block; width: 18px; height: 8px; border-radius: 2px; vertical-align: middle; margin-right: 5px; }
 .legend i.line { height: 2px; }
 .legend-layer { display: contents; }
+.legend .geo b { color: var(--fg); font-weight: 600; }
 .layer-note { flex-basis: 100%; margin: 2px 0 0; font-size: 12px; color: var(--muted); }
 .sel { font: inherit; font-size: 12.5px; color: var(--fg); background: var(--panel-2); border: 1px solid var(--line); border-radius: 8px; padding: 4px 8px; margin-left: 4px; }
 .transport { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 8px 12px; border-top: 1px solid var(--line); }
@@ -208,7 +209,15 @@ footer code { font: 12px var(--mono); }
             <optgroup label="traversability"><option value="slope">경사</option><option value="step">턱</option><option value="rough">거칠기</option><option value="belief" selected>로봇이 본 cost</option><option value="gt">실제 cost</option><option value="chassis">차체 기하 기준</option></optgroup>
           </select>
         </label>
-        <div class="seg tools" id="tool" role="group" aria-label="클릭 도구">
+        <label class="check" for="geoSel" title="2D 음영과 3D 기하를 어느 높이로 그릴지. 로봇이 본 지형은 못 본 칸을 로봇이 믿는 값(채운 높이)으로 그린다.">높이
+          <select id="geoSel" class="sel" aria-label="그릴 높이">
+            <option value="belief" selected>로봇이 본 지형</option><option value="true">참 지형</option><option value="both">둘 다(참은 등고선)</option>
+          </select>
+        </label>
+        <div class="seg" id="exag" role="group" aria-label="높이 과장 배율" title="3D 높이와 2D 음영의 과장 배율. 3D 로봇의 pitch·roll은 과장하지 않는다.">
+          <button data-val="1" aria-pressed="false">×1</button><button data-val="2" aria-pressed="true">×2</button><button data-val="3" aria-pressed="false">×3</button>
+        </div>
+        <div class="seg tools" id="tool" role="group" aria-label="클릭 도구(2D)">
           <button data-val="goal" aria-pressed="true">목표</button><button data-val="box" aria-pressed="false">상자</button><button data-val="pothole" aria-pressed="false">포트홀</button><button data-val="ped" aria-pressed="false">보행자</button><button data-val="erase" aria-pressed="false">지우기</button>
         </div>
         <label class="check"><input type="checkbox" id="showRoute" checked> 경로</label>
@@ -239,6 +248,7 @@ footer code { font: 12px var(--mono); }
       <div class="probe" id="probe">처음이라면 위 '시연'에서 하나를 누르고, 시연 카드의 '볼 것'을 보세요. 3D는 드래그로 돌려 본다. 칸의 높이·경사·턱·cost를 보거나 목표·장애물을 찍으려면 2D로 바꾼다.</div>
       <div class="legend" aria-label="범례">
         <span id="legendLayer" class="legend-layer"></span>
+        <span id="legendGeo" class="legend-layer"></span>
         <span><i class="line" style="background:var(--route)"></i>Planner 경로</span>
         <span><i class="line" style="background:var(--accent)"></i>MPPI 계획(<span id="legHorizon">4.0</span> s)</span>
         <span><i class="line" style="background:#8fd6e6"></i>MPPI 샘플</span>
@@ -315,7 +325,7 @@ footer code { font: 12px var(--mono); }
       </section>
       <section class="card">
         <h2>보행자 <em id="pedCount">0명</em></h2>
-        <p class="note">'보행자' 도구로 지도 위를 끌면 그 방향·속도로 걷는 사람을 놓는다. 반경 0.55 m(로봇 크기 포함)에 닿으면 충돌이다.</p>
+        <p class="note">2D 보기의 '보행자' 도구로 지도 위를 끌면 그 방향·속도로 걷는 사람을 놓는다. 반경 0.55 m(로봇 크기 포함)에 닿으면 충돌이다.</p>
         <div class="bar"><button class="btn" id="spawnPeds">경로에 3명</button><button class="btn" id="clearPeds">모두 지우기</button></div>
       </section>
     </aside>

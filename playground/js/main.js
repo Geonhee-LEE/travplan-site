@@ -9,10 +9,12 @@ import { ROBOTS } from "./robots.js";
 import { PRESETS, GROUPS } from "./presets.js";
 import { PUBLIC_BASE, baseState, canon, diff, isModified, parse, serialize, buildWorld, applyEdit, presetById, RUN_KEYS } from "./state.js";
 import { EpisodeMeter, toCsv } from "./metrics.js";
+import { attitudeNow, drawHeights, CONTOUR } from "./view.js";
 
 const $ = (id) => document.getElementById(id);
 const opts = defaultOptions();          // 화면 조작이 고치는 설정. World가 같은 객체를 본다
-const view = { layer: "belief", tool: "goal", route: true, samples: true, points: true, exag: 2.0, mode: "3d", cursor: null, drag: null };
+// geo는 그릴 높이(view.js: belief 로봇이 본 지형, true 참 지형, both 둘 다), exag는 높이 과장 배율(×1·×2·×3).
+const view = { layer: "belief", geo: "belief", exag: 2, tool: "goal", route: true, samples: true, points: true, mode: "3d", cursor: null, drag: null };
 let world = null;
 let paused = false, speed = 1, acc = 0, last = performance.now(), logged = false;
 const runLog = [];                      // 주행 기록(최근 10회)
@@ -164,6 +166,9 @@ function ensureChassis() {
     if (w === world) $("probe").textContent = "차체 기하 기준: 빨강·보라·파랑·주황 칸은 어느 방향으로도 차체가 들어가지 못한다.";
   }, 30);
 }
+// 그릴 높이와 높이 과장: 2D 음영과 3D 기하가 함께 바뀐다(주소의 geo·ex).
+$("geoSel").addEventListener("change", (e) => { view.geo = e.target.value; uiKey = ""; touch(true); });
+const syncExag = segment("exag", view.exag, (v) => { view.exag = +v; uiKey = ""; touch(true); });
 segment("tool", view.tool, (v) => { view.tool = v; });
 segment("speed", 1, (v) => { speed = +v; });
 const syncView = segment("view", view.mode, (v) => { viewChoice = v; touch(true); setMode(v); });
@@ -241,6 +246,9 @@ function syncPanel() {
   $("plNote").textContent = PLANNERS[opts.planner].note;
   $("coNote").textContent = CONTROLLERS[opts.controller].note;
   $("mppiParams").hidden = opts.controller !== "mppi";
+  // 그릴 것이 없는 표시 체크는 숨긴다: MPPI 샘플은 MPPI, LiDAR 점은 L1 간이에서만 있다.
+  $("showSamples").closest("label").hidden = opts.controller !== "mppi";
+  $("showPoints").closest("label").hidden = opts.perception !== "l1lite";
   const occl = opts.perception === "occlusion" || opts.perception === "l1lite";
   $("sensorHeight").disabled = !occl;
   $("sensorRange").disabled = opts.perception === "gt";
@@ -254,7 +262,8 @@ function syncPanel() {
 
 // ------------------------------------------------------------------ 주행 시작과 주소 상태
 // 지형·지도를 다시 만드는 조작은 계산(0.1–0.3 s) 전에 주소부터 쓴다. 계산이 끝난 뒤의 touch()는 같은 주소라 다시 쓰지 않는다.
-const putNext = (s) => putHash(serialize({ ...s, layer: view.layer, view: viewChoice }));
+const viewKeys = () => ({ layer: view.layer, view: viewChoice, geo: view.geo, ex: view.exag });   // 주소의 보기 키
+const putNext = (s) => putHash(serialize({ ...s, ...viewKeys() }));
 function newWorld() {
   putNext({ ...snapshot(), goal: null, edits: [] });
   const peds = world.pedsInit;
@@ -277,16 +286,16 @@ function onNewRun() {
 function snapshot() {
   const g = world.goal, g0 = world.terrain.goal;
   return canon({
-    base: active, o: opts, layer: view.layer, view: viewChoice,
+    base: active, o: opts, ...viewKeys(),
     goal: g[0] === g0[0] && g[1] === g0[1] ? null : g.slice(),
     peds: pedsFromPreset ? null : (world.pedsInit || []).map((p) => [p.x, p.y, p.vx, p.vy]),
     edits,
   });
 }
-// 주소에 쓸 상태: 주행 중에 바꾼 것은 담지 않고 그 주행의 시작 상태를 둔다. 층·보기는 언제나 지금 것이다.
+// 주소에 쓸 상태: 주행 중에 바꾼 것은 담지 않고 그 주행의 시작 상태를 둔다. 층·보기·그릴 높이·과장은 언제나 지금 것이다.
 function addrState() {
   const s = runChanged && world.status === "running" ? runStart : snapshot();
-  return { ...s, layer: view.layer, view: viewChoice };
+  return { ...s, ...viewKeys() };
 }
 // 결과를 바꾸는 조작 뒤에 부른다. 첫 스텝 전이면 시작 상태에 담고, 주행 중이면 '주행 중 변경'으로 표시한다.
 function changed() {
@@ -306,14 +315,17 @@ function applyState(s, notes = []) {
   world = buildWorld(s, opts);
   world.terrainVersion = 0; world.edited = edits.length > 0;
   view.layer = s.layer; $("layerSel").value = s.layer;
+  view.geo = s.geo; $("geoSel").value = s.geo; view.exag = s.ex; syncExag(s.ex);
   viewChoice = s.view;   // 3D가 한 번 안 열렸으면 주소가 3D여도 2D로 둔다(사용자가 3D를 누를 때만 다시 시도)
   if (!started || (s.view !== view.mode && !(s.view === "3d" && glFailed))) { syncView(s.view); setMode(s.view); }
   onNewRun();
   showNotes(notes);
   revealChip();
 }
-function applyPreset(p) { if (p) applyState({ ...baseState(p.id), view: viewChoice }); }   // 시연을 눌러도 보기는 그대로
-function openAddress(addr) { const r = parse(addr); applyState({ ...r.state, view: viewChoice }, r.notes); }
+// 시연·비교 상대·기록 행을 눌러도 보기(2D·3D), 그릴 높이, 과장은 그대로 둔다. 층은 시연이 정한다.
+const keepView = () => ({ view: viewChoice, geo: view.geo, ex: view.exag });
+function applyPreset(p) { if (p) applyState({ ...baseState(p.id), ...keepView() }); }
+function openAddress(addr) { const r = parse(addr); applyState({ ...r.state, ...keepView() }, r.notes); }
 
 function showNotes(notes) {
   $("notice").hidden = !notes.length;
@@ -426,10 +438,12 @@ function probe(x, y) {
 }
 
 // ------------------------------------------------------------------ 3D
+// 3D에서는 클릭 도구를 숨긴다(3D에서 지형을 찍는 것은 TP-0115). 3D에 보이는 조작은 모두 3D 그림을 바꾼다.
 async function setMode(m) {
   view.mode = m;
   $("gl").hidden = m !== "3d"; $("map2d").hidden = m === "3d"; $("hint3d").hidden = m !== "3d";
-  $("tool").querySelectorAll("button").forEach((b) => { b.disabled = m === "3d"; });
+  $("tool").hidden = m === "3d";
+  fitMap();   // 도구 줄이 숨거나 나타나 툴바 높이가 바뀐다
   if (m === "3d") {
     try { await map3d.init(); glFailed = false; }
     catch (err) {
@@ -443,7 +457,7 @@ async function setMode(m) {
 // ------------------------------------------------------------------ 표시
 const deg = (r) => (r * 57.2958).toFixed(1);
 function telemetry() {
-  const c = world.cur || { pitch: 0, roll: 0, gtCost: 0, speed: 0 };
+  const c = attitudeNow(world);   // 3D 로봇도 이 pitch·roll로 기운다(view.js robotPose)
   const cls = (v, lim) => (Math.abs(v) > lim ? "bad" : Math.abs(v) > 0.7 * lim ? "warn" : "");
   const clear = world.stats.minClear;
   $("telemetry").innerHTML = [
@@ -532,7 +546,7 @@ $("history").addEventListener("click", (e) => {
   const tr = e.target.closest("tr[data-i]");
   if (!tr) return;
   const h = runLog[+tr.dataset.i];
-  if (h) applyState({ ...h.st, layer: view.layer, view: viewChoice });
+  if (h) applyState({ ...h.st, layer: view.layer, ...keepView() });
 });
 function exportCsv() {
   const csv = toCsv(runLog.slice().reverse().map((h) => h.m));     // 오래된 주행부터
@@ -550,9 +564,19 @@ function exportCsv() {
 }
 
 // ------------------------------------------------------------------ 표시 보조
+// 그릴 높이 범례: 면의 높이가 무엇인지, 못 본 칸은 로봇이 믿는 값이라는 것, 과장 배율.
+function geoLegend() {
+  const ex = `<b>높이 ×${view.exag}</b>`, pose = view.mode === "3d" ? " 3D 로봇의 pitch·roll은 과장하지 않은 실제 값이다." : "";
+  if (view.geo === "true") return `<span class="geo">${ex} 음영·3D 높이는 참 지형이다. 로봇이 못 본 칸도 보인다.${pose}</span>`;
+  const fill = opts.perception === "gt" ? "완전 관측이라 참 지형과 같다."
+    : "못 본 칸은 로봇이 믿는 값이다(관측의 이웃 평균을 0.4 m까지 번지고 그 밖은 0 m, 그림자 상한·깊이 prior가 있으면 그 아래로 내린 높이).";
+  return `<span class="geo">${ex} 음영·3D 높이는 로봇이 본 지형이다. ${fill}${pose}</span>`
+    + (view.geo === "both" ? `<span><i class="line" style="background:${CONTOUR.css};box-shadow:0 0 0 1px #6b7773"></i>참 지형 등고선(5 cm${view.mode === "3d" ? ", 면에 가린 곳은 옅게" : ""})</span>` : "");
+}
 function syncLegend() {
   const L = LAYERS[view.layer];
   $("legendLayer").innerHTML = L.legend();
+  $("legendGeo").innerHTML = geoLegend();
   $("layerNote").textContent = `${L.group} · ${L.label}: ${L.note}`;
   document.querySelectorAll(".legend [data-l1]").forEach((el) => { el.hidden = opts.perception !== "l1lite"; });
   $("legHorizon").textContent = (opts.mppi.T * SIM.dt).toFixed(1);
@@ -589,7 +613,7 @@ function frame(now) {
   if (view.mode === "2d") map2d.draw(world, view, CSS);
   else if (map3d.renderer) { map3d.update(world, view); map3d.render(CSS.mapBg); }
   // 글자 영역은 스텝·상태·층이 바뀔 때만 다시 쓴다.
-  const key = `${world.k}|${world.status}|${paused}|${world.peds.length}|${view.layer}|${opts.mppi.T}|${Math.round(rt.factor * 10)}|${world.mapVersion}`;
+  const key = `${world.k}|${world.status}|${paused}|${world.peds.length}|${view.layer}|${view.geo}|${view.exag}|${view.mode}|${opts.mppi.T}|${Math.round(rt.factor * 10)}|${world.mapVersion}`;
   if (key !== uiKey) { uiKey = key; telemetry(); bars(); banner(); syncLegend(); }
   requestAnimationFrame(frame);
 }
@@ -609,6 +633,25 @@ window.playgroundTest = {
   runToEnd() { paused = true; syncPlay(); while (world.status === "running") stepOnce(); banner(); return this.result(); },
   log: () => runLog.map((h) => ({ link: linkFor(h.st), hash: serialize(h.st), changed: h.changed, m: h.m })),
   csv: () => toCsv(runLog.slice().reverse().map((h) => h.m)),
+  step(n = 1) { paused = true; syncPlay(); for (let i = 0; i < n; i++) stepOnce(); return this.result(); },
+  // 3D 검사(TP-0106): three.js 로봇의 회전 행렬에서 읽은 pitch·roll, 텔레메트리 값, 메시 높이와 그릴 높이의 차.
+  view3d() {
+    if (view.mode !== "3d" || !map3d.renderer || !map3d.mesh) return null;
+    map3d.update(world, view); map3d.robot.updateMatrixWorld(true);
+    const e = map3d.robot.matrixWorld.elements;   // 열 우선: R[2][0] = e[2], R[2][1] = e[6], R[2][2] = e[10]
+    const H = drawHeights(view.geo, world), pos = map3d.mesh.geometry.attributes.position, cells = map3d.cells, known = world.belief.known;
+    let meshErr = 0, unseen = 0;
+    for (let v = 0; v < cells.length; v++) {
+      if (!known[cells[v]]) unseen++;
+      meshErr = Math.max(meshErr, Math.abs(pos.getZ(v) / view.exag - H.fill[cells[v]]));
+    }
+    const a = attitudeNow(world), gait = world.body?.gait || { pitch: 0, roll: 0 };
+    return {
+      geo: view.geo, exag: view.exag, robot: { pitch: Math.asin(Math.max(-1, Math.min(1, e[2]))), roll: Math.atan2(e[6], e[10]), z: e[14] },
+      tele: { pitch: a.pitch, roll: a.roll }, gait: { pitch: gait.pitch, roll: gait.roll }, meshErr, unseen, vertices: cells.length,
+      visible: { samples: map3d.samples.visible, points: map3d.points.visible, ring: map3d.ring.visible, contour: map3d.contour.visible, route: !!map3d.lines.route?.line.visible },
+    };
+  },
 };
 
 // 시작: 주소(#TP-0047, #TP-0047?…, #pg?…)를 열고, 없으면 기본 설정. 기본 보기는 3D이고 WebGL이 없으면 2D로 돌아간다.

@@ -1,5 +1,7 @@
-// 위에서 본 2.5D 지도. 배경 = GT 높이 음영 × 선택한 층(LAYERS: 높이, elevation mapping, traversability, 차체 기준).
+// 위에서 본 2.5D 지도. 배경 = 높이 음영 × 선택한 층(LAYERS: 높이, elevation mapping, traversability, 차체 기준).
+// 음영의 높이는 view.js drawHeights가 고른다(기본은 로봇이 본 지형, '둘 다'면 참 지형을 등고선으로 더 그린다).
 import { TRAV } from "./travmap.js";
+import { drawHeights, hillshade, contours, CONTOUR } from "./view.js";
 
 // cost 색: 0 = 지면(음영만), 0.3~0.95 = 황토 -> 주황, 치명 = 빨강. 모르는 칸은 어둡게.
 const COST_STOPS = [[0.0, [58, 72, 70]], [0.35, [98, 112, 84]], [0.6, [196, 152, 58]], [0.94, [232, 112, 46]]];
@@ -128,25 +130,28 @@ export class Map2D {
   toScreen(x, y) { const L = this.L; return [L.ox + x * L.s, L.oy - y * L.s]; }
   toWorld(px, py) { const L = this.L; return [(px - L.ox) / L.s, (L.oy - py) / L.s]; }
 
-  shade(world) {
-    // GT 높이 힐셰이드(북서 광원), 지형이 바뀔 때만 다시 계산
-    if (this._shadeFor === world.terrain && this._shadeVer === world.terrainVersion) return this._shade;
-    const g = world.terrain.grid, z = world.terrain.z, sh = new Float32Array(g.N);
-    for (let r = 0; r < g.H; r++) for (let c = 0; c < g.W; c++) {
-      const i = r * g.W + c;
-      const dx = (z[r * g.W + Math.min(g.W - 1, c + 1)] - z[r * g.W + Math.max(0, c - 1)]) / (2 * g.res);
-      const dy = (z[Math.min(g.H - 1, r + 1) * g.W + c] - z[Math.max(0, r - 1) * g.W + c]) / (2 * g.res);
-      const nx = -dx * 2.2, ny = -dy * 2.2, nz = 1, n = Math.hypot(nx, ny, nz);
-      sh[i] = 0.62 + 0.48 * Math.max(0, (nx * -0.55 + ny * 0.55 + nz * 0.63) / n);
-    }
-    this._shade = sh; this._shadeFor = world.terrain; this._shadeVer = world.terrainVersion;
-    return sh;
+  // 높이 음영(북서 광원). 참 지형은 지형이 바뀔 때만, 로봇이 본 지형은 지도가 바뀔 때마다 다시 계산한다.
+  shade(world, H, exag) {
+    const k = this._shadeKey, mv = H.believed ? world.mapVersion : -1;
+    if (k && k.src === H.fill && k.world === world && k.mv === mv && k.tv === world.terrainVersion && k.exag === exag) return this._shade;
+    this._shade = hillshade(H.fill, world.terrain.grid, exag, this._shade?.length === world.terrain.grid.N ? this._shade : undefined);
+    this._shadeKey = { src: H.fill, world, mv, tv: world.terrainVersion, exag };
+    return this._shade;
   }
 
-  paintBase(world, layer) {
+  // 참 지형 등고선(세계 좌표의 Path2D). 지형이 바뀔 때만 다시 만든다.
+  contourPath(world, z) {
+    if (this._ctFor === z && this._ctVer === world.terrainVersion) return this._ct;
+    const { seg } = contours(z, world.terrain.grid), p = new Path2D();
+    for (let i = 0; i < seg.length; i += 4) { p.moveTo(seg[i], seg[i + 1]); p.lineTo(seg[i + 2], seg[i + 3]); }
+    this._ct = p; this._ctFor = z; this._ctVer = world.terrainVersion;
+    return p;
+  }
+
+  paintBase(world, layer, H, exag) {
     const g = world.terrain.grid;
     if (this.off.width !== g.W) { this.off.width = g.W; this.off.height = g.H; this.img = this.octx.createImageData(g.W, g.H); }
-    const d = this.img.data, sh = this.shade(world), vis = world.lastVis;
+    const d = this.img.data, sh = this.shade(world, H, exag), vis = world.lastVis;
     for (let r = 0; r < g.H; r++) for (let c = 0; c < g.W; c++) {
       const i = r * g.W + c, j = ((g.H - 1 - r) * g.W + c) * 4;   // 캔버스는 y가 아래로
       let k = sh[i];
@@ -162,13 +167,20 @@ export class Map2D {
     const { ctx, L } = this, dpr = L.dpr;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, this.cv.clientWidth, this.cv.clientHeight);
-    const key = `${world.mapVersion}|${view.layer}|${world.terrainVersion}|${world.chassisVer ?? -1}`;
-    if (key !== this._baseKey) { this.paintBase(world, view.layer); this._baseKey = key; }
+    // view.geo가 없으면(옛 호출, robot_pose.html) 예전처럼 참 지형으로 그린다.
+    const geo = view.geo || "true", exag = view.exag ?? 2, H = drawHeights(geo, world);
+    const key = `${world.mapVersion}|${view.layer}|${world.terrainVersion}|${world.chassisVer ?? -1}|${geo}|${exag}`;
+    if (key !== this._baseKey || world !== this._baseWorld) { this.paintBase(world, view.layer, H, exag); this._baseKey = key; this._baseWorld = world; }
     ctx.imageSmoothingEnabled = true;
     const [x0, y0] = this.toScreen(0, L.Hm);
     ctx.drawImage(this.off, x0, y0, L.Wm * L.s, L.Hm * L.s);
     ctx.strokeStyle = css.line; ctx.lineWidth = 1; ctx.strokeRect(x0 - 0.5, y0 - 0.5, L.Wm * L.s + 1, L.Hm * L.s + 1);
     this.axes(css);
+    if (H.line) {   // '둘 다': 참 지형은 등고선으로만
+      ctx.save(); ctx.translate(L.ox, L.oy); ctx.scale(L.s, -L.s);
+      ctx.lineWidth = 1 / L.s; ctx.strokeStyle = CONTOUR.css; ctx.stroke(this.contourPath(world, H.line));
+      ctx.restore();
+    }
 
     const P = (p) => this.toScreen(p[0], p[1]);
     const poly = (pts, color, w, dash = []) => {

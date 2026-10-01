@@ -21,8 +21,8 @@ td.ok { color: var(--ok); font-weight: 600; } td.bad { color: var(--bad); font-w
 <body>
 <main>
   <h1>Playground 검사</h1>
-  <p>Playground 코어(js/)가 저장소 결과와 같은 방향으로 도는지, 주소 하나로 같은 주행이 다시 나오는지 확인한다. 각 줄은 한 번의 주행이나 한 번의 주소 확인이고,
-    기대와 다르면 빨갛게 표시한다. 시연의 기대는 <code>js/presets.js</code>의 <code>expect</code>를 읽는다.
+  <p>Playground 코어(js/)가 저장소 결과와 같은 방향으로 도는지, 주소 하나로 같은 주행이 다시 나오는지, 화면이 로봇이 본 지형을 그리는지 확인한다.
+    각 줄은 한 번의 주행이나 한 번의 확인이고, 기대와 다르면 빨갛게 표시한다. 시연의 기대는 <code>js/presets.js</code>의 <code>expect</code>를 읽는다.
     <code>scripts/check_playground.sh</code>가 이 페이지를 헤드리스 Chrome으로 열어 판정한다. 약 4분 걸린다.</p>
   <div id="summary">실행 중…</div>
   <div class="table"><table>
@@ -34,6 +34,7 @@ td.ok { color: var(--ok); font-weight: 600; } td.bad { color: var(--bad); font-w
 import { World, defaultOptions } from "./js/sim.js";
 import { PRESETS, GROUPS } from "./js/presets.js";
 import { PUBLIC_BASE, baseState, buildWorld, canon, parse, serialize } from "./js/state.js";
+import { EXAG, drawHeights, meshCells, meshZ, robotPose, attitudeNow } from "./js/view.js";
 
 const rows = document.getElementById("rows");
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -84,10 +85,10 @@ const USERS = [
     Object.assign(s.o.mppi, { K: 512, T: 30, lambda: 0.3, noise: [0.4 * 1.5, 0.25 * 1.5, 0.6 * 1.5] }); Object.assign(s.o.mppi.w, { trav: 8, risk: 2, attitude: 25 });
     return s;
   })()],
-  ["사용자 설정 3", user({ scenario: "curb_ramp", level: 1, seed: 3, perception: "range", sensorRange: 6.5, planner: "straight", controller: "tracker", shadowCeiling: false }, { goal: [14, 6.5], layer: "gt" })],
+  ["사용자 설정 3", user({ scenario: "curb_ramp", level: 1, seed: 3, perception: "range", sensorRange: 6.5, planner: "straight", controller: "tracker", shadowCeiling: false }, { goal: [14, 6.5], layer: "gt", geo: "true", ex: 1 })],
 ];
 const OVERRIDES = [
-  ["시연 + 보기", Object.assign(baseState("TP-0047"), { layer: "belief_elev", view: "2d" })],
+  ["시연 + 보기", Object.assign(baseState("TP-0047"), { layer: "belief_elev", view: "2d", geo: "both", ex: 3 })],
   ["시연 + seed(보행자 따라감)", (() => { const s = baseState("TP-0027"); s.o.seed = 2; return s; })()],
   ["시연 + 센서 높이·K", (() => { const s = baseState("TP-0031-low"); s.o.sensorHeight = 0.5; s.o.mppi.K = 320; return s; })()],
 ];
@@ -98,7 +99,7 @@ for (const [name, x] of [...PRESETS.map((p) => [p.id, baseState(p.id)]), ...USER
 }
 // 나쁜 주소: 예외 없이 읽고, 쓸 수 없는 값은 바탕(기본 설정) 그대로 두고 알린다. 상속 이름(constructor)과 상한을 넘는 목록도 본다.
 const BAD = ["#pg?layer=constructor", "#pg?layer=__proto__", "#pg?ed=constructor,1,1", "#pg?ed=b,99,1", "#pg?goal=100,100", "#pg?ped=0,0,9,9",
-  "#pg?s=abc", "#pg?v=4d", "#TP-9999", "#%E0%A4%A", "#pg?ped=" + Array(101).fill("1,1,0,0").join(";")];
+  "#pg?s=abc", "#pg?v=4d", "#TP-9999", "#%E0%A4%A", "#pg?ped=" + Array(101).fill("1,1,0,0").join(";"), "#pg?geo=constructor", "#pg?ex=5", "#pg?ex="];
 const badWrong = BAD.filter((h) => {
   try { const r = parse(h); return !(r.notes.length && same(r.state, canon(baseState(null)))); } catch { return true; }
 });
@@ -128,6 +129,59 @@ for (const [name, x0] of [...USERS, OVERRIDES[1], OVERRIDES[2]]) {
   if (name === "사용자 설정 1") row("iframe 안의 링크 바탕", tab.link, PUBLIC_BASE, tab.link.startsWith(PUBLIC_BASE + "#") ? "공개 주소" : "다르다", tab.link.startsWith(PUBLIC_BASE + "#"));
 }
 
+// 5) 로봇이 본 지형 보기(TP-0106). 2D 음영과 3D 메시는 view.js drawHeights의 fill을 그린다(render2d.js, render3d.js).
+{
+  await tick();
+  const w = buildWorld(baseState("TP-0047")), b = w.belief, g = w.terrain.grid, z = w.terrain.z, H = drawHeights("belief", w);
+  let unseen = 0, bad = 0, hidden = 0;
+  for (let i = 0; i < g.N; i++) if (!b.known[i]) { unseen++; if (H.fill[i] !== b.elev[i]) bad++; if (Math.abs(b.elev[i] - z[i]) > 0.05) hidden++; }
+  row("로봇이 본 지형: 못 본 칸", `TP-0047 시작 · 못 본 칸 ${unseen}`, "그릴 높이 = belief.elev(못 본 칸 모두)",
+    bad ? `다른 칸 ${bad}` : `같다 · 그중 참 높이와 5 cm 넘게 다른 칸 ${hidden}`, unseen > 0 && !bad && hidden > 0);
+  // 3D 메시 정점(2칸마다 1정점)의 높이 = 그릴 높이 × 과장
+  const { cells } = meshCells(g, 2);
+  let mv = 0, mbad = 0;
+  for (const ex of EXAG) {
+    const mz = meshZ(H.fill, cells, ex);
+    for (let v = 0; v < cells.length; v++) if (!b.known[cells[v]]) { mv++; if (Math.abs(mz[v] - b.elev[cells[v]] * ex) > 1e-6) mbad++; }
+  }
+  row("로봇이 본 지형: 3D 메시", `못 본 정점 ${mv / EXAG.length} × 과장 ${EXAG.join("·")}`, "정점 높이 = belief.elev × 과장", mbad ? `다른 정점 ${mbad}` : "같다", mv > 0 && !mbad);
+  const T = drawHeights("true", w), B = drawHeights("both", w);
+  const wg = buildWorld(Object.assign(baseState("TP-0047"), { o: Object.assign(baseState("TP-0047").o, { perception: "gt" }) }));
+  const okModes = T.fill === z && !T.line && B.fill === b.elev && B.line === z && drawHeights("belief", wg).fill.every((v, i) => v === wg.terrain.z[i]);
+  row("그릴 높이 셋", "참 · 둘 다 · 완전 관측의 로봇이 본 지형", "참 = 참 높이, 둘 다 = 로봇이 본 면 + 참 선, 완전 관측이면 참과 같다", okModes ? "같다" : "다르다", okModes);
+}
+// 3D 로봇 자세: 과장 ×1·×2·×3에서 render3d.js와 같은 회전 Rz(yaw)·Ry(−pitch)·Rx(roll)을 짜서 다시 읽은 pitch·roll이
+// 텔레메트리 값(attitudeNow) + 걸음새 흔들림과 0.5° 안이다. 옛 방식(과장한 높이차로 기울이기)의 차도 함께 적는다.
+{
+  const mul = (A, B) => A.map((r) => [0, 1, 2].map((j) => r[0] * B[0][j] + r[1] * B[1][j] + r[2] * B[2][j]));
+  const Rz = (a) => [[Math.cos(a), -Math.sin(a), 0], [Math.sin(a), Math.cos(a), 0], [0, 0, 1]];
+  const Ry = (a) => [[Math.cos(a), 0, Math.sin(a)], [0, 1, 0], [-Math.sin(a), 0, Math.cos(a)]];
+  const Rx = (a) => [[1, 0, 0], [0, Math.cos(a), -Math.sin(a)], [0, Math.sin(a), Math.cos(a)]];
+  const deg = (r) => (r * 180) / Math.PI;
+  const slope = Object.assign(baseState(null), { o: Object.assign(defaultOptions(), { scenario: "slope_crossfall", level: 3, perception: "range" }) });
+  for (const [name, st] of [["TP-0047", baseState("TP-0047")], ["slope_crossfall L3 s0", slope], ["TP-0102 사족", baseState("TP-0102")]]) {
+    await tick();
+    const w = buildWorld(st);
+    let worst = 0, big = 0, old = 0, gaitMax = 0;
+    for (let k = 0; k <= 100 && w.status === "running"; k++) {
+      if (k) w.step();
+      const a = attitudeNow(w), H = drawHeights("belief", w);
+      big = Math.max(big, Math.abs(a.pitch), Math.abs(a.roll));
+      for (const ex of EXAG) {
+        const P = robotPose(w, H.fill, ex), M = mul(mul(Rz(P.yaw), Ry(-P.pitch)), Rx(P.roll));
+        const p = Math.asin(M[2][0]), r = Math.atan2(M[2][1], M[2][2]);
+        worst = Math.max(worst, Math.abs(deg(p - P.gait.pitch - a.pitch)), Math.abs(deg(r - P.gait.roll - a.roll)));
+        gaitMax = Math.max(gaitMax, Math.abs(deg(P.gait.pitch)), Math.abs(deg(P.gait.roll)));
+        if (ex !== 3) continue;
+        // 옛 방식: 과장한 참 높이의 앞뒤(±0.3 m)·좌우(±0.2 m) 차로 기울였다(×3에서 잰다)
+        const [x, y, yaw] = w.pose, c = Math.cos(yaw), sn = Math.sin(yaw), zt = (dx, dy) => w.terrain.grid.sample(w.terrain.z, x + dx, y + dy, 0) * ex;
+        old = Math.max(old, Math.abs(deg(Math.atan2(zt(0.3 * c, 0.3 * sn) - zt(-0.3 * c, -0.3 * sn), 0.6) - a.pitch)), Math.abs(deg(Math.atan2(zt(-0.2 * sn, 0.2 * c) - zt(0.2 * sn, -0.2 * c), 0.4) - a.roll)));
+      }
+    }
+    row(`3D 로봇 자세: ${name}`, `100스텝 · 과장 ${EXAG.join("·")} · 텔레메트리 최대 ${deg(big).toFixed(1)}°${gaitMax ? ` · 흔들림 최대 ${gaitMax.toFixed(1)}°` : ""}`,
+      "pitch·roll − 흔들림 = 텔레메트리(차 0.5° 이하)", `최대 차 ${worst.toFixed(3)}° (옛 방식 ×3이면 ${old.toFixed(1)}°)`, worst <= 0.5 && big > Math.PI / 180);
+  }
+}
 const s = document.getElementById("summary");
 s.textContent = `${pass === total ? "PASS" : "FAIL"} ${pass}/${total}`;
 s.style.color = pass === total ? "var(--ok)" : "var(--bad)";
