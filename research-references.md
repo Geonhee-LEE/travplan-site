@@ -555,7 +555,7 @@ E.1(MPPI 계보), E.2(학습 동역학·적응 마일스톤), C.4(안전 필터 
 | **Hybrid Robotics**, UC Berkeley | **Koushil Sreenath** | CBF ↔ MPC 다리(ACC 2021). ⚠️ `HybridRobotics/MPC-CBF`는 **아카이브됨** |
 | **AMBER Lab**, Caltech | **Aaron Ames** | CBF 이론의 정본. A.12.5의 Lipschitz 연속성 정리 |
 | **Urban Robotics Lab**, KAIST | **명현(Hyun Myung)** | DreamWaQ 계열(F.4)과 TRIP(A.2b.7 ⑨) — ==보행자·지형 양쪽에서 travplan과 겹치는 국내 그룹== |
-| **RaiLab**, KAIST | **권재민(Jemin Hwangbo)** | 4족 RL의 국내 축. ⚠️ 정확한 직함 미확인 |
+| **RaiLab**, KAIST | **황보제민(Jemin Hwangbo)** | 4족 RL의 국내 축. 학습 forward 모델 + 샘플링 MPC(RSS 2022), 전체 로봇 모델 물리 롤아웃(Sci. Robot. 2025) — MPC 문서 M.1.3. ⚠️ 정확한 직함 미확인 |
 
 ==**따라갈 곳을 셋만 고른다면**== — 지형은 **고려대 ISR**(FastDEM, 우리 전제와 가장 가깝고 가장 최신),
 컨트롤러는 **TU Delft AMR**(guidance + MPC/MPPI 구조가 우리와 같다), 보행자는 **UPO**(HuNavSim이
