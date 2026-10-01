@@ -4,7 +4,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans+KR:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
 <style>
-/* 레이아웃: 위 = 시나리오 탭과 재현 프리셋, 가운데 = 지도(2D/3D) + 오른쪽 조작 패널, 아래 = 진단과 기록.
+/* 레이아웃: 위 = 시나리오 탭과 시연(한 줄), 가운데 = 지도(2D/3D)와 바로 아래 재생 막대 + 오른쪽 조작 패널, 아래 = 진단과 기록.
+   첫 화면에 재생 막대가 들어오도록 지도 높이를 화면에 맞춘다(main.js fitMap).
    색: 아스팔트 바탕 + 연석 도색 노랑(강조) + 청록(경로). 의미 색(도달/실패)은 따로 둔다. */
 :root {
   color-scheme: dark;
@@ -31,43 +32,65 @@
 }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 html, body { background: var(--bg); color: var(--fg); }
 body { margin: 0; font: 14px/1.55 var(--body); }
-.shell { max-width: 1480px; margin: 0 auto; padding-inline: 16px; padding-block: 14px 40px; display: grid; gap: 14px; }
-button, input, select { font: inherit; color: inherit; }
+.shell { max-width: 1480px; margin: 0 auto; padding-inline: 16px; padding-block: 12px 40px; display: grid; gap: 10px; }
+button, input, select, textarea { font: inherit; color: inherit; }
 button { cursor: pointer; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 /* 머리 */
-.hero { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 10px 24px; }
-.brand { display: grid; gap: 2px; }
-.brand h1 { font: 800 clamp(26px, 3.4vw, 38px)/1 var(--display); letter-spacing: -0.02em; margin: 0; text-wrap: balance; }
+.hero { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 24px; }
+.brand { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 14px; min-width: 0; }
+.brand h1 { font: 800 clamp(22px, 2.6vw, 30px)/1.1 var(--display); letter-spacing: -0.02em; margin: 0; }
 .brand h1 span { color: var(--accent); }
-.brand p { margin: 0; color: var(--muted); max-width: 70ch; }
+.brand p { margin: 0; color: var(--muted); font-size: 13px; max-width: 100ch; }
 .links { display: flex; gap: 8px; flex-wrap: wrap; }
 .links a { color: var(--muted); font: 12px var(--mono); text-decoration: none; border: 1px solid var(--line); border-radius: 6px; padding: 4px 8px; }
 .links a:hover { color: var(--fg); border-color: var(--muted); }
 
-/* 탭·프리셋 */
+/* 탭·시연 */
 .bar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .bar .label { font: 600 11px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-right: 4px; }
-.tab { border: 1px solid var(--line); background: var(--panel); border-radius: 8px; padding: 6px 12px; font-weight: 600; }
+.tab { border: 1px solid var(--line); background: var(--panel); border-radius: 8px; padding: 5px 12px; font-weight: 600; }
 .tab[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
 .tab small { font: 11px var(--mono); opacity: .7; margin-left: 6px; }
-.chip { border: 1px dashed var(--line); background: transparent; border-radius: 999px; padding: 4px 11px; font-size: 12.5px; color: var(--fg); }
+.chip { border: 1px dashed var(--line); background: transparent; border-radius: 999px; padding: 4px 11px; font-size: 12.5px; color: var(--fg); white-space: nowrap; }
 .chip:hover { border-color: var(--accent); }
 .chip b { font: 600 11px var(--mono); color: var(--accent); margin-right: 5px; }
-@media (max-width: 640px) {
-  .bar.scroll { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; }
-  .bar.scroll .chip, .bar.scroll .label { flex: none; }
-  .tab small { display: none; }
-}
+.chip[aria-pressed="true"] { border-style: solid; border-color: var(--accent); background: color-mix(in srgb, var(--accent) 16%, transparent); }
+.mod { font: normal 600 10.5px var(--mono); color: var(--warn); border: 1px solid currentColor; border-radius: 4px; padding: 0 4px; margin-left: 6px; }
+/* 시연은 한 줄로 접고 옆으로 넘긴다. 묶음 이름이 칩 사이에 선다. */
+.presetbar { flex-wrap: nowrap; min-width: 0; }
+.presetbar .chips { display: flex; gap: 6px; align-items: center; overflow-x: auto; min-width: 0; flex: 1; padding-block: 2px; scrollbar-width: thin; }
+.presetbar .chips > * { flex: none; }
+.grp { font: 600 10.5px var(--mono); color: var(--muted); padding-left: 6px; border-left: 1px solid var(--line); margin-left: 4px; }
+.grp:first-child { border-left: 0; padding-left: 0; margin-left: 0; }
+.chip.more { flex: none; border-style: solid; color: var(--muted); }
+.bar.scroll { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 2px; scrollbar-width: thin; }
+.bar.scroll > * { flex: none; }
+@media (max-width: 640px) { .tab small { display: none; } }
+
+/* 시연 카드(펼친 것) */
+.pcards { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
+.pc-note { grid-column: 1 / -1; }
+.pgroup { display: grid; gap: 8px; align-content: start; }
+.pgroup h3 { margin: 0; font: 600 11px var(--mono); letter-spacing: .08em; color: var(--muted); }
+.pcard { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; display: grid; }
+.pcard:has(.pc-main[aria-pressed="true"]) { border-color: var(--accent); }
+.pc-main { border: 0; background: transparent; text-align: left; padding: 9px 11px 6px; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 3px 8px; font-size: 12.5px; }
+.pc-head { grid-column: 1 / -1; font-weight: 600; font-size: 13px; }
+.pc-head b { font: 600 11px var(--mono); color: var(--accent); margin-right: 5px; }
+.pc-k { color: var(--muted); font-size: 11.5px; white-space: nowrap; }
+.pc-pair { border: 0; border-top: 1px dashed var(--line); background: transparent; text-align: left; padding: 6px 11px; font-size: 12px; color: var(--route); }
+.pc-pair:hover, .pc-main:hover .pc-head { text-decoration: underline; }
 
 /* 본문 격자 */
 .main { display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 14px; align-items: start; }
 @media (max-width: 1020px) { .main { grid-template-columns: minmax(0, 1fr); } }
 .stage { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; min-width: 0; }
-.toolbar { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; padding: 8px 12px; border-bottom: 1px solid var(--line); }
 .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
 .seg button { border: 0; background: transparent; padding: 5px 10px; font-size: 12.5px; color: var(--muted); }
 .seg button + button { border-left: 1px solid var(--line); }
@@ -75,35 +98,42 @@ button { cursor: pointer; }
 .tools button[aria-pressed="true"] { box-shadow: inset 0 -2px 0 var(--route); }
 .check { display: inline-flex; gap: 5px; align-items: center; font-size: 12.5px; color: var(--muted); }
 .check input { accent-color: var(--accent); }
-.canvas-wrap { position: relative; background: var(--map-bg); aspect-ratio: 2 / 1.08; max-width: 100%; }
+/* 지도 높이: 기본은 2 : 1.08, 화면이 낮으면 재생 막대가 첫 화면에 남도록 --fit-h로 줄인다. */
+.canvas-wrap { position: relative; background: var(--map-bg); width: 100%; aspect-ratio: 2 / 1.08; max-height: var(--fit-h, none); }
 .canvas-wrap canvas, .canvas-wrap .gl { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .canvas-wrap canvas { touch-action: none; }
 .gl canvas { position: static; }
-.banner { position: absolute; left: 50%; top: 14px; transform: translateX(-50%); display: flex; gap: 10px; align-items: center;
+.banner { position: absolute; left: 50%; top: 14px; transform: translateX(-50%); display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; width: max-content; max-width: calc(100% - 24px);
   background: color-mix(in srgb, var(--panel) 92%, transparent); border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; font-weight: 600; box-shadow: 0 6px 24px rgba(0,0,0,.35); }
 .banner.ok { border-color: var(--ok); } .banner.bad { border-color: var(--bad); }
 .banner .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--ok); }
 .banner.bad .dot { background: var(--bad); }
+.banner .expect { font-weight: 500; font-size: 12.5px; color: var(--warn); }
 .banner button { border: 1px solid var(--line); background: var(--panel-2); border-radius: 6px; padding: 3px 9px; font-size: 12.5px; }
 .hint3d { position: absolute; right: 10px; bottom: 8px; font: 11px var(--mono); color: #b9c4bf; opacity: .8; }
+.notice { position: absolute; left: 10px; bottom: 10px; max-width: min(560px, calc(100% - 20px)); display: flex; gap: 10px; align-items: flex-start;
+  background: color-mix(in srgb, var(--panel) 94%, transparent); border: 1px solid var(--warn); border-radius: 8px; padding: 7px 10px; font-size: 12.5px; }
+.notice button { border: 1px solid var(--line); background: var(--panel-2); border-radius: 6px; padding: 3px 8px; font-size: 12px; line-height: 16px; flex: none; }
 .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; padding: 8px 12px; border-top: 1px solid var(--line); font-size: 12px; color: var(--muted); }
 .legend i { display: inline-block; width: 18px; height: 8px; border-radius: 2px; vertical-align: middle; margin-right: 5px; }
 .legend i.line { height: 2px; }
 .legend-layer { display: contents; }
 .layer-note { flex-basis: 100%; margin: 2px 0 0; font-size: 12px; color: var(--muted); }
 .sel { font: inherit; font-size: 12.5px; color: var(--fg); background: var(--panel-2); border: 1px solid var(--line); border-radius: 8px; padding: 4px 8px; margin-left: 4px; }
-.transport { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 10px 12px; border-top: 1px solid var(--line); }
+.transport { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 8px 12px; border-top: 1px solid var(--line); }
 .btn { border: 1px solid var(--line); background: var(--panel-2); border-radius: 8px; padding: 6px 12px; font-weight: 600; font-size: 13px; }
 .btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); min-width: 92px; }
 .telemetry { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-left: auto; font: 12px var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
 .telemetry b { color: var(--fg); font-weight: 600; }
 .telemetry .warn b { color: var(--warn); } .telemetry .bad b { color: var(--bad); }
+.share { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; padding: 8px 12px; border-top: 1px solid var(--line); font-size: 12.5px; }
+.share input { flex: 1 1 320px; min-width: 0; font: 12px var(--mono); background: var(--panel-2); border: 1px solid var(--line); border-radius: 6px; padding: 5px 8px; }
 .probe { padding: 7px 12px; border-top: 1px solid var(--line); font: 12px var(--mono); color: var(--muted); min-height: 32px; font-variant-numeric: tabular-nums; overflow-x: auto; white-space: nowrap; }
 
 /* 오른쪽 패널 */
 .side { display: grid; gap: 10px; min-width: 0; }
 .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; display: grid; gap: 10px; }
-.card h2 { margin: 0; font: 600 11px var(--mono); letter-spacing: .09em; text-transform: uppercase; color: var(--muted); display: flex; justify-content: space-between; }
+.card h2 { margin: 0; font: 600 11px var(--mono); letter-spacing: .09em; text-transform: uppercase; color: var(--muted); display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 .card h2 em { font-style: normal; color: var(--accent); letter-spacing: 0; text-transform: none; }
 .note { margin: 0; font-size: 12.5px; color: var(--muted); }
 .row { display: grid; grid-template-columns: 92px minmax(0, 1fr) 54px; gap: 8px; align-items: center; font-size: 13px; }
@@ -111,9 +141,15 @@ button { cursor: pointer; }
 .row input[type=range] { width: 100%; accent-color: var(--accent); }
 .toggles { display: flex; flex-wrap: wrap; gap: 6px 12px; }
 .seg.full { display: flex; } .seg.full button { flex: 1; }
+.demo-title { margin: 0; font-weight: 600; }
+.demo-title b { font: 600 11px var(--mono); color: var(--accent); margin-right: 5px; }
+.demo dl { margin: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 10px; font-size: 12.5px; }
+.demo dt { color: var(--muted); white-space: nowrap; }
+.demo dd { margin: 0; }
+.demo .bar .btn { font-size: 12px; padding: 4px 10px; }
 
 /* 아래: 진단 + 기록 */
-.lower { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 14px; }
+.lower { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: 14px; }
 @media (max-width: 880px) { .lower { grid-template-columns: minmax(0, 1fr); } }
 .bars { display: grid; gap: 5px; }
 .bars div { display: grid; grid-template-columns: 78px minmax(0, 1fr) 64px; gap: 8px; align-items: center; font-size: 12.5px; }
@@ -126,7 +162,13 @@ table { width: 100%; border-collapse: collapse; font-size: 12.5px; font-variant-
 th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
 th { font: 600 11px var(--mono); color: var(--muted); letter-spacing: .05em; }
 td.ok { color: var(--ok); font-weight: 600; } td.bad { color: var(--bad); font-weight: 600; }
+#history tr[data-i] { cursor: pointer; }
+#history tr[data-i]:hover { background: var(--panel-2); }
+/* 작은 버튼도 터치 대상 24 px 이상(줄 높이 18 + 위아래 여백 4 + 테두리 2) */
+.mini { border: 1px solid var(--line); background: var(--panel-2); border-radius: 6px; padding: 2px 8px; font-size: 12px; line-height: 18px; color: var(--fg); text-decoration: none; display: inline-block; }
+.tag { font: normal 600 10.5px var(--mono); color: var(--warn); margin-left: 6px; }
 .empty { color: var(--muted); font-size: 12.5px; margin: 0; }
+.csvbox textarea { width: 100%; font: 11.5px var(--mono); background: var(--panel-2); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; }
 footer { color: var(--muted); font-size: 12.5px; display: grid; gap: 4px; max-width: 110ch; }
 footer code { font: 12px var(--mono); }
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto; } }
@@ -136,7 +178,7 @@ footer code { font: 12px var(--mono); }
   <header class="hero">
     <div class="brand">
       <h1>travplan <span>Playground</span></h1>
-      <p>실외 보도 배달로봇(스워브)이 2.5D 지형 위에서 Planner → Controller 폐루프로 달린다. 지형, 가림, Dijkstra, MPPI를 브라우저에서 실시간으로 돌린다.</p>
+      <p>실외 보도 배달로봇이 2.5D 지형 위에서 Planner → Controller 폐루프로 달린다. 지형, 가림, Dijkstra, MPPI를 브라우저에서 실시간으로 돌린다.</p>
     </div>
     <nav class="links" aria-label="관련 링크">
       <a id="dashLink" href="../dashboard.html">← 대시보드</a>
@@ -145,8 +187,13 @@ footer code { font: 12px var(--mono); }
     </nav>
   </header>
 
-  <div class="bar" id="scenarios" role="group" aria-label="시나리오"><span class="label">지형</span></div>
-  <div class="bar scroll" id="presets" role="group" aria-label="시연"><span class="label">시연</span></div>
+  <div class="bar scroll" id="scenarios" role="group" aria-label="시나리오"><span class="label">지형</span></div>
+  <div class="bar presetbar" role="group" aria-label="시연">
+    <span class="label">시연</span>
+    <div class="chips" id="presets"></div>
+    <button class="chip more" id="cardsBtn" aria-expanded="false" aria-controls="cards">카드로 보기</button>
+  </div>
+  <section class="pcards" id="cards" hidden aria-label="시연 카드"><p class="note pc-note">'이 페이지' 결과는 JS 재구성이라 지형이 Python과 다르다. 저장소 결과와는 방향만 같다.</p></section>
 
   <div class="main">
     <section class="stage" aria-label="시뮬레이션">
@@ -171,9 +218,25 @@ footer code { font: 12px var(--mono); }
       <div class="canvas-wrap" id="wrap">
         <canvas id="map2d" aria-label="위에서 본 지도. 클릭하면 선택한 도구가 적용된다."></canvas>
         <div class="gl" id="gl" hidden></div>
-        <div class="banner" id="banner" role="status" aria-live="polite" hidden><span class="dot"></span><span id="bannerText"></span><button id="bannerRetry">다시 달리기</button><button id="bannerNew">새 지형</button></div>
+        <div class="banner" id="banner" role="status" aria-live="polite" hidden><span class="dot"></span><span id="bannerText"></span><span id="bannerExpect" class="expect" hidden></span><button id="bannerRetry">다시 달리기</button><button id="bannerNew">새 지형</button></div>
         <div class="hint3d" id="hint3d" hidden>드래그 회전 · 휠 확대 · 우클릭 이동 · 목표·장애물 찍기는 2D에서</div>
+        <div class="notice" id="notice" role="status" hidden><span id="noticeText"></span><button id="noticeClose">닫기</button></div>
       </div>
+      <div class="transport" id="transport">
+        <button class="btn primary" id="play">일시정지</button>
+        <button class="btn" id="stepBtn">한 스텝</button>
+        <button class="btn" id="restart">다시 달리기</button>
+        <button class="btn" id="newSeed">새 지형</button>
+        <div class="seg" id="speed" role="group" aria-label="속도">
+          <button data-val="1" aria-pressed="true">1×</button><button data-val="2" aria-pressed="false">2×</button><button data-val="4" aria-pressed="false">4×</button>
+        </div>
+        <button class="btn" id="linkBtn" title="지금 설정(지형·인식·Planner·Controller·MPPI·목표·보행자·편집·층·보기)을 담은 주소를 복사한다">링크 복사</button>
+        <div class="telemetry" id="telemetry"></div>
+      </div>
+      <div class="share" id="share" hidden>
+        <label for="shareUrl">링크</label><input id="shareUrl" readonly><span class="note" id="shareNote"></span><button class="btn" id="shareClose">닫기</button>
+      </div>
+      <div class="probe" id="probe">처음이라면 위 '시연'에서 하나를 누르고, 시연 카드의 '볼 것'을 보세요. 3D는 드래그로 돌려 본다. 칸의 높이·경사·턱·cost를 보거나 목표·장애물을 찍으려면 2D로 바꾼다.</div>
       <div class="legend" aria-label="범례">
         <span id="legendLayer" class="legend-layer"></span>
         <span><i class="line" style="background:var(--route)"></i>Planner 경로</span>
@@ -183,20 +246,17 @@ footer code { font: 12px var(--mono); }
         <span><i style="background:#ff8fb8;border-radius:50%;width:8px;height:8px"></i>보행자와 4 s 예측</span>
         <span data-l1><i style="background:#78dcff;border-radius:50%;width:6px;height:6px"></i>LiDAR 점</span>
         <p id="layerNote" class="layer-note"></p>
-      </div>      <div class="transport">
-        <button class="btn primary" id="play">일시정지</button>
-        <button class="btn" id="stepBtn">한 스텝</button>
-        <button class="btn" id="restart">다시 달리기</button>
-        <button class="btn" id="newSeed">새 지형</button>
-        <div class="seg" id="speed" role="group" aria-label="속도">
-          <button data-val="1" aria-pressed="true">1×</button><button data-val="2" aria-pressed="false">2×</button><button data-val="4" aria-pressed="false">4×</button>
-        </div>
-        <div class="telemetry" id="telemetry"></div>
       </div>
-      <div class="probe" id="probe">처음이라면 위 '시연' 버튼을 하나 눌러 보세요. 3D는 드래그로 돌려 본다. 칸의 높이·경사·턱·cost를 보거나 목표·장애물을 찍으려면 2D로 바꾼다.</div>
     </section>
 
     <aside class="side">
+      <section class="card demo" id="demoCard" aria-labelledby="demoH">
+        <h2 id="demoH">시연 <em id="demoState"></em></h2>
+        <p class="demo-title" id="demoTitle"></p>
+        <dl id="demoInfo"></dl>
+        <p class="note" id="demoNote" hidden>이 페이지 결과는 JS 재구성이라 지형이 Python과 다르다. 저장소 결과와는 방향만 같다.</p>
+        <div class="bar"><button class="btn" id="demoPair" hidden></button><button class="btn" id="demoReset" hidden>시연 설정으로 되돌리기</button></div>
+      </section>
       <section class="card">
         <h2>지형 <em id="scNote"></em></h2>
         <p class="note" id="scDesc"></p>
@@ -267,17 +327,19 @@ footer code { font: 12px var(--mono); }
       <div class="bars" id="bars"><p class="empty">MPPI를 고르면 비용 6항의 크기가 여기 나온다.</p></div>
     </section>
     <section class="card">
-      <h2>주행 기록 <em>최근 10회</em></h2>
+      <h2>주행 기록 <em>최근 10회 <button class="mini" id="csvBtn" title="Python metrics.csv와 같은 열로 내려받는다">CSV</button></em></h2>
       <div class="table-wrap"><table>
-        <thead><tr><th>로봇</th><th>지형</th><th>인식</th><th>스택</th><th>결과</th><th>시간</th><th>최대 pitch</th><th>평균 GT cost</th><th>평균 높이 오차</th></tr></thead>
-        <tbody id="history"><tr><td colspan="9" class="empty">주행이 끝나면 여기 쌓인다.</td></tr></tbody>
+        <thead><tr><th><span class="sr">다시 달리기</span></th><th>로봇</th><th>지형</th><th>인식</th><th>스택</th><th>MPPI</th><th>결과</th><th>시간</th><th>최대 pitch</th><th>평균 GT cost</th><th>평균 높이 오차</th><th>주소</th></tr></thead>
+        <tbody id="history"><tr><td colspan="12" class="empty">주행이 끝나면 여기 쌓인다. 행을 누르면 그 설정으로 다시 달린다.</td></tr></tbody>
       </table></div>
+      <div class="csvbox" id="csvBox" hidden><p class="note">내려받기가 막힌 곳이면 아래 글을 복사해 <code>.csv</code>로 저장한다.</p><textarea id="csvText" readonly rows="6" aria-label="CSV"></textarea></div>
     </section>
   </div>
 
   <footer>
     <div>travplan 저장소의 <code>sim/terrain.py</code>, <code>representation/</code>, <code>sim/visibility.py</code>, <code>planners/guidance.py</code>, <code>control/mppi/</code>, <code>robot/swerve.py</code>를 JS로 옮긴 간이 시뮬레이터다. 지형 규칙과 비용 식, 스워브의 한계값(경사 15°, 턱 0.08 m, 거칠기 0.04 m, 치명 cost 0.95)은 같다. 사족 보행과 바퀴 사족은 이 Playground에만 있는 비교용 가정이다(한계·흔들림은 공개 제원을 참고한 대표값).</div>
     <div>난수 생성기가 달라 seed가 같아도 Python 벤치마크와 지형이 똑같지는 않다. 시연 버튼의 결과와 표의 수치는 이 페이지(JS)에서 돈 결과이고, 저장소 결과와는 방향만 같다. MPPI 샘플 수 기본값은 브라우저 속도에 맞춰 256이다(Python 768). 학습 Planner(Planner D)는 아직 브라우저에서 돌리지 않는다. 판정은 실제 지형으로 한다: 치명 셀 진입, 로봇별 전복 한계(스워브 pitch 0.35 rad·roll 0.30 rad) 초과, 보행자 접촉, 60 s 초과가 실패다.</div>
+    <div>주소에 설정 전체가 담긴다. '링크 복사'나 기록 행의 주소를 열면 같은 코어 버전에서 같은 주행이 나온다. 코어가 다른 링크면 알림이 뜬다.</div>
   </footer>
 </div>
 

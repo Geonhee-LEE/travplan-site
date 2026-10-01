@@ -1,43 +1,30 @@
 import { World, defaultOptions, PERCEPTION, SIM } from "./sim.js";
 import { SCENARIOS, DIFFICULTY } from "./terrain.js";
 import { PLANNERS } from "./planner.js";
-import { CONTROLLERS, sampleMap } from "./control.js";
+import { CONTROLLERS } from "./control.js";
 import { Map2D, LAYERS } from "./render2d.js";
 import { chassisFeasibility } from "./chassis.js";
 import { Map3D } from "./render3d.js";
 import { ROBOTS } from "./robots.js";
+import { PRESETS, GROUPS } from "./presets.js";
+import { PUBLIC_BASE, baseState, canon, diff, isModified, parse, serialize, buildWorld, applyEdit, presetById, RUN_KEYS } from "./state.js";
+import { EpisodeMeter, toCsv } from "./metrics.js";
 
 const $ = (id) => document.getElementById(id);
-const opts = defaultOptions();
+const opts = defaultOptions();          // 화면 조작이 고치는 설정. World가 같은 객체를 본다
 const view = { layer: "belief", tool: "goal", route: true, samples: true, points: true, exag: 2.0, mode: "3d", cursor: null, drag: null };
-let world = new World(opts);
-world.terrainVersion = 0;
+let world = null;
 let paused = false, speed = 1, acc = 0, last = performance.now(), logged = false;
-const history = [];
+const runLog = [];                      // 주행 기록(최근 10회)
+
+// 주소 상태(state.js). active는 켜진 시연, viewChoice는 사용자가 고른 보기(3D가 안 열려 2D로 돌아가도 그대로 둔다).
+// edits는 지금 지형에 쓴 편집, pedsFromPreset은 보행자가 시연이 정한 그대로인지다.
+// runStart는 지금 주행의 시작 상태, runChanged는 첫 스텝 뒤에 결과를 바꾸는 조작(MPPI 값·목표·보행자·편집)이 있었는지다.
+let active = null, viewChoice = "3d", edits = [], pedsFromPreset = true, runStart = null, runChanged = false;
+let meter = new EpisodeMeter(), started = false, glFailed = false;
 
 const map2d = new Map2D($("map2d"));
 const map3d = new Map3D($("gl"));
-
-// 시연 프리셋: 저장소 결과를 브라우저에서 다시 보는 설정. id는 주소 해시(#TP-0047)와 대시보드 링크가 쓴다
-// (automation/dashboard_links.py가 이 목록을 읽는다). 한 TP에 프리셋이 여럿이면 #TP-XXXX는 첫 번째를 연다.
-const PRESETS = [
-  { id: "TP-0031-low", tp: "TP-0031", label: "가림, 센서 0.3 m", set: { scenario: "bumps_potholes", level: 0, seed: 4, perception: "occlusion", sensorHeight: 0.3, shadowCeiling: false, depthPrior: false } },
-  { id: "TP-0031-high", tp: "TP-0031", label: "센서 1.0 m로 올리기", set: { scenario: "bumps_potholes", level: 0, seed: 4, perception: "occlusion", sensorHeight: 1.0, shadowCeiling: false, depthPrior: false } },
-  { id: "TP-0046", tp: "TP-0046", label: "가림 + 그림자 상한만", set: { scenario: "bumps_potholes", level: 0, seed: 4, perception: "occlusion", shadowCeiling: true, depthPrior: false } },
-  { id: "TP-0047", tp: "TP-0047", label: "+ 깊이 prior", set: { scenario: "bumps_potholes", level: 0, seed: 4, perception: "occlusion", shadowCeiling: true, depthPrior: true, evidence: true } },
-  { id: "TP-0048", tp: "TP-0048", label: "내림 턱 오탐(증거 제한 끔)", set: { scenario: "down_curb", level: 0, seed: 1, perception: "occlusion", shadowCeiling: true, depthPrior: true, evidence: false } },
-  { id: "TP-0082", tp: "TP-0082", label: "차체 기준 층: 둔덕 경사", set: { scenario: "slope_crossfall", level: 0, seed: 0, perception: "range" }, layer: "chassis" },
-  { id: "TP-0100", tp: "TP-0100", label: "L1 간이: 못 본 칸이 위험", set: { scenario: "bumps_potholes", level: 0, seed: 4, perception: "l1lite", shadowCeiling: true, depthPrior: true }, layer: "belief_elev" },
-  { id: "TP-0101", tp: "TP-0101", label: "근거리 미관측을 치명으로(1.5 m)", set: { scenario: "bumps_potholes", level: 0, seed: 4, perception: "occlusion", shadowCeiling: true, depthPrior: true, unknownNear: 1.5 } },
-  { id: "TP-0065", tp: "TP-0065", label: "L1 간이 + 전면 스테레오 + 미관측 1.5 m", set: { scenario: "down_curb", level: 0, seed: 0, perception: "l1lite", shadowCeiling: true, depthPrior: true, stereo: true, unknownNear: 1.5 }, layer: "belief_elev" },
-  { id: "TP-0102", tp: "TP-0102", label: "사족 보행 + L1 간이(자세 보상)", set: { robot: "quadruped", scenario: "bumps_potholes", level: 0, seed: 4, perception: "l1lite", sensorHeight: 0.45, poseComp: true }, layer: "elev_err" },
-  { id: "TP-0102-nocomp", tp: "TP-0102", label: "사족: 자세 보상 끔", set: { robot: "quadruped", scenario: "bumps_potholes", level: 0, seed: 4, perception: "l1lite", sensorHeight: 0.45, poseComp: false }, layer: "elev_err" },
-  { id: "TP-0102-noise", tp: "TP-0102", label: "사족: 자세 추정 잡음 1°", set: { robot: "quadruped", scenario: "bumps_potholes", level: 0, seed: 4, perception: "l1lite", sensorHeight: 0.45, poseComp: true, poseNoise: 1 }, layer: "elev_err" },
-  { id: "TP-0102-wheelleg", tp: "TP-0102", label: "바퀴 사족: 연석을 바로 오른다", set: { robot: "wheelLeg", scenario: "curb_ramp", level: 0, seed: 0, perception: "l1lite", sensorHeight: 0.45, poseComp: true }, layer: "elev_err" },
-  { id: "TP-0039", tp: "TP-0039", label: "연석 L3 (경사로 1.1 m)", set: { scenario: "curb_ramp", level: 3, seed: 0, perception: "range" } },
-  { id: "planner-vs-controller", tp: "P/C", label: "Planner 없이 MPPI만", set: { scenario: "bumps_potholes", level: 0, seed: 0, perception: "range", planner: "straight" } },
-  { id: "TP-0027", tp: "TP-0027", label: "보행자 3명", set: { scenario: "bumps_potholes", level: 0, seed: 1, perception: "range" }, peds: 3 },
-];
 
 function css() {
   const s = getComputedStyle(document.documentElement), v = (n) => s.getPropertyValue(n).trim();
@@ -46,6 +33,8 @@ function css() {
 let CSS = css();
 matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", () => { CSS = css(); });
 new MutationObserver(() => { CSS = css(); }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const r2 = (v) => Math.round(v * 100) / 100;   // 지도에서 찍은 좌표는 1 cm로 맞춰 주소와 같은 값을 쓴다
 
 // ------------------------------------------------------------------ 조작 연결
 function segment(id, value, onPick) {
@@ -72,12 +61,82 @@ for (const [key, sc] of Object.entries(SCENARIOS)) {
   b.addEventListener("click", () => { opts.scenario = key; newWorld(); });
   scBar.appendChild(b);
 }
-const prBar = $("presets");
-for (const p of PRESETS) {
-  const b = document.createElement("button");
-  b.className = "chip"; b.innerHTML = `<b>${p.tp}</b>${p.label}`;
-  b.addEventListener("click", () => applyPreset(p));
-  prBar.appendChild(b);
+
+// ------------------------------------------------------------------ 시연: 한 줄 칩, 펼치는 카드, 오른쪽 시연 카드
+const onoff = (v) => (v === "1" ? "켬" : "끔");
+const KEY_TEXT = {
+  sc: (v) => SCENARIOS[v]?.label || v, lv: (v) => `레벨 ${v}`, s: (v) => `seed ${v}`,
+  rb: (v) => ROBOTS[v]?.label || v, pc: (v) => `자세 보상 ${onoff(v)}`, pn: (v) => `자세 추정 잡음 ${v}°`,
+  per: (v) => PERCEPTION[v]?.label || v, sh: (v) => `센서 ${v} m`, sr: (v) => `센서 범위 ${v} m`,
+  ceil: (v) => `그림자 상한 ${onoff(v)}`, dp: (v) => `깊이 prior ${onoff(v)}`, ev: (v) => `증거 제한 ${onoff(v)}`,
+  un: (v) => (+v ? `근거리 미관측 ${v} m` : "근거리 미관측 끔"), unc: (v) => `미관측 cost ${v}`, st: (v) => `전면 스테레오 ${onoff(v)}`,
+  pl: (v) => `Planner ${PLANNERS[v]?.label || v}`, co: (v) => `Controller ${CONTROLLERS[v]?.label || v}`,
+  K: (v) => `K ${v}`, T: (v) => `지평 ${(v * SIM.dt).toFixed(1)} s`, lam: (v) => `λ ${v}`, nz: (v) => `탐색 잡음 ×${v}`,
+  wt: (v) => `지형 가중 ${v}`, wr: (v) => `위험 가중 ${v}`, wa: (v) => `자세 가중 ${v}`,
+  goal: () => "목표 이동", ped: (v) => (v ? `보행자 ${v.split(";").length}명` : "보행자 없음"), ed: (v) => `지형 편집 ${v.split(";").length}곳`,
+};
+const diffText = (st) => diff(st).filter(([k]) => RUN_KEYS.has(k)).map(([k, v]) => KEY_TEXT[k](v)).join(", ");
+function pairInfo(addr) {
+  const r = parse(addr), p = presetById(r.state.base), extra = diffText(r.state);
+  return { st: r.state, text: p ? `${p.tp} ${p.label}${extra ? " + " + extra : ""}` : extra };
+}
+
+const chipBox = $("presets"), cardBox = $("cards");
+for (const [g, name] of Object.entries(GROUPS)) {
+  const ps = PRESETS.filter((p) => p.group === g);
+  chipBox.insertAdjacentHTML("beforeend", `<span class="grp">${esc(name)}</span>` + ps.map((p) =>
+    `<button class="chip" data-preset="${esc(p.id)}" aria-pressed="false" title="볼 것: ${esc(p.watch)}"><b>${esc(p.tp)}</b>${esc(p.label)}<em class="mod" hidden>수정됨</em></button>`).join(""));
+  cardBox.insertAdjacentHTML("beforeend", `<section class="pgroup" aria-label="${esc(name)}"><h3>${esc(name)}</h3>` + ps.map((p) => {
+    const pair = p.pair ? pairInfo(p.pair) : null;
+    return `<article class="pcard"><button class="pc-main" data-preset="${esc(p.id)}" aria-pressed="false">`
+      + `<span class="pc-head"><b>${esc(p.tp)}</b>${esc(p.label)}<em class="mod" hidden>수정됨</em></span>`
+      + `<span class="pc-k">볼 것</span><span>${esc(p.watch)}</span><span class="pc-k">이 페이지</span><span>${esc(p.expect.text)}</span>`
+      + `<span class="pc-k">저장소</span><span>${esc(p.repo)}</span></button>`
+      + (pair ? `<button class="pc-pair" data-pair="${esc(p.pair)}">비교 ▸ ${esc(pair.text)}</button>` : "") + "</article>";
+  }).join("") + "</section>");
+}
+const others = PRESETS.filter((p) => !GROUPS[p.group]);   // 묶음이 없는 시연도 칩은 둔다
+if (others.length) chipBox.insertAdjacentHTML("beforeend", `<span class="grp">기타</span>` + others.map((p) => `<button class="chip" data-preset="${esc(p.id)}" aria-pressed="false"><b>${esc(p.tp)}</b>${esc(p.label)}<em class="mod" hidden>수정됨</em></button>`).join(""));
+for (const box of [chipBox, cardBox]) box.addEventListener("click", (e) => {
+  const pair = e.target.closest("[data-pair]");
+  if (pair) { openAddress(pair.dataset.pair); return; }
+  const b = e.target.closest("[data-preset]");
+  if (b) applyPreset(presetById(b.dataset.preset));
+});
+$("cardsBtn").addEventListener("click", () => {
+  const open = cardBox.hidden;
+  cardBox.hidden = !open; $("cardsBtn").setAttribute("aria-expanded", String(open));
+  $("cardsBtn").textContent = open ? "카드 접기" : "카드로 보기";
+});
+$("demoPair").addEventListener("click", (e) => openAddress(e.currentTarget.dataset.pair));
+$("demoReset").addEventListener("click", () => applyPreset(presetById(active)));
+
+function syncPresets() {
+  const cur = snapshot(), mod = !!active && isModified(cur);
+  document.querySelectorAll("[data-preset]").forEach((el) => {
+    const on = el.dataset.preset === active;
+    el.setAttribute("aria-pressed", String(on));
+    const m = el.querySelector(".mod"); if (m) m.hidden = !(on && mod);
+  });
+  const p = presetById(active);
+  $("demoState").textContent = p ? (mod ? "수정됨" : "켜짐") : "없음";
+  $("demoTitle").innerHTML = p ? `<b>${esc(p.tp)}</b>${esc(p.label)}` : "사용자 설정";
+  $("demoInfo").innerHTML = p
+    ? `<dt>볼 것</dt><dd>${esc(p.watch)}</dd><dt>이 페이지</dt><dd>${esc(p.expect.text)}</dd><dt>저장소</dt><dd>${esc(p.repo)}</dd>`
+      + (mod ? `<dt>바꾼 것</dt><dd>${esc(diffText(cur))}</dd>` : "")
+    : `<dt>안내</dt><dd>위 '시연'에서 하나를 고르면 저장소 결과를 그 설정 그대로 다시 달린다. '카드로 보기'는 시연마다 볼 것과 기대 결과를 보인다.</dd>`;
+  const pb = $("demoPair");
+  pb.hidden = !p?.pair;
+  if (p?.pair) { pb.dataset.pair = p.pair; pb.textContent = `비교 ▸ ${pairInfo(p.pair).text}`; }
+  $("demoReset").hidden = !(p && mod);
+  $("demoNote").hidden = !p;
+}
+// 한 줄 칩에서 켜진 시연이 보이게 옆으로만 넘긴다(페이지는 움직이지 않는다).
+function revealChip() {
+  const b = [...chipBox.querySelectorAll("[data-preset]")].find((el) => el.dataset.preset === active);
+  if (!b) return;
+  const l = b.offsetLeft - chipBox.offsetLeft, r = l + b.offsetWidth;
+  if (l < chipBox.scrollLeft || r > chipBox.scrollLeft + chipBox.clientWidth) chipBox.scrollLeft = Math.max(0, l - 40);
 }
 
 // 로봇을 바꾸면 한계가 바뀌어 GT 지도부터 다시 만든다. 센서 높이는 그 로봇의 기본 장착 높이로 맞춘다.
@@ -90,7 +149,7 @@ const syncCo = segment("controller", opts.controller, (v) => { opts.controller =
 $("layerSel").addEventListener("change", (e) => { setLayer(e.target.value); });
 function setLayer(v) {
   view.layer = v; $("layerSel").value = v; uiKey = "";
-  ensureChassis();
+  touch(true); ensureChassis();
 }
 // 차체 기하 기준은 지형이 바뀔 때만 한 번 계산한다(약 1 s). 층을 고를 때 필요하면 시작한다.
 function ensureChassis() {
@@ -99,6 +158,7 @@ function ensureChassis() {
   $("probe").textContent = "차체 기하 기준을 계산하는 중이다(방위각 8개 × 모든 칸, 약 1 s)…";
   const w = world;
   setTimeout(() => {
+    flushAddr();   // 이 계산이 메인 스레드를 막는 동안 주소 쓰기가 밀리지 않게 먼저 쓴다
     w.chassis = chassisFeasibility(w.terrain.z, w.terrain.grid);
     w.chassisVer = w.terrainVersion; w.chassisBusy = false;
     if (w === world) $("probe").textContent = "차체 기하 기준: 빨강·보라·파랑·주황 칸은 어느 방향으로도 차체가 들어가지 못한다.";
@@ -106,20 +166,21 @@ function ensureChassis() {
 }
 segment("tool", view.tool, (v) => { view.tool = v; });
 segment("speed", 1, (v) => { speed = +v; });
-const syncView = segment("view", view.mode, (v) => setMode(v));
+const syncView = segment("view", view.mode, (v) => { viewChoice = v; touch(true); setMode(v); });
 
 const setLevel = slider("level", (v) => `L${v}`, (v) => { opts.level = v; newWorld(); });
 const setSeed = slider("seed", (v) => `${v}`, (v) => { opts.seed = v; newWorld(); });
 const setSH = slider("sensorHeight", (v) => `${v.toFixed(2)} m`, (v) => { opts.sensorHeight = v; restart(); });
 const setUN = slider("unknownNear", (v) => (v ? `${v.toFixed(2)} m` : "끔"), (v) => { opts.unknownNear = v; restart(); });
 const setSR = slider("sensorRange", (v) => `${v.toFixed(1)} m`, (v) => { opts.sensorRange = v; restart(); });
-const setK = slider("K", (v) => `${v}`, (v) => { opts.mppi.K = v; });
-const setT = slider("T", (v) => `${(v * 0.1).toFixed(1)} s`, (v) => { opts.mppi.T = v; });
-const setL = slider("lambda", (v) => v.toFixed(2), (v) => { opts.mppi.lambda = v; });
-const setN = slider("noiseScale", (v) => `×${v.toFixed(2)}`, (v) => { opts.mppi.noise = [0.4 * v, 0.25 * v, 0.6 * v]; });
-const setWT = slider("wTrav", (v) => v.toFixed(1), (v) => { opts.mppi.w.trav = v; });
-const setWR = slider("wRisk", (v) => v.toFixed(1), (v) => { opts.mppi.w.risk = v; });
-const setWA = slider("wAtt", (v) => `${v}`, (v) => { opts.mppi.w.attitude = v; });
+// MPPI 값은 주행을 다시 시작하지 않고 다음 스텝부터 쓴다. 첫 스텝 뒤에 바꾸면 '주행 중 변경'이다.
+const setK = slider("K", (v) => `${v}`, (v) => { opts.mppi.K = v; changed(); });
+const setT = slider("T", (v) => `${(v * 0.1).toFixed(1)} s`, (v) => { opts.mppi.T = v; changed(); });
+const setL = slider("lambda", (v) => v.toFixed(2), (v) => { opts.mppi.lambda = v; changed(); });
+const setN = slider("noiseScale", (v) => `×${v.toFixed(2)}`, (v) => { opts.mppi.noise = [0.4 * v, 0.25 * v, 0.6 * v]; changed(); });
+const setWT = slider("wTrav", (v) => v.toFixed(1), (v) => { opts.mppi.w.trav = v; changed(); });
+const setWR = slider("wRisk", (v) => v.toFixed(1), (v) => { opts.mppi.w.risk = v; changed(); });
+const setWA = slider("wAtt", (v) => `${v}`, (v) => { opts.mppi.w.attitude = v; changed(); });
 
 for (const id of ["shadowCeiling", "depthPrior", "evidence", "stereo"]) {
   $(id).checked = opts[id];
@@ -129,17 +190,27 @@ $("showRoute").addEventListener("change", (e) => { view.route = e.target.checked
 $("showSamples").addEventListener("change", (e) => { view.samples = e.target.checked; });
 $("showPoints").addEventListener("change", (e) => { view.points = e.target.checked; });
 
+function stepOnce() {
+  if (world.status !== "running") return;
+  const k0 = world.k;
+  world.step();
+  meter.after(world, k0);
+}
 $("play").addEventListener("click", () => {
   if (world.status !== "running") { restart(); return; }
   paused = !paused; syncPlay();
 });
-$("stepBtn").addEventListener("click", () => { paused = true; syncPlay(); world.step(); });
+$("stepBtn").addEventListener("click", () => { paused = true; syncPlay(); stepOnce(); });
 $("restart").addEventListener("click", restart);
 $("newSeed").addEventListener("click", () => { opts.seed = (opts.seed + 1) % 20; newWorld(); });
 $("bannerRetry").addEventListener("click", restart);
 $("bannerNew").addEventListener("click", () => { opts.seed = (opts.seed + 1) % 20; newWorld(); });
-$("spawnPeds").addEventListener("click", () => { world.spawnCrossing(3); restart(); });   // 시작 시각에 맞춘 보행자라 처음부터 다시
-$("clearPeds").addEventListener("click", () => { world.clearPeds(); });
+$("spawnPeds").addEventListener("click", () => { world.spawnCrossing(3); pedsFromPreset = false; restart(); });   // 시작 시각에 맞춘 보행자라 처음부터 다시
+$("clearPeds").addEventListener("click", () => { world.clearPeds(); pedsFromPreset = false; changed(); });
+$("linkBtn").addEventListener("click", () => copyLink(linkFor(addrState()), $("linkBtn")));
+$("shareClose").addEventListener("click", () => { $("share").hidden = true; });
+$("noticeClose").addEventListener("click", () => { $("notice").hidden = true; });
+$("csvBtn").addEventListener("click", exportCsv);
 
 document.addEventListener("keydown", (e) => {
   if (e.target.closest("input, select, textarea, button, a")) return;
@@ -181,45 +252,142 @@ function syncPanel() {
   setWT(opts.mppi.w.trav); setWR(opts.mppi.w.risk); setWA(opts.mppi.w.attitude);
 }
 
+// ------------------------------------------------------------------ 주행 시작과 주소 상태
+// 지형·지도를 다시 만드는 조작은 계산(0.1–0.3 s) 전에 주소부터 쓴다. 계산이 끝난 뒤의 touch()는 같은 주소라 다시 쓰지 않는다.
+const putNext = (s) => putHash(serialize({ ...s, layer: view.layer, view: viewChoice }));
 function newWorld() {
+  putNext({ ...snapshot(), goal: null, edits: [] });
   const peds = world.pedsInit;
-  world = new World(opts); world.terrainVersion = 0; world.edited = false;
+  world = new World(opts); world.terrainVersion = 0; world.edited = false; edits = [];   // 새 지형이라 편집과 목표는 처음으로
   if (peds?.length) { world.pedsInit = []; for (const p of peds) world.addPed(p.x, p.y, p.vx, p.vy); world.peds = world.pedsInit.map((p) => ({ ...p })); }
   onNewRun();
 }
 function restart() {
+  putNext(snapshot());
   world.opts = opts; world.reset();
   onNewRun();
 }
-function onNewRun() { paused = false; logged = false; acc = 0; uiKey = ""; syncPanel(); syncPlay(); ensureChassis(); }
-
-function applyPreset(p) {
-  Object.assign(opts, defaultOptions(), p.set);          // 시연은 MPPI도 기본값에서 시작한다
-  world.clearPeds();
-  newWorld();
-  setLayer(p.layer || "belief");
-  if (p.peds) { world.spawnCrossing(p.peds); restart(); }
+function onNewRun() {
+  paused = false; logged = false; acc = 0; uiKey = "";
+  runStart = snapshot(); runChanged = false; meter = new EpisodeMeter();
+  syncPanel(); syncPlay(); ensureChassis(); touch();
 }
 
-// ------------------------------------------------------------------ 지도 클릭
+// 지금 '다시 달리기'가 돌릴 설정(주행 중 변경까지 담는다)
+function snapshot() {
+  const g = world.goal, g0 = world.terrain.goal;
+  return canon({
+    base: active, o: opts, layer: view.layer, view: viewChoice,
+    goal: g[0] === g0[0] && g[1] === g0[1] ? null : g.slice(),
+    peds: pedsFromPreset ? null : (world.pedsInit || []).map((p) => [p.x, p.y, p.vx, p.vy]),
+    edits,
+  });
+}
+// 주소에 쓸 상태: 주행 중에 바꾼 것은 담지 않고 그 주행의 시작 상태를 둔다. 층·보기는 언제나 지금 것이다.
+function addrState() {
+  const s = runChanged && world.status === "running" ? runStart : snapshot();
+  return { ...s, layer: view.layer, view: viewChoice };
+}
+// 결과를 바꾸는 조작 뒤에 부른다. 첫 스텝 전이면 시작 상태에 담고, 주행 중이면 '주행 중 변경'으로 표시한다.
+function changed() {
+  if (world.status === "running") { if (world.k > 0) runChanged = true; else runStart = snapshot(); }
+  touch();
+}
+
+// 주소·기록 행·시연 -> 화면. 시작 상태는 state.js의 buildWorld가 만든다(check.html과 같은 길).
+function applyState(s, notes = []) {
+  s = canon(s);
+  if (started) putHash(serialize(s));
+  active = s.base;
+  for (const k of Object.keys(opts)) delete opts[k];
+  Object.assign(opts, structuredClone(s.o));
+  edits = s.edits.map((e) => e.slice());
+  pedsFromPreset = s.peds === null;
+  world = buildWorld(s, opts);
+  world.terrainVersion = 0; world.edited = edits.length > 0;
+  view.layer = s.layer; $("layerSel").value = s.layer;
+  viewChoice = s.view;   // 3D가 한 번 안 열렸으면 주소가 3D여도 2D로 둔다(사용자가 3D를 누를 때만 다시 시도)
+  if (!started || (s.view !== view.mode && !(s.view === "3d" && glFailed))) { syncView(s.view); setMode(s.view); }
+  onNewRun();
+  showNotes(notes);
+  revealChip();
+}
+function applyPreset(p) { if (p) applyState({ ...baseState(p.id), view: viewChoice }); }   // 시연을 눌러도 보기는 그대로
+function openAddress(addr) { const r = parse(addr); applyState({ ...r.state, view: viewChoice }, r.notes); }
+
+function showNotes(notes) {
+  $("notice").hidden = !notes.length;
+  $("noticeText").textContent = notes.join(" ");
+}
+
+// 주소 쓰기: 마지막 조작 200 ms 뒤 replaceState(브라우저 기록은 늘지 않는다). 손으로 고친 주소는 hashchange로 다시 연다.
+// 시간은 조작한 순간부터 센다. 지형을 새로 만드는 데 걸린 시간(L1 간이에서 약 0.2 s)을 기다림에 더하지 않기 위해서다.
+// 층·보기처럼 한 번에 끝나는 조작은 바로 쓴다(now).
+let addrTimer = 0, actedAt = performance.now();
+for (const t of ["input", "change", "click", "keydown", "pointerup"]) document.addEventListener(t, () => { actedAt = performance.now(); }, true);
+function touch(now = false) {
+  syncPresets(); clearTimeout(addrTimer); addrTimer = 0;
+  if (now) writeAddr();
+  else addrTimer = setTimeout(writeAddr, Math.max(0, actedAt + 200 - performance.now()));
+}
+function writeAddr() { addrTimer = 0; putHash(serialize(addrState())); }
+function flushAddr() { if (addrTimer) { clearTimeout(addrTimer); writeAddr(); } }   // 기다리는 주소 쓰기를 지금 한다
+function putHash(h) {
+  if (serialize(parse(location.hash).state) === h) return;             // 지금 주소가 이미 이 상태다(#TP-0031처럼 다른 꼴 포함)
+  if (!location.hash && h === "pg") return;                               // 처음 연 기본 설정은 주소를 비워 둔다
+  try { history.replaceState(history.state, "", "#" + h); } catch { /* 틀 안에서 막히면 링크 복사만 쓴다 */ }
+}
+window.addEventListener("hashchange", () => {
+  const r = parse(location.hash);
+  if (serialize(r.state) === serialize(addrState())) return;
+  applyState(r.state, r.notes);
+});
+
+// 공유 링크: 공개 페이지(로컬 서버·GitHub Pages)를 맨 위 창으로 열었으면 그 주소, claude.ai 게시본이나 iframe 안이면 공개 Playground 주소.
+function shareBase() {
+  let top = true;
+  try { top = window.top === window; } catch { top = false; }
+  const claude = /(^|\.)claude\.ai$|(^|\.)claudeusercontent\.com$/.test(location.hostname);
+  return top && !claude && /^https?:$/.test(location.protocol) ? location.origin + location.pathname : PUBLIC_BASE;
+}
+const linkFor = (s) => shareBase() + "#" + serialize(s);
+async function copyLink(url, btn) {
+  let ok = false;
+  try { await navigator.clipboard.writeText(url); ok = true; } catch { /* 권한이 없으면 아래 입력칸으로 */ }
+  const inp = $("shareUrl");
+  inp.value = url;
+  if (!ok) {
+    $("share").hidden = false; inp.focus(); inp.select();
+    try { ok = document.execCommand("copy"); } catch { ok = false; }
+    $("shareNote").textContent = ok ? "복사했다." : "복사가 막혀 주소를 선택해 두었다. Ctrl+C(⌘C)로 복사한다.";
+  }
+  if (btn) { const t = btn.dataset.label || (btn.dataset.label = btn.textContent); btn.textContent = ok ? "복사했다 ✓" : "주소를 선택했다"; setTimeout(() => { btn.textContent = t; }, 1600); }
+  return ok;
+}
+
+// ------------------------------------------------------------------ 지도 클릭(2D)
 const cv = $("map2d");
 function evWorld(e) { const r = cv.getBoundingClientRect(); return map2d.toWorld(e.clientX - r.left, e.clientY - r.top); }
-function editTerrain(fn) {
-  fn(); world.terrainVersion++; world.edited = true; world.rebuildGT(); ensureChassis();
-  world.observe(); world.replan();
+function editTerrain(op, x, y) {
+  applyEdit(world.terrain, op, x, y); edits.push([op, x, y]);
+  world.terrainVersion++; world.edited = true; world.rebuildGT(); ensureChassis();
+  if (world.status === "running" && world.k === 0) world.reset();   // 첫 스텝 전 편집은 시작 상태가 된다(주소로 연 World와 같다)
+  else { world.observe(); world.replan(); }
+  changed();
 }
 cv.addEventListener("pointerdown", (e) => {
   if (!map2d.L) return;
-  const [x, y] = evWorld(e), g = world.terrain.grid;
+  const [x, y] = evWorld(e).map(r2), g = world.terrain.grid;
   if (!g.inside(x, y)) return;
   if (view.tool === "goal") {
     if (world.status !== "running") restart();          // 끝난 주행은 처음부터 다시 달린다
     const why = world.setGoal(x, y);
     if (why) $("probe").textContent = why + ". 다른 곳을 고르세요.";
+    else changed();
   }
-  else if (view.tool === "box") editTerrain(() => world.terrain.addBox(x, y));
-  else if (view.tool === "pothole") editTerrain(() => world.terrain.addPothole(x, y));
-  else if (view.tool === "erase") editTerrain(() => world.terrain.erase(x, y));
+  else if (view.tool === "box") editTerrain("box", x, y);
+  else if (view.tool === "pothole") editTerrain("pothole", x, y);
+  else if (view.tool === "erase") editTerrain("erase", x, y);
   else if (view.tool === "ped") { view.drag = { from: [x, y], to: [x, y] }; cv.setPointerCapture(e.pointerId); }
   if (view.tool === "goal") { paused = false; syncPlay(); }
 });
@@ -237,8 +405,8 @@ cv.addEventListener("pointerup", () => {
   const { from, to } = view.drag, dx = to[0] - from[0], dy = to[1] - from[1], d = Math.hypot(dx, dy);
   const sp = Math.min(1.2, Math.max(0.5, d));   // 끈 길이 = 속력(0.5–1.2 m/s)
   const ux = d > 0.05 ? dx / d : -1, uy = d > 0.05 ? dy / d : 0;
-  world.addPed(from[0], from[1], ux * sp, uy * sp);
-  view.drag = null;
+  world.addPed(from[0], from[1], r2(ux * sp), r2(uy * sp));
+  view.drag = null; pedsFromPreset = false; changed();
 });
 
 function probe(x, y) {
@@ -263,8 +431,9 @@ async function setMode(m) {
   $("gl").hidden = m !== "3d"; $("map2d").hidden = m === "3d"; $("hint3d").hidden = m !== "3d";
   $("tool").querySelectorAll("button").forEach((b) => { b.disabled = m === "3d"; });
   if (m === "3d") {
-    try { await map3d.init(); }
+    try { await map3d.init(); glFailed = false; }
     catch (err) {
+      glFailed = true;
       syncView("2d"); await setMode("2d");
       $("probe").textContent = `3D 보기를 열지 못했다(${err.message}). 2D 보기로 돌아왔다.`;
     }
@@ -305,16 +474,33 @@ function bars() {
   $("ctrlMs").textContent = `K ${opts.mppi.K} · ${c.ms.toFixed(1)} ms`;
 }
 
+// 시연을 그대로 달렸는데 결과가 PRESETS.expect와 다르면 배너에 쓴다.
+function expectNote() {
+  const p = presetById(runStart?.base);
+  if (!p || runChanged || isModified(runStart)) return "";
+  const e = p.expect, same = world.status === e.status && (e.status !== "failed" || !e.fail || e.fail === world.failCode);
+  return same ? "" : `시연 기대와 다르다(기대: ${e.text})`;
+}
+function mppiText(o) {
+  if (o.controller !== "mppi") return "—";
+  const d = defaultOptions().mppi, m = o.mppi, nz = +(m.noise[0] / 0.4).toFixed(2), extra = [];
+  if (nz !== 1) extra.push(`잡음 ×${nz}`);
+  if (m.w.trav !== d.w.trav || m.w.risk !== d.w.risk || m.w.attitude !== d.w.attitude) extra.push(`가중 ${m.w.trav}/${m.w.risk}/${m.w.attitude}`);
+  return [`K ${m.K}`, `T ${(m.T * SIM.dt).toFixed(1)} s`, `λ ${m.lambda}`, ...extra].join(" · ");
+}
 function banner() {
   const b = $("banner");
   if (world.status === "running") { b.hidden = true; return; }
   b.hidden = false;
   b.className = "banner " + (world.status === "reached" ? "ok" : "bad");
   $("bannerText").textContent = world.status === "reached" ? `도달 · ${world.t.toFixed(1)} s · ${world.stats.len.toFixed(1)} m` : `실패 · ${world.failure} · ${world.t.toFixed(1)} s`;
+  const en = expectNote();
+  $("bannerExpect").hidden = !en; $("bannerExpect").textContent = en;
   if (!logged) {
     logged = true;
     const s = world.stats;
-    history.unshift({
+    runLog.unshift({
+      st: runStart, changed: runChanged, m: meter.row(world, { edited: world.edited }),
       robot: ({ swerve: "스워브", quadruped: "사족", wheelLeg: "바퀴 사족" }[opts.robot])
         + (opts.perception === "l1lite" && opts.robot !== "swerve" ? (opts.poseComp ? ` 보상${opts.poseNoise ? " ±" + opts.poseNoise + "°" : ""}` : " 보상 끔") : ""),
       err: s.errN ? `${((100 * s.errSum) / s.errN).toFixed(1)} cm` : "-",
@@ -323,13 +509,44 @@ function banner() {
         + (opts.perception === "occlusion" || opts.perception === "l1lite" ? `${opts.shadowCeiling ? " +상한" : ""}${opts.shadowCeiling && opts.depthPrior ? " +prior" : ""}` : "")
         + (opts.perception === "l1lite" && opts.stereo ? " +스테레오" : "")
         + (opts.unknownNear ? ` +미관측 ${opts.unknownNear} m` : ""),
-      stack: `${opts.planner}+${opts.controller}`, ok: world.status === "reached", res: world.status === "reached" ? "도달" : world.failure,
+      stack: `${opts.planner}+${opts.controller}`, mppi: mppiText(runStart.o), ok: world.status === "reached", res: world.status === "reached" ? "도달" : world.failure,
       t: world.t, pitch: world.stats.maxPitch, cost: world.stats.gtCostSum / Math.max(1, world.stats.steps),
     });
-    history.length = Math.min(history.length, 10);
-    $("history").innerHTML = history.map((h) => `<tr><td>${h.robot}</td><td>${h.sc}</td><td>${h.per}</td><td>${h.stack}</td><td class="${h.ok ? "ok" : "bad"}">${h.res}</td><td>${h.t.toFixed(1)} s</td><td>${deg(h.pitch)}°</td><td>${h.cost.toFixed(3)}</td><td>${h.err}</td></tr>`).join("");
-    syncPlay();
+    runLog.length = Math.min(runLog.length, 10);
+    renderLog();
+    syncPlay(); touch();   // 주행 중 변경이 있었으면 이제 주소가 다음 주행의 설정이 된다
   }
+}
+function renderLog() {
+  $("history").innerHTML = runLog.map((h, i) => {
+    const tip = h.changed ? "주행 중에 MPPI 값·목표·보행자·지형을 바꿔서, 이 행의 주소(시작 상태)로는 같은 결과가 나오지 않을 수 있다" : "이 설정으로 다시 달린다";
+    return `<tr data-i="${i}" title="${tip}"><td><button class="mini" data-act="rerun" aria-label="${i + 1}번째 기록을 다시 달리기">▶</button></td>`
+      + `<td>${esc(h.robot)}</td><td>${esc(h.sc)}</td><td>${esc(h.per)}</td><td>${esc(h.stack)}</td><td>${esc(h.mppi)}</td>`
+      + `<td class="${h.ok ? "ok" : "bad"}">${esc(h.res)}${h.changed ? '<span class="tag">주행 중 변경</span>' : ""}</td>`
+      + `<td>${h.t.toFixed(1)} s</td><td>${deg(h.pitch)}°</td><td>${h.cost.toFixed(3)}</td><td>${esc(h.err)}</td>`
+      + `<td><a class="mini" data-act="link" href="${esc(linkFor(h.st))}" target="_blank" rel="noopener" title="이 주행의 시작 설정을 새 탭으로 연다">링크</a></td></tr>`;
+  }).join("");
+}
+$("history").addEventListener("click", (e) => {
+  if (e.target.closest("[data-act=link]")) return;      // 링크는 새 탭으로
+  const tr = e.target.closest("tr[data-i]");
+  if (!tr) return;
+  const h = runLog[+tr.dataset.i];
+  if (h) applyState({ ...h.st, layer: view.layer, view: viewChoice });
+});
+function exportCsv() {
+  const csv = toCsv(runLog.slice().reverse().map((h) => h.m));     // 오래된 주행부터
+  try {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
+    a.download = "travplan-playground-metrics.csv";
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  } catch { /* 아래 글 상자로 */ }
+  if (shareBase() === PUBLIC_BASE) {   // claude.ai·iframe 안에서는 내려받기가 막힐 수 있다
+    $("csvBox").hidden = false; $("csvText").value = csv; $("csvText").select();
+  }
+  return csv;
 }
 
 // ------------------------------------------------------------------ 표시 보조
@@ -340,6 +557,16 @@ function syncLegend() {
   document.querySelectorAll(".legend [data-l1]").forEach((el) => { el.hidden = opts.perception !== "l1lite"; });
   $("legHorizon").textContent = (opts.mppi.T * SIM.dt).toFixed(1);
 }
+
+// 첫 화면에 재생 막대가 들어오게 지도 높이를 줄인다(넓은 화면의 2 : 1.08을 넘지 않는다). 펼친 시연 카드는 높이 계산에서 뺀다.
+function fitMap() {
+  const wrap = $("wrap"), cards = $("cards");
+  const above = wrap.getBoundingClientRect().top + window.scrollY - (cards.hidden ? 0 : cards.offsetHeight + 10);
+  const play = $("play").getBoundingClientRect().height + 18;   // 재생 막대 첫 줄(위아래 여백 포함)
+  wrap.style.setProperty("--fit-h", `${Math.max(220, Math.floor(window.innerHeight - above - play - 6))}px`);
+}
+window.addEventListener("resize", fitMap);
+document.fonts?.ready?.then(fitMap);
 
 // 실시간 배율: 최근 1초 동안 흐른 시뮬 시간 / 실제 시간
 const rt = { simT: 0, wall: performance.now(), factor: 1 };
@@ -355,7 +582,7 @@ function frame(now) {
   if (!paused && world.status === "running") {
     acc += dtReal * speed;
     const t0 = performance.now();
-    while (acc >= SIM.dt && world.status === "running" && performance.now() - t0 < 45) { world.step(); acc -= SIM.dt; }
+    while (acc >= SIM.dt && world.status === "running" && performance.now() - t0 < 45) { stepOnce(); acc -= SIM.dt; }
     if (acc > 0.3) acc = 0.3;
   }
   realtime(now);
@@ -367,17 +594,6 @@ function frame(now) {
   requestAnimationFrame(frame);
 }
 
-// 동작 줄이기 설정이면 일시정지로 시작한다.
-if (matchMedia("(prefers-reduced-motion: reduce)").matches) paused = true;
-// 주소 해시로 프리셋 열기: #TP-0047, #TP-0031-high 등(대시보드의 '▶ 시뮬레이션' 링크)
-function presetFromHash() {
-  const h = decodeURIComponent(location.hash.slice(1));
-  if (!h) return;
-  const p = PRESETS.find((q) => q.id === h) || PRESETS.find((q) => q.tp === h);
-  if (p) applyPreset(p);
-}
-window.addEventListener("hashchange", presetFromHash);
-
 // 대시보드 링크: 저장소(로컬 서버·GitHub Pages)에서는 옆의 docs/dashboard.html, 게시본에서는 대시보드 게시본
 const DASHBOARD_ARTIFACT = "https://claude.ai/artifact/QMumSBE3kBQMqAyu1oPxHG";
 {
@@ -385,7 +601,23 @@ const DASHBOARD_ARTIFACT = "https://claude.ai/artifact/QMumSBE3kBQMqAyu1oPxHG";
   $("dashLink").href = local ? "../dashboard.html" : DASHBOARD_ARTIFACT;
 }
 
-syncPanel(); syncPlay();
-presetFromHash();
-setMode(view.mode);   // 기본은 3D. WebGL이 없거나 three.js를 못 받으면 2D로 돌아간다
+// 검사용(check.html, 헤드리스 검사): 같은 출처에서 지금 주행을 끝까지 계산하고 결과·주소·CSV를 읽는다. 화면 조작에는 쓰지 않는다.
+window.playgroundTest = {
+  hash: () => serialize(addrState()),
+  link: () => linkFor(addrState()),
+  result: () => ({ status: world.status, fail: world.failCode || "", t: world.t, k: world.k, pose: world.pose.slice() }),
+  runToEnd() { paused = true; syncPlay(); while (world.status === "running") stepOnce(); banner(); return this.result(); },
+  log: () => runLog.map((h) => ({ link: linkFor(h.st), hash: serialize(h.st), changed: h.changed, m: h.m })),
+  csv: () => toCsv(runLog.slice().reverse().map((h) => h.m)),
+};
+
+// 시작: 주소(#TP-0047, #TP-0047?…, #pg?…)를 열고, 없으면 기본 설정. 기본 보기는 3D이고 WebGL이 없으면 2D로 돌아간다.
+{
+  const r = parse(location.hash);
+  applyState(r.state, r.notes);
+  started = true;
+}
+// 동작 줄이기 설정이면 일시정지로 시작한다.
+if (matchMedia("(prefers-reduced-motion: reduce)").matches) { paused = true; syncPlay(); }
+fitMap();
 requestAnimationFrame(frame);

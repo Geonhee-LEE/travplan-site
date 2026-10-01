@@ -8,7 +8,7 @@
 :root { color-scheme: light dark; --bg: #f6f7f3; --fg: #152024; --muted: #5a6964; --ok: #1f8a57; --bad: #c9372c; --line: #cfd6d0; }
 @media (prefers-color-scheme: dark) { :root { --bg: #0d1113; --fg: #e4e9e6; --muted: #8b9893; --ok: #4cc38a; --bad: #ef5b5b; --line: #29333a; } }
 body { margin: 0; background: var(--bg); color: var(--fg); font: 14px/1.55 system-ui, "IBM Plex Sans KR", sans-serif; }
-main { max-width: 980px; margin: 0 auto; padding: 24px 16px 40px; }
+main { max-width: 1100px; margin: 0 auto; padding: 24px 16px 40px; }
 h1 { font-size: 22px; margin: 0 0 6px; }
 p { color: var(--muted); margin: 0 0 14px; }
 .table { overflow-x: auto; }
@@ -21,8 +21,9 @@ td.ok { color: var(--ok); font-weight: 600; } td.bad { color: var(--bad); font-w
 <body>
 <main>
   <h1>Playground 검사</h1>
-  <p>Playground 코어(js/)가 저장소 결과와 같은 방향으로 도는지 확인한다. 각 줄은 한 번의 주행이고, 기대 결과와 다르면 빨갛게 표시한다.
-    <code>scripts/check_playground.sh</code>가 이 페이지를 헤드리스 Chrome으로 열어 판정한다. 약 1분 걸린다.</p>
+  <p>Playground 코어(js/)가 저장소 결과와 같은 방향으로 도는지, 주소 하나로 같은 주행이 다시 나오는지 확인한다. 각 줄은 한 번의 주행이나 한 번의 주소 확인이고,
+    기대와 다르면 빨갛게 표시한다. 시연의 기대는 <code>js/presets.js</code>의 <code>expect</code>를 읽는다.
+    <code>scripts/check_playground.sh</code>가 이 페이지를 헤드리스 Chrome으로 열어 판정한다. 약 4분 걸린다.</p>
   <div id="summary">실행 중…</div>
   <div class="table"><table>
     <thead><tr><th>검사</th><th>설정</th><th>기대</th><th>결과</th><th>시뮬 시간</th></tr></thead>
@@ -31,48 +32,105 @@ td.ok { color: var(--ok); font-weight: 600; } td.bad { color: var(--bad); font-w
 </main>
 <script type="module">
 import { World, defaultOptions } from "./js/sim.js";
+import { PRESETS, GROUPS } from "./js/presets.js";
+import { PUBLIC_BASE, baseState, buildWorld, canon, parse, serialize } from "./js/state.js";
 
-// 기대값은 docs/playground/README.md의 "검증" 절과 같다. 한 줄 = 한 주행.
+const rows = document.getElementById("rows");
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const tick = () => new Promise((r) => setTimeout(r, 0));   // 화면이 한 줄씩 갱신되게
+let pass = 0, total = 0;
+function row(name, cfg, expect, got, ok, t = "") {
+  total++; if (ok) pass++;
+  const td = (v, cls = "") => `<td${cls}>${esc(v)}</td>`;   // check_playground.sh가 표 줄(tr 뒤 td)만 찍도록 이 줄에는 그 꼴을 쓰지 않는다
+  rows.insertAdjacentHTML("beforeend", "<tr>" + td(name) + td(cfg) + td(expect) + td(got, ` class="${ok ? "ok" : "bad"}"`) + td(t) + "</tr>");
+}
+const runToEnd = (w) => { while (w.status === "running") w.step(); return { status: w.status, fail: w.failCode || "", t: w.t, k: w.k, pose: w.pose.slice() }; };
+const word = (r) => (r.status === "reached" ? "도달" : r.fail === "lethal" ? "치명 셀 진입" : r.fail === "timeout" ? "60 s 시간 초과" : r.fail === "tipover" ? "전복 한계 초과" : r.fail === "collision" ? "보행자 충돌" : r.status);
+const describe = (o) => `${o.robot !== "swerve" ? o.robot + (o.poseComp ? "" : " 보상 끔") + " · " : ""}${o.scenario}${o.level ? "@L" + o.level : ""} s${o.seed} · ${o.perception}`
+  + `${o.perception === "occlusion" ? ` ${o.sensorHeight} m${o.shadowCeiling ? " +상한" : ""}${o.shadowCeiling && o.depthPrior ? " +prior" : ""}` : ""} · ${o.planner}+${o.controller}`;
+
+// 1) 시연이 아닌 주행. 기대값은 docs/playground/README.md 6절과 같다. 한 줄 = 한 주행.
 const CASES = [
   ["기본 주행", { scenario: "curb_ramp", perception: "occlusion" }, "reached"],
   ["기본 주행", { scenario: "bumps_potholes", perception: "occlusion" }, "reached"],
   ["기본 주행", { scenario: "slope_crossfall", perception: "range" }, "reached"],
   ["기본 주행", { scenario: "random_mix", perception: "range" }, "reached"],
-  ["TP-0031 센서 0.3 m", { scenario: "bumps_potholes", seed: 4, perception: "occlusion", sensorHeight: 0.3, shadowCeiling: false, depthPrior: false }, "failed"],
-  ["TP-0031 센서 1.0 m", { scenario: "bumps_potholes", seed: 4, perception: "occlusion", sensorHeight: 1.0, shadowCeiling: false, depthPrior: false }, "reached"],
-  ["TP-0046 상한만", { scenario: "bumps_potholes", seed: 4, perception: "occlusion", shadowCeiling: true, depthPrior: false }, "failed"],
-  ["TP-0047 + 깊이 prior", { scenario: "bumps_potholes", seed: 4, perception: "occlusion", shadowCeiling: true, depthPrior: true }, "reached"],
-  ["TP-0039 연석 L3", { scenario: "curb_ramp", level: 3, perception: "range" }, "reached"],
-  ["Planner 없이 MPPI만", { scenario: "bumps_potholes", perception: "range", planner: "straight" }, "failed"],
   ["L1 간이 주행", { scenario: "curb_ramp", perception: "l1lite" }, "reached"],
   ["L1 간이 주행", { scenario: "bumps_potholes", perception: "l1lite" }, "reached"],
-  ["TP-0065 L1 간이 + 스테레오 + 미관측 1.5 m", { scenario: "down_curb", perception: "l1lite", stereo: true, unknownNear: 1.5 }, "reached"],
-  ["TP-0102 스워브 L1: 범프에서 몸체가 들려 포트홀을 놓친다", { scenario: "bumps_potholes", seed: 4, perception: "l1lite" }, "failed"],
-  ["TP-0102 사족 보행 L1, 자세 보상", { robot: "quadruped", scenario: "bumps_potholes", seed: 4, perception: "l1lite", sensorHeight: 0.45, poseComp: true }, "reached"],
-  ["TP-0102 사족 보행 L1, 자세 보상 끔", { robot: "quadruped", scenario: "bumps_potholes", seed: 4, perception: "l1lite", sensorHeight: 0.45, poseComp: false }, "failed"],
-  ["TP-0102 바퀴 사족 L1, 연석", { robot: "wheelLeg", scenario: "curb_ramp", perception: "l1lite", sensorHeight: 0.45, poseComp: true }, "reached"],
-  ["TP-0101 근거리 미관측 1.5 m", { scenario: "bumps_potholes", seed: 4, perception: "occlusion", shadowCeiling: true, depthPrior: true, unknownNear: 1.5 }, "reached"],
 ];
-
-const rows = document.getElementById("rows");
-let pass = 0;
-const results = [];
 for (const [name, set, expect] of CASES) {
-  await new Promise((r) => setTimeout(r, 0));   // 화면이 한 줄씩 갱신되게
-  const o = Object.assign(defaultOptions(), set);
-  const w = new World(o);
-  let n = 0;
-  while (w.status === "running") { w.step(); n++; }
-  const ok = w.status === expect;
-  if (ok) pass++;
-  results.push({ name, ok, status: w.status, failure: w.failure, t: w.t });
-  const cfg = `${o.robot !== "swerve" ? o.robot + (o.poseComp ? "" : " 보상 끔") + " · " : ""}${o.scenario}${o.level ? "@L" + o.level : ""} s${o.seed} · ${o.perception}${o.perception === "occlusion" ? ` ${o.sensorHeight} m${o.shadowCeiling ? " +상한" : ""}${o.shadowCeiling && o.depthPrior ? " +prior" : ""}` : ""} · ${o.planner}+${o.controller}`;
-  rows.insertAdjacentHTML("beforeend", `<tr><td>${name}</td><td>${cfg}</td><td>${expect === "reached" ? "도달" : "실패"}</td>` +
-    `<td class="${ok ? "ok" : "bad"}">${w.status === "reached" ? "도달" : w.failure}</td><td>${w.t.toFixed(1)} s</td></tr>`);
+  await tick();
+  const o = Object.assign(defaultOptions(), set), r = runToEnd(new World(o));
+  row(name, describe(o), expect === "reached" ? "도달" : "실패", word(r), r.status === expect, `${r.t.toFixed(1)} s`);
 }
+
+// 2) 시연 16개: 주소 #id로 연 것과 같은 World(state.js buildWorld). 기대는 PRESETS.expect의 status·fail이다.
+const fieldsOk = PRESETS.every((p) => GROUPS[p.group] && p.watch && p.expect?.text && p.repo && (p.pair === null || (p.pair && parse(p.pair).notes.length === 0)));
+row("시연 필드", `${PRESETS.length}개`, "group·watch·expect·repo, pair는 쓸 수 있는 주소", fieldsOk ? "있다" : "빠졌다", fieldsOk);
+for (const p of PRESETS) {
+  await tick();
+  const st = baseState(p.id), r = runToEnd(buildWorld(st)), e = p.expect;
+  const ok = r.status === e.status && (e.status !== "failed" || !e.fail || r.fail === e.fail);
+  row(`시연 ${p.id}`, describe(st.o) + (p.peds ? ` · 보행자 ${p.peds}명` : ""), e.text, word(r), ok, `${r.t.toFixed(1)} s`);
+}
+
+// 3) 주소 왕복: parse(serialize(x))가 x와 같다(시연 16개, 사용자 설정 3개, 시연 덮어쓰기 3개).
+function user(set, extra = {}) { const s = baseState(null); Object.assign(s.o, set); return Object.assign(s, extra); }
+const USERS = [
+  ["사용자 설정 1", user({ scenario: "bumps_potholes", seed: 4, perception: "occlusion" })],
+  ["사용자 설정 2", (() => {
+    const s = user({ scenario: "random_mix", level: 2, seed: 7, robot: "quadruped", perception: "l1lite", sensorHeight: 0.45, stereo: true, unknownNear: 1, poseNoise: 0.5 },
+      { goal: [9, 5.5], peds: [[8, 1, 0, 0.6], [10.25, 7.5, -0.31, -0.2]], edits: [["box", 6, 4], ["pothole", 9.5, 2.25], ["erase", 6.1, 4.05]], layer: "elev_err", view: "2d" });
+    Object.assign(s.o.mppi, { K: 512, T: 30, lambda: 0.3, noise: [0.4 * 1.5, 0.25 * 1.5, 0.6 * 1.5] }); Object.assign(s.o.mppi.w, { trav: 8, risk: 2, attitude: 25 });
+    return s;
+  })()],
+  ["사용자 설정 3", user({ scenario: "curb_ramp", level: 1, seed: 3, perception: "range", sensorRange: 6.5, planner: "straight", controller: "tracker", shadowCeiling: false }, { goal: [14, 6.5], layer: "gt" })],
+];
+const OVERRIDES = [
+  ["시연 + 보기", Object.assign(baseState("TP-0047"), { layer: "belief_elev", view: "2d" })],
+  ["시연 + seed(보행자 따라감)", (() => { const s = baseState("TP-0027"); s.o.seed = 2; return s; })()],
+  ["시연 + 센서 높이·K", (() => { const s = baseState("TP-0031-low"); s.o.sensorHeight = 0.5; s.o.mppi.K = 320; return s; })()],
+];
+const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+for (const [name, x] of [...PRESETS.map((p) => [p.id, baseState(p.id)]), ...USERS, ...OVERRIDES]) {
+  const h = serialize(x), y = parse(h), ok = same(canon(x), y.state) && !y.notes.length;
+  row(`주소 왕복: ${name}`, `#${h}`, "parse(serialize(x)) = x", ok ? "같다" : "다르다 " + y.notes.join(" "), ok);
+}
+// 나쁜 주소: 예외 없이 읽고, 쓸 수 없는 값은 바탕(기본 설정) 그대로 두고 알린다. 상속 이름(constructor)과 상한을 넘는 목록도 본다.
+const BAD = ["#pg?layer=constructor", "#pg?layer=__proto__", "#pg?ed=constructor,1,1", "#pg?ed=b,99,1", "#pg?goal=100,100", "#pg?ped=0,0,9,9",
+  "#pg?s=abc", "#pg?v=4d", "#TP-9999", "#%E0%A4%A", "#pg?ped=" + Array(101).fill("1,1,0,0").join(";")];
+const badWrong = BAD.filter((h) => {
+  try { const r = parse(h); return !(r.notes.length && same(r.state, canon(baseState(null)))); } catch { return true; }
+});
+row("나쁜 주소", `${BAD.length}개(상속 이름, 범위 밖, 상한을 넘는 목록)`, "예외 없이 기본 설정 + 알림", badWrong.length ? "다르다: " + badWrong.join(" ").slice(0, 120) : "같다", !badWrong.length);
+
+// 4) 새 탭 재현: 주소로 index.html을 iframe(새 문서)에 열고 끝까지 달린 결과·끝 시각·마지막 자세가 이 페이지의 결과와 같다.
+//    보기는 2D로 둔다(결과와 무관하고 three.js를 받지 않는다).
+async function inTab(hash) {
+  const f = document.createElement("iframe");
+  f.style.cssText = "position:absolute;left:-10000px;top:0;width:960px;height:720px;border:0";
+  f.src = "index.html#" + hash;
+  const loaded = new Promise((ok) => f.addEventListener("load", ok, { once: true }));
+  document.body.appendChild(f);
+  await loaded;
+  for (let i = 0; i < 200 && !f.contentWindow.playgroundTest; i++) await new Promise((r) => setTimeout(r, 50));
+  const t = f.contentWindow.playgroundTest, r = t.runToEnd(), link = t.link(), back = t.hash();
+  f.remove();
+  return { r, link, back };
+}
+const fmt = (r) => `${word(r)} ${r.t.toFixed(1)} s (${r.pose.map((v) => v.toFixed(3)).join(", ")})`;
+for (const [name, x0] of [...USERS, OVERRIDES[1], OVERRIDES[2]]) {
+  await tick();
+  const x = { ...canon(x0), view: "2d" }, h = serialize(x);
+  const mine = runToEnd(buildWorld(x)), tab = await inTab(h);
+  const ok = mine.status === tab.r.status && mine.fail === tab.r.fail && mine.t === tab.r.t && mine.pose.every((v, i) => v === tab.r.pose[i]) && tab.back === h;
+  row(`새 탭 재현: ${name}`, `#${h}`, fmt(mine), ok ? "같다" : `다르다: ${fmt(tab.r)} · 주소 ${tab.back}`, ok, `${mine.t.toFixed(1)} s`);
+  if (name === "사용자 설정 1") row("iframe 안의 링크 바탕", tab.link, PUBLIC_BASE, tab.link.startsWith(PUBLIC_BASE + "#") ? "공개 주소" : "다르다", tab.link.startsWith(PUBLIC_BASE + "#"));
+}
+
 const s = document.getElementById("summary");
-s.textContent = `${pass === CASES.length ? "PASS" : "FAIL"} ${pass}/${CASES.length}`;
-s.style.color = pass === CASES.length ? "var(--ok)" : "var(--bad)";
+s.textContent = `${pass === total ? "PASS" : "FAIL"} ${pass}/${total}`;
+s.style.color = pass === total ? "var(--ok)" : "var(--bad)";
 document.body.dataset.result = s.textContent;   // scripts/check_playground.sh가 읽는다
 </script>
 </body>
