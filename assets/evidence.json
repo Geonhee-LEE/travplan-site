@@ -65,6 +65,30 @@
   "tp0102_robot_pose": {
    "caption": "사족 보행, 몸체에 붙은 LiDAR: 자세 보상 켬(왼쪽)은 높이 오차 1 cm대, 끔(가운데)·추정 잡음 1°(오른쪽)는 먼 링이 줄무늬로 틀려 거짓 치명이 앞을 막는다",
    "results": "results/tp0102_playground_robots"
+  },
+  "tp0085_shadow_rules": {
+   "caption": "그림자 판별 규칙 비교 — 기울기 규칙은 오탐만 늘리고 재현율을 못 지킨다 (TP-0085)"
+  },
+  "tp0085_shadow_inputs": {
+   "caption": "판별 규칙이 실제로 받는 입력: 관측 지면, 시선 상한, 그림자 마스크 (TP-0085)"
+  },
+  "tp0085_shadow_inputs_anim": {
+   "caption": "로봇이 지나가며 상한과 그림자가 어떻게 바뀌는지 (TP-0085)"
+  },
+  "tp0089_yield": {
+   "caption": "궤적 참조는 같은 만큼 비키면서 시간은 덜 낸다 — 보행자 유무 쌍대 비교 (TP-0089)"
+  },
+  "tp0070_mpc_vs_mppi": {
+   "caption": "acados NMPC 0단계(지형 항 없음) 대 MPPI — 네 시나리오 궤적 (TP-0070)"
+  },
+  "tp0070_curb_ramp": {
+   "caption": "TP-0070 0단계: curb_ramp seed 0, 굵은 선이 그 순간의 4초 예측"
+  },
+  "tp0071_mpc_vs_mppi": {
+   "caption": "치명 셀을 비용이 아니라 제약으로 세운 NMPC 대 MPPI (TP-0071)"
+  },
+  "tp0071_curb_ramp": {
+   "caption": "TP-0071: curb_ramp seed 0, 굵은 선이 그 순간의 4초 예측"
   }
  },
  "tp": {

@@ -28,11 +28,11 @@ Controller·안전, 시뮬레이션이고, 보조 문서는 여러 논문이 함
 | 문서 | 탭과 절 | 무엇을 보나 | travplan에서 |
 |---|---|---|---|
 | 인식 (§A) | 지형 지도·Occupancy(A.1–A.5), Traversability(A.10), 시각 기반 모델(A.11), 동적 장애물(A.12), 예측·World model(A.6), 보행 로봇(A.7–A.9) | 센서에서 TravMap과 동적 장애물까지 | elevation mapping(P2.1), TravNet(TP-0010), 검출·추적 PoC(TP-0011) |
-| Planner (§B) | 고전 기준선(B.10), 로봇별 오픈소스(B.12: 자동차, 사족보행, 휴머노이드, 바퀴 로봇), 학습 로컬 Planner(B.2–B.4, B.4b, B.7), Foundation model·VLA(B.6, B.6b), 생성형 궤적(B.8.0, B.8), E2E 주행(B.11), 위험 인지·로컬 내비(B.9) | 경로와 시간 인덱스 궤적 생성 | GuidancePlanner, LearnedPlanner, Planner D |
+| Planner (§B) | **방법** — travplan과 고전 기준선(B.1, B.10), 학습 로컬 Planner(B.2–B.4, B.4b, B.7), 생성형 궤적(B.8.0, B.8), Foundation·VLA·언어(B.6, B.6b–B.6d), 위험 인지·로컬 내비(B.9). **현황** — 자율주행 자동차(B.12.1, B.11, B.13), 다리·바퀴 로봇과 계보(B.12, B.14) | 경로와 시간 인덱스 궤적 생성 | GuidancePlanner, LearnedPlanner, Planner D |
 | Controller·안전 (§E, §C) | MPPI 계열(E.1, B.5), 학습 동역학·적응(E, E.2), 안전 필터(C.1–C.4) | 궤적 추종과 안전 | MPPIController(유지보수), 시간가변 비용 레이어, CVaR-BF 후보 |
 | 시뮬레이션 (§S) | 물리 엔진(S.1), 보도·도시(S.2), 보행자(S.3), 센서·렌더링(S.4), 지형·바퀴(S.5), sim-to-real(S.6), travplan 권고(S.7) | 검증 환경의 네 층(L0–L3) | 운동학 시뮬(L0), Isaac Sim(L1) |
 | 배경·수식 (§0) | 인식(0.1, 0.8, 0.9, 0.10, 0.14), Planner·학습(0.5, 0.6, 0.7, 0.12, 0.13), 제어·안전(0.2, 0.3, 0.4, 0.11) | 여러 논문이 공유하는 수식 | 각 토글이 "배경 0.N"으로 가리킨다 |
-| 참고문헌 (§D) | 인식(D.1–D.3b), Planner(D.0–D.5b), Controller·안전(D.6–D.7b), 시뮬레이션(S.8), 로코모션·데이터·산업(D.8–D.11) | 전체 목록, 발표처, 코드 링크 | — |
+| 참고문헌 (§D) | 인식(D.1–D.3b), Planner(D.0–D.5b), Controller·안전(D.6–D.7b), 연구 그룹(D.13), 로코모션·데이터·산업(D.8–D.12) | 전체 목록, 발표처, 코드 링크 | — |
 
 **전체 연표.** 분야마다 흐름을 바꾼 연구를 한 표에 놓았다. 2023년 전후로 네 분야가 함께 "큰 사전학습 모델 + 생성형 출력"으로
 옮겨 갔다. 인식은 시각 기반 모델로, Planner는 diffusion과 flow matching으로, Controller는 학습 world model로, 시뮬레이션은 GPU 병렬

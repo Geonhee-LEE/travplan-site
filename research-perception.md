@@ -369,15 +369,16 @@ CUDA가 27배).
 임계 아래는 ghost로 제거). **"이 칸이 정말 관측됐는지"를 log-odds로 들고 있는 유일한 구현이고**, travplan의
 그림자 상한이 이진 마스크로 다루는 것을 연속값으로 다룬다.
 
-#### A.2b.5 CMU 신형 포크 — 음의 장애물 파라미터가 이미 정리돼 있다
+#### A.2b.5 CMU `terrain_analysis` — 음의 장애물 파라미터가 이미 정리돼 있다
 
-A.9.1의 CMU `terrain_analysis`는 **base 저장소** 기준이다. 그 뒤 나온
+A.9.1이 이 저장소의 `terrain_analysis` 파이프라인을 다루고, 여기서는 같은 저장소의 음의 장애물·미관측
+파라미터를 자세히 본다.
 [autonomy_stack_mecanum_wheel_platform](https://github.com/jizhang-cmu/autonomy_stack_mecanum_wheel_platform)
 (★330, `jazzy` 브랜치, 2026-06-06)에는 base에 없는 파라미터가 있다.
 
 | 파라미터 | 값 | 뜻 |
 |---|---|---|
-| `negObstacle` | −1 끔 / 0 **지면 기준** / 1 **차체 기준** | ==음의 장애물 **기준계를 고른다**== |
+| `negObstacle` | −1 끔 / 0 **지면 높이 기준**(`disZ` = 셀 지면 대비) / 1 **센서 높이 기준**(`pointZ` = `point.z − vehicleZ`, 오도메트리 원점 대비) | ==음의 장애물 **기준계를 고른다**== |
 | `negObstacleDis`, `negObstacleRelZThre` | 10.0 m, −0.2 m | 판정 거리와 낙차 문턱 |
 | `nearObstacle*` | true, 0.75 m, −0.3 m | 근거리 사각지대 전용 완화 문턱 |
 | ==`noDataBlockShrinkNum` / `noDataBlockExpandNum`== | — | no-data 마스크 **침식 → 팽창** |
@@ -411,7 +412,7 @@ FOV 기하로 판정하는데, travplan이 그림자 상한을 유지할지 만�
 | 구현 | 라이선스·활동 | 주장과 표현 |
 |---|---|---|
 | [SCAN-Planner](https://github.com/wuyi2121/SCAN-Planner) ★547 | **Apache-2.0**, 2026-07-29, arXiv 2606.19555 | *"A 2.5D elevation map cannot faithfully represent overhanging tables, shelves, or multi-level structures"*. 표현은 **하이브리드**(로봇중심 3D sliding occupancy + 지면 추종면 위 A\*), 충돌은 **twin-cylinder footprint**(`d_xy`, ==`d_up`==, `d_down`, `d_off`)로 두 점만 질의. **Go2 + Mid-360, Orin NX 온보드 실시간** |
-| [traversability_generator3d](https://github.com/dfki-ric/traversability_generator3d) ★29 + [ugv_nav4d](https://github.com/dfki-ric/ugv_nav4d) ★74 | BSD-3, 2026-09-23, **JOSS 11(118):9410 (2026)** 피어리뷰 | MLS(Multi-Level Surface)로 칸마다 복수 표면. 노드 상태에 ==**Unknown / Frontier / Hole이 1급**==이고 *"patches become unknown if there is not enough support"* — **근거가 부족하면 보간하지 않는다.** 기본값이 보도 범위(`maxStepHeight` 0.05 m, `maxSlope` 26°). ⚠️ 빌드가 **Rock 프레임워크** 의존 |
+| [traversability_generator3d](https://github.com/dfki-ric/traversability_generator3d) ★29 + [ugv_nav4d](https://github.com/dfki-ric/ugv_nav4d) ★74 | BSD-3, 2026-09-23, **JOSS 11(118):9410 (2026)** 피어리뷰 | MLS(Multi-Level Surface)로 칸마다 복수 표면. 노드 상태에 ==**Unknown / Frontier가 1급**==이고(`Hole`은 지도 형식에는 있으나 ==이 라이브러리가 쓰지 않는다== — README 명시) *"patches become unknown if there is not enough support"* — **근거가 부족하면 보간하지 않는다.** 기본값이 보도 범위(`maxStepHeight` 0.05 m, `maxSlope` 26°). ⚠️ 빌드가 **Rock 프레임워크** 의존 |
 
 ![SCAN-Planner Fig. 6](https://arxiv.org/html/2606.19555v1/figures/metric.jpg)
 *그림 — SCAN-Planner (Fig. 6): ==2.5D가 지는 장면이 (a) 책상 밑이다== — 상판 아래로 지나갈 수 있는데 2.5D 높이 지도는 상판 높이를 지면으로 보고 돌아간다. 출처: [arXiv:2606.19555](https://arxiv.org/abs/2606.19555)*
@@ -476,14 +477,16 @@ travplan의 알려진 한계 "센서 범위 밖 미관측 영역 탐색"을 플�
 `min_filter`는 무효 칸을 **주변 유효 칸의 최솟값**으로 채우고 오프셋이 없다
 (`if(valid > 0.5 && value < min_value) min_value = value;`). ==즉 **관측된 이웃보다 낮은 값을 만들 수 없다.**
 포트홀 테두리가 평지이고 내부가 미관측이면 내부를 테두리 높이로 채워 **구멍을 지운다.**== travplan의 깊이
-prior(TP-0047)는 거꾸로 고정 깊이를 빼서 구멍을 만든다. `inpainting`(OpenCV Telea, `max_hole_area=64`)도 함께
+prior(TP-0047)는 거꾸로 고정 깊이를 빼서 구멍을 만든다. `inpainting`(OpenCV Telea, ==벤더링본에는 `max_hole_area`가 **없어 크기 제한 없이** 메운다== — 상류 `ros2`가
+기본 64, 설정 25로 넣은 상한이 벤더링본에는 아직 없다)도 함께
 미관측 마스크를 지운다. travplan은 지금 `emap_no_plugins.yaml`에 `{}`를 넘겨 이 체인을 쓰지 않는데, **그 선택이
 옳았다.** TP-0048에는 "기성 기준선"이 아니라 ==**대조 실패 사례**("상류 기본값을 켜면 포트홀이 사라진다")==로 넣는다.
 
 #### A.2b.7 미관측을 1급 상태로 두는 계보 — travplan이 이미 서 있는 자리
 
 **먼저 사실 확인 하나.** 조사 과정에서 "travplan이 emap의 `upper_bound`를 버리고 있을 수 있다"는 지적이 나왔지만,
-==`travplan/perception/emap_mapper.py:109-110`이 `get_upper_bound()`와 `get_is_upper_bound()`를 이미 읽는다.==
+==`travplan/perception/emap_mapper.py`의 `ElevationMapper._paste()`가 `get_upper_bound()`와
+`get_is_upper_bound()`를 이미 읽는다.==
 TP-0044의 그림자 상한이 바로 그것이다. **이 축에서 travplan은 뒤처진 게 아니라 앞서 있다** — 아래 구현들과 비교해도
 "미관측을 이진 마스크가 아니라 상한값으로 들고 있는" 쪽에 이미 속한다.
 
@@ -622,7 +625,7 @@ couple mapping, planning and reactive components in dealing with negative obstac
 |---|---|---|
 | min 전파 결과를 | ==**최종 표면으로 쓴다**== | ==**불연속 검출기에 먹인다**== |
 | 그래서 포트홀이 | 테두리 높이로 **메워져 사라진다** | 인공 단차가 생겨 **장애물로 잡힌다** |
-| 반복 횟수 | 고정 5회 | $N_{expansions}$ 파라미터 |
+| 반복 횟수 | `iteration_n`(기본 5, 벤더링본 3 · 상류 `ros2` 30) | $N_{expansions}$ 파라미터 |
 | 오탐 억제 | 없음 | 비주행 지형과 교차하지 않으면 **버린다** |
 
 ![그림자 개념도](https://arxiv.org/html/2403.13431v1/drawing_explored_area_shade.png)
@@ -654,7 +657,8 @@ couple mapping, planning and reactive components in dealing with negative obstac
 
 **⑤ 가장 단순한 낙차 검정.** [depth_nav_tools](https://github.com/mdrwiega/depth_nav_tools)의 `cliff_detector`
 (★69, `master`가 ROS 2, 2024-12): 센서 높이와 피치로 **"이 광선이 지면 $z=0$에 닿으면 나올 거리"**를 조회표로
-미리 계산하고, 실측 거리가 그보다 `cliff_threshold_constant`만큼 크면 낙차로 표시한다. 기하만으로 되는 기준선이다.
+미리 계산하고, 실측 거리가 그보다 `ground_margin`(기본 0.05 m)만큼 크면 낙차로 표시한다
+(입력은 `sensor_mount_height`와 `sensor_tilt_angle` 둘). 기하만으로 되는 기준선이다.
 
 **⑥ 가려진 부분을 학습으로 메우려면 데이터 만드는 법이 이미 있다.** `solving-occlusion`은 방치된 논문 저장소가
 아니라 게재된 연구다 — Stölzle 외, RA-L 2022([arXiv:2109.07150](https://arxiv.org/abs/2109.07150)). 재사용할 수 있는
@@ -740,7 +744,7 @@ ArtPlanner는 반대를 말한다 — *"when we approach a negative obstacle, li
 **appear to have a very small inclination**, until we are very close to it."*
 
 ==**어느 쪽이 맞는지 쟀다 — 우리 기하에서는 ArtPlanner가 맞았다.**== 측정 설계·수치·그림은
-개발 기록 **A.13.1**에 있다. 요약만 적으면: 같은 재현율에서 기울기 규칙이 오탐을 17배 내고,
+개발 기록 **A.13.1**에 있다. 요약만 적으면: 판별기만 바꾸면 같은 재현율에서 전방 오탐이 4.3배가 되고(기본값 대비 17배 중 3.9배는 근거 floor 몫),
 오탐을 없애는 문턱에서는 아무것도 잡지 못한다. 기제는 **포트홀의 상한이 거의 평면이라 내부
 기울기가 0**이라는 것이다.
 
@@ -757,7 +761,7 @@ travplan에 걸리는 이유는, ==우리가 지금 손으로 만들고 있는 �
 | 2019 | **Fast-Planner** | log-odds 점유 격자 + **국소 배치 EDT**(Felzenszwalb O(n) 스윕, 양·음 2패스) | [Fast-Planner](https://github.com/HKUST-Aerial-Robotics/Fast-Planner) 3.4k |
 | 2020 | **EGO-Planner** | ==**ESDF를 없앴다.**== 제어점마다 $\{p, v\}$ 앵커 평면으로 거리·경사를 직접 만든다 | [ego-planner](https://github.com/ZJU-FAST-Lab/ego-planner) 2.7k |
 | 2022 | EGO-Planner-v2 (Science Robotics) | **ring buffer 점유 격자 + 증분 팽창 카운터 + 시간 감쇠**. 논문이 아니라 코드에만 있다 | [EGO-Planner-v2](https://github.com/ZJU-FAST-Lab/EGO-Planner-v2) 0.7k |
-| 2023 | RC-ESDF | 거리장을 환경이 아니라 **로봇 몸체 좌표계**에 오프라인으로 만든다 | [Implicit-SVSDF-Planner](https://github.com/ZJU-FAST-Lab/Implicit-SVSDF-Planner) 0.2k |
+| 2023 | [RC-ESDF](https://arxiv.org/abs/2306.16046)(IROS 2023) | 거리장을 환경이 아니라 **로봇 몸체 좌표계**에 오프라인으로 만든다 | — (공식 코드 없음) |
 | 2024 | ROG-Map *(Fei Gao 아님 — HKU MaRS)* | robocentric 슬라이딩 격자, O(n) 증분 팽창, **Unknown을 별도 상태로** | [ROG-Map](https://github.com/hku-mars/ROG-Map) 0.6k |
 | **2025** | **SEB-Naver** | **지상 비평탄 지형**. SE(2) 위험 지도를 GPU로 만들고 그 위에 **Felzenszwalb SDF** | [seb_naver](https://github.com/ZJU-FAST-Lab/seb_naver) 0.1k |
 
@@ -1014,7 +1018,7 @@ RTX 3070 mobile에서 20 Hz. ==한 줄로 줄이면 이 분야가 "foundation mo
 **휴머노이드 — 2026에 네 패턴이 굳었다.** ① 몸통 LiDAR → 로봇중심 rolling height map(전방 깊이 카메라의 발밑 블라인드를
 없앤다), ② **표현 분리** — 수평 고도 지도 + 수직 여유 지도([ADAPT](https://arxiv.org/abs/2603.16328), Unitree G1 zero-shot),
 ③ **능동 인식** — 어디를 볼지와 **얼마나 멀리 볼지를 정책이 고른다**(ADAPT는 감지 범위를 학습 가능한 action으로 둔다),
-④ **점 단위 융합으로 센서 고장 내구성** — [UniPoint](https://arxiv.org/abs/2609.23666)(RA-L 2026)는 360° LiDAR 1대와 깊이
+④ **점 단위 융합으로 센서 고장 내구성** — [UniPoint](https://arxiv.org/abs/2609.23666)(RA-L **투고**, 2026-09)는 360° LiDAR 1대와 깊이
 카메라 2대를 **높이 지도로 투영하기 전에** point 수준에서 합쳐, 센서 하나가 죽어도 성능이 서서히 떨어진다. 실세계 7지형,
 70 cm 플랫폼과 100 cm 갭을 **RK3588 온보드**로 통과했다.
 
@@ -1060,7 +1064,7 @@ A.2b·A.3·A.3b에서 다룬 것 말고도 폼팩터별 조사에서 나온 저�
 | [LTU-RAI/TravBlox](https://github.com/LTU-RAI/TravBlox) | 30 | BSD-3 | 2025-09 | Voxblox TSDF/ESDF에 traversability를 **네 번째 voxel 속성**으로 | 속도 미보고, README 체크리스트 미완 |
 | [LARIAD/Offroad-Nav](https://github.com/LARIAD/Offroad-Nav) | 68 | MIT | 2026-04 | 로봇중심 2.5D + **Depth Anything V2 + VINS-Mono** 미터 복원, Isaac Sim | A.11.2와 연결. **미관측·음의 장애물 모델링 없음** |
 | [ethz-asl/BIEVR-LIO](https://github.com/ethz-asl/BIEVR-LIO) | 313 | BSD-3 | 2026-07 | RSS 2026. **주 기여는 LiDAR-관성 오도메트리**이고 지형 표현은 하위 응용이다. 표면을 voxel별 **방향성 높이 이미지("bump image")**로 | ==2.5D와 완전 voxel의 중간 — 오버행을 표현한다.== 지켜볼 것 |
-| [csiro-robotics/raycloudtools](https://github.com/csiro-robotics/raycloudtools) | 118 | NOASSERTION | 2026-09 | *"ray clouds are point clouds with sensor location included per point"* | ==free와 unobserved를 가르는 가장 깔끔한 자료 구조== |
+| [csiro-robotics/raycloudtools](https://github.com/csiro-robotics/raycloudtools) | 118 | **BSD-3 상당**(`licence.txt`가 *"CSIRO Open Source Software Licence Agreement (variation of the BSD / MIT License)"*, GitHub는 NOASSERTION 표시) | 2026-09 | *"ray clouds are point clouds with sensor location included per point"* | ==free와 unobserved를 가르는 가장 깔끔한 자료 구조== |
 | [csiro-robotics/foresttrav](https://github.com/csiro-robotics/foresttrav) | 16 | **MIT**(파일 기준) | 2025-02 | 짙은 초목에서 voxel별 학습 traversability(IEEE Access 2024) | 보도와 도메인이 다름 |
 | [nubot-nudt/LuSeg](https://github.com/nubot-nudt/LuSeg) | 31 | MIT | 2025-09 | IROS 2025. RGB-D 분할 ~57 Hz. ==동결 RGB 특징 대비 대조 손실로 **함몰 클래스를 깊이 잡음과 분리**== | 포트홀을 깊이 잡음과 구분하는 학습 기법 참고 |
 | [guoyangzhao/CurbNet](https://github.com/guoyangzhao/CurbNet) | 25 | 없음 | 2026-04 | T-ITS 2025(HKUST). LiDAR 연석 분할 + **3D-Curb 데이터셋** | 데이터셋만 유용. 오름/내림 구분 없음 |
@@ -1093,10 +1097,10 @@ STONE이 쓸 만하다.
 | ==**FastDEM**== | BSD-3 | ✅ 2026-09 | 2.5D, **CPU만** (Eigen) | `visibility_logodds`, 인페인팅 별도 레이어 | ==**Orin 100+ Hz, 스캔당 ~10 ms**== | **TP-0084 비교 기준선으로 세운다.** 레이어가 `TravMap[8]`과 1:1 |
 | **CSIRO ohm** | **BSD-3** | ⚠️ `master` 2023-02 | 3D voxel → 2.5D 높이지도 | ==6상태 열거형 + `virtualSurfaceFilterThreshold`== | NUC에서 높이지도 ~5 Hz, 20³ m/0.1 m | **TP-0048 규칙 설계에 읽는다.** SubT 실전 검증 |
 | **G-VOM** | **GPL-3.0** | ❌ 2023 정지 (ETH 포크 2024-06) | 3D voxel → 2.5D 5장 | ==`negative_obstacle` + `visibility` 1급 출력== | 트럭용 0.4 m | **재구현만.** 파라미터는 트럭용이라 못 씀 |
-| **CMU `terrain_analysis`** (신형 포크) | 없음 | ✅ 2026-06 `jazzy` | 2.5D planar voxel | `negObstacle` 기준계 선택, ==shrink/expand== | 실시간 | **파라미터 설계만 참조** (라이선스 없음) |
+| **CMU `terrain_analysis`** | 없음 | ✅ 2026-06 `jazzy` | 2.5D planar voxel | `negObstacle` 기준계 선택, ==shrink/expand== | 실시간 | **파라미터 설계만 참조** (라이선스 없음) |
 | **nvblox** | Apache-2.0 | ✅ | 3D TSDF/ESDF | `UnobservedEsdfPolicy` 3종 | Orin Nano ESDF 6.2 ms | `clearance` 채널 구현 수단 |
 | **wavemap** | BSD-3 | ✅ | 멀티해상도 3D | occupied/free/**unobserved** 3상태 | 논문은 데스크톱(i9-9900K)만 보고 | 미관측 질의 인터페이스 선례. ⚠️ Orin 29 ms는 **Waverider**의 수치다(A.2b.2) |
-| **traversability_generator3d** + `ugv_nav4d` | BSD-3 | ✅ 2026-09, JOSS 2026 | **MLS** 다층 표면 | Unknown/Frontier/**Hole** 1급 | 미보고 | 오버행의 유일한 활성 답. ⚠️ Rock 빌드 |
+| **traversability_generator3d** + `ugv_nav4d` | BSD-3 | ✅ 2026-09, JOSS 2026 | **MLS** 다층 표면 | Unknown/**Frontier** 1급 (Hole은 미사용) | 미보고 | 오버행의 유일한 활성 답. ⚠️ Rock 빌드 |
 | **SCAN-Planner** | Apache-2.0 | ✅ 2026-07 | 3D sliding + 지면추종면 | ==`d_up` twin-cylinder== | Orin NX 실시간 | `clearance` 채널의 근거 |
 | **ROG-Map** | GPL-3.0 | 2025-03 | 3D 링버퍼 | — | 50 Hz 중 5.96 ms | A.2c (드론 계열) |
 
@@ -1117,7 +1121,7 @@ STONE이 쓸 만하다.
 | 제품 | 지형 인터페이스 | z 차원 | 특징 |
 |---|---|---|---|
 | **Spot** | `local_grid.proto` 5종 | ==없음 (`cell_size`, `num_cells_x/y`만)== | `no_step` boolean + `obstacle_distance` SDF, **> 40 cm는 장애물 아님** 하드 임계 |
-| **Unitree Go2** | `rt/utlidar/height_map_array` | ==없음 (`origin_`이 `array<float,2>`)== | 매퍼는 온보드 클로즈드 |
+| **Unitree Go2** | `idl/go2/HeightMap_.hpp`(`resolution_`·`width_`·`height_`·`origin_`·`data_`) | ==없음 (`origin_`이 `array<float,2>`)== | 매퍼는 온보드 클로즈드. 흔히 인용되는 토픽 `rt/utlidar/height_map_array`는 SDK에 없다(A.2b.6) |
 | Booster·Fourier·AgiBot·Galbot | 지형 타입 **0건** | — | SDK에 elevation 개념 없음 |
 
 #### A.5.4 결론
@@ -1159,7 +1163,7 @@ STONE이 쓸 만하다.
 | 기울기 0.1 | 0.95 (더 높음) | ==**63.7**== |
 | 기울기 0.5 | 0.77 | 1.7 (= prior 없음과 같다) |
 
-==**같은 재현율에서 기울기 규칙은 오탐을 17배 낸다.**== 문턱을 올려 오탐을 없애면 재현율이 prior를
+==**판별기만 바꾸면 같은 재현율에서 전방 오탐이 4.3배가 된다**(`g0.15` 47.0 대 `sd0` 10.9).== 현재 기본값(`sd`, 근거 floor까지 쓰는 쪽) 대비로는 17배인데, 그 차이의 3.9배는 판별기가 아니라 **근거 floor 몫**이다(`sd0` 10.9 대 `sd` 2.8). 문턱을 올려 오탐을 없애면 재현율이 prior를
 안 쓴 값으로 돌아간다 — 아무것도 걸리지 않는다는 뜻이다. **어느 작동점에서도 이기지 못한다.**
 
 **왜 지는지**(`tests/test_shadow_depth_evidence.py::test_gradient_rule_misses_a_pit_whose_bound_is_flat`).
@@ -1204,11 +1208,19 @@ Release 빌드, 단일 코어 — **FastDEM에는 OpenMP·`std::thread`·TBB가 
 |---|---|---|---|---|---|---|
 | 15 × 15 m @ 0.10 (FastDEM 배포값) | 22,500 | 1.55 ms | **6.89 ms** | 8.97 ms | 7.30 ms | **1.11 ms** |
 | ==11.1 × 11.1 m @ 0.05 (travplan)== | 49,284 | 1.98 ms | ==**40.11 ms**== | ==43.70 ms== | **31.43 ms** | ==**1.47 ms**== |
-| 15 × 15 m @ 0.05 | 90,000 | 3.98 ms | 43.26 ms | 80.83 ms | 59.36 ms | 1.17 ms |
+| 15 × 15 m @ 0.05 | 90,000 | —¹ | 43.26 ms | 80.83 ms | —¹ | —¹ |
 
-==**같은 격자에서 CPU 대 CPU는 사실상 무승부다**(40.1 대 43.7, 9 % 차). travplan을 12스레드로
-돌리면 이미 FastDEM보다 빠르고, **CUDA는 27배 빠르다.**== 즉 **TP-0084의 GPU 이전은 반박되지 않고
-오히려 정당화된다.**
+¹ `results/p2-fastdem-baseline.tsv`에 기록이 없는 칸이다. 최초 표에는 3.98 / 59.36 / 1.17이 적혀 있었으나
+근거 파일에 그 행이 없어 2026-10-01에 지웠다(재측정은 머신이 다른 작업으로 부하 상태라 비교 불가였다).
+==근거 파일에 없는 수치는 표에 적지 않는다.==
+
+==**"무승부"는 커버리지 교란이었다**(2026-10-01 정정).== FastDEM의 40.11 ms는 격자 전체가 아니라
+**측정된 칸만** 돈다(`feature_extraction.cpp:59-61`이 미측정 칸을 첫 줄에서 건너뛴다). 그 행의 점 예산으로
+채워지는 칸은 49,284칸 중 **61 % 이하**이고, 같은 격자를 더 채우면 비용이 1.7배로 오른다(재실행).
+==빽빽하게 채운 같은 크기 격자에서는 `applyFeatureExtraction`이 127–150 ms로, `TravMapBuilder`의
+43.70 ms(1스레드)의 약 3배, 31.43 ms(12스레드)의 약 4배다.== `TravMapBuilder`는 커버리지와 무관하게
+격자 전체를 돌므로 시간이 변하지 않는다. 즉 **CPU 대 CPU도 무승부가 아니고**, **CUDA 이전(TP-0084)은
+더 강하게 정당화된다**(같은 11.1 격자에서 FastDEM 대비 27배).
 
 ⚠️ **두 구현이 같은 일을 하지 않는다.** FastDEM은 칸마다 반경 0.3 m 이웃으로 **국소 PCA**를 돌려
 curvature와 **법선**까지 낸다. 루프는 격자 전체를 돌지만 ==**미측정 칸은 첫 줄에서 건너뛰므로**==
@@ -1231,7 +1243,8 @@ FastDEM 자체의 합성 지형이다. **같은 장면에서 같은 출력을 �
 `parseNpyHeader`가 `fortran_order`를 읽지 않고 열 우선 Eigen 행렬에 그대로 `memcpy`한다.
 
 **정렬이 맞는다는 증거.** 격자 대응은 `A_travplan[H,W] = np.flip(M_fastdem).T`이고, 실제 travplan
-LiDAR 스캔의 고도 오차가 GT 대비 ==**RMS 4.5 mm**==다. 전치나 중심이 틀렸다면 연석에서 터진다.
+LiDAR 스캔의 고도 오차가 GT 대비 ==**RMS 13.8 mm**(편향 −1.4 mm, MAE 3.2 mm)==다.
+30 mm대 꼬리는 `bumps_potholes` 포트홀 가장자리이지 정렬 오차가 아니다. 전치나 중심이 틀렸다면 연석에서 터진다.
 ==`GLOBAL` 모드를 썼다== — `LOCAL`은 첫 `integrate`에 순환 버퍼 시작 인덱스가 (0,0) → (175,15)로 감긴다.
 
 **두 실험.** `E1`은 양쪽에 **동일한 GT 고도 격자**를 먹여 특징 정의만 비교하고, `E2`는 FastDEM이
@@ -1248,7 +1261,7 @@ travplan 스캔 12장을 스스로 융합하게 해 융합·커버리지까지 �
 
 **답: 부분적으로 같다.**
 
-- **slope** — 변환하면 실질적으로 호환된다(r 0.975, 편향 0.17°). ⚠️ 다만 *"단위만 다른 같은 양"*은
+- **slope** — 변환하면 실질적으로 호환된다(r 0.975, 편향 **0.19°** = +0.0033 rad). ⚠️ 다만 *"단위만 다른 같은 양"*은
   과장이다. FastDEM은 0.6 m 원반 PCA 법선의 `acos|n_z|`, travplan은 0.35 m 박스평균 면의
   중심차분 `atan`이다 — **추정기가 다르고, 일치는 경험적 결과다.**
 - **step** — ==**구조적으로 다르다.**== FastDEM은 반경 안 z의 **백분위 범위**(p95−p05)이고 추세 제거가
@@ -1405,56 +1418,70 @@ roll·pitch는 지도의 `GRAD_X`/`GRAD_Y`에서 오고 `slope`는 같은 기울
 
 4 시나리오 × seed 0–2, 0.05 m, 인식은 일부러 완벽(참 고도를 셋에 그대로 넣어 추정기만 남긴다).
 
-| variant | lethal% | **MISS** | over | IoU 섀시 | 오탐 | MAE(기하 대비) | IoU(기하 대비) |
-|---|---|---|---|---|---|---|---|
-| 기하 | 13.62 | **0** | 45805 | 0.139 | 0.0 | 0.0000 | 1.000 |
-| RSL gate 0.15 | 2.48 | **4425** | 2576 | 0.221 | 0.0 | 0.1511 | 0.173 |
-| RSL gate 0.30 | 7.14 | **2235** | 17080 | 0.260 | 0.0 | 0.1045 | 0.551 |
-| RSL gate 0.50 | 11.18 | **0** | 31281 | 0.167 | 0.0 | 0.0657 | 0.777 |
-| RSL soft | 2.31 | 4492 | 1672 | 0.236 | 0.0 | 0.0922 | 0.158 |
-| TravNet | 13.62 | **0** | 45808 | 0.139 | 0.0 | 0.0162 | 0.999 |
+| variant | lethal% | **MISS** | miss(any) | over | IoU 섀시 | 오탐 | MAE(기하 대비) | IoU(기하 대비) |
+|---|---|---|---|---|---|---|---|---|
+| 기하 | 13.62 | **0** | 1936 | 31437 | 0.165 | 0.0 | 0.0000 | 1.000 |
+| RSL gate 0.15 | 2.48 | **5961** | 35675 | 2067 | 0.219 | 0.0 | 0.1511 | 0.173 |
+| RSL gate 0.30 | 7.14 | **2243** | 13413 | 4963 | 0.295 | 0.0 | 0.1045 | 0.551 |
+| RSL gate 0.50 | 11.18 | **0** | 2578 | 16920 | 0.194 | 0.0 | 0.0657 | 0.777 |
+| RSL soft | 2.31 | 6065 | 35808 | 1224 | 0.231 | 0.0 | 0.0922 | 0.158 |
+| TravNet | 13.62 | **0** | 1936 | 31440 | 0.165 | 0.0 | 0.0162 | 0.999 |
 
 `MISS`는 **차체가 어느 방위각으로도 들어가지 못하는 칸을 추정기가 주행 가능이라 부른 수**다. 여기서 유일한
-안전 관련 수치다. `over`는 반대 방향(차체가 모든 방위각에서 들어가는데 치명이라 함)이고, 오탐은 치명 셀이
-없는 `NEGATIVE_SCENARIOS`에서 나온 치명 칸 수다.
+안전 관련 수치다. `miss(any)`는 그보다 약한 조건 — **일부 방위각에서만** 들어가는 칸을 주행 가능이라 부른 수다.
+`over`는 반대 방향(차체가 모든 방위각에서 들어가는데 치명이라 함)이고, 오탐은 치명 셀이 없는
+`NEGATIVE_SCENARIOS`에서 나온 치명 칸 수다.
+
+> **2026-10-01 정정.** 최초 게시한 표는 섀시 기준의 바퀴 지지 판정이 4배 관대한 상태에서 잰 것이었다.
+> 최소제곱 평면에 대한 잔차는 네 접지점의 뒤틀림 `|twist|`의 **1/4**인데 그것을 문턱과 직접 비교해서,
+> `max_wheel_drop_m` 0.08 m가 사실상 **0.32 m**로 동작했다(실측: 처짐 0.20 m가 통과하고 0.36 m에서야 걸렸다).
+> 위 표는 고친 기준으로 다시 잰 값이다. **결론의 방향은 그대로**이고 `over`와 `miss(any)`가 주로 바뀌었다.
 
 **읽는 법.**
 
 1. ==RSL 필터는 **공개된 배포 운용점에서 물리적으로 통과 불가한 칸을 놓친다**.== art_planner가 싣고 다니는
-   0.15 게이트에서 4425칸이다. 저자 자신의 분류 문턱인 0.5에서만 0이 된다.
-2. ==놓친 칸은 거의 전부 `slope_crossfall`에 몰려 있다== (seed당 ~1460). `curb_ramp`와 `bumps_potholes`는 **0**이다.
-   즉 **불연속 장애물(연석·포트홀)에는 멀쩡하고 지속적인 경사에서 무너진다** — 이방성과 해상도 의존이 사는 바로 그곳이다.
-3. 이유가 닫힌 형태로 나온다. 게이트를 평면 경사각으로 환산하면:
+   0.15 게이트에서 **5961칸**이다. 저자 자신의 분류 문턱인 0.5에서만 0이 된다.
+2. ==놓친 칸은 경사에 쏠린다.== 0.15에서 `slope_crossfall` 4381(73 %), `curb_ramp` 844, `random_mix` 423,
+   `bumps_potholes` 313이고, **0.30에서는 2243칸 중 2235(99.6 %)가 `slope_crossfall`**이다(나머지 셋 합계 8칸).
+   즉 **불연속 장애물(연석·포트홀)보다 지속적인 경사에서 훨씬 크게 무너진다** — 이방성과 해상도 의존이 사는 곳이다.
+3. 이유가 닫힌 형태로 나온다. 게이트를 평면 경사각으로 환산하면(==측정한 변형, 즉 `rescale_to_train_res=True`
+   기준==. 배포본 그대로의 값은 괄호 안):
 
-   | 게이트 | 치명이라 하기 시작하는 각 (방향에 따라) |
-   |---|---|
-   | 0.15 (art_planner 배포) | **36.1° – 47.0°** |
-   | 0.30 (우리 격자의 측정 분리점) | 24.9° – 34.3° |
-   | 0.50 (논문 5.B의 저자 분류 문턱) | **14.9° – 21.4°** |
+   | 게이트 | 치명이라 하기 시작하는 각 (방향에 따라) | rescale 끄면 |
+   |---|---|---|
+   | 0.15 (art_planner 배포) | **42.4° – 53.3°** | 36.1° – 47.0° |
+   | 0.30 (우리 격자의 측정 분리점) | 30.1° – 40.4° | 24.9° – 34.3° |
+   | 0.50 (논문 5.B의 저자 분류 문턱) | **18.4° – 26.1°** | 14.9° – 21.4° |
 
-   ==차체는 17.2°(roll)/20.1°(pitch)에서 넘어진다.== 배포 게이트가 **전복각의 두 배**에서야 치명이라 말하는 것이
-   MISS 4425의 전부다. 반대로 논문 자신의 0.5는 전복각을 정확히 감싼다. 참고로 기하 추정기의 14.9°
-   (`max_slope_rad` 0.26)가 0.5 밴드의 아래 끝과 겹치는데, 설계가 아니라 우연이다.
-4. **기하와 TravNet은 MISS가 0**이다. 물리적으로 못 들어가는 칸을 주행 가능이라 부른 적이 없다.
+   ==차체는 17.2°(roll)/20.1°(pitch)에서 넘어진다.== 배포 게이트가 **전복각의 약 2.5배**에서야 치명이라 말하는
+   것이 MISS 5961의 전부다. 논문 자신의 0.5도 밴드의 **아래 끝(18.4°)이 roll 한계 17.2°보다 위**라 전복각을
+   감싸지는 못한다 — 그래도 MISS가 0인 이유는 `MISS`가 *모든* 방위각에서의 불가를 요구하고 그 조건이
+   pitch 한계 20.1°에 걸리기 때문이다.
+4. **기하와 TravNet은 MISS가 0**이다. 물리적으로 어느 방위로도 못 들어가는 칸을 주행 가능이라 부른 적이 없다.
+   ==다만 `miss(any)`가 1936칸이다== — 차체가 **일부 방위각에서만** 들어가는 칸을 둘 다 주행 가능이라 부른다
+   (`bumps_potholes` 1868, `random_mix` 68). 기하 비용은 등방 팽창이라 "이 방향으로만 설 수 있다"를 표현할
+   수단이 없다. 방위각 의존이 표현의 빈자리로 드러난 지점이다.
 5. **셋 다 `NEGATIVE_SCENARIOS` 오탐이 0**이다.
-6. TravNet은 기하와 사실상 같다(IoU 0.999, MAE 0.0162). 잔차 구조상 치명 셀을 거의 건드리지 않는다는
-   TP-0022의 기록과 일치한다. ==셋을 나란히 두는 실험에서 TravNet은 별개의 답이 아니라 기하의 미세 보정이다.==
-7. 기하의 `over` 45805는 결함이 아니라 **설계 여유**다. 비용은 14.9°에서 포화하는데 차체는 17–20°에서 넘어진다.
+6. TravNet은 기하와 사실상 같다(IoU 0.999, MAE 0.0162, `miss(any)`도 1936으로 동일). 잔차 구조상 치명 셀을
+   거의 건드리지 않는다는 TP-0022의 기록과 일치한다.
+   ==셋을 나란히 두는 실험에서 TravNet은 별개의 답이 아니라 기하의 미세 보정이다.==
+7. 기하의 `over` 31437은 결함이 아니라 **설계 여유**다. 비용은 14.9°에서 포화하는데 차체는 17–20°에서 넘어진다.
 
 `rsl_soft`의 MISS는 필터가 아니라 문턱 이야기다. `cost = 1 - t`이므로 0.95 치명은 $t \le 0.05$를 뜻하고,
 공개된 어떤 운용점보다 엄격하다.
 
-**지상고 스윕**(유일한 가정): 0.08–0.20 m에서 결론이 바뀌지 않는다. 0.05 m에서는 기하도 35칸을 놓치는데,
-바퀴 반지름 0.103 m의 절반이라 비현실적이다. 그래도 결론이 가정에 걸리는 지점이라 적어 둔다.
+**지상고 스윕**(유일한 가정): ==0.08–0.20 m에서 결론이 바뀌지 않는다.== 기하·TravNet·`gate 0.5`는 그 구간
+전체에서 MISS 0이고, `gate 0.15`는 8640 → 4531칸으로 줄되 0에 가까워지지 않는다. 0.05 m에서는 기하와
+TravNet도 30칸, `gate 0.5`도 2칸을 놓치는데, 바퀴 반지름 0.103 m의 절반이라 비현실적이다. 그래도 결론이
+가정에 걸리는 지점이라 적어 둔다.
 
 #### 부수적으로 나온 것
 
-- ==이 필터는 지금 L1 매 프레임 돌고 결과만 버려진다.== `emap_mapper.py:75`가 실제 `weights.dat`를 연결하고
-  벤더링 트리에는 가드가 없다. `_paste()`가 네 층만 읽어서 `get_traversability()`는 아무도 부르지 않는다.
-  읽어 내는 데 3줄이면 되고 GPU 비용은 이미 지불돼 있다.
-- **TP-0097과 충돌한다.** TP-0097은 `weight_file=""`로 이 필터를 끄려던 것인데, 이제 쓸 값이 있는지가 걸려 있다.
-  다만 위 측정이 **배포 운용점에서 안전하지 않다**고 말하므로, 끄는 쪽 결정은 유지하고 필요하면
-  `EmapConfig` 플래그로 되살릴 수 있게 한다.
+- 조사 시점에는 ==이 필터가 L1 매 프레임 돌고 결과만 버려지고 있었다== — `emap_mapper.py`가 실제
+  `weights.dat`를 연결했고 벤더링 트리에 가드가 없었으며, `_paste()`가 네 층만 읽어 `get_traversability()`는
+  아무도 부르지 않았다. **TP-0097(같은 날)이 core의 가드를 backport하고 `weight_file=""`로 껐다.**
+  위 측정이 **배포 운용점에서 안전하지 않다**고 말하므로 끄는 결정은 그대로 두고, 필요하면 `EmapConfig`
+  플래그로 되살린다(A.7.2도 같은 날 갱신했다).
 - 상류 버그 하나: `custom_kernels.py:463`의 dilation tie-break이 거리가 아니라 부호 있는 `dx+dy`를 최소화해서,
   frontier 채움 칸의 16.2%가 0.08 m 한계를 넘는 곳에서 높이를 가져온다(평균 오차 0.178 m, 최대 1.47 m).
   TP-0088이 모아 둔 색인 수정과 함께 올릴 거리다.
@@ -1463,10 +1490,6 @@ roll·pitch는 지도의 `GRAD_X`/`GRAD_Y`에서 오고 `slope`는 같은 기울
 *그림 — 왼쪽: 섀시 기하 기준 대비 MISS(빨강)와 over(파랑). 오른쪽: 놓친 칸이 어디에 생기는지.*
 
 수치: `results/p2-estimators.tsv`. 재현: `python scripts/eval_estimators.py --seeds 0 1 2 --tsv results/p2-estimators.tsv`.
-
-
-
----
 
 ### A.13.6 TP-0100 — belief를 차체 기준으로 재니, 위험은 "못 본 칸"에 있고 깊이 prior는 그것을 막지 않는다
 
@@ -1721,6 +1744,54 @@ CMU (1,2)는 한 번 침식으로 띠를 지우고 두 번 팽창으로 포트�
 
 - elevation_mapping_cupy처럼 마할라노비스 게이트로 이상치 점을 거르면 보상 끔·잡음 1°의 거짓 치명이 얼마나 줄어드는지 잰다.
 - Python 운동학 시뮬의 LiDAR도 몸체 자세를 따르게 한다(지금은 수평). 그 뒤 L1 벤치마크의 스워브 결과가 바뀌는지 본다.
+
+### A.13.11 TP-0089 — 궤적 참조는 같은 만큼 비키면서 시간은 덜 낸다
+
+`ReferenceCost`를 읽어 보면 두 참조 모드가 감속을 다르게 벌한다. 4 s 지평 안에서
+**경로 모드**(`times` 없음)는 `w_deviation ×` 평균 횡편차 `+ w_progress ×` **종단** 잔여 거리를 낸다 —
+==진행에 대해서는 **지평 끝점만** 보므로, 중간에 늦췄다가 따라잡으면 공짜다.==
+**궤적 모드**(`times` 있음, Planner D가 내는 모드)는 `w_time ×` **지평 전체 평균** 시간 인덱스 목표와의 거리
+`+ w_progress ×` 종단 차이를 낸다 — ==`w_time`이 **모든 스텝을 평균**하므로 **따라잡아도 중간 감속이 벌점으로
+남는다.**==
+
+⚠️ **정정(2026-09-30).** 처음에는 이를 "궤적 모드에서는 지각이 *반복적*이라 이후 모든 스텝에서 계속 벌점"이라고
+썼는데 **틀렸다.** `mppi.py::_reference`가 `times - t_since_plan`으로 시간축을 현재로 재기준화하고,
+`SimConfig.replan_every = 1`이라 플래너가 **매 스텝** 로봇의 현재 위치에서 다시 계획한다. 따라서 지각은
+==**에피소드에 걸쳐 누적되지 않는다.**== 실제 차이는 **한 지평 안**에서 중간 감속을 평균으로 세느냐 끝점만
+보느냐이고, 아래 측정 결과는 그대로다.
+
+그래서 "궤적 모드가 감속 양보를 억제할 것"을
+가설로 세우고, ==같은 지형·같은 seed에서 **보행자 유무만 바꾼 쌍대 비교**==로 쟀다
+(`scripts/eval_yield_behavior.py`, 3 시나리오 × 8 seed × 2 모드 = **48 쌍**, 쌍마다 보행자 유무 둘이니 **96 에피소드**).
+
+![TP-0089 양보 행동](assets/figs/tp0089_yield.webp)
+*그림 — TP-0089: 왼쪽은 3 시나리오 × seed 0–7의 24쌍 전부, 보행자 때문에 낸 값(가로=우회, 세로=지연)이고 큰 반투명 표식이 평균이다. 아래쪽 멀리 떨어진 두 점이 효과의 절반을 만드는 쌍이다 — 축을 0에서 자르지 않았다. 오른쪽은 속도 이력이고 점선이 같은 조건의 보행자 없는 주행이다.*
+
+| 측정(궤적 − 경로) | 평균 | 95 % CI (paired bootstrap) | n | 판정 |
+|---|---|---|---|---|
+| 지연 `dt` | **−2.22 s** | [−3.87, −0.79] | 24 | 0 제외 — 궤적 모드가 **시간을 덜 낸다** |
+| 우회 `detour` | −0.01 m | [−0.34, +0.25] | 22 | 0 포함 — **차이 없다** |
+| 감속폭 \|`dv`\| | **−0.21 m/s** | [−0.34, −0.07] | 22 | 0 제외 — **덜 감속한다** |
+
+==**같은 만큼 비키면서 시간은 덜 낸다** — 예측대로 궤적 참조가 브레이크 채널만 눌렀다.== 96 에피소드 전부
+충돌 0이다.
+
+⚠️ **한계 — 소수의 쌍이 평균을 끈다(2026-10-01 감사에서 정량화).** seed별 부호가 `dt` 16/24, `dv` 16/22로
+일관되지 않고, ==`dt` 효과의 **65 %를 상위 세 쌍**이 만든다.== 그 셋을 빼면 `dt` = **−0.90 s**
+[−1.64, −0.11](중앙값 −1.00, n=21)로 ==부호와 0 제외는 유지되지만 크기는 2.5배 작아진다.==
+가장 큰 기여는 `bumps_potholes` seed 6(−13.4 s)인데, 이 쌍은 **보행자 없는 기준선 쪽이 비정상적으로 느렸다.**
+그러니 "시간을 덜 낸다"는 방향은 믿을 만하고 **−2.2 s라는 크기는 믿으면 안 된다.**
+
+⚠️ 그 밖의 한계: seed 3개로 처음 쟀을 때는 `curb_ramp`에서 **방향이 뒤집혔다.** 그리고 두 모드는 속도가 달라
+보행자를 **조금 다른 지점에서 만난다** — 쌍대 기준선이 지형은 지우지만 조우 기하는 지우지 못한다.
+
+수치는 `results/yield/*.npz`에 있다(2026-10-01에 커밋했다 — 그전에는 근거 자료가 저장소에 없었다).
+재현: `python scripts/eval_yield_behavior.py --scenario <sc> --seeds 0 1 2 3 4 5 6 7 --out results/yield`.
+
+
+
+---
+
 
 <!-- tab: Traversability -->
 
@@ -2689,7 +2760,7 @@ Apollo 현행 소스(`modules/planning/tasks/`)에 이 단계가 그대로 있�
 
 ==**Autoware의 구조가 travplan에 가장 곧바로 옮겨진다.**== `autoware_velocity_smoother`의 README가 그 핵심을 적는다 —
 *"The external velocity is applied at the position that it is able to reach the velocity limit with the
-deceleration and the jerk constraints."* 즉 ==**"여기서 이 속도 이하"라는 이진 요구를, 저크 한계로 $s$축을 따라
+deceleration and the jerk constraints set as the parameter."* 즉 ==**"여기서 이 속도 이하"라는 이진 요구를, 저크 한계로 $s$축을 따라
 거꾸로 전파해 부드러운 조기 감속으로 바꾼다.**== 회피 로직은 이진이어도 되고, 부드러움은 **한 곳**에서 책임진다.
 (⚠️ 단, 같은 README의 **곡선(횡가속) 속도 상한** 절에는 반대 방향 주의가 있다 —
 *"velocity limit that requests larger than `nominal.jerk` is not applied. In other words, even if a sharp
@@ -2785,8 +2856,9 @@ $$ B = \gamma \left\lVert \lambda\, \Delta v + \hat{d} \right\rVert $$
 
 **③ CBF-QP의 여유 비례 감속.** 안전 집합 $\mathcal{C} = \{x: h(x) \ge 0\}$에 대해
 $\dot h \ge -\alpha(h)$를 제약으로 걸고 $\min_u \lVert u - u_{nom}\rVert^2$를 푼다. 제약이 $u$에 대해 아핀이라
-QP 해가 ==**Lipschitz 연속**==이고(Ames 외가 증명, [arXiv:1903.11199](https://arxiv.org/abs/1903.11199) —
-*"it was established that this controller is Lipschitz continuous"*), 이것이 안전 필터가 **점프를 낼 수 없는**
+QP 해가 ==**Lipschitz 연속**==이고(증명은 Ames·Xu·Grizzle·Tabuada, *IEEE TAC* 62(8):3861–3876, 2017이고,
+서베이 [arXiv:1903.11199](https://arxiv.org/abs/1903.11199)가 그것을 CLF-CBF QP에 대해 요약한다 —
+*"In [21] it was established that this controller is Lipschitz continuous"*), 이것이 안전 필터가 **점프를 낼 수 없는**
 정확한 이유다. $\alpha(h) = \gamma h$면 ==허용 접근 속도가 남은 여유에 비례해 줄어든다 —
 지수적으로 잦아드는 감속 곡선이다.== $\alpha$ 하나가 "얼마나 일찍 감속을 시작하는가" 손잡이 전부다.
 그리고 $h$가 크면 QP가 $u = u_{nom}$을 그대로 돌려주므로 ==**다시 가속하는 쪽은 공짜다**== — 이력 로직이 없다.
@@ -3007,38 +3079,12 @@ a short oscillatory interaction."* 보도 배달로봇의 일반 밀도에서는
    이 실패가 원인 불명의 성공률 하락으로만 보인다(TP-0091). 살아 있게 하는 장치 — 실행 가능한 저비용 롤아웃이
    없을 때 보행자 비용 가중치를 낮추는 것 — 을 나중에 붙이는 패치가 아니라 **설계의 일부**로 넣는다.
 
-##### TP-0089 측정 — travplan은 시간이 아니라 공간으로 낸다
+##### TP-0089 — 두 참조 모드가 감속을 다르게 벌한다
 
-`ReferenceCost`를 읽어 보면 두 참조 모드가 감속을 다르게 벌한다. 4 s 지평 안에서
-**경로 모드**(`times` 없음)는 `w_deviation ×` 평균 횡편차 `+ w_progress ×` **종단** 잔여 거리를 낸다 —
-==진행에 대해서는 **지평 끝점만** 보므로, 중간에 늦췄다가 따라잡으면 공짜다.==
-**궤적 모드**(`times` 있음, Planner D가 내는 모드)는 `w_time ×` **지평 전체 평균** 시간 인덱스 목표와의 거리
-`+ w_progress ×` 종단 차이를 낸다 — ==`w_time`이 **모든 스텝을 평균**하므로 **따라잡아도 중간 감속이 벌점으로
-남는다.**==
-
-⚠️ **정정(2026-09-30).** 처음에는 이를 "궤적 모드에서는 지각이 *반복적*이라 이후 모든 스텝에서 계속 벌점"이라고
-썼는데 **틀렸다.** `mppi.py::_reference`가 `times - t_since_plan`으로 시간축을 현재로 재기준화하고,
-`SimConfig.replan_every = 1`이라 플래너가 **매 스텝** 로봇의 현재 위치에서 다시 계획한다. 따라서 지각은
-==**에피소드에 걸쳐 누적되지 않는다.**== 실제 차이는 **한 지평 안**에서 중간 감속을 평균으로 세느냐 끝점만
-보느냐이고, 아래 측정 결과는 그대로다.
-
-그래서 "궤적 모드가 감속 양보를 억제할 것"을
-가설로 세우고, ==같은 지형·같은 seed에서 **보행자 유무만 바꾼 쌍대 비교**==로 쟀다
-(`scripts/eval_yield_behavior.py`, 3 시나리오 × 8 seed × 2 모드 = 96 에피소드).
-
-![TP-0089 양보 행동](assets/figs/tp0089_yield.webp)
-*그림 — TP-0089: 왼쪽은 시나리오·seed별로 보행자 때문에 낸 값(가로=우회, 세로=지연), 큰 반투명 표식이 평균. 오른쪽은 속도 이력이고 점선이 같은 조건의 보행자 없는 주행이다.*
-
-| 측정(궤적 − 경로) | 평균 | 95 % CI (paired bootstrap, n=22) | 판정 |
-|---|---|---|---|
-| 지연 `dt` | **−2.44 s** | [−4.21, −0.92] | 0 제외 — 궤적 모드가 **시간을 덜 낸다** |
-| 우회 `detour` | −0.01 m | [−0.35, +0.25] | 0 포함 — **차이 없다** |
-| 감속폭 \|`dv`\| | **−0.20 m/s** | [−0.34, −0.07] | 0 제외 — **덜 감속한다** |
-
-==**같은 만큼 비키면서 시간은 덜 낸다** — 예측대로 궤적 참조가 브레이크 채널만 눌렀다.== 96 에피소드 전부
-충돌 0이다. ⚠️ **한계**: seed별 부호는 16/22, 15/22로 일관되지 않아 몇몇 seed의 큰 효과가 평균을 끌고 있다
-(부호 검정 p = 0.05, 0.13). seed 3개로 처음 쟀을 때는 `curb_ramp`에서 **방향이 뒤집혔다.** 그리고 두 모드는
-속도가 달라 보행자를 **조금 다른 지점에서 만난다** — 쌍대 기준선이 지형은 지우지만 조우 기하는 지우지 못한다.
+`ReferenceCost`의 **경로 모드**는 진행을 지평 **끝점만** 보고, **궤적 모드**는 시간 인덱스 목표와의 거리를
+**지평 전체 평균**으로 센다. 그래서 궤적 모드에서는 따라잡아도 중간 감속이 벌점으로 남는다.
+==travplan에서 쟀더니 궤적 모드가 **같은 만큼 비키면서 시간은 덜 낸다.**== 측정·정정·한계는
+개발 기록 **A.13.11**에 있다.
 
 ##### 무엇을 재야 "양보했다"를 아는가
 
@@ -5856,13 +5902,19 @@ box blur·median 평활, 평면 영역 분할(경계와 구멍을 다각형으�
 TP-0082를 위해 벤더링된 소스를 직접 읽었다. 예상과 달랐던 것이 셋이다.
 
 **① 플러그인이 아니라 코어에 박혀 있다.** `elevation_mapping_cupy/traversability_filter.py`가 구현이고,
-`ElevationMap.__init__`이 **무조건** 만들어서 `input_pointcloud()`마다 돌린다. 켜고 끄는 플래그가 없다.
-(**2026-09-30 단서**: 이것은 travplan이 벤더링한 사본과 상류 ROS 노드 경로에서 맞다. 상류가 2026-02에 분리한
-`elevation_mapping_cupy_core`는 `weight_file` 경로가 비어 있으면 필터를 아예 만들지 않도록 바꿨다 — A.2b 참조.
-즉 core로 옮기면 **끌 수 있다.**)
-`travplan/perception/emap_no_plugins.yaml`은 내용이 `{}`라 플러그인이 0개인데, ==그것과 무관하게 이 필터는
-travplan의 L1 루프에서 **이미 돌고 있다.** 출력을 아무도 읽지 않을 뿐이다.== (`emap_mapper.py`가 꺼내는 것은
-elevation·variance·upper_bound·is_upper_bound 넷이고 `get_traversability()`는 한 번도 부르지 않는다.)
+`ElevationMap.__init__`이 만들어서 `input_pointcloud()`마다 돌린다. 상류 ROS 노드 경로에는 **켜고 끄는 플래그가
+없다.** 상류가 2026-02에 분리한 `elevation_mapping_cupy_core`는 `weight_file`이 비어 있으면 필터를 아예 만들지
+않도록 바꿨다(A.2b).
+
+==**2026-09-30에 이 문단의 전제가 travplan에서는 깨졌다.**== TP-0097이 core의 가드를 벤더링 사본으로
+backport했다(d88728f). 이제 `ElevationMap.__init__`은 `param.weight_file`이 비어 있지 않을 때만 필터를 만들고,
+`emap_mapper.py`가 `""`를 넘긴다. 그래서 ==travplan의 L1 루프에서 이 필터는 더 이상 돌지 않고 CUDA torch도
+import되지 않는다.== 아래 ②–③의 구조 분석은 그대로 유효하다 — 필터가 무엇인지에 대한 것이지 언제 도는지에
+대한 것이 아니기 때문이다. 작업 기록 A.13.5에 측정이 있다.
+
+그 이전 기준으로는 `travplan/perception/emap_no_plugins.yaml`이 `{}`라 플러그인이 0개인데도 이 필터만은
+돌고 있었고, 출력을 아무도 읽지 않았다(`emap_mapper.py`가 꺼내는 것은 elevation·variance·upper_bound·
+is_upper_bound 넷이고 `get_traversability()`는 한 번도 부르지 않는다).
 
 **② 모델이 아주 작다.** 가중치가 저장소에 들어 있고(`config/core/weights.dat`, 1,138 바이트) **파라미터가 120개**다.
 구조는 3×3 conv 셋을 dilation 1·2·3으로 **병렬** 적용해 12채널로 잇고, 절댓값을 거쳐 1×1 conv 하나로 줄인 뒤

@@ -71,7 +71,7 @@ elevation, variance, traversability)이 실제로 발행되고, 로봇이 움직
 | 합성 LiDAR `scan` | 6.7 ms | **시뮬 전용**. 실물에서는 LiDAR 하드웨어가 한다 |
 | `mapper.update`(GPU) | **3.7 ms** | 약 270 Hz 상당. 지도 크기·점 수에 거의 둔감하다 |
 | `TravMapBuilder.build`(CPU) | **32.8 ms** | 전체의 76%. `compute_features`가 대부분 |
-| 〃 + 깊이 prior 0.10 | **65.6 ms** | 86%. `shadow_evidence_m=1.0`의 k=21 maxpool 두 번이 +27 ms |
+| 〃 + 깊이 prior 0.10 | **65.6 ms** | 86%. 깊이 prior가 **+32.8 ms**이고, 그 중 `shadow_evidence_m=1.0`의 k=21 maxpool 두 번이 **23.1 ms**(11.5 ms × 2)다 |
 
 **R-NF-001의 "10 Hz 이상"은 매퍼 단독으로는 크게 통과한다.** 그런데 폐루프 한 스텝(dt = 0.1 s)으로 보면 실물에 해당하는
 비용이 `mapper + build`이고, 권장 설정(깊이 prior 켬)에서 **69 ms**다. 여기에 계획 3.4 ms와 제어 7.8 ms를 더하면

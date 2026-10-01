@@ -9,8 +9,10 @@
 
 목차: D.0 E2E 분해 · D.1 지형·traversability·중간 표현(A.10) · D.2 Occupancy · D.3 예측(occupancy flow·world model·
 행위자) · D.3b 인식 마일스톤·시각 기반 모델·동적 장애물 · D.4 학습 Planner · D.4b 비학습 위험 인지 경로 계획 · D.5 생성형 궤적 Planner ·
-D.5b 고전 기준선·마일스톤·VLA·E2E 주행 · D.5c 로봇별 오픈소스 스택 · D.6 Controller(참고) · D.7 안전 필터 · D.7b Controller·안전 마일스톤 · S.8 시뮬레이션 ·
-D.8 로코모션·시스템 스택 · D.9 데이터셋·벤치마크 · D.10 벤더·산업 자료 · D.11 기타
+D.5b 고전 기준선·마일스톤·VLA·E2E 주행 · D.5c 로봇별 오픈소스 스택 · D.6 Controller(참고) · D.7 안전 필터 · D.7b Controller·안전 마일스톤 ·
+**D.13 연구 그룹과 사람** · D.8 로코모션·시스템 스택 · D.9 데이터셋·벤치마크 · D.10 벤더·산업 자료 ·
+D.12 IROS 2026 수확 · D.11 기타
+(시뮬레이션 참고문헌은 시뮬레이션 문서의 S.8에 있다)
 
 ---
 
@@ -491,9 +493,9 @@ E.1(MPPI 계보), E.2(학습 동역학·적응 마일스톤), C.4(안전 필터 
 
 ---
 
-<!-- tab: 시뮬레이션 -->
+<!-- tab: 연구 그룹 -->
 
-### D.8 연구 그룹과 사람 — 누구를 따라갈 것인가
+### D.13 연구 그룹과 사람 — 누구를 따라갈 것인가
 
 ==**소속과 활동 상태는 2026-09-30에 1차 출처(연구실 페이지·대학 인명부·출판사 제출 소속·`gh api`)로 확인했다.**==
 사람은 옮겨 다니므로 기억으로 쓰지 않았고, 확인하지 못한 것은 그렇게 적었다.
@@ -522,7 +524,7 @@ E.1(MPPI 계보), E.2(학습 동역학·적응 마일스톤), C.4(안전 필터 
 
 </details>
 
-#### D.8.1 지형 지도·traversability (→ A.2b, A.10)
+#### D.13.1 지형 지도·traversability (→ A.2b, A.10)
 
 | 그룹 | PI·기관 | 코드 | travplan에 왜 |
 |---|---|---|---|
@@ -533,7 +535,7 @@ E.1(MPPI 계보), E.2(학습 동역학·적응 마일스톤), C.4(안전 필터 
 | **AirLab** ([theairlab.org](https://theairlab.org/)) + Field AI | **Sebastian Scherer**(Research Professor), CMU RI | [castacks](https://github.com/castacks) 219개. `tartanair_tools` ★434 · `tartan_drive` ★126. ⚠️ Field AI는 **공개 코드가 사실상 없다** | ==**STEP**이 "traversability를 분포로 보고 그 위험(CVaR)에 대해 계획한다"의 정본==이고, 그게 우리 `SIGMA` → MPPI 확률 제약(E.10)·NMPC 튜브(TP-0070/0071)의 설계 근거다 |
 | **Unmanned Systems Lab** ([unmannedlab.org](https://www.unmannedlab.org/)) | **Srikanth Saripalli**, Texas A&M | [unmannedlab](https://github.com/unmannedlab) — `RELLIS-3D` ★458 · `G-VOM` ★89 | G-VOM은 LiDAR → 지상차량 traversability 격자의 **읽기 쉬운 참조 구현**. ⚠️ 코드는 2023-05 정지 |
 
-#### D.8.2 동적 장애물·소셜 내비게이션 (→ A.12, A.12.5)
+#### D.13.2 동적 장애물·소셜 내비게이션 (→ A.12, A.12.5)
 
 | 그룹 | PI·기관 | 코드 | travplan에 왜 |
 |---|---|---|---|
@@ -545,7 +547,7 @@ E.1(MPPI 계보), E.2(학습 동역학·적응 마일스톤), C.4(안전 필터 
 | **ADCS / HCII** ([nikmartelaro.com](http://nikmartelaro.com/)) | **Nikolas Martelaro**(부교수), CMU **HCII** | GitHub **없음**(확인 못 함) | ==목록에서 **실제 보도 배달로봇과 실제 보행자의 만남을 현장 관찰하는 유일한 그룹**.== A.12.5의 "얼어붙기가 보도에서 관찰됐다"가 이 그룹의 피츠버그 연구다 |
 | **AMRL** ([amrl.cs.utexas.edu](https://amrl.cs.utexas.edu/)) | **Joydeep Biswas**(부교수), UT Austin | [ut-amrl](https://github.com/ut-amrl) 222개 — `SocialGym2` ★63 · `graph_navigation` ★14 | 소셜 내비 벤치마크. ⚠️ **LARG(Peter Stone)는 별도 연구실**이고 SocialGym 2.0의 **저자가 아니다** |
 
-#### D.8.3 제어·최적화, 그리고 한국 그룹 (→ C·E, F)
+#### D.13.3 제어·최적화, 그리고 한국 그룹 (→ C·E, F)
 
 | 그룹 | PI·기관 | travplan에 왜 |
 |---|---|---|
