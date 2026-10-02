@@ -17,7 +17,7 @@ import { GEO, EXAG } from "./view.js";
 
 // 코어 버전 키: 코어 모듈 14개(chassis·control·core·mpot·perception·planner·plannerd·plannerd_weights·policy·policy_weights·robots·sim·terrain·travmap .js)를 이름순으로 이은
 // 내용의 sha256 앞 8자. scripts/check_playground.sh가 다시 계산해 다르면 실패한다. 코어를 고치면 이 값도 바꾼다.
-export const CORE_VERSION = "c307d8d0";
+export const CORE_VERSION = "93ac0146";
 
 // 공유 링크의 바탕. claude.ai 게시본이나 iframe 안에서는 location.href가 틀 주소일 수 있어 이 주소로 링크를 만든다.
 export const PUBLIC_BASE = "https://geonhee-lee.github.io/travplan-site/playground/";
@@ -57,6 +57,7 @@ const OPT_KEYS = [
   ["pl", ...at(["planner"]), one(Object.keys(PLANNERS))],
   ["co", ...at(["controller"]), one(Object.keys(CONTROLLERS))],
   ["gs", ...at(["genSteps"]), num(1, 40, 1)],
+  ["pf", ...at(["pdFallback"]), flag],
   ["K", ...at(["mppi", "K"]), num(32, 1024, 32)],
   ["T", ...at(["mppi", "T"]), num(10, 60, 5)],
   ["lam", ...at(["mppi", "lambda"]), num(0.05, 2, 0.05)],

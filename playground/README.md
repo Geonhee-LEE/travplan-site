@@ -44,6 +44,7 @@ MPPI Controller, 스워브 운동학이 한 폐루프로 돈다. 목표와 장�
 | `un`, `unc` | 근거리 미관측 반경, 그 칸의 cost | 0–2 m, 0–1 |
 | `pl`, `co` | Planner, Controller | `guidance`·`mpot`·`plannerd`·`plannerd_diff`·`straight`, `mppi`·`tracker`·`learned`·`blind` |
 | `gs` | Planner D 생성 스텝 | 1–40(기본 10) |
+| `pf` | Planner D Guidance 폴백(TP-0078) | `1` 켬, `0` 끔(기본) |
 | `K`, `T`, `lam`, `nz` | MPPI 샘플 수, 지평(스텝), 온도 λ, 탐색 잡음 배율 | 슬라이더의 범위와 눈금 |
 | `wt`, `wr`, `wa` | MPPI 지형·위험·자세 가중 | 슬라이더의 범위와 눈금 |
 | `goal`, `ped`, `ed` | 목표, 시작 전 보행자, 지형 편집 | 지도(16 × 8 m) 안의 `x,y` · `x,y,vx,vy;…`(100명까지, 3 m/s 이하) · `b,x,y;p,x,y;e,x,y`(상자·포트홀·지우기, 적용 순서, 1000곳까지) |
@@ -186,6 +187,9 @@ Sinkhorn Step을 2D 경로에 옮겼다. 경로(입자) 16개, 경로당 웨이�
   - 4 지형 × 3 seed에서 flow·diffusion 모두 12/12다(Guidance 12/12). 계획은 10스텝 112 ms, 1스텝 32 ms다(파이썬 4 ms).
   - 1스텝 후보가 가장 넓게 퍼진다(끝점 1.0 m). 학습된 망이 $t = 0$에서 $-x$를 95–99%만 갚고, 남은 잡음이 변화율이라 두 번 적분되기 때문이다.
   - 레벨 3 좁은 경사로에서는 저장소의 병목(TP-0077)처럼 경사로를 지나쳐 시간 초과가 난다. 기록은 Planner 문서 B.15.1.
+- **Guidance 폴백(TP-0078).** 'Guidance 폴백'을 켜면 새 표본 16개 가운데 90% 넘게 치명인 계획이 3번 이어질 때 2 s 동안 Guidance 경로를 후보로 넣는다.
+  경로는 1 m/s로 4 s 따라간 점열로 표본과 같은 식으로 채점하고, 이기면 그 경로를 그대로 낸다. 위 레벨 3 주행이 30.5 s에 도달한다(시연 `TP-0078`).
+  텔레메트리의 '폴백 %'는 경로가 이긴 계획의 비율이다. 파이썬에서는 `planner_df` 스택이고, curb_ramp 레벨 3 30 에피소드가 20/30에서 29/30이 됐다(Planner 문서 B.15.2).
 '둘 다'에서 옅은 크림색 선은 참 지형 등고선이다.
 
 판정은 실제 지형으로 한다. 치명 셀 진입, 로봇별 전복 한계(스워브 pitch 0.35 rad·roll 0.30 rad, 사족 0.55·0.50, 바퀴 사족 0.50·0.45) 초과, 보행자 접촉, 60 s 초과가 실패다.
@@ -234,6 +238,7 @@ Sinkhorn Step을 2D 경로에 옮겼다. 경로(입자) 16개, 경로당 웨이�
 | `TP-0137-diff` | TP-0137 | 같은 망, diffusion 10스텝 | 도달 15.6 s | 이 페이지 전용(12/12) | `TP-0137` |
 | `TP-0137-1step` | TP-0137 | flow 1스텝 | 도달 15.5 s, 후보가 거칠게 흩어진다(적분된 잡음) | 이 페이지 전용 | `TP-0137` |
 | `TP-0137-l3` | TP-0137 | Planner D flow, curb_ramp 레벨 3 seed 0 | 60 s 시간 초과(경사로를 지나친다) | curb_ramp L3 seed 0–9 8/10(TP-0077) | Guidance(`?pl=guidance`): 27.6 s |
+| `TP-0078` | TP-0078 | 위와 같은 주행 + Guidance 폴백 | 도달 30.5 s | curb_ramp L3 30 에피소드 29/30(파이썬 `planner_df`) | `TP-0137-l3` |
 | `TP-0128` | TP-0128 | bumps_potholes s0, 가림, 학습 정책 | 도달 10.1 s(MPPI는 14.1 s) | 브라우저 폐루프 8/12(MPPI 12/12) | MPPI(`?co=mppi`) |
 | `TP-0128-limit` | TP-0128 | curb_ramp s0, 가림, 학습 정책 | 9.0 s 치명 셀 진입(MPPI는 22.5 s 도달) | 실패 4건이 모두 lethal | MPPI(`?co=mppi`) |
 | `TP-0129` | TP-0129 | curb_ramp s0, 스워브, 지도 없는 정책 | 2.8 s 치명 셀 진입 | 지도 없는 스워브 0/12 | `TP-0129-quad` |
@@ -253,7 +258,7 @@ Sinkhorn Step을 2D 경로에 옮겼다. 경로(입자) 16개, 경로당 웨이�
 | `travmap.js` | `travplan/representation/`, `travplan/sim/visibility.py` | 특징(창 7·7·21·5·13칸), 램프 cost, `fill_unknown`, 2.5D 시선 스윕, 그림자 상한, 깊이 prior와 증거 제한 |
 | `planner.js` | `travplan/planners/guidance.py` | Dijkstra cost-to-go(간선 = 길이 × 평균(1 + 4·cost + 0.5·sigma)), 경로 추출, Planner 목록 |
 | `mpot.js` | [anindex/mpot](https://github.com/anindex/mpot) `mpot/ot/sinkhorn_step.py`(줄인 것) | MPOT Sinkhorn Step: 무작위 회전 orthoplex, probe 비용, 로그 영역 Sinkhorn, barycentric projection(TP-0136) |
-| `plannerd.js` | `travplan/planners/learned/flow_planner.py`·`flow_model.py`·`obs.py` | Planner D 추론: crop, conv 인코더, 속도망, flow·diffusion 샘플러, rollout, 선택기(TP-0137) |
+| `plannerd.js` | `travplan/planners/learned/flow_planner.py`·`flow_model.py`·`obs.py` | Planner D 추론: crop, conv 인코더, 속도망, flow·diffusion 샘플러, rollout, 선택기(TP-0137), Guidance 폴백(TP-0078) |
 | `plannerd_weights.js` | `checkpoints/planner_d_L0123_dagger.pt` | 생성물. float16 base64 가중치(`scripts/export_playground_planner_d.py`). base64가 우연히 토큰 모양이 된 자리는 끊어 잇는다(공개 사이트 위생 검사) |
 | `control.js` | `travplan/control/mppi/`, `travplan/robot/swerve.py`, `travplan/control/tracker.py` | 스워브 한계·적분, pure pursuit, MPPI(AR(1) 잡음, 평균·정지 후보, 비용 6항, warm start) |
 | `sim.js` | `travplan/sim/kinematic_sim.py`, `travplan/eval/runner.py` | 0.1 s 폐루프, 10스텝마다 재계획, 관측 융합, 보행자, 실패 판정 |

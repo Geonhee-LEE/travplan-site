@@ -146,6 +146,7 @@ function revealChip() {
 const syncRobot = segment("robot", opts.robot, (v) => { opts.robot = v; opts.sensorHeight = ROBOTS[v].sensorH; newWorld(); });
 $("poseComp").addEventListener("change", (e) => { opts.poseComp = e.target.checked; restart(); });
 $("wbcAware").addEventListener("change", (e) => { opts.wbcAware = e.target.checked; restart(); });
+$("pdFallback").addEventListener("change", (e) => { opts.pdFallback = e.target.checked; restart(); });
 const setPN = slider("poseNoise", (v) => (v ? `${v.toFixed(2)}°` : "없음"), (v) => { opts.poseNoise = v; restart(); });
 const syncPer = segment("perception", opts.perception, (v) => { opts.perception = v; restart(); });
 const syncPl = segment("planner", opts.planner, (v) => { opts.planner = v; restart(); });
@@ -249,6 +250,7 @@ function syncPanel() {
   $("perNote").textContent = PERCEPTION[opts.perception].note;
   $("plNote").textContent = PLANNERS[opts.planner].note;
   setGS(opts.genSteps ?? 10); $("genSteps").disabled = !PLANNERS[opts.planner].learned;
+  $("pdFallback").checked = !!opts.pdFallback; $("pdFallback").disabled = !PLANNERS[opts.planner].learned;
   $("coNote").textContent = CONTROLLERS[opts.controller].note;
   $("mppiParams").hidden = opts.controller !== "mppi";
   // 그릴 것이 없는 표시 체크는 숨긴다: MPPI 샘플은 MPPI, LiDAR 점은 L1 간이에서만 있다.
@@ -481,7 +483,7 @@ function telemetry() {
     world.mapErr && opts.perception !== "gt" ? `<span class="${world.mapErr.rmse > 0.03 ? "warn" : ""}" title="로봇 3 m 안 관측 칸: 본 높이와 실제 높이의 RMSE">높이 오차 <b>${(world.mapErr.rmse * 100).toFixed(1)} cm</b></span>` : "",
     world.mapErr && opts.perception !== "gt" ? `<span class="${world.mapErr.falseBlocked > 20 ? "warn" : ""}" title="로봇 3 m 안: 로봇 지도는 치명인데 실제 cost는 치명이 아닌 관측 칸">거짓 치명 <b>${world.mapErr.falseBlocked}칸</b></span>` : "",
     world.R && world.R.gait ? `<span title="걸음새로 흔들린 몸체 pitch(지형 기울기 제외)">흔들림 <b>${deg(world.body.gait.pitch)}°</b></span>` : "",
-    world.plan?.sampler ? `<span title="Planner D(TP-0137): 샘플러 · 생성 스텝 · 후보(표본 16 + 이전 계획 1) · Planner D만의 계획 시간(Dijkstra 소목표는 따로)">Planner D <b>${world.plan.sampler === "flow" ? "flow" : "diffusion"}</b> · ${world.plan.steps}스텝 · 후보 ${world.plan.particles.length} · <b>${world.plan.ms.toFixed(0)} ms</b></span>` : world.plan?.loading ? `<span class="warn">Planner D 가중치 불러오는 중(그동안 Guidance)</span>` : "",
+    world.plan?.sampler ? `<span title="Planner D(TP-0137): 샘플러 · 생성 스텝 · 후보(표본 16 + 이전 계획 1) · Planner D만의 계획 시간(Dijkstra 소목표는 따로)">Planner D <b>${world.plan.sampler === "flow" ? "flow" : "diffusion"}</b> · ${world.plan.steps}스텝 · 후보 ${world.plan.particles.length} · <b>${world.plan.ms.toFixed(0)} ms</b>${world.planMem?.pdStats ? ` · 폴백 <b>${Math.round((100 * world.planMem.pdStats.chosen) / Math.max(1, world.planMem.pdStats.plans))}%</b>${world.plan.fallback ? "(지금 Guidance 경로)" : ""}` : ""}</span>` : world.plan?.loading ? `<span class="warn">Planner D 가중치 불러오는 중(그동안 Guidance)</span>` : "",
     world.wbc ? `<span title="GR00T 분리형 WBC: 하체 정책이 받은 navigate_cmd(vx·vy·ωz). 크기가 0.05보다 작으면 서기 정책으로 선다(TP-0135)">WBC <b>${world.wbc.standing ? "서기" : "걷기"}</b>${world.wbc.cmd ? ` · 명령 <b>${world.wbc.cmd.map((v) => v.toFixed(2)).join(" ")}</b>` : ""}</span>` : "",
     world.R?.feet ? `<span class="${world.footFaults ? "warn" : ""}" title="발이 디딘 횟수와 나쁜 디딤(경사 30° 초과 또는 턱 한계 초과 칸). 실패 판정에는 쓰지 않는다(TP-0135)">발 디딤 <b>${world.footCount}</b> · 나쁜 디딤 <b>${world.footFaults}</b></span>` : "",
     world.peds.length ? `<span class="${clear < 0.3 ? "warn" : ""}">보행자 여유 <b>${Number.isFinite(clear) ? clear.toFixed(2) + " m" : "-"}</b></span>` : "",

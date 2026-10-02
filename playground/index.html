@@ -331,6 +331,7 @@ footer code { font: 12px var(--mono); }
         </div>
         <p class="note" id="plNote"></p>
         <div class="row"><label for="genSteps" title="Planner D(flow·diffusion)가 노이즈에서 제어열까지 가는 스텝 수. 1스텝은 두 샘플러 모두 조건부 평균이라 후보 16개가 하나로 겹친다(배경 0.7b, TP-0137)">생성 스텝</label><input type="range" id="genSteps" min="1" max="40" step="1" value="10"><output id="genStepsOut"></output></div>
+        <label class="check" title="TP-0078: 새 표본 16개 가운데 90% 넘게 치명인 계획이 3번 이어지면 2 s 동안 Guidance 경로를 후보로 넣고, 이기면 그 경로를 그대로 낸다. 경사로를 지나친 Planner D를 되돌린다(파이썬 planner_df)."><input type="checkbox" id="pdFallback"> Guidance 폴백</label>
       </section>
       <section class="card">
         <h2>Controller</h2>

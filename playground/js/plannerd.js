@@ -9,11 +9,16 @@
 //   flow      — ODE. Euler n스텝: x ← x + v/n. 지금 Planner D 그대로다.
 //   diffusion — DDPM식 조상 샘플링. 선형(rectified flow) 일정 x_t = t·x₁ + (1 − t)·ε에서
 //               q(x_s | x_t, x̂₁)의 평균과 분산(VDM 식)으로 한 걸음씩 노이즈를 새로 섞으며 간다. n = 1이면 둘 다 조건부 평균이다.
+//
+// Guidance 폴백(TP-0078, 원본 flow_planner.py의 fallback_*·route_ahead). 켜면(mem.fallback) 새 표본 16개 가운데 치명 비율이
+// 0.9 이상인 계획이 3번 이어질 때 다음 20번 동안 Guidance 경로를 후보로 넣는다. 경로는 1 m/s로 4 s 따라간 점열로
+// 표본과 같은 식으로 채점하고, 이기면 그 경로를 그대로 낸다. 이 페이지의 MPPI는 늘 경로로 따라가므로 출력 형식은 같다.
 import { Rng } from "./core.js";
 import { SWERVE, clampTwist, clampAccel, stepPose, sampleMap } from "./control.js";
 import { TRAV } from "./travmap.js";
 
-export const PD_SEL = { K: 16, wCost: 6.0, lethalPenalty: 1e3, wProgress: 4.0, keepPrevious: true, lookahead: 4.0 };
+export const PD_SEL = { K: 16, wCost: 6.0, lethalPenalty: 1e3, wProgress: 4.0, keepPrevious: true, lookahead: 4.0,
+  fallbackShare: 0.9, fallbackAfter: 3, fallbackHold: 20, fallbackSpeed: 1.0, fallbackWindow: 2.0 };   // 폴백은 TP-0078
 const OBS_SCALE = [1, 1, 1 / 0.3, 1 / 0.1];
 
 let NET = null, LOADING = null;
@@ -202,9 +207,50 @@ export function plannerDPlan(map, start, goal, mem, guide, sampler) {
     if (J < bestS) { bestS = J; best = k; }
     return { P, J, lethal, applied };
   });
+  const particles = scored.map((s) => ({ P: s.P, J: s.J, lethal: s.lethal }));
+  const out = { field: guide.field, sampler, steps: n, subgoal: sub, particles, best };
+  // Guidance 폴백(TP-0078): 이전 계획을 뺀 새 표본만으로 치명 비율을 센다.
+  if (mem.fallback) {
+    const st = (mem.pdStats ||= { plans: 0, offered: 0, chosen: 0 });
+    const share = scored.slice(0, PD_SEL.K).filter((q) => q.lethal).length / PD_SEL.K;
+    mem.pdStreak = share >= PD_SEL.fallbackShare ? (mem.pdStreak || 0) + 1 : 0;
+    if (mem.pdStreak >= PD_SEL.fallbackAfter) mem.pdHold = PD_SEL.fallbackHold;
+    st.plans++; out.lethalShare = share;
+    if ((mem.pdHold || 0) > 0 && guide.route.length >= 2) {
+      mem.pdHold--; st.offered++;
+      const { rest, ahead } = routeAhead(guide.route, start, T, dt, PD_SEL.fallbackSpeed, PD_SEL.fallbackWindow);
+      let c = 0, lethal = false;
+      for (let t = 1; t <= T; t++) { sampleMap(map, ahead[t][0], ahead[t][1], m); c += m[0] * dt; if (m[0] >= TRAV.lethal) lethal = true; }
+      const J = PD_SEL.wCost * c + PD_SEL.lethalPenalty * (lethal ? 1 : 0) + PD_SEL.wProgress * sampleField(guide.field, g, ahead[T][0], ahead[T][1]);
+      particles.push({ P: ahead, J, lethal, route: true });
+      if (J < bestS) {                     // 경로가 이기면 경로를 그대로 낸다(Python: times 없는 PlanResult)
+        st.chosen++; mem.pdPrevU = null;
+        return { ...out, path: rest, ok: !lethal, best: particles.length - 1, fallback: true, ms: performance.now() - t0 };
+      }
+    }
+  }
   mem.pdPrevU = scored[best].applied;
-  return {
-    path: scored[best].P, ok: !scored[best].lethal, field: guide.field, ms: performance.now() - t0, sampler, steps: n, subgoal: sub,
-    particles: scored.map((s) => ({ P: s.P, J: s.J, lethal: s.lethal })), best,
-  };
+  return { ...out, path: scored[best].P, ok: !scored[best].lethal, ms: performance.now() - t0 };
+}
+
+// Guidance 경로를 로봇에 가장 가까운 점부터: (rest, speed·dt·k m 앞의 점 T+1개). 가장 가까운 점은 처음 window m 안에서만
+// 찾는다 — 경사로를 돌아 로봇 바로 위 보도로 되돌아오는 구간에 붙지 않게(flow_planner.py route_ahead, TP-0078).
+export function routeAhead(route, pose, T, dt, speed, window = 2.0) {
+  const s = [0];
+  for (let i = 1; i < route.length; i++) s.push(s[i - 1] + Math.hypot(route[i][0] - route[i - 1][0], route[i][1] - route[i - 1][1]));
+  let hi = 1;
+  while (hi < route.length && s[hi] < window) hi++;
+  let i0 = 0, bd = Infinity;
+  for (let i = 0; i < Math.max(1, hi); i++) { const d = Math.hypot(route[i][0] - pose[0], route[i][1] - pose[1]); if (d < bd) { bd = d; i0 = i; } }
+  const rest = route.length - i0 >= 2 ? route.slice(i0) : route.slice(-2);
+  const s0 = s[route.length - rest.length], ahead = [];
+  let j = 1;
+  for (let k = 0; k <= T; k++) {
+    const q = Math.min(speed * dt * k, s[route.length - 1] - s0);
+    while (j < rest.length - 1 && s[route.length - rest.length + j] - s0 < q) j++;
+    const a = s[route.length - rest.length + j - 1] - s0, b = s[route.length - rest.length + j] - s0, w = b > a ? (q - a) / (b - a) : 0;
+    const p0 = rest[j - 1], p1 = rest[j];
+    ahead.push([p0[0] + w * (p1[0] - p0[0]), p0[1] + w * (p1[1] - p0[1])]);
+  }
+  return { rest, ahead };
 }
