@@ -196,9 +196,9 @@ footer { max-width: 1000px; margin: 0 auto; padding: 0 16px 40px; color: var(--m
   nav.subtabs button { min-height: 32px; }
 }
 </style>
-<header data-generated="2026-10-03 07:50 KST">
+<header data-generated="2026-10-03 08:49 KST">
   <h1>travplan 대시보드</h1>
-  <div class="meta" data-site-meta><a href="index.html">← travplan 홈</a> · 갱신 2026-10-03 07:50 KST</div>
+  <div class="meta" data-site-meta><a href="index.html">← travplan 홈</a> · 갱신 2026-10-03 08:49 KST</div>
 </header>
 <nav class="tabs" role="tablist" aria-label="대시보드 탭"><button role="tab" id="tabbtn-state" aria-controls="tab-state" aria-selected="true" tabindex="0" data-tab="state" class="active">진행 현황</button><button role="tab" id="tabbtn-todo" aria-controls="tab-todo" aria-selected="false" tabindex="-1" data-tab="todo">TODO</button><button role="tab" id="tabbtn-prd" aria-controls="tab-prd" aria-selected="false" tabindex="-1" data-tab="prd">PRD</button><button role="tab" id="tabbtn-arch" aria-controls="tab-arch" aria-selected="false" tabindex="-1" data-tab="arch">아키텍처 · 기능 설명</button><button role="tab" id="tabbtn-research" aria-controls="tab-research" aria-selected="false" tabindex="-1" data-tab="research">리서치</button><button role="tab" id="tabbtn-design" aria-controls="tab-design" aria-selected="false" tabindex="-1" data-tab="design">설계 · PoC</button><button role="tab" id="tabbtn-sim" aria-controls="tab-sim" aria-selected="false" tabindex="-1" data-tab="sim">시뮬레이션 ▶</button></nav>
 <main>
@@ -310,8 +310,8 @@ footer { max-width: 1000px; margin: 0 auto; padding: 0 16px 40px; color: var(--m
 </tr>
 </tbody>
 </table></div>
-<div class="card md"><h2>다음 작업 (Claude)</h2><p><strong>이번 초점: traversability와 elevation mapping</strong>(2026-09-30 사용자 지정). 아래 "병목" 표보다 이 줄이 우선한다.
-병목(Planner D 레벨 3)은 그대로 열려 있고, 다른 PC의 cron이 이어 간다.</p>
+<div class="card md"><h2>다음 작업 (Claude)</h2><p><strong>초점(2026-10-03 갱신).</strong> 2026-09-30에 지정한 traversability·elevation mapping 초점 표는 Isaac을 기다리는 <a class="tp tp-backlog" href="#todo" data-tp="TP-0040" title="백로그 · P1 인식 격차: L0 belief와 L1(RTX LiDAR → elevation mapping) TravMap의 비용 오차 분포 비교 (P1 R-F-010) · PR #141(merge됨)">TP-0040</a>만 남아 끝났다.
+지금은 아래 "병목 쪽" 표가 우선이고, 다음 작업은 사용자 결정 1(아래 Next user-blocked)을 따른다.</p>
 <table>
 <thead>
 <tr>
@@ -518,39 +518,118 @@ cost가 <code>max_slope_rad</code> 0.26에서 포화해 구조적으로 지배�
   예측 모델 계층(2026-10-01 사용자 요청): <a class="tp tp-backlog" href="#todo" data-tp="TP-0124" title="백로그 · Controller 모델 계층(사용자 요청 2026-10-01): MPC·MPPI의 예측 모델을 기구학(SwerveModel) → 동역학(모듈 지연·슬립 plant의 배치 모... · 이슈 #122(열림)">TP-0124</a>(기구학·동역학·학습 모델을 한 프로토콜로), <a class="tp tp-backlog" href="#todo" data-tp="TP-0125" title="백로그 · 메쉬 기반 forward 샘플링 시뮬레이터: 로봇 메쉬(차체·바퀴 접지점)를 2.5D 고도 지도 위에 놓고 샘플마다 접지 높이·자세(pitch·roll)·차체 하부 간섭·전복... · 이슈 #122(열림)">TP-0125</a>(로봇 메쉬 기반 forward 샘플링 시뮬레이터), <a class="tp tp-backlog" href="#todo" data-tp="TP-0126" title="백로그 · 학습 forward dynamics 모델(FDM): 지역 고도 패치·상태 이력·명령 열 → 미래 위치·실패 확률(LSTM). 메쉬 시뮬레이터로 자기 지도 데이터를 만들고, M... · 이슈 #122(열림)">TP-0126</a>(학습 forward dynamics 모델). 근거는 MPC 문서 M.1.3.</li>
 <li>낮은 우선순위: <a class="tp tp-backlog" href="#todo" data-tp="TP-0041" title="백로그 · (조사·PoC) URBAN-SIM·UrbanVerse 장면 활용성: 에셋 라이선스, Isaac Sim 5.x 요구, RTX 5080 실행 (P2 R-F-011)">TP-0041</a>, <a class="tp tp-backlog" href="#todo" data-tp="TP-0042" title="백로그 · Isaac Lab 3.0 정식판(2026-10 말 목표) 뒤 kit-less 경로(Newton·OVPhysX)로 Planner D 학습 루프 이식 검토">TP-0042</a>, <a class="tp tp-backlog" href="#todo" data-tp="TP-0043" title="백로그 · sim-to-real 예측력 프로토콜 문서: 스택·실외 코스·지표·SRCC 판정 기준, 첫 주행 보정 기록 항목 (P2 R-F-012)">TP-0043</a>, <a class="tp tp-backlog" href="#todo" data-tp="TP-0007" title="백로그 · LiDAR 프로파일(Velodyne_VLS128 등) 조회가 &#x27;not found&#x27; 경고를 냄 — Isaac Sim 6.0에서 omni.sensors.nv.common 데이터 ...">TP-0007</a>, <a class="tp tp-backlog" href="#todo" data-tp="TP-0014" title="백로그 · (연구) CBF-QP/OcclusionCBF류 안전필터를 OSQP 등 오픈소스 QP로 대체 가능한지 조사 (Gurobi 상용 라이선스 회피)">TP-0014</a>.</li>
 </ul></div>
-<div class="card md"><h2>사용자 실행 대기</h2><table>
+<div class="card md"><h2>사용자 실행 대기</h2><p><strong>사용자가 정할 것 (순서대로, 2026-10-03 정리).</strong> 위에서부터 정하면 아래가 풀린다. 각 줄의 첫 선택지가 권장이다.</p>
+<table>
 <thead>
 <tr>
-<th>TODO</th>
-<th>할 일</th>
-<th>시간</th>
-<th>확인할 것</th>
+<th>순서</th>
+<th>결정</th>
+<th>선택지 (첫째가 권장)</th>
+<th>왜 사용자 몫인가</th>
+<th>풀리는 것</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><a class="tp tp-blocked" href="#todo" data-tp="TP-0005" title="사용자 실행 대기 · TP-0001 완료 후: 지형 USD 로드 + 스워브/LiDAR 로봇 배치 + ROS2 브릿지 폐루프 재현, P0 운동학 벤치마크와 성공률 비교">⏸ TP-0005</a></td>
-<td>Isaac Sim 폐루프를 돌려 운동학 벤치마크와 비교</td>
-<td>—</td>
-<td>같은 시나리오에서 성공 여부가 같은가</td>
+<td>1</td>
+<td>학습 Planner 병목(curb_ramp L3 재탐색)을 어떻게 이어갈지</td>
+<td>A. 경사로를 지나친 상태로 리셋해 Guidance + MPPI 시연을 모으는 DAgger(하루 안). B. RL 3단계 리셋 커리큘럼 + 재탐색 보상(반나절 구현 + 1–2시간 계산). C. 폴백으로 덮고 다음 병목(<a class="tp tp-backlog" href="#todo" data-tp="TP-0055" title="백로그 · TP-0053 후속: Planner D를 L1 belief로 재학습·DAgger — L1에서 planner_d+mppi 32/40(guidance 36/40), 미관측 패턴이... · PR #141(merge됨)">TP-0055</a> L1 재학습, 보행자)으로</td>
+<td>연구 방향. 같은 RL 처방은 단독 26/30에서 멈췄다(<a class="tp tp-done" href="#todo" data-tp="TP-0138" title="완료 · TP-0066 후속: RL 후학습 2단계 — curb_ramp 레벨 3 집중 라운드(--scenarios curb_ramp --levels 3)와 라운드 수 6, 단독 30 ...">✓ TP-0138 ◉</a>)</td>
+<td><a class="tp tp-backlog" href="#todo" data-tp="TP-0143" title="백로그 · TP-0138 후속: RL 후학습 3단계 — 같은 처방(라운드 추가, 지형 집중)은 curb_ramp L3 단독 26/30에서 멈춘다. 경사로를 지나친 상태에서 rollout...">TP-0143</a>, 현재 병목</td>
 </tr>
 <tr>
-<td><a class="tp tp-blocked" href="#todo" data-tp="TP-0064" title="사용자 실행 대기 · 배달로봇 센서 사양 제공: LiDAR 모델·수평·수직 시야각·채널, 장착 높이·위치·기울기, 카메라 시야각·해상도·스테레오 기선, 연산 장치 (TP-0060 입력)">⏸ TP-0064</a></td>
-<td>배달로봇 센서 사양 제공(<code>docs/design-sensor-layout.md</code> 권장안 참고)</td>
-<td>—</td>
-<td>사용자 결정</td>
+<td>2</td>
+<td>학습 Planner의 공식 성적을 무엇으로 볼지</td>
+<td>A. 연구 지표는 Planner D 단독, 배포 스택은 <code>planner_df</code>(폴백 포함)로 둘 다 보고. B. <code>planner_df</code>를 기본 Planner D로</td>
+<td>"학습 Planner가 기준선과 같다"는 주장의 근거. 폴백 스택은 레벨 3 계획의 42–51%가 Guidance다</td>
+<td>STATE·벤치마크 기본 스택</td>
 </tr>
 <tr>
-<td><a class="tp tp-blocked" href="#todo" data-tp="TP-0009" title="사용자 실행 대기 · 센서 하드웨어 확정·구매 — 근거리 스테레오/RGB-D(예: RealSense D435/ZED2i) + 원거리 solid-state LiDAR(예: Livox Mid-70) ...">⏸ TP-0009</a></td>
-<td>센서 하드웨어 확정과 구매</td>
-<td>—</td>
-<td>사용자 결정</td>
+<td>3</td>
+<td>안전 원칙: 치명 1건과 시간 초과 여러 건</td>
+<td>A. 치명이 하나라도 늘면 기본값으로 채택하지 않는다. 평활(<a class="tp tp-done" href="#todo" data-tp="TP-0142" title="완료 · TP-0141 후속: 턱(step) 특징의 잡음 편향 — 창 안 최대−최소가 L0 잡음 극값을 주워 GT 0.07 m 칸을 0.08 m로 읽고 한 칸 폭 통로를 닫는다. 분위... · PR #155(merge됨)">✓ TP-0142 ◉</a>)은 명시적 여유(예: 턱 한계를 잡음만큼 낮춤)와 함께 다시 판정. B. 성공 수 합으로 판단</td>
+<td>안전 정책. <a class="tp tp-done" href="#todo" data-tp="TP-0142" title="완료 · TP-0141 후속: 턱(step) 특징의 잡음 편향 — 창 안 최대−최소가 L0 잡음 극값을 주워 GT 0.07 m 칸을 0.08 m로 읽고 한 칸 폭 통로를 닫는다. 분위... · PR #155(merge됨)">✓ TP-0142 ◉</a>는 시간 초과 4개를 도달로, 1개를 치명으로 바꾼다</td>
+<td><a class="tp tp-done" href="#todo" data-tp="TP-0142" title="완료 · TP-0141 후속: 턱(step) 특징의 잡음 편향 — 창 안 최대−최소가 L0 잡음 극값을 주워 GT 0.07 m 칸을 0.08 m로 읽고 한 칸 폭 통로를 닫는다. 분위... · PR #155(merge됨)">✓ TP-0142 ◉</a>·0131 기본값</td>
 </tr>
 <tr>
-<td><a class="tp tp-blocked" href="#todo" data-tp="TP-0035" title="사용자 실행 대기 · 배달로봇 스워브 모듈 파라미터 제공: 모듈 위치·비동축 오프셋·바퀴 반지름·조향 속도 한계 (TP-0034 입력)">⏸ TP-0035</a></td>
-<td>스워브 모듈 파라미터 제공(<a class="tp tp-done" href="#todo" data-tp="TP-0034" title="완료 · 기록에서 복원">✓ TP-0034</a> 입력)</td>
-<td>—</td>
-<td>사용자 결정</td>
+<td>4</td>
+<td>판정 절차에 잡음 바닥 넣기</td>
+<td>A. 레벨 3·plant·보행자 비교는 seed 10 × 난수 오프셋 3, 짝 비교(<code>scripts/paired_success.py</code>)로 판정하도록 CLAUDE.md 비평가 기준표에 더한다(계산 3배). B. 지금처럼 한 번</td>
+<td>CLAUDE.md는 사용자 지시 파일이고 cron 에이전트도 따른다. 같은 설정 재실행에서 curb_ramp L3 10개 중 6개, plant 24개 중 7–10개가 뒤집혔다</td>
+<td>모든 비교의 판정</td>
+</tr>
+<tr>
+<td>5</td>
+<td>사이트 결정 D1–D4(<a class="tp tp-blocked" href="#todo" data-tp="TP-0107" title="사용자 실행 대기 · 사이트 결정: 생성물 CI 빌드(D1)·검색 노출(D2)·claude.ai 게시본 범위(D3)·공개된 로컬 경로 정리(D4) (UX D) · 이슈 #109(열림) · PR #110(merge됨)">⏸ TP-0107</a>)</td>
+<td>D1 생성물 CI 빌드: A. CI. D2 검색 노출: A. D4 정리 범위를 정할 때까지 noindex(지금은 막지 않음). D3 claude.ai 대시보드 게시본: A. 그만두고 공개 사이트 대시보드를 README 링크로. 게시본은 다른 계정이 만든 것이라 이 계정에서 갱신하지 못한다(2026-10-03 확인). B. 이 계정으로 새 게시본. D4 이미 공개된 항목: 사이트 저장소 이력·옛 대시보드까지 비울지</td>
+<td>공개 범위·커밋 규칙</td>
+<td><a class="tp tp-blocked" href="#todo" data-tp="TP-0110" title="사용자 실행 대기 · 사이트: 생성물을 CI에서 빌드하고 커밋하지 않기(D1이 CI일 때), CLAUDE.md·cron 지시문 함께 고침 (UX W7) · 이슈 #109(열림) · PR #110(merge됨)">⏸ TP-0110</a>, 0111, 0114</td>
+</tr>
+<tr>
+<td>6</td>
+<td>이 PC 환경: casadi(<code>.[mpc]</code>) 설치와 잔차 GP 체크포인트 공유</td>
+<td>A. 설치하고 <code>residual_sgp_wide.pt</code>를 릴리스로 공유. B. GP 쪽 평가는 다른 PC에서만</td>
+<td>PRD 7절: 시스템 변경은 사람 몫. 지금 이 PC는 <code>mppi_ccgp</code>·MPC 계열을 못 돌린다</td>
+<td><a class="tp tp-done" href="#todo" data-tp="TP-0131" title="완료 · TP-0130 후속: ReferenceCost 진행 항이 접힌 참조에서 건너뛴다 — curb_ramp에서 Guidance 경로가 램프로 돌아가 접히면 연석 아래 끝점이 되돌아... · 이슈 #132(닫힘) · PR #152(merge됨)">✓ TP-0131 ◉</a>의 <code>mppi_ccgp</code> 장면 확인</td>
+</tr>
+<tr>
+<td>7</td>
+<td>하드웨어·사양 입력(오래 대기)</td>
+<td><a class="tp tp-blocked" href="#todo" data-tp="TP-0064" title="사용자 실행 대기 · 배달로봇 센서 사양 제공: LiDAR 모델·수평·수직 시야각·채널, 장착 높이·위치·기울기, 카메라 시야각·해상도·스테레오 기선, 연산 장치 (TP-0060 입력)">⏸ TP-0064</a> 센서 사양, <a class="tp tp-blocked" href="#todo" data-tp="TP-0035" title="사용자 실행 대기 · 배달로봇 스워브 모듈 파라미터 제공: 모듈 위치·비동축 오프셋·바퀴 반지름·조향 속도 한계 (TP-0034 입력)">⏸ TP-0035</a> 스워브 모듈 파라미터, <a class="tp tp-blocked" href="#todo" data-tp="TP-0009" title="사용자 실행 대기 · 센서 하드웨어 확정·구매 — 근거리 스테레오/RGB-D(예: RealSense D435/ZED2i) + 원거리 solid-state LiDAR(예: Livox Mid-70) ...">⏸ TP-0009</a> 센서 구매, <a class="tp tp-blocked" href="#todo" data-tp="TP-0005" title="사용자 실행 대기 · TP-0001 완료 후: 지형 USD 로드 + 스워브/LiDAR 로봇 배치 + ROS2 브릿지 폐루프 재현, P0 운동학 벤치마크와 성공률 비교">⏸ TP-0005</a> Isaac 폐루프 실행</td>
+<td>실물 정보와 구매·실행</td>
+<td>P1(Isaac)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Claude가 정한 작은 결정(2026-10-03).</strong> 영향이 작아 사용자에게 묻지 않고 정했다. 바꾸려면 해당 TODO에 적으면 된다.</p>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>결정</th>
+<th>이유</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="tp tp-done" href="#todo" data-tp="TP-0131" title="완료 · TP-0130 후속: ReferenceCost 진행 항이 접힌 참조에서 건너뛴다 — curb_ramp에서 Guidance 경로가 램프로 돌아가 접히면 연석 아래 끝점이 되돌아... · 이슈 #132(닫힘) · PR #152(merge됨)">✓ TP-0131 ◉</a> 진행 항 끝점 제한</td>
+<td>기본 끔 유지. <code>planner_df</code>를 운동학에서 평가할 때 켠다(<code>--ctrl-cfg reach_margin_m=0.5</code>)</td>
+<td>plant 도달 수가 잡음 안이고, 기본 Controller를 바꾸면 모든 기준선을 다시 재야 한다</td>
+</tr>
+<tr>
+<td><a class="tp tp-done" href="#todo" data-tp="TP-0078" title="완료 · 기록에서 복원 · 이슈 #148(닫힘) · PR #149(merge됨)">✓ TP-0078 ◉</a> 폴백 트리거(0.9 · 3 · 20)</td>
+<td>그대로. 튜닝하지 않는다</td>
+<td>미리 정한 값으로 판정을 통과했다. 튜닝은 결정 1 뒤에 필요하면</td>
+</tr>
+<tr>
+<td><a class="tp tp-done" href="#todo" data-tp="TP-0138" title="완료 · TP-0066 후속: RL 후학습 2단계 — curb_ramp 레벨 3 집중 라운드(--scenarios curb_ramp --levels 3)와 라운드 수 6, 단독 30 ...">✓ TP-0138 ◉</a> 체크포인트(<code>rl2</code>, <code>rl2b</code>)</td>
+<td>릴리스하지 않는다. 1단계(<code>planner_d_L0123_rl.pt</code>)를 유지</td>
+<td>판정 미달</td>
+</tr>
+<tr>
+<td>Playground의 Planner D 가중치</td>
+<td>DAgger 체크포인트 유지</td>
+<td>B.15.1 기록과 시연 기대값이 그것으로 정해져 있고, RL 단독 이득은 잡음 안이다</td>
+</tr>
+<tr>
+<td><a class="tp tp-backlog" href="#todo" data-tp="TP-0057" title="백로그 · TP-0022 후속: TravNet 잔차 방향 결정 — proxy가 과속방지턱을 편하다고 느껴 잔차가 cost를 낮춤(gt_cost 0.020→0.025). 올리는 쪽만 허용...">TP-0057</a> TravNet 잔차 방향</td>
+<td>기본은 cost를 올리는 쪽만 허용한다. 낮추는 쪽(TNT식 "넘을 수 있는 곳 찾기")은 선택 실험으로 두고 결정 3의 안전 원칙으로 판정한다. 구현은 <a class="tp tp-backlog" href="#todo" data-tp="TP-0057" title="백로그 · TP-0022 후속: TravNet 잔차 방향 결정 — proxy가 과속방지턱을 편하다고 느껴 잔차가 cost를 낮춤(gt_cost 0.020→0.025). 올리는 쪽만 허용...">TP-0057</a></td>
+<td>기하가 놓친 위험을 더하는 데만 학습을 기본으로 쓴다. proxy가 과속방지턱을 편하다고 느껴 cost를 낮추는 일을 막는다. TravNet은 기본 스택 밖이라 지금 결과는 바뀌지 않는다</td>
+</tr>
+<tr>
+<td><a class="tp tp-backlog" href="#todo" data-tp="TP-0028" title="백로그 · TP-0027 후속: PlanRequest에 동적 장애물 예측 전달(TP-0017 규칙 예외 결정 후) — Planner D가 보행자를 보고 시간 인덱스 궤적으로 비켜 가는지...">TP-0028</a> 선행 조건(<a class="tp tp-done" href="#todo" data-tp="TP-0017" title="완료 · 기록에서 복원">✓ TP-0017</a> 규칙 예외)</td>
+<td>성립한 것으로 본다</td>
+<td><code>PlanRequest.pedestrians</code>가 이미 <code>core/types.py</code> 공유 계약에 있다(Joint Planner가 쓴다). <a class="tp tp-backlog" href="#todo" data-tp="TP-0028" title="백로그 · TP-0027 후속: PlanRequest에 동적 장애물 예측 전달(TP-0017 규칙 예외 결정 후) — Planner D가 보행자를 보고 시간 인덱스 궤적으로 비켜 가는지...">TP-0028</a>은 바로 실행 가능하다</td>
+</tr>
+<tr>
+<td>순서</td>
+<td><a class="tp tp-backlog" href="#todo" data-tp="TP-0140" title="백로그 · TP-0131 후속: plant 목표 앞 맴돌기 — 진행 항 끝점 제한을 켠 plant curb_ramp 72 에피소드 중 3번이 목표 0.30–0.37 m 앞에서 10 s ...">TP-0140</a>(plant 목표 앞 머물기), <a class="tp tp-done" href="#todo" data-tp="TP-0142" title="완료 · TP-0141 후속: 턱(step) 특징의 잡음 편향 — 창 안 최대−최소가 L0 잡음 극값을 주워 GT 0.07 m 칸을 0.08 m로 읽고 한 칸 폭 통로를 닫는다. 분위... · PR #155(merge됨)">✓ TP-0142 ◉</a> 여유 연구는 결정 1·3 뒤</td>
+<td>둘 다 결정의 영향을 받는다</td>
+</tr>
+<tr>
+<td>문서</td>
+<td>CLAUDE.md Playground 절의 숫자를 사실대로 고쳤다(코어 14개, 시연 31개). 지시 내용은 바꾸지 않았다</td>
+<td>낡은 숫자</td>
 </tr>
 </tbody>
 </table></div>
@@ -2826,7 +2905,7 @@ TP-0034의 참고가 된다.</p>
 같은 문제의식이다.</p>
 <p><strong>travplan에 주는 의미.</strong> <mark>험지 연구는 "보수적으로 막는 것"에서 "실제로 넘을 수 있는지 데이터로 가르는 것"으로 옮겨 가고 있다.</mark>
 TNT가 대표다. travplan은 반대로 보수적인 최댓값 규칙을 쓰고 있고, 그것이 안전 쪽으로는 옳지만 0.07 m 턱을 막는 오탐(TP-0048, TP-0067)의
-뿌리이기도 하다. 두 흐름을 어떻게 화해시킬지가 TP-0057의 결정 사항이다. 가림 쪽은 RayOcc와 OGM-CBF가 각각 인식과 제어에서 "못 본 것을
+뿌리이기도 하다. 두 흐름을 어떻게 화해시킬지가 TP-0057의 결정 사항이다. 2026-10-03에는 기본을 "올리는 쪽만"으로 두고, 낮추는 쪽은 치명이 늘지 않는지로 판정하는 선택 실험으로 남겼다. 가림 쪽은 RayOcc와 OGM-CBF가 각각 인식과 제어에서 "못 본 것을
 어떻게 들고 갈 것인가"를 다루는데, travplan의 그림자 상한·깊이 prior와 비교할 값이 있다.</p></div></div><div class="docpanel subpanel" id="sub-research-d-1" role="tabpanel" aria-labelledby="subbtn-research-d-1"><nav class="subtabs" role="tablist" data-group="research-d1"><button role="tab" id="subbtn-research-d1-0" aria-controls="sub-research-d1-0" aria-selected="true" tabindex="0" data-sub="research-d1-0" class="active">개요</button><button role="tab" id="subbtn-research-d1-1" aria-controls="sub-research-d1-1" aria-selected="false" tabindex="-1" data-sub="research-d1-1">지형 지도·Occupancy</button><button role="tab" id="subbtn-research-d1-2" aria-controls="sub-research-d1-2" aria-selected="false" tabindex="-1" data-sub="research-d1-2">작업 기록</button><button role="tab" id="subbtn-research-d1-3" aria-controls="sub-research-d1-3" aria-selected="false" tabindex="-1" data-sub="research-d1-3">Traversability</button><button role="tab" id="subbtn-research-d1-4" aria-controls="sub-research-d1-4" aria-selected="false" tabindex="-1" data-sub="research-d1-4">시각 기반 모델</button><button role="tab" id="subbtn-research-d1-5" aria-controls="sub-research-d1-5" aria-selected="false" tabindex="-1" data-sub="research-d1-5">동적 장애물</button><button role="tab" id="subbtn-research-d1-6" aria-controls="sub-research-d1-6" aria-selected="false" tabindex="-1" data-sub="research-d1-6">예측·World model</button><button role="tab" id="subbtn-research-d1-7" aria-controls="sub-research-d1-7" aria-selected="false" tabindex="-1" data-sub="research-d1-7">보행 로봇</button></nav><div class="card md subpanel active" id="sub-research-d1-0" role="tabpanel" aria-labelledby="subbtn-research-d1-0"><!-- doc: 인식 | 1 -->
 <h1>인식 — 지형·장애물을 TravMap으로 (§A)</h1>
 <p><strong>인식은 센서 관측을 TravMap[8,H,W]과 동적 장애물 목록으로 바꾸는 일이다.</strong> 이 문서는 여섯 탭으로 나뉜다. 앞의 네 탭(지형 지도,
@@ -31236,7 +31315,8 @@ D1이 CI면 W7을 Backlog로 옮기고, "지금처럼 커밋"이면 W7을 지운
 <ul>
 <li>240 에피소드의 proxy 라벨로 <strong>기하 cost 위의 잔차</strong>를 학습했다. 폐루프에서 기하보다 나빠지지 않았다(40/40, 39–40/40).</li>
 <li>라벨은 <strong>로봇 중심 칸</strong>에 붙여야 cost의 의미와 맞는다(상관 0.63 → 0.78).</li>
-<li>proxy는 <strong>과속방지턱을 편하다고 느껴</strong> 그곳 cost를 낮춘다. 잔차를 올리는 쪽만 허용할지 결정이 필요하다(TP-0057).</li>
+<li>proxy는 <strong>과속방지턱을 편하다고 느껴</strong> 그곳 cost를 낮춘다. 2026-10-03에 <strong>기본은 잔차가 cost를 올리는 쪽만</strong> 허용하기로 정했다(TP-0057, 구현 대기).
+  학습은 기본으로 기하가 놓친 위험을 더하는 데만 쓴다. 낮추는 쪽(TNT식 "넘을 수 있는 곳 찾기")은 선택 실험으로 두고, 치명이 늘지 않는지로 판정한다.</li>
 </ul>
 <p><code>docs/prd-p2.md</code> R-F-002·R-NF-002의 설계 문서다. 코드는 <code>travplan/representation/self_supervised.py</code>, 테스트는
 <code>tests/test_self_supervised.py</code>에 있다.</p>
