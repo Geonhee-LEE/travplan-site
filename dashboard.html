@@ -196,19 +196,19 @@ footer { max-width: 1000px; margin: 0 auto; padding: 0 16px 40px; color: var(--m
   nav.subtabs button { min-height: 32px; }
 }
 </style>
-<header data-generated="2026-10-02 18:07 KST">
+<header data-generated="2026-10-02 21:25 KST">
   <h1>travplan 대시보드</h1>
-  <div class="meta" data-site-meta><a href="index.html">← travplan 홈</a> · 갱신 2026-10-02 18:07 KST</div>
+  <div class="meta" data-site-meta><a href="index.html">← travplan 홈</a> · 갱신 2026-10-02 21:25 KST</div>
 </header>
 <nav class="tabs" role="tablist" aria-label="대시보드 탭"><button role="tab" id="tabbtn-state" aria-controls="tab-state" aria-selected="true" tabindex="0" data-tab="state" class="active">진행 현황</button><button role="tab" id="tabbtn-todo" aria-controls="tab-todo" aria-selected="false" tabindex="-1" data-tab="todo">TODO</button><button role="tab" id="tabbtn-prd" aria-controls="tab-prd" aria-selected="false" tabindex="-1" data-tab="prd">PRD</button><button role="tab" id="tabbtn-arch" aria-controls="tab-arch" aria-selected="false" tabindex="-1" data-tab="arch">아키텍처 · 기능 설명</button><button role="tab" id="tabbtn-research" aria-controls="tab-research" aria-selected="false" tabindex="-1" data-tab="research">리서치</button><button role="tab" id="tabbtn-design" aria-controls="tab-design" aria-selected="false" tabindex="-1" data-tab="design">설계 · PoC</button><button role="tab" id="tabbtn-sim" aria-controls="tab-sim" aria-selected="false" tabindex="-1" data-tab="sim">시뮬레이션 ▶</button></nav>
 <main>
   <section class="tab active" id="tab-state" role="tabpanel" aria-labelledby="tabbtn-state">
     <div class="kpis">
 <div class="kpi"><div class="kpi-label">TODO 완료</div><div class="kpi-val">20/82</div><div class="progress-bar"><div class="progress-fill" style="width:24%"></div></div></div>
-<div class="kpi"><div class="kpi-label">진행 중·오늘</div><div class="kpi-val">1</div></div>
-<div class="kpi"><div class="kpi-label">사용자 실행 대기</div><div class="kpi-val">8</div></div>
+<div class="kpi"><div class="kpi-label">진행 중·오늘</div><div class="kpi-val">0</div></div>
+<div class="kpi"><div class="kpi-label">사용자 실행 대기</div><div class="kpi-val">9</div></div>
 <div class="kpi"><div class="kpi-label">열린 PR</div><div class="kpi-val">0</div></div>
-<div class="kpi"><div class="kpi-label">최근 7일 merge</div><div class="kpi-val">91</div></div>
+<div class="kpi"><div class="kpi-label">최근 7일 merge</div><div class="kpi-val">93</div></div>
 </div>
 <div class="card md"><h2>현재 병목</h2><p><mark>Planner D는 레벨 3 연석에서 경사로를 지나친 뒤 되돌아가 찾지 못해 10번 중 2번 실패한다.</mark></p>
 <ul>
@@ -217,7 +217,7 @@ footer { max-width: 1000px; margin: 0 auto; padding: 0 16px 40px; color: var(--m
 <li><strong>원인(<a class="tp tp-done" href="#todo" data-tp="TP-0077" title="완료 · 기록에서 복원 · 이슈 #53(닫힘) · PR #61(merge됨)">✓ TP-0077 ◉</a>).</strong> 7/10 seed가 9 s 무렵 경사로를 지나 목표 아래 도로까지 간다. 거기서 샘플의 94–100%가 연석을 넘는 치명 샘플이다.
   되돌아 찾는 동안 도로 위 치명 비율은 실패 0.78, 성공 0.47–0.73이다. 경사로 폭에 들어가면 모든 seed가 1 s 안에 오르므로, 오르기가 아니라 재탐색이 병목이다.
   s7은 경사로 폭을 4번 지나고도 오르지 못했다.</li>
-<li><strong>대책.</strong> 도로 위 치명 샘플이 연속되면 Guidance 경로로 조건을 주거나 폴백한다(<a class="tp tp-backlog" href="#todo" data-tp="TP-0078" title="백로그 · TP-0077 후속: Planner D 경사로 재탐색 — 도로 위 계획의 치명 샘플이 0.9 이상 연속되면 Guidance 경로를 조건·폴백으로 써서 되돌아가 경사로를 찾게 ...">TP-0078</a>). 실패 주행에 직접 보상을 주는 강화학습 후학습(<a class="tp tp-today" href="#todo" data-tp="TP-0066" title="오늘 · Planner D 폐루프 강화학습 후학습(PPO/GRPO + 모방 정규화, RAD·DriveZero식): 운동학 시뮬 폐루프, 보상=도달·치명/충돌 벌점·진행·부드러움, 대상... · 이슈 #34(열림) · PR #35(merge됨)">▶ TP-0066</a>)도 같은 문제를 겨냥한다.</li>
+<li><strong>대책.</strong> 도로 위 치명 샘플이 연속되면 Guidance 경로로 조건을 주거나 폴백한다(<a class="tp tp-backlog" href="#todo" data-tp="TP-0078" title="백로그 · TP-0077 후속: Planner D 경사로 재탐색 — 도로 위 계획의 치명 샘플이 0.9 이상 연속되면 Guidance 경로를 조건·폴백으로 써서 되돌아가 경사로를 찾게 ...">TP-0078</a>). 실패 주행에 직접 보상을 주는 강화학습 후학습(<a class="tp tp-blocked" href="#todo" data-tp="TP-0066" title="사용자 실행 대기 · Planner D 폐루프 강화학습 후학습(PPO/GRPO + 모방 정규화, RAD·DriveZero식): 운동학 시뮬 폐루프, 보상=도달·치명/충돌 벌점·진행·부드러움, 대상... · 이슈 #34(열림) · PR #35(merge됨) · PR #139(merge됨)">⏸ TP-0066</a>)도 같은 문제를 겨냥한다.</li>
 <li><strong>판정 기준.</strong> curb_ramp 레벨 3 seed 0–9가 9/10 이상이고, 벤치마크 레벨 0·3이 12/12를 유지해야 한다. 보행자 최소 여유도 0.2 m 이상으로 되돌린다(DAgger 뒤 0.14 m).</li>
 </ul><figure class="ev wide"><a class="thumb" href="assets/figs/ev_tp0073_curb_l3.webp" title="원본 보기"><img alt="▶ curb_ramp 레벨 3 seed 0. 레벨 0 시연만 배운 Planner D는 60 s 시간 초과, 레벨 0–3 시연 + DAgger 뒤에는 24.9 s에 도달" src="assets/figs/ev_tp0073_curb_l3.webp" loading="lazy"></a><figcaption>▶ curb_ramp 레벨 3 seed 0. 레벨 0 시연만 배운 Planner D는 60 s 시간 초과, 레벨 0–3 시연 + DAgger 뒤에는 24.9 s에 도달 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span></figcaption></figure></div>
 <div class="card md"><h2>전체 진행</h2><p>travplan은 <strong>학습 Planner를 키우는 단계</strong>다. 레벨 0 지형에서는 학습 Planner(Planner D)가 비학습 기준선과 같은 성공률에 도달했다.
@@ -415,9 +415,9 @@ cost가 <code>max_slope_rad</code> 0.26에서 포화해 구조적으로 지배�
 </tr>
 <tr>
 <td>2</td>
-<td><a class="tp tp-today" href="#todo" data-tp="TP-0066" title="오늘 · Planner D 폐루프 강화학습 후학습(PPO/GRPO + 모방 정규화, RAD·DriveZero식): 운동학 시뮬 폐루프, 보상=도달·치명/충돌 벌점·진행·부드러움, 대상... · 이슈 #34(열림) · PR #35(merge됨)">▶ TP-0066</a></td>
-<td>Planner D를 폐루프에서 강화학습으로 후학습한다(PPO/GRPO, 모방 손실로 정규화). 출발점은 <code>planner_d_L0123_dagger.pt</code></td>
-<td>Today</td>
+<td><a class="tp tp-blocked" href="#todo" data-tp="TP-0066" title="사용자 실행 대기 · Planner D 폐루프 강화학습 후학습(PPO/GRPO + 모방 정규화, RAD·DriveZero식): 운동학 시뮬 폐루프, 보상=도달·치명/충돌 벌점·진행·부드러움, 대상... · 이슈 #34(열림) · PR #35(merge됨) · PR #139(merge됨)">⏸ TP-0066</a></td>
+<td>Planner D를 폐루프에서 강화학습으로 후학습한다(GRPO식 이점 + 모방 손실). 스크립트는 PR #139</td>
+<td>사용자 실행 대기</td>
 </tr>
 <tr>
 <td>3</td>
@@ -491,6 +491,12 @@ cost가 <code>max_slope_rad</code> 0.26에서 포화해 구조적으로 지배�
 </thead>
 <tbody>
 <tr>
+<td><a class="tp tp-blocked" href="#todo" data-tp="TP-0066" title="사용자 실행 대기 · Planner D 폐루프 강화학습 후학습(PPO/GRPO + 모방 정규화, RAD·DriveZero식): 운동학 시뮬 폐루프, 보상=도달·치명/충돌 벌점·진행·부드러움, 대상... · 이슈 #34(열림) · PR #35(merge됨) · PR #139(merge됨)">⏸ TP-0066</a></td>
+<td>RL 후학습 3 round × 64 지도 뒤 레벨 0·3 벤치마크와 curb_ramp L3 seed 0–9 평가(명령은 PR #139)</td>
+<td>약 30–60분</td>
+<td>curb_ramp L3 ≥ 9/10, 레벨 0·3 12/12 유지, 보행자 최소 여유 ≥ 0.2 m</td>
+</tr>
+<tr>
 <td><a class="tp tp-blocked" href="#todo" data-tp="TP-0074" title="사용자 실행 대기 · TP-0050 진단 확장 실행(약 30분): scripts/diagnose_planner_d_level.py --levels 0 1 2 3 --seeds 0-9 --out r...">⏸ TP-0074</a></td>
 <td><a class="tp tp-done" href="#todo" data-tp="TP-0050" title="완료 · 기록에서 복원 · 이슈 #42(닫힘) · PR #43(merge됨)">✓ TP-0050 ◉</a> 진단을 seed 10개로 확장(<code>scripts/diagnose_planner_d_level.py</code>, main에 merge됨)</td>
 <td>약 30분</td>
@@ -528,7 +534,11 @@ cost가 <code>max_slope_rad</code> 0.26에서 포화해 구조적으로 지배�
 </tr>
 </tbody>
 </table>
-<pre><code class="language-bash"># TP-0074
+<pre><code class="language-bash"># TP-0066 (PR #139 merge 뒤 또는 그 브랜치에서)
+python scripts/rl_finetune_planner_d.py --rounds 3 --maps 64 --levels 0 1 2 3 --out checkpoints/planner_d_L0123_rl.pt
+python scripts/run_benchmark.py --stacks planner_d+mppi --ckpt-d checkpoints/planner_d_L0123_rl.pt --scenarios curb_ramp --levels 3 \
+    --seeds 0 1 2 3 4 5 6 7 8 9 --out results/tp0066_rl_cr3
+# TP-0074
 python scripts/diagnose_planner_d_level.py --levels 0 1 2 3 --seeds 0 1 2 3 4 5 6 7 8 9 --out results/tp0050_full
 # TP-0039
 python scripts/run_benchmark.py --stacks guidance+mppi planner_d+mppi --levels 0 1 2 3 \
@@ -950,10 +960,10 @@ LiDAR 링 사이가 비어 로봇 주변 3 m 안의 10–12%가 미관측으로 
 </thead>
 <tbody>
 <tr>
-<td><code>p2/planner-d-rl</code></td>
-<td><a class="tp tp-today" href="#todo" data-tp="TP-0066" title="오늘 · Planner D 폐루프 강화학습 후학습(PPO/GRPO + 모방 정규화, RAD·DriveZero식): 운동학 시뮬 폐루프, 보상=도달·치명/충돌 벌점·진행·부드러움, 대상... · 이슈 #34(열림) · PR #35(merge됨)">▶ TP-0066</a></td>
-<td>—</td>
-<td>RL 후학습 스크립트 초안(<code>scripts/rl_finetune_planner_d.py</code>). 폐루프 평가 전</td>
+<td><code>p2/planner-d-rl-posttrain</code></td>
+<td><a class="tp tp-blocked" href="#todo" data-tp="TP-0066" title="사용자 실행 대기 · Planner D 폐루프 강화학습 후학습(PPO/GRPO + 모방 정규화, RAD·DriveZero식): 운동학 시뮬 폐루프, 보상=도달·치명/충돌 벌점·진행·부드러움, 대상... · 이슈 #34(열림) · PR #35(merge됨) · PR #139(merge됨)">⏸ TP-0066</a></td>
+<td>#139</td>
+<td>RL 후학습 스크립트(<code>scripts/rl_finetune_planner_d.py</code>, L0123 DAgger 출발, <code>--scenarios</code>·<code>--levels</code>). smoke만 통과, 본 학습·평가는 사용자 실행</td>
 </tr>
 <tr>
 <td><code>p2/tp0097-filter-guard-backport</code></td>
@@ -962,7 +972,7 @@ LiDAR 링 사이가 비어 로봇 주변 3 m 안의 10–12%가 미관측으로 
 <td>필터 가드 backport 완료, merge 대기</td>
 </tr>
 </tbody>
-</table><h3>열린 PR</h3><ul class='prs'><li class='empty'>없음</li></ul><h3>최근 merge된 PR</h3><ul class='prs'><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #137</span> 대시보드: TP-0130 PR #134 merge 반영 <a class="tp tp-done" href="#todo" data-tp="TP-0130" title="완료 · MPOT 검토 0단계(사용자 요청 2026-10-02): MPPI 계열이 멈춘 plant 장면 10개에 더 센 최적화기의 여지가 있는지 오라클 다섯(생산 MPPI 재추첨·2회... · PR #134(merge됨) · PR #137(merge됨)">✓ TP-0130 ◉</a> <span class="date">2026-10-02</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #136</span> TP-0128·0129: Playground에 ES로 학습한 Controller와 지도 없는 대조군 <a class="tp tp-done" href="#todo" data-tp="TP-0128" title="완료 · Playground에 학습 정책 추론 넣기: 파이썬에서 학습한 작은 정책을 JSON 가중치로 내보내고 js/control.js의 CONTROLLERS에 항목 추가. 브라우저에... · PR #136(merge됨)">✓ TP-0128 ◉</a> <a class="tp tp-done" href="#todo" data-tp="TP-0129" title="완료 · Playground 사족 보행 대조군: 지도를 쓰는 사족과 고유수용(걸음새 흔들림)만 쓰는 사족을 같은 지형에서 나란히 돌린다. DreamWaQ의 전제를 travplan 지형... · PR #136(merge됨)">✓ TP-0129 ◉</a> <span class="date">2026-10-02</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #135</span> 배경 0.2b: 최적 수송의 여섯 가지 뜻과 MPOT의 자리 (arXiv 2309.15970 · 2508.21205)  <span class="date">2026-10-02</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #134</span> TP-0130: 멈춘 장면에서 MPOT식 최적화기는 같은 예산의 MPPI를 넘지 못했다 — MPOT 변형은 만들지 않는다 <a class="tp tp-done" href="#todo" data-tp="TP-0130" title="완료 · MPOT 검토 0단계(사용자 요청 2026-10-02): MPPI 계열이 멈춘 plant 장면 10개에 더 센 최적화기의 여지가 있는지 오라클 다섯(생산 MPPI 재추첨·2회... · PR #134(merge됨) · PR #137(merge됨)">✓ TP-0130 ◉</a> <span class="date">2026-10-02</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #131</span> KAIST Urban Robotics Lab: 지면 분할 계보 신설과 기존 서술 정정 8건  <span class="date">2026-10-02</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #130</span> 배경 0.6b·0.7b: diffusion과 flow matching의 환율, 그리고 스텝을 줄이는 값 (+Flow Planner)  <span class="date">2026-10-02</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #129</span> TP-0054: L1 매퍼 분산은 σ가 되지 못한다 — cost 민감도 σ는 오차를 맞히지만 폐루프는 그대로, 기본값 유지 <a class="tp tp-done" href="#todo" data-tp="TP-0054" title="완료 · 기록에서 복원 · 이슈 #128(닫힘) · PR #129(merge됨)">✓ TP-0054 ◉</a> <span class="date">2026-10-01</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #127</span> TP-0098 완료: 매퍼 누적·삽입 경쟁을 닫아 L1이 비트 단위로 재현된다 <a class="tp tp-done" href="#todo" data-tp="TP-0098" title="완료 · TP-0097 후속: 벤더링 elevation_mapping 실행 간 비결정성 — 같은 점군 두 번에 upper_bound 623/3875칸이 최대 0.15 m 다르고, L1... · PR #105(merge됨) · 이슈 #126(닫힘) · PR #127(merge됨)">✓ TP-0098 ◉</a> <span class="date">2026-10-01</span></li></ul><p class="note">GitHub 인덱스 갱신: 2026-10-02 18:07 · <code>python3 automation/gh_index.py</code></p></div>
+</table><h3>열린 PR</h3><ul class='prs'><li class='empty'>없음</li></ul><h3>최근 merge된 PR</h3><ul class='prs'><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #139</span> [auto] TP-0066: Planner D RL 후학습 스크립트를 레벨 무작위 DAgger 출발로 갱신 <a class="tp tp-blocked" href="#todo" data-tp="TP-0066" title="사용자 실행 대기 · Planner D 폐루프 강화학습 후학습(PPO/GRPO + 모방 정규화, RAD·DriveZero식): 운동학 시뮬 폐루프, 보상=도달·치명/충돌 벌점·진행·부드러움, 대상... · 이슈 #34(열림) · PR #35(merge됨) · PR #139(merge됨)">⏸ TP-0066</a> <span class="date">2026-10-02</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #138</span> 대시보드: PR #130·#131·#135·#136 merge 반영  <span class="date">2026-10-02</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #137</span> 대시보드: TP-0130 PR #134 merge 반영 <a class="tp tp-done" href="#todo" data-tp="TP-0130" title="완료 · MPOT 검토 0단계(사용자 요청 2026-10-02): MPPI 계열이 멈춘 plant 장면 10개에 더 센 최적화기의 여지가 있는지 오라클 다섯(생산 MPPI 재추첨·2회... · PR #134(merge됨) · PR #137(merge됨)">✓ TP-0130 ◉</a> <span class="date">2026-10-02</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #136</span> TP-0128·0129: Playground에 ES로 학습한 Controller와 지도 없는 대조군 <a class="tp tp-done" href="#todo" data-tp="TP-0128" title="완료 · Playground에 학습 정책 추론 넣기: 파이썬에서 학습한 작은 정책을 JSON 가중치로 내보내고 js/control.js의 CONTROLLERS에 항목 추가. 브라우저에... · PR #136(merge됨)">✓ TP-0128 ◉</a> <a class="tp tp-done" href="#todo" data-tp="TP-0129" title="완료 · Playground 사족 보행 대조군: 지도를 쓰는 사족과 고유수용(걸음새 흔들림)만 쓰는 사족을 같은 지형에서 나란히 돌린다. DreamWaQ의 전제를 travplan 지형... · PR #136(merge됨)">✓ TP-0129 ◉</a> <span class="date">2026-10-02</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #135</span> 배경 0.2b: 최적 수송의 여섯 가지 뜻과 MPOT의 자리 (arXiv 2309.15970 · 2508.21205)  <span class="date">2026-10-02</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #134</span> TP-0130: 멈춘 장면에서 MPOT식 최적화기는 같은 예산의 MPPI를 넘지 못했다 — MPOT 변형은 만들지 않는다 <a class="tp tp-done" href="#todo" data-tp="TP-0130" title="완료 · MPOT 검토 0단계(사용자 요청 2026-10-02): MPPI 계열이 멈춘 plant 장면 10개에 더 센 최적화기의 여지가 있는지 오라클 다섯(생산 MPPI 재추첨·2회... · PR #134(merge됨) · PR #137(merge됨)">✓ TP-0130 ◉</a> <span class="date">2026-10-02</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #131</span> KAIST Urban Robotics Lab: 지면 분할 계보 신설과 기존 서술 정정 8건  <span class="date">2026-10-02</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #130</span> 배경 0.6b·0.7b: diffusion과 flow matching의 환율, 그리고 스텝을 줄이는 값 (+Flow Planner)  <span class="date">2026-10-02</span></li></ul><p class="note">GitHub 인덱스 갱신: 2026-10-02 21:25 · <code>python3 automation/gh_index.py</code></p></div>
 <div class="card md"><h2>작업 환경</h2><details><summary>체크포인트, 가상환경, 그림·인덱스 재생성</summary><ul>
 <li><strong>브랜치.</strong> 두 PC 모두 main에서 이어간다.</li>
 <li><strong>체크포인트.</strong> <code>checkpoints/</code>는 git에 없다. 릴리스에서 받는다.
@@ -984,11 +994,9 @@ LiDAR 링 사이가 비어 로봇 주변 3 m 안의 10–12%가 미관측으로 
 <p class="note">● 이슈, ⇄ PR(보라 merge됨, 초록 열림, 회색 닫힘). 그림이 붙은 항목은 결과 그림을 함께 보여 준다. 제목 안의 TP 번호는 상태 칩이다.</p>
 <h3 class="status-h status-doing">진행 중 <span class="count">0</span></h3>
 <p class="empty">없음</p>
-<h3 class="status-h status-today">오늘 <span class="count">1</span></h3>
-<ul class="todo-list">
-<li class="todo-item" id="todo-TP-0066"><label><input type="checkbox" disabled > <span class="id">TP-0066</span> <span class="badge prio">P1</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> Planner D 폐루프 강화학습 후학습(PPO/GRPO + 모방 정규화, RAD·DriveZero식): 운동학 시뮬 폐루프, 보상=도달·치명/충돌 벌점·진행·부드러움, 대상... <span class=gh-row><span class="private-ref gh gh-open gh-issue" title="이슈 #34 · 열림 · Planner D 폐루프 강화학습 후학습 (TP-0066, RAD·DriveZero식, 리서치 B.13)">● #34</span><span class="private-ref gh gh-merged gh-pr" title="PR #35 · merge됨 · TP-0066 등록 + 문서 시각화 + 리서치 보강(현대차그룹·BotBrain·RoM-Nav 계열) + 월간 리서치 자동화">⇄ #35</span></span></label></li>
-</ul>
-<h3 class="status-h status-blocked">막힘 <span class="count">8</span></h3>
+<h3 class="status-h status-today">오늘 <span class="count">0</span></h3>
+<p class="empty">없음</p>
+<h3 class="status-h status-blocked">막힘 <span class="count">9</span></h3>
 <ul class="todo-list">
 <li class="todo-item" id="todo-TP-0005"><label><input type="checkbox" disabled > <span class="id">TP-0005</span> <span class="badge prio">P1</span> <span class="badge phase">P1</span> <span class="badge owner owner-user">user</span> <a class="tp tp-done" href="#todo" data-tp="TP-0001" title="완료 · 기록에서 복원">✓ TP-0001</a> 완료 후: 지형 USD 로드 + 스워브/LiDAR 로봇 배치 + ROS2 브릿지 폐루프 재현, P0 운동학 벤치마크와 성공률 비교 <span class="badge usertest">UserTest</span></label></li>
 <li class="todo-item" id="todo-TP-0009"><label><input type="checkbox" disabled > <span class="id">TP-0009</span> <span class="badge prio">P1</span> <span class="badge phase">P2</span> <span class="badge owner owner-user">user</span> 센서 하드웨어 확정·구매 — 근거리 스테레오/RGB-D(예: RealSense D435/ZED2i) + 원거리 solid-state LiDAR(예: Livox Mid-70) ... <span class="badge usertest">UserTest</span></label></li>
@@ -998,6 +1006,7 @@ LiDAR 링 사이가 비어 로봇 주변 3 m 안의 10–12%가 미관측으로 
 <li class="todo-item" id="todo-TP-0074"><label><input type="checkbox" disabled > <span class="id">TP-0074</span> <span class="badge prio">P3</span> <span class="badge phase">P2</span> <span class="badge owner owner-user">user</span> <a class="tp tp-done" href="#todo" data-tp="TP-0050" title="완료 · 기록에서 복원 · 이슈 #42(닫힘) · PR #43(merge됨)">✓ TP-0050 ◉</a> 진단 확장 실행(약 30분): scripts/diagnose_planner_d_level.py --levels 0 1 2 3 --seeds 0-9 --out r... <span class="badge usertest">UserTest</span></label></li>
 <li class="todo-item" id="todo-TP-0107"><label><input type="checkbox" disabled > <span class="id">TP-0107</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-user">user</span> 사이트 결정: 생성물 CI 빌드(D1)·검색 노출(D2)·claude.ai 게시본 범위(D3)·공개된 로컬 경로 정리(D4) (UX D) <span class="badge usertest">UserTest</span> <span class=gh-row><span class="private-ref gh gh-open gh-issue" title="이슈 #109 · 열림 · Playground·사이트 UX 개선 추적 (TP-0103–0116, taekyung.me 데모 참조)">● #109</span><span class="private-ref gh gh-merged gh-pr" title="PR #110 · merge됨 · UX 개선 계획 등록(TP-0103–0116): taekyung.me 데모 참조, 공개 경로 정리">⇄ #110</span></span></label></li>
 <li class="todo-item" id="todo-TP-0110"><label><input type="checkbox" disabled > <span class="id">TP-0110</span> <span class="badge prio">P3</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> 사이트: 생성물을 CI에서 빌드하고 커밋하지 않기(D1이 CI일 때), CLAUDE.md·cron 지시문 함께 고침 (UX W7) <span class=gh-row><span class="private-ref gh gh-open gh-issue" title="이슈 #109 · 열림 · Playground·사이트 UX 개선 추적 (TP-0103–0116, taekyung.me 데모 참조)">● #109</span><span class="private-ref gh gh-merged gh-pr" title="PR #110 · merge됨 · UX 개선 계획 등록(TP-0103–0116): taekyung.me 데모 참조, 공개 경로 정리">⇄ #110</span></span></label></li>
+<li class="todo-item" id="todo-TP-0066"><label><input type="checkbox" disabled > <span class="id">TP-0066</span> <span class="badge prio">P1</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> Planner D 폐루프 강화학습 후학습(PPO/GRPO + 모방 정규화, RAD·DriveZero식): 운동학 시뮬 폐루프, 보상=도달·치명/충돌 벌점·진행·부드러움, 대상... · <code class="branch">p2/planner-d-rl-posttrain</code> <span class="badge usertest">UserTest</span> <span class=gh-row><span class="private-ref gh gh-open gh-issue" title="이슈 #34 · 열림 · Planner D 폐루프 강화학습 후학습 (TP-0066, RAD·DriveZero식, 리서치 B.13)">● #34</span><span class="private-ref gh gh-merged gh-pr" title="PR #35 · merge됨 · TP-0066 등록 + 문서 시각화 + 리서치 보강(현대차그룹·BotBrain·RoM-Nav 계열) + 월간 리서치 자동화">⇄ #35</span><span class="private-ref gh gh-merged gh-pr" title="PR #139 · merge됨 · [auto] TP-0066: Planner D RL 후학습 스크립트를 레벨 무작위 DAgger 출발로 갱신">⇄ #139</span></span></label></li>
 </ul>
 <h3 class="status-h status-backlog">백로그 <span class="count">53</span></h3>
 <ul class="todo-list">
