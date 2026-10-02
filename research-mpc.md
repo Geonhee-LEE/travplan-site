@@ -17,7 +17,8 @@ plant 합계 221 → 228/240이고, 도달은 오히려 빨라진다. GP 분산�
 MPOT식 최적화기는 MPPI 계열이 멈춘 장면에서 같은 예산의 MPPI를 넘지 못해 만들지 않는다(TP-0130, M.3.20).
 멈춤의 원인은 curb_ramp의 접힌 참조와, bumps·random_mix에서 GP 분산 튜브를 쓰는 스택의 멈춤으로 좁혔다.
 다음은 명령 수정으로 두 배가 된 jerk를 줄이는 일(TP-0123), 예측 모델을 기구학·동역학·학습의 세 층으로 쌓는 일(TP-0124–0126, M.1.3),
-접힌 참조의 진행 항을 고치는 일(TP-0131), GP 확률 제약 스택의 멈춤 원인을 가르는 일(TP-0132)이다.
+GP 확률 제약 스택의 멈춤 원인을 가르는 일(TP-0132)이다. 접힌 참조의 진행 항(TP-0131)은 끝점 투영을 닿을 수 있는 호로 제한하는 선택 항목으로 넣었다.
+운동학에서는 Guidance 폴백 스택의 맴돌기를 없애지만 plant 도달 수는 잡음 안이라 기본값은 끈다(M.3.21).
 
 <!-- tab: 설계 -->
 
@@ -1407,4 +1408,61 @@ python -m scripts.eval_stall_headroom run --scene plant:mppi_ccgpm:bumps_pothole
 python -m scripts.eval_stall_headroom replay      # 사후 참조: 실행한 계획·정지 명령의 plant 재생, 계획 속도 윤곽
 python -m scripts.eval_stall_headroom summary     # → results/tp0130/headroom.tsv, headroom_probes.tsv, stall_profile.tsv
 python scripts/make_doc_figures.py --followup TP-0130 TP-0130-episodes
+```
+
+### M.3.21 접힌 참조에서 진행 항의 끝점 투영을 닿을 수 있는 호로 제한한다 (TP-0131)
+
+**한 줄로.** ==MPPI 진행 항이 rollout 끝점을 그 rollout이 실제로 달린 거리 + 0.5 m 안의 호에만 투영하게 했다(`ReferenceCost(reach_margin_m=0.5)`, 선택).==
+접힌 경로에서 생기던 맴돌기가 풀린다. 운동학 curb_ramp 레벨 3에서는 Guidance 폴백 스택의 도달이 30/30이 되고, 짝지어 9.9 s 빨라진다(23 : 6, p = 0.002).
+plant curb_ramp 72 에피소드의 도달 수는 잡음 안이다(57 대 52, 짝 비교 p = 0.38). 그래서 기본값은 끈 채 둔다.
+
+![TP-0131](assets/figs/tp0131_reach.webp)
+
+*그림 — TP-0131 (Fig. 1): 왼쪽은 plant curb_ramp seed 19(guidance+mppi)다. 끄면(빨강) 경사로 왼쪽 아래에서 맴돌다 60 s를 넘기고, 켜면(초록) 40.3 s에 도달한다. 오른쪽은 스택별 도달 비율과 도달 시간 평균이다. 출처: scripts/make_evidence_figures.py --only tp0131*
+
+**무엇이 문제였나.** Guidance 경로가 경사로로 돌아간 뒤 보도에서 로봇 바로 위로 되돌아오면 경로가 접힌다.
+연석 아래에서 끝나는 rollout의 가장 가까운 참조점은 되돌아오는 구간에 있다. 진행 항은 그 rollout이 7–8 m 나아갔다고 셈한다(TP-0130, M.3.20).
+그래서 계획이 경사로 쪽과 연석 쪽을 오가며 맴돈다. Guidance 폴백(TP-0078) 뒤의 Planner D도 같은 자리에서 시간을 썼다.
+
+**무엇을 바꿨나.**
+- 끝점 투영을 호 $s \le s_0 + L + m$으로 제한한다. $s_0$은 로봇 자신의 투영, $L$은 그 rollout이 달린 거리, $m$은 여유 0.5 m다. 투영점까지의 거리도 그 점까지로 잰다.
+- 편차 항(경로까지 거리의 평균)은 참조 전체를 그대로 쓴다. 처음에는 스텝마다 같은 창을 걸었는데, 정적 bumps_potholes s6이 시간 초과로, plant curb_ramp s18이 치명으로 바뀌었다. 끝점만 제한하면 둘 다 도달한다.
+- `reach_margin_m=None`(기본)이면 예전 항과 비트 단위로 같다. `--ctrl-cfg reach_margin_m=0.5`로 켠다. `--ctrl-cfg`는 이제 CostTerm의 필드에도 닿는다.
+
+**결과.**
+
+| 장면 (guidance+mppi) | 끄기 | 스텝마다 제한 | 끝점만 제한 |
+|---|---|---|---|
+| plant curb_ramp s19 (TP-0130의 멈춤) | 60 s 시간 초과 | 41.0 s | **40.4 s** |
+| plant curb_ramp s18 | 46.6 s | 치명 | 42.1 s |
+| plant curb_ramp s14 | 49.0 s | 41.4 s | 43.6 s |
+| 정적 bumps_potholes s6 | 24.9 s | 60 s 시간 초과 | 27.1 s |
+
+| 운동학 curb_ramp 레벨 3 (seed 0–9 × 오프셋 3) | 끄기 | 켜기 | 짝지은 도달 시간 차 (켜기가 빠름 : 느림) |
+|---|---|---|---|
+| guidance+mppi | 29/30, 28.0 s | 30/30, 26.0 s | −2.0 s (15 : 14, p = 1) |
+| planner_df+mppi (DAgger) | 29/30, 36.3 s | 30/30, 26.3 s | **−9.9 s (23 : 6, p = 0.002)** |
+| planner_df+mppi (RL) | 30/30, 28.9 s | 30/30, 25.6 s | −3.2 s (20 : 10, p = 0.10) |
+
+| 지키는 기준 (guidance+mppi) | 끄기 | 켜기 |
+|---|---|---|
+| 정적 4 지형 × seed 0–9 | 40/40 | 40/40 |
+| 보행자 3명 × seed 0–5 | 24/24, 충돌 0 | 24/24, 충돌 0 |
+| plant bumps·slope·random × seed 0–11 | 35/36 | 34/36 |
+| plant curb_ramp × seed 0–23 × 오프셋 3, `mppi` | 57/72 (치명 14, 시간 초과 1), 44.3 s | 52/72 (치명 17, 시간 초과 3), 42.7 s |
+| plant curb_ramp × seed 0–23 × 오프셋 3, `mppi_cc` | 59/72 (치명 12, 시간 초과 1), 43.3 s | 56/72 (치명 15, 시간 초과 1), 42.1 s |
+
+- 운동학에서는 폴백 스택의 맴돌기가 사라진다. Planner D가 경사로를 지나친 뒤 Guidance 경로를 넘겨받는 장면이 가장 접힌 경로이기 때문이다.
+- plant의 도달 수 차이는 잡음 안이다. 같은 설정을 난수만 바꿔 다시 돌리면 24 에피소드 가운데 7–10개가 뒤집힌다. 짝 비교는 13 : 8(p = 0.38)과 13 : 10(p = 0.68)이다.
+- plant의 시간 초과는 성격이 바뀐다. 끄면 하나(s19)가 접힌 경로의 맴돌기다. 켜면 셋 모두 목표 0.30–0.37 m 앞에서 10 s 넘게 머문다(도달 판정 0.3 m).
+  목표 근처에서 마스크가 끝점 투영을 바꾼 rollout은 0%다(s14 오프셋 2000을 다시 돌려 확인). 그 앞의 다른 길이 plant의 목표 접근 약점에 닿은 것으로 본다(TP-0140).
+
+**판단.** 기본값은 끈 채 둔다. Guidance 폴백 스택(`planner_df`)과 함께 운동학 평가에서 켜기를 권한다(`--ctrl-cfg reach_margin_m=0.5`).
+`mppi_ccgp`의 TP-0130 장면(s14·s18)은 잔차 GP 체크포인트가 이 PC에 없어 돌리지 못했다. GP가 있는 PC에서 같은 명령으로 확인한다.
+
+```bash
+python scripts/run_benchmark.py --plant --scenarios curb_ramp --seeds $(seq -s ' ' 0 23) --stacks guidance+mppi guidance+mppi_cc \
+    --ctrl-cfg reach_margin_m=0.5 --rng-offset 0 --out results/tp0131/plant_cr_on     # 끄기는 reach_margin_m=none
+python scripts/run_benchmark.py --stacks planner_df+mppi --ckpt-d checkpoints/planner_d_L0123_dagger.pt --scenarios curb_ramp --levels 3 \
+    --seeds 0 1 2 3 4 5 6 7 8 9 --rng-offset 0 --ctrl-cfg reach_margin_m=0.5 --out results/tp0131/cr3_df_on_o0
 ```

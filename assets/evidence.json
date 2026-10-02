@@ -121,6 +121,10 @@
   "tp0066_rl": {
    "caption": "폐루프 RL 후학습(3 라운드) 뒤 curb_ramp 레벨 3의 30 에피소드: 단독 20/30 → 26/30, Guidance 폴백과 함께 30/30. 오른쪽은 폴백이 이긴 계획 비율(51% → 42%)과 도달 시간(36.3 s → 28.9 s)",
    "results": "results/tp0066_rl, results/tp0078"
+  },
+  "tp0131_reach": {
+   "caption": "접힌 Guidance 경로에서 MPPI 진행 항의 끝점 투영을 닿을 수 있는 호로 제한한다. 왼쪽 plant curb_ramp s19는 끄면 맴돌다 시간 초과, 켜면 40.3 s 도달. 오른쪽은 운동학 폴백 스택(30)과 plant(72)의 도달 비율·시간",
+   "results": "results/tp0131"
   }
  },
  "tp": {
@@ -185,6 +189,7 @@
   ]
  },
  "featured": [
+  "tp0131_reach",
   "tp0066_rl",
   "tp0078_fallback",
   "tp0137_planner_d",
