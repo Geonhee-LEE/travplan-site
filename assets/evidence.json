@@ -105,6 +105,10 @@
   "tp0135_humanoid": {
    "caption": "Playground 휴머노이드(GR00T 분리형 WBC): MPPI가 하체 지연을 알면 포트홀 사이를 지나고(왼쪽), 모르면 12 s에 포트홀 둘레로 들어간다(가운데). 오른쪽은 3D",
    "results": "docs/playground/humanoid_fig.html"
+  },
+  "tp0136_mpot": {
+   "caption": "Playground MPOT Planner: 입자 16개가 최적 수송으로 모인다(왼쪽). 레벨 3 좁은 경사로에서는 연석 앞 국소 최솟값에 갇히고(가운데) Dijkstra는 경사로를 찾는다(오른쪽)",
+   "results": "docs/playground/mpot_fig.html"
   }
  },
  "tp": {
@@ -169,6 +173,7 @@
   ]
  },
  "featured": [
+  "tp0136_mpot",
   "tp0135_humanoid",
   "tp0128_policy",
   "tp0054_sigma",

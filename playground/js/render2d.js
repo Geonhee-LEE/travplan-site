@@ -214,6 +214,15 @@ export class Map2D {
       const pts = world.emap.points;
       for (let k = 0; k < pts.length; k += 2) { const [a, b] = this.toScreen(pts[k], pts[k + 1]); ctx.fillRect(a - 0.8, b - 0.8, 1.6, 1.6); }
     }
+    // 생성·최적화 Planner의 후보들(TP-0136·0137): MPOT 입자, flow·diffusion 표본. 고른 것은 아래 경로로 그린다.
+    if (view.route && world.plan && world.plan.particles) {
+      const js = world.plan.particles.map((p) => p.J).filter(Number.isFinite).sort((x, y) => x - y);
+      const lo = js[0] ?? 0, hi = js[Math.floor(js.length * 0.8)] ?? lo + 1;
+      for (const p of world.plan.particles) {
+        const q = Math.min(1, Math.max(0, (p.J - lo) / Math.max(1e-6, hi - lo)));
+        poly(p.P, p.lethal ? "rgba(239,91,91,0.35)" : `rgba(${Math.round(190 - 60 * q)},${Math.round(140 + 40 * (1 - q))},255,${0.18 + 0.35 * (1 - q)})`, 1.1);
+      }
+    }
     if (view.route && world.plan) poly(world.plan.path, css.route, 1.6, [6, 5]);
     poly(world.trail, "rgba(255,255,255,0.85)", 2);
     if (c && c.nominal) poly(c.nominal, css.accent, 3);

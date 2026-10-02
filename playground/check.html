@@ -65,7 +65,7 @@ for (const [name, set, expect] of CASES) {
   row(name, describe(o), expect === "reached" ? "도달" : "실패", word(r), r.status === expect, `${r.t.toFixed(1)} s`);
 }
 
-// 2) 시연 24개: 주소 #id로 연 것과 같은 World(state.js buildWorld). 기대는 PRESETS.expect의 status·fail이다.
+// 2) 시연 26개: 주소 #id로 연 것과 같은 World(state.js buildWorld). 기대는 PRESETS.expect의 status·fail이다.
 const fieldsOk = PRESETS.every((p) => GROUPS[p.group] && p.watch && p.expect?.text && p.repo && (p.pair === null || (p.pair && parse(p.pair).notes.length === 0)));
 row("시연 필드", `${PRESETS.length}개`, "group·watch·expect·repo, pair는 쓸 수 있는 주소", fieldsOk ? "있다" : "빠졌다", fieldsOk);
 for (const p of PRESETS) {

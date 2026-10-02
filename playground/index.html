@@ -274,6 +274,7 @@ footer code { font: 12px var(--mono); }
         <span><i class="line" style="background:var(--route)"></i>Planner 경로</span>
         <span><i class="line" style="background:var(--accent)"></i>MPPI 계획(<span id="legHorizon">4.0</span> s)</span>
         <span><i class="line" style="background:#8fd6e6"></i>MPPI 샘플</span>
+        <span><i class="line" style="background:#a8b4ff"></i>Planner 후보(MPOT 입자)</span>
         <span><i class="line" style="background:#ffffff;box-shadow:0 0 0 1px #6b7773"></i>지나온 길</span>
         <span><i style="background:#ff8fb8;border-radius:50%;width:8px;height:8px"></i>보행자와 4 s 예측</span>
         <span data-l1><i style="background:#78dcff;border-radius:50%;width:6px;height:6px"></i>LiDAR 점</span>
@@ -326,7 +327,7 @@ footer code { font: 12px var(--mono); }
       <section class="card">
         <h2>Planner</h2>
         <div class="seg full" id="planner" role="group" aria-label="Planner">
-          <button data-val="guidance">Guidance (Dijkstra)</button><button data-val="straight">직선</button>
+          <button data-val="guidance">Guidance (Dijkstra)</button><button data-val="mpot">MPOT</button><button data-val="straight">직선</button>
         </div>
         <p class="note" id="plNote"></p>
       </section>

@@ -110,6 +110,7 @@ export class Map3D {
       this.pedMeshes = [];
       // MPPI 샘플(선분 묶음, 색 = 비용), LiDAR 점, 센서 범위 원, 참 지형 등고선(보이는 선 + 면에 가린 부분의 옅은 선)
       this.samples = this.segments(0xffffff, { vertexColors: true, opacity: 0.6 });
+      this.cands = this.segments(0xffffff, { vertexColors: true, opacity: 0.55 });   // Planner 후보(MPOT 입자 등, TP-0136)
       this.points = new T.Points(new T.BufferGeometry(), new T.PointsMaterial({ color: 0x78dcff, size: 3, sizeAttenuation: false, transparent: true, opacity: 0.85 }));
       this.points.geometry.setAttribute("position", new T.BufferAttribute(new Float32Array(3 * 1024), 3));
       this.points.frustumCulled = false; this.scene.add(this.points);
@@ -227,6 +228,7 @@ export class Map3D {
     setLine("route", view.route && world.plan ? world.plan.path : null, 0x5fd3c6, 0.06);
     setLine("nominal", world.ctrl?.nominal, 0xf2b705, 0.1);
     this.drawSamples(world, view);
+    this.drawCandidates(world, view);
     this.drawPoints(world, view);
     this.drawRing(world);
     this.drawContours(world, H, ex);
@@ -261,6 +263,27 @@ export class Map3D {
       }
     }
     pos.needsUpdate = true; col.needsUpdate = true; this.samples.geometry.setDrawRange(0, v);
+  }
+
+  // Planner 후보(MPOT 입자·생성 표본): 2D와 같은 색(싸면 밝은 보라, 치명을 지나면 빨강)
+  drawCandidates(world, view) {
+    const C = view.route && world.plan && world.plan.particles ? world.plan.particles : null;
+    this.cands.visible = !!C;
+    if (!C) return;
+    const key = [world.plan, this.exag, view.geo, world.mapVersion];
+    if (this._cKey && key.every((v, i) => v === this._cKey[i])) return;
+    this._cKey = key;
+    const n = C.reduce((a, p) => a + 2 * (p.P.length - 1), 0), pos = this.fill(this.cands, "position", n), col = this.fill(this.cands, "color", n);
+    const js = C.map((p) => p.J).sort((a, b) => a - b), lo = js[0], hi = js[Math.floor(js.length * 0.8)] ?? lo + 1;
+    let v = 0;
+    for (const p of C) {
+      const q = Math.min(1, Math.max(0, (p.J - lo) / Math.max(1e-6, hi - lo)));
+      const [R, G, B] = p.lethal ? [0.94, 0.36, 0.36] : [(190 - 60 * q) / 255, (140 + 40 * (1 - q)) / 255, 1];
+      for (let i = 0; i < p.P.length - 1; i++) for (const k of [i, i + 1]) {
+        const [x, y] = p.P[k]; pos.setXYZ(v, x, y, this.zAt(world, x, y) + 0.07); col.setXYZ(v, R, G, B); v++;
+      }
+    }
+    pos.needsUpdate = true; col.needsUpdate = true; this.cands.geometry.setDrawRange(0, v);
   }
 
   // L1 간이: 마지막 스캔의 LiDAR 점(2D와 같은 점)을 그린 면 위에

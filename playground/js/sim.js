@@ -65,6 +65,7 @@ export class World {
     this.stats = { len: 0, maxPitch: 0, maxRoll: 0, gtCostSum: 0, minClear: Infinity, steps: 0, errSum: 0, errN: 0, falseMax: 0 };
     this.ms = { map: 0, plan: 0, ctrl: 0 };
     this.plan = null; this.ctrl = null;
+    this.planMem = { seed: o.seed * 7919 + 13 };          // 상태를 갖는 Planner(MPOT의 입자·난수, TP-0136)
     this.peds = (this.pedsInit || []).map((p) => ({ ...p }));
     this.mppi = new MPPI(o.mppi, o.seed);
     this.blindPath = straightPath([x, y], this.goal, g.res);   // 지도 없는 대조군이 받는 전부(TP-0129)
@@ -173,7 +174,7 @@ export class World {
   }
 
   replan() {
-    const res = PLANNERS[this.opts.planner].plan(this.belief, this.pose, this.goal);
+    const res = PLANNERS[this.opts.planner].plan(this.belief, this.pose, this.goal, this.planMem);
     this.plan = res; this.ms.plan = res.ms;
   }
 

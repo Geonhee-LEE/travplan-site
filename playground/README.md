@@ -42,7 +42,7 @@ MPPI Controller, 스워브 운동학이 한 폐루프로 돈다. 목표와 장�
 | `per`, `sh`, `sr` | 인식, 센서 높이, 센서 범위 | `gt`·`range`·`occlusion`·`l1lite`, 0.2–1.2 m, 3–8 m |
 | `ceil`, `dp`, `ev`, `st` | 그림자 상한, 깊이 prior, 관측 증거 제한, 전면 스테레오 | 0·1 |
 | `un`, `unc` | 근거리 미관측 반경, 그 칸의 cost | 0–2 m, 0–1 |
-| `pl`, `co` | Planner, Controller | `guidance`·`straight`, `mppi`·`tracker`·`learned`·`blind` |
+| `pl`, `co` | Planner, Controller | `guidance`·`mpot`·`straight`, `mppi`·`tracker`·`learned`·`blind` |
 | `K`, `T`, `lam`, `nz` | MPPI 샘플 수, 지평(스텝), 온도 λ, 탐색 잡음 배율 | 슬라이더의 범위와 눈금 |
 | `wt`, `wr`, `wa` | MPPI 지형·위험·자세 가중 | 슬라이더의 범위와 눈금 |
 | `goal`, `ped`, `ed` | 목표, 시작 전 보행자, 지형 편집 | 지도(16 × 8 m) 안의 `x,y` · `x,y,vx,vy;…`(100명까지, 3 m/s 이하) · `b,x,y;p,x,y;e,x,y`(상자·포트홀·지우기, 적용 순서, 1000곳까지) |
@@ -154,6 +154,20 @@ L1 간이, 시나리오 3개(curb_ramp s0, bumps_potholes s4, slope_crossfall s0
 
 지도 색은 cost다. 0.3 아래는 지면색이고, 0.95로 갈수록 황토에서 주황이 된다. 치명 셀은 빨강이다. 아직 못 본 칸은 검정,
 그림자 상한·깊이 prior로 채운 칸은 보라다. 청록 점선이 Planner 경로, 노란 선이 MPPI 계획(지평 T), 옅은 선이 MPPI 샘플이다.
+연보라 선은 Planner의 후보다(MPOT 입자, 싸면 밝게, 치명 칸을 지나면 빨강).
+
+**MPOT Planner(TP-0136).** [anindex/mpot](https://github.com/anindex/mpot)(Le 외, *Accelerating Motion Planning via Optimal Transport*, NeurIPS 2023, MIT)의
+Sinkhorn Step을 2D 경로에 옮겼다. 경로(입자) 16개, 경로당 웨이포인트 40개를 함께 옮긴다.
+- **한 걸음.** 웨이포인트마다 무작위로 돌린 직교 방향 4개(2D orthoplex)를 놓는다. 방향마다 probe 점 5개(probe 반경의 1/6 … 5/6)의 비용을 평균해
+  비용 행렬 C[웨이포인트, 방향]을 만든다. 비용은 Guidance와 같은 칸 가중치(1 + 4·cost + 0.5·σ, 치명 20) + 이웃과의 2차 차분 + 길이다.
+- **OT.** C를 [0, 1]로 맞추고(`scale_cost_matrix`) 균등 주변분포 사이의 엔트로피 OT(ε = 0.01)를 로그 영역 Sinkhorn으로 푼다.
+  각 웨이포인트를 방향별 한 걸음 점(0.3 m)의 무게중심으로 옮긴다(barycentric projection). 시작과 목표는 고정한다. 반경은 반복마다 3%씩 줄인다.
+- **처음과 재계획.** 처음에는 직선 + 양 끝이 0인 매끄러운 굽힘(GP 다리처럼)에서 60번 돈다. 재계획(1 s마다)은 이전 입자를 로봇 위치부터 다시 놓고 20번 돈다.
+  가장 싼 입자(칸 가중치 × 길이)가 경로다. 데스크톱 기준 처음 83 ms, 재계획 26 ms(Guidance 5 ms).
+- **원본과 다른 점.** 상태가 위치뿐이다. 원본은 위치·속도 4D와 GP 등속 prior를 쓰고, 여기서는 2차 차분과 길이로 매끄러움을 준다.
+- **결과.** 원형 시야 6 지형 × 2 seed와 기본 인식 4 지형 × 5 seed에서 모두 도달했다(Guidance와 같다).
+  연석 레벨 2는 경로가 매끄러워 Guidance보다 빠르다(17.2 s 대 24.0 s, seed 1). 레벨 3(경사로 폭 1.1 m) seed 0은 입자가 연석 앞 국소 최솟값에 모여 시간 초과다.
+  Dijkstra는 전역 최단이라 찾는다. TP-0130(MPOT식 최적화기가 같은 예산의 MPPI를 넘지 못함)은 Controller 자리의 비교였고, 여기는 Planner 자리다.
 '둘 다'에서 옅은 크림색 선은 참 지형 등고선이다.
 
 판정은 실제 지형으로 한다. 치명 셀 진입, 로봇별 전복 한계(스워브 pitch 0.35 rad·roll 0.30 rad, 사족 0.55·0.50, 바퀴 사족 0.50·0.45) 초과, 보행자 접촉, 60 s 초과가 실패다.
@@ -196,6 +210,8 @@ L1 간이, 시나리오 3개(curb_ramp s0, bumps_potholes s4, slope_crossfall s0
 | `TP-0135-l1` | TP-0135 | 휴머노이드, L1 간이, 뒤집은 MID-360 시야 | 도달 35.5 s | 이 페이지 전용 | `TP-0100`(스워브) |
 | `TP-0039` | TP-0039 | curb_ramp 레벨 3(연석 0.24 m, 경사로 1.1 m) | 도달 27.6 s | guidance+mppi 12/12 | — |
 | `planner-vs-controller` | — | Planner를 직선으로 | 60 s 시간 초과 | Planner가 필요한 이유 | Guidance(`?pl=guidance`): 14.8 s 도달 |
+| `TP-0136` | TP-0136 | MPOT, curb_ramp 레벨 2 seed 1, 원형 시야 | 도달 17.2 s | 이 페이지 전용(4 지형 × 5 seed 20/20) | Guidance(`?pl=guidance`): 24.0 s |
+| `TP-0136-l3` | TP-0136 | MPOT, curb_ramp 레벨 3 seed 0 | 60 s 시간 초과(국소 최솟값) | 이 페이지 전용(L3 seed 0–2 2/3) | Guidance(`?pl=guidance`): 27.6 s |
 | `TP-0128` | TP-0128 | bumps_potholes s0, 가림, 학습 정책 | 도달 10.1 s(MPPI는 14.1 s) | 브라우저 폐루프 8/12(MPPI 12/12) | MPPI(`?co=mppi`) |
 | `TP-0128-limit` | TP-0128 | curb_ramp s0, 가림, 학습 정책 | 9.0 s 치명 셀 진입(MPPI는 22.5 s 도달) | 실패 4건이 모두 lethal | MPPI(`?co=mppi`) |
 | `TP-0129` | TP-0129 | curb_ramp s0, 스워브, 지도 없는 정책 | 2.8 s 치명 셀 진입 | 지도 없는 스워브 0/12 | `TP-0129-quad` |
@@ -213,7 +229,8 @@ L1 간이, 시나리오 3개(curb_ramp s0, bumps_potholes s4, slope_crossfall s0
 |---|---|---|
 | `terrain.js` | `travplan/sim/terrain.py` | 시나리오 7개, 난이도 표(`DIFFICULTY`), 편집(상자·포트홀·지우기) |
 | `travmap.js` | `travplan/representation/`, `travplan/sim/visibility.py` | 특징(창 7·7·21·5·13칸), 램프 cost, `fill_unknown`, 2.5D 시선 스윕, 그림자 상한, 깊이 prior와 증거 제한 |
-| `planner.js` | `travplan/planners/guidance.py` | Dijkstra cost-to-go(간선 = 길이 × 평균(1 + 4·cost + 0.5·sigma)), 경로 추출 |
+| `planner.js` | `travplan/planners/guidance.py` | Dijkstra cost-to-go(간선 = 길이 × 평균(1 + 4·cost + 0.5·sigma)), 경로 추출, Planner 목록 |
+| `mpot.js` | [anindex/mpot](https://github.com/anindex/mpot) `mpot/ot/sinkhorn_step.py`(줄인 것) | MPOT Sinkhorn Step: 무작위 회전 orthoplex, probe 비용, 로그 영역 Sinkhorn, barycentric projection(TP-0136) |
 | `control.js` | `travplan/control/mppi/`, `travplan/robot/swerve.py`, `travplan/control/tracker.py` | 스워브 한계·적분, pure pursuit, MPPI(AR(1) 잡음, 평균·정지 후보, 비용 6항, warm start) |
 | `sim.js` | `travplan/sim/kinematic_sim.py`, `travplan/eval/runner.py` | 0.1 s 폐루프, 10스텝마다 재계획, 관측 융합, 보행자, 실패 판정 |
 | `chassis.js` | `travplan/sim/ground_truth.py` | 차체 기하 기준(방위각 8개, 자세·바퀴 들뜸·배 밑 간섭, 지상고 0.10 m 가정) |
@@ -265,7 +282,7 @@ L1 간이, 시나리오 3개(curb_ramp s0, bumps_potholes s4, slope_crossfall s0
   로봇이 본 지형 3개(TP-0047 시작 상태에서 못 본 칸의 그릴 높이 = `belief.elev`, 3D 메시 정점 높이, 그릴 높이 셋)와
   3D 로봇 자세 3개(과장 ×1·×2·×3에서 pitch·roll이 텔레메트리 + 걸음새 흔들림과 0.5° 안)도 본다.
   코어 파일을 고친 뒤에는 꼭 돌린다. 시연 결과가 바뀌어 기대와 달라지면 `presets.js`의 `expect`와 3절 표를 같이 고친다.
-- **코어 버전 키(`cv`):** `js/state.js`의 `CORE_VERSION`은 코어 모듈 11개(`chassis`·`control`·`core`·`perception`·`planner`·`policy`·`policy_weights`·`robots`·`sim`·`terrain`·`travmap` `.js`)를
+- **코어 버전 키(`cv`):** `js/state.js`의 `CORE_VERSION`은 코어 모듈 12개(`chassis`·`control`·`core`·`mpot`·`perception`·`planner`·`policy`·`policy_weights`·`robots`·`sim`·`terrain`·`travmap` `.js`)를
   이름순으로 이은 내용의 sha256 앞 8자다. 코어를 고치고 이 값을 그대로 두면 검사와 `pytest -q`(`tests/test_playground_state.py`)가 실패하고 새 값을 알려 준다.
   값을 바꾸면 옛 주소를 열 때 "다른 코어 버전" 알림이 뜬다. 시연만 담은 주소(`#TP-0047`)에는 `cv`가 없어 늘 지금 코어로 연다.
 - **주행 기록 CSV:** 열은 Python `metrics.csv`(`travplan/eval/metrics.py`의 `EpisodeMetrics`)와 같고 순서도 같다. 같은 이름은 같은 정의로 계산한다.

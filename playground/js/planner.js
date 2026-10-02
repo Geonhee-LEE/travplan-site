@@ -88,6 +88,8 @@ export function extractRoute(field, g, start, goal) {
   return { route, ok: true };
 }
 
+import { mpotPlan } from "./mpot.js";
+
 export const PLANNERS = {
   guidance: {
     label: "Guidance (Dijkstra)",
@@ -98,6 +100,11 @@ export const PLANNERS = {
       const { route, ok } = extractRoute(field, map.grid, start, goal);
       return { path: route, ok, field, ms: performance.now() - t0 };
     },
+  },
+  mpot: {
+    label: "MPOT (Sinkhorn Step)",
+    note: "최적 수송 기반 경로 최적화(Le 외, NeurIPS 2023). 경로 16개의 웨이포인트를 무작위 회전한 방향 4개와 probe 비용, 엔트로피 OT로 함께 옮긴다. 가장 싼 경로를 고른다. 재계획은 이전 입자에서 출발한다(TP-0136).",
+    plan(map, start, goal, mem) { return mpotPlan(map, start, goal, mem || {}); },
   },
   straight: {
     label: "직선 (지도 무시)",
