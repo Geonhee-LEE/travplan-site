@@ -133,6 +133,10 @@
   "tp0141_corridor": {
    "caption": "random_mix s3 레벨 2: GT에서는 한 칸 폭 통로가 열려 있고(왼쪽, 초록 = GT 경로), 로봇이 본 cost에서는 턱 특징의 1 cm 잡음 편향이 그 통로를 닫는다(오른쪽). 길이 없어 Guidance는 상자를 뚫는 직선을 내고, 로봇은 상자 앞에서 멈춘다",
    "results": "results/tp0039_levels, results/tp0039_rerun"
+  },
+  "tp0142_presmooth": {
+   "caption": "턱 특징 전 평활: 평지 잡음이 만드는 턱 특징이 2.3 cm에서 0.7 cm로 준다(왼쪽). Guidance 레벨 0–3 스윕 154 → 158/160, random_mix에서 치명 1(오른쪽)",
+   "results": "results/tp0142, results/tp0039_levels"
   }
  },
  "tp": {
@@ -200,6 +204,7 @@
   ]
  },
  "featured": [
+  "tp0142_presmooth",
   "tp0141_corridor",
   "tp0039_levels",
   "tp0131_reach",
