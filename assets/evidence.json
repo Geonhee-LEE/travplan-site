@@ -125,6 +125,10 @@
   "tp0131_reach": {
    "caption": "접힌 Guidance 경로에서 MPPI 진행 항의 끝점 투영을 닿을 수 있는 호로 제한한다. 왼쪽 plant curb_ramp s19는 끄면 맴돌다 시간 초과, 켜면 40.3 s 도달. 오른쪽은 운동학 폴백 스택(30)과 plant(72)의 도달 비율·시간",
    "results": "results/tp0131"
+  },
+  "tp0039_levels": {
+   "caption": "레벨 0–3 × 4 지형 × seed 0–9: 세 스택의 도달 수(왼쪽, 실패는 모두 시간 초과)와 Planner D의 에피소드별 치명 표본 비율(오른쪽, X = 시간 초과)",
+   "results": "results/tp0039_levels, results/tp0074"
   }
  },
  "tp": {
@@ -186,9 +190,13 @@
   ],
   "TP-0129": [
    "tp0128_policy"
+  ],
+  "TP-0074": [
+   "tp0039_levels"
   ]
  },
  "featured": [
+  "tp0039_levels",
   "tp0131_reach",
   "tp0066_rl",
   "tp0078_fallback",
