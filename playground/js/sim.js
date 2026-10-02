@@ -7,6 +7,7 @@ import { PLANNERS, costToGo, extractRoute } from "./planner.js";
 import { ElevationMap, bodyFrame } from "./perception.js";
 import { applyRobot, gaitOffset } from "./robots.js";
 import { MPPI, trackCommand, clampAccel, clampTwist, stepPose, sampleMap, attitude } from "./control.js";
+import { policyFor, predict, straightPath } from "./policy.js";
 
 export const SIM = { dt: 0.1, rollLimit: 0.30, pitchLimit: 0.35, goalTol: 0.3, maxTime: 60, replanEvery: 10, noise: 0.01, pedRadius: 0.55 };
 
@@ -61,6 +62,7 @@ export class World {
     this.plan = null; this.ctrl = null;
     this.peds = (this.pedsInit || []).map((p) => ({ ...p }));
     this.mppi = new MPPI(o.mppi, o.seed);
+    this.blindPath = straightPath([x, y], this.goal, g.res);   // 지도 없는 대조군이 받는 전부(TP-0129)
     this.observe();
     this.replan();
   }
@@ -70,6 +72,7 @@ export class World {
     const m = sampleMap(this.gt, x, y, [0, 0, 0, 0]);
     if (m[0] >= TRAV.lethal) return "치명 셀 위에는 목표를 둘 수 없다";
     this.goal = [x, y];
+    this.blindPath = straightPath(this.terrain.start.slice(0, 2), this.goal, this.terrain.grid.res);
     this.replan();
     return null;
   }
@@ -213,6 +216,25 @@ export class World {
       if (this.mppi.U.length !== this.mppi.cfg.T * 3) this.mppi.reset();
       this.ctrl = this.mppi.control({ pose: this.pose, twist: this.twist, path: this.plan.path, goal: this.goal, map: this.belief, peds: pedsNow });
       u = this.ctrl.u; this.ms.ctrl = this.ctrl.ms;
+    } else if (o.controller === "learned" || o.controller === "blind") {
+      // 학습 정책(TP-0128). 지도 없는 대조군(TP-0129)은 지형 입력을 0으로 받고 목표 직선만 본다.
+      const blind = o.controller === "blind";
+      const pol = policyFor(o.robot, blind);
+      const t0 = performance.now();
+      if (!pol) {                                   // 그 로봇의 가중치가 없으면 솔직하게 pure pursuit로 떨어진다
+        u = trackCommand(this.pose, blind ? this.blindPath : this.plan.path);
+        this.ctrl = { nominal: null, samples: [], ms: performance.now() - t0, missing: true };
+      } else {
+        const path = blind ? this.blindPath : this.plan.path;
+        const att = [this.body?.pitch ?? 0, this.body?.roll ?? 0];   // 몸이 느끼는 자세(걸음새 흔들림 포함)
+        u = pol.control(this.belief, this.pose, this.twist, path, att);
+        // 명령을 낸 시각에서 끊는다. 아래 predict()는 화면에 그릴 궤적일 뿐이라 제어 시간이 아니다
+        // (MPPI의 nominal은 평균 갱신의 일부라 ms 안에 있는 것이 맞다 — 그래서 여기만 따로 끊는다).
+        const ms = performance.now() - t0;
+        this.ctrl = { nominal: predict(pol, this.belief, this.pose, this.twist, path),
+                      samples: [], ms, policy: pol, blind };
+      }
+      this.ms.ctrl = this.ctrl.ms;
     } else {
       const t0 = performance.now();
       u = trackCommand(this.pose, this.plan.path);

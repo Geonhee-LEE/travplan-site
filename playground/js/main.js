@@ -479,6 +479,15 @@ function telemetry() {
 const TERM_LABEL = { reference: "경로", trav: "지형", risk: "위험 CVaR", attitude: "자세", control: "제어", approach: "목표 접근" };
 function bars() {
   const c = world.ctrl;
+  if (opts.controller === "learned" || opts.controller === "blind") {
+    const pol = c?.policy;
+    $("bars").innerHTML = pol
+      ? `<p class="empty">학습 정책은 비용 항이 없다. 입력 50개 → tanh MLP(${pol.nParams.toLocaleString()} 파라미터) → 몸체 twist 3개.`
+        + `${c.blind ? " 지형 입력 36개는 0이고 경로 대신 목표 직선만 받는다." : ""} 가중치는 파이썬에서 ES로 학습했다(TP-0128).</p>`
+      : '<p class="empty">이 로봇의 학습 가중치가 없어 pure pursuit로 돈다.</p>';
+    $("ctrlMs").textContent = c ? `${c.ms.toFixed(2)} ms` : "";
+    return;
+  }
   if (!c || !c.breakdown) { if (opts.controller !== "mppi") $("bars").innerHTML = '<p class="empty">Pure pursuit는 비용을 쓰지 않는다.</p>'; $("ctrlMs").textContent = ""; return; }
   const entries = Object.entries(c.breakdown), mx = Math.max(1, ...entries.filter(([, v]) => v < 1000).map(([, v]) => v));
   $("bars").innerHTML = entries.map(([k, v]) => {

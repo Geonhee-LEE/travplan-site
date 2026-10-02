@@ -97,6 +97,10 @@
   "tp0054_sigma": {
    "caption": "매퍼 분산은 실제 높이 오차와 따로 놀고(a), 관측 칸의 cost 오차는 cost의 높이 민감도가 맞힌다(b, AUROC 0.886). 그래도 L1 폐루프 성공은 이진 σ와 같다(c)",
    "results": "results/tp0054_sigma"
+  },
+  "tp0128_policy": {
+   "caption": "Playground 폐루프(가림 켠 belief 지도, 4 시나리오 × seed 0–2). 학습 정책은 사족에서 MPPI와 같은 12/12에 제어 시간 약 1/180이고, 지도 입력을 끄면 바퀴는 0/12로 전부 잃는다",
+   "results": "results/p2-playground-policy.tsv"
   }
  },
  "tp": {
@@ -155,9 +159,13 @@
   ],
   "TP-0101": [
    "tp0100_belief_chassis"
+  ],
+  "TP-0129": [
+   "tp0128_policy"
   ]
  },
  "featured": [
+  "tp0128_policy",
   "tp0054_sigma",
   "tp0098_determinism",
   "tp0102_robot_pose",

@@ -204,4 +204,6 @@ export class MPPI {
 export const CONTROLLERS = {
   mppi: { label: "MPPI", note: "지형 투영 롤아웃 K개를 비용 6항(경로, 지형, 위험 CVaR, 자세, 제어, 목표 접근)으로 가중 평균한다." },
   tracker: { label: "Pure pursuit", note: "경로만 따라간다. 지형과 보행자를 스스로 피하지 않는다." },
+  learned: { label: "학습 정책(ES)", note: "파이썬에서 진화 전략으로 학습한 1.7k 파라미터 MLP. 입력 50개(앞쪽 7x5 지형 비용, 경로 네 점, 현재 twist, 몸이 느끼는 pitch·roll)뿐이고 롤아웃이 없다(TP-0128)." },
+  blind: { label: "지도 없는 보행(대조군)", note: "같은 MLP인데 지형 입력 36개를 0으로 받고 경로 대신 목표 직선만 받는다. 고유수용(pitch·roll)만으로 간다 — 사족은 어느 정도 가고 바퀴는 못 간다(TP-0129)." },
 };

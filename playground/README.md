@@ -42,7 +42,7 @@ MPPI Controller, 스워브 운동학이 한 폐루프로 돈다. 목표와 장�
 | `per`, `sh`, `sr` | 인식, 센서 높이, 센서 범위 | `gt`·`range`·`occlusion`·`l1lite`, 0.2–1.2 m, 3–8 m |
 | `ceil`, `dp`, `ev`, `st` | 그림자 상한, 깊이 prior, 관측 증거 제한, 전면 스테레오 | 0·1 |
 | `un`, `unc` | 근거리 미관측 반경, 그 칸의 cost | 0–2 m, 0–1 |
-| `pl`, `co` | Planner, Controller | `guidance`·`straight`, `mppi`·`tracker` |
+| `pl`, `co` | Planner, Controller | `guidance`·`straight`, `mppi`·`tracker`·`learned`·`blind` |
 | `K`, `T`, `lam`, `nz` | MPPI 샘플 수, 지평(스텝), 온도 λ, 탐색 잡음 배율 | 슬라이더의 범위와 눈금 |
 | `wt`, `wr`, `wa` | MPPI 지형·위험·자세 가중 | 슬라이더의 범위와 눈금 |
 | `goal`, `ped`, `ed` | 목표, 시작 전 보행자, 지형 편집 | 지도(16 × 8 m) 안의 `x,y` · `x,y,vx,vy;…`(100명까지, 3 m/s 이하) · `b,x,y;p,x,y;e,x,y`(상자·포트홀·지우기, 적용 순서, 1000곳까지) |
@@ -147,7 +147,7 @@ L1 간이, 시나리오 3개(curb_ramp s0, bumps_potholes s4, slope_crossfall s0
 | `pair` | 비교 상대의 주소. `TP-0046`처럼 시연이거나 `TP-0100?un=1.5`처럼 덮어쓰기다. 없으면 `null` |
 | `set`, `layer`, `peds` | `defaultOptions()` 덮어쓰기, 처음 고를 층, 시연 지형의 경로에 놓을 보행자 수 |
 
-아래 표의 결과는 2026-10-01 코어(`cv=acf52a53`)에서 잰 것이다. 숫자는 `expect.text`·`repo`와 같다.
+아래 표의 결과는 2026-10-02 코어(`cv=a57492d8`)에서 잰 것이다. 숫자는 `expect.text`·`repo`와 같다.
 
 | id | TP | 설정 | 이 페이지 결과 | 저장소 결과 | 비교 상대 |
 |---|---|---|---|---|---|
@@ -166,6 +166,10 @@ L1 간이, 시나리오 3개(curb_ramp s0, bumps_potholes s4, slope_crossfall s0
 | `TP-0102-wheelleg` | TP-0102 | 바퀴 사족, curb_ramp, L1 간이 | 도달 15.5 s, 턱 15 cm 한계라 연석을 바로 넘는다 | 이 페이지 전용 | 스워브(`?rb=swerve&sh=0.3`): 경사로로 35.3 s |
 | `TP-0039` | TP-0039 | curb_ramp 레벨 3(연석 0.24 m, 경사로 1.1 m) | 도달 27.6 s | guidance+mppi 12/12 | — |
 | `planner-vs-controller` | — | Planner를 직선으로 | 60 s 시간 초과 | Planner가 필요한 이유 | Guidance(`?pl=guidance`): 14.8 s 도달 |
+| `TP-0128` | TP-0128 | bumps_potholes s0, 가림, 학습 정책 | 도달 10.1 s(MPPI는 14.1 s) | 브라우저 폐루프 8/12(MPPI 12/12) | MPPI(`?co=mppi`) |
+| `TP-0128-limit` | TP-0128 | curb_ramp s0, 가림, 학습 정책 | 9.0 s 치명 셀 진입(MPPI는 22.5 s 도달) | 실패 4건이 모두 lethal | MPPI(`?co=mppi`) |
+| `TP-0129` | TP-0129 | curb_ramp s0, 스워브, 지도 없는 정책 | 2.8 s 치명 셀 진입 | 지도 없는 스워브 0/12 | `TP-0129-quad` |
+| `TP-0129-quad` | TP-0129 | 같은 지형, 사족 보행 | 도달 11.8 s | 지도 없는 사족 8/12(지도 봄도 8/12) | `TP-0129` |
 | `TP-0027` | TP-0027 | 보행자 3명(GT 경로에 배치) | 도달 17.3 s | 보행자 2명 조건 40/40, 충돌 0 | — |
 
 같은 bumps_potholes를 레벨 0–2, seed 12개(36회)로 돌리면 이 페이지에서도 저장소와 같은 방향이 나온다.
@@ -185,6 +189,7 @@ L1 간이, 시나리오 3개(curb_ramp s0, bumps_potholes s4, slope_crossfall s0
 | `chassis.js` | `travplan/sim/ground_truth.py` | 차체 기하 기준(방위각 8개, 자세·바퀴 들뜸·배 밑 간섭, 지상고 0.10 m 가정) |
 | `perception.js` | `travplan/sim/lidar.py`, `travplan/perception/emap_mapper.py`(줄인 것) | 합성 LiDAR, 칸별 칼만 높이 융합, 상한. 몸체 자세(참 자세로 쏘고, 믿는 자세로 놓는다) |
 | `robots.js` | (없음, 이 페이지 전용) | 로봇 종류별 한계·센서 높이·걸음새 흔들림(TP-0102) |
+| `policy.js` | `travplan/control/tiny_policy.py` | 학습 정책의 관측 50개와 MLP forward. 가중치는 `policy_weights.js`(생성물, 손대지 않는다) |
 | `core.js` | `travplan/core/grid.py` 일부 | 난수, 격자, 이중선형 보간, max·avg pool |
 | `metrics.js` | `travplan/eval/metrics.py`, `travplan/eval/runner.py`의 log | 주행 한 번을 `metrics.csv` 한 줄로(6절) |
 | `presets.js` | — | 시연 목록과 묶음(DOM 없음, 3절) |
@@ -206,6 +211,12 @@ L1 간이, 시나리오 3개(curb_ramp s0, bumps_potholes s4, slope_crossfall s0
 - 난수 생성기가 달라서 seed가 같아도 Python 벤치마크와 지형이 똑같지는 않다. 규칙과 분포는 같다.
 - MPPI 샘플 수 기본값은 256이다(Python 768). 슬라이더로 1024까지 올린다.
 - 학습 Planner(Planner D, Joint Planner)는 아직 브라우저에서 돌지 않는다. 스워브 모듈 모델(TP-0034)도 없다.
+- **학습 Controller는 돈다**(TP-0128). 브라우저는 학습하지 않는다 — 파이썬이 진화 전략으로 1,675개 가중치를 만들고
+  (`scripts/train_playground_policy.py`), 이 페이지는 추론만 한다. 입력 50개와 forward가 파이썬과 글자 그대로 같은지는
+  `node scripts/check_policy.mjs`가 황금 벡터로 확인한다. 학습은 **GT 지도** 위에서 했고 이 페이지는 **belief 지도**로
+  돌리므로, 가림을 켜면 학습 때보다 어려운 조건이다.
+- `지도 없음`은 같은 MLP에 지형 입력 36개를 0으로 주고 경로 대신 **목표 직선**만 주는 대조군이다(TP-0129).
+  자세(pitch·roll)는 IMU라 남는다 — 걸음새 흔들림이 섞인 값 그대로다.
 - L1 간이는 elevation_mapping_cupy의 핵심(높이 융합, 분산, 상한)만 흉내 낸다. 드리프트 보정, 레이 캐스팅으로 칸 비우기, 이상치 제거는 없다.
   LiDAR 잡음은 σ = 0.5 cm + 0.2 cm/m로 L0와 비슷하게 두었다. 더 크면 좁은 턱 창(0.30 m)이 잡음을 턱으로 읽는다.
 - 사족 보행과 바퀴 사족은 이 페이지에만 있다. 다리 동역학·발 디딤·미끄러짐은 없고, 몸체를 twist로 움직이며 걸음새 흔들림만 더한다. 한계값은 공개 제원을 참고한 대표값이다.
@@ -218,12 +229,12 @@ L1 간이, 시나리오 3개(curb_ramp s0, bumps_potholes s4, slope_crossfall s0
 - **시연 추가:** `js/presets.js`의 `PRESETS`에 한 항목을 넣는다. `{ id, tp, label`로 시작하고, 새 필드는 `label` 뒤에 둔다(3절 필드 표).
   `expect`는 실제로 달려 본 결과로 쓴다. `automation/dashboard_links.py`의 `load_presets()`가 이 파일을 읽어, 같은 TP의 TODO 항목에 ▶ 시뮬레이션 링크를 저절로 단다. 대시보드는 다시 생성한다.
 - **검사:** `./scripts/check_playground.sh`가 `check.html`을 헤드리스 Chrome으로 열어 판정한다(약 4분). 기본 주행 4개와 L1 간이 2개는 `check.html`의 표가,
-  시연 16개는 `PRESETS.expect`가 기대다. 주소 왕복 22개(`parse(serialize(x)) = x`)와 새 탭 재현 5개(주소로 `index.html`을 새 문서에 열어 결과·끝 시각·마지막 자세가 같은지)도 본다.
+  시연 20개는 `PRESETS.expect`가 기대다. 주소 왕복 26개(`parse(serialize(x)) = x`)와 새 탭 재현 5개(주소로 `index.html`을 새 문서에 열어 결과·끝 시각·마지막 자세가 같은지)도 본다.
   나쁜 주소 14개(`layer=constructor` 같은 상속 이름, 범위 밖 값, 상한을 넘는 목록)는 예외 없이 기본 설정으로 읽고 알리는지 본다.
   로봇이 본 지형 3개(TP-0047 시작 상태에서 못 본 칸의 그릴 높이 = `belief.elev`, 3D 메시 정점 높이, 그릴 높이 셋)와
   3D 로봇 자세 3개(과장 ×1·×2·×3에서 pitch·roll이 텔레메트리 + 걸음새 흔들림과 0.5° 안)도 본다.
   코어 파일을 고친 뒤에는 꼭 돌린다. 시연 결과가 바뀌어 기대와 달라지면 `presets.js`의 `expect`와 3절 표를 같이 고친다.
-- **코어 버전 키(`cv`):** `js/state.js`의 `CORE_VERSION`은 코어 모듈 9개(`chassis`·`control`·`core`·`perception`·`planner`·`robots`·`sim`·`terrain`·`travmap` `.js`)를
+- **코어 버전 키(`cv`):** `js/state.js`의 `CORE_VERSION`은 코어 모듈 11개(`chassis`·`control`·`core`·`perception`·`planner`·`policy`·`policy_weights`·`robots`·`sim`·`terrain`·`travmap` `.js`)를
   이름순으로 이은 내용의 sha256 앞 8자다. 코어를 고치고 이 값을 그대로 두면 검사와 `pytest -q`(`tests/test_playground_state.py`)가 실패하고 새 값을 알려 준다.
   값을 바꾸면 옛 주소를 열 때 "다른 코어 버전" 알림이 뜬다. 시연만 담은 주소(`#TP-0047`)에는 `cv`가 없어 늘 지금 코어로 연다.
 - **주행 기록 CSV:** 열은 Python `metrics.csv`(`travplan/eval/metrics.py`의 `EpisodeMetrics`)와 같고 순서도 같다. 같은 이름은 같은 정의로 계산한다.
