@@ -129,6 +129,10 @@
   "tp0039_levels": {
    "caption": "레벨 0–3 × 4 지형 × seed 0–9: 세 스택의 도달 수(왼쪽, 실패는 모두 시간 초과)와 Planner D의 에피소드별 치명 표본 비율(오른쪽, X = 시간 초과)",
    "results": "results/tp0039_levels, results/tp0074"
+  },
+  "tp0141_corridor": {
+   "caption": "random_mix s3 레벨 2: GT에서는 한 칸 폭 통로가 열려 있고(왼쪽, 초록 = GT 경로), 로봇이 본 cost에서는 턱 특징의 1 cm 잡음 편향이 그 통로를 닫는다(오른쪽). 길이 없어 Guidance는 상자를 뚫는 직선을 내고, 로봇은 상자 앞에서 멈춘다",
+   "results": "results/tp0039_levels, results/tp0039_rerun"
   }
  },
  "tp": {
@@ -196,6 +200,7 @@
   ]
  },
  "featured": [
+  "tp0141_corridor",
   "tp0039_levels",
   "tp0131_reach",
   "tp0066_rl",
