@@ -137,6 +137,10 @@
   "tp0142_presmooth": {
    "caption": "턱 특징 전 평활: 평지 잡음이 만드는 턱 특징이 2.3 cm에서 0.7 cm로 준다(왼쪽). Guidance 레벨 0–3 스윕 154 → 158/160, random_mix에서 치명 1(오른쪽)",
    "results": "results/tp0142, results/tp0039_levels"
+  },
+  "tp0138_rl_stage2": {
+   "caption": "RL 후학습을 더 돌린 두 시도: curb_ramp L3 단독은 26/30 그대로, 폴백이 이긴 계획은 42% → 46–48%, 보행자 최소 여유도 줄었다. 1단계 체크포인트 유지",
+   "results": "results/tp0138"
   }
  },
  "tp": {
@@ -204,6 +208,7 @@
   ]
  },
  "featured": [
+  "tp0138_rl_stage2",
   "tp0142_presmooth",
   "tp0141_corridor",
   "tp0039_levels",
