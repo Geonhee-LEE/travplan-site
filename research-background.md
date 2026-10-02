@@ -7,7 +7,7 @@
 무엇을 바꿨는지**만 설명한다. 각 절은 요점 한 단락으로 시작하고, 왜 필요한가·직관·작은 예·함정·어디서 쓰나 순서로 이어진다.
 그림 뒤의 "수식 보기" 토글에 기호, 유도, 변형을 모았고, 끝에 참고문헌을 달았다. travplan 코드와 연결되는 곳은 파일 이름을 적었다.
 
-**이 문서는 여러 논문이 공유하는 수학 도구 14개를 세 탭에 모았다.** 표의 "쓰는 절"은 그 도구를 "배경 0.N"으로 가리키는 절이고,
+**이 문서는 여러 논문이 공유하는 수학 도구 16개를 세 탭에 모았다.** 표의 "쓰는 절"은 그 도구를 "배경 0.N"으로 가리키는 절이고,
 "원전"은 그 도구의 원 논문과 대표 논문이다. 번호는 처음 쓴 순서라 탭 안에서 순서가 섞여 있다.
 
 | 절 | 도구 | 한 줄 요약 | 쓰는 절 | travplan 코드 | 원전 |
@@ -19,7 +19,9 @@
 | 0.14 | VQ-VAE | 연속 장면을 코드북의 이산 토큰으로 바꾼다 | A.6 | — | [VQ-VAE](https://arxiv.org/abs/1711.00937) |
 | 0.5 | Diffusion과 guidance | 잡음 제거로 샘플하고, 비용 기울기로 샘플을 유도한다 | A.6, A.8, B.3, B.6, B.8, B.8.0, B.8.2 | —(DPS식 guidance만 `FlowPolicy.sample`) | [DDPM](https://arxiv.org/abs/2006.11239), [DPS](https://arxiv.org/abs/2209.14687) |
 | 0.6 | Flow matching | 잡음에서 데이터로 곧게 가는 속도장을 배운다 | A.8, B.6b, B.8.2, B.9 | `planners/learned/flow_model.py` | [Flow Matching](https://arxiv.org/abs/2210.02747), [Rectified Flow](https://arxiv.org/abs/2209.03003) |
+| 0.6b | diffusion ↔ flow matching 환율 | 둘은 같은 ODE의 두 좌표계다. 네 좌표의 변환식과 규약 지뢰 | B.8, B.8.0, B.8.2 | `planners/learned/flow_model.py`를 $\epsilon$ 모델로 읽는 법 | [Score SDE](https://arxiv.org/abs/2011.13456), [FM Guide](https://arxiv.org/abs/2412.06264) |
 | 0.7 | Truncated·anchored diffusion | 잡음 대신 후보에서 시작해 몇 스텝만 적분한다 | B.8.2, B.9 | — | [DiffusionDrive](https://arxiv.org/abs/2411.15139), [TDPM](https://arxiv.org/abs/2202.09671) |
+| 0.7b | 적은 스텝과 증류 | 스텝을 줄이는 세 길과, 플래너가 치르는 다양성 비용 | B.8.2, B.8.3 | `FlowPolicy`(10스텝), `JointFlowPolicy`(4스텝) | [Consistency](https://arxiv.org/abs/2303.01469), [Shortcut](https://arxiv.org/abs/2410.12557) |
 | 0.12 | 모방 학습, DAgger, 특권 교사 | 교사를 따라 하되, 학생이 간 상태에 교사 라벨을 붙인다 | A.7, A.7.1, A.8, A.8.2, B.2, B.5, B.9 | `scripts/dagger_planner_d.py` | [DAgger](https://arxiv.org/abs/1011.0686), [Learning by Cheating](https://arxiv.org/abs/1912.12294) |
 | 0.13 | Conformal prediction | 분포 가정 없이 보정된 예측 영역을 만든다 | B.9, E | — | [Shafer·Vovk](https://arxiv.org/abs/0706.3188), [ACI](https://arxiv.org/abs/2106.00170) |
 | 0.2 | MPPI | 제어열 후보를 굴려 비용이 낮을수록 큰 가중치로 평균한다 | A.8, A.10.1, B.5, B.8.2, C.2, E.1 | `control/mppi/mppi.py` | [MPPI](https://arxiv.org/abs/1509.01149), [정보이론 MPC](https://arxiv.org/abs/1707.02342) |
@@ -784,6 +786,7 @@ $$ \nabla_{x_t} \log q_t(x_t) \approx -\frac{\epsilon_\theta(x_t, t, c)}{\sqrt{1
 노이즈를 맞히는 것은 score를 배우는 것과 같다. 모델이 $x_0$를 바로 예측하게 해도 된다(DiffusionDrive).
 
 **샘플링.** 역방향을 확률 흐름 ODE로 보고 적분한다. DPM-Solver(++) 같은 고차 ODE 풀이기를 쓰면 10스텝 안팎으로 줄어든다(Diffusion Planner).
+==이 식이 바로 0.6의 $\dot x = v_\theta$다== — 환율과 규약 지뢰는 **0.6b**에 있다.
 
 $$ \frac{dx_t}{dt} = f(t)\, x_t - \tfrac{1}{2} g^2(t)\, \nabla_{x_t} \log q_t(x_t) $$
 
@@ -828,6 +831,10 @@ $$ \tilde\epsilon_\theta(x_t, c) = (1 + w)\, \epsilon_\theta(x_t, c) - w\, \epsi
 
 ### 0.6 Flow matching: 노이즈에서 데이터까지 곧게 가는 속도장
 
+> **수식 없이 먼저 감을 잡고 싶다면**: 데이터 공간 → 확률 경로 → 벡터장 → 흐름 순서로 쌓아 올린
+> 한국어 설명이 있다([Turing Post Korea](https://turingpost.co.kr/p/topic-20-flow-matching)).
+> 이 절은 그 위에 travplan 구현에 바로 닿는 식과 수치를 얹는다.
+
 flow matching은 diffusion(0.5)과 같은 일을 더 단순하게 한다. ==노이즈 $x_0$와 데이터 $x_1$을 직선으로 잇고, 그 직선을 따라가는 속도를
 네트워크가 배운다.== 샘플링은 그 속도장을 몇 스텝 적분하면 끝난다. travplan Planner D(`planners/learned/flow_model.py`)가 이 방식으로
 Euler 10스텝에 후보 16개를 만든다.
@@ -838,6 +845,7 @@ diffusion의 역방향 경로는 휘어 있어서, 스텝을 줄이면 오차가
 Planner D는 이 구조로 계획 한 번을 3.4 ms에 끝낸다(§B.8.3). 여러 후보, 시간 인덱스 궤적, 비용 유도라는 diffusion의 장점은 그대로 남는다.
 
 **직관.** diffusion이 노이즈를 맞히며 굽은 길을 되짚는다면, flow matching은 속도를 맞히며 출발점과 도착점을 자로 이은 길을 배운다.
+==다만 둘은 서로 다른 방법이 아니라 **같은 ODE의 두 좌표계**다== — 변환식과 "무엇이 진짜 다른가"는 **0.6b**에 있다.
 
 1. **짝짓기.** 노이즈 한 점 $x_0$와 시연 한 개 $x_1$을 무작위로 짝짓고 직선으로 잇는다.
 2. **라벨.** 직선 위 임의의 시각 $t$에서 점 $x_t = (1-t)\,x_0 + t\,x_1$을 입력으로, 직선의 방향 $x_1 - x_0$를 정답으로 준다. 노이즈 스케줄이 없다.
@@ -951,6 +959,157 @@ $x_0 = 0.3$이면 1스텝 결과는 0, 2스텝 결과는 $\tanh(0.3) = 0.29$다.
 - Lipman 외, *Flow Matching Guide and Code*, arXiv 2024 — [arXiv:2412.06264](https://arxiv.org/abs/2412.06264). 유도와 변형을 코드와 함께 정리한 튜토리얼이다.
 - Black 외, *π0: A Vision-Language-Action Flow Model for General Robot Control*, RSS 2025 — [arXiv:2410.24164](https://arxiv.org/abs/2410.24164). 로봇 행동 묶음에 같은 규칙(Euler 10스텝)을 쓴 대표 사례다(§B.6b).
 - Wu 외, *JPPD: Joint Prediction_Planning Diffusion with Differentiable Safety Guidance for Dynamic Obstacle Avoidance in Intelligent Transportation Systems*, arXiv 2026 — [arXiv:2606.20686](https://arxiv.org/abs/2606.20686). 보도 공유 공간에서 flow matching 공동 생성과 끝으로 갈수록 커지는 안전 guidance를 쓴다(§B.8.2).
+
+### 0.6b Diffusion과 flow matching은 같은 것의 두 좌표계다
+
+**한 줄로.** ==0.5와 0.6은 서로 다른 두 방법이 아니다. **같은 미분방정식을 다른 글자로 쓴 것**이다.==
+그래서 "우리는 diffusion 대신 flow matching을 쓴다"는 문장은 대개 모델이 아니라 **표기와 경로 선택**을
+말하고 있다. 이 절은 그 환율표다.
+
+**왜 이 절이 필요한가.** 0.5와 0.6을 따로 읽으면 세 가지를 틀리기 쉽다.
+① 두 논문의 식을 섞어 쓰다가 **부호를 뒤집는다.** ② "flow matching이 더 빠르다"를 모델의 성질로 오해한다 —
+빠른 것은 **경로가 곧아서**이지 방법이 달라서가 아니다. ③ 한쪽에서 쓰는 기법(guidance 일정, anchor,
+증류)을 다른 쪽으로 못 옮긴다고 생각한다. 실제로는 환율만 알면 거의 다 옮겨진다.
+
+#### 먼저 그림으로
+
+==**노이즈 구름에서 데이터 구름까지 점을 옮기는 일**== 하나를 두고, 두 문헌이 서로 다른 것을 네트워크에
+맡긴다. 아래 넷은 **같은 한 가지 정보의 네 가지 표현**이고, 하나를 알면 나머지 셋이 대수로 나온다.
+
+| 네트워크가 내놓는 것 | 뜻 | 주로 쓰는 쪽 |
+|---|---|---|
+| $\epsilon_\theta$ | "지금 섞여 있는 노이즈가 얼마냐" | DDPM 계열(0.5) |
+| $s_\theta \approx \nabla_x \log p_t(x)$ | "확률이 커지는 방향이 어디냐" | score 기반(0.5) |
+| $\hat x_{\text{data}}$ | "깨끗한 답이 뭐라고 생각하냐" | $x_0$-prediction |
+| $v_\theta$ | "지금 어느 쪽으로 얼마나 가야 하냐" | flow matching(0.6), travplan |
+
+Lipman 본인이 이 동치를 명시한다 — *"Our construction of the conditional VF $u_t(x|x_1)$ does in fact
+coincide with the vector field previously used in the deterministic probability flow (Song et al. 2020b,
+**equation 13**) **when restricted to these conditional diffusion processes**"*
+([arXiv:2210.02747](https://arxiv.org/abs/2210.02747) §4.1, 원문 어순 그대로).
+*when restricted to these conditional diffusion processes*가 중요하다 —
+==이 동치는 **VP(확산) 조건부 경로에 한정한 진술**이다.== 임의의 보간자까지 덮는 주장이 아니고,
+아래 "등가가 깨지는 곳 셋"이 그 한계를 적는다.
+
+#### ⚠️ 규약 지뢰: 이 문서 안에서 충돌하는 기호
+
+==문헌마다 $t=0$이 노이즈인지 데이터인지가 다르다.== 아래는 **이 문서 안에서 실제로 충돌하는** 것만 모았다.
+새 글을 쓸 때는 중립 기호 $x_{\text{data}}$, $\epsilon$, $\alpha_t$, $\sigma_t$를 쓰고, 어느 규약인지 문장으로 밝힌다.
+
+| 기호 | 0.5(Song·DDPM) | 0.6·travplan | 함정 |
+|---|---|---|---|
+| $t = 0$ | **데이터** | **노이즈** | 시간이 반대로 흐른다 |
+| $t = 1$ 또는 $T$ | 노이즈 | **데이터** | 〃 |
+| $\hat x_0$ / $\hat x_1$ | $\hat x_0$가 **깨끗한 데이터** | $\hat x_1$이 **깨끗한 데이터** | ==둘은 **같은 양**이다== |
+| "$x_0$-prediction" | 데이터 예측 | — | ==Flow Matching Guide에서는 **노이즈** 예측을 뜻한다== |
+| 속도 $v$ | — | 데이터 쪽으로 | 규약을 뒤집으면 **부호가 바뀐다** |
+| score $s$, 노이즈 $\epsilon$ | 그대로 | 그대로 | ==규약을 뒤집어도 **부호가 안 바뀐다**== |
+
+마지막 두 줄이 핵심이다. $s$와 $\epsilon$은 **시각 $t$의 분포만** 보는 양이라 시간이 어느 쪽으로 흐르는지
+모른다. 속도만 방향을 안다. 그래서 규약을 옮길 때 **속도만 부호를 뒤집는다**(Lemma: $\tilde u_t(x) = -u_{1-t}(x)$).
+0.5↔0.6 사이 실수의 거의 전부가 이 비대칭에서 나온다.
+
+#### 환율표
+
+두 문헌이 공유하는 틀은 **아핀 가우시안 경로**다. 노이즈 $\epsilon \sim \mathcal{N}(0, I)$와 데이터 $x_{\text{data}}$를
+섞되, 섞는 비율만 다르다.
+
+$$ x_t = \alpha_t\, x_{\text{data}} + \sigma_t\, \epsilon $$
+
+| 경로 | $\alpha_t$ | $\sigma_t$ | 성질 |
+|---|---|---|---|
+| **rectified flow**(travplan) | $t$ | $1 - t$ | $\alpha_t + \sigma_t = 1$, 직선 |
+| **VP(DDPM)** | $\bar\alpha_s^{1/2}$ | $(1 - \bar\alpha_s)^{1/2}$ | $\alpha_t^2 + \sigma_t^2 = 1$, 곡선 |
+
+속도는 한 식에서 전부 나온다. $v = \dot\alpha_t\, \hat x_{\text{data}} + \dot\sigma_t\, \hat\epsilon$.
+travplan의 선형 보간자($\dot\alpha_t = 1$, $\dot\sigma_t = -1$)에 넣으면 환율이 셋으로 줄어든다.
+
+$$ \hat\epsilon = x - t\,v, \qquad \hat x_{\text{data}} = x + (1-t)\,v, \qquad s = \frac{t\,v - x}{1 - t} $$
+
+가운데 식이 `FlowPolicy`가 guidance에 쓰는 끝점 예측 그 자체다(0.6의 `planner_dg` 항목).
+VP에서는 $v = \frac{\dot\alpha_t}{\alpha_t}(x + s)$이고, $\dot\alpha_t/\alpha_t = \beta(1-t)/2$라
+==Song 식 (13)을 시간만 뒤집은 것과 글자 그대로 같다.==
+
+#### 같은 것 셋
+
+**① 샘플러가 같다.** ==선형 보간자에서 **DDIM 한 스텝과 Euler 한 스텝은 대수적으로 동일하다.**==
+$\hat x_{\text{data}}$와 $\hat\epsilon$을 위 환율로 바꿔 넣으면 DDIM 갱신식이 $x + \Delta t \cdot v$로 정리된다.
+travplan은 Euler라고 부르지만 **이미 DDIM을 쓰고 있다.**
+
+**② 손실이 같다.** 세 파라미터화의 제곱 오차는 가중치 하나 차이다. ==아래 등가식은 **선형 보간자 전용**이다==
+($\alpha_t = t$, $\sigma_t = 1-t$). 일반 아핀 경로에서는 $\kappa_t = \dot\alpha_t \sigma_t - \dot\sigma_t \alpha_t$가
+계수로 더 붙어 $\|v_\theta - v\|^2 = \kappa_t^2 \alpha_t^{-2}\|\epsilon_\theta - \epsilon\|^2$이고, 선형 보간자에서만
+$\kappa_t = 1$이라 아래처럼 깔끔해진다.
+
+$$ \|v_\theta - v\|^2 \;=\; \alpha_t^{-2}\,\|\epsilon_\theta - \epsilon\|^2 \;=\; \sigma_t^{-2}\,\|\hat x_{\text{data}} - x_{\text{data}}\|^2 $$
+
+가중치가 다르면 **학습 동역학은 달라지지만 최적해는 같다.** "어떤 손실을 쓰느냐"는 모델 선택이 아니라
+시각별 가중치 선택이다.
+
+**③ 네트워크가 같다.** 학습을 마친 뒤에도 좌표를 바꿔 읽을 수 있다. travplan의 `FlowPolicy`를
+$\epsilon$-모델로 읽고 싶으면 $\hat\epsilon = x - t v_\theta$를 씌우면 끝이다. 가중치를 다시 학습할 필요가 없다.
+
+#### 그래서 무엇이 진짜 다른가
+
+| 축 | 판정 |
+|---|---|
+| **경로**(보간자) | ==**진짜 선택.**== 직선이면 적은 스텝으로 되고, VP는 곡선이라 더 든다 |
+| 파라미터화 | 표기. 학습 후에도 바꿔 읽는다 |
+| 손실 | 가중치. 최적해는 같다 |
+| 샘플러 | 선형 보간자에서는 DDIM = Euler. 같다 |
+
+==솔직한 요약: **대부분 표기법이고, 실질은 "경로가 조금 더 곧다"는 것 하나다.**==
+그리고 그 하나가 스텝 수를 정하므로 travplan에는 중요하다 — Planner D는 10 ms 안에 계획해야 한다.
+
+#### 등가가 깨지는 곳 셋
+
+- **① 끝점.** VP는 유한 시간에 노이즈에도 데이터에도 닿지 못한다. DDPM의 $\tau = 999$는 흐름 시각
+  0.0063, $\tau = 0$은 0.990이다 — ==양 끝 1%에 못 간다.== rectified flow는 끝을 정확히 맞히는 대신
+  양 끝에서 좌표 하나가 쓸모를 잃는데, **두 끝이 서로 다른 방식으로 잃는다.**
+  ==환율표가 실제로 **깨지는** 곳은 $t = 1$이다== — $s = (t v - x)/(1 - t)$의 분모가 0이 되어 score가 발산한다.
+  $t = 0$에서는 발산하지 않는다. $\hat\epsilon = x$, $\hat x_{\text{data}} = x + v$, $s = -x$로 **모두 유한하다.**
+  대신 $\epsilon$·score 읽기가 $v_\theta$와 **무관해져 정보가 없다** — 네트워크가 무엇을 내놓든 $\hat\epsilon$과 $s$는
+  같은 값이다. 요약하면 $t = 1$은 쓰면 안 되는 곳이고, $t = 0$은 써도 되지만 아무것도 알려 주지 않는 곳이다.
+- **② SDE 샘플링.** "flow matching에는 확률적 샘플러가 없다"는 **흔히 하는 틀린 말**이다. 있다
+  (Albergo 외, 식 2.21/2.33). 진짜 대가는 score 복원이 $1/(1-t)$로 오차를 키운다는 것과,
+  10스텝 예산에서 확률적 샘플러가 손해라는 것이다.
+- **③ 분산 폭발(VE).** 변환식은 가장 단순하지만 볼록 결합이 아니고, 단위 prior도 직선성도 깨진다.
+  이 절의 표를 VE에 적용하면 안 된다.
+
+#### travplan에 주는 것
+
+상수 `guide_scale`이 ==**이미 "일정(schedule)"을 구현하고 있다.**== 환율표에서 $\delta s = \frac{t}{1-t}\,\delta v$이므로,
+속도 공간의 **상수** 가중은 score 공간에서 $\sqrt{\mathrm{SNR}}$ 가중이 된다. 샘플러가 `t = i / n`을 쓰므로
+(`planners/learned/flow_model.py`의 `FlowPolicy.sample`) 10스텝의 $t$는 0.0, 0.1, …, 0.9이고,
+==**두 번째 스텝($t = 0.1$) 대비 마지막 스텝($t = 0.9$)이 81배**다.== 첫 스텝은 $t = 0$이라 $t/(1-t) = 0$ —
+score 공간 등가 가중이 **0**이고, guidance가 score 관점에서는 첫 스텝에 아무 일도 하지 않는다.
+다른 논문들이 손으로 넣는 "뒤로 갈수록 세게"가 좌표 선택만으로 들어 있다.
+거꾸로, 0.5의 DPS 식을 속도 공간으로 옮기지 않고 그대로 쓰면 **출발 스텝에서 폭발한다.**
+
+**데이터 스케일.** `scripts/train_planner_d.py`가 모으는 교사 라벨의 제어 변화율 $a$는 표준편차가 **0.5 근처**로,
+Karras의 이미지 $\sigma_{\text{data}} = 0.5$와 거의 같다 — 세 시드로 재 본 **자체 측정이고 아직 TP를 달지 않았다**
+(재현 절차와 수치는 TP를 열어 작업 기록으로 남긴다). 그래서 EDM의 전처리 상수를 환산 없이 쓸 수 있고,
+데이터 분산까지 넣은 **유효 SNR**($\alpha_t^2 \sigma_{\text{data}}^2 / \sigma_t^2$)이 1이 되는 지점은
+$\sigma_{\text{data}} = 0.5$에서 $t \approx 0.67$이다(바로 위 $\sqrt{\mathrm{SNR}}$는 데이터 분산 없는 표준 정의라
+1이 되는 곳이 $t = 0.5$다 — 같은 이름이지만 다른 양이다). 그런데 travplan의 균등 $t$는 ==그 지점에 가중을
+**몰아주지 않는다.**== 바로 아래 SD3에서 이긴 logit-normal $t$가 하는 일이 그 몰아주기다. 즉 균등 $t$는 "운 좋게
+맞은" 설정이 아니라 **아직 손대지 않은 손잡이**다.
+
+**다만 flow matching이 이긴다는 증거는 약하다.** Stable Diffusion 3이 61개 설정을 맞대본 결과,
+==**균등 $t$ rectified flow는 $\epsilon$-예측 선형 diffusion을 이기지 못했다.**== 이긴 것은 logit-normal로 $t$를
+가운데에 몰아준 변형이다([arXiv:2403.03206](https://arxiv.org/abs/2403.03206)). travplan이 flow matching을 쓰는
+근거는 "더 좋은 모델이라서"가 아니라 **직선 경로라 10스텝으로 끝난다**는 것 하나로 적어야 정확하다.
+
+**참고문헌.**
+
+- Song 외, *Score-Based Generative Modeling through SDEs*, ICLR 2021 — [arXiv:2011.13456](https://arxiv.org/abs/2011.13456). 확률 흐름 ODE는 식 (13), 순방향 SDE는 (5), 역방향은 (6).
+- Lipman 외, *Flow Matching for Generative Modeling*, ICLR 2023 — [arXiv:2210.02747](https://arxiv.org/abs/2210.02747). §4.1이 위 동치를 명시한다(확산 조건부 경로에 한정한 진술).
+- Lipman 외, *Flow Matching Guide and Code*, 2024 — [arXiv:2412.06264](https://arxiv.org/abs/2412.06264). 아핀 경로의 네 좌표 변환이 식 (4.55) 부근에 모여 있다.
+- Karras 외, *Elucidating the Design Space of Diffusion-Based Generative Models*, NeurIPS 2022 — [arXiv:2206.00364](https://arxiv.org/abs/2206.00364). 식 (4)와 Table 1이 VP·VE·DDIM·EDM을 한 ODE에 담는다.
+- Esser 외, *Scaling Rectified Flow Transformers*(SD3), ICML 2024 — [arXiv:2403.03206](https://arxiv.org/abs/2403.03206). 61개 설정 비교와 logit-normal $t$.
+- Albergo 외(Albergo·Boffi·Vanden-Eijnden), *Stochastic Interpolants: A Unifying Framework for Flows and Diffusions* — [arXiv:2303.08797](https://arxiv.org/abs/2303.08797). flow matching의 확률적 샘플러는 식 2.21/2.33.
+
+---
 
 ### 0.7 Truncated / anchored diffusion: 시작점을 노이즈가 아니라 후보에서
 
@@ -1077,6 +1236,97 @@ anchored diffusion은 SDEdit와 두 가지가 다르다. anchor가 여럿이고,
 - Chai 외, *MultiPath: Multiple Probabilistic Anchor Trajectory Hypotheses for Behavior Prediction*, CoRL 2019 — [arXiv:1910.05449](https://arxiv.org/abs/1910.05449). K-means anchor 궤적과 anchor별 점수·보정의 원형이다.
 - Xu 외, *Primitive-based Truncated Diffusion for Efficient Trajectory Generation of Differential Drive Mobile Manipulators*, arXiv 2026 — [arXiv:2604.04166](https://arxiv.org/abs/2604.04166). primitive를 먼저 고르고 그 주변에서만 샘플하는 로봇 판이다(§B.9).
 - Liu 외, *GuideFlow: Constraint-Guided Flow Matching for Planning in End-to-End Autonomous Driving*, arXiv 2025 — [arXiv:2511.18729](https://arxiv.org/abs/2511.18729). 추론 때만 적분 상태를 anchor로 바꾸는 flow matching 판이다(§B.8.2).
+
+### 0.7b 스텝을 줄이는 법, 그리고 플래너가 치르는 값
+
+**한 줄로.** 스텝을 줄이는 길은 셋이다 — **더 좋은 적분기**, **시작점 당기기**(0.7), **증류**.
+앞의 둘은 공짜에 가깝고 ==세 번째는 **다양성을 판다**==. 플래너에게는 그 값이 이미지보다 비싸다.
+
+**왜 플래너에게 다르게 비싼가.** 이미지 생성은 한 장만 그럴듯하면 된다. 플래너는 ==**장애물 양쪽으로 도는 두
+답을 둘 다 낼 수 있어야**== 선택기가 고를 거리가 생긴다. 모드 하나를 잃으면 출력이 "평균 궤적" 하나로 수렴하고,
+0.5가 경고한 ==**두 답의 평균이 장애물로 들어가는**== 바로 그 실패가 돌아온다.
+
+#### 1스텝이 왜 반드시 평균이 되는가
+
+0.6은 "Euler 1스텝은 회귀와 같다"고 적었다. 이것은 비유가 아니라 **항등식**이다. 독립 짝짓기로 학습하면
+$t = 0$에서 최적 속도장이
+
+$$ v^\star(x, 0) \;=\; \mathbb{E}[x_1 - x_0 \mid x_0 = x] \;=\; \mathbb{E}[x_1 \mid c] - x $$
+
+이므로 1스텝 Euler의 결과는 $x + 1 \cdot v^\star = \mathbb{E}[x_1 \mid c]$ — ==**조건부 평균 그 자체**다.==
+차원에도 모드 수에도 무관하다. 그래서 1스텝 flow matching은 "모드를 잃을 수도 있다"가 아니라
+**정의상 반드시 평균을 낸다.**
+
+**스텝을 늘려 얻는 것은 모드 '선택'이 아니라 모드 '도달'이다.** 어느 모드로 갈지는 $n \ge 2$면 이미 정해져 있다 —
+흐름 경로가 교차하지 않으므로 출발 노이즈 $x_0$가 모드를 고른다. 이것은 ODE의 성질이고 측정이 아니다.
+남는 문제는 **거기까지 가느냐**이고, 스텝이 적으면 목표 크기에 못 미친 채 멈춘다($n = 4$에서 약 95%라는
+**자체 측정이 있지만 아직 TP를 달지 않았다** — 재현 절차와 함께 `JointFlowPolicy`에서 다시 재야 한다).
+`JointFlowPolicy`의 `sample_steps = 4`가 ==바로 이 지점에 걸려 있다.==
+
+#### 증류 세 갈래
+
+| 방법 | 무엇을 배우나 | 스텝 | 대가 |
+|---|---|---|---|
+| **Consistency model** | ODE 궤적 위 아무 점에서나 **같은 끝점**을 내도록(자기일관성) | 1–2 | 1스텝에서 recall 손실 |
+| **Shortcut model** | 스텝 크기 $d$를 **조건으로** 받아 한 네트워크가 여러 스텝 수를 겸한다 | 1–다수 | 조건 축이 하나 늘어난다 |
+| **MeanFlow** | 순간 속도가 아니라 **구간 평균 속도**를 직접 | 1 | 학습이 더 까다롭다 |
+
+==**consistency model의 끝점과 flow matching의 끝점 예측은 서로 다른 물건이다.**== $f$는 ODE를 끝까지
+적분한 **표본**이고, $\hat x_1 = x + (1-t)v$는 **조건부 평균**이다. 이 구분이 "증류는 단순히 스텝을 줄이는 것"이
+아닌 이유 전부다.
+
+#### 다양성 손실에는 숫자가 있다 — Recall
+
+Consistency Models(Song 외, ICML 2023)의 Table 2가 Precision과 Recall을 모두 싣는다. ==1스텝 증류는
+**정밀도는 지키고 recall을 잃는다.**==
+
+| 데이터셋 | 교사(EDM) recall | 1스텝 증류(CD) | 2스텝 증류(CD) | 1스텝 변화 |
+|---|---|---|---|---|
+| ImageNet-64 | 0.67 | 0.63 | 0.64 | −6% |
+| LSUN Bedroom | 0.45 | **0.34** | 0.39 | **−24%** |
+| LSUN Cat | 0.43 | 0.36 | 0.40 | −16% |
+
+교사 없이 처음부터 배우는 consistency *training*은 훨씬 나쁘다(Bedroom 1스텝 recall **0.17**).
+그리고 ==**2스텝은 잃은 것의 일부만 되찾고, 어느 행도 교사 수준에 가지 못한다.**== Bedroom 0.34 → 0.39(교사 0.45),
+Cat 0.36 → 0.40(0.43), ImageNet-64 0.63 → 0.64(0.67)다. 2스텝을 "거의 복구"로 읽으면 안 된다.
+
+**플래너에게 이 표가 뜻하는 것.** recall이 "데이터 분포의 모드를 얼마나 덮느냐"이므로, 플래너에서 recall
+−24%는 "왼쪽으로 도는 답을 네 번에 한 번은 못 낸다"에 해당한다. 후보 16개를 뽑아 선택기로 고르는
+travplan 구조에서는 ==**후보가 다양하지 않으면 선택기가 할 일이 없다.**== 그래서 1스텝 증류는 travplan에
+맞지 않는다. 다만 **2스텝으로 올려도 교사만큼 다양해지지는 않는다** — 2스텝이 하한일 뿐 안전선은 아니다.
+==증류를 쓰는 순간 후보 다양성을 얼마간 내놓는다는 것이 이 표의 결론이다.==
+
+#### 증류 없이 줄이는 길
+
+- **더 좋은 적분기.** Heun은 스텝마다 네트워크를 **두 번** 부르므로 $n$스텝이 NFE $2n$이다. ==NFE로 세면
+  Heun 5스텝 = Euler 10스텝==이고, 곡률이 큰 경로에서만 이긴다. 직선 보간자에서는 이득이 작다.
+  DPM-Solver++는 VP 경로를 겨냥한 것이라 rectified flow에서는 Euler와 차이가 크지 않다.
+- **시작점 당기기(0.7).** 노이즈가 아니라 후보에서 출발하면 적분 구간 자체가 짧아진다. 증류와 달리
+  **분포를 바꾸지 않는다.** travplan에 가장 싼 길이다.
+- **경로를 더 곧게(reflow).** 자기 모델로 만든 짝 $(x_0, \mathrm{ODE}(x_0))$로 다시 학습한다. ==reflow가
+  보존하는 것은 **주변 분포**이고 바꾸는 것은 **결합**(어느 노이즈가 어느 데이터로 가는가)이다.== 한 번
+  돌릴 때마다 곧아지지만 교사의 오차가 누적되므로 "몇 번이든 좋다"가 아니다.
+
+#### travplan의 예산
+
+Planner D는 계획에 **3.4–4.1 ms**를 쓴다(`STATE.md`, 레벨 0·3 벤치마크). CLAUDE.md의 비평가 기준은
+**10 ms 미만**이고 20 ms를 넘으면 Fail이다. 즉 ==지금 스텝 수를 줄여야 할 압력이 **없다**.==
+10스텝으로 4 ms면 한 스텝이 0.4 ms이고, 예산 10 ms는 **스무 스텝도 감당한다.**
+
+==그래서 travplan에서 증류는 지금 답이 아니다.== 이 절의 쓸모는 반대 방향이다 — **스텝을 더 줄이자는 제안이
+들어왔을 때 무엇을 잃는지 아는 것**, 그리고 `sample_steps = 4`가 목표 크기에 못 미친 채 멈춘다는 위의
+(아직 TP를 달지 않은) 자체 측정을 근거로 ==**조인트 플래너 쪽은 오히려 스텝을 늘리는 쪽이 맞을 수 있다**==는 것이다
+(TP-0052가 계획 시간 180 ms를 줄이려는 항목이므로, 거기서는 반대 압력이 걸린다 — 두 요구를 같이 봐야 한다).
+
+**참고문헌.**
+
+- Song 외, *Consistency Models*, ICML 2023 — [arXiv:2303.01469](https://arxiv.org/abs/2303.01469). Table 2에 Precision/Recall.
+- Frans 외, *One Step Diffusion via Shortcut Models*, ICLR 2025 — [arXiv:2410.12557](https://arxiv.org/abs/2410.12557).
+- Geng 외, *Mean Flows for One-step Generative Modeling*, 2025 — [arXiv:2505.13447](https://arxiv.org/abs/2505.13447).
+- Liu 외, *InstaFlow* — [arXiv:2309.06380](https://arxiv.org/abs/2309.06380). rectified flow 증류.
+- Karras 외, *EDM*, NeurIPS 2022 — [arXiv:2206.00364](https://arxiv.org/abs/2206.00364). Heun 적분기와 NFE 회계.
+
+---
 
 ### 0.12 모방 학습, DAgger, 특권 교사
 

@@ -312,6 +312,15 @@ arXiv가 없어 DOI로 링크했다.
 | Diffusion Policy | 2023.03 · RSS 2023 | 관측 조건 행동 열 확산, receding horizon | B.8.0 | [논문](https://arxiv.org/abs/2303.04137) · [코드](https://github.com/real-stanford/diffusion_policy) |
 | MPD | 2023.08 | 확산 prior와 비용 likelihood의 사후 분포 샘플 | B.8.0 | [논문](https://arxiv.org/abs/2308.01557) · [코드](https://github.com/joaoamcarvalho/mpd-public) |
 | GoalFlow | 2025.03 · CVPR 2025 | 목표점 선택 + flow matching 한 스텝, NAVSIM PDMS 90.3 | B.8.0 | [논문](https://arxiv.org/abs/2503.05689) · [코드](https://github.com/YvanYin/GoalFlow) |
+| **Flow Planner** | 2025.10 · **NeurIPS 2025** | 궤적을 잘게 토큰화하고 시공간 융합 + classifier-free guidance. nuPlan Val14 **90.43**(refinement 없이), InterPlan 61.82 | B.8.0, B.8.2 | [논문](https://arxiv.org/abs/2510.11083) · [코드](https://github.com/DiffusionAD/Flow-Planner) ★0.3k **MIT** |
+| Flow Matching(원논문) | 2022.10 · ICLR 2023 | 조건부 flow matching 정리. 주변 속도장 대신 조건부 속도장을 회귀해도 기울기가 같다 | 0.6, 0.6b | [논문](https://arxiv.org/abs/2210.02747) |
+| Flow Matching Guide and Code | 2024.12 | 아핀 경로의 네 좌표(score·$\epsilon$·$x$·$v$) 변환을 한자리에 모은 교과서격 자료 | 0.6b | [논문](https://arxiv.org/abs/2412.06264) |
+| Score SDE | 2020.11 · ICLR 2021 | 확률 흐름 ODE(식 13). diffusion을 결정론적으로 샘플하면 그것이 곧 속도장 적분이다 | 0.5, 0.6b | [논문](https://arxiv.org/abs/2011.13456) |
+| EDM(Karras 외) | 2022.06 · NeurIPS 2022 | VP·VE·DDIM·EDM을 한 ODE에 담은 설계 공간 정리, Heun 적분기와 NFE 회계 | 0.6b, 0.7b | [논문](https://arxiv.org/abs/2206.00364) |
+| Consistency Models | 2023.03 · ICML 2023 | 자기일관성으로 1–2스텝 생성. ==Table 2의 Recall이 증류의 다양성 손실을 수치로 보여 준다== | 0.7b | [논문](https://arxiv.org/abs/2303.01469) |
+| Shortcut Models | 2024.10 · ICLR 2025 | 스텝 크기를 조건으로 받아 한 네트워크가 여러 스텝 수를 겸한다 | 0.7b | [논문](https://arxiv.org/abs/2410.12557) |
+| Stochastic Interpolants: A Unifying Framework for Flows and Diffusions(Albergo 외) | 2023.03 | flow matching에도 확률적 샘플러가 있다 — "FM은 결정론적뿐"이라는 통념의 반례 | 0.6b | [논문](https://arxiv.org/abs/2303.08797) |
+| Flow matching 쉬운 설명(한국어) | 2025 · Turing Post Korea | 데이터 공간 → 확률 경로 → 벡터장 → 흐름 순서로 수식 없이 쌓아 올린다. 0.6·0.6b를 읽기 전 배경으로 | 0.6, 0.6b | [글](https://turingpost.co.kr/p/topic-20-flow-matching) |
 | UniAD | 2022.12 · CVPR 2023 | 계획 중심 E2E 주행, 과제를 query로 연결 | B.11 | [논문](https://arxiv.org/abs/2212.10156) · [코드](https://github.com/OpenDriveLab/UniAD) |
 | VAD | 2023.03 · ICCV 2023 | 벡터 장면 표현과 벡터 계획 제약 | B.11 | [논문](https://arxiv.org/abs/2303.12077) · [코드](https://github.com/hustvl/VAD) |
 | SparseDrive | 2024.05 | 희소 표현, 예측·계획 병렬, 충돌 인식 재채점 | B.11 | [논문](https://arxiv.org/abs/2405.19620) · [코드](https://github.com/swc-17/SparseDrive) |
