@@ -17,7 +17,7 @@ import { GEO, EXAG } from "./view.js";
 
 // 코어 버전 키: 코어 모듈 11개(chassis·control·core·perception·planner·policy·policy_weights·robots·sim·terrain·travmap .js)를 이름순으로 이은
 // 내용의 sha256 앞 8자. scripts/check_playground.sh가 다시 계산해 다르면 실패한다. 코어를 고치면 이 값도 바꾼다.
-export const CORE_VERSION = "a57492d8";
+export const CORE_VERSION = "242fa7cd";
 
 // 공유 링크의 바탕. claude.ai 게시본이나 iframe 안에서는 location.href가 틀 주소일 수 있어 이 주소로 링크를 만든다.
 export const PUBLIC_BASE = "https://geonhee-lee.github.io/travplan-site/playground/";
@@ -44,6 +44,7 @@ const OPT_KEYS = [
   ["rb", ...at(["robot"]), one(Object.keys(ROBOTS))],
   ["pc", ...at(["poseComp"]), flag],
   ["pn", ...at(["poseNoise"]), num(0, 3, 0.25)],
+  ["wbc", ...at(["wbcAware"]), flag],
   ["per", ...at(["perception"]), one(Object.keys(PERCEPTION))],
   ["sh", ...at(["sensorHeight"]), num(0.2, 1.2, 0.05)],
   ["sr", ...at(["sensorRange"]), num(3, 8, 0.5)],

@@ -1,0 +1,32 @@
+<!doctype html><meta charset="utf-8"><title>휴머노이드 WBC 비교</title>
+<!-- TP-0135 그림(docs/assets/figs/tp0135_humanoid.webp)을 만드는 페이지. ?t=12. 헤드리스 Chrome --screenshot으로 찍는다(3D는 SwiftShader). -->
+<style>body{margin:0;background:#0d1113;color:#e4e9e6;font:14px system-ui,sans-serif}.g{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:8px}canvas{width:100%;height:330px;display:block}#gl{height:330px}#gl canvas{width:100%!important;height:330px!important}h3{margin:4px 0;font-size:14px}</style>
+<div class="g" id="g"></div>
+<script type="module">
+import { World, defaultOptions } from "./js/sim.js";
+import { Map2D } from "./js/render2d.js";
+import { Map3D } from "./js/render3d.js";
+const css={line:"#29333a",muted:"#8b9893",fg:"#e4e9e6",accent:"#f2b705",route:"#3fb6a8",ok:"#4cc38a",bad:"#ef5b5b",mapBg:"#0d1113"};
+const T=+(new URLSearchParams(location.search).get("t")||12);
+const view={layer:"belief",geo:"belief",exag:2,route:true,samples:true,points:false,mode:"2d",cursor:null,drag:null};
+const cell=(title)=>{const d=document.createElement("div");const h=document.createElement("h3");h.textContent=title;d.append(h);document.getElementById("g").append(d);return d;};
+const base={robot:"humanoid",scenario:"bumps_potholes",seed:4,perception:"range",sensorHeight:1.2};
+let aware=null;
+for (const [lab,set] of [["MPPI가 하체 지연을 안다",{wbcAware:true}],["MPPI가 하체 지연을 모른다",{wbcAware:false}]]) {
+  const w=new World(Object.assign(defaultOptions(),base,set));
+  while(w.status==="running"&&w.t<T) w.step();
+  const d=cell(`휴머노이드 · ${lab} · t=${w.t.toFixed(1)} s · ${w.status==="failed"?w.failure:"주행 중"} · 발 디딤 ${w.footCount}`);
+  const cv=document.createElement("canvas"); d.append(cv);
+  new Map2D(cv).draw(w,view,css);
+  if (set.wbcAware) aware=w;
+}
+const d=cell(`3D · 하체 지연을 아는 쪽, t=${aware.t.toFixed(1)} s (몸통은 곧게, 머리 LiDAR 1.2 m)`);
+const host=document.createElement("div"); host.id="gl"; d.append(host);
+try {
+  const m=new Map3D(host); await m.init();
+  m.renderer.setSize(host.clientWidth, 330); m.camera.aspect=host.clientWidth/330; m.camera.updateProjectionMatrix();
+  const [x,y,yaw]=aware.pose; m.camera.position.set(x-2.6*Math.cos(yaw)+1.2, y-2.6*Math.sin(yaw)-1.6, 2.2); m.controls.target.set(x+0.8*Math.cos(yaw), y+0.8*Math.sin(yaw), 0.7); m.controls.update();
+  m.update(aware,{...view,mode:"3d"}); m.render(css.mapBg);
+} catch(e) { d.append(document.createTextNode("3D 실패: "+e.message)); }
+document.body.dataset.done=1;
+</script>

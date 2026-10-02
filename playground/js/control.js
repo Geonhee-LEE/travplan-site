@@ -64,8 +64,11 @@ export function trackerControls(pose0, twist0, path, T, dt) {
 }
 
 // ------------------------------------------------------------------ MPPI
+// lag > 0(TP-0135): 롤아웃이 하체 정책(GR00T 분리형 WBC)의 닫힌 루프를 안다 — 명령 c는 1차 지연(시정수 lag)으로
+// 몸체 twist가 되고, |c| < lagStand면 서기 정책이 0을 향한다. 그때 평균은 몸체 twist가 아니라 명령으로 낸다.
+// lag = 0이면 이전과 같다(비트 단위).
 export const MPPI_DEFAULT = {
-  K: 256, T: 40, dt: 0.1, lambda: 0.5, noise: [0.4, 0.25, 0.6], corr: 0.7, prior: 0.3,
+  K: 256, T: 40, dt: 0.1, lambda: 0.5, noise: [0.4, 0.25, 0.6], corr: 0.7, prior: 0.3, lag: 0, lagStand: 0,
   w: { deviation: 2.0, progress: 4.0, trav: 6.0, risk: 3.0, attitude: 20.0 },
 };
 
@@ -97,7 +100,13 @@ export class MPPI {
   // req: { pose, twist, path, goal, map, peds } -> { u, nominal, samples, costs, info }
   control(req) {
     const t0 = performance.now();
-    const { K, T, dt, lambda, noise, corr, prior, w } = this.cfg;
+    const { K, T, dt, lambda, noise, corr, prior, w, lag, lagStand } = this.cfg;
+    const al = lag > 0 ? 1 - Math.exp(-dt / lag) : 1;
+    const body = (c, up) => {                         // 명령 -> 이번 스텝의 몸체 twist
+      if (!(lag > 0)) return clampAccel(c, up, dt);
+      const tg = Math.hypot(c[0], c[1], c[2]) < lagStand ? [0, 0, 0] : c;
+      return clampAccel([up[0] + al * (tg[0] - up[0]), up[1] + al * (tg[1] - up[1]), up[2] + al * (tg[2] - up[2])], up, dt);
+    };
     const { ref, arc } = this._reference(req.path, req.pose);
     const endGap = Math.hypot(req.path[req.path.length - 1][0] - req.goal[0], req.path[req.path.length - 1][1] - req.goal[1]);
     const reachesGoal = endGap < 0.5;
@@ -132,9 +141,9 @@ export class MPPI {
       let smooth = 0, lat = 0, rev = 0, dmin = 0, jmin = 0;
       for (let t = 0; t < T; t++) {
         const o = (k * T + t) * 3;
-        let u = clampAccel(clampTwist([V[o], V[o + 1], V[o + 2]]), up, dt);
+        const c = clampTwist([V[o], V[o + 1], V[o + 2]]), u = body(c, up), keep = lag > 0 ? c : u;
         [x, y, yaw] = stepPose(x, y, yaw, u, dt);
-        A[o] = u[0]; A[o + 1] = u[1]; A[o + 2] = u[2];
+        A[o] = keep[0]; A[o + 1] = keep[1]; A[o + 2] = keep[2];
         const q = po + (t + 1) * 3; P[q] = x; P[q + 1] = y; P[q + 2] = yaw;
         // reference: 경로까지 거리
         dmin = Infinity; jmin = 0;
@@ -185,8 +194,8 @@ export class MPPI {
     let x = req.pose[0], y = req.pose[1], yaw = req.pose[2], up = req.twist;
     const nominal = [[x, y]], Uout = new Float32Array(T * 3);
     for (let t = 0; t < T; t++) {
-      const u = clampAccel(clampTwist([U[t * 3], U[t * 3 + 1], U[t * 3 + 2]]), up, dt);
-      Uout.set(u, t * 3); [x, y, yaw] = stepPose(x, y, yaw, u, dt); nominal.push([x, y]); up = u;
+      const c = clampTwist([U[t * 3], U[t * 3 + 1], U[t * 3 + 2]]), u = body(c, up);
+      Uout.set(lag > 0 ? c : u, t * 3); [x, y, yaw] = stepPose(x, y, yaw, u, dt); nominal.push([x, y]); up = u;
     }
     this.U = new Float32Array(T * 3);
     this.U.set(Uout.subarray(3)); this.U.set(Uout.subarray((T - 1) * 3), (T - 1) * 3);   // warm start

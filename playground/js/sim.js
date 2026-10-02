@@ -5,7 +5,7 @@ import { makeTerrain } from "./terrain.js";
 import { buildMap, lineOfSight, TRAV } from "./travmap.js";
 import { PLANNERS, costToGo, extractRoute } from "./planner.js";
 import { ElevationMap, bodyFrame } from "./perception.js";
-import { applyRobot, gaitOffset } from "./robots.js";
+import { applyRobot, gaitOffset, wbcTrack, footTouchdowns } from "./robots.js";
 import { MPPI, trackCommand, clampAccel, clampTwist, stepPose, sampleMap, attitude } from "./control.js";
 import { policyFor, predict, straightPath } from "./policy.js";
 
@@ -48,6 +48,11 @@ export class World {
   reset() {
     const o = this.opts, g = this.terrain.grid, [x, y, yaw] = this.terrain.start;
     this.pose = [x, y, yaw]; this.twist = [0, 0, 0]; this.t = 0; this.k = 0;
+    // 걸음 시계(TP-0135): 사족·바퀴 사족은 시뮬 시각과 같고, 휴머노이드(WBC)는 서 있는 동안 멈춘다.
+    this.gaitClock = 0; this.wbc = this.R.wbc ? { standing: true } : null;
+    const c0 = Math.cos(yaw), s0 = Math.sin(yaw);
+    this.feet = (this.R.feet || []).map(([, bx, by]) => [x + c0 * bx - s0 * by, y + s0 * bx + c0 * by]);
+    this.footsteps = []; this.footFaults = 0; this.footCount = 0;
     this.rng = new Rng(o.seed * 31 + 7);
     this.poseRng = new Rng(o.seed * 131 + 5); this.poseErr = [0, 0, 0];   // 자세 추정 오차(pitch, roll, z)
     this.mapErr = null;
@@ -88,7 +93,7 @@ export class World {
     const R = o.sensorRange, [x, y] = this.pose;
     const near = { unknownNear: o.unknownNear || 0, unknownNearCost: o.unknownNearCost ?? 1.0, robotXY: [x, y] };
     if (o.perception === "l1lite") {
-      this.emap.scan(z, bodyT, bodyE, o.sensorHeight, R, this.rng);
+      this.emap.scan(z, bodyT, bodyE, o.sensorHeight, R, this.rng, this.R.lidar);
       if (o.stereo) this.emap.stereo(z, bodyT, bodyE, this.R.sensorH, this.rng);   // TP-0065 전면 스테레오(몸체에 붙은 카메라)
       this.lastVis = null;
       this.belief = buildMap(this.emap.h, g, {
@@ -138,8 +143,9 @@ export class World {
     const zs = this.terrain.z, c = Math.cos(yaw), sn = Math.sin(yaw), at = (dx, dy) => g.sample(zs, x + dx, y + dy, 0);
     const zf = at(0.3 * c, 0.3 * sn), zb = at(-0.3 * c, -0.3 * sn), zl = at(-0.2 * sn, 0.2 * c), zr = at(0.2 * sn, -0.2 * c);
     const z0 = (zf + zb + zl + zr) / 4, pa = Math.atan2(zf - zb, 0.6), ra = Math.atan2(zl - zr, 0.4);
-    const gait = gaitOffset(this.R, this.t, Math.hypot(this.twist[0], this.twist[1]));
-    const pitch = pa + gait.pitch, roll = ra + gait.roll, zB = z0 + gait.dz;
+    const gait = gaitOffset(this.R, this.gaitClock, Math.hypot(this.twist[0], this.twist[1]));
+    // WBC 휴머노이드는 몸통을 곧게 세운다(rpy_cmd = 0): 머리 센서는 지형 기울기가 아니라 걸음새 흔들림만 탄다.
+    const up = this.R.wbc?.upright, pitch = (up ? 0 : pa) + gait.pitch, roll = (up ? 0 : ra) + gait.roll, zB = z0 + gait.dz;
     this.body = { z: zB, pitch, roll, gait };
     const T = bodyFrame(x, y, zB, yaw, pitch, roll);
     if (!o.poseComp) return [T, bodyFrame(x, y, z0, yaw, 0, 0)];
@@ -213,6 +219,9 @@ export class World {
     let u;
     if (o.controller === "mppi") {
       this.mppi.cfg = { ...this.mppi.cfg, ...o.mppi, w: { ...this.mppi.cfg.w, ...(o.mppi?.w || {}) } };
+      // 휴머노이드: MPPI 롤아웃이 하체 정책의 지연·서기 전환을 알게 할지(TP-0135). 끄면 명령이 곧바로 몸체 twist라고 믿는다.
+      const aware = this.R.wbc && o.wbcAware !== false;
+      this.mppi.cfg.lag = aware ? this.R.wbc.tau : 0; this.mppi.cfg.lagStand = aware ? this.R.wbc.stand : 0;
       if (this.mppi.U.length !== this.mppi.cfg.T * 3) this.mppi.reset();
       this.ctrl = this.mppi.control({ pose: this.pose, twist: this.twist, path: this.plan.path, goal: this.goal, map: this.belief, peds: pedsNow });
       u = this.ctrl.u; this.ms.ctrl = this.ctrl.ms;
@@ -241,10 +250,21 @@ export class World {
       this.ctrl = { nominal: null, samples: [], ms: performance.now() - t0 };
       this.ms.ctrl = this.ctrl.ms;
     }
-    u = clampAccel(clampTwist(u), this.twist, dt);
-    const prev = this.pose;
+    u = clampTwist(u);                                             // 휴머노이드에게는 GR00T의 navigate_cmd 한계
+    if (this.R.wbc) {                                              // 하체 정책: 서기/걷기 전환과 추종 지연(TP-0135)
+      const w = wbcTrack(this.R, u, this.twist, dt);
+      this.wbc = { standing: w.standing, cmd: u };                // cmd = 하체 정책이 받은 navigate_cmd
+      u = w.u;
+    }
+    u = clampAccel(u, this.twist, dt);
+    const prev = this.pose, prevClock = this.gaitClock;
     this.pose = stepPose(prev[0], prev[1], prev[2], u, dt);
     this.twist = u; this.t += dt; this.k++;
+    if (!this.wbc?.standing) this.gaitClock += dt;
+    for (const f of footTouchdowns(this.R, prevClock, this.gaitClock, this.pose, u, this.terrain.z, this.terrain.grid)) {
+      this.feet[f.i] = [f.x, f.y]; this.footCount++; if (!f.ok) this.footFaults++;
+      this.footsteps.push(f); if (this.footsteps.length > 48) this.footsteps.shift();
+    }
     this.trail.push([this.pose[0], this.pose[1]]);
     for (const p of this.peds) { p.x += p.vx * dt; p.y += p.vy * dt; }   // Python DynamicObstacles.advance: 등속 직진
 
@@ -264,7 +284,7 @@ export class World {
     else if (Math.abs(roll) > SIM.rollLimit || Math.abs(pitch) > SIM.pitchLimit) this.fail("tipover", "전복 한계 초과");
     else if (clear < 0) this.fail("collision", "보행자 충돌");
     else if (Math.hypot(this.pose[0] - this.goal[0], this.pose[1] - this.goal[1]) < SIM.goalTol) { this.status = "reached"; }
-    else if (this.t >= SIM.maxTime) this.fail("timeout", "60 s 시간 초과");
+    else if (this.t >= (this.R.maxTime ?? SIM.maxTime)) this.fail("timeout", `${this.R.maxTime ?? SIM.maxTime} s 시간 초과`);
 
     this.observe();
   }
@@ -275,7 +295,7 @@ export class World {
 export function defaultOptions() {
   return {
     scenario: "curb_ramp", level: 0, seed: 0,
-    robot: "swerve", poseComp: true, poseNoise: 0,
+    robot: "swerve", poseComp: true, poseNoise: 0, wbcAware: true,
     perception: "occlusion", sensorHeight: 0.3, sensorRange: 5.0,
     shadowCeiling: true, depthPrior: true, evidence: true,
     unknownNear: 0, unknownNearCost: 1.0,

@@ -250,10 +250,45 @@ export class Map2D {
     ctx.beginPath(); ctx.moveTo(a, b - 22); ctx.lineTo(a + 12, b - 18); ctx.lineTo(a, b - 14); ctx.closePath(); ctx.fillStyle = css.ok; ctx.fill();
   }
 
+  // 발자국(TP-0135): 다리 로봇이 디딘 자리. 나쁜 디딤(경사 30° 또는 턱 한계 초과 칸)은 빨갛게.
+  footprints(world, css) {
+    const { ctx } = this, s = this.L.s, hum = world.R?.kind === "humanoid";
+    for (const f of world.footsteps || []) {
+      const [a, b] = this.toScreen(f.x, f.y);
+      ctx.save(); ctx.translate(a, b); ctx.rotate(-f.yaw);
+      ctx.fillStyle = f.ok ? "rgba(217,223,220,0.32)" : css.bad;
+      ctx.beginPath();
+      if (hum) ctx.roundRect(-0.11 * s, -0.045 * s, 0.22 * s, 0.09 * s, 0.03 * s); else ctx.arc(0, 0, 0.035 * s, 0, 7);
+      ctx.fill(); ctx.restore();
+    }
+  }
+
+  // 휴머노이드(위에서): 디디고 있는 두 발, 어깨, 머리(LiDAR), 걸음과 반대로 흔드는 팔.
+  humanoid(world, css) {
+    const { ctx } = this, s = this.L.s, [x, y, yaw] = world.pose, R = world.R;
+    for (const [fx, fy] of world.feet || []) {
+      const [a, b] = this.toScreen(fx, fy);
+      ctx.save(); ctx.translate(a, b); ctx.rotate(-yaw);
+      ctx.fillStyle = "#d9dfdc"; ctx.beginPath(); ctx.roundRect(-0.11 * s, -0.045 * s, 0.22 * s, 0.09 * s, 0.03 * s); ctx.fill(); ctx.restore();
+    }
+    const [a, b] = this.toScreen(x, y), ph = 2 * Math.PI * R.gait.freq * (world.gaitClock || 0);
+    const sp = Math.min(1, Math.hypot(world.twist[0], world.twist[1]) / 0.4), arm = 0.09 * sp * Math.sin(ph);
+    ctx.save(); ctx.translate(a, b); ctx.rotate(-yaw);
+    ctx.fillStyle = "#d9dfdc";
+    for (const side of [1, -1]) { ctx.beginPath(); ctx.arc(-side * arm * s, -side * 0.26 * s, 0.045 * s, 0, 7); ctx.fill(); }
+    ctx.fillStyle = "rgba(10,14,16,0.85)"; ctx.strokeStyle = css.accent; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.roundRect(-0.1 * s, -0.22 * s, 0.2 * s, 0.44 * s, 0.08 * s); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.arc(0, 0, 0.09 * s, 0, 7); ctx.fillStyle = css.accent; ctx.fill();
+    ctx.beginPath(); ctx.moveTo(0.18 * s, 0); ctx.lineTo(0.1 * s, -5); ctx.lineTo(0.1 * s, 5); ctx.closePath(); ctx.fill();
+    ctx.restore();
+  }
+
   // 로봇: 스워브는 0.7 × 0.5 m 차체와 그 순간 모듈 속도 방향으로 조향한 바퀴 4개. 사족은 몸통과 걸음새에 맞춰 흔드는 다리 4개.
   robot(world, css) {
     const { ctx } = this, s = this.L.s, [x, y, yaw] = world.pose, [a, b] = this.toScreen(x, y);
     const R = world.R || { kind: "wheel", body: [0.7, 0.5] }, u = world.twist, Lx = R.body[0] / 2, Ly = R.body[1] / 2;
+    this.footprints(world, css);
+    if (R.kind === "humanoid") { this.humanoid(world, css); this.failMark(world, css, a, b); return; }
     ctx.save(); ctx.translate(a, b); ctx.rotate(-yaw);
     if (R.kind !== "wheel") {
       // 다리: 대각선 쌍(트롯)이 번갈아 앞뒤로 흔든다. 바퀴 사족은 다리 끝에 바퀴.
@@ -275,7 +310,13 @@ export class Map2D {
     }
     ctx.beginPath(); ctx.moveTo(Lx * s - 2, 0); ctx.lineTo(Lx * s - 10, -5); ctx.lineTo(Lx * s - 10, 5); ctx.closePath(); ctx.fillStyle = css.accent; ctx.fill();
     ctx.restore();
-    if (world.status === "failed") { ctx.beginPath(); ctx.moveTo(a - 9, b - 9); ctx.lineTo(a + 9, b + 9); ctx.moveTo(a + 9, b - 9); ctx.lineTo(a - 9, b + 9); ctx.strokeStyle = css.bad; ctx.lineWidth = 3; ctx.stroke(); }
+    this.failMark(world, css, a, b);
+  }
+
+  failMark(world, css, a, b) {
+    if (world.status !== "failed") return;
+    const { ctx } = this;
+    ctx.beginPath(); ctx.moveTo(a - 9, b - 9); ctx.lineTo(a + 9, b + 9); ctx.moveTo(a + 9, b - 9); ctx.lineTo(a - 9, b + 9); ctx.strokeStyle = css.bad; ctx.lineWidth = 3; ctx.stroke();
   }
 
   cursor(view, css) {

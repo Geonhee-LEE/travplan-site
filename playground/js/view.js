@@ -95,5 +95,7 @@ export function robotPose(world, h, exag) {
   const at = (dx, dy) => g.sample(h, x + dx, y + dy, 0);
   const z0 = (at(0.3 * c, 0.3 * s) + at(-0.3 * c, -0.3 * s) + at(-0.2 * s, 0.2 * c) + at(0.2 * s, -0.2 * c)) / 4;
   const a = attitudeNow(world), gait = world.body?.gait || { dz: 0, pitch: 0, roll: 0 };
-  return { x, y, z: z0 * exag + gait.dz, yaw, pitch: a.pitch + gait.pitch, roll: a.roll + gait.roll, gait };
+  // WBC 휴머노이드는 몸통을 곧게 세운다(rpy_cmd = 0, TP-0135): 지형 기울기 대신 걸음새 흔들림만 탄다(sim.js sensorPoses와 같다).
+  const up = world.R?.wbc?.upright ? 0 : 1;
+  return { x, y, z: z0 * exag + gait.dz, yaw, pitch: up * a.pitch + gait.pitch, roll: up * a.roll + gait.roll, gait };
 }

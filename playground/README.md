@@ -123,6 +123,32 @@ L1 간이, 시나리오 3개(curb_ramp s0, bumps_potholes s4, slope_crossfall s0
 몸체 기울기를 끄면 도달한다(23.6 s). 범프 위에서 몸체가 5°까지 기울어 LiDAR가 앞의 포트홀을 덜 본다. 근거리 미관측 1.5 m + 전면 스테레오를 켜면 도달한다(20.7 s).
 그림은 `robot_pose.html`로 다시 만든다. 기록은 인식 문서 A.13.10.
 
+**휴머노이드와 GR00T 분리형 WBC(TP-0135).** 네 번째 로봇은 Unitree G1급 휴머노이드다.
+이동 방식은 [NVlabs/GR00T-WholeBodyControl](https://github.com/NVlabs/GR00T-WholeBodyControl)의 분리형 WBC를 본뜬다.
+상위(MPPI·pure pursuit·학습 정책)가 `navigate_cmd`(vx, vy, ωz)를 내면 하체 RL 정책이 그것을 따라 걷는다.
+관절 수준 정책은 옮기지 않았고, 그 닫힌 루프의 거동만 흉내 낸다.
+
+| 항목 | 값 | 근거 |
+|---|---|---|
+| 명령 한계 | 0.5 m/s · 0.5 rad/s | `KeyboardNavigationPolicy` 기본값 |
+| 서기·걷기 | 명령 크기 < 0.05면 서기 정책, 걸음 시계도 멈춘다 | `G1GearWbcPolicy`의 `policy_1`·`policy_2` 전환 |
+| 걸음 시계 | 1.5 Hz, 두 발 위상차 0.5 | `freq_cmd`, `gait_indices`, `phases` |
+| 골반·몸통 | 골반 0.74 m, 몸통은 곧게(지형 기울기를 타지 않는다) | `height_cmd`, `rpy_cmd = 0` |
+| 추종 지연 | 1차 지연 0.4 s | **가정**(학습 정책의 속도 추종 시정수) |
+| 머리 LiDAR | 높이 1.2 m, 수직 시야 −52°~+7° | G1은 Livox MID-360(−7°~+52°)을 머리에 **뒤집어** 단다 |
+| 지형 한계 | 턱 15 cm · 경사 20° · 0.5 m/s라 시간 한계 90 s | 대표값(가정) |
+
+- **발자국.** 걸음 시계가 반 주기를 넘을 때 그 발이 땅에 닿는다. 위치는 엉덩이 위치에 Raibert 보정(속도 × 디딤 시간 / 2)을 더한 곳이다.
+  디딘 칸의 경사가 30°를 넘거나 몸 아래 지면과의 높이차가 턱 한계를 넘으면 '나쁜 디딤'으로 빨갛게 그린다.
+  사족 보행도 트롯 대각선 쌍으로 발자국을 남긴다. 실패 판정은 바꾸지 않았고(몸 중심의 cost·자세 그대로) 텔레메트리에만 센다.
+- ==**WBC 위의 MPPI는 하체 지연을 알아야 한다.**== MPPI가 '명령이 곧바로 몸체 속도가 된다'고 믿으면 0.4 s 늦게 따라오는 몸이 예측을 벗어난다.
+  시나리오 5개 × seed로 10번 달렸다(원형 시야). 도달 수는 이렇게 갈렸다. 롤아웃에 같은 1차 지연과 서기 전환을 넣으면(기본, '하체 지연을 안다') **10/10**이다.
+  모르면 **6/10**이고, 실패 넷은 모두 치명 셀 진입이다. 지연을 0으로 두면 모르는 쪽도 6/6이라, 원인이 지연이라는 것을 확인했다.
+- **포트홀은 휴머노이드에게 장애물이 아니다.** 깊이 12 cm 포트홀이 턱 한계 15 cm 안이라 디뎌 넘는다.
+  가림·그림자 처리 없음 설정(bumps seed 0–9)에서 센서 높이 0.3 m와 1.2 m 모두 9/10이다. 같은 설정의 스워브는 0.3 m에서 3/10, 1.0 m에서 9/10이다.
+- **뒤집은 MID-360 시야가 발밑을 본다.** 일반 LiDAR(±15°, 10° 숙임)를 1.2 m에 달면 2.6 m 안이 비어 L1 간이 bumps s4가 90 s 시간 초과다.
+  −52°~+7° 시야로 바꾸면 5개 지형 모두 도달한다(높이 RMSE 1.1–1.6 cm).
+
 **근거리 미관측(TP-0101).** 로봇 둘레(몸체 0.35 m ~ 슬라이더 반경)의 못 본 칸을 치명으로 둔다. L1 간이에서 켜면 로봇이 더 조심스러워진다
 (bumps_potholes에서 도달 19 s → 39 s). L0 가림에서는 근처의 못 본 칸이 대개 이미 치명 링으로 둘러싸인 포트홀 바닥이라 주행이 거의 달라지지 않는다.
 
@@ -164,6 +190,10 @@ L1 간이, 시나리오 3개(curb_ramp s0, bumps_potholes s4, slope_crossfall s0
 | `TP-0102-nocomp` | TP-0102 | 같은 설정, 자세 보상 끔 | 60 s 시간 초과, 평균 높이 오차 2.9 cm(먼 링이 줄무늬로 틀린다) | 이 페이지 전용 | `TP-0102` |
 | `TP-0102-noise` | TP-0102 | 같은 설정, 추정 잡음 1° | 도달 56.9 s(느려짐) | 이 페이지 전용 | `TP-0102` |
 | `TP-0102-wheelleg` | TP-0102 | 바퀴 사족, curb_ramp, L1 간이 | 도달 15.5 s, 턱 15 cm 한계라 연석을 바로 넘는다 | 이 페이지 전용 | 스워브(`?rb=swerve&sh=0.3`): 경사로로 35.3 s |
+| `TP-0135` | TP-0135 | 휴머노이드, bumps_potholes s4, 원형 시야, MPPI가 하체 지연을 안다 | 도달 37.5 s | 이 페이지 전용(10번 중 10번 도달) | `TP-0135-unaware` |
+| `TP-0135-unaware` | TP-0135 | 같은 설정, MPPI가 하체 지연을 모른다 | 12.0 s 치명 셀 진입 | 이 페이지 전용(10번 중 6번 도달) | `TP-0135` |
+| `TP-0135-pothole` | TP-0135 | 휴머노이드, 가림·센서 0.3 m·그림자 처리 없음 | 도달 37.4 s, 포트홀을 디뎌 넘는다 | 이 페이지 전용 | `TP-0031-low`(스워브 5.0 s 치명) |
+| `TP-0135-l1` | TP-0135 | 휴머노이드, L1 간이, 뒤집은 MID-360 시야 | 도달 35.5 s | 이 페이지 전용 | `TP-0100`(스워브) |
 | `TP-0039` | TP-0039 | curb_ramp 레벨 3(연석 0.24 m, 경사로 1.1 m) | 도달 27.6 s | guidance+mppi 12/12 | — |
 | `planner-vs-controller` | — | Planner를 직선으로 | 60 s 시간 초과 | Planner가 필요한 이유 | Guidance(`?pl=guidance`): 14.8 s 도달 |
 | `TP-0128` | TP-0128 | bumps_potholes s0, 가림, 학습 정책 | 도달 10.1 s(MPPI는 14.1 s) | 브라우저 폐루프 8/12(MPPI 12/12) | MPPI(`?co=mppi`) |
@@ -188,7 +218,7 @@ L1 간이, 시나리오 3개(curb_ramp s0, bumps_potholes s4, slope_crossfall s0
 | `sim.js` | `travplan/sim/kinematic_sim.py`, `travplan/eval/runner.py` | 0.1 s 폐루프, 10스텝마다 재계획, 관측 융합, 보행자, 실패 판정 |
 | `chassis.js` | `travplan/sim/ground_truth.py` | 차체 기하 기준(방위각 8개, 자세·바퀴 들뜸·배 밑 간섭, 지상고 0.10 m 가정) |
 | `perception.js` | `travplan/sim/lidar.py`, `travplan/perception/emap_mapper.py`(줄인 것) | 합성 LiDAR, 칸별 칼만 높이 융합, 상한. 몸체 자세(참 자세로 쏘고, 믿는 자세로 놓는다) |
-| `robots.js` | (없음, 이 페이지 전용) | 로봇 종류별 한계·센서 높이·걸음새 흔들림(TP-0102) |
+| `robots.js` | (없음, 이 페이지 전용) | 로봇 종류별 한계·센서 높이·걸음새 흔들림(TP-0102), 휴머노이드의 GR00T식 하체 추종(`wbcTrack`)과 발 디딤(`footTouchdowns`, TP-0135) |
 | `policy.js` | `travplan/control/tiny_policy.py` | 학습 정책의 관측 50개와 MLP forward. 가중치는 `policy_weights.js`(생성물, 손대지 않는다) |
 | `core.js` | `travplan/core/grid.py` 일부 | 난수, 격자, 이중선형 보간, max·avg pool |
 | `metrics.js` | `travplan/eval/metrics.py`, `travplan/eval/runner.py`의 log | 주행 한 번을 `metrics.csv` 한 줄로(6절) |
@@ -219,7 +249,8 @@ L1 간이, 시나리오 3개(curb_ramp s0, bumps_potholes s4, slope_crossfall s0
   자세(pitch·roll)는 IMU라 남는다 — 걸음새 흔들림이 섞인 값 그대로다.
 - L1 간이는 elevation_mapping_cupy의 핵심(높이 융합, 분산, 상한)만 흉내 낸다. 드리프트 보정, 레이 캐스팅으로 칸 비우기, 이상치 제거는 없다.
   LiDAR 잡음은 σ = 0.5 cm + 0.2 cm/m로 L0와 비슷하게 두었다. 더 크면 좁은 턱 창(0.30 m)이 잡음을 턱으로 읽는다.
-- 사족 보행과 바퀴 사족은 이 페이지에만 있다. 다리 동역학·발 디딤·미끄러짐은 없고, 몸체를 twist로 움직이며 걸음새 흔들림만 더한다. 한계값은 공개 제원을 참고한 대표값이다.
+- 사족 보행, 바퀴 사족, 휴머노이드는 이 페이지에만 있다. 다리 동역학과 미끄러짐은 없다. 몸체를 twist로 움직이고 걸음새 흔들림과 발 디딤만 더한다. 한계값은 공개 제원을 참고한 대표값이다.
+- 휴머노이드의 하체는 GR00T WBC의 RL 정책(관절 15개)이 아니라 그 닫힌 루프의 근사다(1차 지연 0.4 s는 가정). 발 디딤은 실패 판정에 쓰지 않는다.
 - 센서가 몸체와 함께 기운다(TP-0102). Python 운동학 시뮬의 LiDAR는 아직 수평이다.
 - 보행자는 등속으로 직진한다(Python `DynamicObstacles.advance`와 같다).
 

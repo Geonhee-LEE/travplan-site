@@ -163,6 +163,7 @@ button { cursor: pointer; }
 .row input[type=range] { width: 100%; accent-color: var(--accent); }
 .toggles { display: flex; flex-wrap: wrap; gap: 6px 12px; }
 .seg.full { display: flex; } .seg.full button { flex: 1; }
+#robot button { padding: 5px 3px; white-space: nowrap; }   /* 로봇 넷(TP-0135): 휴머노이드가 두 줄로 꺾이지 않게 */
 .demo-title { margin: 0; font-weight: 600; }
 .demo-title b { font: 600 11px var(--mono); color: var(--accent); margin-right: 5px; }
 .demo dl { margin: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 10px; font-size: 12.5px; }
@@ -297,11 +298,12 @@ footer code { font: 12px var(--mono); }
       <section class="card">
         <h2>로봇 <em id="robotNote"></em></h2>
         <div class="seg full" id="robot" role="group" aria-label="로봇 종류">
-          <button data-val="swerve">스워브</button><button data-val="quadruped">사족 보행</button><button data-val="wheelLeg">바퀴 사족</button>
+          <button data-val="swerve">스워브</button><button data-val="quadruped">사족 보행</button><button data-val="wheelLeg">바퀴 사족</button><button data-val="humanoid">휴머노이드</button>
         </div>
         <p class="note" id="robotDesc"></p>
         <div class="toggles">
           <label class="check" title="매퍼가 IMU·다리 기구학으로 몸체 pitch·roll·높이를 알고 점을 그 자세로 놓는다. 끄면 몸체가 수평이고 흔들리지 않는다고 믿는다."><input type="checkbox" id="poseComp"> 자세 보상</label>
+          <label class="check" title="휴머노이드 전용(TP-0135): MPPI 롤아웃이 하체 정책(GR00T 분리형 WBC)의 추종 지연 0.4 s와 서기 전환을 안다. 끄면 명령이 곧바로 몸체 속도가 된다고 믿어 예측과 실제가 어긋난다."><input type="checkbox" id="wbcAware"> MPPI가 하체 지연을 안다</label>
         </div>
         <div class="row"><label for="poseNoise" title="자세 보상을 켰을 때 추정 자세의 잡음(pitch·roll σ, 1°당 높이 5 mm). 시정수 약 1 s로 천천히 변한다.">자세 추정 잡음</label><input type="range" id="poseNoise" min="0" max="3" step="0.25" value="0"><output id="poseNoiseOut"></output></div>
       </section>

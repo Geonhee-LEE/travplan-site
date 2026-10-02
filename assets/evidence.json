@@ -101,6 +101,10 @@
   "tp0128_policy": {
    "caption": "Playground 폐루프(가림 켠 belief 지도, 4 시나리오 × seed 0–2). 학습 정책은 사족에서 MPPI와 같은 12/12에 제어 시간 약 1/180이고, 지도 입력을 끄면 바퀴는 0/12로 전부 잃는다",
    "results": "results/p2-playground-policy.tsv"
+  },
+  "tp0135_humanoid": {
+   "caption": "Playground 휴머노이드(GR00T 분리형 WBC): MPPI가 하체 지연을 알면 포트홀 사이를 지나고(왼쪽), 모르면 12 s에 포트홀 둘레로 들어간다(가운데). 오른쪽은 3D",
+   "results": "docs/playground/humanoid_fig.html"
   }
  },
  "tp": {
@@ -165,6 +169,7 @@
   ]
  },
  "featured": [
+  "tp0135_humanoid",
   "tp0128_policy",
   "tp0054_sigma",
   "tp0098_determinism",

@@ -81,6 +81,29 @@ export class Map3D {
         this.legBody.add(hip); this.legs.push([hip, k, foot]);
       }
       this.legBody.visible = false; this.robot.add(this.legBody);
+      // 휴머노이드(G1급, TP-0135): 골반 0.74 m, 허벅지·정강이 0.36 m씩, 몸통, 머리(LiDAR 1.2 m), 팔.
+      // 다리는 엉덩이에서 앞뒤로, 흔드는 다리는 무릎을 굽힌다. 팔은 같은 쪽 다리와 반대로 흔든다.
+      const dark = new T.MeshStandardMaterial({ color: 0x1b2226, roughness: 0.6 }), acc = new T.MeshStandardMaterial({ color: 0xf2b705 });
+      this.humBody = new T.Group();
+      const pelvis = new T.Mesh(new T.BoxGeometry(0.18, 0.26, 0.12), dark); pelvis.position.z = 0.74; this.humBody.add(pelvis);
+      const chest = new T.Mesh(new T.BoxGeometry(0.2, 0.34, 0.36), dark); chest.position.z = 1.0; this.humBody.add(chest);
+      const badge = new T.Mesh(new T.BoxGeometry(0.205, 0.2, 0.06), acc); badge.position.set(0.0, 0, 1.08); this.humBody.add(badge);
+      const skull = new T.Mesh(new T.SphereGeometry(0.1, 16, 12), mat); skull.position.z = 1.24; this.humBody.add(skull);
+      const puck = new T.Mesh(new T.CylinderGeometry(0.05, 0.05, 0.05, 16), new T.MeshStandardMaterial({ color: 0x9aa4a0 }));
+      puck.rotation.x = Math.PI / 2; puck.position.set(0.06, 0, 1.2); this.humBody.add(puck);
+      this.humLegs = []; this.humArms = [];
+      for (const side of [1, -1]) {
+        const hip = new T.Group(); hip.position.set(0, 0.1 * side, 0.72);
+        const thigh = new T.Mesh(new T.CylinderGeometry(0.045, 0.04, 0.36, 10), mat); thigh.rotation.x = Math.PI / 2; thigh.position.z = -0.18; hip.add(thigh);
+        const knee = new T.Group(); knee.position.z = -0.36; hip.add(knee);
+        const shin = new T.Mesh(new T.CylinderGeometry(0.04, 0.035, 0.34, 10), mat); shin.rotation.x = Math.PI / 2; shin.position.z = -0.17; knee.add(shin);
+        const sole = new T.Mesh(new T.BoxGeometry(0.22, 0.09, 0.03), dark); sole.position.set(0.04, 0, -0.35); knee.add(sole);
+        this.humBody.add(hip); this.humLegs.push([hip, knee, side]);
+        const sh = new T.Group(); sh.position.set(0, 0.21 * side, 1.15);
+        const arm = new T.Mesh(new T.CylinderGeometry(0.035, 0.03, 0.46, 10), mat); arm.rotation.x = Math.PI / 2; arm.position.z = -0.23; sh.add(arm);
+        this.humBody.add(sh); this.humArms.push([sh, side]);
+      }
+      this.humBody.visible = false; this.robot.add(this.humBody);
       this.goalMark = new T.Mesh(new T.CylinderGeometry(0.3, 0.3, 0.02, 32), new T.MeshBasicMaterial({ color: 0x4cc38a, transparent: true, opacity: 0.8 }));
       this.goalMark.rotation.x = Math.PI / 2; this.scene.add(this.goalMark);
       this.lines = {};
@@ -157,9 +180,20 @@ export class Map3D {
     this.robot.position.set(P.x, P.y, P.z);
     this.robot.rotation.set(0, 0, 0); this.robot.rotateZ(P.yaw); this.robot.rotateY(-P.pitch); this.robot.rotateX(P.roll);
     const u = world.twist, R = world.R || { kind: "wheel" };
-    const legged = R.kind !== "wheel";
-    for (const p of this.wheelParts) p.visible = !legged;
+    const hum = R.kind === "humanoid", legged = R.kind !== "wheel" && !hum;
+    for (const p of this.wheelParts) p.visible = R.kind === "wheel";
     this.legBody.visible = legged;
+    this.humBody.visible = hum;
+    if (hum) {
+      // 걸음 시계(world.gaitClock)의 위상으로 다리를 움직인다. 왼발 위상 0, 오른발 0.5(GR00T phases = 0.5).
+      const sp = Math.min(1, Math.hypot(u[0], u[1]) / 0.4), base = 2 * Math.PI * R.gait.freq * (world.gaitClock || 0);
+      for (const [hip, knee, side] of this.humLegs) {
+        const ph = base + (side > 0 ? 0 : Math.PI), swing = Math.max(0, Math.sin(ph));   // 앞 반 주기에 흔든다
+        hip.rotation.y = -0.38 * sp * Math.cos(ph);
+        knee.rotation.y = 0.75 * sp * swing;
+      }
+      for (const [sh, side] of this.humArms) sh.rotation.y = 0.3 * sp * Math.cos(base + (side > 0 ? 0 : Math.PI));
+    }
     if (legged) {
       const ph = 2 * Math.PI * (R.gait?.freq || 1) * world.t, sp = Math.min(1, Math.hypot(u[0], u[1]) / 0.6), amp = R.kind === "legs" ? 0.35 : 0.1;
       for (const [hip, k, foot] of this.legs) {

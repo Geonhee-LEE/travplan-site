@@ -68,8 +68,9 @@ export class ElevationMap {
   // T = 참 몸체 자세(레이를 쏘고 지형과 부딪히는 곳을 찾는다), E = 매퍼가 믿는 몸체 자세(측정 거리를 그 자세로 세계에 놓는다).
   // 둘이 같으면 자세 보상이 완벽한 경우다. sensorH = 몸체 원점 위 LiDAR 높이, range = 최대 거리, z = 실제 높이장.
   // 상한(upper bound)도 E로 그린 레이를 따라 갱신한다. 자세를 잘못 믿으면 상한도 틀린다.
-  scan(z, T, E, sensorH, range, rng) {
-    const g = this.g, L = LIDAR, res = g.res, W = g.W;
+  // lidar: 로봇별 덮어쓰기(TP-0135 — G1은 머리에 Livox MID-360을 뒤집어 달아 수직 시야가 −52°~+7°다). 없으면 LIDAR.
+  scan(z, T, E, sensorH, range, rng, lidar = null) {
+    const g = this.g, L = lidar ? { ...LIDAR, ...lidar } : LIDAR, res = g.res, W = g.W;
     const Wm = (g.W - 1) * res, Hm = (g.H - 1) * res;
     const ot = apply(T, [0, 0, sensorH]), oe = apply(E, [0, 0, sensorH]);
     const pts = [];

@@ -144,6 +144,7 @@ function revealChip() {
 // 로봇을 바꾸면 한계가 바뀌어 GT 지도부터 다시 만든다. 센서 높이는 그 로봇의 기본 장착 높이로 맞춘다.
 const syncRobot = segment("robot", opts.robot, (v) => { opts.robot = v; opts.sensorHeight = ROBOTS[v].sensorH; newWorld(); });
 $("poseComp").addEventListener("change", (e) => { opts.poseComp = e.target.checked; restart(); });
+$("wbcAware").addEventListener("change", (e) => { opts.wbcAware = e.target.checked; restart(); });
 const setPN = slider("poseNoise", (v) => (v ? `${v.toFixed(2)}°` : "없음"), (v) => { opts.poseNoise = v; restart(); });
 const syncPer = segment("perception", opts.perception, (v) => { opts.perception = v; restart(); });
 const syncPl = segment("planner", opts.planner, (v) => { opts.planner = v; restart(); });
@@ -241,6 +242,7 @@ function syncPanel() {
   syncRobot(opts.robot); $("robotDesc").textContent = R.note;
   $("robotNote").textContent = `턱 ${Math.round(R.trav.maxStep * 100)} cm · 경사 ${Math.round(R.trav.maxSlope * 57.3)}° · ${R.vmax[0]} m/s`;
   $("poseComp").checked = opts.poseComp; setPN(opts.poseNoise || 0);
+  $("wbcAware").checked = opts.wbcAware !== false; $("wbcAware").disabled = !R.wbc || opts.controller !== "mppi";
   $("poseComp").disabled = opts.perception !== "l1lite"; $("poseNoise").disabled = opts.perception !== "l1lite" || !opts.poseComp;
   $("perNote").textContent = PERCEPTION[opts.perception].note;
   $("plNote").textContent = PLANNERS[opts.planner].note;
@@ -469,6 +471,8 @@ function telemetry() {
     world.mapErr && opts.perception !== "gt" ? `<span class="${world.mapErr.rmse > 0.03 ? "warn" : ""}" title="로봇 3 m 안 관측 칸: 본 높이와 실제 높이의 RMSE">높이 오차 <b>${(world.mapErr.rmse * 100).toFixed(1)} cm</b></span>` : "",
     world.mapErr && opts.perception !== "gt" ? `<span class="${world.mapErr.falseBlocked > 20 ? "warn" : ""}" title="로봇 3 m 안: 로봇 지도는 치명인데 실제 cost는 치명이 아닌 관측 칸">거짓 치명 <b>${world.mapErr.falseBlocked}칸</b></span>` : "",
     world.R && world.R.gait ? `<span title="걸음새로 흔들린 몸체 pitch(지형 기울기 제외)">흔들림 <b>${deg(world.body.gait.pitch)}°</b></span>` : "",
+    world.wbc ? `<span title="GR00T 분리형 WBC: 하체 정책이 받은 navigate_cmd(vx·vy·ωz). 크기가 0.05보다 작으면 서기 정책으로 선다(TP-0135)">WBC <b>${world.wbc.standing ? "서기" : "걷기"}</b>${world.wbc.cmd ? ` · 명령 <b>${world.wbc.cmd.map((v) => v.toFixed(2)).join(" ")}</b>` : ""}</span>` : "",
+    world.R?.feet ? `<span class="${world.footFaults ? "warn" : ""}" title="발이 디딘 횟수와 나쁜 디딤(경사 30° 초과 또는 턱 한계 초과 칸). 실패 판정에는 쓰지 않는다(TP-0135)">발 디딤 <b>${world.footCount}</b> · 나쁜 디딤 <b>${world.footFaults}</b></span>` : "",
     world.peds.length ? `<span class="${clear < 0.3 ? "warn" : ""}">보행자 여유 <b>${Number.isFinite(clear) ? clear.toFixed(2) + " m" : "-"}</b></span>` : "",
     `<span>지도 <b>${world.ms.map.toFixed(0)}</b> · 계획 <b>${world.ms.plan.toFixed(0)}</b> · 제어 <b>${world.ms.ctrl.toFixed(0)} ms</b></span>`,
     !paused && world.status === "running" ? `<span class="${rt.factor < 0.9 * speed ? "warn" : ""}">실시간 <b>×${rt.factor.toFixed(2)}</b></span>` : "",
@@ -524,8 +528,9 @@ function banner() {
     const s = world.stats;
     runLog.unshift({
       st: runStart, changed: runChanged, m: meter.row(world, { edited: world.edited }),
-      robot: ({ swerve: "스워브", quadruped: "사족", wheelLeg: "바퀴 사족" }[opts.robot])
-        + (opts.perception === "l1lite" && opts.robot !== "swerve" ? (opts.poseComp ? ` 보상${opts.poseNoise ? " ±" + opts.poseNoise + "°" : ""}` : " 보상 끔") : ""),
+      robot: ({ swerve: "스워브", quadruped: "사족", wheelLeg: "바퀴 사족", humanoid: "휴머노이드" }[opts.robot])
+        + (opts.perception === "l1lite" && opts.robot !== "swerve" ? (opts.poseComp ? ` 보상${opts.poseNoise ? " ±" + opts.poseNoise + "°" : ""}` : " 보상 끔") : "")
+        + (opts.robot === "humanoid" && opts.controller === "mppi" ? (opts.wbcAware !== false ? " WBC 앎" : " WBC 모름") : ""),
       err: s.errN ? `${((100 * s.errSum) / s.errN).toFixed(1)} cm` : "-",
       sc: `${opts.scenario}${DIFFICULTY[opts.scenario] ? "@L" + opts.level : ""} s${opts.seed}${world.edited ? " (편집)" : ""}`,
       per: ({ gt: "완전", range: "L0", occlusion: `가림 ${opts.sensorHeight.toFixed(1)} m`, l1lite: `L1 간이 ${opts.sensorHeight.toFixed(1)} m` }[opts.perception])
