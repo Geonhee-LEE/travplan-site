@@ -285,10 +285,12 @@ A.2·A.2b(지형 지도 계보), A.10.1–A.10.2(traversability 계보와 2026 S
 | GRACE | 2026.07 | reverse step마다 MPPI로 guidance 평균 추정(gradient 불필요) | B.8.2 | [논문](https://arxiv.org/abs/2607.21661) |
 | CoDiG | 2025.05 | denoise SDE에 지수 barrier 기울기를 더해 제약 만족, 1:28 경주차 실물. 4090 2.5 Hz(warm start) | B.8.2 | [논문](https://arxiv.org/abs/2505.13131) |
 | 최적화 guidance (OGD) | 2026.06 | 역방향 스텝의 노이즈를 최적화 변수로 치환, 재학습 없이 hard 제약. 제약 solver는 46–69배 | B.8.2 | [논문](https://arxiv.org/abs/2606.24208) |
+| OT-CFM(미니배치 OT) | 2023.02 · TMLR 2024 | 배치 안에서 노이즈↔데이터 짝을 OT로 골라 경로를 곧게 만든다. `flow_model.py`의 독립 짝짓기를 바꿀 후보 | 0.2b ④ | [논문](https://arxiv.org/abs/2302.00482) · [코드](https://github.com/atong01/conditional-flow-matching) |
+| Multisample Flow Matching | 2023.04 · ICML 2023 | 위와 같은 발상의 다른 판. 주변 분포를 보존하면서 결합만 바꾼다 | 0.2b ④ | [논문](https://arxiv.org/abs/2304.14772) |
 
 ### D.5b Planner — 고전 기준선, 마일스톤, VLA, E2E 주행
 
-B.10(고전 기준선), B.4b(비용 지도 자기지도), B.6b(VLA·도시 내비), B.8.0(생성형 궤적 계보), B.11(E2E 주행)에서 다룬 연구다. 고전 논문은
+B.10·B.10.1(고전 기준선), B.4b(비용 지도 자기지도), B.6b(VLA·도시 내비), B.8.0(생성형 궤적 계보), B.11(E2E 주행)에서 다룬 연구다. 고전 논문은
 arXiv가 없어 DOI로 링크했다.
 
 | 이름 | 연·발표 | 요약 | 본문 | 링크 |
@@ -301,6 +303,8 @@ arXiv가 없어 DOI로 링크했다.
 | Nav2 (The Marathon 2) | 2020.03 · IROS 2020 | behavior tree 기반 ROS 2 내비 스택 | B.10, B.12.4 | [논문](https://arxiv.org/abs/2003.00368) · [코드](https://github.com/ros-navigation/navigation2) |
 | ROS 2 내비 알고리즘 개관 | 2023.07 | Nav2 유지보수자들이 쓴 알고리즘 비교 | B.10 | [논문](https://arxiv.org/abs/2307.15236) |
 | Smac Planner | 2024.01 | 비용 인식 A\*, Hybrid-A\*, State Lattice. Nav2 기본 계획기 | B.10, B.12.4 | [논문](https://arxiv.org/abs/2401.13078) |
+| **MPOT** | 2023.09 · **NeurIPS 2023** | 기울기 없이 궤적 다발을 한꺼번에 최적화(Sinkhorn Step). point-mass 0.4 s/99.2%, Panda 0.8 s/71.6%. ==원형은 Controller 자리에 못 쓰고, 제어열 판은 같은 예산의 MPPI를 넘지 못했다(TP-0130). 남는 자리는 Planner D의 다중 모드 교사== | E.11, B.10.1, 0.2b ① | [논문](https://arxiv.org/abs/2309.15970) · [코드](https://github.com/anindex/mpot) ★71 **MIT** · [ssax](https://github.com/anindex/ssax) **MIT** |
+| MPC-OT | 2025.08 · IEEE CDC 2025 | 로봇 N대를 목표 M개에 배정하며 경로 비겹침을 LP 제약으로 보장, MPC로 재계획. **D.6의 OT-MPC와 다른 논문이다.** ⚠️ 계산 시간·성공률·기준선 비교 없음, 증명은 다른 곳, 코드 없음 | 0.2b ② | [논문](https://arxiv.org/abs/2508.21205) |
 | iPlanner | 2023.02 · RSS 2023 | 비용 지도의 기울기로 학습하는 경로 Planner, fear loss | B.4b, B.12.2 | [논문](https://arxiv.org/abs/2302.11434) · [코드](https://github.com/leggedrobotics/iPlanner) |
 | ViPlanner | 2023.10 · ICRA 2024 | 의미 비용 지도로 확장, 시뮬 학습만으로 실물 | B.4b, B.12.2 | [논문](https://arxiv.org/abs/2310.00982) · [코드](https://github.com/leggedrobotics/viplanner) |
 | OpenVLA | 2024.06 | 공개 7B VLA, 행동을 256구간 토큰으로 | B.6b | [논문](https://arxiv.org/abs/2406.09246) · [코드](https://github.com/openvla/openvla) |
@@ -420,6 +424,7 @@ TEB, Smac, iPlanner, ViPlanner, X-Mobility, COMPASS, legged_gym, autonomy_stack_
 | 이름 | 연·발표 | 요약 | 본문 | 링크 |
 |---|---|---|---|---|
 | Smooth MPPI (SMPPI) | 2021.12 · RA-L/IROS 2022 | 제어 변화율 공간 샘플링. `SmoothMPPIController`로 반영(TP-0021) | B.5, E | [논문](https://arxiv.org/abs/2112.09988) · [프로젝트](https://www.taekyung.me/research/smppi) |
+| OT-MPC | 2026.05 | MPPI의 가중 평균 단계를 엔트로피 OT로 바꿔, 입자를 가까운 저비용 제안의 무게중심으로 옮긴다. 모드가 여럿인 과제에서 이득, 코드 미공개. **D.5b의 MPC-OT와 다른 논문이다** | E.11 | [논문](https://arxiv.org/abs/2605.02147) |
 | Terrain-Aware Kinodynamic Model + MPPI | 2023.05 · RA-L 2023 | 지형 조건 학습 6-DoF 모델을 MPPI rollout에 사용, 접촉 추정 | E | [논문](https://arxiv.org/abs/2305.00676) · [프로젝트](https://www.taekyung.me/research/off-road) |
 | PENN (Physics Embedded NN Vehicle Model) | 2022.07 | 미분 가능 물리 + NN 차량 모델, 잠재 특징 = 타이어 힘 | E | [논문](https://arxiv.org/abs/2207.07920) |
 | TOAST | 2022.01 · RA-L/IROS 2022 | MPC와 같은 NN 동역학으로 고속 추종 제어 | E | [논문](https://arxiv.org/abs/2201.08321) |
@@ -753,6 +758,8 @@ TP-0036에 바로 들어간다)다.
 ### D.11 기타
 
 - 사용자 Notion 리서치 허브 — [VLA/E2E/Learning-based planning — Mobile robot](https://app.notion.com/p/geonhee-lee/VLA-E2E-Learning-based-planning-Mobile-robot-346c5d39343d80f18d74f6efac4cc40a)
+- Cuturi, *Sinkhorn Distances: Lightspeed Computation of Optimal Transport*, NeurIPS 2013 — [논문](https://proceedings.neurips.cc/paper/2013/hash/af21d0c97db2e27e13572cbf59eb343d-Abstract.html). 엔트로피 정규화 OT와 Sinkhorn–Knopp 반복의 출처 — 배경 0.2b의 ①과 ⑥이 이 반복을 쓴다
+- Peyré·Cuturi, *Computational Optimal Transport*, 2019 — [논문](https://arxiv.org/abs/1803.00567). Monge·Kantorovich·Wasserstein·Sinkhorn을 한자리에 모은 교과서 — "OT"가 뜻하는 여섯 가지를 가를 때의 출처(배경 0.2b)
 - KAIST Urban Robotics Lab 연구자 페이지 — [Jiwon Park](https://ziwon-park.com/)(DreamFlow), [Dongkyu Lee](https://dklee98.github.io/#highlights)(TRG-planner, DreamFlow, DreamWaQ++, DreamFLEX, TRIP; ==2025-04부터 스핀오프 **URobotics Corp.**의 CTO·공동창업자==), [I Made Aswin Nahrendra](https://anahrendra.github.io/)(==Dream\* 계열 다섯 편의 1저자 또는 공저==)
 - 같은 페이지의 [ADD - Traversability Estimation, Off-Road Autonomous Driving](https://app.notion.com/p/geonhee-lee/VLA-E2E-Learning-based-planning-Mobile-robot-346c5d39343d80f18d74f6efac4cc40a#3e5c5d39343d8039bd36c32ec5418e7d) 블록 — A.10·E의 출처
 

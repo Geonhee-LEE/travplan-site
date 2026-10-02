@@ -7,7 +7,7 @@
 무엇을 바꿨는지**만 설명한다. 각 절은 요점 한 단락으로 시작하고, 왜 필요한가·직관·작은 예·함정·어디서 쓰나 순서로 이어진다.
 그림 뒤의 "수식 보기" 토글에 기호, 유도, 변형을 모았고, 끝에 참고문헌을 달았다. travplan 코드와 연결되는 곳은 파일 이름을 적었다.
 
-**이 문서는 여러 논문이 공유하는 수학 도구 16개를 세 탭에 모았다.** 표의 "쓰는 절"은 그 도구를 "배경 0.N"으로 가리키는 절이고,
+**이 문서는 여러 논문이 공유하는 수학 도구 17개를 세 탭에 모았다.** 표의 "쓰는 절"은 그 도구를 "배경 0.N"으로 가리키는 절이고,
 "원전"은 그 도구의 원 논문과 대표 논문이다. 번호는 처음 쓴 순서라 탭 안에서 순서가 섞여 있다.
 
 | 절 | 도구 | 한 줄 요약 | 쓰는 절 | travplan 코드 | 원전 |
@@ -25,6 +25,7 @@
 | 0.12 | 모방 학습, DAgger, 특권 교사 | 교사를 따라 하되, 학생이 간 상태에 교사 라벨을 붙인다 | A.7, A.7.1, A.8, A.8.2, B.2, B.5, B.9 | `scripts/dagger_planner_d.py` | [DAgger](https://arxiv.org/abs/1011.0686), [Learning by Cheating](https://arxiv.org/abs/1912.12294) |
 | 0.13 | Conformal prediction | 분포 가정 없이 보정된 예측 영역을 만든다 | B.9, E | — | [Shafer·Vovk](https://arxiv.org/abs/0706.3188), [ACI](https://arxiv.org/abs/2106.00170) |
 | 0.2 | MPPI | 제어열 후보를 굴려 비용이 낮을수록 큰 가중치로 평균한다 | A.8, A.10.1, B.5, B.8.2, C.2, E.1 | `control/mppi/mppi.py` | [MPPI](https://arxiv.org/abs/1509.01149), [정보이론 MPC](https://arxiv.org/abs/1707.02342) |
+| 0.2b | 최적 수송(OT) | 한 이름이 뜻하는 여섯 가지를 가른다. 최적화기·배정·경로 이름·짝짓기·거리·군집화 | 0.3, 0.6, 0.9, B.8.3, B.10.1 | `eval/map_quality.py::wasserstein1`(⑤만 쓴다) | [MPOT](https://arxiv.org/abs/2309.15970), [Sinkhorn](https://proceedings.neurips.cc/paper/2013/hash/af21d0c97db2e27e13572cbf59eb343d-Abstract.html) |
 | 0.3 | CVaR | 평균 대신 가장 나쁜 꼬리의 평균을 본다 | A.7, B.9, C.2 | `RiskCost` | [Rockafellar·Uryasev](https://doi.org/10.21314/JOR.2000.038), [Majumdar·Pavone](https://arxiv.org/abs/1710.11040) |
 | 0.4 | Control Barrier Function | 명령을 최소한으로 고쳐 안전 집합에 남긴다 | A.8, B.9, C.2, C.4 | CVaR-BF(TP-0014) 후보 | [CBF-QP](https://arxiv.org/abs/1609.06408), [CVaR-BF](https://arxiv.org/abs/2011.01578) |
 | 0.11 | 메타러닝, 온라인 적응 | 빨리 적응하기 좋은 시작점을 배워 두고 현장에서 몇 스텝 미세조정한다 | A.10.3, E | `control/acados_mpc/gp.py`(잔차 GP) | [MAML](https://arxiv.org/abs/1703.03400), [RMA](https://arxiv.org/abs/2107.04034) |
@@ -418,7 +419,7 @@ $$ \mathcal{L}^{\text{SVDD}}(x_i) = \lVert g_\phi(x_i) - C_p \rVert^2, \qquad x_
 $$ Q_{kj} = \frac{\exp(x_j^\top c_k / \tau)}{\sum_{k'} \exp(x_j^\top c_{k'} / \tau)}, \qquad \max_A \operatorname{Tr}(A^\top Q)\ \ \text{s.t. 각 군집 크기} = n_u / K $$
 
 $g_\phi$는 분류 머리, $x_j$는 라벨 없는 점 $j$의 특징, $c_k$는 prototype $k$, $\tau$는 온도, $A \in \{0, 1\}^{K \times n_u}$는 점을 군집에 하나씩
-넣는 배정이다. 균등 분할 제약이 "모두 한 군집" 해를 막는다. 이 최적 수송 문제는 Sinkhorn–Knopp 반복 몇 번으로 풀리고(SeLa, Asano 2020), 그 배정을
+넣는 배정이다. 균등 분할 제약이 "모두 한 군집" 해를 막는다. 이 최적 수송 문제는 Sinkhorn–Knopp 반복 몇 번으로 풀리고(SeLa, Asano 2020. 같은 반복을 쓰는 다른 OT들과의 구분은 0.2b ⑥), 그 배정을
 정답 삼아 교차 엔트로피 $-\tfrac{1}{n_u} \sum_{k, j} A_{kj} \log Q_{kj}$로 특징과 prototype을 함께 갱신한다. 추론 때는 $C_p$와의 유사도(정상
 점수)를 문턱과 비교해 지나갈 수 있는지 정한다. Self-Supervisions Only는 정규화 흐름(Fastflow)의 특징 위에서 같은 일을 한다. 양성 중심과의 코사인
 유사도를 쓰고, 흐름의 Jacobian 항이 상수 사상을 벌하며, 라벨 없는 픽셀에 같은 균등 분할 군집화를 건다.
@@ -891,6 +892,8 @@ Planner D는 이 구조로 계획 한 번을 3.4 ms에 끝낸다(§B.8.3). 여�
 
 ![Flow Matching Fig. 3 오른쪽](https://arxiv.org/html/2210.02747v2/figures/2d_traj/2d_traj_ot.png)
 *그림 — Flow Matching (Fig. 3 오른쪽): 최적 수송(OT) 조건부 경로. 같은 도착점으로 곧게, 일정한 속도로 간다. rectified flow와 Planner D가 쓰는 경로다. 출처: [arXiv:2210.02747](https://arxiv.org/abs/2210.02747)*
+
+==여기서 "OT"는 **아무 수송 문제도 풀지 않는다** — 두 가우시안 사이의 닫힌 형식 사상에 붙은 이름이다.== 실제로 OT를 풀어 노이즈와 데이터를 짝짓는 미니배치 OT는 별개이고, 둘의 구분과 travplan에 들어올 자리는 0.2b ③④에 있다.
 
 ![Rectified Flow Fig. 1](https://arxiv.org/html/2209.03003v1/arxiv_figures/cat_triangle_new_2_cy.pptx.jpeg)
 *그림 — Rectified Flow (Fig. 1): 노이즈에서 고양이 얼굴을 Euler N스텝으로 만든다. 1-rectified flow는 N = 1에서 흐린 평균이 나오고 N = 2부터 쓸 만하다. reflow로 경로를 편 2-rectified flow는 N = 1에서도 선명하다. 출처: [arXiv:2209.03003](https://arxiv.org/abs/2209.03003)*
@@ -1612,6 +1615,7 @@ $\Phi^{-1}(1-\epsilon)$ 자리에 들어갈 값도 이 $\hat q$다.
 MPPI(model predictive path integral)는 제어열에 노이즈를 섞은 후보를 수백 개 굴려 보고,
 ==비용이 낮은 후보일수록 지수적으로 큰 가중치를 줘서 평균을 낸다.== 미분이 필요 없어서 치명 셀 벌점처럼 불연속인 비용도 그대로 쓸 수 있다.
 travplan `MPPIController`(`control/mppi/mppi.py`)가 이 방식이고, 0.1 s마다 후보 768개를 4 s 앞까지 굴린다.
+==기울기 없는 궤적 최적화라는 점에서 MPOT(Sinkhorn Step)와 묶이기 쉽다== — 둘이 무엇을 공유하고 무엇이 다른지는 0.2b가, 제어열 판을 실제로 세워 같은 예산으로 맞대 본 결과는 E.11(TP-0130)이 적었다.
 
 **왜 필요한가.** Controller는 매 주기 앞으로 몇 초 동안의 제어열을 정해야 한다. travplan의 비용은 TravMap에서 오는데, 치명 셀 벌점(1000)과
 자세 한계 벌점은 계단 모양이라 기울기가 없다. 기울기로 푸는 최적화는 이런 비용에서 갈 방향을 얻지 못한다.
@@ -1763,11 +1767,224 @@ $$ \epsilon_t = \sum_{s \le t} \eta_s, \qquad \eta_s \sim \mathcal{N}\!\Big(0, \
 - Kazim 외, *Recent Advances in Path Integral Control for Trajectory Optimization: An Overview in Theoretical and Algorithmic Perspectives*, Annual Reviews in Control 2024 — [arXiv:2309.12566](https://arxiv.org/abs/2309.12566). 개관. MPPI·CEM·PI²-CMA의 관계와 SMPPI·log-MPPI 비교를 본다.
 - Vlahov 외, *MPPI-Generic: A CUDA Library for Stochastic Trajectory Optimization*, arXiv 2024 — [arXiv:2409.07563](https://arxiv.org/abs/2409.07563). GPU 구현 라이브러리. Orin 이식 때 속도 기준으로 본다.
 
+### 0.2b 최적 수송(OT): 이름 하나가 여섯 가지를 뜻한다
+
+**결론 먼저.** ==travplan이 실제로 쓰는 OT는 하나뿐이다== — 지도 품질 지표의 1-Wasserstein 거리
+(`travplan/eval/map_quality.py::wasserstein1`). 새로 가져올 가치가 있는 것도 하나다 — **MPOT를 Planner D의
+다중 모드 교사로 쓰는 것**. ==MPOT는 원형 그대로는 MPPI 자리에 들어가지 못한다== — 제어열 판은 만들 수 있고, Controller 문서 E.11이
+그 판을 실제로 만들어 멈춘 장면에서 재 봤지만 같은 예산의 MPPI를 넘지 못했다(TP-0130).
+==MPC-OT는 로봇이 한 대면 성립하지 않는다.==
+
+**왜 이 절이 필요한가.** "최적 수송(optimal transport)을 쓴다"는 문장이 로봇·생성 모델 논문에서 **여섯 가지 서로
+다른 것**을 뜻한다. 섞어 읽으면 *"우리도 OT를 쓰니 저 방법이 우리 자리에 맞겠다"* 는 잘못된 결론으로 간다.
+먼저 갈라 둔다.
+
+| # | OT가 하는 일 | 대표 | travplan |
+|---|---|---|---|
+| ① | **최적화기** — 비용이 낮은 쪽으로 점 다발을 옮기는 규칙 | MPOT(Sinkhorn Step), OT-MPC | 아래에서 MPPI와 맞대본다. 제어열 판의 실측은 E.11 |
+| ② | **배정** — 누가 어느 목표로 갈지 고르고 경로가 안 겹치게 | MPC-OT(E.11의 OT-MPC와 **다른 논문**) | ==전이되지 않는다==(로봇 1대) |
+| ③ | **경로에 붙은 이름** — 두 가우시안 사이 닫힌 형식 사상 | Lipman의 "OT 조건부 경로" | 0.6. ==수송 문제를 **풀지 않는다**== |
+| ④ | **생성 학습의 짝짓기** — 어느 노이즈를 어느 데이터에 붙일까 | 미니배치 OT(OT-CFM) | 0.6의 다음 후보 |
+| ⑤ | **분포 사이 거리** $W_1$ | Wasserstein 지표 | ==오늘 쓰는 **유일한** OT== |
+| ⑥ | **균등 분할 군집화** | SeLa·ScaTE(Sinkhorn–Knopp) | 0.9 |
+
+==③과 ④가 가장 자주 섞인다.== ③은 **아무 최적화도 풀지 않는** 이름이고, ④는 배치 안에서 실제로 OT를 푼다
+(기본은 POT의 정확 EMD이고, Sinkhorn은 엔트로피 변종 쪽이다).
+①은 **궤적을** 옮기고, ④는 **학습 짝을** 옮긴다. ⑤는 **재는 것**이고 ①②④⑥은 **푸는 것**이다.
+
+#### ① MPOT — 원형은 MPPI 자리에 맞지 않고, 제어열 판은 MPPI를 넘지 못했다
+
+**MPOT**(*Accelerating Motion Planning via Optimal Transport*,
+[arXiv:2309.15970](https://arxiv.org/abs/2309.15970), **NeurIPS 2023**, Le·Chalvatzaki·Biess·Peters)는
+기울기 없이 **궤적 다발을 한꺼번에** 최적화한다. 핵심이 **Sinkhorn Step**이다.
+
+waypoint마다 **무작위로 회전시킨 정규 다포체**(단체·정축체·초입방체)를 씌우고, 각 꼭짓점 방향으로 probe 점을
+몇 개 찍어 비용을 잰다. 그 비용 행렬에 엔트로피 정규화 OT를 **한 번** 풀어 나온 수송 계획을 **방향 가중치**로 쓴다.
+==점수가 "궤적 하나당 하나"가 아니라 **(waypoint, 방향) 칸마다** 매겨진다.==
+
+**이 절은 분류와 혼동 지점만 다룬다.** Sinkhorn Step 한 번을 그린 논문 Fig. 2, 비용 행렬과 로그 영역 Sinkhorn
+반복의 수식, 논문 Table 1·2의 수치, 그리고 제어열 판의 실측은 Controller 문서 E.11이 같은 깊이로 다룬다(TP-0130).
+여기서 되풀이하지 않는다.
+
+==**여기서 OT는 "출발 분포와 목표 분포" 사이가 아니다.**== 두 주변 분포는 **(i) waypoint 전체의 균등 히스토그램**과
+**(ii) 다포체 꼭짓점의 균등 히스토그램**이다. 즉 ==**waypoint와 탐색 방향 사이**== 의 수송이다. 흔히 "시작점에서
+목표점으로 질량을 옮긴다"로 읽는데 **틀린 읽기다.** 행을 정규화한 수송 계획은 무게중심 좌표라 각 waypoint가
+**자기 방향들의 볼록 결합**만큼 움직이고, 열 주변 분포가 **방향 사용량을 전체 궤적에 걸쳐 고르게** 만든다.
+이 결합 — 국소 이동과 전역 균등 사용 — 이 MPPI에는 대응물이 없다.
+
+#### MPPI와 무엇이 다른가
+
+| | travplan MPPI | MPOT Sinkhorn Step |
+|---|---|---|
+| 무엇을 샘플하나 | **제어열** $V \in \mathbb{R}^{768 \times 40 \times 3}$ | 없다. waypoint를 직접 민다 |
+| 동역학 | `SwerveModel.rollout`으로 굴린다 | **없다**(비용 항으로만 넣는다) |
+| 속도·가속 한계 | `clamp_twist`·`clamp_accel`로 ==후보가 **구조적으로 실현 가능**== | **soft cost로만**(부록 I.4의 관절·속도 한계 L2 위반 벌점). 구조적 보장은 없다 |
+| 점수의 입도 | ==궤적 하나에 **스칼라 하나**== | ==**(waypoint, 방향) 칸마다** 하나== |
+| receding horizon·warm start | 있다(`control/mppi/mppi.py`가 명목열을 한 스텝 shift) | 없다. 전체 궤적을 수렴까지 |
+| 보고된 시간 | **13.0 ms/주기**(`guidance+mppi`, 주기 0.1 s. MPC 문서 M.3.13의 제어 시간 표 — 한 프로세스에서 차례로 잰 중앙값이다. 벤치마크 실행 중에 잰 `results/tp0025_v2/metrics.csv`의 `control_ms_mean`은 8.7 ms다) | **0.4 s**(수렴까지, point-mass, RTX 3080Ti) |
+
+==**결론: 원형 그대로는 travplan Controller에 들어가지 못한다.**==
+가장 빠른 보고 숫자 0.4 s는 travplan의 제어 주기 0.1 s보다 **4배 길고**, CLAUDE.md 비평가 기준의 계획 시간
+게이트 10 ms의 **40배**다. 원형은 제어열 대신 상태 waypoint를 직접 밀어 `Controller` 프로토콜이 요구하는 twist를
+내지 않는다. 비동축 스워브는 $a_{\max} = (1.0, 0.8, 2.0)$에 후진이 $-0.3$ m/s로 **비대칭**인데(`SwerveLimits`),
+등방 다포체가 제안하는 보폭을 그 실현 가능 집합으로 되돌릴 방법이 원형에는 없다.
+
+==**제어열 판은 만들 수 있고, 오라클로 세워 실제로 재 봤다.**== 입자를 제어열로, OT의 점을 twist 매듭점으로
+바꾼 판(M.3.20의 오라클 O2)이 travplan의 `CostTerm`·rollout 모델·확률 제약을 그대로 물려받는다. TP-0130은
+MPPI 계열이 멈춘 장면 10개에서 그 오라클과 같은 예산의 MPPI를 맞대 봤다. 결론은 하나다 — ==오프라인 오라클로
+세워도 같은 예산의 MPPI를 넘지 못해, **제품에 넣을 MPOT 변형은 만들지 않았다**==(E.11, MPC 문서 M.3.20).
+
+**게다가 설계가 정면으로 충돌한다.** MPOT는 Sinkhorn 안의 지수 때문에 ==OT 비용 행렬을 $[0,1]$로 정규화==해야
+한다 — 논문이 부록에 그대로 적는다: *"MPOT is cost-sensitive due to exponential terms inside the Sinkhorn
+algorithm, hence, in practice, we normalize the cost matrix to the range $[0,1]$."* travplan은 반대로 치명 셀·자세·동적 겹침에 ==**1e3짜리 지시 벌점**== 을 주고(`control/mppi/costs.py`의
+`lethal_penalty`·`hard_penalty`·`dynamic_lethal_penalty`) MPPI 온도를 **절대값 0.5**로 고정한다. 코드의 주석이
+이유를 적어 둔다 — *"absolute (range-normalising breaks with hard penalties)"*.
+==두 선택은 그대로는 같이 설 수 없다.== 다만 막다른 길은 아니다. E.11의 제어열 판은 비용 행렬의 **행마다 최솟값을
+빼고 상한에서 잘라** $[0,1]$로 맞추는 방식으로 이 충돌을 우회한다 — 1e3 벌점을 비용 항에 남겨 둔 채로 Sinkhorn이
+돌아간다.
+
+#### 그래도 두 가지는 옮겨진다
+
+**(1) ==Planner D의 교사로.==** `scripts/train_planner_d.py`는 상태마다 `GlobalGuidance` + `MPPIController`로
+**4초 제어열 하나**를 만들어 라벨로 쓴다(같은 상태에서 warm start 3회를 돌리지만 결과는 **한 개**다).
+즉 **단일 모드 교사**다. 그런데 Planner D는 생성 모델이라 ==**여러 모드를 내는 것이 존재 이유**== 다
+(0.5가 경고한 "두 답의 평균이 장애물로 들어간다"는 실패). MPOT 논문이 스스로 밝히는 용도가 바로 이것이다 —
+*"a strong oracle for collecting datasets ... capturing homotopy classes"*. ==오프라인 데이터 생성은 0.4 s를
+신경 쓰지 않는다.== 교사가 단일 모드라는 것은 travplan 쪽의 **구조적 공백**이고, 여기에 정확히 맞는다(→ B.8.3).
+
+==한 번에 서로 다른 위상(homotopy class)의 답이 여러 개 나오는 것이 교사로서의 값이다.== 목표 세 개에 궤적을
+다섯 개씩 두고 한 배치로 미는 그림(논문 Fig. 1)은 E.11에 있다.
+
+**(2) 비용 크기와 무관한 신뢰 영역.** MPOT는 한 스텝의 이동을
+$\lVert \tau_{k+1} - \tau_k \rVert \le T \alpha_k$로 묶는데(식 25), ==이 한계가 **국소 비용의 크기에 의존하지
+않는다.**== MPPI의 명목 갱신에 같은 상한을 씌우는 것은 몇 줄이고 **OT가 전혀 필요 없다.** 1e3 벌점이 섞인
+비용 지형에서 명목 해가 한 스텝에 멀리 튀는 것을 막는 쪽으로는 볼 가치가 있다.
+
+**입도 이야기 하나.** MPPI는 궤적 하나에 스칼라 하나를 주지만 Sinkhorn Step은 **(waypoint, 방향) 칸마다** 점수를
+준다. 그래서 *"12–18스텝 구간만 옆으로"* 같은 지시가 직접 표현된다. travplan의 TP-0127(램프 입구에서 여유 경로가
+오히려 실패)과 TP-0118(한두 칸 틈)이 정확히 그 입도의 문제다. 다만 위의 이유로 ==그 표현력을 쓰려면 Controller가
+아니라 **Planner 자리**여야 한다.==
+
+**코드.** [anindex/mpot](https://github.com/anindex/mpot) ★71 **MIT**(PyTorch),
+[anindex/ssax](https://github.com/anindex/ssax) ★50 **MIT**(JAX). 둘 다 LICENSE 원문을 확인했다.
+오프라인 교사로만 쓰므로 라이선스가 걸림돌이 아니다.
+
+#### ② MPC-OT — 로봇이 한 대면 성립하지 않는다
+
+**MPC-OT**(*Multi-robot Path Planning and Scheduling via Model Predictive Optimal Transport*,
+[arXiv:2508.21205](https://arxiv.org/abs/2508.21205), **IEEE CDC 2025**)는 로봇 $N$대를 목표 $M$개에 배정하면서
+**경로가 겹치지 않게** 한다. 공간을 $K$칸으로 나누고 칸 전이 비용 행렬에 OT를 풀며, 제약 행렬이 totally
+unimodular라 ==정수해와 비겹침이 선형계획에서 공짜로 나온다.== MPC로 매 스텝 다시 푼다.
+
+==먼저 이름을 갈라 둔다. MPC-OT는 E.11의 OT-MPC와 다른 논문이다.== 애너그램처럼 보이지만,
+MPC-OT([arXiv:2508.21205](https://arxiv.org/abs/2508.21205))는 로봇 여럿의 **배정**이고 OT-MPC([arXiv:2605.02147](https://arxiv.org/abs/2605.02147))는
+MPPI의 **가중 평균 단계**를 엔트로피 OT로 바꾼 단일 로봇 receding horizon 제어기다(E.11). 섞어 읽으면 "OT를 쓰는
+MPC"라는 한 덩어리가 되어, 로봇 한 대에서 성립하지 않는 쪽의 판정이 다른 쪽으로 옮겨 붙는다.
+
+==travplan은 로봇 **한 대**다.== $N = 1$이면 그 OT는 Dijkstra로 축퇴하고, 이미 `GuidancePlanner`가 그것이다.
+그리고 $K \times K$ 밀집 비용 행렬이 travplan 격자(16 m × 8 m, 0.05 m → **321 × 161 = 51,681칸**)에서
+**$2.7 \times 10^9$ 원소**가 된다. 쓸 수 없다.
+
+<details markdown="1">
+<summary>자세히: Joint Planner에 "비겹침을 구조적으로" 아이디어가 쓰일까 — 그리고 논문 자체의 한계</summary>
+
+travplan의 **Joint Planner**(`planners/learned/joint_flow_model.py`)는 ego와 보행자 궤적을 **함께** 생성하고,
+열린 실패가 충돌이다(TP-0051: +tracker 조합에서 충돌 20/40). "비겹침을 구조로 보장한다"는 발상이 여기에
+맞을 것 같지만 ==**깨진다.**== MPC-OT의 보장은 **모든 에이전트가 제어 가능하다**는 전제 위에 있다. 수송 계획이
+로봇 전부를 동시에 배치하므로 겹침이 없는 것이지, 한쪽이 제멋대로 움직이면 성립하지 않는다. ==보행자는
+travplan이 제어하지 않는다.== Joint Planner가 보행자 궤적을 **생성**하는 것은 예측이지 지시가 아니다.
+
+![MPC-OT Fig. 1](https://arxiv.org/html/2508.21205v1/newf1.png)
+*그림 — MPC-OT (Fig. 1 왼쪽): 장애물(회색) 사이에서 로봇 12대(▲)를 목표 14개(○)에 배정한다. 목표 2개는 배정되지 않고 남는다. ==이 그림의 가치 전부가 "여럿"에 있다.== 출처: [arXiv:2508.21205](https://arxiv.org/abs/2508.21205)*
+
+⚠️ **논문 자체의 한계도 적어 둔다.** MPC-OT는 ==계산 시간도, 성공률도, 기준선 비교도 보고하지 않는다.==
+그림 몇 장의 정성 서술뿐이고, Theorem 1의 증명은 *"will be provided elsewhere"*다. 코드도 없다.
+발상(비겹침을 LP 제약으로 넣고 정수성을 공짜로 얻는 것)은 깔끔하지만 **수치로 믿을 것이 아직 없는 단계**다.
+교통 흐름처럼 로봇 수가 많아지는 문제를 만나면 다시 본다.
+
+</details>
+
+#### ③④ "OT 경로"와 "OT 짝짓기"는 다른 것이다
+
+0.6의 그림 설명에 나오는 ==**"최적 수송(OT) 조건부 경로"**== 가 ③이다. Lipman 외가 그렇게 부른 이유는 그 경로가
+$\mathcal{N}(0, I)$에서 $\mathcal{N}(x_{\text{data}}, \sigma_{\min}^2 I)$로 가는 **두 가우시안 사이의 Monge 사상**이기
+때문이고, ==**닫힌 형식이라 아무것도 풀지 않는다.**== 평균과 표준편차를 선형으로 잇는 것이 전부다. travplan의
+`flow_model.py`가 쓰는 직선 보간자가 바로 이것이다.
+
+④는 전혀 다르다. 미니배치 안에서 **어느 노이즈를 어느 데이터에 붙일지**를 실제로 OT로 고른다
+(OT-CFM, Tong 외 2023; Multisample Flow Matching, Pooladian 외 2023). 독립 짝짓기는 경로가 서로 교차해 속도장이
+평균으로 뭉개지는데, OT 짝짓기는 교차를 줄여 ==**경로를 더 곧게 만들고 스텝 수를 줄인다.**==
+`flow_model.py`는 지금 **독립 짝짓기**다(`loss()`가 `x0 = torch.randn_like(x1)`로 노이즈를 따로 뽑는다). 즉 ④는
+travplan에 **아직 안 들어온 선택지**이고, 배치 안에서 $B \times B$ 정확 OT(POT의 `emd`) 한 번이라 비용이 거의 없다.
+Tong 외의 실험 부록이 그렇게 적는다 — OT-CFM에는 POT의 **정확 선형계획 EMD**를 쓰고, Sinkhorn은 엔트로피
+변종(SB-CFM) 쪽에 쓴다. 즉 ④의 기본은 정확 OT이고, Sinkhorn–Knopp 반복은 ⑥(0.9)처럼 큰 문제에서 쓴다.
+reflow(자기 모델로 만든 짝으로 다시 학습하는 것)와 목적이 같고 **교사 오차가 누적되지 않는다**는 점에서 더 싸다.
+
+#### ⑤ $W_1$과 CVaR은 무엇이 다른가
+
+0.3의 **CVaR**은 분포의 나쁜 꼬리 평균이다 — ==**분포를 안다고 가정**하고 그 안에서 위험을 잰다.==
+$W_1$ 같은 Wasserstein 거리는 **분포 사이의 거리**라, 그것으로 공(ball)을 그리면
+==*"참 분포가 내 추정에서 이만큼 떨어져 있을 수 있다"*== 를 말하게 된다. 두 번째가 분포적 강건
+최적화(distributionally robust optimization)의 뼈대다.
+
+travplan에 걸리는 지점은 분명하다. `RiskCost`와 MPPI 확률 제약(TP-0076)은 **GP 잔차 분산을 믿고** 위험을
+재는데, ==그 분산 추정 자체가 틀렸을 때를 다루는 틀이 없다.== TP-0119가 "확률 제약의 0선이 실패 경계와 어긋난다"로
+부딪힌 것이 같은 뿌리다. Wasserstein 공은 정확히 그 자리를 겨냥한다. 다만 travplan은 이 방향으로 아직 아무것도
+재지 않았으므로, 여기서는 **자리만 표시해 둔다.**
+
+<details markdown="1">
+<summary>수식 보기: 엔트로피 정규화 OT, Sinkhorn Step, 무게중심 투영</summary>
+
+**엔트로피 정규화 OT.** waypoint 쪽 주변 분포 $\mu \in \Delta^{n}$, 방향 쪽 주변 분포 $\nu \in \Delta^{m}$과
+비용 행렬 $C \in \mathbb{R}^{n \times m}$에 대해
+
+$$ W^*_\lambda = \arg\min_{W \in U(\mu, \nu)} \langle W, C \rangle - \lambda H(W), \qquad U(\mu, \nu) = \{ W \ge 0 : W \mathbf{1} = \mu,\ W^\top \mathbf{1} = \nu \} $$
+
+$\lambda > 0$이면 해가 $W^*_\lambda = \mathrm{diag}(u)\, e^{-C/\lambda}\, \mathrm{diag}(v)$ 꼴이고, $u, v$를 번갈아 맞추는
+**Sinkhorn–Knopp 반복**으로 행·열 합을 맞춘다(Cuturi 2013). ==지수 때문에 $C$의 크기가 그대로 수치 안정성에
+들어온다 — 그래서 MPOT가 $C$를 $[0,1]$로 정규화한다.== 0.9의 균등 분할 군집화(⑥)가 쓰는 것도 같은 반복이다.
+
+**Sinkhorn Step의 신뢰 영역.** 갱신 자체는 한 줄이다 —
+$X_{k+1} = X_k + \alpha_k\, \mathrm{diag}(\mu)^{-1}\, W^*_\lambda\, D^P$. 여기서 $X_k \in \mathbb{R}^{n \times d}$는
+waypoint 집합, $D^P \in \mathbb{R}^{m \times d}$는 다포체 꼭짓점 방향 행렬, $\alpha_k$는 스텝 크기다. 비용 행렬 $C$의
+정의와 로그 영역 Sinkhorn 반복, 제어열 판의 수식은 E.11의 토글에 있다.
+
+$\mathrm{diag}(\mu)^{-1} W^*_\lambda$는 행마다 합이 1인 **무게중심 투영**이라, 각 waypoint의 이동이 자기 방향들의
+**볼록 결합**이 된다. 그래서 보폭이 다포체 반지름 $\alpha_k$를 넘지 않고, 궤적 전체로는 $T$개 waypoint에 대해
+
+$$ \lVert X_{k+1} - X_k \rVert \le T\, \alpha_k $$
+
+==이 상한에 비용이 들어오지 않는다== — 위에서 "옮겨지는 두 번째"로 꼽은 성질이다. $\lambda \to 0$이면 각 waypoint가
+가장 싼 방향 하나로만 가서 좌표 하강에 가까워지고, $\lambda \to \infty$면 모든 방향을 고르게 섞어 제자리에 머문다.
+그 사이에서 **"싼 방향을 선호하되 한 방향에 다 쏟지 않는"** 갱신이 나온다. 논문의 실험 설정은 $\lambda = 0.01$이다(Table 4).
+
+**MPPI와 겹치지 않는 이유를 식으로.** MPPI의 가중치는 궤적 전체 비용 $S_k$ 하나에서 나온다
+($w_k \propto e^{-S_k/\lambda}$, 0.2). Sinkhorn Step의 가중치는 $(i, j)$ 칸, 즉 **waypoint $i$가 방향 $j$로** 갈
+가중치다. 전자는 $K$개 스칼라, 후자는 $n \times m$ 행렬이다. 열 제약 $W^\top\mathbf{1} = \nu$ 때문에
+**한 방향을 모든 waypoint가 동시에 쓰지 못한다** — MPPI에는 이런 전역 결합이 없다.
+
+**보고된 수치.** 세 과제(point-mass·Panda·TIAGo++)의 시간과 성공률, 기준선 비교는 E.11의 표에 있다. 여기서 쓰는
+수는 하나다 — ==travplan의 비교 대상은 2D point-mass의 0.4 s(성공률 99.2%)다.== 2D 평면 문제인데도 10 ms 게이트의
+40배다. 기준선과의 관계는 시간과 성공률을 갈라 읽어야 한다. 기울기 기반 기준선(CHOMP·GPMP2)보다는 빠르고 성공률도
+높지만, RRT\*와 I-RRT\*는 성공률이 100%이고 대신 43 s가 걸린다(논문 Table 1).
+
+</details>
+
+**참고문헌.**
+
+- Le 외, *Accelerating Motion Planning via Optimal Transport*, NeurIPS 2023 — [arXiv:2309.15970](https://arxiv.org/abs/2309.15970). Sinkhorn Step은 Def. 2와 식 (4), 신뢰 영역은 식 (25), 다포체 선택 실험은 Table 5다. 코드 [mpot](https://github.com/anindex/mpot)(MIT), [ssax](https://github.com/anindex/ssax)(MIT).
+- Khan 외, *Multi-robot Path Planning and Scheduling via Model Predictive Optimal Transport*, IEEE CDC 2025 — [arXiv:2508.21205](https://arxiv.org/abs/2508.21205). ⚠️ 계산 시간·성공률·기준선 비교가 없고 Theorem 1의 증명은 다른 곳에 있다고 적혀 있다.
+- OT-MPC(Pacelli 외, 2026-05) — [arXiv:2605.02147](https://arxiv.org/abs/2605.02147). MPPI의 가중 평균 단계를 엔트로피 OT로 바꾼 receding horizon 제어기. ==위 MPC-OT와 이름만 애너그램인 다른 논문이다.== 서술은 Controller 문서 E.11.
+- Cuturi, *Sinkhorn Distances: Lightspeed Computation of Optimal Transport*, NeurIPS 2013 — [논문](https://proceedings.neurips.cc/paper/2013/hash/af21d0c97db2e27e13572cbf59eb343d-Abstract.html). 엔트로피 정규화와 Sinkhorn–Knopp 반복의 출처. ①과 ⑥이 이 반복을 쓴다(②는 선형계획이라 쓰지 않는다).
+- Tong 외, *Improving and Generalizing Flow-Based Generative Models with Minibatch Optimal Transport*, TMLR 2024 — [arXiv:2302.00482](https://arxiv.org/abs/2302.00482). ④ 미니배치 OT 짝짓기. 실험 부록이 OT-CFM에는 POT의 정확 EMD를, 엔트로피 변종(SB-CFM)에는 Sinkhorn을 쓴다고 적는다. 코드 [TorchCFM](https://github.com/atong01/conditional-flow-matching).
+- Pooladian 외, *Multisample Flow Matching*, ICML 2023 — [arXiv:2304.14772](https://arxiv.org/abs/2304.14772). ④의 또 다른 판. 주변 분포를 보존하면서 경로를 곧게 만든다.
+- Peyré·Cuturi, *Computational Optimal Transport*, 2019 — [arXiv:1803.00567](https://arxiv.org/abs/1803.00567). Monge·Kantorovich·Wasserstein·Sinkhorn을 한자리에 모은 교과서. ③의 "두 가우시안 사이 닫힌 형식 사상"도 여기 있다.
+
 ### 0.3 CVaR: 평균이 아니라 나쁜 꼬리를 본다
 
 CVaR(conditional value-at-risk)는 평균 대신 손실 분포의 나쁜 꼬리를 본다. 평균 비용은 "짧지만 아주 위험한 구간"을 긴 쉬운 구간이 희석해
 버린다. ==CVaR는 가장 나쁜 α 비율만 평균한 값이라, 위험한 한 구간을 놓치지 않는다.== travplan `RiskCost`와 RA-MPPI, CVaR-BF가 이 척도를
-쓴다.
+쓴다. ==CVaR는 **분포를 안다고 가정하고** 그 안의 꼬리를 재는 척도다== — 그 분포 추정 자체가 틀렸을 때를 다루는 Wasserstein 공과는 다른 물건이고, 그 구분은 0.2b ⑤에 있다.
 
 **왜 필요한가.** 보도 로봇의 실패는 평균에서 오지 않는다. 연석 모서리 한 번, 포트홀 한 번, 보행자 접촉 한 번이 실패다. 40스텝 궤적에서
 4스텝만 위험 0.9이고 나머지가 0.05면 평균은 0.135라서, 고르게 0.2인 우회로보다 좋아 보인다. 불확실성도 같은 문제를 낳는다. 평균이 같아도 σ가
