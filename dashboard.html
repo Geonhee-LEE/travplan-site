@@ -3542,7 +3542,7 @@ processing code"</em>, <em>"Stop crashes when attempting empty map updates"</em>
 TRIP(KAIST, <a href="https://arxiv.org/abs/2411.17134">arXiv:2411.17134</a> — steppability + BGK 완성, 개념적으로 가장 가까움),
 WalkOCC/Sidewalk3D(<em>"code and data will be made available"</em> 후 미공개 — <strong>보도 특화로는 가장 아쉬운 항목</strong>),
 3DTTNet, PRISM, Splatblox. 한 번 인용할 서베이는 Lim 외,
-<a href="https://arxiv.org/abs/2312.16839">arXiv:2312.16839</a>(음의 장애물을 부분집합 관계로 명시해 다룬다).</p>
+<a href="https://arxiv.org/abs/2312.16839">arXiv:2312.16839</a>, <strong>IJCAS 22(2):347–359, 2024</strong>로 게재됐다(음의 장애물을 부분집합 관계로 명시해 다룬다). ⚠️ 중립 서베이가 아니라 <mark>Patchwork·TRAVEL·B-TMS·TRIP을 쓴 <strong>그 그룹 자신의 입장 논문</strong></mark>이다(A.2b.8).</p>
 <p><mark><strong>정직한 결론(2026-09-30 정정)</strong>: 처음에는 "이 축에 가져다 쓸 공개 코드가 없고 travplan이 이미 기준선을
 넘어섰다"고 썼는데 <strong>틀렸다.</strong></mark> ohm은 <strong>BSD-3-Clause 공개 코드</strong>이고(<code>LICENSE</code>: <em>"CSIRO grants you a licence to
 the Software on the terms of the BSD 3-Clause Licence"</em> — GitHub가 NOASSERTION으로 표시할 뿐이다), virtual
@@ -3560,6 +3560,111 @@ ArtPlanner는 반대를 말한다 — <em>"when we approach a negative obstacle,
 개발 기록 <strong>A.13.1</strong>에 있다. 요약만 적으면: 판별기만 바꾸면 같은 재현율에서 전방 오탐이 4.3배가 되고(기본값 대비 17배 중 3.9배는 근거 floor 몫),
 오탐을 없애는 문턱에서는 아무것도 잡지 못한다. 기제는 <strong>포트홀의 상한이 거의 평면이라 내부
 기울기가 0</strong>이라는 것이다.</p>
+<h4>A.2b.8 KAIST Urban Robotics Lab의 지면 분할 계보 — 허용 라이선스가 둘이다</h4>
+<p><strong>왜 따로 보나.</strong> travplan은 이 연구실의 보행 제어(F.4 Dream 계열)와 플래너(B.9 TRG-planner)를 이미 인용한다.
+그런데 <mark>정작 travplan에 가장 가까운 줄기, 즉 <strong>지면 분할</strong> 라인(Patchwork 계열)은 문서에 한 줄도 없었다.</mark>
+(지형 모델링 쪽은 TRIP이 A.10 ⑤에 이미 있다.)
+그 라인이 travplan의 <code>TravMapBuilder</code> 앞단(점군 → 지면/비지면)에 바로 들어갈 자리이고, 라이선스가 갈린다.</p>
+<table>
+<thead>
+<tr>
+<th>연도</th>
+<th>이름</th>
+<th>하는 일</th>
+<th>코드·라이선스</th>
+<th>travplan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2021</td>
+<td><mark><strong>Patchwork</strong></mark></td>
+<td>동심 극좌표 구역마다 지면 평면을 맞추고 ground likelihood로 검정</td>
+<td><a href="https://github.com/LimHyungTae/patchwork">LimHyungTae/patchwork</a>(1저자 계정) ★591, <mark><strong>MIT</strong></mark>. ⚠️ <code>url-kaist/Patchwork2</code>는 <strong>AGPL-3.0</strong></td>
+<td>전신이면서 <mark>제품에 넣을 수 있다</mark></td>
+</tr>
+<tr>
+<td>2022</td>
+<td><mark><strong>Patchwork++</strong></mark></td>
+<td>구역별 고도·평탄도 문턱을 <strong>데이터에서 적응</strong>시킨다(손튜닝 제거)</td>
+<td><a href="https://github.com/url-kaist/patchwork-plusplus">url-kaist/patchwork-plusplus</a> ★1.1k, <mark><strong>BSD-2-Clause</strong></mark>, <code>pip install pypatchworkpp</code></td>
+<td><mark><strong>허용 라이선스 둘 중 하나</strong></mark> — 적응 문턱까지 갖춘 쪽이라 먼저 재 볼 것</td>
+</tr>
+<tr>
+<td>2022</td>
+<td><strong>TRAVEL</strong></td>
+<td>삼각 격자장 그래프로 지면과 지상물을 <strong>함께</strong> 분할</td>
+<td><a href="https://github.com/url-kaist/TRAVEL">url-kaist/TRAVEL</a> ★344, <strong>GPL-3.0</strong>(PyPI <code>travel-seg</code>도 GPL)</td>
+<td>읽을 거리. GPL이라 제품에 못 넣는다</td>
+</tr>
+<tr>
+<td>2024</td>
+<td><strong>B-TMS</strong></td>
+<td>TRAVEL 위에 베이지안. <mark>움푹한 곳의 "거짓 음성"을 없앤다</mark></td>
+<td>공개 코드 없음</td>
+<td>⚠️ <strong>아래 참조</strong></td>
+</tr>
+<tr>
+<td>2024</td>
+<td><strong>TRIP</strong></td>
+<td>구면 surfel에서 위험을 예측해 2.5D로 되돌린다</td>
+<td>공개 코드 없음(<code>url-kaist/TRIP</code> 404)</td>
+<td>A.10 ⑤</td>
+</tr>
+</tbody>
+</table>
+<p><mark><strong>제품에 넣을 수 있는 것은 하나가 아니라 둘이다</strong></mark> — Patchwork(MIT)와 Patchwork++(BSD-2-Clause).
+다만 MIT인 것은 1저자 계정의 Patchwork 저장소이고, 같은 계열의 <code>url-kaist/Patchwork2</code>는 <mark>AGPL-3.0</mark>이라
+저장소를 잘못 고르면 라이선스가 뒤집힌다. 막힌 것은 TRAVEL(GPL-3.0)과 코드가 없는 둘이다.</p>
+<h5>⚠️ B-TMS는 가져올 것이 아니라 경고다</h5>
+<p>B-TMS가 abstract에서 드는 문제는 <em>"when encountering sunken areas, their performance is frequently
+compromised, and they may even fail to recognize them"</em>이고, 고치는 방향은 <mark>논문 <strong>Fig. 5 캡션</strong>이
+<em>"mitigates issues arising from the ceiling ... and </em><em>false negatives in sunken areas</em><em>"</em>로 적는다</mark>
+(travplan이 오래 인용해 온 "removing false negatives in sunken areas"는 <mark><strong>논문에 없는 문장</strong>이다</mark> —
+'removing'은 전문에 한 번도 나오지 않는다. 2026-10-02 재확인). <mark><strong>움푹 꺼진 곳을
+"지면이 아니다"로 잘못 보던 것을 고쳐, 다시 지면으로 메워 넣는다</strong></mark>는 뜻이다. 네 다리는 그 위를 <strong>딛거나 넘으므로</strong> 맞는 방향이다.</p>
+<p><strong>바퀴는 거기에 빠진다.</strong> travplan이 A.2b.7에서 상류 <code>inpainting</code> 플러그인을 기각한 것과 <strong>정확히 같은
+이유</strong>다 — 미관측·음의 영역을 메우는 동작은 사족에게는 복원이고 바퀴에게는 <strong>구덩이 은폐</strong>다.
+travplan은 반대 방향으로 간다: 그림자 상한(TP-0044)과 깊이 prior(TP-0047·0067·0095)로 <mark><strong>못 본 곳을 오히려
+더 깊게</strong></mark> 가정한다.</p>
+<p>그래서 이 연구실 지형 라인을 읽을 때 기준은 하나다 — <mark><strong>"이 방법이 구덩이를 메우는가, 파는가."</strong></mark>
+메우는 쪽은 사족용이고, travplan은 파는 쪽이다. 같은 연구실의 같은 줄기 안에서도 이 축으로 갈린다.</p>
+<h5>지면 분할(Patchwork 계열)만은 다르다</h5>
+<p>지면 분할은 <strong>구덩이를 메우지 않는다.</strong> 점이 지면인지 아닌지만 가른다. travplan의 L1은 지금
+<strong>모든 LiDAR 점을</strong> <code>elevation_mapping_cupy</code>에 넣는데, 여기에 지면/비지면 분할을 앞에 두면
+CLAUDE.md가 적어 둔 한계 <em>"높은 박스 윗면 저비용"</em>을 앞단에서 줄일 수 있다 — 상자 윗면 점이
+지면으로 기록되지 않기 때문이다.</p>
+<ul>
+<li>의존성이 <strong>Eigen뿐</strong>이고 <code>pip install pypatchworkpp</code>로 들어온다. ROS 없이 쓸 수 있다.
+  ⚠️ 다만 <mark><strong>공식 ROS 래퍼는 GPL-3.0이다</strong></mark> — BSD-2는 코어뿐이고
+  <a href="https://github.com/url-kaist/patchwork-plusplus-ros">url-kaist/patchwork-plusplus-ros</a>는 GPL-3.0이다.
+  travplan의 P1이 ROS 2 Jazzy이므로 그 래퍼를 가져다 쓰지 않고 <mark><strong>코어를 직접 링크해야</strong></mark> 한다.</li>
+<li><mark>BSD-2-Clause라 상용 배달로봇에 넣을 수 있다.</mark> 이 연구실 공개 저장소 27개 중 <mark><strong>15개가 GPL-3.0</strong>이고
+  허용 라이선스는 여섯</mark>이다(Apache-2.0 3, MIT 2, BSD-2 1. 그 밖에 GPL-2.0 2, AGPL-3.0 1 = Patchwork2, 라이선스 없음 3). Patchwork++가 그 BSD-2 하나이고,
+  MIT인 Patchwork는 1저자 계정이라 이 집계 밖이다.</li>
+<li>⚠️ 다만 <strong>아직 재 보지 않았다.</strong> travplan의 합성 LiDAR는 0.05 m 격자에 5 m 사거리이고, Patchwork++는
+  차량용 64채널 원거리 스캔에 맞춰 조정돼 있다. 구역 수와 문턱이 보도 규모에서 그대로 통하는지는
+  측정해야 안다.</li>
+</ul>
+<details>
+<summary>자세히: 이 연구실의 "지면 분할과 traversability는 다르다"는 입장</summary>
+<p>이 그룹은 2024년에 서베이를 한 편 냈다 — <em>Similar but Different: A Survey of Ground Segmentation and
+Traversability Estimation for Terrestrial Robots</em>
+(<a href="https://arxiv.org/abs/2312.16839">arXiv:2312.16839</a>, <strong>IJCAS 22(2):347–359, 2024</strong>).</p>
+<p><mark>이것은 중립적인 제3자 서베이가 아니라 <strong>Patchwork·TRAVEL·B-TMS·TRIP을 쓴 바로 그 사람들의 입장
+논문</strong>이다.</mark> 그래서 이들의 지형 논문이 왜 전부 같은 모양인지가 여기서 설명된다. 서베이는 두 개념이
+흔히 혼동된다고 보고 네 축으로 가른다 — 로봇 플랫폼의 기동성, 주변 환경 안에서의 로봇 위치,
+<strong>음의 장애물의 포함 관계</strong>, 그리고 데이터의 포함 관계다.</p>
+<p>세 번째 축이 travplan에 직접 걸린다. 지면 분할은 "점이 지면인가"를 묻고, traversability는 "로봇이
+지나갈 수 있는가"를 묻는다. <mark>구덩이 바닥은 <strong>지면이지만 지나갈 수 없다</strong>.</mark> 이 구분이 B-TMS가 왜
+구덩이를 메우고 travplan이 왜 파는지의 근거다 — 두 쪽이 <strong>서로 다른 질문에 답하고 있다.</strong></p>
+<p>travplan은 이 서베이를 이미 두 곳에서 인용하는데(D.1, A.2b.7), 중립 서베이로 다루고 있었다.
+저자 관계를 밝혀 두면 그 분류 축이 왜 그렇게 그어졌는지가 읽힌다.</p>
+</details>
+<p><strong>수치.</strong> SemanticKITTI 단일 스캔(식생 제외) 기준으로 B-TMS가 자기 논문 Table II에 세 방법을 함께 싣는다 —
+B-TMS P 95.5 / R 97.0 / F1 96.2 @ 22 ms, TRAVEL 96.3 / 95.1 / 95.7 @ 18 ms, Patchwork 94.2 / 97.6 / 95.8 @ 25 ms.
+<mark>셋이 F1 0.5 %p 안에 있다.</mark> 즉 <strong>정확도로 고를 일이 아니라 라이선스와 의존성으로 고를 일이다.</strong></p>
+<hr />
 <h3>A.2c 고전 점유 격자와 거리장 — 드론 계열이 20년 판 자리</h3>
 <p><strong>travplan이 TP-0071에서 치명 셀의 거리 변환(EDT)을 직접 만들어 쓰기 시작했다.</strong> 그 자리를 오래 판 계보가 따로 있다.
 ZJU FAST Lab(Fei Gao)과 그 전신인 HKUST 쪽의 <strong>비학습 점유 격자·거리장</strong> 연구다. 학습이 하나도 들어가지 않는데도
@@ -13350,7 +13455,7 @@ Coco의 바퀴 로봇 여러 대로 모았다. 입력은 어안 영상 256 × 25
 관련이 있다. 셋째, <strong>평가 지표</strong>다. 400 m당 개입 횟수는 실물 운용에서 의미가 분명하다. travplan의 TP-0038(100 m당 실패 지표)과 같은 방향이고,
 이쪽이 먼저 숫자를 냈다.</p>
 <p>다만 입력이 다르다. MIMIC은 어안 RGB로 배우고 높이를 명시하지 않는다. 연석 높이나 포트홀 깊이를 비용으로 다루지 않으므로, travplan의
-2.5D 표현을 대체하지 않는다. 겹치는 곳은 표현이 아니라 <strong>학습 방법과 평가</strong>다.</p></div><div class="card md subpanel" id="sub-research-d3-5" role="tabpanel" aria-labelledby="subbtn-research-d3-5" data-math="46"><h3>B.9 위험 인지 경로 계획과 로컬 내비게이션</h3>
+2.5D 표현을 대체하지 않는다. 겹치는 곳은 표현이 아니라 <strong>학습 방법과 평가</strong>다.</p></div><div class="card md subpanel" id="sub-research-d3-5" role="tabpanel" aria-labelledby="subbtn-research-d3-5" data-math="51"><h3>B.9 위험 인지 경로 계획과 로컬 내비게이션</h3>
 <p>이 절은 학습 Planner를 키울 때 <strong>비교 기준으로 삼거나 기법을 빌려 올</strong> 연구를 모았다. 층위가 서로 다르므로 먼저 위치를 잡는다.</p>
 <pre><code>전역 경로 (비학습 기준선)                      로컬 궤적 (학습, 개발 대상)
 GuidancePlanner(Dijkstra) ── 비교 ──▶ TRG-planner     Planner D(flow matching) ── 참고 ──▶ DreamFlow (관측 밖 상상)
@@ -13362,10 +13467,42 @@ Planner/Controller 분리 전체의 참고: RoM-Nav (축소 모델 → 고정 �
                                      ABS (빠른 정책 + 학습한 도달-회피 가치 감시 + 회복 정책)
 </code></pre>
 <p><strong>TRG-planner — 지형 위험을 가중한 그래프 위의 전역 경로</strong>(<a href="https://arxiv.org/abs/2501.01806">arXiv:2501.01806</a>, RA-L 2025, IROS 2025 oral,
-KAIST Urban Robotics Lab, <a href="https://github.com/wasahaiah/TRG-planner">코드</a>). 노드에는 지형의 안정성과 도달 가능성을, 간선에는 상대적 통과 위험을 담은 <strong>Traversal Risk Graph</strong>를 wavefront 방식으로
+KAIST Urban Robotics Lab, <a href="https://github.com/wasahaiah/TRG-planner">코드</a> ★31 — <mark>⚠️ <strong>Apache-2.0 + Commons Clause</strong>로 <strong>판매가 금지</strong>된다</mark>(아래 참조)). 노드에는 지형의 안정성과 도달 가능성을, 간선에는 상대적 통과 위험을 담은 <strong>Traversal Risk Graph</strong>를 wavefront 방식으로
 넓혀 가며 만들고 계층적으로 관리한다. 그래프 최적화로 안전하면서 짧은 경로를 찾는다. ICRA 2023 Quadruped Robot Challenge 우승 팀의 전역
-플래너였다. travplan <code>GuidancePlanner</code>(격자 Dijkstra, 간선 = 길이 × (1 + 4·cost))를 <strong>넓은 환경으로 키울 때의 대안</strong>이자, 학습 Planner의 비학습
-비교 기준으로 둘 만하다.</p>
+플래너였다. <mark><strong>가져올 것은 규모가 아니라 방향 의존성이다</strong>(2026-10-02 정정).</mark> 처음에는 이것을 travplan
+<code>GuidancePlanner</code>를 "넓은 환경으로 키울 때의 대안"으로 적었는데, <mark>논문의 동기는 규모가 아니다.</mark>
+저자들이 드는 예는 <em>경사면을 정면으로 들어가면 안정적이고 옆으로 들어가면 불안정하다</em>는 것이고,
+간선 가중치가 그것을 담는다 — 띠를 PCA로 타원 평면에 맞춰 종·횡 고유벡터를 중력과 내적한
+$w_{ij} = \gamma R_{\text{lon}} + (1-\gamma) R_{\text{lat}}$, $R_{\text{dir}} = -e_{\text{dir}} \cdot g$다.
+<mark>같은 땅이 <strong>지나가는 방향에 따라 다른 값</strong>을 갖는다.</mark></p>
+<p>travplan의 <code>GlobalGuidance</code>는 <code>cell_w = 1 + 4·cost + 0.5·σ</code>라는 <strong>칸당 스칼라</strong>라서 어느 방향으로 지나든
+같다. 그런데 ==<code>GRAD_X</code>/<code>GRAD_Y</code>가 <code>TravMap</code>에 이미 있고 플래너는 한 번도 읽지 않는다.==
+<code>compute_features</code>가 slope·step·rough를 footprint로 max-pool할 때 방향을 <strong>일부러 버리기</strong> 때문이다.
+그리고 <code>slope_crossfall</code> 시나리오(<em>"직선 횡단이 경사·roll 한계를 넘는 둔덕, 완만한 우회로가 있다"</em>)가
+글자 그대로 TRG의 둔덕 실험이다 — 지금 travplan은 <strong>우회만 할 수 있고, 안전한 진입 방향을 고를 수는 없다.</strong></p>
+<p><strong>⚠️ 다만 그대로 가져오면 안 된다.</strong> 논문 결론이 이 방향 의존 위험은 <em>"specifically tailored to
+non-holonomic robots"</em>라고 적는다. 차체의 종축이 간선 방향에 놓인다고 가정하는 것인데,
+<mark>travplan의 스워브는 <strong>holonomic</strong>이라 진행 방향과 차체 yaw가 분리된다</mark>(<code>robot/swerve.py</code>:
+<em>"Swerve (holonomic) kinematics"</em>, 횡속 $|v_y| \le 0.6$ m/s). 그대로 쓰면 "로봇이 늘 가는 쪽을 본다"를
+암묵 가정하게 되고, 제대로 하려면 노드 상태에 yaw를 실어야 하는데 TRG는 그러지 않는다.
+그리고 측정상 네 벤치마크 시나리오 × 3 seed에서 <code>guidance+mppi</code> <strong>주행 중</strong> 차체 $|\text{roll}|$ 최댓값이 <strong>0.0951 rad</strong>
+(5.45°, <code>curb_ramp</code> seed 1)이다. <code>AttitudeCost</code>의 soft 0.08은 <mark><strong>이미 넘지만 hard 0.25에는 한참 못 미친다</strong></mark>
+— 벌점은 붙되 금지선에서 멀다. 재현: <code>results/tp0025_v2/metrics.csv</code>의 guidance+mppi 12런에서
+<code>max_roll_deg</code> 최댓값(5.4469°)을 라디안으로 바꾼 값이다. TP 번호를 달아 따로 잰 측정이 아니라 기록 재집계다.</p>
+<p><strong>규모 쪽은 오히려 반대다.</strong> TRG의 희소 그래프는 50×50 m를 0.05 m로 덮으면 $10^6$칸이기 때문에 있는
+것이다. travplan의 시나리오는 16×8 m(약 5.2만 칸)이고 L1 지도는 11 m 사각(220×220)이라 <mark><strong>격자 Dijkstra는
+이 크기에서 병목이 아니다</strong></mark>(<code>results/tp0025_v2/bench.log</code>에서 guidance+mppi의 <code>plan</code> 칸이 0.0 ms로 찍힌다.
+⚠️ 흔히 인용되는 3.4 ms는 <strong>Planner D의 계획 시간</strong>이고 Dijkstra의 것이 아니다). 반면 TRG의
+<mark><strong>그래프 초기화 4.01 s</strong></mark>는 자릿수가 다르다 — ⚠️ 다만 그 값은 논문 Table 3의 <strong>50×50×6.9 m 산악 환경</strong>
+수치이므로 16×8 m 예산에 그대로 옮길 수는 없다. 게다가 travplan의 Dijkstra는
+목표에서부터 풀어서 <strong>도달 불가 칸이 <code>dist=inf</code>로 공짜로 떨어진다</strong> — TRG가 노드 유효성으로 하는 일이
+이미 되어 있다.</p>
+<p><strong>⚠️ 코드 라이선스 — 상용 제품에 못 넣는다.</strong> 저자들 프로젝트 페이지와 README가 가리키는
+<code>url-kaist/TRG-planner</code>는 <mark><strong>404</strong></mark>다. 닿는 사본은 개인 계정의 <code>wasahaiah/TRG-planner</code>뿐이고(★31,
+마지막 push 2025-03-14), 그 <code>LICENSE</code>가 Dongkyu Lee 본인의 저작권으로 <strong>Apache-2.0 + Commons Clause</strong>다 —
+<em>"the License does not grant to you, the right to </em><em>Sell</em><em> the Software … 'Sell' does not include use of
+the Software for non-profit or research-based projects."</em> <mark>travplan은 상용 배달로봇이므로
+<strong>연구·비교는 되고 제품 탑재는 안 된다.</strong></mark> 1저자는 2025-04부터 스핀오프 <strong>URobotics Corp.</strong>의 CTO·공동창업자다.</p>
 <div class="fig-grid"><figure class="fig"><a class="thumb" href="https://arxiv.org/html/2501.01806v1/TRG_framework_v7_compressed.png" title="원본 보기"><img alt="TRG-planner Fig. 2" src="assets/thumbs/0c0b40e4164a.webp" loading="lazy"></a><figcaption>그림 — TRG-planner (Fig. 2): 지형 기하로 Traversal Risk Graph를 만들고, 위험 가중 그래프 위에서 안전하고 짧은 경로를 찾는 전체 구조. 출처: <a href="https://arxiv.org/abs/2501.01806">arXiv:2501.01806</a></figcaption></figure>
 </div><details>
 <summary>자세히: TRG-planner의 방법과 수식</summary>
@@ -17106,21 +17243,92 @@ travplan이 어느 쪽을 참고할지는 이 갈래에 달려 있다.</p>
 </tr>
 </tbody>
 </table>
-<p><strong>(b) DreamWaQ — 지형을 "상상"한다</strong>(<a href="https://arxiv.org/abs/2301.10602">arXiv:2301.10602</a>, ICRA 2023, KAIST 도시로봇연구실
-Nahrendra·Yu·Myung). <mark>외수용 센서 없이 고유수용만으로 주변 지형을 암묵적으로 추정한다.</mark> 문맥 보조 추정기(CENet)가
+<p><strong>(b) DreamWaQ — 지형을 "상상"한다</strong>(<a href="https://arxiv.org/abs/2301.10602">arXiv:2301.10602</a>, ICRA 2023,
+KAIST <strong>Urban Robotics Lab</strong>, Nahrendra·Yu·Myung). <mark>이 한 편이 <strong>Dream* 계열 다섯 편의 줄기</strong>다</mark>(아래 상자). <mark>외수용 센서 없이 고유수용만으로 주변 지형을 암묵적으로 추정한다.</mark> 문맥 보조 추정기(CENet)가
 관절 이력에서 지형·동역학 문맥을 잠재 벡터로 뽑고, 정책은 그 잠재 벡터를 조건으로 받는다. E.2의 RMA와 같은 뼈대인데
 대상이 "환경 파라미터"가 아니라 <strong>지형</strong>이다. ICRA 2023 자율 사족보행 대회에서 1위였고, 경사 36°·고도차 22 m의 실외
-장거리 주행을 보였다. 보상 함수를 다시 맞추지 않고도 다른 4족 로봇으로 옮겨진다는 점을 강조한다.</p>
-<p><strong>DreamRiser — 넘어진 뒤 일어나는 것도 같은 방식으로</strong>(<a href="https://arxiv.org/abs/2306.12712">arXiv:2306.12712</a>, KAIST).
+장거리 주행을 보였다. ⚠️ <strong>정정(2026-10-02)</strong>: 처음에는 "보상 함수를 다시 맞추지 않고도 다른 4족 로봇으로
+옮겨진다"고 적었는데 <mark>그것은 <strong>다른 논문의 주장</strong>이다.</mark> DreamWaQ 자신은 Unitree A1 <strong>한 대</strong>에서만 돌고,
+새로움으로 내세우는 것은 단일 플랫폼에서의 blind 보행이다. <mark>고도차 22 m는 논문 본문에 있고(§III-G
+<em>"Course B was an on-campus hill with an elevation gain of up to 22 m"</em>), <strong>경사 36°만 본문 밖</strong>이다</mark> —
+둘을 묶어 프로젝트 자료로 돌린 것은 과한 정정이었다(2026-10-02 재확인).</p>
+<p><strong>복구 동작 — 넘어진 뒤 일어나는 것도 같은 방식으로</strong>(<a href="https://arxiv.org/abs/2306.12712">arXiv:2306.12712</a>,
+<strong>RSS 2023 워크숍</strong>, KAIST). travplan이 이것을 "DreamRiser"라 불러 왔는데, 그 이름은
+<mark><strong>논문 제목에는 없고 저자들의 프로젝트 페이지가 쓰는 통칭</strong></mark>이다(<a href="https://sites.google.com/view/dreamriser">sites.google.com/view/dreamriser</a>). 정식 제목은 <em>Robust Recovery Motion Control for Quadrupedal Robots via Learned Terrain
+Imagination</em>이고, ⚠️ <mark>정규 학회 논문이 아니라 <strong>RSS 2023 워크숍 논문</strong>이다</mark>(arXiv Comments).
 같은 "학습된 지형 상상"으로 <strong>복구 동작</strong>을 배운다. 스펀지·플라스틱 상자·울퉁불퉁한 바닥처럼 학습 분포 밖 지형에서
 A1·Go1이 넘어진 뒤 일어나 다시 걷는다. <mark>로코모션 정책이 아니라 실패 뒤의 회복을 다룬 것이 특징이다.</mark></p>
 <p><strong>DreamWaQ++ — (b)에서 (a)로 건너오면서 "믿을지 말지"를 배운다</strong>(<a href="https://arxiv.org/abs/2409.19709">arXiv:2409.19709</a>,
-IEEE T-RO 2026, KAIST·KRAFTON·MIT). blind 기반 위에 외수용을 더하되, <strong>PointNet 인코더 + 학습된 신뢰도 필터</strong>를 두고
+IEEE T-RO <strong>2026</strong>, DOI 10.1109/TRO.2026.3653774, KAIST·KRAFTON·MIT). blind 기반 위에 외수용을 더하되, <strong>PointNet 인코더 + 학습된 신뢰도 필터</strong>를 두고
 MLP-Mixer로 두 흐름을 50 Hz에 합친다. 계단 성공률 97.8%, 계단 50개 코스를 35초에, 합산 30 cm 장애물까지 넘는다.
-시뮬에서 계단 구성별로 20–40%p 높은 성공률이고, 센서 구성이 다른 하드웨어 네 종으로 일반화한다.</p>
+시뮬에서 계단 구성별로 20–40%p 높은 성공률이다.</p>
+<p>⚠️ <strong>정정 둘(2026-10-02).</strong> ① 이것을 "지도 + 고유수용"으로 적었는데 <mark><strong>추론에는 높이 지도가 필요 없다</strong></mark>
+— 점군을 그대로 PointNet에 넣는다. 다만 논문이 내세우는 동기는 매핑 생략이 아니라 <mark><strong>센서 구성
+불가지성</strong></mark>이고, 서론은 오히려 <em>"elevation map–based approaches have proven to be superior"</em>라고 적는다.
+높이 지도는 버리는 것이 아니라 <strong>학습 때 특권 정보</strong>로 쓴다.
+② "센서 구성이 다른 하드웨어 <strong>네 종</strong>"은 과장이다. §V-A의 실물 넷은 <mark><strong>R1·R3·R4가 외수용 구성만 다른
+Unitree Go1 셋이고, R2는 외수용이 없는 Unitree A1</strong></mark>이다. 기종 간 일반화는 실물이 아니라
+<strong>시뮬의 Go1·ANYmal-C·Hound 셋</strong>으로 따로 보인다.</p>
 <p><mark>travplan에 가장 값진 것이 이 "신뢰도 필터"다.</mark> travplan은 미관측·불확실을 <code>SIGMA</code> 채널로 들고 있지만 그것을 <strong>믿을지
 말지의 게이트로 쓰지 않는다</strong>. DreamWaQ++는 외수용이 믿을 만할 때만 쓰고 아니면 고유수용으로 물러난다. L1 belief에서
 Planner D가 떨어지는 문제(TP-0055)에 그대로 대응한다.</p>
+<details>
+<summary>자세히: Dream* 계열 다섯 편은 한 줄기다 (그리고 공식 코드가 하나도 없다)</summary>
+<p>travplan은 이 계열을 세 문서에 흩어 인용해 왔는데, <mark>다섯 편이 <strong>DreamWaQ의 CENet 하나</strong> 위에 쌓인 한
+줄기라는 사실이 어디에도 없었다.</mark> 순서와 각 편이 더한 것은 이렇다.</p>
+<table>
+<thead>
+<tr>
+<th>편</th>
+<th>연·발표처</th>
+<th>CENet 위에 더한 것</th>
+<th>travplan 전이</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>DreamWaQ</strong></td>
+<td>ICRA 2023</td>
+<td>고유수용에서 지형 문맥을 뽑는 <strong>CENet</strong> 자체</td>
+<td>⚠️ 바퀴에는 접지 신호가 없다</td>
+</tr>
+<tr>
+<td><strong>복구 동작</strong>(통칭 DreamRiser)</td>
+<td><strong>RSS 2023 워크숍</strong></td>
+<td>넘어진 뒤 일어나기</td>
+<td>스워브는 넘어지면 끝이다</td>
+</tr>
+<tr>
+<td><strong>DreamWaQ++</strong></td>
+<td>IEEE T-RO 2026</td>
+<td>외수용 + <mark><strong>학습된 신뢰도 필터</strong></mark></td>
+<td>✅ 가장 값진 것(위 문단)</td>
+</tr>
+<tr>
+<td><strong>DreamFLEX</strong></td>
+<td>ICRA 2025</td>
+<td><strong>고장 벡터</strong>를 명시 입력으로 받아 잠재를 변조</td>
+<td>✅ 아래</td>
+</tr>
+<tr>
+<td><strong>DreamFlow</strong></td>
+<td>ICRA 2026</td>
+<td>관측 <strong>밖</strong>을 conditional flow matching으로 상상</td>
+<td>Planner B.9</td>
+</tr>
+</tbody>
+</table>
+<p><mark><strong>DreamFLEX가 travplan이 놓친 것이다.</strong></mark> 다리 하나가 고장 났을 때 그 사실을 <strong>명시적 벡터</strong>로 받아
+정책의 잠재를 변조한다. 스워브는 모듈 네 개가 각각 조향·구동을 갖는데, 모듈 하나가 열화되거나 미끄러질 때
+travplan은 지금 그것을 <strong>GP 잔차로 뭉뚱그려</strong> 흡수한다(<code>control/acados_mpc/gp.py</code>). 고장을 1급 입력으로
+두는 설계는 그대로 옮겨진다 — 바퀴 로봇에도 "어느 모듈이 이상하다"는 신호가 있기 때문이다.</p>
+<p>그 밖에 travplan이 아직 적지 않은 같은 그룹의 둘: <strong>LocoVLM</strong>(SafeVLMs 워크숍 @ ICRA 2025,
+<a href="https://arxiv.org/abs/2602.10399">arXiv:2602.10399</a>)은 언어·영상으로 보행 정책을 고르게 하고,
+<strong>휴머노이드 blind locomotion</strong>(Sim-to-Real 워크숍 @ Humanoids 2025)은 같은 blind 뼈대를 2족으로 옮긴다.</p>
+<p>⚠️ <mark><strong>다섯 편 모두 공식 코드가 없다.</strong></mark> <code>github.com/url-kaist</code>의 공개 저장소 27개에도, 1저자 계정에도
+Dream* 저장소가 없다. 이 계열은 <strong>읽고 아이디어만 가져오는</strong> 대상이지 가져다 돌릴 수 있는 것이 아니다.
+같은 연구실에서 코드가 나오는 쪽은 SLAM·지면 분할 라인이다(인식 A.2b.8).</p>
+</details>
 <p><strong>(c) 지형 인지 발놓기</strong>(<a href="https://arxiv.org/abs/2310.04675">arXiv:2310.04675</a>, Shi 외, Tencent Robotics X). 매개변수화된
 궤적 생성기를 두고 RL이 발 높이·보폭 주기 같은 <strong>파라미터만</strong> 조절한다. 보상 둘이 핵심이다 — 안전한 곳에 발을 놓게 하는 항과
 발 들어올림을 아끼게 하는 항. 25.5 cm가 넘는 징검다리 간격을 실물로 넘었다. <mark>정책이 관절을 직접 내지 않고 생성기의
@@ -17251,10 +17459,10 @@ DreamWaQ 계열은 프로젝트 페이지에 코드 공개 표시가 없다.</p>
 </tr>
 <tr>
 <td><strong>신뢰도 필터로 융합</strong><br>(DreamWaQ++)</td>
-<td>지도 + 고유수용</td>
+<td>점군 + 고유수용</td>
 <td><strong>믿을 만할 때만 쓴다</strong></td>
 <td>큼(두 흐름)</td>
-<td>계단 97.8%, 4개 기종</td>
+<td>계단 97.8%, Go1 셋(센서 구성 상이)</td>
 <td><mark><strong>높음</strong> — TP-0055(L1에서 40/40 → 32/40)에 그대로 대응</mark></td>
 </tr>
 <tr>
@@ -21034,8 +21242,36 @@ D.12 IROS 2026 수확 · D.11 기타
 <td><a href="https://arxiv.org/abs/2503.11409">논문</a> · <a href="https://github.com/nubot-nudt/LuSeg">코드</a></td>
 </tr>
 <tr>
+<td><strong>Patchwork</strong></td>
+<td>2021.08 · RA-L 2021</td>
+<td>동심 극좌표 구역별 평면 + ground likelihood 검정. Patchwork++의 전신</td>
+<td>A.2b.8</td>
+<td><a href="https://arxiv.org/abs/2108.05560">논문</a> · <a href="https://github.com/LimHyungTae/patchwork">코드</a> ★591 <mark><strong>MIT</strong></mark>(⚠️ <code>url-kaist/Patchwork2</code>는 AGPL-3.0)</td>
+</tr>
+<tr>
+<td><strong>Patchwork++</strong></td>
+<td>2022.10 · IROS 2022</td>
+<td>동심 구역 지면 분할, 문턱을 데이터에서 적응. ==BSD-2-Clause·<code>pip install pypatchworkpp</code>==</td>
+<td>A.2b.8</td>
+<td><a href="https://arxiv.org/abs/2207.11919">논문</a> · <a href="https://github.com/url-kaist/patchwork-plusplus">코드</a> ★1.1k</td>
+</tr>
+<tr>
+<td><strong>TRAVEL</strong></td>
+<td>2022.06 · RA-L 2022</td>
+<td>삼각 격자장 그래프로 지면과 지상물을 함께 분할</td>
+<td>A.2b.8</td>
+<td><a href="https://arxiv.org/abs/2206.03190">논문</a> · <a href="https://github.com/url-kaist/TRAVEL">코드</a> ★344 <strong>GPL-3.0</strong></td>
+</tr>
+<tr>
+<td><strong>B-TMS</strong></td>
+<td>2024.06 · <strong>IEEE IV 2024 워크숍</strong>(Off-road autonomy)</td>
+<td>베이지안 지형 모델링. <mark>움푹한 곳의 거짓 음성을 없앤다 — 바퀴에는 반대 방향</mark></td>
+<td>A.2b.8</td>
+<td><a href="https://arxiv.org/abs/2406.18138">논문</a> · 코드 없음</td>
+</tr>
+<tr>
 <td>Similar but Different (서베이)</td>
-<td>2023.12</td>
+<td>2023.12 arXiv · <strong>IJCAS 22(2):347–359, 2024</strong></td>
 <td>지면 분할과 traversability 추정 서베이. <mark>음의 장애물을 부분집합 관계로 명시</mark></td>
 <td>A.2b.7</td>
 <td><a href="https://arxiv.org/abs/2312.16839">논문</a></td>
@@ -21171,7 +21407,7 @@ D.12 IROS 2026 수확 · D.11 기타
 <td>2026.03 · ICRA 2026</td>
 <td>flow matching으로 관측 밖 지형 잠재 예측</td>
 <td>B.9</td>
-<td><a href="https://arxiv.org/abs/2603.02976">논문</a> · <a href="https://ziwon-park.github.io/dreamflow/">프로젝트</a></td>
+<td><a href="https://arxiv.org/abs/2603.02976">논문</a> · <a href="https://dreamflow-icra.github.io">프로젝트</a></td>
 </tr>
 <tr>
 <td>Miki et al. (perceptive locomotion) <code>E2E▸인식</code></td>
@@ -22097,7 +22333,7 @@ D.12 IROS 2026 수확 · D.11 기타
 <td>2026.03 · ICRA 2026</td>
 <td>관측 + 상상 잠재 DRL 로컬 내비, Go2 실험</td>
 <td>B.9</td>
-<td><a href="https://arxiv.org/abs/2603.02976">논문</a> · <a href="https://ziwon-park.github.io/dreamflow/">프로젝트</a></td>
+<td><a href="https://arxiv.org/abs/2603.02976">논문</a> · <a href="https://dreamflow-icra.github.io">프로젝트</a></td>
 </tr>
 <tr>
 <td>Robostral Navigate <code>E2E▸플래너</code></td>
@@ -23824,7 +24060,7 @@ TEB, Smac, iPlanner, ViPlanner, X-Mobility, COMPASS, legged_gym, autonomy_stack_
 <tr>
 <td><strong>Urban Robotics Lab</strong>, KAIST</td>
 <td><strong>명현(Hyun Myung)</strong></td>
-<td>DreamWaQ 계열(F.4)과 TRIP(A.2b.7 ⑨) — <mark>보행자·지형 양쪽에서 travplan과 겹치는 국내 그룹</mark></td>
+<td>세 줄기가 travplan과 겹친다 — <strong>보행 제어</strong> Dream* 계열(F.4, 다섯 편이 한 줄기, <mark>공식 코드 없음</mark>), <strong>전역 플래너</strong> TRG-planner(B.9, <mark>Commons Clause로 판매 금지</mark>), <strong>지면 분할·지형</strong> Patchwork·Patchwork++·TRAVEL·B-TMS·TRIP(A.2b.8, <mark>Patchwork MIT·Patchwork++ BSD-2</mark>). ⚠️ 이전에 적었던 "보행자" 겹침은 근거를 찾지 못해 지웠다 — 이 그룹의 보행자 상호작용 연구는 확인되지 않는다. 코드는 <a href="https://github.com/url-kaist">github.com/url-kaist</a>(공개 27개 중 <strong>15개가 GPL-3.0</strong>, 허용 라이선스는 여섯, AGPL-3.0 1 = Patchwork2)</td>
 </tr>
 <tr>
 <td><strong>RaiLab</strong>, KAIST</td>
@@ -24272,23 +24508,23 @@ TP-0036에 바로 들어간다)다.</p>
 <tr>
 <td>DreamWaQ</td>
 <td>2023.01 · ICRA 2023</td>
-<td>고유수용만으로 지형을 암묵 추정(CENet). ICRA 2023 사족보행 대회 1위, 경사 36°·고도차 22 m</td>
+<td>고유수용만으로 지형을 암묵 추정(CENet). ICRA 2023 사족보행 대회 1위, 실물은 Unitree A1 한 대. 고도차 22 m는 본문 §III-G에 있고 <mark>경사 36°만 본문 밖</mark>이다</td>
 <td>F.4</td>
 <td><a href="https://arxiv.org/abs/2301.10602">논문</a></td>
 </tr>
 <tr>
 <td>DreamWaQ++</td>
 <td>2024.09 · T-RO 2026</td>
-<td>PointNet + <strong>학습된 신뢰도 필터</strong>로 외수용을 믿을 때만 쓴다. 계단 97.8%, 4개 기종</td>
-<td>F.4</td>
-<td><a href="https://arxiv.org/abs/2409.19709">논문</a></td>
+<td>PointNet + <strong>학습된 신뢰도 필터</strong>로 외수용을 믿을 때만 쓴다. 확률 proprio 잠재 + MLP-Mixer, 카메라 고장 시 접촉 반사로 복귀. 계단 97.8%. <mark>실물 넷은 센서 구성이 다른 Go1 셋 + 외수용 없는 A1 하나</mark>(기종 간 일반화는 시뮬)</td>
+<td>F.4, A.7.1</td>
+<td><a href="https://arxiv.org/abs/2409.19709">논문</a> · <a href="https://dreamwaqpp.github.io/">프로젝트</a> · <a href="https://www.youtube.com/watch?v=IeBNRQsmKR4">영상</a></td>
 </tr>
 <tr>
-<td>DreamRiser</td>
-<td>2023.06</td>
-<td>같은 지형 상상으로 넘어진 뒤 복구 동작, 학습 분포 밖 지형</td>
+<td>복구 동작(통칭 DreamRiser)</td>
+<td>2023.06 · <strong>RSS 2023 워크숍</strong></td>
+<td>같은 지형 상상으로 넘어진 뒤 복구 동작, 학습 분포 밖 지형. <mark>"DreamRiser"는 논문 제목이 아니라 저자 프로젝트 페이지의 통칭</mark></td>
 <td>F.4</td>
-<td><a href="https://arxiv.org/abs/2306.12712">논문</a></td>
+<td><a href="https://arxiv.org/abs/2306.12712">논문</a> · <a href="https://sites.google.com/view/dreamriser">프로젝트</a></td>
 </tr>
 <tr>
 <td>지형 인지 발놓기</td>
@@ -24417,13 +24653,6 @@ TP-0036에 바로 들어간다)다.</p>
 <td><a href="https://arxiv.org/abs/2506.02835">논문</a></td>
 </tr>
 <tr>
-<td>DreamWaQ++</td>
-<td>2024.09 · T-RO</td>
-<td>PointNet(신뢰도 필터) + 확률 proprio 잠재 + MLP-Mixer, 카메라 고장 시 접촉 반사로 복귀</td>
-<td>A.7.1</td>
-<td><a href="https://arxiv.org/abs/2409.19709">논문</a> · <a href="https://dreamwaqpp.github.io/">프로젝트</a> · <a href="https://www.youtube.com/watch?v=IeBNRQsmKR4">영상</a></td>
-</tr>
-<tr>
 <td>OpenHEART</td>
 <td>2026.03 · ICRA 2026</td>
 <td>다리 매니퓰레이터의 관절 물체 열기, 시각 + proprioception 관절 정보 추정</td>
@@ -24459,8 +24688,8 @@ TP-0036에 바로 들어간다)다.</p>
 <td><a href="https://github.com/jizhang-cmu/autonomy_stack_mecanum_wheel_platform">코드</a></td>
 </tr>
 <tr>
-<td>DreamRiser</td>
-<td>2023.06</td>
+<td>복구 동작(통칭 DreamRiser)</td>
+<td>2023.06 · <strong>RSS 2023 워크숍</strong></td>
 <td>학습된 지형 상상으로 넘어진 뒤 복구</td>
 <td>A.7.1</td>
 <td><a href="https://arxiv.org/abs/2306.12712">논문</a> · <a href="https://sites.google.com/view/dreamriser">프로젝트</a></td>
@@ -24468,9 +24697,16 @@ TP-0036에 바로 들어간다)다.</p>
 <tr>
 <td>DreamFLEX</td>
 <td>2025.02 · ICRA 2025</td>
-<td>관절 고장 감지·적응 보행</td>
-<td>A.7.1</td>
-<td><a href="https://arxiv.org/abs/2502.05817">논문</a></td>
+<td>관절 고장 감지·적응 보행. <mark>고장 벡터를 명시 입력으로 받아 정책 잠재를 변조</mark></td>
+<td>A.7.1, F.4</td>
+<td><a href="https://arxiv.org/abs/2502.05817">논문</a> · <a href="https://dreamflex.github.io">프로젝트</a></td>
+</tr>
+<tr>
+<td>LocoVLM</td>
+<td>2026.02 · SafeVLMs 워크숍 @ ICRA 2025</td>
+<td>언어·영상으로 보행 정책을 고른다</td>
+<td>F.4</td>
+<td><a href="https://arxiv.org/abs/2602.10399">논문</a> · <a href="https://locovlm.github.io">프로젝트</a></td>
 </tr>
 <tr>
 <td>Stop to Decide</td>
@@ -24777,7 +25013,7 @@ TP-0036에 바로 들어간다)다.</p>
 <h3>D.11 기타</h3>
 <ul>
 <li>사용자 Notion 리서치 허브 — <a href="https://app.notion.com/p/geonhee-lee/VLA-E2E-Learning-based-planning-Mobile-robot-346c5d39343d80f18d74f6efac4cc40a">VLA/E2E/Learning-based planning — Mobile robot</a></li>
-<li>KAIST Urban Robotics Lab 연구자 페이지 — <a href="https://ziwon-park.com/">Jiwon Park</a>(DreamFlow), <a href="https://dklee98.github.io/#highlights">Dongkyu Lee</a>(TRG-planner, DreamFlow, DreamWaQ++, DreamFLEX, TRIP)</li>
+<li>KAIST Urban Robotics Lab 연구자 페이지 — <a href="https://ziwon-park.com/">Jiwon Park</a>(DreamFlow), <a href="https://dklee98.github.io/#highlights">Dongkyu Lee</a>(TRG-planner, DreamFlow, DreamWaQ++, DreamFLEX, TRIP; <mark>2025-04부터 스핀오프 <strong>URobotics Corp.</strong>의 CTO·공동창업자</mark>), <a href="https://anahrendra.github.io/">I Made Aswin Nahrendra</a>(<mark>Dream* 계열 다섯 편의 1저자 또는 공저</mark>)</li>
 <li>같은 페이지의 <a href="https://app.notion.com/p/geonhee-lee/VLA-E2E-Learning-based-planning-Mobile-robot-346c5d39343d80f18d74f6efac4cc40a#3e5c5d39343d8039bd36c32ec5418e7d">ADD - Traversability Estimation, Off-Road Autonomous Driving</a> 블록 — A.10·E의 출처</li>
 </ul>
 <p><em>Last updated: 2026-09-25 · 관련: <code>docs/prd-p2.md</code>, <code>docs/ARCHITECTURE.md</code></em></p></div></div><div class="docpanel subpanel" id="sub-research-d-8" role="tabpanel" aria-labelledby="subbtn-research-d-8"><nav class="subtabs" role="tablist" data-group="research-d8"><button role="tab" id="subbtn-research-d8-0" aria-controls="sub-research-d8-0" aria-selected="true" tabindex="0" data-sub="research-d8-0" class="active">개요</button><button role="tab" id="subbtn-research-d8-1" aria-controls="sub-research-d8-1" aria-selected="false" tabindex="-1" data-sub="research-d8-1">설계</button><button role="tab" id="subbtn-research-d8-2" aria-controls="sub-research-d8-2" aria-selected="false" tabindex="-1" data-sub="research-d8-2">시뮬 리그</button><button role="tab" id="subbtn-research-d8-3" aria-controls="sub-research-d8-3" aria-selected="false" tabindex="-1" data-sub="research-d8-3">작업 기록</button></nav><div class="card md subpanel active" id="sub-research-d8-0" role="tabpanel" aria-labelledby="subbtn-research-d8-0"><!-- doc: MPC 구축 | 7 -->

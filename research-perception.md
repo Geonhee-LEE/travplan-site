@@ -725,7 +725,7 @@ processing code"*, *"Stop crashes when attempting empty map updates"*, 2024-06).
 TRIP(KAIST, [arXiv:2411.17134](https://arxiv.org/abs/2411.17134) — steppability + BGK 완성, 개념적으로 가장 가까움),
 WalkOCC/Sidewalk3D(*"code and data will be made available"* 후 미공개 — **보도 특화로는 가장 아쉬운 항목**),
 3DTTNet, PRISM, Splatblox. 한 번 인용할 서베이는 Lim 외,
-[arXiv:2312.16839](https://arxiv.org/abs/2312.16839)(음의 장애물을 부분집합 관계로 명시해 다룬다).
+[arXiv:2312.16839](https://arxiv.org/abs/2312.16839), **IJCAS 22(2):347–359, 2024**로 게재됐다(음의 장애물을 부분집합 관계로 명시해 다룬다). ⚠️ 중립 서베이가 아니라 ==Patchwork·TRAVEL·B-TMS·TRIP을 쓴 **그 그룹 자신의 입장 논문**==이다(A.2b.8).
 
 ==**정직한 결론(2026-09-30 정정)**: 처음에는 "이 축에 가져다 쓸 공개 코드가 없고 travplan이 이미 기준선을
 넘어섰다"고 썼는데 **틀렸다.**== ohm은 **BSD-3-Clause 공개 코드**이고(`LICENSE`: *"CSIRO grants you a licence to
@@ -747,6 +747,87 @@ ArtPlanner는 반대를 말한다 — *"when we approach a negative obstacle, li
 개발 기록 **A.13.1**에 있다. 요약만 적으면: 판별기만 바꾸면 같은 재현율에서 전방 오탐이 4.3배가 되고(기본값 대비 17배 중 3.9배는 근거 floor 몫),
 오탐을 없애는 문턱에서는 아무것도 잡지 못한다. 기제는 **포트홀의 상한이 거의 평면이라 내부
 기울기가 0**이라는 것이다.
+
+#### A.2b.8 KAIST Urban Robotics Lab의 지면 분할 계보 — 허용 라이선스가 둘이다
+
+**왜 따로 보나.** travplan은 이 연구실의 보행 제어(F.4 Dream 계열)와 플래너(B.9 TRG-planner)를 이미 인용한다.
+그런데 ==정작 travplan에 가장 가까운 줄기, 즉 **지면 분할** 라인(Patchwork 계열)은 문서에 한 줄도 없었다.==
+(지형 모델링 쪽은 TRIP이 A.10 ⑤에 이미 있다.)
+그 라인이 travplan의 `TravMapBuilder` 앞단(점군 → 지면/비지면)에 바로 들어갈 자리이고, 라이선스가 갈린다.
+
+| 연도 | 이름 | 하는 일 | 코드·라이선스 | travplan |
+|---|---|---|---|---|
+| 2021 | ==**Patchwork**== | 동심 극좌표 구역마다 지면 평면을 맞추고 ground likelihood로 검정 | [LimHyungTae/patchwork](https://github.com/LimHyungTae/patchwork)(1저자 계정) ★591, ==**MIT**==. ⚠️ `url-kaist/Patchwork2`는 **AGPL-3.0** | 전신이면서 ==제품에 넣을 수 있다== |
+| 2022 | ==**Patchwork++**== | 구역별 고도·평탄도 문턱을 **데이터에서 적응**시킨다(손튜닝 제거) | [url-kaist/patchwork-plusplus](https://github.com/url-kaist/patchwork-plusplus) ★1.1k, ==**BSD-2-Clause**==, `pip install pypatchworkpp` | ==**허용 라이선스 둘 중 하나**== — 적응 문턱까지 갖춘 쪽이라 먼저 재 볼 것 |
+| 2022 | **TRAVEL** | 삼각 격자장 그래프로 지면과 지상물을 **함께** 분할 | [url-kaist/TRAVEL](https://github.com/url-kaist/TRAVEL) ★344, **GPL-3.0**(PyPI `travel-seg`도 GPL) | 읽을 거리. GPL이라 제품에 못 넣는다 |
+| 2024 | **B-TMS** | TRAVEL 위에 베이지안. ==움푹한 곳의 "거짓 음성"을 없앤다== | 공개 코드 없음 | ⚠️ **아래 참조** |
+| 2024 | **TRIP** | 구면 surfel에서 위험을 예측해 2.5D로 되돌린다 | 공개 코드 없음(`url-kaist/TRIP` 404) | A.10 ⑤ |
+
+==**제품에 넣을 수 있는 것은 하나가 아니라 둘이다**== — Patchwork(MIT)와 Patchwork++(BSD-2-Clause).
+다만 MIT인 것은 1저자 계정의 Patchwork 저장소이고, 같은 계열의 `url-kaist/Patchwork2`는 ==AGPL-3.0==이라
+저장소를 잘못 고르면 라이선스가 뒤집힌다. 막힌 것은 TRAVEL(GPL-3.0)과 코드가 없는 둘이다.
+
+##### ⚠️ B-TMS는 가져올 것이 아니라 경고다
+
+B-TMS가 abstract에서 드는 문제는 *"when encountering sunken areas, their performance is frequently
+compromised, and they may even fail to recognize them"*이고, 고치는 방향은 ==논문 **Fig. 5 캡션**이
+*"mitigates issues arising from the ceiling ... and **false negatives in sunken areas**"*로 적는다==
+(travplan이 오래 인용해 온 "removing false negatives in sunken areas"는 ==**논문에 없는 문장**이다== —
+'removing'은 전문에 한 번도 나오지 않는다. 2026-10-02 재확인). ==**움푹 꺼진 곳을
+"지면이 아니다"로 잘못 보던 것을 고쳐, 다시 지면으로 메워 넣는다**==는 뜻이다. 네 다리는 그 위를 **딛거나 넘으므로** 맞는 방향이다.
+
+**바퀴는 거기에 빠진다.** travplan이 A.2b.7에서 상류 `inpainting` 플러그인을 기각한 것과 **정확히 같은
+이유**다 — 미관측·음의 영역을 메우는 동작은 사족에게는 복원이고 바퀴에게는 **구덩이 은폐**다.
+travplan은 반대 방향으로 간다: 그림자 상한(TP-0044)과 깊이 prior(TP-0047·0067·0095)로 ==**못 본 곳을 오히려
+더 깊게**== 가정한다.
+
+그래서 이 연구실 지형 라인을 읽을 때 기준은 하나다 — ==**"이 방법이 구덩이를 메우는가, 파는가."**==
+메우는 쪽은 사족용이고, travplan은 파는 쪽이다. 같은 연구실의 같은 줄기 안에서도 이 축으로 갈린다.
+
+##### 지면 분할(Patchwork 계열)만은 다르다
+
+지면 분할은 **구덩이를 메우지 않는다.** 점이 지면인지 아닌지만 가른다. travplan의 L1은 지금
+**모든 LiDAR 점을** `elevation_mapping_cupy`에 넣는데, 여기에 지면/비지면 분할을 앞에 두면
+CLAUDE.md가 적어 둔 한계 *"높은 박스 윗면 저비용"*을 앞단에서 줄일 수 있다 — 상자 윗면 점이
+지면으로 기록되지 않기 때문이다.
+
+- 의존성이 **Eigen뿐**이고 `pip install pypatchworkpp`로 들어온다. ROS 없이 쓸 수 있다.
+  ⚠️ 다만 ==**공식 ROS 래퍼는 GPL-3.0이다**== — BSD-2는 코어뿐이고
+  [url-kaist/patchwork-plusplus-ros](https://github.com/url-kaist/patchwork-plusplus-ros)는 GPL-3.0이다.
+  travplan의 P1이 ROS 2 Jazzy이므로 그 래퍼를 가져다 쓰지 않고 ==**코어를 직접 링크해야**== 한다.
+- ==BSD-2-Clause라 상용 배달로봇에 넣을 수 있다.== 이 연구실 공개 저장소 27개 중 ==**15개가 GPL-3.0**이고
+  허용 라이선스는 여섯==이다(Apache-2.0 3, MIT 2, BSD-2 1. 그 밖에 GPL-2.0 2, AGPL-3.0 1 = Patchwork2, 라이선스 없음 3). Patchwork++가 그 BSD-2 하나이고,
+  MIT인 Patchwork는 1저자 계정이라 이 집계 밖이다.
+- ⚠️ 다만 **아직 재 보지 않았다.** travplan의 합성 LiDAR는 0.05 m 격자에 5 m 사거리이고, Patchwork++는
+  차량용 64채널 원거리 스캔에 맞춰 조정돼 있다. 구역 수와 문턱이 보도 규모에서 그대로 통하는지는
+  측정해야 안다.
+
+<details markdown="1">
+<summary>자세히: 이 연구실의 "지면 분할과 traversability는 다르다"는 입장</summary>
+
+이 그룹은 2024년에 서베이를 한 편 냈다 — *Similar but Different: A Survey of Ground Segmentation and
+Traversability Estimation for Terrestrial Robots*
+([arXiv:2312.16839](https://arxiv.org/abs/2312.16839), **IJCAS 22(2):347–359, 2024**).
+
+==이것은 중립적인 제3자 서베이가 아니라 **Patchwork·TRAVEL·B-TMS·TRIP을 쓴 바로 그 사람들의 입장
+논문**이다.== 그래서 이들의 지형 논문이 왜 전부 같은 모양인지가 여기서 설명된다. 서베이는 두 개념이
+흔히 혼동된다고 보고 네 축으로 가른다 — 로봇 플랫폼의 기동성, 주변 환경 안에서의 로봇 위치,
+**음의 장애물의 포함 관계**, 그리고 데이터의 포함 관계다.
+
+세 번째 축이 travplan에 직접 걸린다. 지면 분할은 "점이 지면인가"를 묻고, traversability는 "로봇이
+지나갈 수 있는가"를 묻는다. ==구덩이 바닥은 **지면이지만 지나갈 수 없다**.== 이 구분이 B-TMS가 왜
+구덩이를 메우고 travplan이 왜 파는지의 근거다 — 두 쪽이 **서로 다른 질문에 답하고 있다.**
+
+travplan은 이 서베이를 이미 두 곳에서 인용하는데(D.1, A.2b.7), 중립 서베이로 다루고 있었다.
+저자 관계를 밝혀 두면 그 분류 축이 왜 그렇게 그어졌는지가 읽힌다.
+
+</details>
+
+**수치.** SemanticKITTI 단일 스캔(식생 제외) 기준으로 B-TMS가 자기 논문 Table II에 세 방법을 함께 싣는다 —
+B-TMS P 95.5 / R 97.0 / F1 96.2 @ 22 ms, TRAVEL 96.3 / 95.1 / 95.7 @ 18 ms, Patchwork 94.2 / 97.6 / 95.8 @ 25 ms.
+==셋이 F1 0.5 %p 안에 있다.== 즉 **정확도로 고를 일이 아니라 라이선스와 의존성으로 고를 일이다.**
+
+---
 
 ### A.2c 고전 점유 격자와 거리장 — 드론 계열이 20년 판 자리
 

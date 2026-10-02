@@ -80,7 +80,11 @@ D.12 IROS 2026 수확 · D.11 기타
 | urban_road_filter | 2022.01 · Sensors 22(1):194 | 연석 검출기 3종 교체 가능, ==기본 브랜치가 `ros2`==. 오름/내림 연석 미구분 | A.3c | [논문](https://doi.org/10.3390/s22010194) · [코드](https://github.com/jkk-research/urban_road_filter) |
 | depth_nav_tools (cliff_detector) | 2017 · JAMRIS | ==지면 $z=0$ 예상 거리 조회표 대비 초과분으로 낙차 판정== — 가장 단순한 기하 기준선 | A.2b.7 | [코드](https://github.com/mdrwiega/depth_nav_tools) |
 | LuSeg | 2025.03 · IROS 2025 (NUDT) | RGB-D ~57 Hz. ==동결 RGB 특징 대비 대조 손실로 **함몰을 깊이 잡음과 분리**== | A.3c | [논문](https://arxiv.org/abs/2503.11409) · [코드](https://github.com/nubot-nudt/LuSeg) |
-| Similar but Different (서베이) | 2023.12 | 지면 분할과 traversability 추정 서베이. ==음의 장애물을 부분집합 관계로 명시== | A.2b.7 | [논문](https://arxiv.org/abs/2312.16839) |
+| **Patchwork** | 2021.08 · RA-L 2021 | 동심 극좌표 구역별 평면 + ground likelihood 검정. Patchwork++의 전신 | A.2b.8 | [논문](https://arxiv.org/abs/2108.05560) · [코드](https://github.com/LimHyungTae/patchwork) ★591 ==**MIT**==(⚠️ `url-kaist/Patchwork2`는 AGPL-3.0) |
+| **Patchwork++** | 2022.10 · IROS 2022 | 동심 구역 지면 분할, 문턱을 데이터에서 적응. ==BSD-2-Clause·`pip install pypatchworkpp`== | A.2b.8 | [논문](https://arxiv.org/abs/2207.11919) · [코드](https://github.com/url-kaist/patchwork-plusplus) ★1.1k |
+| **TRAVEL** | 2022.06 · RA-L 2022 | 삼각 격자장 그래프로 지면과 지상물을 함께 분할 | A.2b.8 | [논문](https://arxiv.org/abs/2206.03190) · [코드](https://github.com/url-kaist/TRAVEL) ★344 **GPL-3.0** |
+| **B-TMS** | 2024.06 · **IEEE IV 2024 워크숍**(Off-road autonomy) | 베이지안 지형 모델링. ==움푹한 곳의 거짓 음성을 없앤다 — 바퀴에는 반대 방향== | A.2b.8 | [논문](https://arxiv.org/abs/2406.18138) · 코드 없음 |
+| Similar but Different (서베이) | 2023.12 arXiv · **IJCAS 22(2):347–359, 2024** | 지면 분할과 traversability 추정 서베이. ==음의 장애물을 부분집합 관계로 명시== | A.2b.7 | [논문](https://arxiv.org/abs/2312.16839) |
 | elevation_mapping_gpu_ros2 | GitHub | GPU elevation mapping의 Jetson Orin 포트. **travplan 채택, TP-0008 실행 검증** | A.1, A.5 | [코드](https://github.com/iit-DLSLab/elevation_mapping_gpu_ros2) |
 | elevation_mapping_cupy | 2022.04 · IROS 2022 (ETH RSL) | 위 리포의 상위. 기하 + 시맨틱 + RGB 멀티모달 GPU elevation mapping, 가시성 정리와 상한 층 | A.2b, A.8 | [논문](https://arxiv.org/abs/2204.12876) · [코드](https://github.com/leggedrobotics/elevation_mapping_cupy) |
 | traversability_estimation | GitHub (ETH RSL) | elevation map → 법선·경사·거칠기·step 필터로 cost layer. 비학습 기준선 | A.7 | [코드](https://github.com/leggedrobotics/traversability_estimation) |
@@ -99,7 +103,7 @@ D.12 IROS 2026 수확 · D.11 기타
 | TRIP | 2024.11 | 다리 로봇 위험 인지 traversability 지도, T-BGK 보간 | A.10 | [논문](https://arxiv.org/abs/2411.17134) |
 | RoM-Nav `E2E▸인식` | 2026.09 · ICRA 2027 심사 중 | LiDAR·깊이 denoising VAE 인코더 + 지형 분할 헤드, 사전학습 후 고정 | B.9 | [논문](https://arxiv.org/abs/2609.19272) · [프로젝트](https://wdc3iii.github.io/rom-nav/) · [코드](https://github.com/wdc3iii/rom-nav) · [영상](https://www.youtube.com/watch?v=l_YT4iP0W8Q) |
 | height_mapping (Caltech AMBER) | GitHub | G1 + MID-360 FAST-LIO 높이 지도, 큰 축 정렬 지도 + SE(2) 조회 스레드 | A.8 | [코드](https://github.com/wdc3iii/height_mapping) |
-| DreamFlow `E2E▸인식` | 2026.03 · ICRA 2026 | flow matching으로 관측 밖 지형 잠재 예측 | B.9 | [논문](https://arxiv.org/abs/2603.02976) · [프로젝트](https://ziwon-park.github.io/dreamflow/) |
+| DreamFlow `E2E▸인식` | 2026.03 · ICRA 2026 | flow matching으로 관측 밖 지형 잠재 예측 | B.9 | [논문](https://arxiv.org/abs/2603.02976) · [프로젝트](https://dreamflow-icra.github.io) |
 | Miki et al. (perceptive locomotion) `E2E▸인식` | 2022.01 · Science Robotics 2022 | 높이 샘플 + proprioception belief encoder | A.7.1 | [논문](https://arxiv.org/abs/2201.08117) |
 | NavDP `E2E▸인식` | 2025.05 · ICRA 2026 | 시뮬 특권 정보로만 학습한 RGB-D 공간 이해 | B.3 | [논문](https://arxiv.org/abs/2505.08712) · [코드](https://github.com/InternRobotics/NavDP) |
 
@@ -250,7 +254,7 @@ A.2·A.2b(지형 지도 계보), A.10.1–A.10.2(traversability 계보와 2026 S
 | 바퀴·다리 로봇 도시 내비게이션 | 2024.05 · Science Robotics 2024 | 전역 그래프 + 학습 내비 정책 + 학습 보행 정책 3층, 취리히·세비야 km 단위 (ETH RSL) | B.14 | [논문](https://arxiv.org/abs/2405.01792) · [프로젝트](https://junja94.github.io/learning_robust_autonomous_navigation_and_locomotion_for_wheeled_legged_robots/) |
 | SRU (공간 강화 순환 유닛) | 2025.06 · IJRR 2025 | 원소별 곱으로 RNN에 공간 변환을 넣어 지도 없는 장거리 내비 (ETH RSL) | B.14 | [논문](https://arxiv.org/abs/2506.05997) · [코드](https://github.com/leggedrobotics/sru-pytorch-spatial-learning) |
 | CLUE | 2026.05 | LLM 상식으로 방·물체 단서를 가중한 통합 시맨틱 가치 지도, zero-shot object-goal | B.6 | [논문](https://arxiv.org/abs/2605.19206) |
-| DreamFlow `E2E▸플래너` | 2026.03 · ICRA 2026 | 관측 + 상상 잠재 DRL 로컬 내비, Go2 실험 | B.9 | [논문](https://arxiv.org/abs/2603.02976) · [프로젝트](https://ziwon-park.github.io/dreamflow/) |
+| DreamFlow `E2E▸플래너` | 2026.03 · ICRA 2026 | 관측 + 상상 잠재 DRL 로컬 내비, Go2 실험 | B.9 | [논문](https://arxiv.org/abs/2603.02976) · [프로젝트](https://dreamflow-icra.github.io) |
 | Robostral Navigate `E2E▸플래너` | 2026.07 | 8B VLM, 이미지 공간 waypoint, R2R-CE 77.4% | B.6 | [논문](https://huggingface.co/papers/2607.20785) |
 
 ### D.4b Planner — 비학습 위험 인지 경로 계획 (비교 기준)
@@ -565,7 +569,7 @@ E.1(MPPI 계보), E.2(학습 동역학·적응 마일스톤), C.4(안전 필터 
 | **syscop**, Freiburg | **Moritz Diehl** | ==acados 자체.== 우리 MPC 트랙 전체가 이 위에 선다 |
 | **Hybrid Robotics**, UC Berkeley | **Koushil Sreenath** | CBF ↔ MPC 다리(ACC 2021). ⚠️ `HybridRobotics/MPC-CBF`는 **아카이브됨** |
 | **AMBER Lab**, Caltech | **Aaron Ames** | CBF 이론의 정본. A.12.5의 Lipschitz 연속성 정리 |
-| **Urban Robotics Lab**, KAIST | **명현(Hyun Myung)** | DreamWaQ 계열(F.4)과 TRIP(A.2b.7 ⑨) — ==보행자·지형 양쪽에서 travplan과 겹치는 국내 그룹== |
+| **Urban Robotics Lab**, KAIST | **명현(Hyun Myung)** | 세 줄기가 travplan과 겹친다 — **보행 제어** Dream\* 계열(F.4, 다섯 편이 한 줄기, ==공식 코드 없음==), **전역 플래너** TRG-planner(B.9, ==Commons Clause로 판매 금지==), **지면 분할·지형** Patchwork·Patchwork++·TRAVEL·B-TMS·TRIP(A.2b.8, ==Patchwork MIT·Patchwork++ BSD-2==). ⚠️ 이전에 적었던 "보행자" 겹침은 근거를 찾지 못해 지웠다 — 이 그룹의 보행자 상호작용 연구는 확인되지 않는다. 코드는 [github.com/url-kaist](https://github.com/url-kaist)(공개 27개 중 **15개가 GPL-3.0**, 허용 라이선스는 여섯, AGPL-3.0 1 = Patchwork2) |
 | **RaiLab**, KAIST | **황보제민(Jemin Hwangbo)** | 4족 RL의 국내 축. 학습 forward 모델 + 샘플링 MPC(RSS 2022), 전체 로봇 모델 물리 롤아웃(Sci. Robot. 2025) — MPC 문서 M.1.3. ⚠️ 정확한 직함 미확인 |
 
 ==**따라갈 곳을 셋만 고른다면**== — 지형은 **고려대 ISR**(FastDEM, 우리 전제와 가장 가깝고 가장 최신),
@@ -659,9 +663,9 @@ TP-0036에 바로 들어간다)다.
 
 | 이름 | 연·발표 | 요약 | 본문 | 링크 |
 |---|---|---|---|---|
-| DreamWaQ | 2023.01 · ICRA 2023 | 고유수용만으로 지형을 암묵 추정(CENet). ICRA 2023 사족보행 대회 1위, 경사 36°·고도차 22 m | F.4 | [논문](https://arxiv.org/abs/2301.10602) |
-| DreamWaQ++ | 2024.09 · T-RO 2026 | PointNet + **학습된 신뢰도 필터**로 외수용을 믿을 때만 쓴다. 계단 97.8%, 4개 기종 | F.4 | [논문](https://arxiv.org/abs/2409.19709) |
-| DreamRiser | 2023.06 | 같은 지형 상상으로 넘어진 뒤 복구 동작, 학습 분포 밖 지형 | F.4 | [논문](https://arxiv.org/abs/2306.12712) |
+| DreamWaQ | 2023.01 · ICRA 2023 | 고유수용만으로 지형을 암묵 추정(CENet). ICRA 2023 사족보행 대회 1위, 실물은 Unitree A1 한 대. 고도차 22 m는 본문 §III-G에 있고 ==경사 36°만 본문 밖==이다 | F.4 | [논문](https://arxiv.org/abs/2301.10602) |
+| DreamWaQ++ | 2024.09 · T-RO 2026 | PointNet + **학습된 신뢰도 필터**로 외수용을 믿을 때만 쓴다. 확률 proprio 잠재 + MLP-Mixer, 카메라 고장 시 접촉 반사로 복귀. 계단 97.8%. ==실물 넷은 센서 구성이 다른 Go1 셋 + 외수용 없는 A1 하나==(기종 간 일반화는 시뮬) | F.4, A.7.1 | [논문](https://arxiv.org/abs/2409.19709) · [프로젝트](https://dreamwaqpp.github.io/) · [영상](https://www.youtube.com/watch?v=IeBNRQsmKR4) |
+| 복구 동작(통칭 DreamRiser) | 2023.06 · **RSS 2023 워크숍** | 같은 지형 상상으로 넘어진 뒤 복구 동작, 학습 분포 밖 지형. =="DreamRiser"는 논문 제목이 아니라 저자 프로젝트 페이지의 통칭== | F.4 | [논문](https://arxiv.org/abs/2306.12712) · [프로젝트](https://sites.google.com/view/dreamriser) |
 | 지형 인지 발놓기 | 2023.10 | 궤적 생성기의 파라미터만 RL로 조절, 안전 발놓기 보상. 징검다리 25.5 cm | F.4 | [논문](https://arxiv.org/abs/2310.04675) |
 | Extreme Parkour | 2023.09 · ICRA 2024 | 단일 전방 깊이 카메라로 파쿠르, 20시간 학습 | F.4, F.6 | [논문](https://arxiv.org/abs/2309.14341) · [코드](https://github.com/chengxuxin/extreme-parkour) |
 | 확률 제약 볼록 MPC (4족) | 2025 | 불확실성을 전파해 마찰 원뿔·접촉 제약을 적응 조임. **손으로 맞춘 조이기를 이김**, 미지 하중 7.5 kg | F.5 | [코드](https://github.com/RIVeR-Lab/Chance-Constrained-MPC) · [프로젝트](https://cc-mpc.github.io/) |
@@ -680,14 +684,14 @@ TP-0036에 바로 들어간다)다.
 | Learning robust perceptive locomotion in the wild (Miki et al.) | 2022.01 · Science Robotics 2022 | belief encoder로 지도 오류에 강한 인식 기반 보행 | A.7.1 | [논문](https://arxiv.org/abs/2201.08117) |
 | ANYmal Parkour | 2023.06 | 인식 모듈 + 내비 정책 + 보행 기술 3단 계층 | A.7.1 | [논문](https://arxiv.org/abs/2306.14874) |
 | High-speed control and navigation (Raibo) | 2025.06 | 발 디딤 planner + 생성 모델과 경쟁 학습한 tracker | A.7.1 | [논문](https://arxiv.org/abs/2506.02835) |
-| DreamWaQ++ | 2024.09 · T-RO | PointNet(신뢰도 필터) + 확률 proprio 잠재 + MLP-Mixer, 카메라 고장 시 접촉 반사로 복귀 | A.7.1 | [논문](https://arxiv.org/abs/2409.19709) · [프로젝트](https://dreamwaqpp.github.io/) · [영상](https://www.youtube.com/watch?v=IeBNRQsmKR4) |
 | OpenHEART | 2026.03 · ICRA 2026 | 다리 매니퓰레이터의 관절 물체 열기, 시각 + proprioception 관절 정보 추정 | A.7.1 | [논문](https://arxiv.org/abs/2603.05830) · [프로젝트](https://openheart-icra.github.io/OpenHEART/) |
 | 전방향 계단 보행 (G1 + Mid-360) | 2026.03 | 신뢰도 감쇠 누적 점군 + EGAU 높이 지도 정제, 조밀한 위험 디딤 벌점 | A.8.2 | [논문](https://arxiv.org/abs/2603.07928) |
 | PolygMap | 2025.10 · ICRA 2026 | 계단 평면 다각형 지도 위 발 디딤, 전신 계획 20–30 Hz(Orin) | A.8.2 | [논문](https://arxiv.org/abs/2510.12346) |
 | Learning Perceptive Humanoid Locomotion over Challenging Terrain | 2025.03 | 변분 정보 병목 world model로 지도 잡음 대응, 2 km 무개입 | A.8.2 | [논문](https://arxiv.org/abs/2503.00692) |
 | autonomy_stack_mecanum_wheel_platform | GitHub (CMU) | Mid-360 + NUC, 분위수 지면 지형 분석·경로 라이브러리 로컬 Planner·FAR·TARE (ROS 2 Jazzy) | A.9.1 | [코드](https://github.com/jizhang-cmu/autonomy_stack_mecanum_wheel_platform) |
-| DreamRiser | 2023.06 | 학습된 지형 상상으로 넘어진 뒤 복구 | A.7.1 | [논문](https://arxiv.org/abs/2306.12712) · [프로젝트](https://sites.google.com/view/dreamriser) |
-| DreamFLEX | 2025.02 · ICRA 2025 | 관절 고장 감지·적응 보행 | A.7.1 | [논문](https://arxiv.org/abs/2502.05817) |
+| 복구 동작(통칭 DreamRiser) | 2023.06 · **RSS 2023 워크숍** | 학습된 지형 상상으로 넘어진 뒤 복구 | A.7.1 | [논문](https://arxiv.org/abs/2306.12712) · [프로젝트](https://sites.google.com/view/dreamriser) |
+| DreamFLEX | 2025.02 · ICRA 2025 | 관절 고장 감지·적응 보행. ==고장 벡터를 명시 입력으로 받아 정책 잠재를 변조== | A.7.1, F.4 | [논문](https://arxiv.org/abs/2502.05817) · [프로젝트](https://dreamflex.github.io) |
+| LocoVLM | 2026.02 · SafeVLMs 워크숍 @ ICRA 2025 | 언어·영상으로 보행 정책을 고른다 | F.4 | [논문](https://arxiv.org/abs/2602.10399) · [프로젝트](https://locovlm.github.io) |
 | Stop to Decide | 2026.07 | 매핑 생략, 지연 우선 proprioceptive 내비(Go2 + Orin) | A.7 | [논문](https://arxiv.org/abs/2607.11204) |
 | Efficient Beam Search for Active Perception | 2026.04 | ANYmal + Orin 깊이 추정 + Voxblox | A.7 | [논문](https://arxiv.org/abs/2604.23327) |
 | QuadPiPS | 2025.01 | perception-informed footstep 계획(시뮬만) | A.7 | [논문](https://arxiv.org/abs/2501.00112) |
@@ -749,7 +753,7 @@ TP-0036에 바로 들어간다)다.
 ### D.11 기타
 
 - 사용자 Notion 리서치 허브 — [VLA/E2E/Learning-based planning — Mobile robot](https://app.notion.com/p/geonhee-lee/VLA-E2E-Learning-based-planning-Mobile-robot-346c5d39343d80f18d74f6efac4cc40a)
-- KAIST Urban Robotics Lab 연구자 페이지 — [Jiwon Park](https://ziwon-park.com/)(DreamFlow), [Dongkyu Lee](https://dklee98.github.io/#highlights)(TRG-planner, DreamFlow, DreamWaQ++, DreamFLEX, TRIP)
+- KAIST Urban Robotics Lab 연구자 페이지 — [Jiwon Park](https://ziwon-park.com/)(DreamFlow), [Dongkyu Lee](https://dklee98.github.io/#highlights)(TRG-planner, DreamFlow, DreamWaQ++, DreamFLEX, TRIP; ==2025-04부터 스핀오프 **URobotics Corp.**의 CTO·공동창업자==), [I Made Aswin Nahrendra](https://anahrendra.github.io/)(==Dream\* 계열 다섯 편의 1저자 또는 공저==)
 - 같은 페이지의 [ADD - Traversability Estimation, Off-Road Autonomous Driving](https://app.notion.com/p/geonhee-lee/VLA-E2E-Learning-based-planning-Mobile-robot-346c5d39343d80f18d74f6efac4cc40a#3e5c5d39343d8039bd36c32ec5418e7d) 블록 — A.10·E의 출처
 
 _Last updated: 2026-09-25 · 관련: `docs/prd-p2.md`, `docs/ARCHITECTURE.md`_
