@@ -2532,3 +2532,74 @@ travplan에서는 둘 다 필요하다. 가림으로 못 본 셀(TP-0047)은 앞
 
 ![FDM overview](https://media.githubusercontent.com/media/leggedrobotics/fdm/main/docs/overview.png)
 *그림 — FDM 개요: 높이 스캔·proprioception·과거 상태를 인코더가 읽고, 앞 자세와 위험을 예측해 MPPI가 보상 최대 명령을 고른다. 아래는 ANYmal이 실내·옥상에서 돈 궤적 샘플. 출처: [GitHub leggedrobotics/fdm](https://github.com/leggedrobotics/fdm)*
+
+<!-- tab: 작업 기록 -->
+
+## B.15 작업 기록
+
+연구 절(B.1–B.14)은 "남이 무엇을 했나"이고, 이 탭은 travplan이 고치고 잰 결과다(CLAUDE.md의 분리 규칙).
+
+### B.15.1 Planner D를 브라우저에서, 같은 망의 diffusion 샘플러 (TP-0137)
+
+**한 줄로.** ==Planner D(flow matching, `planner_d_L0123_dagger.pt`, 파라미터 1,486,488개)를 float16으로 내보내 Playground에서 돌렸다.==
+파이썬과 황금 벡터로 최대 7×10⁻⁶ 안에서 같다(crop, 조건 320, 속도 120 × t 셋). 같은 속도망을 **diffusion**으로도 샘플한다(선형 일정의 DDPM 조상 샘플링).
+두 샘플러 모두 4 지형 × 3 seed에서 12/12다. 그리고 ==배경 0.7b의 "1스텝은 반드시 조건부 평균"은 학습된 망에서 83%만 맞는다.==
+남은 잡음은 변화율이라 두 번 적분돼 끝점이 약 1 m 흩어진다.
+
+![TP-0137](assets/figs/tp0137_planner_d.webp)
+
+*그림 — TP-0137 (Fig. 1): curb_ramp seed 1 첫 계획의 후보 16개(연보라, 빨강 = 치명)와 고른 궤적(청록). 왼쪽부터 flow 10스텝, diffusion 10스텝, flow 1스텝. 출처: `docs/playground/plannerd_fig.html`*
+
+#### 무엇을 만들었나
+
+- **내보내기(`scripts/export_playground_planner_d.py`).** 가중치를 float16 base64 JS 모듈(`js/plannerd_weights.js`, 3.97 MB)로 쓴다.
+  정수 공식으로 만든 합성 TravMap 위에서 같은 float16 가중치로 낸 값을 `plannerd_golden.json`에 남긴다. 페이지는 Planner D를 고를 때만 모듈을 불러온다.
+- **추론(`js/plannerd.js`).** 원본의 다섯 부분을 그대로 옮겼다.
+  1. 자기중심 crop: `grid_sample`(bilinear, zeros, `align_corners=True`), 지도 밖은 1.
+  2. conv 인코더 4층 + 정확한 GELU(erf, 상대 오차 < 1.2×10⁻⁷).
+  3. 속도 MLP(472 → 512 × 3 → 120). 첫 층의 조건 몫은 계획마다 한 번만 계산한다.
+  4. 변화율 적분 → 스워브 rollout.
+  5. 선택기(지도 cost × 6 + 치명 10³ + Guidance cost-to-go × 4)와 이전 계획 유지.
+- **diffusion 샘플러.** 배경 0.6b의 환율 $\hat x_1 = x + (1-t)\,v$로 데이터 예측을 얻는다. 선형 일정 $x_t = t\,x_1 + (1-t)\,\epsilon$의 사후
+  $q(x_s \mid x_t, \hat x_1)$ 평균과 분산(VDM 식, $\alpha_t = t$, $\sigma_t = 1-t$)으로 한 걸음씩 노이즈를 다시 섞는다. 마지막 걸음은 $\hat x_1$ 그대로다.
+- **검사.** `check.html`의 'Planner D 황금 벡터' 행과 Planner D 주행 둘, 시연 넷이 있다(`check_playground.sh` PASS 89/89). 파이썬은 `tests/test_planner_d_export.py`다.
+
+#### 결과
+
+**도달은 같고 시간이 조금 길다**(스워브 + MPPI, 4 지형 × seed 0–2).
+
+| Planner | 원형 시야 | 가림 + 상한 + prior |
+|---|---|---|
+| Guidance(Dijkstra) | 12/12, 16.8 s | 12/12, 16.4 s |
+| Planner D · flow 10스텝 | 12/12, 18.8 s | 12/12, 21.1 s |
+| Planner D · diffusion 10스텝 | 12/12, 19.5 s | 12/12, 19.7 s |
+
+계획 시간(데스크톱 브라우저, 표본 16개)은 1스텝 32 ms, 10스텝 112 ms, 20스텝 200 ms다. 파이썬(torch)은 10스텝 3.4–4.1 ms다.
+1 Hz 재계획이라 페이지에서는 감당한다.
+
+**스텝 수와 후보의 퍼짐**(curb_ramp·bumps_potholes·random_mix × seed 0–2 첫 계획, 끝점 16개의 표준편차; 가림 기본값 4 지형 × 3 seed 도달).
+
+| 스텝 | flow 퍼짐 | diffusion 퍼짐 | 도달(flow / diffusion) |
+|---|---|---|---|
+| 1 | 0.996 m | 0.996 m | 12/12 · 12/12 |
+| 2 | 0.356 m | 0.336 m | 12/12 · 12/12 |
+| 4 | 0.238 m | 0.220 m | 12/12 · 12/12 |
+| 10 | 0.484 m | 0.453 m | 12/12 · 12/12 |
+| 20 | 0.554 m | 0.564 m | 12/12 · 12/12 |
+
+1스텝에서 두 샘플러는 같은 식이 된다($x + v(x, 0)$). 2–4스텝에서는 표본이 목표 크기에 못 미친 채 평균 쪽으로 오그라든다(0.7b의 "모드 도달"). 10–20스텝에서 퍼짐이 돌아온다.
+도달이 모두 12/12인 것은 선택기와 MPPI가 받쳐 주기 때문이다. 이 지형에서는 후보 다양성의 차이가 도달로 드러나지 않는다.
+
+**1스텝은 평균으로 무너지지 않는다 — 83%만 무너진다.** $v(x_0, 0)$를 $x_0$에 회귀하면($v \approx m - a\,x_0$) 세 장면 모두 기울기 $a$ = 0.95–0.99다.
+그래서 $\hat x_1 = x_0 + v$의 표본 표준편차가 0.17이다(노이즈 1). 항등식 $v^\star(x, 0) = \mathbb{E}[x_1 \mid c] - x$는 최적 속도장에서만 정확하다.
+학습된 망은 $-x$를 95–99%만 갚는다. 그 0.17이 Planner D에서 커지는 까닭은 출력이 **변화율**이기 때문이다. 시간축으로 상관없는 잡음이 twist·자세로 두 번 적분돼 끝점이 약 1 m 흩어진다.
+==1스텝 후보의 '퍼짐'은 모드의 다양성이 아니라 적분된 잡음이다.== $t = 0.5$에서는 $a$ = 1.29(과보정), $t = 0.9$에서는 0.70이다.
+
+**병목이 브라우저에서도 재현된다.** curb_ramp 레벨 3 seed 0에서 flow·diffusion 모두 60 s 시간 초과이고, Guidance는 27.6 s에 도달한다.
+좁은 경사로를 지나친 뒤 되돌아 찾지 못하는, STATE의 현재 병목(TP-0077)과 같은 모습이다. 시연 `TP-0137-l3`로 연다.
+
+#### 정직하게 적어 둘 것
+
+- 지형은 JS 재구성이라 파이썬 벤치마크와 seed별로 같지 않다. 비교는 방향만 같다.
+- diffusion은 **같은 망**의 다른 샘플러다. ε-목적으로 따로 학습한 diffusion 모델이 아니다(배경 0.6b의 동치에 기대는 선택).
+- Planner D는 스워브로 학습했다. 다른 로봇을 고르면 변화율 정규화(a_max)가 달라져 분포 밖이다.

@@ -42,7 +42,8 @@ MPPI Controller, 스워브 운동학이 한 폐루프로 돈다. 목표와 장�
 | `per`, `sh`, `sr` | 인식, 센서 높이, 센서 범위 | `gt`·`range`·`occlusion`·`l1lite`, 0.2–1.2 m, 3–8 m |
 | `ceil`, `dp`, `ev`, `st` | 그림자 상한, 깊이 prior, 관측 증거 제한, 전면 스테레오 | 0·1 |
 | `un`, `unc` | 근거리 미관측 반경, 그 칸의 cost | 0–2 m, 0–1 |
-| `pl`, `co` | Planner, Controller | `guidance`·`mpot`·`straight`, `mppi`·`tracker`·`learned`·`blind` |
+| `pl`, `co` | Planner, Controller | `guidance`·`mpot`·`plannerd`·`plannerd_diff`·`straight`, `mppi`·`tracker`·`learned`·`blind` |
+| `gs` | Planner D 생성 스텝 | 1–40(기본 10) |
 | `K`, `T`, `lam`, `nz` | MPPI 샘플 수, 지평(스텝), 온도 λ, 탐색 잡음 배율 | 슬라이더의 범위와 눈금 |
 | `wt`, `wr`, `wa` | MPPI 지형·위험·자세 가중 | 슬라이더의 범위와 눈금 |
 | `goal`, `ped`, `ed` | 목표, 시작 전 보행자, 지형 편집 | 지도(16 × 8 m) 안의 `x,y` · `x,y,vx,vy;…`(100명까지, 3 m/s 이하) · `b,x,y;p,x,y;e,x,y`(상자·포트홀·지우기, 적용 순서, 1000곳까지) |
@@ -168,6 +169,23 @@ Sinkhorn Step을 2D 경로에 옮겼다. 경로(입자) 16개, 경로당 웨이�
 - **결과.** 원형 시야 6 지형 × 2 seed와 기본 인식 4 지형 × 5 seed에서 모두 도달했다(Guidance와 같다).
   연석 레벨 2는 경로가 매끄러워 Guidance보다 빠르다(17.2 s 대 24.0 s, seed 1). 레벨 3(경사로 폭 1.1 m) seed 0은 입자가 연석 앞 국소 최솟값에 모여 시간 초과다.
   Dijkstra는 전역 최단이라 찾는다. TP-0130(MPOT식 최적화기가 같은 예산의 MPPI를 넘지 못함)은 Controller 자리의 비교였고, 여기는 Planner 자리다.
+
+**Planner D와 diffusion 샘플러(TP-0137).** travplan의 학습 Planner(Planner D, flow matching)가 브라우저에서 돈다.
+가중치는 `planner_d_L0123_dagger.pt`(파라미터 1,486,488개)를 float16으로 담은 `js/plannerd_weights.js`(4 MB)다. 'PD flow'나 'PD diffusion'을 처음 고를 때 불러오고, 다 받으면 처음부터 다시 달린다.
+- **파이프라인.** 원본(`flow_planner.py`)과 같다.
+  1. 자기중심 지도 crop(64×64, 0.1 m), Guidance 경로 4 m 앞의 소목표, 현재 twist를 조건으로 넣는다.
+  2. 4 s 제어 변화율 16개를 뽑아 적분하고 스워브 모델로 굴린다.
+  3. 지도 cost·치명·Guidance cost-to-go로 하나를 고른다. 이전 계획(한 칸 민 것)도 후보다.
+  4. 연보라 선이 후보, 청록 선이 고른 4 s 궤적이다.
+- **샘플러 둘, 망 하나.**
+  - flow는 ODE Euler n스텝이다.
+  - diffusion은 같은 속도망을 선형 일정의 DDPM 조상 샘플링으로 돌린다. $\hat x_1 = x + (1-t)v$를 사후 $q(x_s \mid x_t, \hat x_1)$에 넣고 매 걸음 노이즈를 다시 섞는다(배경 0.6b).
+  - '생성 스텝' 슬라이더가 n이다.
+- **파이썬과 같은가.** `check.html`의 'Planner D 황금 벡터' 행이 정수 공식 지도에서 crop·조건 벡터·속도를 다시 낸다. 최대 차는 7×10⁻⁶이다.
+- **결과.**
+  - 4 지형 × 3 seed에서 flow·diffusion 모두 12/12다(Guidance 12/12). 계획은 10스텝 112 ms, 1스텝 32 ms다(파이썬 4 ms).
+  - 1스텝 후보가 가장 넓게 퍼진다(끝점 1.0 m). 학습된 망이 $t = 0$에서 $-x$를 95–99%만 갚고, 남은 잡음이 변화율이라 두 번 적분되기 때문이다.
+  - 레벨 3 좁은 경사로에서는 저장소의 병목(TP-0077)처럼 경사로를 지나쳐 시간 초과가 난다. 기록은 Planner 문서 B.15.1.
 '둘 다'에서 옅은 크림색 선은 참 지형 등고선이다.
 
 판정은 실제 지형으로 한다. 치명 셀 진입, 로봇별 전복 한계(스워브 pitch 0.35 rad·roll 0.30 rad, 사족 0.55·0.50, 바퀴 사족 0.50·0.45) 초과, 보행자 접촉, 60 s 초과가 실패다.
@@ -212,6 +230,10 @@ Sinkhorn Step을 2D 경로에 옮겼다. 경로(입자) 16개, 경로당 웨이�
 | `planner-vs-controller` | — | Planner를 직선으로 | 60 s 시간 초과 | Planner가 필요한 이유 | Guidance(`?pl=guidance`): 14.8 s 도달 |
 | `TP-0136` | TP-0136 | MPOT, curb_ramp 레벨 2 seed 1, 원형 시야 | 도달 17.2 s | 이 페이지 전용(4 지형 × 5 seed 20/20) | Guidance(`?pl=guidance`): 24.0 s |
 | `TP-0136-l3` | TP-0136 | MPOT, curb_ramp 레벨 3 seed 0 | 60 s 시간 초과(국소 최솟값) | 이 페이지 전용(L3 seed 0–2 2/3) | Guidance(`?pl=guidance`): 27.6 s |
+| `TP-0137` | TP-0137 | Planner D flow 10스텝, bumps_potholes s0 | 도달 19.4 s(계획 약 110 ms) | planner_d+mppi 레벨 0·3 12/12(파이썬) | `TP-0137-diff` |
+| `TP-0137-diff` | TP-0137 | 같은 망, diffusion 10스텝 | 도달 15.6 s | 이 페이지 전용(12/12) | `TP-0137` |
+| `TP-0137-1step` | TP-0137 | flow 1스텝 | 도달 15.5 s, 후보가 거칠게 흩어진다(적분된 잡음) | 이 페이지 전용 | `TP-0137` |
+| `TP-0137-l3` | TP-0137 | Planner D flow, curb_ramp 레벨 3 seed 0 | 60 s 시간 초과(경사로를 지나친다) | curb_ramp L3 seed 0–9 8/10(TP-0077) | Guidance(`?pl=guidance`): 27.6 s |
 | `TP-0128` | TP-0128 | bumps_potholes s0, 가림, 학습 정책 | 도달 10.1 s(MPPI는 14.1 s) | 브라우저 폐루프 8/12(MPPI 12/12) | MPPI(`?co=mppi`) |
 | `TP-0128-limit` | TP-0128 | curb_ramp s0, 가림, 학습 정책 | 9.0 s 치명 셀 진입(MPPI는 22.5 s 도달) | 실패 4건이 모두 lethal | MPPI(`?co=mppi`) |
 | `TP-0129` | TP-0129 | curb_ramp s0, 스워브, 지도 없는 정책 | 2.8 s 치명 셀 진입 | 지도 없는 스워브 0/12 | `TP-0129-quad` |
@@ -231,6 +253,8 @@ Sinkhorn Step을 2D 경로에 옮겼다. 경로(입자) 16개, 경로당 웨이�
 | `travmap.js` | `travplan/representation/`, `travplan/sim/visibility.py` | 특징(창 7·7·21·5·13칸), 램프 cost, `fill_unknown`, 2.5D 시선 스윕, 그림자 상한, 깊이 prior와 증거 제한 |
 | `planner.js` | `travplan/planners/guidance.py` | Dijkstra cost-to-go(간선 = 길이 × 평균(1 + 4·cost + 0.5·sigma)), 경로 추출, Planner 목록 |
 | `mpot.js` | [anindex/mpot](https://github.com/anindex/mpot) `mpot/ot/sinkhorn_step.py`(줄인 것) | MPOT Sinkhorn Step: 무작위 회전 orthoplex, probe 비용, 로그 영역 Sinkhorn, barycentric projection(TP-0136) |
+| `plannerd.js` | `travplan/planners/learned/flow_planner.py`·`flow_model.py`·`obs.py` | Planner D 추론: crop, conv 인코더, 속도망, flow·diffusion 샘플러, rollout, 선택기(TP-0137) |
+| `plannerd_weights.js` | `checkpoints/planner_d_L0123_dagger.pt` | 생성물. float16 base64 가중치(`scripts/export_playground_planner_d.py`). base64가 우연히 토큰 모양이 된 자리는 끊어 잇는다(공개 사이트 위생 검사) |
 | `control.js` | `travplan/control/mppi/`, `travplan/robot/swerve.py`, `travplan/control/tracker.py` | 스워브 한계·적분, pure pursuit, MPPI(AR(1) 잡음, 평균·정지 후보, 비용 6항, warm start) |
 | `sim.js` | `travplan/sim/kinematic_sim.py`, `travplan/eval/runner.py` | 0.1 s 폐루프, 10스텝마다 재계획, 관측 융합, 보행자, 실패 판정 |
 | `chassis.js` | `travplan/sim/ground_truth.py` | 차체 기하 기준(방위각 8개, 자세·바퀴 들뜸·배 밑 간섭, 지상고 0.10 m 가정) |
@@ -257,7 +281,7 @@ Sinkhorn Step을 2D 경로에 옮겼다. 경로(입자) 16개, 경로당 웨이�
 
 - 난수 생성기가 달라서 seed가 같아도 Python 벤치마크와 지형이 똑같지는 않다. 규칙과 분포는 같다.
 - MPPI 샘플 수 기본값은 256이다(Python 768). 슬라이더로 1024까지 올린다.
-- 학습 Planner(Planner D, Joint Planner)는 아직 브라우저에서 돌지 않는다. 스워브 모듈 모델(TP-0034)도 없다.
+- Planner D는 브라우저에서 돈다(TP-0137). 다만 계획이 파이썬(torch)보다 약 30배 느리다(10스텝 112 ms 대 4 ms). Joint Planner는 아직 돌지 않는다. 스워브 모듈 모델(TP-0034)도 없다.
 - **학습 Controller는 돈다**(TP-0128). 브라우저는 학습하지 않는다 — 파이썬이 진화 전략으로 1,675개 가중치를 만들고
   (`scripts/train_playground_policy.py`), 이 페이지는 추론만 한다. 입력 50개와 forward가 파이썬과 글자 그대로 같은지는
   `node scripts/check_policy.mjs`가 황금 벡터로 확인한다. 학습은 **GT 지도** 위에서 했고 이 페이지는 **belief 지도**로
@@ -282,7 +306,7 @@ Sinkhorn Step을 2D 경로에 옮겼다. 경로(입자) 16개, 경로당 웨이�
   로봇이 본 지형 3개(TP-0047 시작 상태에서 못 본 칸의 그릴 높이 = `belief.elev`, 3D 메시 정점 높이, 그릴 높이 셋)와
   3D 로봇 자세 3개(과장 ×1·×2·×3에서 pitch·roll이 텔레메트리 + 걸음새 흔들림과 0.5° 안)도 본다.
   코어 파일을 고친 뒤에는 꼭 돌린다. 시연 결과가 바뀌어 기대와 달라지면 `presets.js`의 `expect`와 3절 표를 같이 고친다.
-- **코어 버전 키(`cv`):** `js/state.js`의 `CORE_VERSION`은 코어 모듈 12개(`chassis`·`control`·`core`·`mpot`·`perception`·`planner`·`policy`·`policy_weights`·`robots`·`sim`·`terrain`·`travmap` `.js`)를
+- **코어 버전 키(`cv`):** `js/state.js`의 `CORE_VERSION`은 코어 모듈 14개(`chassis`·`control`·`core`·`mpot`·`perception`·`planner`·`plannerd`·`plannerd_weights`·`policy`·`policy_weights`·`robots`·`sim`·`terrain`·`travmap` `.js`)를
   이름순으로 이은 내용의 sha256 앞 8자다. 코어를 고치고 이 값을 그대로 두면 검사와 `pytest -q`(`tests/test_playground_state.py`)가 실패하고 새 값을 알려 준다.
   값을 바꾸면 옛 주소를 열 때 "다른 코어 버전" 알림이 뜬다. 시연만 담은 주소(`#TP-0047`)에는 `cv`가 없어 늘 지금 코어로 연다.
 - **주행 기록 CSV:** 열은 Python `metrics.csv`(`travplan/eval/metrics.py`의 `EpisodeMetrics`)와 같고 순서도 같다. 같은 이름은 같은 정의로 계산한다.

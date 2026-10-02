@@ -89,6 +89,18 @@ export function extractRoute(field, g, start, goal) {
 }
 
 import { mpotPlan } from "./mpot.js";
+import { plannerDPlan, plannerDReady } from "./plannerd.js";
+
+// Planner D(TP-0137): Guidance(Dijkstra)의 cost-to-go와 경로가 소목표·선택기의 입력이다(파이썬 러너가 1 Hz로 넘기는 것과 같다).
+// 가중치(plannerd_weights.js, 4 MB)를 아직 불러오지 않았으면 그동안은 Guidance 경로를 내고 loading을 표시한다.
+function pdPlan(map, start, goal, mem, sampler) {
+  const t0 = performance.now();
+  const field = costToGo(map, goal), { route, ok } = extractRoute(field, map.grid, start, goal);
+  const msGuide = performance.now() - t0;
+  if (!plannerDReady()) return { path: route, ok, field, ms: msGuide, loading: true };
+  const res = plannerDPlan(map, start, goal, mem || {}, { field, route }, sampler);
+  return { ...res, msGuide };          // ms = Planner D만(파이썬 plan_ms와 같은 범위), msGuide = Dijkstra
+}
 
 export const PLANNERS = {
   guidance: {
@@ -105,6 +117,16 @@ export const PLANNERS = {
     label: "MPOT (Sinkhorn Step)",
     note: "최적 수송 기반 경로 최적화(Le 외, NeurIPS 2023). 경로 16개의 웨이포인트를 무작위 회전한 방향 4개와 probe 비용, 엔트로피 OT로 함께 옮긴다. 가장 싼 경로를 고른다. 재계획은 이전 입자에서 출발한다(TP-0136).",
     plan(map, start, goal, mem) { return mpotPlan(map, start, goal, mem || {}); },
+  },
+  plannerd: {
+    label: "Planner D · flow matching", learned: true,
+    note: "travplan의 학습 Planner(레벨 0–3 시연 + DAgger). 자기중심 지도 crop·소목표·twist를 조건으로 4 s 제어열 16개를 ODE(Euler) n스텝으로 뽑고, 지도 cost·치명·Guidance cost-to-go로 하나를 고른다(TP-0137).",
+    plan(map, start, goal, mem) { return pdPlan(map, start, goal, mem, "flow"); },
+  },
+  plannerd_diff: {
+    label: "Planner D · diffusion", learned: true,
+    note: "같은 망을 diffusion으로 샘플한다: 선형 일정의 DDPM 조상 샘플링(x̂₁ = x + (1 − t)·v로 사후 q(x_s | x_t, x̂₁)에서 한 걸음씩 노이즈를 다시 섞는다). 같은 스텝이면 표본이 더 흩어진다(TP-0137, 배경 0.6b).",
+    plan(map, start, goal, mem) { return pdPlan(map, start, goal, mem, "diffusion"); },
   },
   straight: {
     label: "직선 (지도 무시)",

@@ -163,7 +163,7 @@ button { cursor: pointer; }
 .row input[type=range] { width: 100%; accent-color: var(--accent); }
 .toggles { display: flex; flex-wrap: wrap; gap: 6px 12px; }
 .seg.full { display: flex; } .seg.full button { flex: 1; }
-#robot button { padding: 5px 3px; white-space: nowrap; }   /* 로봇 넷(TP-0135): 휴머노이드가 두 줄로 꺾이지 않게 */
+#robot button, #planner button { padding: 5px 3px; white-space: nowrap; }   /* 로봇 넷(TP-0135): 휴머노이드가 두 줄로 꺾이지 않게 */
 .demo-title { margin: 0; font-weight: 600; }
 .demo-title b { font: 600 11px var(--mono); color: var(--accent); margin-right: 5px; }
 .demo dl { margin: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 10px; font-size: 12.5px; }
@@ -274,7 +274,7 @@ footer code { font: 12px var(--mono); }
         <span><i class="line" style="background:var(--route)"></i>Planner 경로</span>
         <span><i class="line" style="background:var(--accent)"></i>MPPI 계획(<span id="legHorizon">4.0</span> s)</span>
         <span><i class="line" style="background:#8fd6e6"></i>MPPI 샘플</span>
-        <span><i class="line" style="background:#a8b4ff"></i>Planner 후보(MPOT 입자)</span>
+        <span><i class="line" style="background:#a8b4ff"></i>Planner 후보(MPOT 입자·Planner D 표본)</span>
         <span><i class="line" style="background:#ffffff;box-shadow:0 0 0 1px #6b7773"></i>지나온 길</span>
         <span><i style="background:#ff8fb8;border-radius:50%;width:8px;height:8px"></i>보행자와 4 s 예측</span>
         <span data-l1><i style="background:#78dcff;border-radius:50%;width:6px;height:6px"></i>LiDAR 점</span>
@@ -327,9 +327,10 @@ footer code { font: 12px var(--mono); }
       <section class="card">
         <h2>Planner</h2>
         <div class="seg full" id="planner" role="group" aria-label="Planner">
-          <button data-val="guidance">Guidance (Dijkstra)</button><button data-val="mpot">MPOT</button><button data-val="straight">직선</button>
+          <button data-val="guidance">Guidance</button><button data-val="mpot">MPOT</button><button data-val="plannerd">PD flow</button><button data-val="plannerd_diff">PD diffusion</button><button data-val="straight">직선</button>
         </div>
         <p class="note" id="plNote"></p>
+        <div class="row"><label for="genSteps" title="Planner D(flow·diffusion)가 노이즈에서 제어열까지 가는 스텝 수. 1스텝은 두 샘플러 모두 조건부 평균이라 후보 16개가 하나로 겹친다(배경 0.7b, TP-0137)">생성 스텝</label><input type="range" id="genSteps" min="1" max="40" step="1" value="10"><output id="genStepsOut"></output></div>
       </section>
       <section class="card">
         <h2>Controller</h2>

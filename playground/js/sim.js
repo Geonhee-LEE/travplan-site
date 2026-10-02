@@ -174,6 +174,7 @@ export class World {
   }
 
   replan() {
+    this.planMem.twist = this.twist.slice(); this.planMem.steps = this.opts.genSteps;   // Planner D의 조건과 생성 스텝 수(TP-0137)
     const res = PLANNERS[this.opts.planner].plan(this.belief, this.pose, this.goal, this.planMem);
     this.plan = res; this.ms.plan = res.ms;
   }
@@ -301,7 +302,7 @@ export function defaultOptions() {
     shadowCeiling: true, depthPrior: true, evidence: true,
     unknownNear: 0, unknownNearCost: 1.0,
     stereo: false,
-    planner: "guidance", controller: "mppi",
+    planner: "guidance", controller: "mppi", genSteps: 10,
     mppi: { K: 256, T: 40, lambda: 0.5, noise: [0.4, 0.25, 0.6], w: { trav: 6.0, risk: 3.0, attitude: 20.0 } },
   };
 }

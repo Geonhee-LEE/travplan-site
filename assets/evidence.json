@@ -109,6 +109,10 @@
   "tp0136_mpot": {
    "caption": "Playground MPOT Planner: 입자 16개가 최적 수송으로 모인다(왼쪽). 레벨 3 좁은 경사로에서는 연석 앞 국소 최솟값에 갇히고(가운데) Dijkstra는 경사로를 찾는다(오른쪽)",
    "results": "docs/playground/mpot_fig.html"
+  },
+  "tp0137_planner_d": {
+   "caption": "브라우저 Planner D의 첫 계획 후보 16개: flow 10스텝(왼쪽), 같은 망의 diffusion 10스텝(가운데), flow 1스텝(오른쪽 — 평균 + 적분된 잡음). 청록 = 선택기가 고른 4 s 궤적",
+   "results": "docs/playground/plannerd_fig.html"
   }
  },
  "tp": {
@@ -173,6 +177,7 @@
   ]
  },
  "featured": [
+  "tp0137_planner_d",
   "tp0136_mpot",
   "tp0135_humanoid",
   "tp0128_policy",

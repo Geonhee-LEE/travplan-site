@@ -1,0 +1,33 @@
+<!doctype html><meta charset="utf-8"><title>Planner D 샘플러 비교</title>
+<!-- TP-0137 그림(docs/assets/figs/tp0137_planner_d.webp)을 만드는 페이지. 같은 장면의 첫 계획을 샘플러·스텝 수별로 그린다. -->
+<style>body{margin:0;background:#0d1113;color:#e4e9e6;font:14px system-ui,sans-serif}.g{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:8px}canvas{width:100%;height:330px;display:block}h3{margin:4px 0;font-size:14px}</style>
+<div class="g" id="g"></div>
+<script type="module">
+import * as WTS from "./js/plannerd_weights.js";
+import { setPlannerDWeights } from "./js/plannerd.js";
+import { World, defaultOptions } from "./js/sim.js";
+import { Map2D } from "./js/render2d.js";
+setPlannerDWeights(WTS);
+const css={line:"#29333a",muted:"#8b9893",fg:"#e4e9e6",accent:"#f2b705",route:"#3fb6a8",ok:"#4cc38a",bad:"#ef5b5b",mapBg:"#0d1113"};
+const view={layer:"height",geo:"belief",exag:2,route:false,samples:false,points:false,mode:"2d",cursor:null,drag:null};
+for (const [title,set] of [["flow matching · 10스텝",{planner:"plannerd",genSteps:10}],["diffusion(DDPM 조상) · 10스텝",{planner:"plannerd_diff",genSteps:10}],["flow · 1스텝: 평균 + 적분된 잡음",{planner:"plannerd",genSteps:1}]]) {
+  const w=new World(Object.assign(defaultOptions(),{scenario:"curb_ramp",seed:1,perception:"range"},set));
+  const ends=w.plan.particles.slice(0,16).map(p=>p.P[p.P.length-1]), mx=ends.reduce((a,e)=>a+e[0],0)/16, my=ends.reduce((a,e)=>a+e[1],0)/16;
+  const sp=Math.sqrt(ends.reduce((a,e)=>a+(e[0]-mx)**2+(e[1]-my)**2,0)/16);
+  const d=document.createElement("div"),h=document.createElement("h3"),cv=document.createElement("canvas");
+  h.textContent=`Planner D ${title} · 끝점 퍼짐 ${sp.toFixed(2)} m`; d.append(h,cv); document.getElementById("g").append(d);
+  // 큰 캔버스에 지도 전체를 그리고 로봇 둘레(1–7.5 m × 0–4 m)만 잘라 붙인다
+  const big=document.createElement("canvas"); big.style.cssText="position:absolute;left:-6000px;top:0;width:3200px;height:1600px"; document.body.append(big);
+  const m=new Map2D(big); m.draw(w,view,css);
+  const [ax,ay]=m.toScreen(1.0,4.0), [bx,by]=m.toScreen(7.5,0.0), r=big.width/big.clientWidth;
+  cv.width=cv.clientWidth*2; cv.height=cv.clientHeight*2;
+  const ctx=cv.getContext("2d"); ctx.drawImage(big, ax*r, ay*r, (bx-ax)*r, (by-ay)*r, 0, 0, cv.width, cv.height);
+  // 후보(연보라, 싸면 진하게)와 고른 궤적(청록)을 굵게 다시 그린다
+  const k=cv.width/(bx-ax), P=(x,y)=>{const [sx,sy]=m.toScreen(x,y); return [(sx-ax)*k,(sy-ay)*k];};
+  const js=w.plan.particles.map(p=>p.J).sort((a,b)=>a-b), lo=js[0], hi=js[Math.floor(js.length*0.8)];
+  const line=(pts,col,wd)=>{ctx.beginPath(); pts.forEach(([x,y],i)=>{const [a,b]=P(x,y); i?ctx.lineTo(a,b):ctx.moveTo(a,b);}); ctx.strokeStyle=col; ctx.lineWidth=wd; ctx.stroke();};
+  for (const p of w.plan.particles) { const q=Math.min(1,Math.max(0,(p.J-lo)/Math.max(1e-6,hi-lo))); line(p.P, p.lethal?"rgba(239,91,91,0.8)":`rgba(${Math.round(200-70*q)},${Math.round(150+50*(1-q))},255,${0.45+0.5*(1-q)})`, 2.5); }
+  line(w.plan.path, "#3fb6a8", 5);
+}
+document.body.dataset.done=1;
+</script>
