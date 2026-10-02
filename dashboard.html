@@ -196,18 +196,18 @@ footer { max-width: 1000px; margin: 0 auto; padding: 0 16px 40px; color: var(--m
   nav.subtabs button { min-height: 32px; }
 }
 </style>
-<header data-generated="2026-10-01 23:11 KST">
+<header data-generated="2026-10-02 14:57 KST">
   <h1>travplan 대시보드</h1>
-  <div class="meta" data-site-meta><a href="index.html">← travplan 홈</a> · 갱신 2026-10-01 23:11 KST</div>
+  <div class="meta" data-site-meta><a href="index.html">← travplan 홈</a> · 갱신 2026-10-02 14:57 KST</div>
 </header>
 <nav class="tabs" role="tablist" aria-label="대시보드 탭"><button role="tab" id="tabbtn-state" aria-controls="tab-state" aria-selected="true" tabindex="0" data-tab="state" class="active">진행 현황</button><button role="tab" id="tabbtn-todo" aria-controls="tab-todo" aria-selected="false" tabindex="-1" data-tab="todo">TODO</button><button role="tab" id="tabbtn-prd" aria-controls="tab-prd" aria-selected="false" tabindex="-1" data-tab="prd">PRD</button><button role="tab" id="tabbtn-arch" aria-controls="tab-arch" aria-selected="false" tabindex="-1" data-tab="arch">아키텍처 · 기능 설명</button><button role="tab" id="tabbtn-research" aria-controls="tab-research" aria-selected="false" tabindex="-1" data-tab="research">리서치</button><button role="tab" id="tabbtn-design" aria-controls="tab-design" aria-selected="false" tabindex="-1" data-tab="design">설계 · PoC</button><button role="tab" id="tabbtn-sim" aria-controls="tab-sim" aria-selected="false" tabindex="-1" data-tab="sim">시뮬레이션 ▶</button></nav>
 <main>
   <section class="tab active" id="tab-state" role="tabpanel" aria-labelledby="tabbtn-state">
     <div class="kpis">
-<div class="kpi"><div class="kpi-label">TODO 완료</div><div class="kpi-val">20/78</div><div class="progress-bar"><div class="progress-fill" style="width:26%"></div></div></div>
+<div class="kpi"><div class="kpi-label">TODO 완료</div><div class="kpi-val">20/80</div><div class="progress-bar"><div class="progress-fill" style="width:25%"></div></div></div>
 <div class="kpi"><div class="kpi-label">진행 중·오늘</div><div class="kpi-val">1</div></div>
 <div class="kpi"><div class="kpi-label">사용자 실행 대기</div><div class="kpi-val">8</div></div>
-<div class="kpi"><div class="kpi-label">열린 PR</div><div class="kpi-val">0</div></div>
+<div class="kpi"><div class="kpi-label">열린 PR</div><div class="kpi-val">3</div></div>
 <div class="kpi"><div class="kpi-label">최근 7일 merge</div><div class="kpi-val">85</div></div>
 </div>
 <div class="card md"><h2>현재 병목</h2><p><mark>Planner D는 레벨 3 연석에서 경사로를 지나친 뒤 되돌아가 찾지 못해 10번 중 2번 실패한다.</mark></p>
@@ -243,8 +243,8 @@ footer { max-width: 1000px; margin: 0 auto; padding: 0 16px 40px; color: var(--m
 <tr>
 <td>Controller 두 갈래 (MPPI·acados NMPC)</td>
 <td>1단계 완료</td>
-<td>MPC 명령 수정으로 정적 40/40·보행자 24/24·plant 44/48(GP 평균과 같음). GP 분산 튜브(3단계)는 측정되는 효과가 없다. MPPI rollout에 GP 평균을 넣으면 plant curb_ramp 치명 실패가 0이 되지만 멈춤이 늘어 성공 수는 같다. MPPI 확률 제약 0선 정밀화로 plant 96 에피소드 89(기준 88과 차이 없음)</td>
-<td><a class="tp tp-done" href="#todo" data-tp="TP-0070" title="완료 · 기록에서 복원">✓ TP-0070 ◉</a>, <a class="tp tp-done" href="#todo" data-tp="TP-0071" title="완료 · 기록에서 복원 · PR #108(merge됨)">✓ TP-0071 ◉</a>, <a class="tp tp-done" href="#todo" data-tp="TP-0093" title="완료 · acados MPC의 장애물 제약을 여유 비례 형태로: 단순 거리 제약은 매끄러워도 가까워질 때까지 활성화되지 않아 늦게 밟는다. CBF 형태(hdot &gt;= -alpha(h)... · PR #108(merge됨)">✓ TP-0093 ◉</a>, <a class="tp tp-done" href="#todo" data-tp="TP-0068" title="완료 · 기록에서 복원 · PR #108(merge됨)">✓ TP-0068</a>, <a class="tp tp-done" href="#todo" data-tp="TP-0076" title="완료 · 기록에서 복원 · PR #55(merge됨) · PR #108(merge됨)">✓ TP-0076 ◉</a>, <a class="tp tp-done" href="#todo" data-tp="TP-0119" title="완료 · TP-0076 후속: 확률 제약의 0선을 실패 경계에 맞추기 — 이웃 칸 cost가 0.9에 가까운 램프 벽 옆에서 치명 칸 중심 기준 0선이 실패(이중선형 cost ≥ 0.... · PR #117(merge됨)">✓ TP-0119 ◉</a>, <a class="tp tp-done" href="#todo" data-tp="TP-0122" title="완료 · TP-0117에서 분리: MPC 명목 명령을 구간 평균 대신 다음 노드 twist로 — 구간 평균은 계획한 가속의 절반만 실현해 정지 거리가 두 배였다(연석면 치명 실패와 틈... · PR #118(merge됨)">✓ TP-0122 ◉</a>, <a class="tp tp-done" href="#todo" data-tp="TP-0117" title="완료 · TP-0093 후속: MPC 비용에 매끄러운 지형 항(M.1.1) — 지금 MPC 비용엔 지형이 없어 램프 모서리를 고정 여유로만 피한다. 여유 0–0.15 m 스윕에서 모서... · PR #118(merge됨)">✓ TP-0117 ◉</a>, <a class="tp tp-done" href="#todo" data-tp="TP-0069" title="완료 · 기록에서 복원 · PR #120(merge됨)">✓ TP-0069 ◉</a>, <a class="tp tp-done" href="#todo" data-tp="TP-0120" title="완료 · TP-0076 후속: MPPI 확률 제약 rollout에 GP 평균(지연 편향) 반영 — 지금은 명목 rollout이라 분산만 쓴다. SwerveModel 하위 클래스로 평균... · PR #121(merge됨)">✓ TP-0120 ◉</a></td>
+<td>MPC 명령 수정으로 정적 40/40·보행자 24/24·plant 44/48(GP 평균과 같음). GP 분산 튜브(3단계)는 측정되는 효과가 없다. MPPI rollout에 GP 평균을 넣으면 plant curb_ramp 치명 실패가 0이 되지만 멈춤이 늘어 성공 수는 같다. MPPI 확률 제약 0선 정밀화로 plant 96 에피소드 89(기준 88과 차이 없음). MPOT식 최적화기는 멈춘 장면에서 같은 예산의 MPPI를 넘지 못해 더하지 않는다</td>
+<td><a class="tp tp-done" href="#todo" data-tp="TP-0070" title="완료 · 기록에서 복원">✓ TP-0070 ◉</a>, <a class="tp tp-done" href="#todo" data-tp="TP-0071" title="완료 · 기록에서 복원 · PR #108(merge됨)">✓ TP-0071 ◉</a>, <a class="tp tp-done" href="#todo" data-tp="TP-0093" title="완료 · acados MPC의 장애물 제약을 여유 비례 형태로: 단순 거리 제약은 매끄러워도 가까워질 때까지 활성화되지 않아 늦게 밟는다. CBF 형태(hdot &gt;= -alpha(h)... · PR #108(merge됨)">✓ TP-0093 ◉</a>, <a class="tp tp-done" href="#todo" data-tp="TP-0068" title="완료 · 기록에서 복원 · PR #108(merge됨)">✓ TP-0068</a>, <a class="tp tp-done" href="#todo" data-tp="TP-0076" title="완료 · 기록에서 복원 · PR #55(merge됨) · PR #108(merge됨)">✓ TP-0076 ◉</a>, <a class="tp tp-done" href="#todo" data-tp="TP-0119" title="완료 · TP-0076 후속: 확률 제약의 0선을 실패 경계에 맞추기 — 이웃 칸 cost가 0.9에 가까운 램프 벽 옆에서 치명 칸 중심 기준 0선이 실패(이중선형 cost ≥ 0.... · PR #117(merge됨)">✓ TP-0119 ◉</a>, <a class="tp tp-done" href="#todo" data-tp="TP-0122" title="완료 · TP-0117에서 분리: MPC 명목 명령을 구간 평균 대신 다음 노드 twist로 — 구간 평균은 계획한 가속의 절반만 실현해 정지 거리가 두 배였다(연석면 치명 실패와 틈... · PR #118(merge됨)">✓ TP-0122 ◉</a>, <a class="tp tp-done" href="#todo" data-tp="TP-0117" title="완료 · TP-0093 후속: MPC 비용에 매끄러운 지형 항(M.1.1) — 지금 MPC 비용엔 지형이 없어 램프 모서리를 고정 여유로만 피한다. 여유 0–0.15 m 스윕에서 모서... · PR #118(merge됨)">✓ TP-0117 ◉</a>, <a class="tp tp-done" href="#todo" data-tp="TP-0069" title="완료 · 기록에서 복원 · PR #120(merge됨)">✓ TP-0069 ◉</a>, <a class="tp tp-done" href="#todo" data-tp="TP-0120" title="완료 · TP-0076 후속: MPPI 확률 제약 rollout에 GP 평균(지연 편향) 반영 — 지금은 명목 rollout이라 분산만 쓴다. SwerveModel 하위 클래스로 평균... · PR #121(merge됨)">✓ TP-0120 ◉</a>, <a class="tp tp-done" href="#todo" data-tp="TP-0130" title="완료 · MPOT 검토 0단계(사용자 요청 2026-10-02): MPPI 계열이 멈춘 plant 장면 10개에 더 센 최적화기의 여지가 있는지 오라클 다섯(생산 MPPI 재추첨·2회... · PR #134(열림)">✓ TP-0130 ◉</a></td>
 </tr>
 <tr>
 <td>Guidance 경로 여유 (Planner 기준선)</td>
@@ -358,7 +358,7 @@ footer { max-width: 1000px; margin: 0 auto; padding: 0 16px 40px; color: var(--m
 </tr>
 <tr>
 <td>✅</td>
-<td><a class="tp tp-done" href="#todo" data-tp="TP-0054" title="완료 · 기록에서 복원 · 이슈 #128(열림)">✓ TP-0054 ◉</a></td>
+<td><a class="tp tp-done" href="#todo" data-tp="TP-0054" title="완료 · 기록에서 복원 · 이슈 #128(닫힘) · PR #129(merge됨)">✓ TP-0054 ◉</a></td>
 <td>L1 분산 → σ: 매퍼 분산은 쓸 수 없고, cost 민감도 σ(<code>--sigma-mode sensitivity</code>)는 폐루프를 바꾸지 못해 기본값은 이진 σ</td>
 <td><strong>완료</strong> — Key results</td>
 </tr>
@@ -443,7 +443,7 @@ cost가 <code>max_slope_rad</code> 0.26에서 포화해 구조적으로 지배�
 <td>시야 인지 움직임: 관측 나이로 σ를 키우고, 시야 밖 이동에 비용을 준다</td>
 </tr>
 <tr>
-<td><a class="tp tp-done" href="#todo" data-tp="TP-0054" title="완료 · 기록에서 복원 · 이슈 #128(열림)">✓ TP-0054 ◉</a></td>
+<td><a class="tp tp-done" href="#todo" data-tp="TP-0054" title="완료 · 기록에서 복원 · 이슈 #128(닫힘) · PR #129(merge됨)">✓ TP-0054 ◉</a></td>
 <td>L1 분산을 σ로 보정하고, σ를 쓰는 모듈에 미치는 영향을 확인한다</td>
 </tr>
 <tr>
@@ -463,7 +463,8 @@ cost가 <code>max_slope_rad</code> 0.26에서 포화해 구조적으로 지배�
 <li>Isaac 카메라: <a class="tp tp-backlog" href="#todo" data-tp="TP-0019" title="백로그 · Isaac Sim 로봇(TP-0004 챠시스+LiDAR)에 RGB 카메라 prim + ROS2CameraHelper(OmniGraph) 퍼블리시 노드 추가 — TP-0011(... · 이슈 #3(닫힘) · PR #10(merge됨)">TP-0019</a>(카메라 prim), <a class="tp tp-backlog" href="#todo" data-tp="TP-0011" title="백로그 · 동적 장애물 탐지+추적 PoC — YOLO+ByteTrack, Isaac Sim 카메라 스트림 대상(실물 센서 없이 착수 가능) · 이슈 #3(닫힘) · PR #10(merge됨)">TP-0011</a>(YOLO + ByteTrack).</li>
 <li>선행 조건이 있는 것: <a class="tp tp-backlog" href="#todo" data-tp="TP-0028" title="백로그 · TP-0027 후속: PlanRequest에 동적 장애물 예측 전달(TP-0017 규칙 예외 결정 후) — Planner D가 보행자를 보고 시간 인덱스 궤적으로 비켜 가는지...">TP-0028</a>(<a class="tp tp-done" href="#todo" data-tp="TP-0017" title="완료 · 기록에서 복원">✓ TP-0017</a> 결정 뒤), <a class="tp tp-backlog" href="#todo" data-tp="TP-0040" title="백로그 · P1 인식 격차: L0 belief와 L1(RTX LiDAR → elevation mapping) TravMap의 비용 오차 분포 비교 (P1 R-F-010)">TP-0040</a>(<a class="tp tp-blocked" href="#todo" data-tp="TP-0005" title="사용자 실행 대기 · TP-0001 완료 후: 지형 USD 로드 + 스워브/LiDAR 로봇 배치 + ROS2 브릿지 폐루프 재현, P0 운동학 벤치마크와 성공률 비교">⏸ TP-0005</a> 뒤).</li>
 <li>Controller 트랙(2026-09-30 결정: MPPI와 NMPC를 함께 개발하고 같은 벤치마크에서 비교): <a class="tp tp-done" href="#todo" data-tp="TP-0070" title="완료 · 기록에서 복원">✓ TP-0070 ◉</a>·0071·0093·0068·0076은 완료(위 Key results).
-  <a class="tp tp-done" href="#todo" data-tp="TP-0119" title="완료 · TP-0076 후속: 확률 제약의 0선을 실패 경계에 맞추기 — 이웃 칸 cost가 0.9에 가까운 램프 벽 옆에서 치명 칸 중심 기준 0선이 실패(이중선형 cost ≥ 0.... · PR #117(merge됨)">✓ TP-0119 ◉</a>(확률 제약 0선), <a class="tp tp-done" href="#todo" data-tp="TP-0122" title="완료 · TP-0117에서 분리: MPC 명목 명령을 구간 평균 대신 다음 노드 twist로 — 구간 평균은 계획한 가속의 절반만 실현해 정지 거리가 두 배였다(연석면 치명 실패와 틈... · PR #118(merge됨)">✓ TP-0122 ◉</a>(MPC 명령), <a class="tp tp-done" href="#todo" data-tp="TP-0117" title="완료 · TP-0093 후속: MPC 비용에 매끄러운 지형 항(M.1.1) — 지금 MPC 비용엔 지형이 없어 램프 모서리를 고정 여유로만 피한다. 여유 0–0.15 m 스윕에서 모서... · PR #118(merge됨)">✓ TP-0117 ◉</a>(MPC 여유 행), <a class="tp tp-done" href="#todo" data-tp="TP-0118" title="완료 · Guidance 경로의 여유를 Controller와 맞추기: Dijkstra가 한두 칸 틈·지도 가장자리로 경로를 내 MPC 여유 0.15 m·MPPI 튜브와 충돌한다(bum... · PR #119(merge됨)">✓ TP-0118 ◉</a>(Guidance 여유), <a class="tp tp-done" href="#todo" data-tp="TP-0069" title="완료 · 기록에서 복원 · PR #120(merge됨)">✓ TP-0069 ◉</a>(MPC 분산 튜브, 효과 없음), <a class="tp tp-done" href="#todo" data-tp="TP-0120" title="완료 · TP-0076 후속: MPPI 확률 제약 rollout에 GP 평균(지연 편향) 반영 — 지금은 명목 rollout이라 분산만 쓴다. SwerveModel 하위 클래스로 평균... · PR #121(merge됨)">✓ TP-0120 ◉</a>(MPPI GP 고속화·GP 평균 rollout)도 완료. 다음은 <a class="tp tp-backlog" href="#todo" data-tp="TP-0123" title="백로그 · TP-0122 후속: MPC 승차감 — 다음 노드 명령으로 rms jerk가 두 배(정적 6.7, MPPI 4.4). 첫 스테이지 Δu 비용(w_du)은 jerk를 줄이지만 ... · 이슈 #123(열림)">TP-0123</a>(MPC jerk), <a class="tp tp-backlog" href="#todo" data-tp="TP-0127" title="백로그 · TP-0118 후속: plant curb_ramp 램프 입구에서 확률 제약 MPPI(mppi_cc·mppi_ccgp)가 여유 경로로 실패가 2 → 7건 — 지연으로 입구를 지... · 이슈 #124(열림)">TP-0127</a>(램프 입구의 확률 제약 MPPI), <a class="tp tp-backlog" href="#todo" data-tp="TP-0121" title="백로그 · planner_d+mpc·planner_d+mpc_gp·planner_d+mppi_ccgp 평가(시간 참조 모드) — Planner D 체크포인트가 있는 데스크톱에서. 정적·...">TP-0121</a>(Planner D 조합).
+  <a class="tp tp-done" href="#todo" data-tp="TP-0119" title="완료 · TP-0076 후속: 확률 제약의 0선을 실패 경계에 맞추기 — 이웃 칸 cost가 0.9에 가까운 램프 벽 옆에서 치명 칸 중심 기준 0선이 실패(이중선형 cost ≥ 0.... · PR #117(merge됨)">✓ TP-0119 ◉</a>(확률 제약 0선), <a class="tp tp-done" href="#todo" data-tp="TP-0122" title="완료 · TP-0117에서 분리: MPC 명목 명령을 구간 평균 대신 다음 노드 twist로 — 구간 평균은 계획한 가속의 절반만 실현해 정지 거리가 두 배였다(연석면 치명 실패와 틈... · PR #118(merge됨)">✓ TP-0122 ◉</a>(MPC 명령), <a class="tp tp-done" href="#todo" data-tp="TP-0117" title="완료 · TP-0093 후속: MPC 비용에 매끄러운 지형 항(M.1.1) — 지금 MPC 비용엔 지형이 없어 램프 모서리를 고정 여유로만 피한다. 여유 0–0.15 m 스윕에서 모서... · PR #118(merge됨)">✓ TP-0117 ◉</a>(MPC 여유 행), <a class="tp tp-done" href="#todo" data-tp="TP-0118" title="완료 · Guidance 경로의 여유를 Controller와 맞추기: Dijkstra가 한두 칸 틈·지도 가장자리로 경로를 내 MPC 여유 0.15 m·MPPI 튜브와 충돌한다(bum... · PR #119(merge됨)">✓ TP-0118 ◉</a>(Guidance 여유), <a class="tp tp-done" href="#todo" data-tp="TP-0069" title="완료 · 기록에서 복원 · PR #120(merge됨)">✓ TP-0069 ◉</a>(MPC 분산 튜브, 효과 없음), <a class="tp tp-done" href="#todo" data-tp="TP-0120" title="완료 · TP-0076 후속: MPPI 확률 제약 rollout에 GP 평균(지연 편향) 반영 — 지금은 명목 rollout이라 분산만 쓴다. SwerveModel 하위 클래스로 평균... · PR #121(merge됨)">✓ TP-0120 ◉</a>(MPPI GP 고속화·GP 평균 rollout),
+  <a class="tp tp-done" href="#todo" data-tp="TP-0130" title="완료 · MPOT 검토 0단계(사용자 요청 2026-10-02): MPPI 계열이 멈춘 plant 장면 10개에 더 센 최적화기의 여지가 있는지 오라클 다섯(생산 MPPI 재추첨·2회... · PR #134(열림)">✓ TP-0130 ◉</a>(MPOT 검토 0단계, 만들지 않음)도 완료. 다음은 <a class="tp tp-backlog" href="#todo" data-tp="TP-0131" title="백로그 · TP-0130 후속: ReferenceCost 진행 항이 접힌 참조에서 건너뛴다 — curb_ramp에서 Guidance 경로가 램프로 돌아가 접히면 연석 아래 끝점이 되돌아... · 이슈 #132(열림)">TP-0131</a>(접힌 참조의 진행 항), <a class="tp tp-backlog" href="#todo" data-tp="TP-0132" title="백로그 · TP-0130 후속: GP 확률 제약 스택(mppi_ccgp·mppi_ccgpm)의 bumps·random_mix 멈춤 원인 분리 — 같은 seed를 mppi·mppi_cc는... · 이슈 #133(열림)">TP-0132</a>(GP 확률 제약 스택의 멈춤 원인), <a class="tp tp-backlog" href="#todo" data-tp="TP-0123" title="백로그 · TP-0122 후속: MPC 승차감 — 다음 노드 명령으로 rms jerk가 두 배(정적 6.7, MPPI 4.4). 첫 스테이지 Δu 비용(w_du)은 jerk를 줄이지만 ... · 이슈 #123(열림)">TP-0123</a>(MPC jerk), <a class="tp tp-backlog" href="#todo" data-tp="TP-0127" title="백로그 · TP-0118 후속: plant curb_ramp 램프 입구에서 확률 제약 MPPI(mppi_cc·mppi_ccgp)가 여유 경로로 실패가 2 → 7건 — 지연으로 입구를 지... · 이슈 #124(열림)">TP-0127</a>(램프 입구의 확률 제약 MPPI), <a class="tp tp-backlog" href="#todo" data-tp="TP-0121" title="백로그 · planner_d+mpc·planner_d+mpc_gp·planner_d+mppi_ccgp 평가(시간 참조 모드) — Planner D 체크포인트가 있는 데스크톱에서. 정적·...">TP-0121</a>(Planner D 조합).
   예측 모델 계층(2026-10-01 사용자 요청): <a class="tp tp-backlog" href="#todo" data-tp="TP-0124" title="백로그 · Controller 모델 계층(사용자 요청 2026-10-01): MPC·MPPI의 예측 모델을 기구학(SwerveModel) → 동역학(모듈 지연·슬립 plant의 배치 모... · 이슈 #122(열림)">TP-0124</a>(기구학·동역학·학습 모델을 한 프로토콜로), <a class="tp tp-backlog" href="#todo" data-tp="TP-0125" title="백로그 · 메쉬 기반 forward 샘플링 시뮬레이터: 로봇 메쉬(차체·바퀴 접지점)를 2.5D 고도 지도 위에 놓고 샘플마다 접지 높이·자세(pitch·roll)·차체 하부 간섭·전복... · 이슈 #122(열림)">TP-0125</a>(로봇 메쉬 기반 forward 샘플링 시뮬레이터), <a class="tp tp-backlog" href="#todo" data-tp="TP-0126" title="백로그 · 학습 forward dynamics 모델(FDM): 지역 고도 패치·상태 이력·명령 열 → 미래 위치·실패 확률(LSTM). 메쉬 시뮬레이터로 자기 지도 데이터를 만들고, M... · 이슈 #122(열림)">TP-0126</a>(학습 forward dynamics 모델). 근거는 MPC 문서 M.1.3.</li>
 <li>낮은 우선순위: <a class="tp tp-backlog" href="#todo" data-tp="TP-0041" title="백로그 · (조사·PoC) URBAN-SIM·UrbanVerse 장면 활용성: 에셋 라이선스, Isaac Sim 5.x 요구, RTX 5080 실행 (P2 R-F-011)">TP-0041</a>, <a class="tp tp-backlog" href="#todo" data-tp="TP-0042" title="백로그 · Isaac Lab 3.0 정식판(2026-10 말 목표) 뒤 kit-less 경로(Newton·OVPhysX)로 Planner D 학습 루프 이식 검토">TP-0042</a>, <a class="tp tp-backlog" href="#todo" data-tp="TP-0043" title="백로그 · sim-to-real 예측력 프로토콜 문서: 스택·실외 코스·지표·SRCC 판정 기준, 첫 주행 보정 기록 항목 (P2 R-F-012)">TP-0043</a>, <a class="tp tp-backlog" href="#todo" data-tp="TP-0007" title="백로그 · LiDAR 프로파일(Velodyne_VLS128 등) 조회가 &#x27;not found&#x27; 경고를 냄 — Isaac Sim 6.0에서 omni.sensors.nv.common 데이터 ...">TP-0007</a>, <a class="tp tp-backlog" href="#todo" data-tp="TP-0014" title="백로그 · (연구) CBF-QP/OcclusionCBF류 안전필터를 OSQP 등 오픈소스 QP로 대체 가능한지 조사 (Gurobi 상용 라이선스 회피)">TP-0014</a>.</li>
 </ul></div>
@@ -521,7 +522,7 @@ python scripts/diagnose_planner_d_level.py --levels 0 1 2 3 --seeds 0 1 2 3 4 5 
 python scripts/run_benchmark.py --stacks guidance+mppi planner_d+mppi --levels 0 1 2 3 \
     --seeds 0 1 2 3 4 5 6 7 8 9 --out results/tp0039_levels
 </code></pre></div>
-<div class="card md"><h2>주요 결과</h2><div class="ev-grid"><figure class="ev big"><a class="thumb" href="assets/figs/tp0054_sigma.webp" title="원본 보기"><img alt="매퍼 분산은 실제 높이 오차와 따로 놀고(a), 관측 칸의 cost 오차는 cost의 높이 민감도가 맞힌다(b, AUROC 0.886). 그래도 L1 폐루프 성공은 이진 σ와 같다(c)" src="assets/figs/tp0054_sigma.webp" loading="lazy"></a><figcaption>매퍼 분산은 실제 높이 오차와 따로 놀고(a), 관측 칸의 cost 오차는 cost의 높이 민감도가 맞힌다(b, AUROC 0.886). 그래도 L1 폐루프 성공은 이진 σ와 같다(c) · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0054" title="완료 · 기록에서 복원 · 이슈 #128(열림)">✓ TP-0054 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/tp0098_determinism.webp" title="원본 보기"><img alt="매퍼의 순서 의존 넷을 닫으니 같은 점군에서 모든 층이 비트 단위로 같고, L1 폐루프가 재현된다(상한 + prior로 두 스택 12/12)" src="assets/figs/tp0098_determinism.webp" loading="lazy"></a><figcaption>매퍼의 순서 의존 넷을 닫으니 같은 점군에서 모든 층이 비트 단위로 같고, L1 폐루프가 재현된다(상한 + prior로 두 스택 12/12) · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0098" title="완료 · TP-0097 후속: 벤더링 elevation_mapping 실행 간 비결정성 — 같은 점군 두 번에 upper_bound 623/3875칸이 최대 0.15 m 다르고, L1... · PR #105(merge됨) · 이슈 #126(닫힘) · PR #127(merge됨)">✓ TP-0098 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/tp0102_robot_pose.webp" title="원본 보기"><img alt="사족 보행, 몸체에 붙은 LiDAR: 자세 보상 켬(왼쪽)은 높이 오차 1 cm대, 끔(가운데)·추정 잡음 1°(오른쪽)는 먼 링이 줄무늬로 틀려 거짓 치명이 앞을 막는다" src="assets/figs/tp0102_robot_pose.webp" loading="lazy"></a><figcaption>사족 보행, 몸체에 붙은 LiDAR: 자세 보상 켬(왼쪽)은 높이 오차 1 cm대, 끔(가운데)·추정 잡음 1°(오른쪽)는 먼 링이 줄무늬로 틀려 거짓 치명이 앞을 막는다 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0102" title="완료 · Playground 로봇 종류(스워브·사족 보행·바퀴 사족)와 몸체에 붙은 센서: 걸음새 흔들림 아래 elevation mapping 품질(자세 보상 켬/끔, 추정 잡음) 확... · PR #103(merge됨)">✓ TP-0102 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/tp0095_rules.webp" title="원본 보기"><img alt="깊이 prior 후보에 잡음 필터: ohm·CMU 모두 내림 턱 오탐(28.9 → 18.3칸)을 되돌리고, CMU(1,2)가 포트홀 재현율 0.86을 지킨다" src="assets/figs/tp0095_rules.webp" loading="lazy"></a><figcaption>깊이 prior 후보에 잡음 필터: ohm·CMU 모두 내림 턱 오탐(28.9 → 18.3칸)을 되돌리고, CMU(1,2)가 포트홀 재현율 0.86을 지킨다 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0095" title="완료 · TP-0085 후속: 남은 판정 규칙 둘 측정 — ohm virtualSurfaceFilterThreshold, CMU noDataBlockShrink/Expand. 기울기 ... · 이슈 #100(닫힘) · PR #101(merge됨)">✓ TP-0095 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/tp0065_stereo.webp" title="원본 보기"><img alt="전면 스테레오를 L1 두 번째 입력으로: 미관측 1.5 m와 함께 쓰면 L1 느려짐(+23% → +2%)과 음의 지형 오탐(-58%)이 사라지고 MISS는 거의 0을 지킨다" src="assets/figs/tp0065_stereo.webp" loading="lazy"></a><figcaption>전면 스테레오를 L1 두 번째 입력으로: 미관측 1.5 m와 함께 쓰면 L1 느려짐(+23% → +2%)과 음의 지형 오탐(-58%)이 사라지고 MISS는 거의 0을 지킨다 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0065" title="완료 · 기록에서 복원 · 이슈 #98(닫힘) · PR #99(merge됨)">✓ TP-0065 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/tp0101_unknown_near.webp" title="원본 보기"><img alt="로봇 둘레 1.5 m 못 본 칸을 치명으로: L0에서 도달 가능 근거리 MISS 2,204 → 0, 폐루프 성공·시간 그대로. L1에서는 MISS 6,048 → 4 대신 음의 지형 오탐 13배" src="assets/figs/tp0101_unknown_near.webp" loading="lazy"></a><figcaption>로봇 둘레 1.5 m 못 본 칸을 치명으로: L0에서 도달 가능 근거리 MISS 2,204 → 0, 폐루프 성공·시간 그대로. L1에서는 MISS 6,048 → 4 대신 음의 지형 오탐 13배 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0101" title="완료 · TP-0100 후속: 근거리 미관측 칸의 cost 재검토 — 정지 거리 안의 미관측 칸을 치명·높은 cost로 두면 도달 가능 근거리 MISS(L0 가림 2,206, L1 6... · 이슈 #94(닫힘) · PR #95(merge됨)">✓ TP-0101 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/tp0100_belief_chassis.webp" title="원본 보기"><img alt="belief TravMap 대 차체 기하 기준. MISS의 99% 이상이 못 본 칸이고, 그림자 상한·깊이 prior는 도달 가능한 근거리 MISS를 줄이지 않는다(2,206 → 2,204). 센서 0.8 m는 3.4배 줄이고 L1은 2.8배 나쁘다" src="assets/figs/tp0100_belief_chassis.webp" loading="lazy"></a><figcaption>belief TravMap 대 차체 기하 기준. MISS의 99% 이상이 못 본 칸이고, 그림자 상한·깊이 prior는 도달 가능한 근거리 MISS를 줄이지 않는다(2,206 → 2,204). 센서 0.8 m는 3.4배 줄이고 L1은 2.8배 나쁘다 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0101" title="완료 · TP-0100 후속: 근거리 미관측 칸의 cost 재검토 — 정지 거리 안의 미관측 칸을 치명·높은 cost로 두면 도달 가능 근거리 MISS(L0 가림 2,206, L1 6... · 이슈 #94(닫힘) · PR #95(merge됨)">✓ TP-0101 ◉</a> <a class="tp tp-done" href="#todo" data-tp="TP-0100" title="완료 · TP-0082 후속: 섀시 기하 기준(sim/ground_truth.py)을 L0/L1 인식 경로에도 적용 — 지금은 참 고도에서만 잰다. 가림·그림자 상한이 켜진 belie... · 이슈 #92(닫힘) · PR #93(merge됨)">✓ TP-0100 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/tp0082_estimators.webp" title="원본 보기"><img alt="섀시 기하 기준(추정기와 독립)으로 잰 추정기 비교. emap의 RSL 발디딤 필터는 배포 운용점(gate 0.15)에서 차체가 못 들어가는 칸 4,425개를 주행 가능이라 부르고, 거의 전부 slope_crossfall 경사다. 기하·TravNet은 0" src="assets/figs/tp0082_estimators.webp" loading="lazy"></a><figcaption>섀시 기하 기준(추정기와 독립)으로 잰 추정기 비교. emap의 RSL 발디딤 필터는 배포 운용점(gate 0.15)에서 차체가 못 들어가는 칸 4,425개를 주행 가능이라 부르고, 거의 전부 slope_crossfall 경사다. 기하·TravNet은 0 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0082" title="완료 · 기록에서 복원 · PR #63(merge됨) · PR #79(merge됨) · 이슈 #89(닫힘)">✓ TP-0082 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/ev_tp0073_levels.webp" title="원본 보기"><img alt="planner_d+mppi 성공 수: 벤치마크 레벨 3이 11/12 → 12/12, curb_ramp 레벨 3 seed 0–9는 7/10 → 8/10" src="assets/figs/ev_tp0073_levels.webp" loading="lazy"></a><figcaption>planner_d+mppi 성공 수: 벤치마크 레벨 3이 11/12 → 12/12, curb_ramp 레벨 3 seed 0–9는 7/10 → 8/10 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0073" title="완료 · 기록에서 복원 · 이슈 #44(닫힘) · PR #45(merge됨) · PR #54(merge됨)">✓ TP-0073 ◉</a> <a class="tp tp-done" href="#todo" data-tp="TP-0075" title="완료 · 기록에서 복원 · 이슈 #52(닫힘)">✓ TP-0075 ◉</a> <a class="tp tp-done" href="#todo" data-tp="TP-0077" title="완료 · 기록에서 복원 · 이슈 #53(닫힘) · PR #61(merge됨)">✓ TP-0077 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/ev_benchmark_progress.webp" title="원본 보기"><img alt="운동학 벤치마크 성공률 추이(4 시나리오 × 10 seed). 가림·L1 인식으로 떨어지고 그림자 상한·깊이 prior로 회복" src="assets/figs/ev_benchmark_progress.webp" loading="lazy"></a><figcaption>운동학 벤치마크 성공률 추이(4 시나리오 × 10 seed). 가림·L1 인식으로 떨어지고 그림자 상한·깊이 prior로 회복 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0027" title="완료 · 기록에서 복원 · 이슈 #7(닫힘) · 이슈 #8(닫힘) · PR #14(merge됨) · PR #15(merge됨)">✓ TP-0027 ◉</a> <a class="tp tp-done" href="#todo" data-tp="TP-0031" title="완료 · 기록에서 복원 · 이슈 #8(닫힘) · PR #15(merge됨)">✓ TP-0031 ◉</a> <a class="tp tp-done" href="#todo" data-tp="TP-0047" title="완료 · 기록에서 복원 · 이슈 #9(닫힘) · PR #16(merge됨)">✓ TP-0047 ◉</a> <a class="tp tp-done" href="#todo" data-tp="TP-0053" title="완료 · 기록에서 복원 · 이슈 #21(닫힘) · PR #26(merge됨)">✓ TP-0053 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/ev_tp0047_potholes.webp" title="원본 보기"><img alt="▶ 가림 켠 포트홀 주행. 상한만이면 치명 셀 진입, 깊이 prior를 켜면 돌아서 도달" src="assets/figs/ev_tp0047_potholes.webp" loading="lazy"></a><figcaption>▶ 가림 켠 포트홀 주행. 상한만이면 치명 셀 진입, 깊이 prior를 켜면 돌아서 도달 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0044" title="완료 · 기록에서 복원 · 이슈 #9(닫힘) · PR #16(merge됨)">✓ TP-0044 ◉</a> <a class="tp tp-done" href="#todo" data-tp="TP-0046" title="완료 · 기록에서 복원 · 이슈 #9(닫힘) · PR #16(merge됨)">✓ TP-0046 ◉</a> <a class="tp tp-done" href="#todo" data-tp="TP-0047" title="완료 · 기록에서 복원 · 이슈 #9(닫힘) · PR #16(merge됨)">✓ TP-0047 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/ev_tp0025_tracks.webp" title="원본 보기"><img alt="Planner D(주황)와 Guidance(파랑)의 경로, 레벨 0 seed 0. 둘 다 도달" src="assets/figs/ev_tp0025_tracks.webp" loading="lazy"></a><figcaption>Planner D(주황)와 Guidance(파랑)의 경로, 레벨 0 seed 0. 둘 다 도달 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0025" title="완료 · 기록에서 복원 · 이슈 #6(닫힘) · PR #13(merge됨)">✓ TP-0025 ◉</a></figcaption></figure></div><details><summary>수치 표: 인식 설정별 성공 수, 깊이 prior 오탐, 센서 높이, L1 지도 품질</summary><p>최신 수치만 모았다. 따로 적지 않으면 운동학 벤치마크, 4 시나리오 × 10 seed, 센서 높이 0.3 m다.</p>
+<div class="card md"><h2>주요 결과</h2><div class="ev-grid"><figure class="ev big"><a class="thumb" href="assets/figs/tp0054_sigma.webp" title="원본 보기"><img alt="매퍼 분산은 실제 높이 오차와 따로 놀고(a), 관측 칸의 cost 오차는 cost의 높이 민감도가 맞힌다(b, AUROC 0.886). 그래도 L1 폐루프 성공은 이진 σ와 같다(c)" src="assets/figs/tp0054_sigma.webp" loading="lazy"></a><figcaption>매퍼 분산은 실제 높이 오차와 따로 놀고(a), 관측 칸의 cost 오차는 cost의 높이 민감도가 맞힌다(b, AUROC 0.886). 그래도 L1 폐루프 성공은 이진 σ와 같다(c) · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0054" title="완료 · 기록에서 복원 · 이슈 #128(닫힘) · PR #129(merge됨)">✓ TP-0054 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/tp0098_determinism.webp" title="원본 보기"><img alt="매퍼의 순서 의존 넷을 닫으니 같은 점군에서 모든 층이 비트 단위로 같고, L1 폐루프가 재현된다(상한 + prior로 두 스택 12/12)" src="assets/figs/tp0098_determinism.webp" loading="lazy"></a><figcaption>매퍼의 순서 의존 넷을 닫으니 같은 점군에서 모든 층이 비트 단위로 같고, L1 폐루프가 재현된다(상한 + prior로 두 스택 12/12) · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0098" title="완료 · TP-0097 후속: 벤더링 elevation_mapping 실행 간 비결정성 — 같은 점군 두 번에 upper_bound 623/3875칸이 최대 0.15 m 다르고, L1... · PR #105(merge됨) · 이슈 #126(닫힘) · PR #127(merge됨)">✓ TP-0098 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/tp0102_robot_pose.webp" title="원본 보기"><img alt="사족 보행, 몸체에 붙은 LiDAR: 자세 보상 켬(왼쪽)은 높이 오차 1 cm대, 끔(가운데)·추정 잡음 1°(오른쪽)는 먼 링이 줄무늬로 틀려 거짓 치명이 앞을 막는다" src="assets/figs/tp0102_robot_pose.webp" loading="lazy"></a><figcaption>사족 보행, 몸체에 붙은 LiDAR: 자세 보상 켬(왼쪽)은 높이 오차 1 cm대, 끔(가운데)·추정 잡음 1°(오른쪽)는 먼 링이 줄무늬로 틀려 거짓 치명이 앞을 막는다 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0102" title="완료 · Playground 로봇 종류(스워브·사족 보행·바퀴 사족)와 몸체에 붙은 센서: 걸음새 흔들림 아래 elevation mapping 품질(자세 보상 켬/끔, 추정 잡음) 확... · PR #103(merge됨)">✓ TP-0102 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/tp0095_rules.webp" title="원본 보기"><img alt="깊이 prior 후보에 잡음 필터: ohm·CMU 모두 내림 턱 오탐(28.9 → 18.3칸)을 되돌리고, CMU(1,2)가 포트홀 재현율 0.86을 지킨다" src="assets/figs/tp0095_rules.webp" loading="lazy"></a><figcaption>깊이 prior 후보에 잡음 필터: ohm·CMU 모두 내림 턱 오탐(28.9 → 18.3칸)을 되돌리고, CMU(1,2)가 포트홀 재현율 0.86을 지킨다 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0095" title="완료 · TP-0085 후속: 남은 판정 규칙 둘 측정 — ohm virtualSurfaceFilterThreshold, CMU noDataBlockShrink/Expand. 기울기 ... · 이슈 #100(닫힘) · PR #101(merge됨)">✓ TP-0095 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/tp0065_stereo.webp" title="원본 보기"><img alt="전면 스테레오를 L1 두 번째 입력으로: 미관측 1.5 m와 함께 쓰면 L1 느려짐(+23% → +2%)과 음의 지형 오탐(-58%)이 사라지고 MISS는 거의 0을 지킨다" src="assets/figs/tp0065_stereo.webp" loading="lazy"></a><figcaption>전면 스테레오를 L1 두 번째 입력으로: 미관측 1.5 m와 함께 쓰면 L1 느려짐(+23% → +2%)과 음의 지형 오탐(-58%)이 사라지고 MISS는 거의 0을 지킨다 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0065" title="완료 · 기록에서 복원 · 이슈 #98(닫힘) · PR #99(merge됨)">✓ TP-0065 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/tp0101_unknown_near.webp" title="원본 보기"><img alt="로봇 둘레 1.5 m 못 본 칸을 치명으로: L0에서 도달 가능 근거리 MISS 2,204 → 0, 폐루프 성공·시간 그대로. L1에서는 MISS 6,048 → 4 대신 음의 지형 오탐 13배" src="assets/figs/tp0101_unknown_near.webp" loading="lazy"></a><figcaption>로봇 둘레 1.5 m 못 본 칸을 치명으로: L0에서 도달 가능 근거리 MISS 2,204 → 0, 폐루프 성공·시간 그대로. L1에서는 MISS 6,048 → 4 대신 음의 지형 오탐 13배 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0101" title="완료 · TP-0100 후속: 근거리 미관측 칸의 cost 재검토 — 정지 거리 안의 미관측 칸을 치명·높은 cost로 두면 도달 가능 근거리 MISS(L0 가림 2,206, L1 6... · 이슈 #94(닫힘) · PR #95(merge됨)">✓ TP-0101 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/tp0100_belief_chassis.webp" title="원본 보기"><img alt="belief TravMap 대 차체 기하 기준. MISS의 99% 이상이 못 본 칸이고, 그림자 상한·깊이 prior는 도달 가능한 근거리 MISS를 줄이지 않는다(2,206 → 2,204). 센서 0.8 m는 3.4배 줄이고 L1은 2.8배 나쁘다" src="assets/figs/tp0100_belief_chassis.webp" loading="lazy"></a><figcaption>belief TravMap 대 차체 기하 기준. MISS의 99% 이상이 못 본 칸이고, 그림자 상한·깊이 prior는 도달 가능한 근거리 MISS를 줄이지 않는다(2,206 → 2,204). 센서 0.8 m는 3.4배 줄이고 L1은 2.8배 나쁘다 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0101" title="완료 · TP-0100 후속: 근거리 미관측 칸의 cost 재검토 — 정지 거리 안의 미관측 칸을 치명·높은 cost로 두면 도달 가능 근거리 MISS(L0 가림 2,206, L1 6... · 이슈 #94(닫힘) · PR #95(merge됨)">✓ TP-0101 ◉</a> <a class="tp tp-done" href="#todo" data-tp="TP-0100" title="완료 · TP-0082 후속: 섀시 기하 기준(sim/ground_truth.py)을 L0/L1 인식 경로에도 적용 — 지금은 참 고도에서만 잰다. 가림·그림자 상한이 켜진 belie... · 이슈 #92(닫힘) · PR #93(merge됨)">✓ TP-0100 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/tp0082_estimators.webp" title="원본 보기"><img alt="섀시 기하 기준(추정기와 독립)으로 잰 추정기 비교. emap의 RSL 발디딤 필터는 배포 운용점(gate 0.15)에서 차체가 못 들어가는 칸 4,425개를 주행 가능이라 부르고, 거의 전부 slope_crossfall 경사다. 기하·TravNet은 0" src="assets/figs/tp0082_estimators.webp" loading="lazy"></a><figcaption>섀시 기하 기준(추정기와 독립)으로 잰 추정기 비교. emap의 RSL 발디딤 필터는 배포 운용점(gate 0.15)에서 차체가 못 들어가는 칸 4,425개를 주행 가능이라 부르고, 거의 전부 slope_crossfall 경사다. 기하·TravNet은 0 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0082" title="완료 · 기록에서 복원 · PR #63(merge됨) · PR #79(merge됨) · 이슈 #89(닫힘)">✓ TP-0082 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/ev_tp0073_levels.webp" title="원본 보기"><img alt="planner_d+mppi 성공 수: 벤치마크 레벨 3이 11/12 → 12/12, curb_ramp 레벨 3 seed 0–9는 7/10 → 8/10" src="assets/figs/ev_tp0073_levels.webp" loading="lazy"></a><figcaption>planner_d+mppi 성공 수: 벤치마크 레벨 3이 11/12 → 12/12, curb_ramp 레벨 3 seed 0–9는 7/10 → 8/10 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0073" title="완료 · 기록에서 복원 · 이슈 #44(닫힘) · PR #45(merge됨) · PR #54(merge됨)">✓ TP-0073 ◉</a> <a class="tp tp-done" href="#todo" data-tp="TP-0075" title="완료 · 기록에서 복원 · 이슈 #52(닫힘)">✓ TP-0075 ◉</a> <a class="tp tp-done" href="#todo" data-tp="TP-0077" title="완료 · 기록에서 복원 · 이슈 #53(닫힘) · PR #61(merge됨)">✓ TP-0077 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/ev_benchmark_progress.webp" title="원본 보기"><img alt="운동학 벤치마크 성공률 추이(4 시나리오 × 10 seed). 가림·L1 인식으로 떨어지고 그림자 상한·깊이 prior로 회복" src="assets/figs/ev_benchmark_progress.webp" loading="lazy"></a><figcaption>운동학 벤치마크 성공률 추이(4 시나리오 × 10 seed). 가림·L1 인식으로 떨어지고 그림자 상한·깊이 prior로 회복 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0027" title="완료 · 기록에서 복원 · 이슈 #7(닫힘) · 이슈 #8(닫힘) · PR #14(merge됨) · PR #15(merge됨)">✓ TP-0027 ◉</a> <a class="tp tp-done" href="#todo" data-tp="TP-0031" title="완료 · 기록에서 복원 · 이슈 #8(닫힘) · PR #15(merge됨)">✓ TP-0031 ◉</a> <a class="tp tp-done" href="#todo" data-tp="TP-0047" title="완료 · 기록에서 복원 · 이슈 #9(닫힘) · PR #16(merge됨)">✓ TP-0047 ◉</a> <a class="tp tp-done" href="#todo" data-tp="TP-0053" title="완료 · 기록에서 복원 · 이슈 #21(닫힘) · PR #26(merge됨)">✓ TP-0053 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/ev_tp0047_potholes.webp" title="원본 보기"><img alt="▶ 가림 켠 포트홀 주행. 상한만이면 치명 셀 진입, 깊이 prior를 켜면 돌아서 도달" src="assets/figs/ev_tp0047_potholes.webp" loading="lazy"></a><figcaption>▶ 가림 켠 포트홀 주행. 상한만이면 치명 셀 진입, 깊이 prior를 켜면 돌아서 도달 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0044" title="완료 · 기록에서 복원 · 이슈 #9(닫힘) · PR #16(merge됨)">✓ TP-0044 ◉</a> <a class="tp tp-done" href="#todo" data-tp="TP-0046" title="완료 · 기록에서 복원 · 이슈 #9(닫힘) · PR #16(merge됨)">✓ TP-0046 ◉</a> <a class="tp tp-done" href="#todo" data-tp="TP-0047" title="완료 · 기록에서 복원 · 이슈 #9(닫힘) · PR #16(merge됨)">✓ TP-0047 ◉</a></figcaption></figure><figure class="ev big"><a class="thumb" href="assets/figs/ev_tp0025_tracks.webp" title="원본 보기"><img alt="Planner D(주황)와 Guidance(파랑)의 경로, 레벨 0 seed 0. 둘 다 도달" src="assets/figs/ev_tp0025_tracks.webp" loading="lazy"></a><figcaption>Planner D(주황)와 Guidance(파랑)의 경로, 레벨 0 seed 0. 둘 다 도달 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span> <a class="tp tp-done" href="#todo" data-tp="TP-0025" title="완료 · 기록에서 복원 · 이슈 #6(닫힘) · PR #13(merge됨)">✓ TP-0025 ◉</a></figcaption></figure></div><details><summary>수치 표: 인식 설정별 성공 수, 깊이 prior 오탐, 센서 높이, L1 지도 품질</summary><p>최신 수치만 모았다. 따로 적지 않으면 운동학 벤치마크, 4 시나리오 × 10 seed, 센서 높이 0.3 m다.</p>
 <p><strong>Controller 두 갈래(<a class="tp tp-done" href="#todo" data-tp="TP-0093" title="완료 · acados MPC의 장애물 제약을 여유 비례 형태로: 단순 거리 제약은 매끄러워도 가까워질 때까지 활성화되지 않아 늦게 밟는다. CBF 형태(hdot &gt;= -alpha(h)... · PR #108(merge됨)">✓ TP-0093 ◉</a>·0071·0068·0076·0119·0122·0117).</strong> 같은 Guidance 경로를 MPPI와 acados MPC가 따라간다. <code>results/p2-mpc-mppi-constraints.tsv</code>·<code>results/p2-controller-followups.tsv</code>, MPC 문서 M.3.10–M.3.16.</p>
 <table>
 <thead>
@@ -585,7 +586,44 @@ plant에서 무너져, 기본값으로 두지 않았다(후속 <a class="tp tp-b
 (정적 39/40, 보류 seed 39/40, plant 41/48) 선택 스택 <code>mpc_sc</code>로 둔다. MPPI 확률 제약은 0선을 시뮬레이터의 실패 경계에 맞췄다(<a class="tp tp-done" href="#todo" data-tp="TP-0119" title="완료 · TP-0076 후속: 확률 제약의 0선을 실패 경계에 맞추기 — 이웃 칸 cost가 0.9에 가까운 램프 벽 옆에서 치명 칸 중심 기준 0선이 실패(이중선형 cost ≥ 0.... · PR #117(merge됨)">✓ TP-0119 ◉</a>, 0선 오차 99% 분위 최대
 4.97 → 0.78 cm). plant 96 에피소드에서 rim 대비 85 → 89(갈린 짝 6:2, 부호 검정 p ≈ 0.29)이고, 기준 MPPI 88과도 차이가 없다(6:5).
 남은 치명 실패에 기하가 원인인 것은 없고, 지연 편향이 유력하다(추정, <a class="tp tp-done" href="#todo" data-tp="TP-0120" title="완료 · TP-0076 후속: MPPI 확률 제약 rollout에 GP 평균(지연 편향) 반영 — 지금은 명목 rollout이라 분산만 쓴다. SwerveModel 하위 클래스로 평균... · PR #121(merge됨)">✓ TP-0120 ◉</a>에서 확인).</p>
-<p><strong>L1 분산 → σ(<a class="tp tp-done" href="#todo" data-tp="TP-0054" title="완료 · 기록에서 복원 · 이슈 #128(열림)">✓ TP-0054 ◉</a>).</strong> 매퍼의 칸별 높이 분산은 σ로 쓸 수 없다. 배포 설정(factor 0.05)에서 평지 칸의 예측 std는 26.6 cm인데 실제 오차는 0.20 cm다.
+<p><strong>MPPI 멈춤 진단(<a class="tp tp-done" href="#todo" data-tp="TP-0130" title="완료 · MPOT 검토 0단계(사용자 요청 2026-10-02): MPPI 계열이 멈춘 plant 장면 10개에 더 센 최적화기의 여지가 있는지 오라클 다섯(생산 MPPI 재추첨·2회... · PR #134(열림)">✓ TP-0130 ◉</a>).</strong> 멈춘 장면에서 MPOT식 최적화기(O2)는 같은 예산의 MPPI(B)를 넘지 못했다. 그래서 MPOT 변형은 만들지 않는다.
+MPPI 계열이 timeout한 plant 장면 10개에 탐침 184개를 꽂고, 오라클 다섯이 같은 목적함수를 다시 풀었다. O2가 '센' 장면은 둘이고, 그 둘에서 B도 셌다(사전 등록 기준 G0 실패).
+더 센 최적화기의 계획은 대부분 목적함수를 3% 안쪽으로만 낮추고 4 s에 0.4 m를 넘게 나아가지 못했다.
+멈춤의 원인은 가설로 좁혔다. curb_ramp에서는 진행 항이 끝점을 접힌 참조의 되돌아오는 구간에 투영해 거짓 진행을 만든다(<a class="tp tp-backlog" href="#todo" data-tp="TP-0131" title="백로그 · TP-0130 후속: ReferenceCost 진행 항이 접힌 참조에서 건너뛴다 — curb_ramp에서 Guidance 경로가 램프로 돌아가 접히면 연석 아래 끝점이 되돌아... · 이슈 #132(열림)">TP-0131</a>).
+bumps·random_mix의 멈춤은 GP 분산 튜브를 쓰는 두 스택에서만 나고, 같은 seed를 <code>mppi</code>·<code>mppi_cc</code>는 끝낸다(<a class="tp tp-backlog" href="#todo" data-tp="TP-0132" title="백로그 · TP-0130 후속: GP 확률 제약 스택(mppi_ccgp·mppi_ccgpm)의 bumps·random_mix 멈춤 원인 분리 — 같은 seed를 mppi·mppi_cc는... · 이슈 #133(열림)">TP-0132</a>).
+치명 실패 직전의 계획은 모델에서는 안전하지만, plant 개루프 재생(동역학과 실제 지형)에서는 83–91%가 실패한다. 같은 시점의 정지 명령은 29%만 실패한다.
+<code>results/tp0130/</code>, MPC 문서 M.3.20.</p>
+<table>
+<thead>
+<tr>
+<th>'센' 장면 수 (멈춘 장면 10개 중)</th>
+<th>P 생산 재추첨</th>
+<th>O3 2회 반복</th>
+<th>B 같은 예산</th>
+<th>O1 107배</th>
+<th>O2 MPOT식</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>탈출 전진 0.3 m 이상 (사전 등록)</td>
+<td>1</td>
+<td>1</td>
+<td>3</td>
+<td>4</td>
+<td>2</td>
+</tr>
+<tr>
+<td>탈출 전진 1.0 m 이상 (사후, 같은 탐침)</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>L1 분산 → σ(<a class="tp tp-done" href="#todo" data-tp="TP-0054" title="완료 · 기록에서 복원 · 이슈 #128(닫힘) · PR #129(merge됨)">✓ TP-0054 ◉</a>).</strong> 매퍼의 칸별 높이 분산은 σ로 쓸 수 없다. 배포 설정(factor 0.05)에서 평지 칸의 예측 std는 26.6 cm인데 실제 오차는 0.20 cm다.
 분산이 큰 칸이 더 틀린 칸도 아니다(순위 상관 −0.11). 오차의 대부분은 턱의 위아래를 섞는 모서리 칸에서 나오는데, 매퍼의 잡음 모델에는 그 항이 없다.
 factor를 낮추고 이상치·시간 분산을 끄면 평지는 보정되지만 모서리 칸이 z²로 20배 과신한다. 지도 품질은 factor와 무관해 0.05를 유지한다.
 관측 칸의 cost 오차를 맞히는 것은 cost의 높이 민감도와 주변 미관측 비율이다(MISS AUROC 0.886, 매퍼 std 0.669).
@@ -877,7 +915,7 @@ LiDAR 링 사이가 비어 로봇 주변 3 m 안의 10–12%가 미관측으로 
 <td>필터 가드 backport 완료, merge 대기</td>
 </tr>
 </tbody>
-</table><h3>열린 PR</h3><ul class='prs'><li class='empty'>없음</li></ul><h3>최근 merge된 PR</h3><ul class='prs'><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #127</span> TP-0098 완료: 매퍼 누적·삽입 경쟁을 닫아 L1이 비트 단위로 재현된다 <a class="tp tp-done" href="#todo" data-tp="TP-0098" title="완료 · TP-0097 후속: 벤더링 elevation_mapping 실행 간 비결정성 — 같은 점군 두 번에 upper_bound 623/3875칸이 최대 0.15 m 다르고, L1... · PR #105(merge됨) · 이슈 #126(닫힘) · PR #127(merge됨)">✓ TP-0098 ◉</a> <span class="date">2026-10-01</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #125</span> 대시보드: Controller 후속 PR #108·#117–#121과 이슈 #122–#124 반영  <span class="date">2026-10-01</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #121</span> TP-0120: 확률 제약 MPPI의 GP 경로 1.93배 빠르게(결과 동등), GP 평균 rollout은 램프 치명 실패 0 — 선택 스택 mppi_ccgpm <a class="tp tp-done" href="#todo" data-tp="TP-0120" title="완료 · TP-0076 후속: MPPI 확률 제약 rollout에 GP 평균(지연 편향) 반영 — 지금은 명목 rollout이라 분산만 쓴다. SwerveModel 하위 클래스로 평균... · PR #121(merge됨)">✓ TP-0120 ◉</a> <span class="date">2026-10-01</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #120</span> TP-0069: GP 분산 튜브로 MPC 제약 조이기 — 1번 노드 보정은 맞지만 효과 없음, 선택 스택 mpc_gpcc <a class="tp tp-done" href="#todo" data-tp="TP-0069" title="완료 · 기록에서 복원 · PR #120(merge됨)">✓ TP-0069 ◉</a> <span class="date">2026-10-01</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #119</span> TP-0118: 여유를 아는 Guidance(guidance_c) — plant 221 → 228/240, 도달은 빨라짐 <a class="tp tp-done" href="#todo" data-tp="TP-0118" title="완료 · Guidance 경로의 여유를 Controller와 맞추기: Dijkstra가 한두 칸 틈·지도 가장자리로 경로를 내 MPC 여유 0.15 m·MPPI 튜브와 충돌한다(bum... · PR #119(merge됨)">✓ TP-0118 ◉</a> <span class="date">2026-10-01</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #118</span> TP-0122·TP-0117: 명목 MPC 명령을 다음 노드 twist로(정적 40/40·plant 44/48), 부드러운 여유 행은 선택 스택 <a class="tp tp-done" href="#todo" data-tp="TP-0117" title="완료 · TP-0093 후속: MPC 비용에 매끄러운 지형 항(M.1.1) — 지금 MPC 비용엔 지형이 없어 램프 모서리를 고정 여유로만 피한다. 여유 0–0.15 m 스윕에서 모서... · PR #118(merge됨)">✓ TP-0117 ◉</a> <a class="tp tp-done" href="#todo" data-tp="TP-0122" title="완료 · TP-0117에서 분리: MPC 명목 명령을 구간 평균 대신 다음 노드 twist로 — 구간 평균은 계획한 가속의 절반만 실현해 정지 거리가 두 배였다(연석면 치명 실패와 틈... · PR #118(merge됨)">✓ TP-0122 ◉</a> <span class="date">2026-10-01</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #117</span> TP-0119: MPPI 확률 제약의 0선을 시뮬레이터 실패 경계에 (failure_sdf, boundary=exact) <a class="tp tp-done" href="#todo" data-tp="TP-0119" title="완료 · TP-0076 후속: 확률 제약의 0선을 실패 경계에 맞추기 — 이웃 칸 cost가 0.9에 가까운 램프 벽 옆에서 치명 칸 중심 기준 0선이 실패(이중선형 cost ≥ 0.... · PR #117(merge됨)">✓ TP-0119 ◉</a> <span class="date">2026-10-01</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #116</span> journal: TP-0106 W4 툴바 조작 수 고침(22 → 23가지) <a class="tp tp-done" href="#todo" data-tp="TP-0106" title="완료 · Playground: 로봇이 본 지형만 그리는 보기, 높이 과장 표시, 3D에도 MPPI 샘플·LiDAR 점·센서 원 (UX W4) · 이슈 #109(열림) · PR #110(merge됨) · PR #113(merge됨) · PR #115(merge됨) · PR #116(merge됨)">✓ TP-0106</a> <span class="date">2026-10-01</span></li></ul><p class="note">GitHub 인덱스 갱신: 2026-10-01 23:10 · <code>python3 automation/gh_index.py</code></p></div>
+</table><h3>열린 PR</h3><ul class='prs'><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #134</span> TP-0130: 멈춘 장면에서 MPOT식 최적화기는 같은 예산의 MPPI를 넘지 못했다 — MPOT 변형은 만들지 않는다 <a class="tp tp-done" href="#todo" data-tp="TP-0130" title="완료 · MPOT 검토 0단계(사용자 요청 2026-10-02): MPPI 계열이 멈춘 plant 장면 10개에 더 센 최적화기의 여지가 있는지 오라클 다섯(생산 MPPI 재추첨·2회... · PR #134(열림)">✓ TP-0130 ◉</a> </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #131</span> KAIST Urban Robotics Lab: 지면 분할 계보 신설과 기존 서술 정정 8건  </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #130</span> 배경 0.6b·0.7b: diffusion과 flow matching의 환율, 그리고 스텝을 줄이는 값 (+Flow Planner)  </li></ul><h3>최근 merge된 PR</h3><ul class='prs'><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #129</span> TP-0054: L1 매퍼 분산은 σ가 되지 못한다 — cost 민감도 σ는 오차를 맞히지만 폐루프는 그대로, 기본값 유지 <a class="tp tp-done" href="#todo" data-tp="TP-0054" title="완료 · 기록에서 복원 · 이슈 #128(닫힘) · PR #129(merge됨)">✓ TP-0054 ◉</a> <span class="date">2026-10-01</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #127</span> TP-0098 완료: 매퍼 누적·삽입 경쟁을 닫아 L1이 비트 단위로 재현된다 <a class="tp tp-done" href="#todo" data-tp="TP-0098" title="완료 · TP-0097 후속: 벤더링 elevation_mapping 실행 간 비결정성 — 같은 점군 두 번에 upper_bound 623/3875칸이 최대 0.15 m 다르고, L1... · PR #105(merge됨) · 이슈 #126(닫힘) · PR #127(merge됨)">✓ TP-0098 ◉</a> <span class="date">2026-10-01</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #125</span> 대시보드: Controller 후속 PR #108·#117–#121과 이슈 #122–#124 반영  <span class="date">2026-10-01</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #121</span> TP-0120: 확률 제약 MPPI의 GP 경로 1.93배 빠르게(결과 동등), GP 평균 rollout은 램프 치명 실패 0 — 선택 스택 mppi_ccgpm <a class="tp tp-done" href="#todo" data-tp="TP-0120" title="완료 · TP-0076 후속: MPPI 확률 제약 rollout에 GP 평균(지연 편향) 반영 — 지금은 명목 rollout이라 분산만 쓴다. SwerveModel 하위 클래스로 평균... · PR #121(merge됨)">✓ TP-0120 ◉</a> <span class="date">2026-10-01</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #120</span> TP-0069: GP 분산 튜브로 MPC 제약 조이기 — 1번 노드 보정은 맞지만 효과 없음, 선택 스택 mpc_gpcc <a class="tp tp-done" href="#todo" data-tp="TP-0069" title="완료 · 기록에서 복원 · PR #120(merge됨)">✓ TP-0069 ◉</a> <span class="date">2026-10-01</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #119</span> TP-0118: 여유를 아는 Guidance(guidance_c) — plant 221 → 228/240, 도달은 빨라짐 <a class="tp tp-done" href="#todo" data-tp="TP-0118" title="완료 · Guidance 경로의 여유를 Controller와 맞추기: Dijkstra가 한두 칸 틈·지도 가장자리로 경로를 내 MPC 여유 0.15 m·MPPI 튜브와 충돌한다(bum... · PR #119(merge됨)">✓ TP-0118 ◉</a> <span class="date">2026-10-01</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #118</span> TP-0122·TP-0117: 명목 MPC 명령을 다음 노드 twist로(정적 40/40·plant 44/48), 부드러운 여유 행은 선택 스택 <a class="tp tp-done" href="#todo" data-tp="TP-0117" title="완료 · TP-0093 후속: MPC 비용에 매끄러운 지형 항(M.1.1) — 지금 MPC 비용엔 지형이 없어 램프 모서리를 고정 여유로만 피한다. 여유 0–0.15 m 스윕에서 모서... · PR #118(merge됨)">✓ TP-0117 ◉</a> <a class="tp tp-done" href="#todo" data-tp="TP-0122" title="완료 · TP-0117에서 분리: MPC 명목 명령을 구간 평균 대신 다음 노드 twist로 — 구간 평균은 계획한 가속의 절반만 실현해 정지 거리가 두 배였다(연석면 치명 실패와 틈... · PR #118(merge됨)">✓ TP-0122 ◉</a> <span class="date">2026-10-01</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #117</span> TP-0119: MPPI 확률 제약의 0선을 시뮬레이터 실패 경계에 (failure_sdf, boundary=exact) <a class="tp tp-done" href="#todo" data-tp="TP-0119" title="완료 · TP-0076 후속: 확률 제약의 0선을 실패 경계에 맞추기 — 이웃 칸 cost가 0.9에 가까운 램프 벽 옆에서 치명 칸 중심 기준 0선이 실패(이중선형 cost ≥ 0.... · PR #117(merge됨)">✓ TP-0119 ◉</a> <span class="date">2026-10-01</span></li></ul><p class="note">GitHub 인덱스 갱신: 2026-10-02 14:57 · <code>python3 automation/gh_index.py</code></p></div>
 <div class="card md"><h2>작업 환경</h2><details><summary>체크포인트, 가상환경, 그림·인덱스 재생성</summary><ul>
 <li><strong>브랜치.</strong> 두 PC 모두 main에서 이어간다.</li>
 <li><strong>체크포인트.</strong> <code>checkpoints/</code>는 git에 없다. 릴리스에서 받는다.
@@ -893,8 +931,8 @@ LiDAR 링 사이가 비어 로봇 주변 3 m 안의 10–12%가 미관측으로 
   </section>
   <section class="tab" id="tab-todo" role="tabpanel" aria-labelledby="tabbtn-todo">
     <div class="card"><div class="progress-wrap">
-  <div class="progress-label">전체 진행률: <strong>20/78</strong> (26%)</div>
-  <div class="progress-bar"><div class="progress-fill" style="width:26%"></div></div>
+  <div class="progress-label">전체 진행률: <strong>20/80</strong> (25%)</div>
+  <div class="progress-bar"><div class="progress-fill" style="width:25%"></div></div>
 </div>
 <p class="note">● 이슈, ⇄ PR(보라 merge됨, 초록 열림, 회색 닫힘). 그림이 붙은 항목은 결과 그림을 함께 보여 준다. 제목 안의 TP 번호는 상태 칩이다.</p>
 <h3 class="status-h status-doing">진행 중 <span class="count">0</span></h3>
@@ -914,7 +952,7 @@ LiDAR 링 사이가 비어 로봇 주변 3 m 안의 10–12%가 미관측으로 
 <li class="todo-item" id="todo-TP-0107"><label><input type="checkbox" disabled > <span class="id">TP-0107</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-user">user</span> 사이트 결정: 생성물 CI 빌드(D1)·검색 노출(D2)·claude.ai 게시본 범위(D3)·공개된 로컬 경로 정리(D4) (UX D) <span class="badge usertest">UserTest</span> <span class=gh-row><span class="private-ref gh gh-open gh-issue" title="이슈 #109 · 열림 · Playground·사이트 UX 개선 추적 (TP-0103–0116, taekyung.me 데모 참조)">● #109</span><span class="private-ref gh gh-merged gh-pr" title="PR #110 · merge됨 · UX 개선 계획 등록(TP-0103–0116): taekyung.me 데모 참조, 공개 경로 정리">⇄ #110</span></span></label></li>
 <li class="todo-item" id="todo-TP-0110"><label><input type="checkbox" disabled > <span class="id">TP-0110</span> <span class="badge prio">P3</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> 사이트: 생성물을 CI에서 빌드하고 커밋하지 않기(D1이 CI일 때), CLAUDE.md·cron 지시문 함께 고침 (UX W7) <span class=gh-row><span class="private-ref gh gh-open gh-issue" title="이슈 #109 · 열림 · Playground·사이트 UX 개선 추적 (TP-0103–0116, taekyung.me 데모 참조)">● #109</span><span class="private-ref gh gh-merged gh-pr" title="PR #110 · merge됨 · UX 개선 계획 등록(TP-0103–0116): taekyung.me 데모 참조, 공개 경로 정리">⇄ #110</span></span></label></li>
 </ul>
-<h3 class="status-h status-backlog">백로그 <span class="count">49</span></h3>
+<h3 class="status-h status-backlog">백로그 <span class="count">51</span></h3>
 <ul class="todo-list">
 <li class="todo-item" id="todo-TP-0007"><label><input type="checkbox" disabled > <span class="id">TP-0007</span> <span class="badge prio">P2</span> <span class="badge phase">P1</span> <span class="badge owner owner-claude">claude</span> LiDAR 프로파일(Velodyne_VLS128 등) 조회가 &#x27;not found&#x27; 경고를 냄 — Isaac Sim 6.0에서 omni.sensors.nv.common 데이터 ...</label></li>
 <li class="todo-item" id="todo-TP-0014"><label><input type="checkbox" disabled > <span class="id">TP-0014</span> <span class="badge prio">P3</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> (연구) CBF-QP/OcclusionCBF류 안전필터를 OSQP 등 오픈소스 QP로 대체 가능한지 조사 (Gurobi 상용 라이선스 회피)</label></li>
@@ -965,9 +1003,12 @@ LiDAR 링 사이가 비어 로봇 주변 3 m 안의 10–12%가 미관측으로 
 <li class="todo-item" id="todo-TP-0125"><label><input type="checkbox" disabled > <span class="id">TP-0125</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> 메쉬 기반 forward 샘플링 시뮬레이터: 로봇 메쉬(차체·바퀴 접지점)를 2.5D 고도 지도 위에 놓고 샘플마다 접지 높이·자세(pitch·roll)·차체 하부 간섭·전복... <span class=gh-row><span class="private-ref gh gh-open gh-issue" title="이슈 #122 · 열림 · Controller 예측 모델 계층: 기구학·동역학·학습 + 로봇 메쉬 기반 forward 샘플링 (TP-0124–0126)">● #122</span></span></label></li>
 <li class="todo-item" id="todo-TP-0126"><label><input type="checkbox" disabled > <span class="id">TP-0126</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> 학습 forward dynamics 모델(FDM): 지역 고도 패치·상태 이력·명령 열 → 미래 위치·실패 확률(LSTM). 메쉬 시뮬레이터로 자기 지도 데이터를 만들고, M... <span class=gh-row><span class="private-ref gh gh-open gh-issue" title="이슈 #122 · 열림 · Controller 예측 모델 계층: 기구학·동역학·학습 + 로봇 메쉬 기반 forward 샘플링 (TP-0124–0126)">● #122</span></span></label></li>
 <li class="todo-item" id="todo-TP-0127"><label><input type="checkbox" disabled > <span class="id">TP-0127</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-done" href="#todo" data-tp="TP-0118" title="완료 · Guidance 경로의 여유를 Controller와 맞추기: Dijkstra가 한두 칸 틈·지도 가장자리로 경로를 내 MPC 여유 0.15 m·MPPI 튜브와 충돌한다(bum... · PR #119(merge됨)">✓ TP-0118 ◉</a> 후속: plant curb_ramp 램프 입구에서 확률 제약 MPPI(mppi_cc·mppi_ccgp)가 여유 경로로 실패가 2 → 7건 — 지연으로 입구를 지... <span class=gh-row><span class="private-ref gh gh-open gh-issue" title="이슈 #124 · 열림 · plant curb_ramp 램프 입구에서 확률 제약 MPPI가 여유 경로로 더 실패 (TP-0127)">● #124</span></span></label></li>
+<li class="todo-item" id="todo-TP-0131"><label><input type="checkbox" disabled > <span class="id">TP-0131</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-done" href="#todo" data-tp="TP-0130" title="완료 · MPOT 검토 0단계(사용자 요청 2026-10-02): MPPI 계열이 멈춘 plant 장면 10개에 더 센 최적화기의 여지가 있는지 오라클 다섯(생산 MPPI 재추첨·2회... · PR #134(열림)">✓ TP-0130 ◉</a> 후속: ReferenceCost 진행 항이 접힌 참조에서 건너뛴다 — curb_ramp에서 Guidance 경로가 램프로 돌아가 접히면 연석 아래 끝점이 되돌아... <span class=gh-row><span class="private-ref gh gh-open gh-issue" title="이슈 #132 · 열림 · ReferenceCost 진행 항이 접힌 참조에서 건너뛴다 — plant curb_ramp 멈춤 (TP-0131)">● #132</span></span></label></li>
+<li class="todo-item" id="todo-TP-0132"><label><input type="checkbox" disabled > <span class="id">TP-0132</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-done" href="#todo" data-tp="TP-0130" title="완료 · MPOT 검토 0단계(사용자 요청 2026-10-02): MPPI 계열이 멈춘 plant 장면 10개에 더 센 최적화기의 여지가 있는지 오라클 다섯(생산 MPPI 재추첨·2회... · PR #134(열림)">✓ TP-0130 ◉</a> 후속: GP 확률 제약 스택(mppi_ccgp·mppi_ccgpm)의 bumps·random_mix 멈춤 원인 분리 — 같은 seed를 mppi·mppi_cc는... <span class=gh-row><span class="private-ref gh gh-open gh-issue" title="이슈 #133 · 열림 · GP 확률 제약 MPPI(mppi_ccgp·mppi_ccgpm)의 bumps·random_mix 멈춤 원인 분리 (TP-0132)">● #133</span></span></label></li>
 </ul>
 <h3 class="status-h status-done">완료 <span class="count">20</span></h3>
 <ul class="todo-list">
+<li class="todo-item" id="todo-TP-0130"><label><input type="checkbox" disabled checked> <span class="id">TP-0130</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> MPOT 검토 0단계(사용자 요청 2026-10-02): MPPI 계열이 멈춘 plant 장면 10개에 더 센 최적화기의 여지가 있는지 오라클 다섯(생산 MPPI 재추첨·2회... · <code class="branch">p2/mpot-headroom</code> <span class=gh-row><span class="private-ref gh gh-open gh-pr" title="PR #134 · 열림 · TP-0130: 멈춘 장면에서 MPOT식 최적화기는 같은 예산의 MPPI를 넘지 못했다 — MPOT 변형은 만들지 않는다">⇄ #134</span></span></label><div class="ev-row"><figure class="ev"><a class="thumb" href="assets/figs/tp0130_headroom.webp" title="원본 보기"><img alt="tp0130 headroom" src="assets/figs/tp0130_headroom.webp" loading="lazy"></a><figcaption>tp0130 headroom</figcaption></figure><figure class="ev"><a class="thumb" href="assets/figs/tp0130_lethal.webp" title="원본 보기"><img alt="tp0130 lethal" src="assets/figs/tp0130_lethal.webp" loading="lazy"></a><figcaption>tp0130 lethal</figcaption></figure><figure class="ev"><a class="thumb" href="assets/figs/tp0130_mechanisms.webp" title="원본 보기"><img alt="tp0130 mechanisms" src="assets/figs/tp0130_mechanisms.webp" loading="lazy"></a><figcaption>tp0130 mechanisms</figcaption></figure><figure class="ev"><a class="thumb" href="assets/figs/tp0130_plant_curb_fold.webp" title="원본 보기"><img alt="tp0130 plant curb fold" src="assets/figs/tp0130_plant_curb_fold.webp" loading="lazy"></a><figcaption>tp0130 plant curb fold</figcaption></figure></div></li>
 <li class="todo-item" id="todo-TP-0122"><label><input type="checkbox" disabled checked> <span class="id">TP-0122</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-done" href="#todo" data-tp="TP-0117" title="완료 · TP-0093 후속: MPC 비용에 매끄러운 지형 항(M.1.1) — 지금 MPC 비용엔 지형이 없어 램프 모서리를 고정 여유로만 피한다. 여유 0–0.15 m 스윕에서 모서... · PR #118(merge됨)">✓ TP-0117 ◉</a>에서 분리: MPC 명목 명령을 구간 평균 대신 다음 노드 twist로 — 구간 평균은 계획한 가속의 절반만 실현해 정지 거리가 두 배였다(연석면 치명 실패와 틈... · <code class="branch">p2/mpc-terrain-cost</code> <span class=gh-row><span class="private-ref gh gh-merged gh-pr" title="PR #118 · merge됨 · TP-0122·TP-0117: 명목 MPC 명령을 다음 노드 twist로(정적 40/40·plant 44/48), 부드러운 여유 행은 선택 스택">⇄ #118</span></span></label><div class="ev-row"><figure class="ev"><a class="thumb" href="assets/figs/tp0122_brake.webp" title="원본 보기"><img alt="tp0122 brake" src="assets/figs/tp0122_brake.webp" loading="lazy"></a><figcaption>tp0122 brake</figcaption></figure><figure class="ev"><a class="thumb" href="assets/figs/tp0122_curb_ramp_s0.webp" title="원본 보기"><img alt="tp0122 curb ramp s0" src="assets/figs/tp0122_curb_ramp_s0.webp" loading="lazy"></a><figcaption>tp0122 curb ramp s0</figcaption></figure></div></li>
 <li class="todo-item" id="todo-TP-0120"><label><input type="checkbox" disabled checked> <span class="id">TP-0120</span> <span class="badge prio">P3</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-done" href="#todo" data-tp="TP-0076" title="완료 · 기록에서 복원 · PR #55(merge됨) · PR #108(merge됨)">✓ TP-0076 ◉</a> 후속: MPPI 확률 제약 rollout에 GP 평균(지연 편향) 반영 — 지금은 명목 rollout이라 분산만 쓴다. SwerveModel 하위 클래스로 평균... · <code class="branch">p2/mppi-gp-mean</code> <span class=gh-row><span class="private-ref gh gh-merged gh-pr" title="PR #121 · merge됨 · TP-0120: 확률 제약 MPPI의 GP 경로 1.93배 빠르게(결과 동등), GP 평균 rollout은 램프 치명 실패 0 — 선택 스택 mppi_ccgpm">⇄ #121</span></span></label><div class="ev-row"><figure class="ev"><a class="thumb" href="assets/figs/tp0120_matrix.webp" title="원본 보기"><img alt="tp0120 matrix" src="assets/figs/tp0120_matrix.webp" loading="lazy"></a><figcaption>tp0120 matrix</figcaption></figure><figure class="ev"><a class="thumb" href="assets/figs/tp0120_plant_bumps1.webp" title="원본 보기"><img alt="tp0120 plant bumps1" src="assets/figs/tp0120_plant_bumps1.webp" loading="lazy"></a><figcaption>tp0120 plant bumps1</figcaption></figure><figure class="ev"><a class="thumb" href="assets/figs/tp0120_plant_curb8.webp" title="원본 보기"><img alt="tp0120 plant curb8" src="assets/figs/tp0120_plant_curb8.webp" loading="lazy"></a><figcaption>tp0120 plant curb8</figcaption></figure><figure class="ev"><a class="thumb" href="assets/figs/tp0120_timing.webp" title="원본 보기"><img alt="tp0120 timing" src="assets/figs/tp0120_timing.webp" loading="lazy"></a><figcaption>tp0120 timing</figcaption></figure></div></li>
 <li class="todo-item" id="todo-TP-0119"><label><input type="checkbox" disabled checked> <span class="id">TP-0119</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-done" href="#todo" data-tp="TP-0076" title="완료 · 기록에서 복원 · PR #55(merge됨) · PR #108(merge됨)">✓ TP-0076 ◉</a> 후속: 확률 제약의 0선을 실패 경계에 맞추기 — 이웃 칸 cost가 0.9에 가까운 램프 벽 옆에서 치명 칸 중심 기준 0선이 실패(이중선형 cost ≥ 0.... · <code class="branch">p2/controller-followups</code> <span class=gh-row><span class="private-ref gh gh-merged gh-pr" title="PR #117 · merge됨 · TP-0119: MPPI 확률 제약의 0선을 시뮬레이터 실패 경계에 (failure_sdf, boundary=exact)">⇄ #117</span></span></label><div class="ev-row"><figure class="ev"><a class="thumb" href="assets/figs/tp0119_clearance_cdf.webp" title="원본 보기"><img alt="tp0119 clearance cdf" src="assets/figs/tp0119_clearance_cdf.webp" loading="lazy"></a><figcaption>tp0119 clearance cdf</figcaption></figure><figure class="ev"><a class="thumb" href="assets/figs/tp0119_controller_matrix.webp" title="원본 보기"><img alt="tp0119 controller matrix" src="assets/figs/tp0119_controller_matrix.webp" loading="lazy"></a><figcaption>tp0119 controller matrix</figcaption></figure><figure class="ev"><a class="thumb" href="assets/figs/tp0119_curb_ramp_s5_plant.webp" title="원본 보기"><img alt="tp0119 curb ramp s5 plant" src="assets/figs/tp0119_curb_ramp_s5_plant.webp" loading="lazy"></a><figcaption>tp0119 curb ramp s5 plant</figcaption></figure><figure class="ev"><a class="thumb" href="assets/figs/tp0119_curb_ramp_s7_plant.webp" title="원본 보기"><img alt="tp0119 curb ramp s7 plant" src="assets/figs/tp0119_curb_ramp_s7_plant.webp" loading="lazy"></a><figcaption>tp0119 curb ramp s7 plant</figcaption></figure><figure class="ev"><a class="thumb" href="assets/figs/tp0119_failure_traces.webp" title="원본 보기"><img alt="tp0119 failure traces" src="assets/figs/tp0119_failure_traces.webp" loading="lazy"></a><figcaption>tp0119 failure traces</figcaption></figure><figure class="ev"><a class="thumb" href="assets/figs/tp0119_lag.webp" title="원본 보기"><img alt="tp0119 lag" src="assets/figs/tp0119_lag.webp" loading="lazy"></a><figcaption>tp0119 lag</figcaption></figure><figure class="ev"><a class="thumb" href="assets/figs/tp0119_plan_clearance.webp" title="원본 보기"><img alt="tp0119 plan clearance" src="assets/figs/tp0119_plan_clearance.webp" loading="lazy"></a><figcaption>tp0119 plan clearance</figcaption></figure><figure class="ev"><a class="thumb" href="assets/figs/tp0119_zero_line.webp" title="원본 보기"><img alt="tp0119 zero line" src="assets/figs/tp0119_zero_line.webp" loading="lazy"></a><figcaption>tp0119 zero line</figcaption></figure><figure class="ev"><a class="thumb" href="assets/figs/tp0119_zero_line_error.webp" title="원본 보기"><img alt="tp0119 zero line error" src="assets/figs/tp0119_zero_line_error.webp" loading="lazy"></a><figcaption>tp0119 zero line error</figcaption></figure></div></li>
@@ -982,12 +1023,11 @@ LiDAR 링 사이가 비어 로봇 주변 3 m 안의 10–12%가 미관측으로 
 <li class="todo-item" id="todo-TP-0100"><label><input type="checkbox" disabled checked> <span class="id">TP-0100</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-done" href="#todo" data-tp="TP-0082" title="완료 · 기록에서 복원 · PR #63(merge됨) · PR #79(merge됨) · 이슈 #89(닫힘)">✓ TP-0082 ◉</a> 후속: 섀시 기하 기준(sim/ground_truth.py)을 L0/L1 인식 경로에도 적용 — 지금은 참 고도에서만 잰다. 가림·그림자 상한이 켜진 belie... · <code class="branch">p2/tp0100-belief-chassis</code> <span class=gh-row><span class="private-ref gh gh-closed gh-issue" title="이슈 #92 · 닫힘 · belief TravMap을 차체 기하 기준으로 채점: L0 가림·그림자 상한·깊이 prior·L1 (TP-0100)">● #92</span><span class="private-ref gh gh-merged gh-pr" title="PR #93 · merge됨 · TP-0100: belief TravMap을 차체 기하 기준으로 채점 — 위험은 못 본 칸, 깊이 prior는 그것을 막지 않는다">⇄ #93</span></span><a class="sim" href="playground/index.html#TP-0100" target="_blank" rel="noopener" title="Playground에서 이 설정으로 달려 보기">▶ 시뮬레이션 · L1 간이: 못 본 칸이 위험</a></label><div class="ev-row"><figure class="ev"><a class="thumb" href="assets/figs/tp0100_belief_chassis.webp" title="원본 보기"><img alt="belief TravMap 대 차체 기하 기준. MISS의 99% 이상이 못 본 칸이고, 그림자 상한·깊이 prior는 도달 가능한 근거리 MISS를 줄이지 않는다(2,206 → 2,204). 센서 0.8 m는 3.4배 줄이고 L1은 2.8배 나쁘다" src="assets/figs/tp0100_belief_chassis.webp" loading="lazy"></a><figcaption>belief TravMap 대 차체 기하 기준. MISS의 99% 이상이 못 본 칸이고, 그림자 상한·깊이 prior는 도달 가능한 근거리 MISS를 줄이지 않는다(2,206 → 2,204). 센서 0.8 m는 3.4배 줄이고 L1은 2.8배 나쁘다 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span></figcaption></figure></div></li>
 <li class="todo-item" id="todo-TP-0098"><label><input type="checkbox" disabled checked> <span class="id">TP-0098</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-done" href="#todo" data-tp="TP-0097" title="완료 · TP-0088 후속: core의 선택적 필터 가드를 벤더링 트리에 backport — weight_file이 비면 traversability_filter를 만들지 않는다. 지... · 이슈 #80(닫힘) · PR #81(merge됨)">✓ TP-0097</a> 후속: 벤더링 elevation_mapping 실행 간 비결정성 — 같은 점군 두 번에 upper_bound 623/3875칸이 최대 0.15 m 다르고, L1... · <code class="branch">p2/tp0098-fixed-point</code> <span class=gh-row><span class="private-ref gh gh-merged gh-pr" title="PR #105 · merge됨 · TP-0098: elevation_mapping 비결정성의 원인 커널 둘 — 결정적 모드와, 아직 남은 것">⇄ #105</span><span class="private-ref gh gh-closed gh-issue" title="이슈 #126 · 닫힘 · TP-0098 후속: 매퍼 누적(atomicAdd) 순서를 고정소수점으로 — L1 폐루프를 비트 단위로 재현">● #126</span><span class="private-ref gh gh-merged gh-pr" title="PR #127 · merge됨 · TP-0098 완료: 매퍼 누적·삽입 경쟁을 닫아 L1이 비트 단위로 재현된다">⇄ #127</span></span></label><div class="ev-row"><figure class="ev"><a class="thumb" href="assets/figs/tp0098_determinism.webp" title="원본 보기"><img alt="매퍼의 순서 의존 넷을 닫으니 같은 점군에서 모든 층이 비트 단위로 같고, L1 폐루프가 재현된다(상한 + prior로 두 스택 12/12)" src="assets/figs/tp0098_determinism.webp" loading="lazy"></a><figcaption>매퍼의 순서 의존 넷을 닫으니 같은 점군에서 모든 층이 비트 단위로 같고, L1 폐루프가 재현된다(상한 + prior로 두 스택 12/12) · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span></figcaption></figure></div></li>
 <li class="todo-item" id="todo-TP-0097"><label><input type="checkbox" disabled checked> <span class="id">TP-0097</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-done" href="#todo" data-tp="TP-0088" title="완료 · elevation_mapping_cupy_core(ROS 의존 0, MIT)로 이전 검토 — 벤더링 트리 제거, 학습 traversability 필터를 weight_file ...">✓ TP-0088</a> 후속: core의 선택적 필터 가드를 벤더링 트리에 backport — weight_file이 비면 traversability_filter를 만들지 않는다. 지... · <code class="branch">p2/tp0097-filter-guard-backport</code> <span class=gh-row><span class="private-ref gh gh-closed gh-issue" title="이슈 #80 · 닫힘 · TP-0097: 벤더링 elevation_mapping에 학습 traversability 필터 가드 backport">● #80</span><span class="private-ref gh gh-merged gh-pr" title="PR #81 · merge됨 · [auto] TP-0097: 벤더링 elevation_mapping에 학습 필터 가드 backport">⇄ #81</span></span></label></li>
-<li class="todo-item" id="todo-TP-0096"><label><input type="checkbox" disabled checked> <span class="id">TP-0096</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-done" href="#todo" data-tp="TP-0086" title="완료 · FastDEM(BSD-3, Orin 100+Hz CPU)을 TP-0084 GPU TravMapBuilder의 CPU 비교 기준선으로 세운다 — 레이어가 TravMap[8]과 ... · PR #75(merge됨) · PR #77(merge됨)">✓ TP-0086</a> 후속: FastDEM 출력 비교 — travplan 지형에서 뽑은 합성 LiDAR 점군을 FastDEM에 먹이고 step/slope/roughness를 Trav...</label></li>
+<li class="todo-item" id="todo-TP-0096"><label><input type="checkbox" disabled checked> <span class="id">TP-0096</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-done" href="#todo" data-tp="TP-0086" title="완료 · 기록에서 복원 · PR #75(merge됨) · PR #77(merge됨)">✓ TP-0086</a> 후속: FastDEM 출력 비교 — travplan 지형에서 뽑은 합성 LiDAR 점군을 FastDEM에 먹이고 step/slope/roughness를 Trav...</label></li>
 <li class="todo-item" id="todo-TP-0095"><label><input type="checkbox" disabled checked> <span class="id">TP-0095</span> <span class="badge prio">P3</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-done" href="#todo" data-tp="TP-0085" title="완료 · 기록에서 복원 · PR #74(merge됨) · PR #76(merge됨)">✓ TP-0085 ◉</a> 후속: 남은 판정 규칙 둘 측정 — ohm virtualSurfaceFilterThreshold, CMU noDataBlockShrink/Expand. 기울기 ... · <code class="branch">p2/tp0095-ohm-cmu-rules</code> <span class=gh-row><span class="private-ref gh gh-closed gh-issue" title="이슈 #100 · 닫힘 · 그림자 판정: ohm·CMU 잡음 필터 측정 (TP-0095)">● #100</span><span class="private-ref gh gh-merged gh-pr" title="PR #101 · merge됨 · TP-0095: 깊이 prior 후보에 ohm·CMU 잡음 필터 — 내림 턱 오탐 제거, 포트홀 재현율 0.86">⇄ #101</span></span></label><div class="ev-row"><figure class="ev"><a class="thumb" href="assets/figs/tp0095_rules.webp" title="원본 보기"><img alt="깊이 prior 후보에 잡음 필터: ohm·CMU 모두 내림 턱 오탐(28.9 → 18.3칸)을 되돌리고, CMU(1,2)가 포트홀 재현율 0.86을 지킨다" src="assets/figs/tp0095_rules.webp" loading="lazy"></a><figcaption>깊이 prior 후보에 잡음 필터: ohm·CMU 모두 내림 턱 오탐(28.9 → 18.3칸)을 되돌리고, CMU(1,2)가 포트홀 재현율 0.86을 지킨다 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span></figcaption></figure></div></li>
 <li class="todo-item" id="todo-TP-0093"><label><input type="checkbox" disabled checked> <span class="id">TP-0093</span> <span class="badge prio">P3</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> acados MPC의 장애물 제약을 여유 비례 형태로: 단순 거리 제약은 매끄러워도 가까워질 때까지 활성화되지 않아 늦게 밟는다. CBF 형태(hdot &gt;= -alpha(h)... · <code class="branch">p2/mpc-mppi-constraints</code> <span class=gh-row><span class="private-ref gh gh-merged gh-pr" title="PR #108 · merge됨 · TP-0093/0071/0068/0076: MPC 제약 구멍·보행자 반평면·GP 명령 수정, MPPI 확률 제약">⇄ #108</span></span></label><div class="ev-row"><figure class="ev"><a class="thumb" href="assets/figs/tp0093_mpc_vs_mppi.webp" title="원본 보기"><img alt="tp0093 mpc vs mppi" src="assets/figs/tp0093_mpc_vs_mppi.webp" loading="lazy"></a><figcaption>tp0093 mpc vs mppi</figcaption></figure></div></li>
 <li class="todo-item" id="todo-TP-0089"><label><input type="checkbox" disabled checked> <span class="id">TP-0089</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-done" href="#todo" data-tp="TP-0089" title="완료 · TP-0089 양보 행동 측정: 보행자 유무 쌍대 비교로 travplan이 시간이 아니라 공간으로 낸다는 것을 확인(궤적 참조가 지연 -2.44s, 감속폭 -0.20m/s, ... · PR #67(merge됨)">✓ TP-0089 ◉</a> 양보 행동 측정: 보행자 유무 쌍대 비교로 travplan이 시간이 아니라 공간으로 낸다는 것을 확인(궤적 참조가 지연 -2.44s, 감속폭 -0.20m/s, ... <span class=gh-row><span class="private-ref gh gh-merged gh-pr" title="PR #67 · merge됨 · 리서치 A.12.5: 예측이 주행으로 이어지는 자리 + TP-0089 양보 측정">⇄ #67</span></span></label><div class="ev-row"><figure class="ev"><a class="thumb" href="assets/figs/tp0089_yield.webp" title="원본 보기"><img alt="궤적 참조는 같은 만큼 비키면서 시간은 덜 낸다 — 보행자 유무 쌍대 비교 (TP-0089)" src="assets/figs/tp0089_yield.webp" loading="lazy"></a><figcaption>궤적 참조는 같은 만큼 비키면서 시간은 덜 낸다 — 보행자 유무 쌍대 비교 (TP-0089)</figcaption></figure></div></li>
 <li class="todo-item" id="todo-TP-0088"><label><input type="checkbox" disabled checked> <span class="id">TP-0088</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> elevation_mapping_cupy_core(ROS 의존 0, MIT)로 이전 검토 — 벤더링 트리 제거, 학습 traversability 필터를 weight_file ...</label></li>
-<li class="todo-item" id="todo-TP-0086"><label><input type="checkbox" disabled checked> <span class="id">TP-0086</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> FastDEM(BSD-3, Orin 100+Hz CPU)을 <a class="tp tp-done" href="#todo" data-tp="TP-0084" title="완료 · 기록에서 복원 · PR #64(merge됨)">✓ TP-0084</a> GPU TravMapBuilder의 CPU 비교 기준선으로 세운다 — 레이어가 TravMap[8]과 ... <span class=gh-row><span class="private-ref gh gh-merged gh-pr" title="PR #75 · merge됨 · TP-0086: FastDEM CPU 기준선 — README의 10 ms는 특징 추출이 빠진 숫자였다">⇄ #75</span><span class="private-ref gh gh-merged gh-pr" title="PR #77 · merge됨 · TP-0086 캐비엇 정밀화: 루프는 격자 전체, 비용은 측정된 칸 비례">⇄ #77</span></span></label></li>
 </ul></div>
   </section>
   <section class="tab" id="tab-prd" role="tabpanel" aria-labelledby="tabbtn-prd" data-math="3">
@@ -15087,8 +15127,8 @@ travplan에서는 둘 다 필요하다. 가림으로 못 본 셀(TP-0047)은 앞
 </details>
 <div class="fig-grid"><figure class="fig"><a class="thumb" href="https://media.githubusercontent.com/media/leggedrobotics/fdm/main/docs/overview.png" title="원본 보기"><img alt="FDM overview" src="assets/thumbs/0a6ff35acc14.webp" loading="lazy"></a><figcaption>그림 — FDM 개요: 높이 스캔·proprioception·과거 상태를 인코더가 읽고, 앞 자세와 위험을 예측해 MPPI가 보상 최대 명령을 고른다. 아래는 ANYmal이 실내·옥상에서 돈 궤적 샘플. 출처: <a href="https://github.com/leggedrobotics/fdm">GitHub leggedrobotics/fdm</a></figcaption></figure></div></div></div><div class="docpanel subpanel" id="sub-research-d-4" role="tabpanel" aria-labelledby="subbtn-research-d-4"><nav class="subtabs" role="tablist" data-group="research-d4"><button role="tab" id="subbtn-research-d4-0" aria-controls="sub-research-d4-0" aria-selected="true" tabindex="0" data-sub="research-d4-0" class="active">개요</button><button role="tab" id="subbtn-research-d4-1" aria-controls="sub-research-d4-1" aria-selected="false" tabindex="-1" data-sub="research-d4-1">MPPI 계열</button><button role="tab" id="subbtn-research-d4-2" aria-controls="sub-research-d4-2" aria-selected="false" tabindex="-1" data-sub="research-d4-2">학습 동역학·적응</button><button role="tab" id="subbtn-research-d4-3" aria-controls="sub-research-d4-3" aria-selected="false" tabindex="-1" data-sub="research-d4-3">안전 필터</button><button role="tab" id="subbtn-research-d4-4" aria-controls="sub-research-d4-4" aria-selected="false" tabindex="-1" data-sub="research-d4-4">하위 제어 · 4족 RL</button></nav><div class="card md subpanel active" id="sub-research-d4-0" role="tabpanel" aria-labelledby="subbtn-research-d4-0"><!-- doc: Controller · 안전 | 3 -->
 <h1>Controller와 안전 필터 — Planner의 궤적을 실행하는 쪽 (§E, §C)</h1>
-<p><strong>Controller는 Planner의 경로나 궤적을 받아 추종하면서, 지형과 동적 장애물을 로컬로 피하는 body twist를 낸다.</strong> travplan에서 Controller(MPPI)는
-개발 계획에서 빠져 유지보수만 하므로(2026-09-25 결정), 이 문서는 Controller를 손봐야 할 때 볼 참고 지도다. 세 탭으로 나뉜다.</p>
+<p><strong>Controller는 Planner의 경로나 궤적을 받아 추종하면서, 지형과 동적 장애물을 로컬로 피하는 body twist를 낸다.</strong> travplan은 Controller로 MPPI와
+acados NMPC 두 갈래를 함께 개발하고 같은 벤치마크에서 비교한다(2026-09-30 결정). 이 문서는 그 Controller를 고칠 때 보는 참고 지도이고, 개발 기록은 MPC 문서(§M)에 있다. 네 탭으로 나뉜다.</p>
 <table>
 <thead>
 <tr>
@@ -15101,21 +15141,27 @@ travplan에서는 둘 다 필요하다. 가림으로 못 본 셀(TP-0047)은 앞
 <tbody>
 <tr>
 <td>MPPI 계열</td>
-<td>MPPI의 계보, 학습 prior를 넣는 법, SMPPI</td>
-<td>E.1, B.5</td>
+<td>MPPI의 계보, 학습 prior를 넣는 법, SMPPI, 최적 수송으로 샘플을 옮기는 최적화기(MPOT·OT-MPC)</td>
+<td>E.1, B.5, E.11</td>
 <td><code>MPPIController</code>, <code>SmoothMPPIController</code></td>
 </tr>
 <tr>
 <td>학습 동역학·적응</td>
-<td>학습 rollout 모델, 불확실성, 온라인 적응, 마일스톤, Zeilinger 그룹(학습 MPC의 보장·공개 코드·내비 MPC)</td>
-<td>E, E.2–E.7</td>
-<td>슬립이 커질 때 바꿀 rollout 모델</td>
+<td>학습 rollout 모델, 불확실성, 온라인 적응, 마일스톤, Zeilinger 그룹(학습 MPC의 보장·공개 코드·내비 MPC), GP 잔차</td>
+<td>E, E.2–E.10</td>
+<td>슬립이 커질 때 바꿀 rollout 모델, 잔차 GP</td>
 </tr>
 <tr>
 <td>안전 필터</td>
 <td>비용 통합형과 외부 필터형, CBF 계열, 계보</td>
 <td>C.1–C.4</td>
 <td>시간가변 비용 레이어(구현), CVaR-BF(TP-0014)</td>
+</tr>
+<tr>
+<td>하위 제어 · 4족 RL</td>
+<td>4족 보행 RL의 계보, 자동 커리큘럼, RL과 MPC를 섞는 갈래</td>
+<td>F.1–F.7</td>
+<td>지형 난이도 커리큘럼(TP-0039)과 Planner D RL 후학습(TP-0066)</td>
 </tr>
 </tbody>
 </table>
@@ -15150,7 +15196,7 @@ travplan에서는 둘 다 필요하다. 가림으로 못 본 셀(TP-0047)은 앞
 </tr>
 <tr>
 <td>2024–2026</td>
-<td>MPPI-Generic, π-MPPI, DRA-MPPI, ProxPI</td>
+<td>MPPI-Generic, π-MPPI, DRA-MPPI, ProxPI, OT-MPC</td>
 <td>잠재 문맥 온라인 적응</td>
 <td>CVaR-BF, OcclusionCBF, Predictive Semantic Safety</td>
 </tr>
@@ -15228,7 +15274,7 @@ travplan에서는 둘 다 필요하다. 가림으로 못 본 셀(TP-0047)은 앞
 </table>
 <p><strong>travplan의 위치.</strong> <mark>travplan Controller는 "MPPI + 비용 통합형 안전"이고, 다음 단계는 뒤에 붙는 안전 필터다.</mark> 비용은 <code>CostTerm</code>으로만
 더하고 최적화기(<code>mppi.py</code>)는 건드리지 않는다는 규칙이 있어서, 이 문서의 연구 가운데 travplan에 들어오는 것은 셋 중 하나다. 새 비용 항,
-새 rollout 모델, Controller 뒤의 필터다.</p></div><div class="card md subpanel" id="sub-research-d4-1" role="tabpanel" aria-labelledby="subbtn-research-d4-1" data-math="38"><h3>E.1 MPPI의 계보: 경로 적분 제어에서 GPU 라이브러리까지</h3>
+새 rollout 모델, Controller 뒤의 필터다.</p></div><div class="card md subpanel" id="sub-research-d4-1" role="tabpanel" aria-labelledby="subbtn-research-d4-1" data-math="116"><h3>E.1 MPPI의 계보: 경로 적분 제어에서 GPU 라이브러리까지</h3>
 <p><strong>MPPI는 2015년 경로 적분 제어를 GPU 샘플링으로 푼 데서 시작했다.</strong> 이후 정보이론적 유도로 일반화되고(2017), 외란에 버티는 판(Tube·Robust
 MPPI), 샘플링 분포를 바꾼 판(log-MPPI, SMPPI), 범용 라이브러리(Nav2 MPPI Controller, MPPI-Generic)로 발전했다. travplan <code>MPPIController</code>는
 2017년 정보이론적 MPPI에 시간 상관 AR(1) 노이즈와 참조 추종 샘플을 더한 형태다(배경 0.2). 개발 계획에서는 빠져 있어, 이 절은 Controller를
@@ -15518,7 +15564,279 @@ MPPI의 유도(중요도 샘플링으로 제어 비용이 정해지는 구조)�
 </tr>
 </tbody>
 </table>
-<p>hybrid에서도 jerk가 28% 줄고 도달시간은 3% 늘었다. 기본 Controller는 바꾸지 않았다. Planner D도 같은 "변화율 공간"에서 궤적을 생성한다.</p></div><div class="card md subpanel" id="sub-research-d4-2" role="tabpanel" aria-labelledby="subbtn-research-d4-2" data-math="101"><h2>E. Controller — 학습 동역학과 추종 (참고)</h2>
+<p>hybrid에서도 jerk가 28% 줄고 도달시간은 3% 늘었다. 기본 Controller는 바꾸지 않았다. Planner D도 같은 "변화율 공간"에서 궤적을 생성한다.</p>
+<h3>E.11 최적 수송으로 샘플을 옮기는 최적화기: MPOT와 OT-MPC (TP-0130)</h3>
+<p><strong>MPOT(Motion Planning via Optimal Transport)와 OT-MPC는 MPPI처럼 비용만 계산해 해를 고치지만, 샘플을 가중 평균 하나로 합치지
+않는다.</strong> 엔트로피 정규화 최적 수송(OT, optimal transport)으로 샘플과 이동 후보를 짝지어 샘플마다 따로 옮긴다. <mark>MPOT는 Controller가
+아니라, 시작점에서 목표까지 궤적 묶음을 수렴할 때까지 다듬는 오프라인 최적화기다.</mark> 샘플 기반 MPC의 갱신 자체를 OT로 바꾼 것은
+다른 연구실의 OT-MPC다. 두 방법 모두 2차원 지상 이동에서 MPPI보다 낫다는 유의한 근거는 아직 없다. travplan은 이 계열을 들이기 전에,
+MPPI 계열이 멈춘 장면에 개선 여지가 있는지부터 쟀다. 미리 정한 기준을 넘지 못해 MPOT 변형은 만들지 않았다(TP-0130, MPC 문서 M.3.20).</p>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>MPOT</th>
+<th>OT-MPC</th>
+<th>travplan <code>MPPIController</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>쓰임</td>
+<td>오프라인 배치 계획. 수렴까지 Sinkhorn Step 40–70번</td>
+<td>receding horizon MPC</td>
+<td>receding horizon MPC, 0.1 s 주기</td>
+</tr>
+<tr>
+<td>최적화하는 것</td>
+<td>궤적의 상태 웨이포인트(위치와 속도)</td>
+<td>제어열 입자 8–50개</td>
+<td>제어열 하나(샘플 768개의 가중 평균)</td>
+</tr>
+<tr>
+<td>OT가 짝짓는 것</td>
+<td>웨이포인트와 회전한 정다포체의 꼭짓점</td>
+<td>입자와 비용으로 가중한 제안</td>
+<td>쓰지 않는다</td>
+</tr>
+<tr>
+<td>비용이 들어가는 자리</td>
+<td>수송 비용 행렬(웨이포인트마다)</td>
+<td>제안 쪽 주변분포(rollout 전체)</td>
+<td>지수 가중치(rollout 전체)</td>
+</tr>
+<tr>
+<td>동역학</td>
+<td>등속 GP(Gaussian process) 사전분포를 비용으로</td>
+<td>모델 rollout</td>
+<td>스워브 rollout 모델</td>
+</tr>
+<tr>
+<td>근거</td>
+<td>NeurIPS 2023, 시뮬레이션, MPPI 비교 없음</td>
+<td>arXiv v1(2026-05), 시뮬레이션, 코드 미공개</td>
+<td>이 저장소의 벤치마크</td>
+</tr>
+</tbody>
+</table>
+<h4>MPOT: 웨이포인트를 정다포체 꼭짓점 쪽으로 수송한다</h4>
+<p>MPOT(<a href="https://arxiv.org/abs/2309.15970">arXiv:2309.15970</a>, NeurIPS 2023)는 기울기 없이 궤적 묶음을 한꺼번에 다듬는 배치 궤적
+최적화기다. 시작점에서 목표까지 수렴할 때까지 돌린 뒤, 비용이 가장 낮은 궤적을 실행하거나 충돌 없는 궤적을 모두 학습 데이터로
+저장한다. RTX 3080 Ti에서 2차원 질점은 0.4 s, 7자유도 Panda 팔은 0.8 s가 걸렸다. 비교 대상에 MPPI는 없다. 가장 가까운 것은
+MPPI식 가중 평균으로 갱신하는 SGPMP(Stochastic Gaussian Process Motion Planning)다. 질점에서 둘의 성공률은 비슷했고, 차이는 계획
+시간(0.4 s 대 6.5 s)이었다. 논문과 코드, 프로젝트 페이지 어디에도 receding horizon 실행이나 동적 장애물, 실물 실험은 없다.</p>
+<p>궤적 $N_p$개의 웨이포인트 $T$개를 점 $N = N_p T$개로 펼치고, 반복마다 Sinkhorn Step 한 번으로 모든 점을 함께 옮긴다. 웨이포인트는
+위치와 속도를 이어 붙인 1차 상태다. 점마다 무작위로 회전한 정다포체(regular polytope)를 하나씩 놓고, 그 꼭짓점 $m$개를 이동 후보로
+쓴다. 정다포체는 simplex, orthoplex, cube 가운데 하나다. 꼭짓점 방향의 탐침점 $h$개에서 비용을 평균해 $N \times m$ 비용 행렬을 만든다.
+이 행렬로 주변분포가 균등한 엔트로피 OT를 풀고, 각 점을 OT 계획이 정한 꼭짓점들의 무게중심으로 옮긴다. 그래서 이동은 늘 정다포체
+안에 머문다(명시적 신뢰 영역). 실험에서는 반경을 스텝마다 일정 비율로 줄였다. 매끄러움과 동역학은 등속 GP 사전분포의 전이 비용으로만
+들어온다. 충돌은 점유 격자를 조회한 비용으로만 들어오고, 기울기는 필요 없다.</p>
+<p><strong>원형 그대로는 travplan Controller에 맞지 않는다.</strong> travplan의 <code>CostTerm</code>은 rollout 전체를 보고 샘플마다 비용 하나(<code>[K]</code>)를 낸다.
+어느 스텝이든 치명 셀을 밟으면 주는 벌점, 시간축 CVaR(배경 0.3), 끝점 진행이 그렇다. 이 항들은 스텝별로 나뉘지 않는데, MPOT는
+웨이포인트와 꼭짓점마다 비용(<code>[N, m]</code>)을 요구한다. 또 MPOT는 홀로노믹 상태 웨이포인트를 직접 옮기므로 rollout을 하지 않는다. 그래서
+제어열을 rollout할 때만 작동하는 세 가지를 모두 건너뛴다.</p>
+<ul>
+<li>스워브 rollout 모델의 속도·가속 한계</li>
+<li>잔차 GP의 평균을 넣은 rollout(TP-0120, <code>mppi_ccgpm</code>)</li>
+<li>계획 중인 rollout 모델 계층. TP-0124의 기구학·동역학·학습 층, TP-0125의 메쉬 시뮬레이터, TP-0126의 학습 FDM(forward dynamics
+  model)이다.</li>
+</ul>
+<p>맞는 형태는 제어열 판이다. 입자를 40×3 제어열로 두고, OT의 점을 그 제어열의 twist 매듭점 8개로 둔다. 매듭점마다 MPPI 노이즈 크기로
+늘인 3-orthoplex를 놓고, 매듭점 하나를 꼭짓점 쪽으로 옮긴 제어열을 통째로 rollout해 비용을 매긴다. 그러면 <code>CostTerm</code>과 rollout 모델,
+확률 제약을 그대로 물려받는다. SMPPI처럼 <code>mppi.py</code>를 고치지 않는 MPPI 갈래 안의 변형이 된다. 수식은 아래 토글에 있다.</p>
+<div class="fig-grid"><figure class="fig"><a class="thumb" href="https://arxiv.org/html/2309.15970v2/method.png" title="원본 보기"><img alt="MPOT Fig. 2" src="assets/thumbs/91f6b5693552.webp" loading="lazy"></a><figcaption>그림 — MPOT (Fig. 2): Sinkhorn Step 한 번. 웨이포인트(남색 점)마다 무작위로 회전한 2-cube의 꼭짓점(초록)과 그 방향의 탐침점(빨강)을 둔다. 회색 숫자는 방향마다 탐침점 비용의 평균이고, 빨간 화살표가 OT 계획으로 정한 이동이다. 실선 원은 스텝 반경, 점선 원은 탐침 반경이다. 출처: <a href="https://arxiv.org/abs/2309.15970">arXiv:2309.15970</a></figcaption></figure>
+<figure class="fig"><a class="thumb" href="https://arxiv.org/html/2309.15970v2/planar_steps.png" title="원본 보기"><img alt="MPOT Fig. 1" src="assets/thumbs/2c8bddb26aae.webp" loading="lazy"></a><figcaption>그림 — MPOT (Fig. 1): 목표 셋에 궤적을 다섯 개씩 GP 사전분포에서 뽑아 한 OT 문제로 함께 다듬는다. 왼쪽부터 Sinkhorn Step 0, 10, 20, 40번째이고, 전체 계획 시간은 0.12 s였다. 출처: <a href="https://arxiv.org/abs/2309.15970">arXiv:2309.15970</a></figcaption></figure>
+</div><details>
+<summary>자세히: MPOT의 Sinkhorn Step 수식과 제어열 매듭점 판</summary>
+<p><strong>무엇을 하나.</strong> Sinkhorn Step은 점 묶음 $\{\mathbf x_t\}_{t=1}^{N}$을 한 번에 옮기는 0차 갱신이다. 점 $\mathbf x_t$마다 단위 구에
+내접한 정다포체를 무작위 회전 $R_t$로 돌려 이동 후보 $\mathbf d_{t,i} = R_t\mathbf d_i$를 만든다. 꼭짓점 수 $m$은 $d$차원 simplex가
+$d+1$, orthoplex가 $2d$, cube가 $2^d$다. 세 정다포체 모두 꼭짓점의 합이 0이다.</p>
+<p><strong>비용 행렬.</strong> 점 $t$와 꼭짓점 $i$의 비용은 그 방향 탐침점 $h$개에서 잰 상태 비용과 GP 전이 비용의 평균이다(식 10). 둘째 항이
+이웃 웨이포인트를 묶는 유일한 고리다.</p>
+<p>$$ C_{t,i} = \frac{1}{h}\sum_{j=1}^{h} \Big[\, \eta\, c(\mathbf x_t + \mathbf y_{t,i,j}) + \tfrac12 \big\lVert \Phi_{t,t+1}\mathbf x_t - (\mathbf x_{t+1} + \mathbf y_{t+1,i,j}) \big\rVert^2_{Q^{-1}_{t,t+1}} \Big] $$</p>
+<p>$\Phi_{t,t+1}$과 $Q_{t,t+1}$은 등속 GP 사전분포(가속도에 백색 잡음)의 전이 행렬과 공분산이다. 행렬은 최솟값을 빼 양수로 만들고
+$[0, 1]$로 정규화한다. 논문은 Sinkhorn 안의 지수 때문에 MPOT가 비용 크기에 민감하다고 적었다.</p>
+<p><strong>엔트로피 OT.</strong> 주변분포는 균등하다. 엔트로피 항은 해를 유일하게 만들고, Sinkhorn 반복으로 빨리 풀리게 한다. $\lambda$가 크면
+빠르지만 계획이 흐려지고, 작으면 수치가 불안정해진다. 논문은 $\lambda = 0.01$을 썼다.</p>
+<p>$$ W^\star = \arg\min_{W \ge 0,\; W\mathbf 1_m = \mathbf 1_N/N,\; W^\top \mathbf 1_N = \mathbf 1_m/m} \; \langle W, C\rangle - \lambda H(W), \qquad H(W) = -\textstyle\sum_{t,i} W_{ti}\log W_{ti} $$</p>
+<p><strong>로그 영역 Sinkhorn.</strong> 쌍대 퍼텐셜 $\mathbf f \in \mathbb R^N$과 $\mathbf g \in \mathbb R^m$을 번갈아 고친다. 지수를 logsumexp 안에서만
+계산하므로 $\lambda$가 작아도 넘치지 않는다.</p>
+<p>$$ f_t \leftarrow -\lambda\log N - \lambda\log\textstyle\sum_{i} e^{(g_i - C_{ti})/\lambda}, \qquad g_i \leftarrow -\lambda\log m - \lambda\log\textstyle\sum_{t} e^{(f_t - C_{ti})/\lambda}, \qquad W^\star_{ti} = e^{(f_t + g_i - C_{ti})/\lambda} $$</p>
+<p>논문 구현은 스케일 벡터를 곱해 나가다가 값이 커지면 로그 쪽으로 흡수하는 안정화를 쓴다(부록 E). 수학적으로는 같은 반복이다.
+Panda에서는 해가 수렴할수록 안쪽 반복이 1–2번으로 줄었다.</p>
+<p><strong>무게중심 사영.</strong> 행마다 $N W^\star_{t,\cdot}$는 합이 1인 가중치다. 점은 꼭짓점 방향의 볼록 결합만큼 움직인다(식 4).</p>
+<p>$$ \mathbf x_t \leftarrow \mathbf x_t + \alpha_k \sum_{i=1}^{m} N\, W^\star_{ti}\, \mathbf d_{t,i}, \qquad \lVert \Delta\mathbf x_t \rVert \le \alpha_k, \qquad \alpha_{k+1} = (1-\epsilon)\,\alpha_k $$</p>
+<p>이동이 정다포체 안에 머무는 것이 논문이 말하는 명시적 신뢰 영역이다. 탐침 반경 $\beta_k$도 같은 비율로 줄이고, 실험은 $\epsilon$을
+0.032–0.05로 두었다. 균형 OT에는 제자리에 머무는 꼭짓점이 없다. 점이 하나뿐이면 열 주변분포가 계획을 균등하게 만들고, 꼭짓점의 합이
+0이므로 스텝도 0이다. 이론(정리 1)은 점과 꼭짓점의 수가 같고 $\lambda \to 0$이라고 가정한다. 실제 MPOT는 $N \gg m$이라 수렴은
+실험으로만 보였다.</p>
+<p><strong>travplan에 주는 것: 제어열 매듭점 판.</strong> 원형의 점은 상태 웨이포인트라 travplan의 rollout 모델과 <code>CostTerm</code>을 쓰지 못한다. 그래서
+점의 정의를 바꾼다.</p>
+<ul>
+<li>입자 $p$는 제어열 $U_p \in \mathbb R^{T \times 3}$이다. $T = 40$(0.1 s 간격)이고, 행은 twist $\mathbf u_p(t) = (v_x, v_y, \omega_z)$다.
+  입자 8개는 MPPI의 워밍스타트, 경로 추종 사전 제어열, 워밍스타트에 MPPI 노이즈를 더한 사본 여섯으로 시작한다.</li>
+<li>OT의 점은 입자마다 매듭점 $L = 8$개다. 매듭점 $\ell$의 이동은 모자 함수 기저 $\phi_\ell(t)$로 시간축에 퍼진다(구간 선형 보간).</li>
+<li>꼭짓점은 3-orthoplex $\boldsymbol\delta_i \in \{\pm\mathbf e_1, \pm\mathbf e_2, \pm\mathbf e_3\}$($m = 6$)를 무작위로 회전하고, 축마다
+  MPPI 노이즈 표준편차 $\boldsymbol\sigma = (0.4, 0.25, 0.6)$로 늘인 것이다. MPOT 코드의 무작위 회전은 짝수 차원만 받으므로,
+  3차원에서는 단위 쿼터니언으로 균등한 회전을 뽑는다.</li>
+<li>탐침은 꼭짓점 하나다($h = 1$). 비용은 매듭점 하나만 옮긴 제어열을 통째로 rollout한 목적함수 $S$다. $S$는 <code>CostTerm</code>의 합이고,
+  확률 제약 스택이면 그 항도 들어간다.</li>
+</ul>
+<p>$$ V_{p\ell i}(t) = \mathbf u_p(t) + \alpha\,\phi_\ell(t)\,\mathbf d_{p\ell i}, \qquad \mathbf d_{p\ell i} = \boldsymbol\sigma \odot \big(R_{p\ell}\,\boldsymbol\delta_i\big), \qquad C^{(p)}_{\ell i} = S\big(V_{p\ell i}\big) $$</p>
+<p>$$ \mathbf u_p(t) \leftarrow \mathbf u_p(t) + \sum_{\ell=1}^{L} \phi_\ell(t)\,\alpha \sum_{i=1}^{6} L\, W^{(p)}_{\ell i}\,\mathbf d_{p\ell i} $$</p>
+<p>OT는 입자마다 따로 푼다($8 \times 6$ 행렬, 균등 주변분포). 치명 셀의 1e3 벌점이 정규화를 망치지 않도록, 행마다 최솟값을 빼고 상한에서
+잘라 $[0, 1]$로 맞춘다. 균형 OT에는 제자리 꼭짓점이 없으므로 목적함수가 내려갈 때만 갱신을 받는다. 논문이 이론 절에서 언급한 충분
+감소 조건의 가장 단순한 형태다. 반경 $\alpha$는 노이즈 표준편차 단위이고 스텝마다 줄인다. 한 스텝에 rollout이
+$8 \times 8 \times 6 + 8 = 392$개 들어, 두 스텝이 MPPI 한 번(768개)과 비슷하다. MPC 문서 M.3.20의 오라클 O2(명령 knot 공간의
+Sinkhorn Step)가 이 판이다.</p>
+<div class="fig-grid"><figure class="fig"><a class="thumb" href="https://arxiv.org/html/2309.15970v2/figures/orthorplex.png" title="원본 보기"><img alt="MPOT Fig. 5" src="assets/thumbs/cc5347b8e66f.webp" loading="lazy"></a><figcaption>그림 — MPOT (Fig. 5 가운데): 3-orthoplex, 곧 정팔면체다. 꼭짓점 6개가 세 좌표축의 양과 음 방향에 있다. 제어열 판은 twist 매듭점마다 이것을 회전하고 노이즈 크기로 늘려 쓴다. 출처: <a href="https://arxiv.org/abs/2309.15970">arXiv:2309.15970</a></figcaption></figure>
+</div></details>
+<p><strong>논문의 실험.</strong> 시험은 모두 PyBullet 시뮬레이션이다. 기준선은 모두 PyTorch로 다시 구현했고, RRT*를 뺀 방법은 GPU 한 장(RTX 3080 Ti)에서
+돌렸다. 칸의 세 수치는 계획 시간, 과제 성공률, 묶음 안에서 성공한 궤적의 비율이다. 과제 성공은 묶음 안에 성공한 궤적이 하나라도
+있다는 뜻이다.</p>
+<table>
+<thead>
+<tr>
+<th>과제</th>
+<th>MPOT</th>
+<th>SGPMP</th>
+<th>GPMP2</th>
+<th>CHOMP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2차원 질점, 과제 1,000개, 궤적 100개 × 64스텝</td>
+<td>0.4 s, 99.2%, 73.6%</td>
+<td>6.5 s, 98.6%, 74.9%</td>
+<td>2.8 s, 98.3%, 74.9%</td>
+<td>0.5 s, 70.9%, 38.6%</td>
+</tr>
+<tr>
+<td>Panda 7자유도, 과제 500개, 궤적 10개 × 64스텝</td>
+<td>0.8 s, 71.6%, 60.2%</td>
+<td>5.0 s, 67.8%, 58.1%</td>
+<td>3.3 s, 66.0%, 53.2%</td>
+<td>3.1 s, 63.0%, 51.6%</td>
+</tr>
+<tr>
+<td>TIAGo++ 18자유도(상태 36차원), 과제 20개, 궤적 1개 × 128스텝</td>
+<td>1.49 s, 55%</td>
+<td>27.75 s, 25%</td>
+<td>40.11 s, 40%</td>
+<td>16.74 s, 40%</td>
+</tr>
+</tbody>
+</table>
+<p>TIAGo++ 행은 첫 해까지의 시간과 성공률이다. RRT*는 질점과 Panda에서 100%였지만 43.2 s와 186.9 s가 걸렸고, TIAGo++에서는
+1,000 s 안에 해를 찾지 못했다. MPOT는 TIAGo++에서 매끄러움과 경로 길이가 가장 나빴다. 저자들은 매끄러움이 나빠진 까닭을 36-orthoplex(꼭짓점 72개)가
+고차원에서 성기기 때문이라고 본다. 수렴까지의 시간은 지평과 궤적 수를 줄여도 질점 0.10 s, Panda 0.22 s 아래로 내려가지 않았다(그림 8). 프로젝트 페이지
+기준으로 수렴에는 Sinkhorn Step이 질점 약 70번, Panda 약 60번, TIAGo++ 약 40번 들었다.</p>
+<div class="fig-grid"><figure class="fig"><a class="thumb" href="https://arxiv.org/html/2309.15970v2/time_heatmap.png" title="원본 보기"><img alt="MPOT Fig. 8" src="assets/thumbs/289b5167961a.webp" loading="lazy"></a><figcaption>그림 — MPOT (Fig. 8): 수렴까지의 계획 시간(초). 가로는 지평, 세로는 궤적 수이고 왼쪽이 질점, 오른쪽이 Panda다. 가장 짧은 칸도 질점 0.10 s, Panda 0.22 s다(가장 작은 묶음은 0.13 s, 0.25 s). 출처: <a href="https://arxiv.org/abs/2309.15970">arXiv:2309.15970</a></figcaption></figure>
+</div><p><strong>다른 연구실의 비교에서는 약점이 드러났다.</strong> 물리 기반 신경장으로 실내 내비게이션을 푸는 <a href="https://arxiv.org/abs/2510.01519">mNTFields</a>(2025)는
+Gibson 실내 지도 8곳에서 MPOT를 비교했다. 지도마다 시작과 목표 200쌍을 모든 방법에 똑같이 주었다. 방이 7–19개인 지도에서 MPOT의
+성공률은 91.0–96.5%였고, 방 22·24개에서는 77.0%와 65.0%로 떨어졌다. 방이 가장 많은 두 지도(방 30개 1,018 m², 방 42개 550 m²)에서는
+11.5%와 23.0%였다. 저자들은 MPOT가 국소 최소에 빠지기 쉽고, 복잡한 지도에서는 시작과 목표가 가까운 문제만 풀었다고 적었다.
+<a href="https://arxiv.org/abs/2409.16915">SPLANNING</a>의 7자유도 Kinova 팔 시뮬레이션에서는 장애물 기하를 정확히 받고도, 장애물 10·20·40개의
+100장면 가운데 58·23·9번만 성공했다. 나머지 42·77·91번은 모두 충돌로 끝났다. 같은 표의 cuRobo도 59·45·22번 성공하고 나머지가
+충돌이었다.</p>
+<div class="fig-grid"><figure class="fig"><a class="thumb" href="https://arxiv.org/html/2510.01519v1/figures/sultan.png" title="원본 보기"><img alt="mNTFields Fig. 3a" src="assets/thumbs/2bd00ad09322.webp" loading="lazy"></a><figcaption>그림 — mNTFields (Fig. 3 a): Gibson Sultan 지도(358 m²)의 한 시작과 목표. MPOT(빨강)의 경로는 가운데 큰 방에서 크게 휘었다. 보라는 FMM(fast marching method), 초록은 RRTConnect, 청록은 Lazy-PRM이다. 출처: <a href="https://arxiv.org/abs/2510.01519">arXiv:2510.01519</a></figcaption></figure>
+<figure class="fig"><a class="thumb" href="https://arxiv.org/html/2510.01519v1/figures/sanctuary.png" title="원본 보기"><img alt="mNTFields Fig. 3b" src="assets/thumbs/a2344b7fb365.webp" loading="lazy"></a><figcaption>그림 — mNTFields (Fig. 3 b): Gibson Sanctuary 지도(289 m²). 여러 번 꺾어야 하는 경로라 MPOT는 해를 내지 못했고, 그래서 빨간 선이 없다. 출처: <a href="https://arxiv.org/abs/2510.01519">arXiv:2510.01519</a></figcaption></figure>
+</div><p><strong>코드.</strong> <a href="https://github.com/anindex/mpot">anindex/mpot</a>는 MIT 라이선스의 PyTorch 코드다. 2026-05에 0.1.0(Beta)으로 정리됐지만
+커밋은 15개이고 테스트가 없다. torch_robotics의 특정 커밋에 의존하고, 논문 표를 낸 벤치마크 스크립트 없이 예제 셋만 있다. 2026-10
+기준으로 결함이 둘 있다.</p>
+<ul>
+<li><strong>반경 어닐링이 동작하지 않는다.</strong> 2025-11의 JIT(just-in-time) 컴파일 리팩터부터 반경을 매 스텝 처음 반경 $r_0$에서 다시
+  계산한다. 스케줄러의 $\epsilon$은 반복할수록 커지지 않으므로 반경은 $(1-\epsilon)\,r_0$ 아래로 줄지 않는다. 예제 설정에서는
+  처음 반경의 0.98–0.99배에 고정된다. 2023년 코드는 스텝마다 $r \leftarrow (1-\epsilon)\,r$로 줄였다.</li>
+<li><strong><code>polytope</code> 인자가 전달되지 않는다.</strong> 첫 공개(2023-10)부터 <code>MPOT(polytope=...)</code>가 Sinkhorn Step으로 넘어가지 않는다. 그래서
+  예제의 <code>'cube'</code> 설정과 상관없이 늘 orthoplex를 쓴다.</li>
+</ul>
+<p><strong>후속 연구.</strong> MPOT 제1저자(An T. Le)가 참여한 후속은 대부분 오프라인 계획이다. 그가 제1저자인 MPC 후속 MTP는 OT를 쓰지 않는다.</p>
+<table>
+<thead>
+<tr>
+<th>후속</th>
+<th>무엇</th>
+<th>receding horizon</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/anindex/ssax">ssax</a></td>
+<td>Sinkhorn Step의 JAX 판(MIT, OTT-JAX 기반). 궤적과 GP 구조 없이 일반 함수를 최적화한다</td>
+<td>아니다</td>
+</tr>
+<tr>
+<td><a href="https://arxiv.org/abs/2411.19393">GTMP</a> (RA-L 2025)</td>
+<td>무작위 다분 그래프 위의 배치 계획기(JAX). Sinkhorn은 경로 다양성 지표로만 쓴다</td>
+<td>아니다</td>
+</tr>
+<tr>
+<td><a href="https://paperswithcode.co/paper/96053">CLOT</a> (ICRA 2026)</td>
+<td>0차 Sinkhorn 스텝으로 다중 로봇 전체의 궤적 묶음을 최적화한다. 로봇 100대 넘게 평균 몇 초에 계획하고 하드웨어로 시연했다</td>
+<td>아니다</td>
+</tr>
+<tr>
+<td><a href="https://arxiv.org/abs/2505.01059">MTP</a> (TMLR 2025)</td>
+<td>무작위 다분 그래프와 스플라인 보간으로 제어열을 뽑고, 수정한 CEM(cross-entropy method)으로 갱신한다. OT는 쓰지 않는다</td>
+<td>그렇다. 계획 한 번이 2.7 ms로 MPPI(2.6 ms)와 비슷하다(RTX 3090, 시뮬레이션만)</td>
+</tr>
+</tbody>
+</table>
+<h4>OT-MPC: 입자를 가까운 저비용 제안 쪽으로 옮긴다</h4>
+<p>OT-MPC(<a href="https://arxiv.org/abs/2605.02147">arXiv:2605.02147</a>, 2026-05 v1)는 MPPI의 가중 평균 단계를 엔트로피 OT로 바꾼 receding horizon
+제어기다. 저자는 MPPI를 낸 Georgia Tech의 Theodorou 연구실이다(Pacelli·Ratheesh·Theodorou). 제어열 입자 몇 개를 MPPI처럼 뽑은 제안과
+짝짓고, 입자마다 가까운 저비용 제안의 무게중심으로 옮긴다. 입자가 하나면 정확히 MPPI가 된다. 검증은 시뮬레이션뿐이고,
+<a href="https://acdslab.github.io/ot-mpc/">프로젝트 페이지</a>에 코드 링크는 없다(2026-10).</p>
+<p>제안의 무게는 rollout 전체 비용의 Gibbs 가중치 $p_j \propto e^{-\beta S(\mathbf y_j)}$이고, 입자의 무게는 균등하다. 수송 비용은
+제어 공간의 거리다. 그래서 입자는 멀리 있는 전역 최저점이 아니라 가까이 있는 싼 제안 쪽으로 움직인다. 장애물 양쪽처럼 서로 다른
+모드가 평균되지 않고 남는다. 논문은 MPOT를 가장 비슷한 선행 연구로 꼽고, 차이를 비용이 들어가는 자리로 설명한다. MPOT는 비용을
+수송 비용 행렬에 넣고, OT-MPC는 주변분포에 넣는다. MPC 주기마다 이 갱신을 몇 번 반복한 뒤, 비용이 가장 낮은 입자의 첫 제어를
+실행하고 입자를 한 칸 앞당겨 다음 주기에 쓴다. 이득은 모드가 여럿인 과제에서 컸다. 3차원 밀집 장애물의 쿼드로터 Hard에서 성공률은
+92% 대 MPPI 19%였다. 저자들은 MPPI의 실패가 충돌이 아니라, 길을 찾지 못하고 국소 최소에 갇힌 탓이라고 적었다. 쿼드로터 둘의 하중
+운반(91% 대 22%)과 평면 Push-T(76% 대 4%)도 차이가 컸다.</p>
+<p><strong>들이기는 쉽지만, travplan과 가까운 과제에서 이득은 유의하지 않았다.</strong> 갱신이 MPPI와 같은 rollout과 rollout 전체 비용
+$S(\mathbf u)$를 쓰므로 <code>CostTerm</code>과 rollout 모델에 그대로 맞는다. 가장 가까운 과제는 이진 충돌 비용을 쓰는 2차원 자전거 모델
+차량이다. 성공률은 Easy 100회에서 99% 대 95%, Hard 200회에서 93.5% 대 88.5%였다. 우리가 계산한 양측 Fisher 정확 검정은 p ≈ 0.21과
+0.11이라 유의하지 않다. 성공한 실행의 평균 도달 스텝은 오히려 길었다(76.1 대 57.2, 89.5 대 61.7). 비교 조건도 같지 않았다. 차량
+과제에서 OT-MPC는 지평 70스텝에 입자 20개를 두고, 8번 반복하며 반복마다 제안 200개를 뽑았다. MPPI는 지평 30스텝으로 8번 반복하며
+반복마다 샘플 500개를 뽑았다. 비용 가중치도 방법마다 Optuna로 따로 맞췄다(장애물 가중치 479.0 대 281.1). 쿼드로터 비교도
+지평(100 대 60)과 가중치가 달랐다. MPPI를 오래 조율한 Franka Push-T에서는 66% 대 64%였다.</p>
+<p>travplan Controller에서는 <code>ReferenceCost</code>가 rollout을 Planner 경로 쪽으로 당기므로, 모드를 고르는 일은 대부분 Planner 몫이다. 또
+OT-MPC는 가중 평균이 아니라 가장 싼 입자를 실행하는데, 논문은 명령의 매끄러움을 보고하지 않았다.</p>
+<div class="fig-grid"><figure class="fig"><a class="thumb" href="https://arxiv.org/html/2605.02147v1/images/ot-mpc-flow.png" title="원본 보기"><img alt="OT-MPC Fig. 2" src="assets/thumbs/d2b8451647cb.webp" loading="lazy"></a><figcaption>그림 — OT-MPC (Fig. 2): 한 MPC 주기. (a) 제안을 뽑고, (b) Sinkhorn으로 입자(굵은 선)와 제안을 비용과 거리로 짝짓고, (c) 입자를 짝지은 제안의 무게중심 쪽으로 옮기고, (d) 가장 싼 입자를 실행한다. 장애물 양쪽의 모드가 평균되지 않고 남는다. 출처: <a href="https://arxiv.org/abs/2605.02147">arXiv:2605.02147</a></figcaption></figure>
+<figure class="fig"><a class="thumb" href="https://arxiv.org/html/2605.02147v1/images/experiments_grid.png" title="원본 보기"><img alt="OT-MPC Fig. 3" src="assets/thumbs/654f149b9057.webp" loading="lazy"></a><figcaption>그림 — OT-MPC (Fig. 3): 실험 과제. (a) 자전거 모델 차량, (b) 밀집 장애물 속 쿼드로터, (c) 쿼드로터 둘의 하중 운반, (d) Franka Push-T, (e) Go2 상자 밀기, (f) Go2 경사로다. travplan과 가장 가까운 것은 (a)이고, 큰 이득은 (b)와 (c)에서 나왔다. 출처: <a href="https://arxiv.org/abs/2605.02147">arXiv:2605.02147</a></figcaption></figure>
+</div><details>
+<summary>자세히: OT-MPC의 Sinkhorn 좌표 하강과 수식</summary>
+<p><strong>무엇을 하나.</strong> SCD(Sinkhorn Coordinate Descent)는 입자 $N$개 $\mathbf z_i$와 제안 $M$개 $\mathbf y_j$ 사이의 엔트로피 OT 목적을
+입자와 결합(coupling)에 대해 번갈아 최소화한다. 입자 하나는 제어열 하나다. 제안은 입자 둘레의 가우시안과 넓은 전역 분포를 섞어
+반복마다 새로 뽑는다.</p>
+<p>$$ R(\mathbf y \mid \mathbf z) = (1-\rho)\,\frac{1}{N}\sum_{i=1}^{N}\mathcal N(\mathbf y;\, \mathbf z_i, \Sigma) + \rho\, R_{\mathrm{global}}(\mathbf y) $$</p>
+<p><strong>주변분포와 수송 비용.</strong> 제안의 무게는 rollout 전체 비용의 Gibbs 가중치이고, 입자의 무게는 균등하다. 수송 비용은 제어 공간의 제곱
+거리다.</p>
+<p>$$ p_j = \frac{e^{-\beta S(\mathbf y_j)}}{\sum_{k} e^{-\beta S(\mathbf y_k)}}, \qquad q_i = \frac{1}{N}, \qquad C_{ij} = \tfrac12 \lVert \mathbf z_i - \mathbf y_j \rVert^2 $$</p>
+<p><strong>결합과 갱신.</strong> 결합은 MPOT와 같은 Sinkhorn 반복으로 푼다. 입자는 짝지은 제안의 무게중심 쪽으로 이완 계수 $\eta$만큼 움직인다.</p>
+<p>$$ \Gamma^\star = \arg\min_{\Gamma\mathbf 1_M = \mathbf q,\; \Gamma^\top\mathbf 1_N = \mathbf p} \; \sum_{i,j} C_{ij}\Gamma_{ij} - \varepsilon H(\Gamma), \qquad \mathbf b_i = \frac{\sum_j \Gamma^\star_{ij}\,\mathbf y_j}{\sum_j \Gamma^\star_{ij}}, \qquad \mathbf z_i \leftarrow (1-\eta)\,\mathbf z_i + \eta\,\mathbf b_i $$</p>
+<p><strong>MPPI와의 관계.</strong> $N = 1$이면 주변분포 제약이 $\Gamma_{1j} = p_j$를 강제해, 무게중심이 MPPI 가중 평균(배경 0.2)이 된다.
+$\varepsilon \to \infty$이면 $\Gamma_{ij} = q_i p_j$가 되어 모든 입자가 같은 무게중심으로 간다. 두 극한 모두 MPPI다. 제안을 고정하면
+목적함수는 반복마다 늘지 않고 정지점으로 수렴한다(명제 2). 실제로는 반복마다 제안을 새로 뽑으므로 이 보장은 그대로 적용되지 않는다.</p>
+<p><strong>설정과 계산.</strong> 논문의 권장값은 $\varepsilon$을 쌍별 거리 중앙값의 0.01–0.1배, $\eta$를 0.3–0.7, 입자를 10–20개로 두는 것이다.
+결합 계산은 반복마다 $O(NM)$이고, MPPI의 평균은 $O(M)$이다. Sinkhorn과 무게중심 갱신은 8×800 결합에 1.6 ms, 8×50 결합에 0.2 ms였다.
+차량 과제의 벽시계 시간은 27.81 ms로 MPPI의 24.57 ms와 비슷했다(JAX).</p>
+<p><strong>travplan에 주는 것.</strong> OT-MPC는 MPPI와 같은 $S(\mathbf u)$와 rollout을 쓰므로, travplan에서는 가중 평균 단계만 바꾼
+<code>MPPIController</code> 하위 클래스가 된다. SMPPI가 노이즈 생성만 바꾼 것과 같은 자리다. 더 필요한 것은 입자 $N$개의 상태, 주기당 여러 번의
+반복, 가장 싼 입자의 실행이다. MPOT 제어열 판과 달리 꼭짓점별 rollout이 없으므로, rollout 수를 MPPI(768개)와 같게 맞출 수 있다.</p>
+</details>
+<h4>그래서 travplan은 최적화기보다 개선 여지를 먼저 쟀다</h4>
+<p><strong>두 방법이 바꾸는 것은 최적화기뿐이고, 모델과 비용은 그대로다.</strong> travplan MPPI 계열의 남은 실패 가운데 최적화기가 겨눌 수 있는 것은
+멈춤(timeout)이다. 좁은 곳에서 앞으로 가는 샘플이 모두 제약을 어기면, 위반하지 않는 샘플은 정지 하나만 남는다(MPC 문서 M.3.13).
+치명 실패는 지연에 따른 모델 불일치가 유력한 원인이다(M.3.14). GP 평균을 넣은 rollout은 램프의 치명 실패를 없앴지만 멈춤을 남겼고,
+그 원인은 재지 않았다(M.3.19). OT-MPC가 크게 이긴 쿼드로터 과제에서도 MPPI의 실패는 국소 최소에 갇힌 멈춤이었다.</p>
+<p>새 Controller를 만들기 전에 가를 질문은 하나다. 멈춤이 최적화기의 한계인가, 아니면 지금의 목적함수와 모델에서 정지가 실제 최적인가.
+TP-0130은 멈춘 장면을 그대로 다시 돌려, 같은 요청에서 샘플을 늘린 MPPI와 위의 제어열 판 MPOT가 탈출할 제어열을 찾는지 쟀다.
+MPOT식 최적화기가 '센' 멈춤 장면은 10개 중 둘이고, 그 둘에서 같은 예산의 MPPI도 셌다. 그래서 MPOT 변형은 만들지 않는다.
+판정과 멈춤 원인의 가설은 MPC 문서 M.3.20에 있다.</p></div><div class="card md subpanel" id="sub-research-d4-2" role="tabpanel" aria-labelledby="subbtn-research-d4-2" data-math="101"><h2>E. Controller — 학습 동역학과 추종 (참고)</h2>
 <p><mark><strong>travplan의 Controller(MPPI)는 개발 계획에서 빠져 있고 유지보수만 한다.</strong></mark> 이 절은 Controller를 손봐야 할 때 볼 기록이다. 가장 그럴듯한
 계기는 Isaac Sim이나 실물에서 슬립이 커져, 지금의 운동학 모델로는 로봇 움직임을 예측하지 못할 때다. 출처는 A.10과 같은
 <a href="https://app.notion.com/p/geonhee-lee/VLA-E2E-Learning-based-planning-Mobile-robot-346c5d39343d80f18d74f6efac4cc40a#3e5c5d39343d8039bd36c32ec5418e7d">Notion 블록</a>의
@@ -24015,13 +24333,16 @@ TP-0036에 바로 들어간다)다.</p>
 GP 잔차(TP-0068), 0차 근사, 튜브·SLP는 모두 "제약을 조이는" 장치인데 지금 Controller에는 조일 제약이 없다.</p>
 <p>이 문서는 연구 정리가 아니라 <strong>작업 기록</strong>이다. 단계마다 무엇을 했고 무엇이 나왔는지 M.3에 한 줄씩 쌓는다.
 MPPI 쪽 확률 제약(TP-0076)도 여기 적는다. 두 Controller가 잔차 GP와 치명 거리장을 함께 쓰기 때문이다(M.3.13).</p>
-<p><strong>지금 어디(2026-10-01).</strong> 1단계(치명 셀 제약, TP-0071·0093)와 보행자 제약을 마쳤다. 명목 명령을 고친 뒤(TP-0122) 정적 40/40,
+<p><strong>지금 어디(2026-10-02).</strong> 1단계(치명 셀 제약, TP-0071·0093)와 보행자 제약을 마쳤다. 명목 명령을 고친 뒤(TP-0122) 정적 40/40,
 보행자 3명 24/24·충돌 0, plant 44/48이다. 대가로 jerk가 두 배가 됐다. 부드러운 여유 행(TP-0117)은 최소 여유를 넓히지만 성공 수 이득이 없어
 선택 스택으로 둔다. GP 평균(TP-0068)은 plant 조건에서 44/48이다(명령을 고친 <code>mpc</code>와 같다). MPPI 확률 제약(TP-0076)은 0선을 실패 경계에 맞췄다(TP-0119).
 plant 96 에피소드에서 85/96이 89/96이 됐지만 기준 MPPI(88/96)와의 차이는 유의하지 않다. 남은 치명 실패 가운데 기하가 원인인 것은 없고,
 가장 유력한 원인은 지연 편향이다. GP 평균을 rollout에 넣으면(TP-0120) plant curb_ramp의 치명 실패가 모두 사라져 그 가설을 뒷받침한다. 다만 다른 곳에서 멈춤이 늘어 성공 수는 같다. Guidance 경로에 여유를 주면(TP-0118, 선택 스택 <code>guidance_c</code>) 다섯 컨트롤러 모두 성공을 지키거나 늘린다.
 plant 합계 221 → 228/240이고, 도달은 오히려 빨라진다. GP 분산으로 MPC 제약을 조이는 3단계(TP-0069)는 측정되는 효과가 없어 선택 스택으로 둔다.
-다음은 명령 수정으로 두 배가 된 jerk를 줄이는 일(TP-0123)과, 예측 모델을 기구학·동역학·학습의 세 층으로 쌓는 일(TP-0124–0126, M.1.3)이다.</p></div><div class="card md subpanel" id="sub-research-d8-1" role="tabpanel" aria-labelledby="subbtn-research-d8-1" data-math="14"><h2>M.1 OCP를 어떻게 세우나</h2>
+MPOT식 최적화기는 MPPI 계열이 멈춘 장면에서 같은 예산의 MPPI를 넘지 못해 만들지 않는다(TP-0130, M.3.20).
+멈춤의 원인은 curb_ramp의 접힌 참조와, bumps·random_mix에서 GP 분산 튜브를 쓰는 스택의 멈춤으로 좁혔다.
+다음은 명령 수정으로 두 배가 된 jerk를 줄이는 일(TP-0123), 예측 모델을 기구학·동역학·학습의 세 층으로 쌓는 일(TP-0124–0126, M.1.3),
+접힌 참조의 진행 항을 고치는 일(TP-0131), GP 확률 제약 스택의 멈춤 원인을 가르는 일(TP-0132)이다.</p></div><div class="card md subpanel" id="sub-research-d8-1" role="tabpanel" aria-labelledby="subbtn-research-d8-1" data-math="14"><h2>M.1 OCP를 어떻게 세우나</h2>
 <table>
 <thead>
 <tr>
@@ -26442,7 +26763,217 @@ M1의 plant 실패 다섯은 모두 timeout이고 치명 실패는 0이다(A1은
 <em>애니메이션 — plant curb_ramp s8. 회색은 MPPI 샘플 일부, 색 선은 가중 평균 예측, 점선은 Guidance 경로다. 빠른 경로(A1, 명목 rollout)는 입구를 지나쳐 고리를 그린 뒤 비스듬히 들어가, 34.3 s에 램프 위쪽 끝의 모서리에서 치명 실패한다. GP 평균 rollout(M1)은 일찍 꺾어 고리 없이 들어가 48.8 s에 도달한다.</em></p>
 <p><a class="thumb" href="assets/figs/tp0120_plant_bumps1.webp" title="원본 보기"><img alt="TP-0120 bumps_potholes s1" src="assets/figs/tp0120_plant_bumps1.webp" loading="lazy"></a>
 <em>애니메이션 — plant bumps_potholes s1. A1은 36.7 s에 도달한다. M1은 21 s부터 블록 옆 통로 입구에서 거의 움직이지 않다가 60 s에 timeout이다.</em></p>
-<p><strong>다음.</strong> 지연을 아는 rollout이 램프의 치명 실패를 없앤다는 것은 예측 모델 계층(TP-0124)의 첫 근거다. 기구학 rollout에 지연만 더한 동역학 층이 같은 이득을 내면서 멈춤을 늘리지 않는지 보는 것이 그 다음이다.</p></div></div>
+<p><strong>다음.</strong> 지연을 아는 rollout이 램프의 치명 실패를 없앤다는 것은 예측 모델 계층(TP-0124)의 첫 근거다. 기구학 rollout에 지연만 더한 동역학 층이 같은 이득을 내면서 멈춤을 늘리지 않는지 보는 것이 그 다음이다.</p>
+<h3>M.3.20 멈춘 장면에서 MPOT식 최적화기는 같은 예산의 MPPI를 넘지 못했다 — MPOT 변형은 만들지 않는다 (TP-0130)</h3>
+<p><strong>미리 정한 기준 G0가 실패해 MPOT 변형은 만들지 않는다.</strong> MPOT식 Sinkhorn Step(O2)이 '센' 멈춤 장면은 10개 중 둘이다.
+그 두 장면에서는 같은 예산의 MPPI(B)도 셌다. <mark>더 센 최적화기가 찾은 계획은 대부분 목적함수를 3% 안쪽으로만 낮추고, 4 s에 0.4 m를 넘게 나아가지 못했다.</mark>
+멈춤의 원인은 가설로 좁혔다. curb_ramp에서는 접힌 참조가 거짓 진행을 만든다. bumps·random_mix의 멈춤은 GP 분산 튜브를 쓰는 두 스택에서만 난다.
+치명 실패 직전의 계획은 Controller의 모델에서는 안전하지만, plant에서 개루프로 돌리면 대부분 치명적이다.</p>
+<p><strong>무엇을 쟀나.</strong> MPOT(최적 수송으로 샘플을 옮기는 최적화기, Controller 문서 E.11)를 넣기 전에, MPPI 계열이 멈춘 장면에 더 센 최적화기가 쓸 여지가 있는지 쟀다.
+현재 기본 경로에서 MPPI 계열이 timeout한 plant 장면 10개를 골랐다(<code>mppi_ccgpm</code> 다섯, <code>mppi_ccgp</code> 넷, <code>mppi</code> 하나).
+대조로 GP 평균이 없는 스택의 치명 실패 8개를 더했다. 장면마다 벤치마크와 똑같이 두 번 돌린다. 1회차로 구간을 찾고 2회차에서 탐침을 꽂는다.
+2회차는 18 장면 모두 1회차와 같은 결과를 냈다.</p>
+<ul>
+<li>멈춘 구간: 지난 3 s의 순변위가 0.3 m 미만이고 목표까지 1 m 넘게 남은 스텝. 1 s마다 탐침 하나를 두고, 장면당 20개까지 고르게 뽑는다(모두 184개).</li>
+<li>치명 구간: 치명 실패 전 3 s. 0.5 s마다 탐침 하나를 둔다(56개).</li>
+<li>탐침에서는 Controller를 그 스텝의 호출 직전 상태로 복사한다. 오라클 다섯이 Controller가 방금 푼 것과 같은 목적함수를 다시 푼다. 같은 CostTerm, rollout 모델, 확률 제약, warm start를 쓴다.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>오라클</th>
+<th>무엇</th>
+<th>rollout</th>
+<th>탐침당 시간 (중앙값)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P</td>
+<td>생산 MPPI를 다른 seed로 다시</td>
+<td>768 × 1</td>
+<td>26 ms</td>
+</tr>
+<tr>
+<td>O3</td>
+<td>MPPI 두 번 반복</td>
+<td>384 × 2</td>
+<td>31 ms</td>
+</tr>
+<tr>
+<td>B</td>
+<td>O2와 같은 예산의 MPPI</td>
+<td>1,961 × 12 = 23,532</td>
+<td>658 ms</td>
+</tr>
+<tr>
+<td>O1</td>
+<td>큰 MPPI (생산의 107배)</td>
+<td>16,384 × 5 = 81,920</td>
+<td>2.57 s</td>
+</tr>
+<tr>
+<td>O2</td>
+<td>MPOT식 Sinkhorn Step, 명령 knot 공간 (E.11)</td>
+<td>60 step, 23,528</td>
+<td>1.40 s</td>
+</tr>
+</tbody>
+</table>
+<p>시간은 24코어에 2스레드 프로세스 18개를 함께 돌린 값이다. 같은 rollout 수에서 O2는 B보다 2.1배 오래 걸린다.
+O2의 한 스텝은 rollout 384개와 8개를 차례로 돌리고 Sinkhorn을 50번 반복한다. 그 스텝을 60번 차례로 밟는다.</p>
+<p><strong>판정 규칙(실행 전에 정함).</strong> 오라클이 찾은 계획이 셋을 모두 만족하면 그 탐침에서 '탈출'이다.</p>
+<ol>
+<li>Controller의 모델에서 실행 가능하다. 치명 셀, 자세 한계, 확률 제약 위반이 없어야 한다.</li>
+<li>참조를 따라 4 s 안에 0.3 m 이상 나아간다.</li>
+<li>실행한 계획보다 목적함수가 낮다.</li>
+</ol>
+<p>실행한 계획이 이미 0.3 m 이상 나아가는 탐침(plan_go)은 최적화기에 묻는 질문이 아니라서 따로 센다. 탈출은 나머지 탐침(plan_stop)에서만 센다.
+오라클이 한 장면의 plan_stop 탐침(3개 이상) 가운데 절반 이상에서 탈출하면 그 장면에서 '센다'.
+G0는 O2가 3 장면 이상에서 세고, 그 장면마다 B는 세지 않을 때만 통과다. 해석도 미리 적었다.
+O2가 센 곳마다 B나 O1도 세면 표본 수의 문제이고, 값싼 MPPI 변경이 먼저다. P가 세면 표본 운이다.
+실행 전에 두 가지를 고쳤고, 둘 다 도구의 설명에 적었다. 멈춘 구간의 정의를 속도에서 순변위로 바꿨다(첫 장면의 1회차 자료만 보고).
+plan_go 분류는 탐침 두 개의 시험 실행 뒤, 본 실행 전에 넣었다.</p>
+<p><strong>결과 1: G0는 실패했다.</strong> O2는 두 장면(ccgp bumps s6·s11)에서 셌고, B는 그 둘과 ccgpm bumps s6에서 셌다. G0의 두 조건이 모두 깨졌다.
+plan_go 분류를 빼고 모든 탐침으로 세어도 실패다. O2가 7 장면, B가 9 장면에서 세고, B의 장면이 O2의 장면을 모두 덮는다.</p>
+<table>
+<thead>
+<tr>
+<th>'센' 장면 수 (멈춘 장면 10개 중)</th>
+<th>P</th>
+<th>O3</th>
+<th>B</th>
+<th>O1</th>
+<th>O2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>탈출 전진 0.3 m 이상 (사전 등록)</td>
+<td>1</td>
+<td>1</td>
+<td>3</td>
+<td>4</td>
+<td>2</td>
+</tr>
+<tr>
+<td>탈출 전진 1.0 m 이상 (사후, 같은 plan_stop 탐침)</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>미리 적은 해석대로라면 표본 수의 문제다. P도 ccgp bumps s6에서 셌으므로(8/14), 그 장면의 멈춤은 일부 표본 운이기도 하다.
+다만 탈출은 대부분 작다. 탐침마다 가장 나은 오라클을 골라도 목적함수 감소의 장면별 중앙값은 1.2–3.2%다. 그 계획은 대부분 4 s에 0.2–0.4 m만 나아간다.
+탈출 전진을 0.6 m나 1.0 m로 올리면 O1만 한 장면(ccgpm bumps s3)에서 센다.</p>
+<p>예외가 하나 있다. ccgpm bumps s3·s11의 plan_stop 탐침 33개 가운데 14개에는 1 m 넘게 나아가면서 목적함수도 낮은 계획이 있었다.
+감소의 중앙값은 5.2%(1.8–12.5%)다. O1이 9개, O2가 8개, B가 5개에서 찾았고 P와 O3는 하나도 찾지 못했다. 생산 예산(768)에서의 탐색 실패다.
+MPOT가 B를 앞선 유일한 신호도 여기 있다. ccgpm bumps s11에서 O2만 탈출한 탐침이 5개, B만 탈출한 탐침이 0개다(부호 검정 p ≈ 0.06).
+탐침이 1 s 간격으로 이어져 서로 독립이 아니므로, 이 p는 낙관적이다.</p>
+<div class="fig-grid"><figure class="fig"><a class="thumb" href="assets/figs/tp0130_headroom.webp" title="원본 보기"><img alt="TP-0130 탈출" src="assets/figs/tp0130_headroom.webp" loading="lazy"></a><figcaption>그림 — 멈춘 장면(행)과 오라클(열)마다 plan_stop 탐침에서 탈출한 비율. (a)는 사전 등록 기준(전진 0.3 m 이상)이다. (b)는 같은 탐침에서 탈출 전진을 1.0 m로 올린 값이다(사후, 저장한 최선 후보만 봐서 하한). (c)는 오라클이 찾은 최선 계획의 목적함수 감소 중앙값이다. 굵은 테두리가 그 장면에서 '센다'는 뜻이다. 아래 다섯 행은 plan_stop 탐침이 없어 최적화기 질문이 성립하지 않는 장면이다. 원자료 <code>results/tp0130/headroom_probes.tsv</code>.</figcaption></figure>
+</div><p><strong>결과 2: 멈춤 원인의 가설.</strong> 멈춘 구간의 모든 스텝에서 계획의 속도 윤곽을 기록했다. 탐침마다 실행한 계획을 plant에서 4 s 개루프로 돌려도 봤다.
+둘 다 실행 뒤에 더한 기록이다(<code>results/tp0130/stall_profile.tsv</code>). 항별 비용 기록과 반사실 재채점은 하지 않았으므로, 아래 표의 오른쪽 열은 원인이 아니라 가설이다.</p>
+<table>
+<thead>
+<tr>
+<th>장면</th>
+<th>관찰</th>
+<th>가설</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>curb_ramp s18 (<code>mppi_ccgp</code>), s19 (<code>mppi</code>)</td>
+<td>탐침 20개 중 14·15개에서 참조 위 전진이 계획 길이보다 길다(그 탐침의 중앙값 7.9·7.9 m, 계획 길이 1.7·2.6 m)</td>
+<td>진행 항이 끝점을 접힌 참조의 되돌아오는 구간에 투영한다</td>
+</tr>
+<tr>
+<td>bumps s1 (<code>mppi_ccgpm</code>)</td>
+<td>계획은 4 s에 2.2 m 가고, 같은 계획을 plant에서 개루프로 돌려도 1.1 m 간다. 실행한 첫 명령은 0.06 m/s다. 멈춘 스텝의 68%에서 계획이 1.9–2.2 s에 처음 0.5 m/s에 닿는다</td>
+<td>M1이 GP 평균을 앞 2 s에만 쓰는 경계</td>
+</tr>
+<tr>
+<td>bumps 다섯 (ccgp s6·s11, ccgpm s3·s6·s11)</td>
+<td>계획 자체가 4 s에 0.17–0.37 m 간다. 계획 속도는 3.3–3.5 s에서 뛴다</td>
+<td>GP 분산 튜브가 움직임을 비싸게 하고, 진행 항이 지평 끝만 보므로 움직임이 끝으로 밀린다</td>
+</tr>
+<tr>
+<td>random_mix s6 (<code>mppi_ccgpm</code>)</td>
+<td>plan_go로 분류되지만 계획이 4 s에 0.6 m(plant 개루프 0.43 m)만 가는 느린 계획이다</td>
+<td>위와 같다</td>
+</tr>
+</tbody>
+</table>
+<p>curb_ramp s14(<code>mppi_ccgp</code>)는 멈춘 구간이 2.8 s뿐이라 어느 쪽으로도 나누지 않았다.</p>
+<p><strong>bumps·random_mix의 멈춤은 GP 분산 튜브를 쓰는 스택에서만 난다.</strong> 같은 seed에서 <code>mppi</code>와 <code>mppi_cc</code>는 timeout이 없다(각 48 에피소드).
+<code>mppi_ccgp</code>는 2/48, <code>mppi_ccgpm</code>은 5/24다(<code>results/p2-controller-followups.tsv</code>의 TP-0119·0120 행). 진행 항은 모든 스택에 같다.
+그러니 지평 끝에서만 세는 진행 항은 멈춤을 허용할 뿐이다. 멈춤과 도달을 가르는 차이는 GP 분산 튜브와 M1의 평균 창 쪽에 있다.
+GP 분산 튜브는 지평 전체에 걸리고, 속도가 빠를수록 넓어진다. 진행 항은 지평 끝 한 점만 보므로, 움직임을 지평 끝으로 미뤄도 손해가 없다.
+선 계획의 속도가 3.3–3.5 s에서야 뛰는 것은 이 해석과 맞는다. 그러나 항별 비용으로 확인하지는 못했다.
+M1의 rollout은 GP 평균을 앞 2 s에만 쓴다(<code>ResidualSwerveModel</code>, <code>mean_horizon_s</code> 2.0). bumps s1의 계획은 바로 그 경계에서 빨라진다.
+지연을 아는 앞 2 s에는 거의 서 있고, 지연을 모르는 뒤 2 s에 움직이는 계획이다. 이 경계가 미루기를 만드는지는 확인하지 못했다.
+M.3.19가 남긴 질문(M1이 늘린 멈춤 셋)에는 증상까지만 답했다. bumps s1은 2 s 경계에서 미루는 계획이고, bumps s3와 random_mix s6은 느리거나 서는 계획이다.</p>
+<p><strong>접힌 참조.</strong> curb_ramp에서 Guidance 경로는 로봇 뒤쪽 램프로 돌아가 올라간 다음, 연석 위를 따라 되돌아온다.
+Controller가 보는 앞 8 m 참조도 그래서 접혀 있다. 되돌아오는 구간이 로봇 바로 위, 치명 셀인 연석 너머 2–3 m에 있다.
+<code>ReferenceCost</code>의 진행 항은 rollout의 끝점을 참조 전체에서 가장 가까운 점에 투영한다. 그래서 연석 바로 아래에서 끝나는 계획이 되돌아오는 구간에 투영되어 7–8 m 나아간 것으로 계산된다.
+계획은 램프로 가는 참 경로와 연석 아래의 거짓 지름길 사이를 오간다. 두 로봇은 약 30 s 맴돈 뒤(s19 23–53 s, s18 22–49 s) 램프로 돌아간다.
+59 s에 램프 위로 올라섰지만, 목표 5.1 m 앞에서 60 s가 지나 timeout이다(애니메이션).
+이 두 장면의 plan_go 판정은 대부분 이 투영이 만든 것이다. 더 센 최적화기는 같은 거짓 최소점을 더 잘 찾을 뿐이다.
+접힌 참조가 거짓 진행을 만든다는 것은 기하로 확인했다. 그것이 timeout의 원인인지는 투영을 고쳐 봐야 안다.
+curb_ramp의 timeout은 경로에 민감하다. 같은 <code>mppi_ccgp</code>도 이전 GP 경로(f64)에서는 s14·s18이 timeout이 아니었다.</p>
+<div class="fig-grid"><figure class="fig"><a class="thumb" href="assets/figs/tp0130_mechanisms.webp" title="원본 보기"><img alt="TP-0130 메커니즘" src="assets/figs/tp0130_mechanisms.webp" loading="lazy"></a><figcaption>그림 — 멈춤 원인의 세 가설. (a) curb_ramp s19의 35.3 s다. 하늘색이 Controller의 앞 8 m 참조, 노란 선이 모델 계획, 초록 선이 같은 계획을 plant에서 개루프로 돌린 길이다. 계획의 끝점(점선)이 연석 너머 되돌아오는 구간에 투영된다. (b)와 (c)의 위는 스텝마다 계획 속도의 윤곽이고(가로가 시간, 세로가 계획 안의 시점), 아래는 실행한 첫 명령과 실제 속도다. (b) bumps s1(M1)은 계획 속도가 GP 평균 창이 끝나는 2 s(주황 점선)에서 뛴다. (c) bumps s11(M1)은 계획 자체가 느리다.</figcaption></figure>
+</div><p><a class="thumb" href="assets/figs/tp0130_plant_curb_fold.webp" title="원본 보기"><img alt="TP-0130 curb_ramp 애니메이션" src="assets/figs/tp0130_plant_curb_fold.webp" loading="lazy"></a>
+<em>애니메이션 — plant curb_ramp s19(<code>mppi</code>, 왼쪽)와 s18(<code>mppi_ccgp</code>, 오른쪽), 18 s부터. 점선이 Guidance 경로, 색 선이 4 s 예측, 회색이 MPPI 샘플 일부다. 예측이 램프 쪽(왼쪽 아래로 돌아감)과 연석 쪽(위)을 오간다. 두 로봇 모두 약 30 s 맴돈 뒤 램프로 돌아가 59 s에 올라서지만, 60 s에 timeout이다.</em></p>
+<p><strong>결과 3: 치명 실패 직전의 계획은 모델에서는 안전하고 plant에서는 대부분 치명적이다.</strong> 사전 예측과 맞는다.
+치명 구간 8 장면 × 7 탐침에서, 오라클이 찾은 계획 가운데 모델 안에서 실행 가능한 것을 plant에서 4 s 개루프로 돌렸다.</p>
+<table>
+<thead>
+<tr>
+<th>오라클</th>
+<th>P</th>
+<th>O3</th>
+<th>B</th>
+<th>O1</th>
+<th>O2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>plant 개루프에서 실패</td>
+<td>45/54</td>
+<td>46/54</td>
+<td>48/54</td>
+<td>49/54</td>
+<td>49/54</td>
+</tr>
+</tbody>
+</table>
+<p>더 센 최적화기의 계획이 덜 실패하지 않았다. 사후 참조로 같은 시점에 두 가지를 더 돌렸다.
+Controller가 실행한 계획은 49/56이 실패했다. 정지 명령은 16/56만 실패했고, 그중 14건이 실패 0.5 s 전 이후다.
+멈춘 구간의 실행 계획은 같은 재생에서 2/184만 실패했다. 재생 자체가 늘 치명적인 것은 아니다.
+예측은 8 장면 가운데 여섯에서 맞았다. mppi bumps s11에서는 P와 O3 계획의 절반이 살아남았다.
+mppi random_mix s23에서는 모든 계획이 실패 1.5 s 전까지 살아남고, 1.0 s 전부터 모두 실패한다. 그 장면의 실패는 마지막 1 s 안에 정해졌다.
+이 재생은 동역학(지연·슬립)과 지도(belief 대신 실제 지형)를 함께 바꾸고, 재계획 없이 돈다. 그래서 둘 가운데 무엇이 계획을 치명적으로 만드는지는 가르지 못한다.</p>
+<div class="fig-grid"><figure class="fig"><a class="thumb" href="assets/figs/tp0130_lethal.webp" title="원본 보기"><img alt="TP-0130 치명 대조" src="assets/figs/tp0130_lethal.webp" loading="lazy"></a><figcaption>그림 — 치명 실패 전 3 s의 탐침에서, 모델 안에서 실행 가능한 계획을 plant에서 4 s 개루프로 돌렸을 때 실패한 비율. 오라클 다섯 선은 62.5–100%에 있고, O3가 2.5 s 전에 62.5%로 가장 낮다. 점선의 정지 명령은 실패 1 s 전까지 0–12.5%다. 실행한 계획과 정지 명령은 실행 뒤에 더한 참조다. 원자료 <code>results/tp0130/headroom.tsv</code>·<code>headroom_probes.tsv</code>.</figcaption></figure>
+</div><p><strong>판단.</strong></p>
+<ul>
+<li>MPOT 변형은 만들지 않는다. 근거는 G0의 실패다. 조사는 Controller 문서 E.11에 둔다.</li>
+<li>미리 적은 해석은 "표본 수의 문제이니 값싼 MPPI 변경이 먼저"다. 이 갈래는 따르지 않고 원인 분리를 먼저 한다.
+  1 m 넘는 탈출이 생산 예산의 30–107배(B·O2·O1)에서만 나왔기 때문이다. 이 이탈은 실행 뒤에 정했다.</li>
+<li>다시 열 조건은 하나다. TP-0131·0132 뒤에도 plan_stop 멈춤이 남고, 거기서 O2가 B보다 자주 탈출하면 다시 연다. ccgpm bumps s11이 그 방향의 약한 신호를 이미 보였다(5:0).</li>
+<li>접힌 참조는 TP-0131로 넘긴다. 진행 항의 끝점 투영을 rollout이 닿을 수 있는 호 구간으로 제한한다. <code>CostTerm</code>만 고치고 <code>mppi.py</code>는 건드리지 않는다.</li>
+<li>bumps·random_mix의 멈춤은 TP-0132로 넘긴다. 탐침에서 항별 비용을 기록하고, GP 분산 튜브와 M1의 평균 창과 진행 항을 하나씩 바꿔 다시 채점해 원인을 가른다.</li>
+<li>치명 실패 쪽은 예측 모델 계층(TP-0124)의 순서를 그대로 둔다. 동역학과 지도를 나눠 재생하는 대조가 그 첫 확인이다.</li>
+<li>탐침 도구는 다음 비용·모델 변경의 확인에 그대로 쓴다.</li>
+</ul>
+<pre><code class="language-bash">python -m scripts.eval_stall_headroom run --scene plant:mppi_ccgpm:bumps_potholes:1   # 18 장면, 장면당 1.4–5 분(2스레드)
+python -m scripts.eval_stall_headroom replay      # 사후 참조: 실행한 계획·정지 명령의 plant 재생, 계획 속도 윤곽
+python -m scripts.eval_stall_headroom summary     # → results/tp0130/headroom.tsv, headroom_probes.tsv, stall_profile.tsv
+python scripts/make_doc_figures.py --followup TP-0130 TP-0130-episodes
+</code></pre></div></div>
   </section>
   <section class="tab" id="tab-design" role="tabpanel" aria-labelledby="tabbtn-design" data-math="17">
     <div class="card md"><h1>TP-0068 설계: GP 잔차 동역학 (DD · 동축 스워브 · 비동축 스워브)</h1>

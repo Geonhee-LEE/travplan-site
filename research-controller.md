@@ -1,14 +1,15 @@
 <!-- doc: Controller · 안전 | 3 -->
 # Controller와 안전 필터 — Planner의 궤적을 실행하는 쪽 (§E, §C)
 
-**Controller는 Planner의 경로나 궤적을 받아 추종하면서, 지형과 동적 장애물을 로컬로 피하는 body twist를 낸다.** travplan에서 Controller(MPPI)는
-개발 계획에서 빠져 유지보수만 하므로(2026-09-25 결정), 이 문서는 Controller를 손봐야 할 때 볼 참고 지도다. 세 탭으로 나뉜다.
+**Controller는 Planner의 경로나 궤적을 받아 추종하면서, 지형과 동적 장애물을 로컬로 피하는 body twist를 낸다.** travplan은 Controller로 MPPI와
+acados NMPC 두 갈래를 함께 개발하고 같은 벤치마크에서 비교한다(2026-09-30 결정). 이 문서는 그 Controller를 고칠 때 보는 참고 지도이고, 개발 기록은 MPC 문서(§M)에 있다. 네 탭으로 나뉜다.
 
 | 탭 | 다루는 것 | 절 | travplan과의 관계 |
 |---|---|---|---|
-| MPPI 계열 | MPPI의 계보, 학습 prior를 넣는 법, SMPPI | E.1, B.5 | `MPPIController`, `SmoothMPPIController` |
-| 학습 동역학·적응 | 학습 rollout 모델, 불확실성, 온라인 적응, 마일스톤, Zeilinger 그룹(학습 MPC의 보장·공개 코드·내비 MPC) | E, E.2–E.7 | 슬립이 커질 때 바꿀 rollout 모델 |
+| MPPI 계열 | MPPI의 계보, 학습 prior를 넣는 법, SMPPI, 최적 수송으로 샘플을 옮기는 최적화기(MPOT·OT-MPC) | E.1, B.5, E.11 | `MPPIController`, `SmoothMPPIController` |
+| 학습 동역학·적응 | 학습 rollout 모델, 불확실성, 온라인 적응, 마일스톤, Zeilinger 그룹(학습 MPC의 보장·공개 코드·내비 MPC), GP 잔차 | E, E.2–E.10 | 슬립이 커질 때 바꿀 rollout 모델, 잔차 GP |
 | 안전 필터 | 비용 통합형과 외부 필터형, CBF 계열, 계보 | C.1–C.4 | 시간가변 비용 레이어(구현), CVaR-BF(TP-0014) |
+| 하위 제어 · 4족 RL | 4족 보행 RL의 계보, 자동 커리큘럼, RL과 MPC를 섞는 갈래 | F.1–F.7 | 지형 난이도 커리큘럼(TP-0039)과 Planner D RL 후학습(TP-0066) |
 
 **계보 한눈에 보기.**
 
@@ -17,7 +18,7 @@
 | 2015–2018 | MPPI, 정보이론적 MPC, Tube-MPPI | PETS | CBF-QP, HJ 도달 가능성, 예측 안전 필터 |
 | 2019–2021 | Robust MPPI | IKD, RMA | CBF 튜토리얼, 이산 CBF + MPC, safe-control-gym |
 | 2022–2023 | log-MPPI, SMPPI, Nav2 MPPI, RA-MPPI | PENN, TOAST, 지형 인지 운동 모델, 확률 앙상블 능동 탐색, TD-MPC2 | 안전 필터 통합 관점 |
-| 2024–2026 | MPPI-Generic, π-MPPI, DRA-MPPI, ProxPI | 잠재 문맥 온라인 적응 | CVaR-BF, OcclusionCBF, Predictive Semantic Safety |
+| 2024–2026 | MPPI-Generic, π-MPPI, DRA-MPPI, ProxPI, OT-MPC | 잠재 문맥 온라인 적응 | CVaR-BF, OcclusionCBF, Predictive Semantic Safety |
 
 **공개 코드.** GitHub 별 순이다(2026-09).
 
@@ -266,6 +267,249 @@ $$ a_t = a_{t-1} + u_t\, \Delta t, \qquad u_t = \bar u_t + \epsilon_t,\ \ \epsil
 | learned(참고) | 5/12 | 16.7 | 0.039 | 7.0 | 0.5 |
 
 hybrid에서도 jerk가 28% 줄고 도달시간은 3% 늘었다. 기본 Controller는 바꾸지 않았다. Planner D도 같은 "변화율 공간"에서 궤적을 생성한다.
+
+### E.11 최적 수송으로 샘플을 옮기는 최적화기: MPOT와 OT-MPC (TP-0130)
+
+**MPOT(Motion Planning via Optimal Transport)와 OT-MPC는 MPPI처럼 비용만 계산해 해를 고치지만, 샘플을 가중 평균 하나로 합치지
+않는다.** 엔트로피 정규화 최적 수송(OT, optimal transport)으로 샘플과 이동 후보를 짝지어 샘플마다 따로 옮긴다. ==MPOT는 Controller가
+아니라, 시작점에서 목표까지 궤적 묶음을 수렴할 때까지 다듬는 오프라인 최적화기다.== 샘플 기반 MPC의 갱신 자체를 OT로 바꾼 것은
+다른 연구실의 OT-MPC다. 두 방법 모두 2차원 지상 이동에서 MPPI보다 낫다는 유의한 근거는 아직 없다. travplan은 이 계열을 들이기 전에,
+MPPI 계열이 멈춘 장면에 개선 여지가 있는지부터 쟀다. 미리 정한 기준을 넘지 못해 MPOT 변형은 만들지 않았다(TP-0130, MPC 문서 M.3.20).
+
+| 항목 | MPOT | OT-MPC | travplan `MPPIController` |
+|---|---|---|---|
+| 쓰임 | 오프라인 배치 계획. 수렴까지 Sinkhorn Step 40–70번 | receding horizon MPC | receding horizon MPC, 0.1 s 주기 |
+| 최적화하는 것 | 궤적의 상태 웨이포인트(위치와 속도) | 제어열 입자 8–50개 | 제어열 하나(샘플 768개의 가중 평균) |
+| OT가 짝짓는 것 | 웨이포인트와 회전한 정다포체의 꼭짓점 | 입자와 비용으로 가중한 제안 | 쓰지 않는다 |
+| 비용이 들어가는 자리 | 수송 비용 행렬(웨이포인트마다) | 제안 쪽 주변분포(rollout 전체) | 지수 가중치(rollout 전체) |
+| 동역학 | 등속 GP(Gaussian process) 사전분포를 비용으로 | 모델 rollout | 스워브 rollout 모델 |
+| 근거 | NeurIPS 2023, 시뮬레이션, MPPI 비교 없음 | arXiv v1(2026-05), 시뮬레이션, 코드 미공개 | 이 저장소의 벤치마크 |
+
+#### MPOT: 웨이포인트를 정다포체 꼭짓점 쪽으로 수송한다
+
+MPOT([arXiv:2309.15970](https://arxiv.org/abs/2309.15970), NeurIPS 2023)는 기울기 없이 궤적 묶음을 한꺼번에 다듬는 배치 궤적
+최적화기다. 시작점에서 목표까지 수렴할 때까지 돌린 뒤, 비용이 가장 낮은 궤적을 실행하거나 충돌 없는 궤적을 모두 학습 데이터로
+저장한다. RTX 3080 Ti에서 2차원 질점은 0.4 s, 7자유도 Panda 팔은 0.8 s가 걸렸다. 비교 대상에 MPPI는 없다. 가장 가까운 것은
+MPPI식 가중 평균으로 갱신하는 SGPMP(Stochastic Gaussian Process Motion Planning)다. 질점에서 둘의 성공률은 비슷했고, 차이는 계획
+시간(0.4 s 대 6.5 s)이었다. 논문과 코드, 프로젝트 페이지 어디에도 receding horizon 실행이나 동적 장애물, 실물 실험은 없다.
+
+궤적 $N_p$개의 웨이포인트 $T$개를 점 $N = N_p T$개로 펼치고, 반복마다 Sinkhorn Step 한 번으로 모든 점을 함께 옮긴다. 웨이포인트는
+위치와 속도를 이어 붙인 1차 상태다. 점마다 무작위로 회전한 정다포체(regular polytope)를 하나씩 놓고, 그 꼭짓점 $m$개를 이동 후보로
+쓴다. 정다포체는 simplex, orthoplex, cube 가운데 하나다. 꼭짓점 방향의 탐침점 $h$개에서 비용을 평균해 $N \times m$ 비용 행렬을 만든다.
+이 행렬로 주변분포가 균등한 엔트로피 OT를 풀고, 각 점을 OT 계획이 정한 꼭짓점들의 무게중심으로 옮긴다. 그래서 이동은 늘 정다포체
+안에 머문다(명시적 신뢰 영역). 실험에서는 반경을 스텝마다 일정 비율로 줄였다. 매끄러움과 동역학은 등속 GP 사전분포의 전이 비용으로만
+들어온다. 충돌은 점유 격자를 조회한 비용으로만 들어오고, 기울기는 필요 없다.
+
+**원형 그대로는 travplan Controller에 맞지 않는다.** travplan의 `CostTerm`은 rollout 전체를 보고 샘플마다 비용 하나(`[K]`)를 낸다.
+어느 스텝이든 치명 셀을 밟으면 주는 벌점, 시간축 CVaR(배경 0.3), 끝점 진행이 그렇다. 이 항들은 스텝별로 나뉘지 않는데, MPOT는
+웨이포인트와 꼭짓점마다 비용(`[N, m]`)을 요구한다. 또 MPOT는 홀로노믹 상태 웨이포인트를 직접 옮기므로 rollout을 하지 않는다. 그래서
+제어열을 rollout할 때만 작동하는 세 가지를 모두 건너뛴다.
+
+- 스워브 rollout 모델의 속도·가속 한계
+- 잔차 GP의 평균을 넣은 rollout(TP-0120, `mppi_ccgpm`)
+- 계획 중인 rollout 모델 계층. TP-0124의 기구학·동역학·학습 층, TP-0125의 메쉬 시뮬레이터, TP-0126의 학습 FDM(forward dynamics
+  model)이다.
+
+맞는 형태는 제어열 판이다. 입자를 40×3 제어열로 두고, OT의 점을 그 제어열의 twist 매듭점 8개로 둔다. 매듭점마다 MPPI 노이즈 크기로
+늘인 3-orthoplex를 놓고, 매듭점 하나를 꼭짓점 쪽으로 옮긴 제어열을 통째로 rollout해 비용을 매긴다. 그러면 `CostTerm`과 rollout 모델,
+확률 제약을 그대로 물려받는다. SMPPI처럼 `mppi.py`를 고치지 않는 MPPI 갈래 안의 변형이 된다. 수식은 아래 토글에 있다.
+
+![MPOT Fig. 2](https://arxiv.org/html/2309.15970v2/method.png)
+*그림 — MPOT (Fig. 2): Sinkhorn Step 한 번. 웨이포인트(남색 점)마다 무작위로 회전한 2-cube의 꼭짓점(초록)과 그 방향의 탐침점(빨강)을 둔다. 회색 숫자는 방향마다 탐침점 비용의 평균이고, 빨간 화살표가 OT 계획으로 정한 이동이다. 실선 원은 스텝 반경, 점선 원은 탐침 반경이다. 출처: [arXiv:2309.15970](https://arxiv.org/abs/2309.15970)*
+
+![MPOT Fig. 1](https://arxiv.org/html/2309.15970v2/planar_steps.png)
+*그림 — MPOT (Fig. 1): 목표 셋에 궤적을 다섯 개씩 GP 사전분포에서 뽑아 한 OT 문제로 함께 다듬는다. 왼쪽부터 Sinkhorn Step 0, 10, 20, 40번째이고, 전체 계획 시간은 0.12 s였다. 출처: [arXiv:2309.15970](https://arxiv.org/abs/2309.15970)*
+
+<details markdown="1">
+<summary>자세히: MPOT의 Sinkhorn Step 수식과 제어열 매듭점 판</summary>
+
+**무엇을 하나.** Sinkhorn Step은 점 묶음 $\{\mathbf x_t\}_{t=1}^{N}$을 한 번에 옮기는 0차 갱신이다. 점 $\mathbf x_t$마다 단위 구에
+내접한 정다포체를 무작위 회전 $R_t$로 돌려 이동 후보 $\mathbf d_{t,i} = R_t\mathbf d_i$를 만든다. 꼭짓점 수 $m$은 $d$차원 simplex가
+$d+1$, orthoplex가 $2d$, cube가 $2^d$다. 세 정다포체 모두 꼭짓점의 합이 0이다.
+
+**비용 행렬.** 점 $t$와 꼭짓점 $i$의 비용은 그 방향 탐침점 $h$개에서 잰 상태 비용과 GP 전이 비용의 평균이다(식 10). 둘째 항이
+이웃 웨이포인트를 묶는 유일한 고리다.
+
+$$ C_{t,i} = \frac{1}{h}\sum_{j=1}^{h} \Big[\, \eta\, c(\mathbf x_t + \mathbf y_{t,i,j}) + \tfrac12 \big\lVert \Phi_{t,t+1}\mathbf x_t - (\mathbf x_{t+1} + \mathbf y_{t+1,i,j}) \big\rVert^2_{Q^{-1}_{t,t+1}} \Big] $$
+
+$\Phi_{t,t+1}$과 $Q_{t,t+1}$은 등속 GP 사전분포(가속도에 백색 잡음)의 전이 행렬과 공분산이다. 행렬은 최솟값을 빼 양수로 만들고
+$[0, 1]$로 정규화한다. 논문은 Sinkhorn 안의 지수 때문에 MPOT가 비용 크기에 민감하다고 적었다.
+
+**엔트로피 OT.** 주변분포는 균등하다. 엔트로피 항은 해를 유일하게 만들고, Sinkhorn 반복으로 빨리 풀리게 한다. $\lambda$가 크면
+빠르지만 계획이 흐려지고, 작으면 수치가 불안정해진다. 논문은 $\lambda = 0.01$을 썼다.
+
+$$ W^\star = \arg\min_{W \ge 0,\; W\mathbf 1_m = \mathbf 1_N/N,\; W^\top \mathbf 1_N = \mathbf 1_m/m} \; \langle W, C\rangle - \lambda H(W), \qquad H(W) = -\textstyle\sum_{t,i} W_{ti}\log W_{ti} $$
+
+**로그 영역 Sinkhorn.** 쌍대 퍼텐셜 $\mathbf f \in \mathbb R^N$과 $\mathbf g \in \mathbb R^m$을 번갈아 고친다. 지수를 logsumexp 안에서만
+계산하므로 $\lambda$가 작아도 넘치지 않는다.
+
+$$ f_t \leftarrow -\lambda\log N - \lambda\log\textstyle\sum_{i} e^{(g_i - C_{ti})/\lambda}, \qquad g_i \leftarrow -\lambda\log m - \lambda\log\textstyle\sum_{t} e^{(f_t - C_{ti})/\lambda}, \qquad W^\star_{ti} = e^{(f_t + g_i - C_{ti})/\lambda} $$
+
+논문 구현은 스케일 벡터를 곱해 나가다가 값이 커지면 로그 쪽으로 흡수하는 안정화를 쓴다(부록 E). 수학적으로는 같은 반복이다.
+Panda에서는 해가 수렴할수록 안쪽 반복이 1–2번으로 줄었다.
+
+**무게중심 사영.** 행마다 $N W^\star_{t,\cdot}$는 합이 1인 가중치다. 점은 꼭짓점 방향의 볼록 결합만큼 움직인다(식 4).
+
+$$ \mathbf x_t \leftarrow \mathbf x_t + \alpha_k \sum_{i=1}^{m} N\, W^\star_{ti}\, \mathbf d_{t,i}, \qquad \lVert \Delta\mathbf x_t \rVert \le \alpha_k, \qquad \alpha_{k+1} = (1-\epsilon)\,\alpha_k $$
+
+이동이 정다포체 안에 머무는 것이 논문이 말하는 명시적 신뢰 영역이다. 탐침 반경 $\beta_k$도 같은 비율로 줄이고, 실험은 $\epsilon$을
+0.032–0.05로 두었다. 균형 OT에는 제자리에 머무는 꼭짓점이 없다. 점이 하나뿐이면 열 주변분포가 계획을 균등하게 만들고, 꼭짓점의 합이
+0이므로 스텝도 0이다. 이론(정리 1)은 점과 꼭짓점의 수가 같고 $\lambda \to 0$이라고 가정한다. 실제 MPOT는 $N \gg m$이라 수렴은
+실험으로만 보였다.
+
+**travplan에 주는 것: 제어열 매듭점 판.** 원형의 점은 상태 웨이포인트라 travplan의 rollout 모델과 `CostTerm`을 쓰지 못한다. 그래서
+점의 정의를 바꾼다.
+
+- 입자 $p$는 제어열 $U_p \in \mathbb R^{T \times 3}$이다. $T = 40$(0.1 s 간격)이고, 행은 twist $\mathbf u_p(t) = (v_x, v_y, \omega_z)$다.
+  입자 8개는 MPPI의 워밍스타트, 경로 추종 사전 제어열, 워밍스타트에 MPPI 노이즈를 더한 사본 여섯으로 시작한다.
+- OT의 점은 입자마다 매듭점 $L = 8$개다. 매듭점 $\ell$의 이동은 모자 함수 기저 $\phi_\ell(t)$로 시간축에 퍼진다(구간 선형 보간).
+- 꼭짓점은 3-orthoplex $\boldsymbol\delta_i \in \{\pm\mathbf e_1, \pm\mathbf e_2, \pm\mathbf e_3\}$($m = 6$)를 무작위로 회전하고, 축마다
+  MPPI 노이즈 표준편차 $\boldsymbol\sigma = (0.4, 0.25, 0.6)$로 늘인 것이다. MPOT 코드의 무작위 회전은 짝수 차원만 받으므로,
+  3차원에서는 단위 쿼터니언으로 균등한 회전을 뽑는다.
+- 탐침은 꼭짓점 하나다($h = 1$). 비용은 매듭점 하나만 옮긴 제어열을 통째로 rollout한 목적함수 $S$다. $S$는 `CostTerm`의 합이고,
+  확률 제약 스택이면 그 항도 들어간다.
+
+$$ V_{p\ell i}(t) = \mathbf u_p(t) + \alpha\,\phi_\ell(t)\,\mathbf d_{p\ell i}, \qquad \mathbf d_{p\ell i} = \boldsymbol\sigma \odot \big(R_{p\ell}\,\boldsymbol\delta_i\big), \qquad C^{(p)}_{\ell i} = S\big(V_{p\ell i}\big) $$
+
+$$ \mathbf u_p(t) \leftarrow \mathbf u_p(t) + \sum_{\ell=1}^{L} \phi_\ell(t)\,\alpha \sum_{i=1}^{6} L\, W^{(p)}_{\ell i}\,\mathbf d_{p\ell i} $$
+
+OT는 입자마다 따로 푼다($8 \times 6$ 행렬, 균등 주변분포). 치명 셀의 1e3 벌점이 정규화를 망치지 않도록, 행마다 최솟값을 빼고 상한에서
+잘라 $[0, 1]$로 맞춘다. 균형 OT에는 제자리 꼭짓점이 없으므로 목적함수가 내려갈 때만 갱신을 받는다. 논문이 이론 절에서 언급한 충분
+감소 조건의 가장 단순한 형태다. 반경 $\alpha$는 노이즈 표준편차 단위이고 스텝마다 줄인다. 한 스텝에 rollout이
+$8 \times 8 \times 6 + 8 = 392$개 들어, 두 스텝이 MPPI 한 번(768개)과 비슷하다. MPC 문서 M.3.20의 오라클 O2(명령 knot 공간의
+Sinkhorn Step)가 이 판이다.
+
+![MPOT Fig. 5](https://arxiv.org/html/2309.15970v2/figures/orthorplex.png)
+*그림 — MPOT (Fig. 5 가운데): 3-orthoplex, 곧 정팔면체다. 꼭짓점 6개가 세 좌표축의 양과 음 방향에 있다. 제어열 판은 twist 매듭점마다 이것을 회전하고 노이즈 크기로 늘려 쓴다. 출처: [arXiv:2309.15970](https://arxiv.org/abs/2309.15970)*
+
+</details>
+
+**논문의 실험.** 시험은 모두 PyBullet 시뮬레이션이다. 기준선은 모두 PyTorch로 다시 구현했고, RRT\*를 뺀 방법은 GPU 한 장(RTX 3080 Ti)에서
+돌렸다. 칸의 세 수치는 계획 시간, 과제 성공률, 묶음 안에서 성공한 궤적의 비율이다. 과제 성공은 묶음 안에 성공한 궤적이 하나라도
+있다는 뜻이다.
+
+| 과제 | MPOT | SGPMP | GPMP2 | CHOMP |
+|---|---|---|---|---|
+| 2차원 질점, 과제 1,000개, 궤적 100개 × 64스텝 | 0.4 s, 99.2%, 73.6% | 6.5 s, 98.6%, 74.9% | 2.8 s, 98.3%, 74.9% | 0.5 s, 70.9%, 38.6% |
+| Panda 7자유도, 과제 500개, 궤적 10개 × 64스텝 | 0.8 s, 71.6%, 60.2% | 5.0 s, 67.8%, 58.1% | 3.3 s, 66.0%, 53.2% | 3.1 s, 63.0%, 51.6% |
+| TIAGo++ 18자유도(상태 36차원), 과제 20개, 궤적 1개 × 128스텝 | 1.49 s, 55% | 27.75 s, 25% | 40.11 s, 40% | 16.74 s, 40% |
+
+TIAGo++ 행은 첫 해까지의 시간과 성공률이다. RRT\*는 질점과 Panda에서 100%였지만 43.2 s와 186.9 s가 걸렸고, TIAGo++에서는
+1,000 s 안에 해를 찾지 못했다. MPOT는 TIAGo++에서 매끄러움과 경로 길이가 가장 나빴다. 저자들은 매끄러움이 나빠진 까닭을 36-orthoplex(꼭짓점 72개)가
+고차원에서 성기기 때문이라고 본다. 수렴까지의 시간은 지평과 궤적 수를 줄여도 질점 0.10 s, Panda 0.22 s 아래로 내려가지 않았다(그림 8). 프로젝트 페이지
+기준으로 수렴에는 Sinkhorn Step이 질점 약 70번, Panda 약 60번, TIAGo++ 약 40번 들었다.
+
+![MPOT Fig. 8](https://arxiv.org/html/2309.15970v2/time_heatmap.png)
+*그림 — MPOT (Fig. 8): 수렴까지의 계획 시간(초). 가로는 지평, 세로는 궤적 수이고 왼쪽이 질점, 오른쪽이 Panda다. 가장 짧은 칸도 질점 0.10 s, Panda 0.22 s다(가장 작은 묶음은 0.13 s, 0.25 s). 출처: [arXiv:2309.15970](https://arxiv.org/abs/2309.15970)*
+
+**다른 연구실의 비교에서는 약점이 드러났다.** 물리 기반 신경장으로 실내 내비게이션을 푸는 [mNTFields](https://arxiv.org/abs/2510.01519)(2025)는
+Gibson 실내 지도 8곳에서 MPOT를 비교했다. 지도마다 시작과 목표 200쌍을 모든 방법에 똑같이 주었다. 방이 7–19개인 지도에서 MPOT의
+성공률은 91.0–96.5%였고, 방 22·24개에서는 77.0%와 65.0%로 떨어졌다. 방이 가장 많은 두 지도(방 30개 1,018 m², 방 42개 550 m²)에서는
+11.5%와 23.0%였다. 저자들은 MPOT가 국소 최소에 빠지기 쉽고, 복잡한 지도에서는 시작과 목표가 가까운 문제만 풀었다고 적었다.
+[SPLANNING](https://arxiv.org/abs/2409.16915)의 7자유도 Kinova 팔 시뮬레이션에서는 장애물 기하를 정확히 받고도, 장애물 10·20·40개의
+100장면 가운데 58·23·9번만 성공했다. 나머지 42·77·91번은 모두 충돌로 끝났다. 같은 표의 cuRobo도 59·45·22번 성공하고 나머지가
+충돌이었다.
+
+![mNTFields Fig. 3a](https://arxiv.org/html/2510.01519v1/figures/sultan.png)
+*그림 — mNTFields (Fig. 3 a): Gibson Sultan 지도(358 m²)의 한 시작과 목표. MPOT(빨강)의 경로는 가운데 큰 방에서 크게 휘었다. 보라는 FMM(fast marching method), 초록은 RRTConnect, 청록은 Lazy-PRM이다. 출처: [arXiv:2510.01519](https://arxiv.org/abs/2510.01519)*
+
+![mNTFields Fig. 3b](https://arxiv.org/html/2510.01519v1/figures/sanctuary.png)
+*그림 — mNTFields (Fig. 3 b): Gibson Sanctuary 지도(289 m²). 여러 번 꺾어야 하는 경로라 MPOT는 해를 내지 못했고, 그래서 빨간 선이 없다. 출처: [arXiv:2510.01519](https://arxiv.org/abs/2510.01519)*
+
+**코드.** [anindex/mpot](https://github.com/anindex/mpot)는 MIT 라이선스의 PyTorch 코드다. 2026-05에 0.1.0(Beta)으로 정리됐지만
+커밋은 15개이고 테스트가 없다. torch_robotics의 특정 커밋에 의존하고, 논문 표를 낸 벤치마크 스크립트 없이 예제 셋만 있다. 2026-10
+기준으로 결함이 둘 있다.
+
+- **반경 어닐링이 동작하지 않는다.** 2025-11의 JIT(just-in-time) 컴파일 리팩터부터 반경을 매 스텝 처음 반경 $r_0$에서 다시
+  계산한다. 스케줄러의 $\epsilon$은 반복할수록 커지지 않으므로 반경은 $(1-\epsilon)\,r_0$ 아래로 줄지 않는다. 예제 설정에서는
+  처음 반경의 0.98–0.99배에 고정된다. 2023년 코드는 스텝마다 $r \leftarrow (1-\epsilon)\,r$로 줄였다.
+- **`polytope` 인자가 전달되지 않는다.** 첫 공개(2023-10)부터 `MPOT(polytope=...)`가 Sinkhorn Step으로 넘어가지 않는다. 그래서
+  예제의 `'cube'` 설정과 상관없이 늘 orthoplex를 쓴다.
+
+**후속 연구.** MPOT 제1저자(An T. Le)가 참여한 후속은 대부분 오프라인 계획이다. 그가 제1저자인 MPC 후속 MTP는 OT를 쓰지 않는다.
+
+| 후속 | 무엇 | receding horizon |
+|---|---|---|
+| [ssax](https://github.com/anindex/ssax) | Sinkhorn Step의 JAX 판(MIT, OTT-JAX 기반). 궤적과 GP 구조 없이 일반 함수를 최적화한다 | 아니다 |
+| [GTMP](https://arxiv.org/abs/2411.19393) (RA-L 2025) | 무작위 다분 그래프 위의 배치 계획기(JAX). Sinkhorn은 경로 다양성 지표로만 쓴다 | 아니다 |
+| [CLOT](https://paperswithcode.co/paper/96053) (ICRA 2026) | 0차 Sinkhorn 스텝으로 다중 로봇 전체의 궤적 묶음을 최적화한다. 로봇 100대 넘게 평균 몇 초에 계획하고 하드웨어로 시연했다 | 아니다 |
+| [MTP](https://arxiv.org/abs/2505.01059) (TMLR 2025) | 무작위 다분 그래프와 스플라인 보간으로 제어열을 뽑고, 수정한 CEM(cross-entropy method)으로 갱신한다. OT는 쓰지 않는다 | 그렇다. 계획 한 번이 2.7 ms로 MPPI(2.6 ms)와 비슷하다(RTX 3090, 시뮬레이션만) |
+
+#### OT-MPC: 입자를 가까운 저비용 제안 쪽으로 옮긴다
+
+OT-MPC([arXiv:2605.02147](https://arxiv.org/abs/2605.02147), 2026-05 v1)는 MPPI의 가중 평균 단계를 엔트로피 OT로 바꾼 receding horizon
+제어기다. 저자는 MPPI를 낸 Georgia Tech의 Theodorou 연구실이다(Pacelli·Ratheesh·Theodorou). 제어열 입자 몇 개를 MPPI처럼 뽑은 제안과
+짝짓고, 입자마다 가까운 저비용 제안의 무게중심으로 옮긴다. 입자가 하나면 정확히 MPPI가 된다. 검증은 시뮬레이션뿐이고,
+[프로젝트 페이지](https://acdslab.github.io/ot-mpc/)에 코드 링크는 없다(2026-10).
+
+제안의 무게는 rollout 전체 비용의 Gibbs 가중치 $p_j \propto e^{-\beta S(\mathbf y_j)}$이고, 입자의 무게는 균등하다. 수송 비용은
+제어 공간의 거리다. 그래서 입자는 멀리 있는 전역 최저점이 아니라 가까이 있는 싼 제안 쪽으로 움직인다. 장애물 양쪽처럼 서로 다른
+모드가 평균되지 않고 남는다. 논문은 MPOT를 가장 비슷한 선행 연구로 꼽고, 차이를 비용이 들어가는 자리로 설명한다. MPOT는 비용을
+수송 비용 행렬에 넣고, OT-MPC는 주변분포에 넣는다. MPC 주기마다 이 갱신을 몇 번 반복한 뒤, 비용이 가장 낮은 입자의 첫 제어를
+실행하고 입자를 한 칸 앞당겨 다음 주기에 쓴다. 이득은 모드가 여럿인 과제에서 컸다. 3차원 밀집 장애물의 쿼드로터 Hard에서 성공률은
+92% 대 MPPI 19%였다. 저자들은 MPPI의 실패가 충돌이 아니라, 길을 찾지 못하고 국소 최소에 갇힌 탓이라고 적었다. 쿼드로터 둘의 하중
+운반(91% 대 22%)과 평면 Push-T(76% 대 4%)도 차이가 컸다.
+
+**들이기는 쉽지만, travplan과 가까운 과제에서 이득은 유의하지 않았다.** 갱신이 MPPI와 같은 rollout과 rollout 전체 비용
+$S(\mathbf u)$를 쓰므로 `CostTerm`과 rollout 모델에 그대로 맞는다. 가장 가까운 과제는 이진 충돌 비용을 쓰는 2차원 자전거 모델
+차량이다. 성공률은 Easy 100회에서 99% 대 95%, Hard 200회에서 93.5% 대 88.5%였다. 우리가 계산한 양측 Fisher 정확 검정은 p ≈ 0.21과
+0.11이라 유의하지 않다. 성공한 실행의 평균 도달 스텝은 오히려 길었다(76.1 대 57.2, 89.5 대 61.7). 비교 조건도 같지 않았다. 차량
+과제에서 OT-MPC는 지평 70스텝에 입자 20개를 두고, 8번 반복하며 반복마다 제안 200개를 뽑았다. MPPI는 지평 30스텝으로 8번 반복하며
+반복마다 샘플 500개를 뽑았다. 비용 가중치도 방법마다 Optuna로 따로 맞췄다(장애물 가중치 479.0 대 281.1). 쿼드로터 비교도
+지평(100 대 60)과 가중치가 달랐다. MPPI를 오래 조율한 Franka Push-T에서는 66% 대 64%였다.
+
+travplan Controller에서는 `ReferenceCost`가 rollout을 Planner 경로 쪽으로 당기므로, 모드를 고르는 일은 대부분 Planner 몫이다. 또
+OT-MPC는 가중 평균이 아니라 가장 싼 입자를 실행하는데, 논문은 명령의 매끄러움을 보고하지 않았다.
+
+![OT-MPC Fig. 2](https://arxiv.org/html/2605.02147v1/images/ot-mpc-flow.png)
+*그림 — OT-MPC (Fig. 2): 한 MPC 주기. (a) 제안을 뽑고, (b) Sinkhorn으로 입자(굵은 선)와 제안을 비용과 거리로 짝짓고, (c) 입자를 짝지은 제안의 무게중심 쪽으로 옮기고, (d) 가장 싼 입자를 실행한다. 장애물 양쪽의 모드가 평균되지 않고 남는다. 출처: [arXiv:2605.02147](https://arxiv.org/abs/2605.02147)*
+
+![OT-MPC Fig. 3](https://arxiv.org/html/2605.02147v1/images/experiments_grid.png)
+*그림 — OT-MPC (Fig. 3): 실험 과제. (a) 자전거 모델 차량, (b) 밀집 장애물 속 쿼드로터, (c) 쿼드로터 둘의 하중 운반, (d) Franka Push-T, (e) Go2 상자 밀기, (f) Go2 경사로다. travplan과 가장 가까운 것은 (a)이고, 큰 이득은 (b)와 (c)에서 나왔다. 출처: [arXiv:2605.02147](https://arxiv.org/abs/2605.02147)*
+
+<details markdown="1">
+<summary>자세히: OT-MPC의 Sinkhorn 좌표 하강과 수식</summary>
+
+**무엇을 하나.** SCD(Sinkhorn Coordinate Descent)는 입자 $N$개 $\mathbf z_i$와 제안 $M$개 $\mathbf y_j$ 사이의 엔트로피 OT 목적을
+입자와 결합(coupling)에 대해 번갈아 최소화한다. 입자 하나는 제어열 하나다. 제안은 입자 둘레의 가우시안과 넓은 전역 분포를 섞어
+반복마다 새로 뽑는다.
+
+$$ R(\mathbf y \mid \mathbf z) = (1-\rho)\,\frac{1}{N}\sum_{i=1}^{N}\mathcal N(\mathbf y;\, \mathbf z_i, \Sigma) + \rho\, R_{\mathrm{global}}(\mathbf y) $$
+
+**주변분포와 수송 비용.** 제안의 무게는 rollout 전체 비용의 Gibbs 가중치이고, 입자의 무게는 균등하다. 수송 비용은 제어 공간의 제곱
+거리다.
+
+$$ p_j = \frac{e^{-\beta S(\mathbf y_j)}}{\sum_{k} e^{-\beta S(\mathbf y_k)}}, \qquad q_i = \frac{1}{N}, \qquad C_{ij} = \tfrac12 \lVert \mathbf z_i - \mathbf y_j \rVert^2 $$
+
+**결합과 갱신.** 결합은 MPOT와 같은 Sinkhorn 반복으로 푼다. 입자는 짝지은 제안의 무게중심 쪽으로 이완 계수 $\eta$만큼 움직인다.
+
+$$ \Gamma^\star = \arg\min_{\Gamma\mathbf 1_M = \mathbf q,\; \Gamma^\top\mathbf 1_N = \mathbf p} \; \sum_{i,j} C_{ij}\Gamma_{ij} - \varepsilon H(\Gamma), \qquad \mathbf b_i = \frac{\sum_j \Gamma^\star_{ij}\,\mathbf y_j}{\sum_j \Gamma^\star_{ij}}, \qquad \mathbf z_i \leftarrow (1-\eta)\,\mathbf z_i + \eta\,\mathbf b_i $$
+
+**MPPI와의 관계.** $N = 1$이면 주변분포 제약이 $\Gamma_{1j} = p_j$를 강제해, 무게중심이 MPPI 가중 평균(배경 0.2)이 된다.
+$\varepsilon \to \infty$이면 $\Gamma_{ij} = q_i p_j$가 되어 모든 입자가 같은 무게중심으로 간다. 두 극한 모두 MPPI다. 제안을 고정하면
+목적함수는 반복마다 늘지 않고 정지점으로 수렴한다(명제 2). 실제로는 반복마다 제안을 새로 뽑으므로 이 보장은 그대로 적용되지 않는다.
+
+**설정과 계산.** 논문의 권장값은 $\varepsilon$을 쌍별 거리 중앙값의 0.01–0.1배, $\eta$를 0.3–0.7, 입자를 10–20개로 두는 것이다.
+결합 계산은 반복마다 $O(NM)$이고, MPPI의 평균은 $O(M)$이다. Sinkhorn과 무게중심 갱신은 8×800 결합에 1.6 ms, 8×50 결합에 0.2 ms였다.
+차량 과제의 벽시계 시간은 27.81 ms로 MPPI의 24.57 ms와 비슷했다(JAX).
+
+**travplan에 주는 것.** OT-MPC는 MPPI와 같은 $S(\mathbf u)$와 rollout을 쓰므로, travplan에서는 가중 평균 단계만 바꾼
+`MPPIController` 하위 클래스가 된다. SMPPI가 노이즈 생성만 바꾼 것과 같은 자리다. 더 필요한 것은 입자 $N$개의 상태, 주기당 여러 번의
+반복, 가장 싼 입자의 실행이다. MPOT 제어열 판과 달리 꼭짓점별 rollout이 없으므로, rollout 수를 MPPI(768개)와 같게 맞출 수 있다.
+
+</details>
+
+#### 그래서 travplan은 최적화기보다 개선 여지를 먼저 쟀다
+
+**두 방법이 바꾸는 것은 최적화기뿐이고, 모델과 비용은 그대로다.** travplan MPPI 계열의 남은 실패 가운데 최적화기가 겨눌 수 있는 것은
+멈춤(timeout)이다. 좁은 곳에서 앞으로 가는 샘플이 모두 제약을 어기면, 위반하지 않는 샘플은 정지 하나만 남는다(MPC 문서 M.3.13).
+치명 실패는 지연에 따른 모델 불일치가 유력한 원인이다(M.3.14). GP 평균을 넣은 rollout은 램프의 치명 실패를 없앴지만 멈춤을 남겼고,
+그 원인은 재지 않았다(M.3.19). OT-MPC가 크게 이긴 쿼드로터 과제에서도 MPPI의 실패는 국소 최소에 갇힌 멈춤이었다.
+
+새 Controller를 만들기 전에 가를 질문은 하나다. 멈춤이 최적화기의 한계인가, 아니면 지금의 목적함수와 모델에서 정지가 실제 최적인가.
+TP-0130은 멈춘 장면을 그대로 다시 돌려, 같은 요청에서 샘플을 늘린 MPPI와 위의 제어열 판 MPOT가 탈출할 제어열을 찾는지 쟀다.
+MPOT식 최적화기가 '센' 멈춤 장면은 10개 중 둘이고, 그 둘에서 같은 예산의 MPPI도 셌다. 그래서 MPOT 변형은 만들지 않는다.
+판정과 멈춤 원인의 가설은 MPC 문서 M.3.20에 있다.
 
 ---
 
