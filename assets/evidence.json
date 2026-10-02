@@ -113,6 +113,10 @@
   "tp0137_planner_d": {
    "caption": "브라우저 Planner D의 첫 계획 후보 16개: flow 10스텝(왼쪽), 같은 망의 diffusion 10스텝(가운데), flow 1스텝(오른쪽 — 평균 + 적분된 잡음). 청록 = 선택기가 고른 4 s 궤적",
    "results": "docs/playground/plannerd_fig.html"
+  },
+  "tp0078_fallback": {
+   "caption": "curb_ramp 레벨 3: 새 표본이 거의 다 치명이면 Guidance 경로를 후보로 넣는다. 왼쪽 seed 7에서 Planner D 단독(주황)은 경사로를 지나쳐 맴돌고, 폴백(초록, 연한 띠 = 경로가 이긴 구간)은 돌아가 오른다. 오른쪽은 seed 0–9 × 난수 오프셋 3의 도달 수",
+   "results": "results/tp0078"
   }
  },
  "tp": {
@@ -177,6 +181,7 @@
   ]
  },
  "featured": [
+  "tp0078_fallback",
   "tp0137_planner_d",
   "tp0136_mpot",
   "tp0135_humanoid",
@@ -194,5 +199,5 @@
   "ev_tp0047_potholes",
   "ev_tp0025_tracks"
  ],
- "bottleneck": "ev_tp0073_curb_l3"
+ "bottleneck": "tp0078_fallback"
 }
