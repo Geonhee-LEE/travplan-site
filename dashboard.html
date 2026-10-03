@@ -196,19 +196,19 @@ footer { max-width: 1000px; margin: 0 auto; padding: 0 16px 40px; color: var(--m
   nav.subtabs button { min-height: 32px; }
 }
 </style>
-<header data-generated="2026-10-03 02:45 KST">
+<header data-generated="2026-10-03 02:47 KST">
   <h1>travplan 대시보드</h1>
-  <div class="meta" data-site-meta><a href="index.html">← travplan 홈</a> · 갱신 2026-10-03 02:45 KST</div>
+  <div class="meta" data-site-meta><a href="index.html">← travplan 홈</a> · 갱신 2026-10-03 02:47 KST</div>
 </header>
 <nav class="tabs" role="tablist" aria-label="대시보드 탭"><button role="tab" id="tabbtn-state" aria-controls="tab-state" aria-selected="true" tabindex="0" data-tab="state" class="active">진행 현황</button><button role="tab" id="tabbtn-todo" aria-controls="tab-todo" aria-selected="false" tabindex="-1" data-tab="todo">TODO</button><button role="tab" id="tabbtn-prd" aria-controls="tab-prd" aria-selected="false" tabindex="-1" data-tab="prd">PRD</button><button role="tab" id="tabbtn-arch" aria-controls="tab-arch" aria-selected="false" tabindex="-1" data-tab="arch">아키텍처 · 기능 설명</button><button role="tab" id="tabbtn-research" aria-controls="tab-research" aria-selected="false" tabindex="-1" data-tab="research">리서치</button><button role="tab" id="tabbtn-design" aria-controls="tab-design" aria-selected="false" tabindex="-1" data-tab="design">설계 · PoC</button><button role="tab" id="tabbtn-sim" aria-controls="tab-sim" aria-selected="false" tabindex="-1" data-tab="sim">시뮬레이션 ▶</button></nav>
 <main>
   <section class="tab active" id="tab-state" role="tabpanel" aria-labelledby="tabbtn-state">
     <div class="kpis">
-<div class="kpi"><div class="kpi-label">TODO 완료</div><div class="kpi-val">20/78</div><div class="progress-bar"><div class="progress-fill" style="width:26%"></div></div></div>
+<div class="kpi"><div class="kpi-label">TODO 완료</div><div class="kpi-val">20/77</div><div class="progress-bar"><div class="progress-fill" style="width:26%"></div></div></div>
 <div class="kpi"><div class="kpi-label">진행 중·오늘</div><div class="kpi-val">0</div></div>
 <div class="kpi"><div class="kpi-label">사용자 실행 대기</div><div class="kpi-val">4</div></div>
 <div class="kpi"><div class="kpi-label">열린 PR</div><div class="kpi-val">0</div></div>
-<div class="kpi"><div class="kpi-label">최근 7일 merge</div><div class="kpi-val">111</div></div>
+<div class="kpi"><div class="kpi-label">최근 7일 merge</div><div class="kpi-val">112</div></div>
 </div>
 <div class="card md"><h2>현재 병목</h2><p><mark>Planner D의 학습 표본은 레벨 3 연석 근처에서 아직 쓸 만하지 않다. Guidance 폴백을 켜면 도달은 Guidance와 같아지지만, 그때 계획의 절반이 Guidance 경로다.</mark></p>
 <ul>
@@ -480,9 +480,15 @@ cost가 <code>max_slope_rad</code> 0.26에서 포화해 구조적으로 지배�
 <td><strong>완료</strong> — MPC M.3.21</td>
 </tr>
 <tr>
+<td>✅</td>
+<td><a class="tp tp-done" href="#todo" data-tp="TP-0057" title="완료 · 기록에서 복원 · PR #163(merge됨)">✓ TP-0057</a></td>
+<td>TravNet 잔차는 올리는 쪽만(기본). GT cost 0.0247 → 0.0200, 도달 40/40 그대로</td>
+<td><strong>완료</strong> — <code>docs/design-travnet-ssl.md</code> 7절</td>
+</tr>
+<tr>
 <td>4</td>
-<td><a class="tp tp-backlog" href="#todo" data-tp="TP-0140" title="백로그 · TP-0131 후속: plant 목표 앞 맴돌기 — 진행 항 끝점 제한을 켠 plant curb_ramp 72 에피소드 중 3번이 목표 0.30–0.37 m 앞에서 10 s ...">TP-0140</a>, <a class="tp tp-done" href="#todo" data-tp="TP-0142" title="완료 · TP-0141 후속: 턱(step) 특징의 잡음 편향 — 창 안 최대−최소가 L0 잡음 극값을 주워 GT 0.07 m 칸을 0.08 m로 읽고 한 칸 폭 통로를 닫는다. 분위... · PR #155(merge됨)">✓ TP-0142 ◉</a> 여유, <a class="tp tp-backlog" href="#todo" data-tp="TP-0057" title="백로그 · TP-0022 후속: TravNet 잔차 방향 결정 — proxy가 과속방지턱을 편하다고 느껴 잔차가 cost를 낮춤(gt_cost 0.020→0.025). 올리는 쪽만 허용...">TP-0057</a> 구현, <a class="tp tp-backlog" href="#todo" data-tp="TP-0028" title="백로그 · TP-0027 후속: PlanRequest에 동적 장애물 예측 전달(TP-0017 규칙 예외 결정 후) — Planner D가 보행자를 보고 시간 인덱스 궤적으로 비켜 가는지...">TP-0028</a></td>
-<td>plant 목표 앞 머물기, 평활 + 명시적 여유, TravNet 올리는 쪽만, Planner D에 보행자 예측</td>
+<td><a class="tp tp-backlog" href="#todo" data-tp="TP-0140" title="백로그 · TP-0131 후속: plant 목표 앞 맴돌기 — 진행 항 끝점 제한을 켠 plant curb_ramp 72 에피소드 중 3번이 목표 0.30–0.37 m 앞에서 10 s ...">TP-0140</a>, <a class="tp tp-done" href="#todo" data-tp="TP-0142" title="완료 · TP-0141 후속: 턱(step) 특징의 잡음 편향 — 창 안 최대−최소가 L0 잡음 극값을 주워 GT 0.07 m 칸을 0.08 m로 읽고 한 칸 폭 통로를 닫는다. 분위... · PR #155(merge됨)">✓ TP-0142 ◉</a> 여유, <a class="tp tp-backlog" href="#todo" data-tp="TP-0028" title="백로그 · TP-0027 후속: PlanRequest에 동적 장애물 예측 전달(TP-0017 규칙 예외 결정 후) — Planner D가 보행자를 보고 시간 인덱스 궤적으로 비켜 가는지...">TP-0028</a></td>
+<td>plant 목표 앞 머물기, 평활 + 명시적 여유, Planner D에 보행자 예측</td>
 <td>—</td>
 </tr>
 <tr>
@@ -525,7 +531,7 @@ cost가 <code>max_slope_rad</code> 0.26에서 포화해 구조적으로 지배�
 <td>합성 LiDAR에 보행자를 넣고 칼만 추적으로 <code>DynamicObstacles</code>를 만든다</td>
 </tr>
 <tr>
-<td><a class="tp tp-backlog" href="#todo" data-tp="TP-0057" title="백로그 · TP-0022 후속: TravNet 잔차 방향 결정 — proxy가 과속방지턱을 편하다고 느껴 잔차가 cost를 낮춤(gt_cost 0.020→0.025). 올리는 쪽만 허용...">TP-0057</a></td>
+<td><a class="tp tp-done" href="#todo" data-tp="TP-0057" title="완료 · 기록에서 복원 · PR #163(merge됨)">✓ TP-0057</a></td>
 <td>TravNet 잔차가 과속방지턱 cost를 낮추는 문제의 방향을 정한다(결정 필요)</td>
 </tr>
 </tbody>
@@ -631,8 +637,8 @@ A. 모델 구조를 바꿔 다시 학습한다: 관측 6.4 m(±3.2 m)를 넓히�
 <td>B.15.1 기록과 시연 기대값이 그것으로 정해져 있고, RL 단독 이득은 잡음 안이다</td>
 </tr>
 <tr>
-<td><a class="tp tp-backlog" href="#todo" data-tp="TP-0057" title="백로그 · TP-0022 후속: TravNet 잔차 방향 결정 — proxy가 과속방지턱을 편하다고 느껴 잔차가 cost를 낮춤(gt_cost 0.020→0.025). 올리는 쪽만 허용...">TP-0057</a> TravNet 잔차 방향</td>
-<td>기본은 cost를 올리는 쪽만 허용한다. 낮추는 쪽(TNT식 "넘을 수 있는 곳 찾기")은 선택 실험으로 두고 결정 3의 안전 원칙으로 판정한다. 구현은 <a class="tp tp-backlog" href="#todo" data-tp="TP-0057" title="백로그 · TP-0022 후속: TravNet 잔차 방향 결정 — proxy가 과속방지턱을 편하다고 느껴 잔차가 cost를 낮춤(gt_cost 0.020→0.025). 올리는 쪽만 허용...">TP-0057</a></td>
+<td><a class="tp tp-done" href="#todo" data-tp="TP-0057" title="완료 · 기록에서 복원 · PR #163(merge됨)">✓ TP-0057</a> TravNet 잔차 방향</td>
+<td>기본은 cost를 올리는 쪽만 허용한다(구현 완료, <code>--trav-allow-lower</code>가 선택 실험). 낮추는 쪽은 결정 3의 안전 원칙으로 판정한다</td>
 <td>기하가 놓친 위험을 더하는 데만 학습을 기본으로 쓴다. proxy가 과속방지턱을 편하다고 느껴 cost를 낮추는 일을 막는다. TravNet은 기본 스택 밖이라 지금 결과는 바뀌지 않는다</td>
 </tr>
 <tr>
@@ -1239,7 +1245,7 @@ LiDAR 링 사이가 비어 로봇 주변 3 m 안의 10–12%가 미관측으로 
 <td>열린 PR 없음(2026-10-03). <a class="tp tp-done" href="#todo" data-tp="TP-0078" title="완료 · 기록에서 복원 · 이슈 #148(닫힘) · PR #149(merge됨)">✓ TP-0078 ◉</a>·0066·0139·0131·0039·0074는 main에 merge됐다</td>
 </tr>
 </tbody>
-</table><h3>열린 PR</h3><ul class='prs'><li class='empty'>없음</li></ul><h3>최근 merge된 PR</h3><ul class='prs'><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #162</span> TP-0143: 재탐색 상태 DAgger(결정 1A) — 두 시도 모두 판정 미달, 다음 방향 결정 필요 <a class="tp tp-done" href="#todo" data-tp="TP-0143" title="완료 · TP-0138 후속: RL 후학습 3단계 — 같은 처방(라운드 추가, 지형 집중)은 curb_ramp L3 단독 26/30에서 멈춘다. 경사로를 지나친 상태에서 rollout... · PR #162(merge됨)">✓ TP-0143 ◉</a> <span class="date">2026-10-03</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #161</span> TP-0131 후속: GP 재적합 뒤 mppi_ccgp — 끝점 제한이 56 → 65/72, 치명 13 → 7 <a class="tp tp-done" href="#todo" data-tp="TP-0131" title="완료 · TP-0130 후속: ReferenceCost 진행 항이 접힌 참조에서 건너뛴다 — curb_ramp에서 Guidance 경로가 램프로 돌아가 접히면 연석 아래 끝점이 되돌아... · 이슈 #132(닫힘) · PR #152(merge됨) · PR #161(merge됨)">✓ TP-0131 ◉</a> <span class="date">2026-10-03</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #160</span> TP-0110: 대시보드를 CI에서 빌드하고 커밋하지 않는다(사용자 결정 D1) <a class="tp tp-done" href="#todo" data-tp="TP-0110" title="완료 · 사이트: 생성물을 CI에서 빌드하고 커밋하지 않기(D1이 CI일 때), CLAUDE.md·cron 지시문 함께 고침 (UX W7) · 이슈 #109(열림) · PR #110(merge됨) · PR #160(merge됨)">✓ TP-0110</a> <span class="date">2026-10-03</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #159</span> 사용자 결정 반영: 성적·안전·판정 원칙, 사이트 공개 정리, 근사 사양  <span class="date">2026-10-03</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #158</span> 사용자 결정 정리(순서대로 일곱 개)와 작은 결정 기록  <span class="date">2026-10-02</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #156</span> TP-0138: RL 후학습 2단계 — 두 시도 모두 판정 미달(curb_ramp L3 단독 26/30 그대로), 1단계 유지 <a class="tp tp-done" href="#todo" data-tp="TP-0138" title="완료 · TP-0066 후속: RL 후학습 2단계 — curb_ramp 레벨 3 집중 라운드(--scenarios curb_ramp --levels 3)와 라운드 수 6, 단독 30 ... · PR #156(merge됨)">✓ TP-0138 ◉</a> <span class="date">2026-10-02</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #155</span> TP-0142: 턱 특징 전 15 cm 평활(선택) — Guidance 스윕 154 → 158/160, 대신 치명 1 <a class="tp tp-done" href="#todo" data-tp="TP-0142" title="완료 · TP-0141 후속: 턱(step) 특징의 잡음 편향 — 창 안 최대−최소가 L0 잡음 극값을 주워 GT 0.07 m 칸을 0.08 m로 읽고 한 칸 폭 통로를 닫는다. 분위... · PR #155(merge됨)">✓ TP-0142 ◉</a> <span class="date">2026-10-02</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #154</span> TP-0141: random_mix s3의 결정적 멈춤 — 한 칸 폭 통로를 1 cm 잡음 편향이 닫는다 <a class="tp tp-done" href="#todo" data-tp="TP-0141" title="완료 · TP-0039 후속: random_mix s3 레벨 2·3에서 guidance·planner_d·RL+폴백 셋 다 (4.5, 5.2)에서 멈춘다(난수 바꿔도 0/4, 끝점 제... · PR #154(merge됨)">✓ TP-0141 ◉</a> <span class="date">2026-10-02</span></li></ul><p class="note">GitHub 인덱스 갱신: 2026-10-03 02:45 · <code>python3 automation/gh_index.py</code></p></div>
+</table><h3>열린 PR</h3><ul class='prs'><li class='empty'>없음</li></ul><h3>최근 merge된 PR</h3><ul class='prs'><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #163</span> TP-0057: TravNet 잔차는 올리는 쪽만(기본) — GT cost 0.0247 → 0.0200 <a class="tp tp-done" href="#todo" data-tp="TP-0057" title="완료 · 기록에서 복원 · PR #163(merge됨)">✓ TP-0057</a> <span class="date">2026-10-03</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #162</span> TP-0143: 재탐색 상태 DAgger(결정 1A) — 두 시도 모두 판정 미달, 다음 방향 결정 필요 <a class="tp tp-done" href="#todo" data-tp="TP-0143" title="완료 · TP-0138 후속: RL 후학습 3단계 — 같은 처방(라운드 추가, 지형 집중)은 curb_ramp L3 단독 26/30에서 멈춘다. 경사로를 지나친 상태에서 rollout... · PR #162(merge됨)">✓ TP-0143 ◉</a> <span class="date">2026-10-03</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #161</span> TP-0131 후속: GP 재적합 뒤 mppi_ccgp — 끝점 제한이 56 → 65/72, 치명 13 → 7 <a class="tp tp-done" href="#todo" data-tp="TP-0131" title="완료 · TP-0130 후속: ReferenceCost 진행 항이 접힌 참조에서 건너뛴다 — curb_ramp에서 Guidance 경로가 램프로 돌아가 접히면 연석 아래 끝점이 되돌아... · 이슈 #132(닫힘) · PR #152(merge됨) · PR #161(merge됨)">✓ TP-0131 ◉</a> <span class="date">2026-10-03</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #160</span> TP-0110: 대시보드를 CI에서 빌드하고 커밋하지 않는다(사용자 결정 D1) <a class="tp tp-done" href="#todo" data-tp="TP-0110" title="완료 · 사이트: 생성물을 CI에서 빌드하고 커밋하지 않기(D1이 CI일 때), CLAUDE.md·cron 지시문 함께 고침 (UX W7) · 이슈 #109(열림) · PR #110(merge됨) · PR #160(merge됨)">✓ TP-0110</a> <span class="date">2026-10-03</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #159</span> 사용자 결정 반영: 성적·안전·판정 원칙, 사이트 공개 정리, 근사 사양  <span class="date">2026-10-03</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #158</span> 사용자 결정 정리(순서대로 일곱 개)와 작은 결정 기록  <span class="date">2026-10-02</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #156</span> TP-0138: RL 후학습 2단계 — 두 시도 모두 판정 미달(curb_ramp L3 단독 26/30 그대로), 1단계 유지 <a class="tp tp-done" href="#todo" data-tp="TP-0138" title="완료 · TP-0066 후속: RL 후학습 2단계 — curb_ramp 레벨 3 집중 라운드(--scenarios curb_ramp --levels 3)와 라운드 수 6, 단독 30 ... · PR #156(merge됨)">✓ TP-0138 ◉</a> <span class="date">2026-10-02</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #155</span> TP-0142: 턱 특징 전 15 cm 평활(선택) — Guidance 스윕 154 → 158/160, 대신 치명 1 <a class="tp tp-done" href="#todo" data-tp="TP-0142" title="완료 · TP-0141 후속: 턱(step) 특징의 잡음 편향 — 창 안 최대−최소가 L0 잡음 극값을 주워 GT 0.07 m 칸을 0.08 m로 읽고 한 칸 폭 통로를 닫는다. 분위... · PR #155(merge됨)">✓ TP-0142 ◉</a> <span class="date">2026-10-02</span></li></ul><p class="note">GitHub 인덱스 갱신: 2026-10-03 02:47 · <code>python3 automation/gh_index.py</code></p></div>
 <div class="card md"><h2>작업 환경</h2><details><summary>체크포인트, 가상환경, 그림·인덱스 재생성</summary><ul>
 <li><strong>브랜치.</strong> 두 PC 모두 main에서 이어간다.</li>
 <li><strong>체크포인트.</strong> <code>checkpoints/</code>는 git에 없다. 릴리스에서 받는다.
@@ -1256,7 +1262,7 @@ LiDAR 링 사이가 비어 로봇 주변 3 m 안의 10–12%가 미관측으로 
   </section>
   <section class="tab" id="tab-todo" role="tabpanel" aria-labelledby="tabbtn-todo">
     <div class="card"><div class="progress-wrap">
-  <div class="progress-label">전체 진행률: <strong>20/78</strong> (26%)</div>
+  <div class="progress-label">전체 진행률: <strong>20/77</strong> (26%)</div>
   <div class="progress-bar"><div class="progress-fill" style="width:26%"></div></div>
 </div>
 <p class="note">● 이슈, ⇄ PR(보라 merge됨, 초록 열림, 회색 닫힘). 그림이 붙은 항목은 결과 그림을 함께 보여 준다. 제목 안의 TP 번호는 상태 칩이다.</p>
@@ -1271,7 +1277,7 @@ LiDAR 링 사이가 비어 로봇 주변 3 m 안의 10–12%가 미관측으로 
 <li class="todo-item" id="todo-TP-0035"><label><input type="checkbox" disabled > <span class="id">TP-0035</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-user">user</span> 배달로봇 스워브 모듈 파라미터 제공: 모듈 위치·비동축 오프셋·바퀴 반지름·조향 속도 한계 (<a class="tp tp-done" href="#todo" data-tp="TP-0034" title="완료 · 기록에서 복원">✓ TP-0034</a> 입력) <span class="badge usertest">UserTest</span></label></li>
 <li class="todo-item" id="todo-TP-0064"><label><input type="checkbox" disabled > <span class="id">TP-0064</span> <span class="badge prio">P1</span> <span class="badge phase">P2</span> <span class="badge owner owner-user">user</span> 배달로봇 센서 사양 제공: LiDAR 모델·수평·수직 시야각·채널, 장착 높이·위치·기울기, 카메라 시야각·해상도·스테레오 기선, 연산 장치 (<a class="tp tp-done" href="#todo" data-tp="TP-0060" title="완료 · 기록에서 복원 · 이슈 #28(닫힘) · PR #29(merge됨) · 이슈 #30(닫힘) · PR #31(merge됨)">✓ TP-0060 ◉</a> 입력) <span class="badge usertest">UserTest</span></label></li>
 </ul>
-<h3 class="status-h status-backlog">백로그 <span class="count">54</span></h3>
+<h3 class="status-h status-backlog">백로그 <span class="count">53</span></h3>
 <ul class="todo-list">
 <li class="todo-item" id="todo-TP-0007"><label><input type="checkbox" disabled > <span class="id">TP-0007</span> <span class="badge prio">P2</span> <span class="badge phase">P1</span> <span class="badge owner owner-claude">claude</span> LiDAR 프로파일(Velodyne_VLS128 등) 조회가 &#x27;not found&#x27; 경고를 냄 — Isaac Sim 6.0에서 omni.sensors.nv.common 데이터 ...</label></li>
 <li class="todo-item" id="todo-TP-0014"><label><input type="checkbox" disabled > <span class="id">TP-0014</span> <span class="badge prio">P3</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> (연구) CBF-QP/OcclusionCBF류 안전필터를 OSQP 등 오픈소스 QP로 대체 가능한지 조사 (Gurobi 상용 라이선스 회피)</label></li>
@@ -1292,7 +1298,6 @@ LiDAR 링 사이가 비어 로봇 주변 3 m 안의 10–12%가 미관측으로 
 <li class="todo-item" id="todo-TP-0052"><label><input type="checkbox" disabled > <span class="id">TP-0052</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-done" href="#todo" data-tp="TP-0049" title="완료 · 기록에서 복원 · 이슈 #17(닫힘) · PR #18(merge됨)">✓ TP-0049</a> 후속: Joint Planner 계획 시간 180 ms -&gt; 20 ms 이하 (토큰 360 x 샘플 8 x 4 step; 보행자 토큰 요약·샘플 수·GPU 추론)</label></li>
 <li class="todo-item" id="todo-TP-0055"><label><input type="checkbox" disabled > <span class="id">TP-0055</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-done" href="#todo" data-tp="TP-0053" title="완료 · 기록에서 복원 · 이슈 #21(닫힘) · PR #26(merge됨)">✓ TP-0053 ◉</a> 후속: Planner D를 L1 belief로 재학습·DAgger — L1에서 planner_d+mppi 32/40(guidance 36/40), 미관측 패턴이... <span class=gh-row><span class="private-ref gh gh-merged gh-pr" title="PR #141 · merge됨 · STATE 정리: merge된 PR 행, TP-0040 선행 조건, TP-0055 전제 수치">⇄ #141</span></span></label></li>
 <li class="todo-item" id="todo-TP-0056"><label><input type="checkbox" disabled > <span class="id">TP-0056</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> 합성 LiDAR에 보행자 원기둥을 넣고 LiDAR 클러스터 + odom 좌표 칼만 추적으로 DynamicObstacles 생성, 참값 대비 위치·속도 오차와 폐루프 비교 (리...</label></li>
-<li class="todo-item" id="todo-TP-0057"><label><input type="checkbox" disabled > <span class="id">TP-0057</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-done" href="#todo" data-tp="TP-0022" title="완료 · 기록에서 복원 · 이슈 #22(닫힘) · PR #27(merge됨)">✓ TP-0022 ◉</a> 후속: TravNet 잔차 방향 결정 — proxy가 과속방지턱을 편하다고 느껴 잔차가 cost를 낮춤(gt_cost 0.020→0.025). 올리는 쪽만 허용...</label></li>
 <li class="todo-item" id="todo-TP-0058"><label><input type="checkbox" disabled > <span class="id">TP-0058</span> <span class="badge prio">P3</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-done" href="#todo" data-tp="TP-0022" title="완료 · 기록에서 복원 · 이슈 #22(닫힘) · PR #27(merge됨)">✓ TP-0022 ◉</a> 후속: TravNet 추론 속도 — 매 스텝 전체 지도(161x321)를 CPU로 추론, 로봇 주변 창만 갱신하거나 GPU·TensorRT로</label></li>
 <li class="todo-item" id="todo-TP-0059"><label><input type="checkbox" disabled > <span class="id">TP-0059</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> <a class="tp tp-done" href="#todo" data-tp="TP-0022" title="완료 · 기록에서 복원 · 이슈 #22(닫힘) · PR #27(merge됨)">✓ TP-0022 ◉</a> E4: Isaac 마찰 패치(기하로는 평평함) + 슬립 proxy로 TravNet 학습, 패치를 돌아가는지 확인 (<a class="tp tp-blocked" href="#todo" data-tp="TP-0005" title="사용자 실행 대기 · TP-0001 완료 후: 지형 USD 로드 + 스워브/LiDAR 로봇 배치 + ROS2 브릿지 폐루프 재현, P0 운동학 벤치마크와 성공률 비교">⏸ TP-0005</a> 뒤)</label></li>
 <li class="todo-item" id="todo-TP-0061"><label><input type="checkbox" disabled > <span class="id">TP-0061</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> 합성 센서 배치 완성: 카메라 다섯 대(전면 스테레오, 측면, 후면)의 시야와 거리 오차 모델을 운동학 시뮬에 추가, 사람 검출 범위 평가 (<a class="tp tp-done" href="#todo" data-tp="TP-0060" title="완료 · 기록에서 복원 · 이슈 #28(닫힘) · PR #29(merge됨) · 이슈 #30(닫힘) · PR #31(merge됨)">✓ TP-0060 ◉</a> D2·D3)</label></li>
@@ -31512,8 +31517,9 @@ D1이 CI면 W7을 Backlog로 옮기고, "지금처럼 커밋"이면 W7을 지운
 <ul>
 <li>240 에피소드의 proxy 라벨로 <strong>기하 cost 위의 잔차</strong>를 학습했다. 폐루프에서 기하보다 나빠지지 않았다(40/40, 39–40/40).</li>
 <li>라벨은 <strong>로봇 중심 칸</strong>에 붙여야 cost의 의미와 맞는다(상관 0.63 → 0.78).</li>
-<li>proxy는 <strong>과속방지턱을 편하다고 느껴</strong> 그곳 cost를 낮춘다. 2026-10-03에 <strong>기본은 잔차가 cost를 올리는 쪽만</strong> 허용하기로 정했다(TP-0057, 구현 대기).
-  학습은 기본으로 기하가 놓친 위험을 더하는 데만 쓴다. 낮추는 쪽(TNT식 "넘을 수 있는 곳 찾기")은 선택 실험으로 두고, 치명이 늘지 않는지로 판정한다.</li>
+<li>proxy는 <strong>과속방지턱을 편하다고 느껴</strong> 그곳 cost를 낮춘다. 2026-10-03에 <strong>기본은 잔차가 cost를 올리는 쪽만</strong> 허용하기로 정하고 구현했다(TP-0057).
+  학습은 기본으로 기하가 놓친 위험을 더하는 데만 쓴다. 낮추는 쪽(TNT식 "넘을 수 있는 곳 찾기")은 <code>--trav-allow-lower</code>로 켜는 선택 실험이고, 치명이 늘지 않는지로 판정한다.
+  올리는 쪽만으로 바꾸면 GT cost가 기하 수준으로 돌아온다(0.0247 → 0.0200, 과속방지턱 지형 0.0588 → 0.0517). 도달은 그대로이고(40/40) 0.6 s 늦다(7절).</li>
 </ul>
 <p><code>docs/prd-p2.md</code> R-F-002·R-NF-002의 설계 문서다. 코드는 <code>travplan/representation/self_supervised.py</code>, 테스트는
 <code>tests/test_self_supervised.py</code>에 있다.</p>
@@ -31830,6 +31836,55 @@ proxy(가속 기준 8 m/s², 전복 한계 대비 자세)에는 편하다. 경�
 <li><strong>결정 필요</strong>: 잔차가 cost를 낮추는 것을 허용할지(4절). 올리는 쪽만 허용하면 기하가 아는 위험은 그대로 두고, 기하가 모르는 것(슬립,
   부드러운 지면)만 더한다. 운동학 시뮬에서는 거의 효과가 없어지고, Isaac(E4)에서 의미가 생긴다.</li>
 <li><strong>남은 것</strong>: E4(Isaac 마찰 패치, 슬립 proxy), 학습 추론 속도(지금은 매 스텝 전체 지도를 CPU로 추론한다).</li>
+</ul>
+<h2>7. 잔차 방향 (TP-0057, 2026-10-03)</h2>
+<p><strong>결정.</strong> 추론 때 잔차를 0 이상으로 자른다(<code>ResidualTraversability(raise_only=True)</code>, 기본). 학습은 그대로다.
+낮추는 쪽은 <code>run_benchmark.py --trav-allow-lower</code>(또는 <code>raise_only=False</code>)로 켜는 선택 실험이다.</p>
+<p><strong>결과</strong>(guidance+mppi, <code>travnet_center_a8_ctr.pt</code>, 4 지형 × seed 0–9, 레벨 0).</p>
+<table>
+<thead>
+<tr>
+<th>설정</th>
+<th>잔차</th>
+<th>도달</th>
+<th>GT cost 평균 (과속방지턱 지형)</th>
+<th>도달 시간</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>원형 시야</td>
+<td>올리는 쪽만</td>
+<td>40/40</td>
+<td>0.0200 (0.0517)</td>
+<td>16.3 s</td>
+</tr>
+<tr>
+<td>원형 시야</td>
+<td>양쪽</td>
+<td>40/40</td>
+<td>0.0247 (0.0588)</td>
+<td>15.7 s</td>
+</tr>
+<tr>
+<td>가림 + 상한 + prior</td>
+<td>올리는 쪽만</td>
+<td>40/40</td>
+<td>0.0199 (0.0518)</td>
+<td>16.3 s</td>
+</tr>
+<tr>
+<td>가림 + 상한 + prior</td>
+<td>양쪽</td>
+<td>40/40</td>
+<td>0.0244 (0.0599)</td>
+<td>15.5 s</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>올리는 쪽만이면 GT cost가 기하 기준선(TP-0022의 0.020)으로 돌아온다. 낮추는 잔차는 과속방지턱 위로 지나가게 해 0.6–0.8 s를 줄이는 대신 GT cost를 23% 올렸다.</li>
+<li>치명 실패는 양쪽 모두 0이다. 레벨 3·보행자에서는 재지 않았다.</li>
 </ul></div>
 <div class="card md"><h1>TP-0011·TP-0018: YOLO + ByteTrack 동적 장애물 인식 PoC</h1>
 <p><strong>요약.</strong> 카메라로 보행자를 찾아 추적하고(YOLO + ByteTrack), 그 결과를 Controller가 쓰는 <code>DynamicObstacles</code>로 바꾸는 경로를
