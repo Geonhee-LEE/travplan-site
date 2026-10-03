@@ -104,7 +104,7 @@ P2 네 묶음(W1–W4)을 먼저 한다. 사이트 흐름과 Playground 흐름�
 | D 사이트 결정(사용자) | P2 | D1–D4 | 결정만 | 없음 | Blocked, Owner user | TP-0107 |
 | W5 Playground: 실패 순간과 이유 | P3 | U-04, U-05, U-14 | 약 4.5일 | W3 | Backlog | TP-0108 |
 | W6 Playground: 같은 seed 나란히 달리기·seed sweep | P3 | U-03, U-12 | 약 4.5일 | W3 | Backlog | TP-0109 |
-| W7 사이트: 생성물 CI 빌드 | P3 | U-15 | 약 1.5일 | D1이 CI, W1 | Blocked(D1) | TP-0110 |
+| W7 사이트: 생성물 CI 빌드 | P3 | U-15 | 약 1.5일 | D1이 CI, W1 | Done(2026-10-03) | TP-0110 |
 | W8 사이트: TP 결과 페이지·소식 | P3 | U-07, U-13 | 약 3.5일 | W1, W2, D1 | Backlog | TP-0111 |
 | W9 사이트: 결과 카드·데모 갤러리·첫 화면 | P3 | U-19 | 약 4일 | W3, W8 | Backlog | TP-0112 |
 | W10 사이트: 대시보드 절 주소 | P3 | U-18 | 약 2일 | W1 | Backlog | TP-0113 |
