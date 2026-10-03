@@ -169,6 +169,11 @@ cycle 안의 시뮬레이션 실행(Isaac Sim GUI·헤드리스, 대규모 벤�
 - 시스템 변경(설치, 업그레이드, crontab)은 늘 사람의 몫이다. Owner=user TODO로만 표현하고 daily_executor는 시도하지 않는다.
 - 시뮬레이션에 관한 주장에는 반드시 `pytest` 결과나 `results/` 파일로 근거를 남긴다. 근거 없는 "됨" 보고는 받지 않는다.
 - 시뮬 결과에는 어느 층에서 쟀는지 붙인다(L0 운동학, L1 Isaac, L2 보도 장면, L3 실물). L0 결과만으로 실물 성능을 주장하지 않는다.
+- **학습 Planner 성적(2026-10-03 사용자 결정).** 연구 지표는 Planner D 단독(`planner_d+mppi`)이고, 배포 스택은 Guidance 폴백을 켠
+  `planner_df+mppi`다. 둘 다 보고하고, "학습 Planner가 기준선과 같다"는 주장은 단독 성적으로만 한다.
+- **안전 원칙(2026-10-03 사용자 결정).** 치명 실패가 하나라도 늘면 성공 수가 늘어도 기본값으로 채택하지 않는다. 그런 변경은 선택 항목으로만 둔다.
+- **판정 절차(2026-10-03 사용자 결정).** 레벨 3·plant·보행자 비교는 seed 10개 × 난수 오프셋 3(`--rng-offset 0 1000 2000`)에서
+  같은 (seed, 오프셋)끼리 짝지어 판정한다(`scripts/paired_success.py`). 한 번 돌린 차이는 판정 근거가 아니다.
 - 시뮬 엔진은 Isaac Sim을 유지한다. 보도 시뮬레이터(URBAN-SIM, UrbanVerse, SidewalkBench, CostNav)가 모두 그 위에 있다. 다른 엔진(Newton MPM,
   Chrono SCM 등)은 변형 지면처럼 분명한 목적이 생길 때만 들인다(`docs/research-simulation.md` S.1, S.7).
 
@@ -179,4 +184,4 @@ cycle 안의 시뮬레이션 실행(Isaac Sim GUI·헤드리스, 대규모 벤�
   `main`에 바로 push할 수 있다(화이트리스트 밖 경로가 섞이면 스크립트가 거부한다).
 - **이 문서와 `docs/ARCHITECTURE.md`**: 사람이 편집하고 cron 에이전트는 읽기만 한다.
 
-_Last updated: 2026-09-25 (시뮬레이션 조사 반영) · 관련: `CLAUDE.md`, `docs/ARCHITECTURE.md`, `docs/research-simulation.md`, `TODO.md`_
+_Last updated: 2026-10-03 (사용자 결정: 학습 Planner 성적·안전 원칙·판정 절차) · 2026-09-25 (시뮬레이션 조사 반영) · 관련: `CLAUDE.md`, `docs/ARCHITECTURE.md`, `docs/research-simulation.md`, `TODO.md`_

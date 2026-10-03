@@ -645,11 +645,12 @@ function frame(now) {
   requestAnimationFrame(frame);
 }
 
-// 대시보드 링크: 저장소(로컬 서버·GitHub Pages)에서는 옆의 docs/dashboard.html, 게시본에서는 대시보드 게시본
-const DASHBOARD_ARTIFACT = "https://claude.ai/artifact/QMumSBE3kBQMqAyu1oPxHG";
+// 대시보드 링크: 저장소(로컬 서버·GitHub Pages)에서는 옆의 docs/dashboard.html, claude.ai 게시본에서는 공개 사이트의 대시보드
+// (대시보드의 claude.ai 게시본은 2026-10-03 사용자 결정 D3으로 그만두었다)
+const DASHBOARD_PUBLIC = "https://geonhee-lee.github.io/travplan-site/dashboard.html";
 {
   const local = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname) || location.hostname.endsWith("github.io") || location.protocol === "file:";
-  $("dashLink").href = local ? "../dashboard.html" : DASHBOARD_ARTIFACT;
+  $("dashLink").href = local ? "../dashboard.html" : DASHBOARD_PUBLIC;
 }
 
 // 검사용(check.html, 헤드리스 검사): 같은 출처에서 지금 주행을 끝까지 계산하고 결과·주소·CSV를 읽는다. 화면 조작에는 쓰지 않는다.
