@@ -141,6 +141,10 @@
   "tp0138_rl_stage2": {
    "caption": "RL 후학습을 더 돌린 두 시도: curb_ramp L3 단독은 26/30 그대로, 폴백이 이긴 계획은 42% → 46–48%, 보행자 최소 여유도 줄었다. 1단계 체크포인트 유지",
    "results": "results/tp0138"
+  },
+  "tp0143_reset_dagger": {
+   "caption": "경사로를 지나친 상태에서 시작하는 DAgger(멈춘 채·움직이며) 두 시도: curb_ramp L3 단독 23/30으로 RL 1단계 26/30을 넘지 못했다. 폴백이 이긴 계획 비율도 그대로",
+   "results": "results/tp0143"
   }
  },
  "tp": {
@@ -208,6 +212,7 @@
   ]
  },
  "featured": [
+  "tp0143_reset_dagger",
   "tp0138_rl_stage2",
   "tp0142_presmooth",
   "tp0141_corridor",
