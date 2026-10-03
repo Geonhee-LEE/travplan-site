@@ -11,6 +11,26 @@ import { policyFor, predict, straightPath } from "./policy.js";
 
 export const SIM = { dt: 0.1, rollLimit: 0.30, pitchLimit: 0.35, goalTol: 0.3, maxTime: 60, replanEvery: 10, noise: 0.01, pedRadius: 0.55 };
 
+// 출발점에 겹쳐 생긴 보행자를 제 경로를 따라 민다(Python sim/terrain.py clear_start, TP-0147).
+// 처음 1초 동안 출발점에서 0.3 m를 비울 때까지 0.1 s씩 늦게 출발시키고, 그래도 안 되면 앞으로 보낸다. 난수는 쓰지 않는다.
+export function clearStart(peds, start, r, margin = 0.3, horizon = 1.0) {
+  const gap = (x, y, vx, vy) => {
+    let m = Infinity;
+    for (let k = 0; k <= 10; k++) { const t = (horizon * k) / 10; m = Math.min(m, Math.hypot(x + vx * t - start[0], y + vy * t - start[1])); }
+    return m - r;
+  };
+  return peds.map(([x, y, vx, vy]) => {
+    if (gap(x, y, vx, vy) >= margin) return [x, y, vx, vy];
+    for (const s of [-1, 1]) {
+      for (let k = 1; k <= 200; k++) {
+        const qx = x + s * 0.1 * k * vx, qy = y + s * 0.1 * k * vy;
+        if (gap(qx, qy, vx, vy) >= margin) return [qx, qy, vx, vy];
+      }
+    }
+    return [x, y, vx, vy];
+  });
+}
+
 export const PERCEPTION = {
   gt: { label: "완전 관측", note: "지도 전체를 처음부터 안다. 인식 오차가 없을 때의 상한." },
   range: { label: "L0 원형 시야", note: "로봇 주변 반경 안의 칸은 모두 보인다(가림 없음). 벤치마크 기본값." },
@@ -204,13 +224,14 @@ export class World {
     };
     const rng = new Rng(10000 + this.opts.seed * 17 + (this.pedsInit?.length || 0));
     const [px, py, tx, ty] = at(0.8), sp = rng.uniform(0.5, 0.9), off = rng.uniform(-0.2, 0.2);
-    this.addPed(px - ty * off, py + tx * off, -sp * tx, -sp * ty);
+    const peds = [[px - ty * off, py + tx * off, -sp * tx, -sp * ty]];
     for (let i = 1; i < n; i++) {
       const f = i / n + rng.uniform(-0.08, 0.08), [qx, qy, ux, uy] = at(f);
       const tMeet = (f * arc[arc.length - 1]) / 0.9 + rng.uniform(-1, 1);
       const s = (rng.r() < 0.5 ? -1 : 1) * rng.uniform(0.4, 0.8), vx = -uy * s, vy = ux * s;
-      this.addPed(qx - vx * tMeet, qy - vy * tMeet, vx, vy);
+      peds.push([qx - vx * tMeet, qy - vy * tMeet, vx, vy]);
     }
+    for (const [x, y, vx, vy] of clearStart(peds, start, SIM.pedRadius)) this.addPed(x, y, vx, vy);
   }
 
   // ------------------------------------------------------------ 한 스텝
