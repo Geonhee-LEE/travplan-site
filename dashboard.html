@@ -196,28 +196,30 @@ footer { max-width: 1000px; margin: 0 auto; padding: 0 16px 40px; color: var(--m
   nav.subtabs button { min-height: 32px; }
 }
 </style>
-<header data-generated="2026-10-03 17:22 KST">
+<header data-generated="2026-10-03 17:47 KST">
   <h1>travplan 대시보드</h1>
-  <div class="meta" data-site-meta><a href="index.html">← travplan 홈</a> · 갱신 2026-10-03 17:22 KST</div>
+  <div class="meta" data-site-meta><a href="index.html">← travplan 홈</a> · 갱신 2026-10-03 17:47 KST</div>
 </header>
 <nav class="tabs" role="tablist" aria-label="대시보드 탭"><button role="tab" id="tabbtn-state" aria-controls="tab-state" aria-selected="true" tabindex="0" data-tab="state" class="active">진행 현황</button><button role="tab" id="tabbtn-todo" aria-controls="tab-todo" aria-selected="false" tabindex="-1" data-tab="todo">TODO</button><button role="tab" id="tabbtn-prd" aria-controls="tab-prd" aria-selected="false" tabindex="-1" data-tab="prd">PRD</button><button role="tab" id="tabbtn-arch" aria-controls="tab-arch" aria-selected="false" tabindex="-1" data-tab="arch">아키텍처 · 기능 설명</button><button role="tab" id="tabbtn-research" aria-controls="tab-research" aria-selected="false" tabindex="-1" data-tab="research">리서치</button><button role="tab" id="tabbtn-design" aria-controls="tab-design" aria-selected="false" tabindex="-1" data-tab="design">설계 · PoC</button><button role="tab" id="tabbtn-sim" aria-controls="tab-sim" aria-selected="false" tabindex="-1" data-tab="sim">시뮬레이션 ▶</button></nav>
 <main>
   <section class="tab active" id="tab-state" role="tabpanel" aria-labelledby="tabbtn-state">
     <div class="kpis">
 <div class="kpi"><div class="kpi-label">TODO 완료</div><div class="kpi-val">20/78</div><div class="progress-bar"><div class="progress-fill" style="width:26%"></div></div></div>
-<div class="kpi"><div class="kpi-label">진행 중·오늘</div><div class="kpi-val">1</div></div>
-<div class="kpi"><div class="kpi-label">사용자 실행 대기</div><div class="kpi-val">4</div></div>
+<div class="kpi"><div class="kpi-label">진행 중·오늘</div><div class="kpi-val">0</div></div>
+<div class="kpi"><div class="kpi-label">사용자 실행 대기</div><div class="kpi-val">5</div></div>
 <div class="kpi"><div class="kpi-label">열린 PR</div><div class="kpi-val">0</div></div>
-<div class="kpi"><div class="kpi-label">최근 7일 merge</div><div class="kpi-val">118</div></div>
+<div class="kpi"><div class="kpi-label">최근 7일 merge</div><div class="kpi-val">119</div></div>
 </div>
 <div class="card md"><h2>현재 병목</h2><p><mark>스워브 plant에서 치명은 거의 사라졌지만(4/360), 레벨 3의 3분의 1이 시간 초과로 끝난다. 특히 레벨 3 경사로는 거의 지나가지 못한다.</mark></p>
 <ul>
 <li><strong>어디까지 왔나(<a class="tp tp-done" href="#todo" data-tp="TP-0149" title="완료 · 다음 병목 측정 2: 권장 L1(정렬 + 낮은 채움 + 구덩이 여유)이 레벨 3에서 335/360(치명 6)으로 거의 포화. 아직 같이 재지 않은 현실 요소를 얹어 잰다 — ... · 이슈 #171(닫힘) · PR #172(merge됨)">✓ TP-0149 ◉</a>·0150).</strong> 권장 L1에 plant를 얹으면 <code>mppi</code>로는 레벨 3이 221/360(치명 55)이었다. MPPI rollout이 plant의 지연을 몰랐기 때문이다.
   rollout에 1차 지연을 넣은 <code>mppi_plant_lag</code>로 레벨 3이 239/360(치명 4), 레벨 0이 116/120(치명 0)이 됐다.
   스택별 레벨 3은 guidance 79, planner_df 81, planner_d 79/120이다.</li>
-<li><strong>남은 것(<a class="tp tp-today" href="#todo" data-tp="TP-0151" title="오늘 · 다음 병목: plant 레벨 3의 진행성 — mppi_plant_lag로 치명은 4/360이 됐지만 시간 초과가 117/360(curb_ramp 86/90, random_mi...">▶ TP-0151</a>).</strong> 레벨 3 시간 초과가 117/360이다. curb_ramp가 86/90이고, random_mix 20, bumps_potholes 11이다.
+<li><strong>남은 것(<a class="tp tp-blocked" href="#todo" data-tp="TP-0151" title="사용자 실행 대기 · 다음 병목: plant 레벨 3의 진행성 — mppi_plant_lag로 치명은 4/360이 됐지만 시간 초과가 117/360(curb_ramp 86/90, random_mi... · 이슈 #175(닫힘) · PR #176(merge됨)">⏸ TP-0151</a>).</strong> 레벨 3 시간 초과가 117/360이다. curb_ramp가 86/90이고, random_mix 20, bumps_potholes 11이다.
   레벨 3 경사로는 중심이 지날 띠가 0.2 m라, 굼뜬 동역학으로는 설계상 통과 한계에 가깝다. 미끄럼까지 예측하면 포트홀에 붙은 Guidance 경로 앞에서 멈춰 버린다(<a class="tp tp-done" href="#todo" data-tp="TP-0150" title="완료 · 다음 병목: 레벨 3에서 plant를 아는 Controller — 권장 L1 + 스워브 plant에서 레벨 3이 335 → 221/360(치명 6 → 55). MPPI rol... · 이슈 #173(닫힘) · PR #174(merge됨)">✓ TP-0150 ◉</a>).</li>
-<li><strong>판정 기준(<a class="tp tp-today" href="#todo" data-tp="TP-0151" title="오늘 · 다음 병목: plant 레벨 3의 진행성 — mppi_plant_lag로 치명은 4/360이 됐지만 시간 초과가 117/360(curb_ramp 86/90, random_mi...">▶ TP-0151</a>).</strong> 치명을 늘리지 않고 plant 레벨 3 도달을 239/360에서 늘린다. 비교는 seed 10 × 오프셋 3 짝 비교다.</li>
+<li><strong>판정 기준(<a class="tp tp-blocked" href="#todo" data-tp="TP-0151" title="사용자 실행 대기 · 다음 병목: plant 레벨 3의 진행성 — mppi_plant_lag로 치명은 4/360이 됐지만 시간 초과가 117/360(curb_ramp 86/90, random_mi... · 이슈 #175(닫힘) · PR #176(merge됨)">⏸ TP-0151</a>).</strong> 치명을 늘리지 않고 plant 레벨 3 도달을 239/360에서 늘린다. 비교는 seed 10 × 오프셋 3 짝 비교다.</li>
+<li><strong><a class="tp tp-blocked" href="#todo" data-tp="TP-0151" title="사용자 실행 대기 · 다음 병목: plant 레벨 3의 진행성 — mppi_plant_lag로 치명은 4/360이 됐지만 시간 초과가 117/360(curb_ramp 86/90, random_mi... · 이슈 #175(닫힘) · PR #176(merge됨)">⏸ TP-0151</a>은 멈췄다(2026-10-04).</strong> 레벨 3 경사로를 여는 다섯 시도가 모두 실패했다(여유 경로, 조향 한계 모델, MPPI 설정, 긴 지평, 지연 인식 사전 표본).
+  대신 시뮬 plant에서 겹침을 찾았다. 명령의 가속 한계가 실현 속도 기준이라 지연과 겹쳐, 실제 가속이 약 0.33 m/s²가 된다. 아래 사용자 결정 셋을 기다린다. MPC 문서 M.3.23.</li>
 <li><strong>보행자 5명</strong>(<a class="tp tp-done" href="#todo" data-tp="TP-0149" title="완료 · 다음 병목 측정 2: 권장 L1(정렬 + 낮은 채움 + 구덩이 여유)이 레벨 3에서 335/360(치명 6)으로 거의 포화. 아직 같이 재지 않은 현실 요소를 얹어 잰다 — ... · 이슈 #171(닫힘) · PR #172(merge됨)">✓ TP-0149 ◉</a>의 두 번째 후보)은 아직 plant와 함께 재지 않았다.</li>
 <li>측정 기록: MPC 문서 M.3.22, 인식 문서 A.13.19, <code>results/tp0149</code>, <code>results/tp0150</code>.</li>
 </ul><figure class="ev wide"><a class="thumb" href="assets/figs/tp0078_fallback.webp" title="원본 보기"><img alt="curb_ramp 레벨 3: 새 표본이 거의 다 치명이면 Guidance 경로를 후보로 넣는다. 왼쪽 seed 7에서 Planner D 단독(주황)은 경사로를 지나쳐 맴돌고, 폴백(초록, 연한 띠 = 경로가 이긴 구간)은 돌아가 오른다. 오른쪽은 seed 0–9 × 난수 오프셋 3의 도달 수" src="assets/figs/tp0078_fallback.webp" loading="lazy"></a><figcaption>curb_ramp 레벨 3: 새 표본이 거의 다 치명이면 Guidance 경로를 후보로 넣는다. 왼쪽 seed 7에서 Planner D 단독(주황)은 경사로를 지나쳐 맴돌고, 폴백(초록, 연한 띠 = 경로가 이긴 구간)은 돌아가 오른다. 오른쪽은 seed 0–9 × 난수 오프셋 3의 도달 수 · <span class="private-ref" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">결과 폴더</span></figcaption></figure></div>
@@ -515,10 +517,10 @@ cost가 <code>max_slope_rad</code> 0.26에서 포화해 구조적으로 지배�
 <td><strong>완료</strong> — MPC M.3.22</td>
 </tr>
 <tr>
-<td>1</td>
-<td><a class="tp tp-today" href="#todo" data-tp="TP-0151" title="오늘 · 다음 병목: plant 레벨 3의 진행성 — mppi_plant_lag로 치명은 4/360이 됐지만 시간 초과가 117/360(curb_ramp 86/90, random_mi...">▶ TP-0151</a></td>
-<td>plant 레벨 3의 진행성: 시간 초과 117/360(curb_ramp 86/90). 치명을 늘리지 않고 도달을 늘린다</td>
-<td><strong>다음</strong></td>
+<td>⏸</td>
+<td><a class="tp tp-blocked" href="#todo" data-tp="TP-0151" title="사용자 실행 대기 · 다음 병목: plant 레벨 3의 진행성 — mppi_plant_lag로 치명은 4/360이 됐지만 시간 초과가 117/360(curb_ramp 86/90, random_mi... · 이슈 #175(닫힘) · PR #176(merge됨)">⏸ TP-0151</a></td>
+<td>plant 레벨 3 경사로: 다섯 시도 모두 실패. 시뮬 plant의 명령 한계 겹침을 찾아 사용자 결정 대기</td>
+<td><strong>멈춤</strong> — MPC M.3.23</td>
 </tr>
 <tr>
 <td>2</td>
@@ -653,6 +655,37 @@ A는 칸 정렬(버그 수정)이 레벨 0 guidance 치명을 0 → 2로 늘린 
 <p><strong><a class="tp tp-done" href="#todo" data-tp="TP-0150" title="완료 · 다음 병목: 레벨 3에서 plant를 아는 Controller — 권장 L1 + 스워브 plant에서 레벨 3이 335 → 221/360(치명 6 → 55). MPPI rol... · 이슈 #173(닫힘) · PR #174(merge됨)">✓ TP-0150 ◉</a>에서 생긴 결정(2026-10-04).</strong> plant가 있는 조건(실물에 가까운 조건)의 배포 스택을 <code>planner_df+mppi_plant_lag</code>로 볼지 묻는다.
 plant 조건에서 이 Controller는 <code>mppi</code>보다 모든 스택·레벨에서 치명이 적고 도달이 많다(planner_df 레벨 3 77 → 81, 치명 22 → 3). 권장: 그렇게 본다.
 지금은 벤치마크 기본 Controller(<code>mppi</code>)를 그대로 두고, plant 실행에만 <code>mppi_plant_lag</code>를 쓴다.</p>
+<p><strong><a class="tp tp-blocked" href="#todo" data-tp="TP-0151" title="사용자 실행 대기 · 다음 병목: plant 레벨 3의 진행성 — mppi_plant_lag로 치명은 4/360이 됐지만 시간 초과가 117/360(curb_ramp 86/90, random_mi... · 이슈 #175(닫힘) · PR #176(merge됨)">⏸ TP-0151</a>에서 생긴 결정 셋(2026-10-04).</strong> 지금은 그대로 두고 답을 기다린다.</p>
+<table>
+<thead>
+<tr>
+<th>순서</th>
+<th>결정</th>
+<th>지금</th>
+<th>권장</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>시뮬 <code>step</code>은 명령의 가속 한계를 직전 <strong>실현</strong> 속도 기준으로 건다. plant의 1차 지연과 겹쳐 실제 가속이 1.0이 아니라 약 0.33 m/s²이고, 미끄럼 0.2면 최고 속도가 0.13 m/s다. 직전 <strong>명령</strong> 기준으로 바꿀까</td>
+<td>그대로(plant 결과 전부가 이 모델로 쟀다)</td>
+<td>바꾼다. 실물의 속도 제어기는 보통 자기 명령의 변화율을 제한한다. 바꾸면 plant 결과를 다시 잰다</td>
+</tr>
+<tr>
+<td>B</td>
+<td>레벨 3 경사로(폭 1.1 m, 중심 통로 0.2 m)를 plant 로봇의 설계 한계로 둘까</td>
+<td>판정에서 빼지 않는다</td>
+<td>A를 바꾼 뒤 다시 재고 정한다</td>
+</tr>
+<tr>
+<td>C</td>
+<td>NMPC 갈래를 이 PC에서 plant와 비교하려면 acados 설치가 필요하다(casadi만 있음)</td>
+<td>설치하지 않음</td>
+<td>다른 PC에서 비교하거나 설치를 허락받는다</td>
+</tr>
+</tbody>
+</table>
 <p><strong>아직 사용자 몫.</strong> <a class="tp tp-blocked" href="#todo" data-tp="TP-0064" title="사용자 실행 대기 · 배달로봇 센서 사양 제공: LiDAR 모델·수평·수직 시야각·채널, 장착 높이·위치·기울기, 카메라 시야각·해상도·스테레오 기선, 연산 장치 (TP-0060 입력)">⏸ TP-0064</a>(센서 사양), <a class="tp tp-blocked" href="#todo" data-tp="TP-0035" title="사용자 실행 대기 · 배달로봇 스워브 모듈 파라미터 제공: 모듈 위치·비동축 오프셋·바퀴 반지름·조향 속도 한계 (TP-0034 입력)">⏸ TP-0035</a>(스워브 모듈 파라미터), <a class="tp tp-blocked" href="#todo" data-tp="TP-0009" title="사용자 실행 대기 · 센서 하드웨어 확정·구매 — 근거리 스테레오/RGB-D(예: RealSense D435/ZED2i) + 원거리 solid-state LiDAR(예: Livox Mid-70) ...">⏸ TP-0009</a>(센서 구매), <a class="tp tp-blocked" href="#todo" data-tp="TP-0005" title="사용자 실행 대기 · TP-0001 완료 후: 지형 USD 로드 + 스워브/LiDAR 로봇 배치 + ROS2 브릿지 폐루프 재현, P0 운동학 벤치마크와 성공률 비교">⏸ TP-0005</a>(Isaac 폐루프 실행). 다음에 정한다(결정 7).</p>
 <p><strong>Claude가 정한 작은 결정(2026-10-03).</strong> 영향이 작아 사용자에게 묻지 않고 정했다. 바꾸려면 해당 TODO에 적으면 된다.</p>
 <table>
@@ -1303,7 +1336,7 @@ LiDAR 링 사이가 비어 로봇 주변 3 m 안의 10–12%가 미관측으로 
 <td>열린 PR 없음(2026-10-03). <a class="tp tp-done" href="#todo" data-tp="TP-0078" title="완료 · 기록에서 복원 · 이슈 #148(닫힘) · PR #149(merge됨)">✓ TP-0078 ◉</a>·0066·0139·0131·0039·0074는 main에 merge됐다</td>
 </tr>
 </tbody>
-</table><h3>열린 PR</h3><ul class='prs'><li class='empty'>없음</li></ul><h3>최근 merge된 PR</h3><ul class='prs'><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #174</span> TP-0150: MPPI rollout에 스워브 plant의 지연을 넣는다 — plant 레벨 3 치명 55 → 4, 도달 221 → 239/360 <a class="tp tp-done" href="#todo" data-tp="TP-0150" title="완료 · 다음 병목: 레벨 3에서 plant를 아는 Controller — 권장 L1 + 스워브 plant에서 레벨 3이 335 → 221/360(치명 6 → 55). MPPI rol... · 이슈 #173(닫힘) · PR #174(merge됨)">✓ TP-0150 ◉</a> <span class="date">2026-10-03</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #172</span> TP-0149: 다음 병목 측정 2 — 권장 L1에 스워브 plant를 얹으면 레벨 3이 335 → 221/360 <a class="tp tp-done" href="#todo" data-tp="TP-0149" title="완료 · 다음 병목 측정 2: 권장 L1(정렬 + 낮은 채움 + 구덩이 여유)이 레벨 3에서 335/360(치명 6)으로 거의 포화. 아직 같이 재지 않은 현실 요소를 얹어 잰다 — ... · 이슈 #171(닫힘) · PR #172(merge됨)">✓ TP-0149 ◉</a> <span class="date">2026-10-03</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #170</span> TP-0148: 포트홀 가장자리 mixed pixel — 닫힌 구덩이에만 한 칸 여유, 권장 L1 레벨 3 치명 80 → 6 <a class="tp tp-done" href="#todo" data-tp="TP-0148" title="완료 · TP-0146 후속: L1 포트홀 가장자리 mixed pixel — 두 수정 뒤 남은 치명(레벨 3 25/360, 레벨 0 guidance s6)은 관측된 가장자리 칸이 테두... · 이슈 #169(닫힘) · PR #170(merge됨)">✓ TP-0148 ◉</a> <span class="date">2026-10-03</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #168</span> TP-0146: L1 레벨 3 치명의 원인 — 매퍼 반 칸 어긋남(수정)과 테두리 뒤 채움(선택), 치명 80 → 25 <a class="tp tp-done" href="#todo" data-tp="TP-0146" title="완료 · 다음 병목: L1 인식 레벨 3 치명 원인 분리 — 권장 L1에서 세 스택 모두 120 중 23–33 치명(포트홀 44건 전부 0.7 m 안, 연석 27/34). 매퍼 채움·... · PR #164(merge됨) · 이슈 #165(닫힘) · PR #168(merge됨)">✓ TP-0146 ◉</a> <span class="date">2026-10-03</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #167</span> TP-0147: 보행자 레벨 3 &#x27;충돌&#x27;은 출발점에 겹쳐 생성된 보행자 하나 — 생성기 수정, 충돌 0 <a class="tp tp-done" href="#todo" data-tp="TP-0147" title="완료 · 보행자: 5명 레벨 3에서 random_mix L3 s9가 모든 오프셋에서 충돌(guidance·planner_df 3건씩), 레벨 0은 포화지만 최소 여유 0.11–0.14... · 이슈 #166(닫힘) · PR #167(merge됨)">✓ TP-0147</a> <span class="date">2026-10-03</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #164</span> 다음 병목 측정(결정 1B): L1 레벨 3은 세 스택 모두 4분의 1이 치명 — TP-0146·0147 <a class="tp tp-done" href="#todo" data-tp="TP-0146" title="완료 · 다음 병목: L1 인식 레벨 3 치명 원인 분리 — 권장 L1에서 세 스택 모두 120 중 23–33 치명(포트홀 44건 전부 0.7 m 안, 연석 27/34). 매퍼 채움·... · PR #164(merge됨) · 이슈 #165(닫힘) · PR #168(merge됨)">✓ TP-0146 ◉</a> <span class="date">2026-10-03</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #163</span> TP-0057: TravNet 잔차는 올리는 쪽만(기본) — GT cost 0.0247 → 0.0200 <a class="tp tp-done" href="#todo" data-tp="TP-0057" title="완료 · 기록에서 복원 · PR #163(merge됨)">✓ TP-0057</a> <span class="date">2026-10-03</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #162</span> TP-0143: 재탐색 상태 DAgger(결정 1A) — 두 시도 모두 판정 미달, 다음 방향 결정 필요 <a class="tp tp-done" href="#todo" data-tp="TP-0143" title="완료 · TP-0138 후속: RL 후학습 3단계 — 같은 처방(라운드 추가, 지형 집중)은 curb_ramp L3 단독 26/30에서 멈춘다. 경사로를 지나친 상태에서 rollout... · PR #162(merge됨)">✓ TP-0143 ◉</a> <span class="date">2026-10-03</span></li></ul><p class="note">GitHub 인덱스 갱신: 2026-10-03 17:22 · <code>python3 automation/gh_index.py</code></p></div>
+</table><h3>열린 PR</h3><ul class='prs'><li class='empty'>없음</li></ul><h3>최근 merge된 PR</h3><ul class='prs'><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #176</span> TP-0151: plant 레벨 3 경사로는 다섯 시도로도 열리지 않았다 — 시뮬 plant의 명령 한계 겹침을 묻고 멈춘다 <a class="tp tp-blocked" href="#todo" data-tp="TP-0151" title="사용자 실행 대기 · 다음 병목: plant 레벨 3의 진행성 — mppi_plant_lag로 치명은 4/360이 됐지만 시간 초과가 117/360(curb_ramp 86/90, random_mi... · 이슈 #175(닫힘) · PR #176(merge됨)">⏸ TP-0151</a> <span class="date">2026-10-03</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #174</span> TP-0150: MPPI rollout에 스워브 plant의 지연을 넣는다 — plant 레벨 3 치명 55 → 4, 도달 221 → 239/360 <a class="tp tp-done" href="#todo" data-tp="TP-0150" title="완료 · 다음 병목: 레벨 3에서 plant를 아는 Controller — 권장 L1 + 스워브 plant에서 레벨 3이 335 → 221/360(치명 6 → 55). MPPI rol... · 이슈 #173(닫힘) · PR #174(merge됨)">✓ TP-0150 ◉</a> <span class="date">2026-10-03</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #172</span> TP-0149: 다음 병목 측정 2 — 권장 L1에 스워브 plant를 얹으면 레벨 3이 335 → 221/360 <a class="tp tp-done" href="#todo" data-tp="TP-0149" title="완료 · 다음 병목 측정 2: 권장 L1(정렬 + 낮은 채움 + 구덩이 여유)이 레벨 3에서 335/360(치명 6)으로 거의 포화. 아직 같이 재지 않은 현실 요소를 얹어 잰다 — ... · 이슈 #171(닫힘) · PR #172(merge됨)">✓ TP-0149 ◉</a> <span class="date">2026-10-03</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #170</span> TP-0148: 포트홀 가장자리 mixed pixel — 닫힌 구덩이에만 한 칸 여유, 권장 L1 레벨 3 치명 80 → 6 <a class="tp tp-done" href="#todo" data-tp="TP-0148" title="완료 · TP-0146 후속: L1 포트홀 가장자리 mixed pixel — 두 수정 뒤 남은 치명(레벨 3 25/360, 레벨 0 guidance s6)은 관측된 가장자리 칸이 테두... · 이슈 #169(닫힘) · PR #170(merge됨)">✓ TP-0148 ◉</a> <span class="date">2026-10-03</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #168</span> TP-0146: L1 레벨 3 치명의 원인 — 매퍼 반 칸 어긋남(수정)과 테두리 뒤 채움(선택), 치명 80 → 25 <a class="tp tp-done" href="#todo" data-tp="TP-0146" title="완료 · 다음 병목: L1 인식 레벨 3 치명 원인 분리 — 권장 L1에서 세 스택 모두 120 중 23–33 치명(포트홀 44건 전부 0.7 m 안, 연석 27/34). 매퍼 채움·... · PR #164(merge됨) · 이슈 #165(닫힘) · PR #168(merge됨)">✓ TP-0146 ◉</a> <span class="date">2026-10-03</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #167</span> TP-0147: 보행자 레벨 3 &#x27;충돌&#x27;은 출발점에 겹쳐 생성된 보행자 하나 — 생성기 수정, 충돌 0 <a class="tp tp-done" href="#todo" data-tp="TP-0147" title="완료 · 보행자: 5명 레벨 3에서 random_mix L3 s9가 모든 오프셋에서 충돌(guidance·planner_df 3건씩), 레벨 0은 포화지만 최소 여유 0.11–0.14... · 이슈 #166(닫힘) · PR #167(merge됨)">✓ TP-0147</a> <span class="date">2026-10-03</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #164</span> 다음 병목 측정(결정 1B): L1 레벨 3은 세 스택 모두 4분의 1이 치명 — TP-0146·0147 <a class="tp tp-done" href="#todo" data-tp="TP-0146" title="완료 · 다음 병목: L1 인식 레벨 3 치명 원인 분리 — 권장 L1에서 세 스택 모두 120 중 23–33 치명(포트홀 44건 전부 0.7 m 안, 연석 27/34). 매퍼 채움·... · PR #164(merge됨) · 이슈 #165(닫힘) · PR #168(merge됨)">✓ TP-0146 ◉</a> <span class="date">2026-10-03</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #163</span> TP-0057: TravNet 잔차는 올리는 쪽만(기본) — GT cost 0.0247 → 0.0200 <a class="tp tp-done" href="#todo" data-tp="TP-0057" title="완료 · 기록에서 복원 · PR #163(merge됨)">✓ TP-0057</a> <span class="date">2026-10-03</span></li></ul><p class="note">GitHub 인덱스 갱신: 2026-10-03 17:47 · <code>python3 automation/gh_index.py</code></p></div>
 <div class="card md"><h2>작업 환경</h2><details><summary>체크포인트, 가상환경, 그림·인덱스 재생성</summary><ul>
 <li><strong>브랜치.</strong> 두 PC 모두 main에서 이어간다.</li>
 <li><strong>체크포인트.</strong> <code>checkpoints/</code>는 git에 없다. 릴리스에서 받는다.
@@ -1326,16 +1359,15 @@ LiDAR 링 사이가 비어 로봇 주변 3 m 안의 10–12%가 미관측으로 
 <p class="note">● 이슈, ⇄ PR(보라 merge됨, 초록 열림, 회색 닫힘). 그림이 붙은 항목은 결과 그림을 함께 보여 준다. 제목 안의 TP 번호는 상태 칩이다.</p>
 <h3 class="status-h status-doing">진행 중 <span class="count">0</span></h3>
 <p class="empty">없음</p>
-<h3 class="status-h status-today">오늘 <span class="count">1</span></h3>
-<ul class="todo-list">
-<li class="todo-item" id="todo-TP-0151"><label><input type="checkbox" disabled > <span class="id">TP-0151</span> <span class="badge prio">P1</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> 다음 병목: plant 레벨 3의 진행성 — mppi_plant_lag로 치명은 4/360이 됐지만 시간 초과가 117/360(curb_ramp 86/90, random_mi...</label></li>
-</ul>
-<h3 class="status-h status-blocked">막힘 <span class="count">4</span></h3>
+<h3 class="status-h status-today">오늘 <span class="count">0</span></h3>
+<p class="empty">없음</p>
+<h3 class="status-h status-blocked">막힘 <span class="count">5</span></h3>
 <ul class="todo-list">
 <li class="todo-item" id="todo-TP-0005"><label><input type="checkbox" disabled > <span class="id">TP-0005</span> <span class="badge prio">P1</span> <span class="badge phase">P1</span> <span class="badge owner owner-user">user</span> <a class="tp tp-done" href="#todo" data-tp="TP-0001" title="완료 · 기록에서 복원">✓ TP-0001</a> 완료 후: 지형 USD 로드 + 스워브/LiDAR 로봇 배치 + ROS2 브릿지 폐루프 재현, P0 운동학 벤치마크와 성공률 비교 <span class="badge usertest">UserTest</span></label></li>
 <li class="todo-item" id="todo-TP-0009"><label><input type="checkbox" disabled > <span class="id">TP-0009</span> <span class="badge prio">P1</span> <span class="badge phase">P2</span> <span class="badge owner owner-user">user</span> 센서 하드웨어 확정·구매 — 근거리 스테레오/RGB-D(예: RealSense D435/ZED2i) + 원거리 solid-state LiDAR(예: Livox Mid-70) ... <span class="badge usertest">UserTest</span></label></li>
 <li class="todo-item" id="todo-TP-0035"><label><input type="checkbox" disabled > <span class="id">TP-0035</span> <span class="badge prio">P2</span> <span class="badge phase">P2</span> <span class="badge owner owner-user">user</span> 배달로봇 스워브 모듈 파라미터 제공: 모듈 위치·비동축 오프셋·바퀴 반지름·조향 속도 한계 (<a class="tp tp-done" href="#todo" data-tp="TP-0034" title="완료 · 기록에서 복원">✓ TP-0034</a> 입력) <span class="badge usertest">UserTest</span></label></li>
 <li class="todo-item" id="todo-TP-0064"><label><input type="checkbox" disabled > <span class="id">TP-0064</span> <span class="badge prio">P1</span> <span class="badge phase">P2</span> <span class="badge owner owner-user">user</span> 배달로봇 센서 사양 제공: LiDAR 모델·수평·수직 시야각·채널, 장착 높이·위치·기울기, 카메라 시야각·해상도·스테레오 기선, 연산 장치 (<a class="tp tp-done" href="#todo" data-tp="TP-0060" title="완료 · 기록에서 복원 · 이슈 #28(닫힘) · PR #29(merge됨) · 이슈 #30(닫힘) · PR #31(merge됨)">✓ TP-0060 ◉</a> 입력) <span class="badge usertest">UserTest</span></label></li>
+<li class="todo-item" id="todo-TP-0151"><label><input type="checkbox" disabled > <span class="id">TP-0151</span> <span class="badge prio">P1</span> <span class="badge phase">P2</span> <span class="badge owner owner-claude">claude</span> 다음 병목: plant 레벨 3의 진행성 — mppi_plant_lag로 치명은 4/360이 됐지만 시간 초과가 117/360(curb_ramp 86/90, random_mi... · <code class="branch">p2/tp0151-plant-liveness</code> <span class=gh-row><span class="private-ref gh gh-closed gh-issue" title="이슈 #175 · 닫힘 · TP-0151: plant 레벨 3 경사로 진행성 — 다섯 시도 실패, 시뮬 plant의 명령 한계 겹침 결정 대기">● #175</span><span class="private-ref gh gh-merged gh-pr" title="PR #176 · merge됨 · TP-0151: plant 레벨 3 경사로는 다섯 시도로도 열리지 않았다 — 시뮬 plant의 명령 한계 겹침을 묻고 멈춘다">⇄ #176</span></span></label></li>
 </ul>
 <h3 class="status-h status-backlog">백로그 <span class="count">53</span></h3>
 <ul class="todo-list">
@@ -30230,6 +30262,60 @@ python scripts/run_benchmark.py --stacks planner_df+mppi --ckpt-d checkpoints/pl
 <li><strong>판정.</strong> TP-0150의 기준(plant 레벨 3 치명 55 → 절반 이하, plant 없는 권장 L1 벤치마크 유지)을 넘었다. 기본 Controller(<code>mppi</code>)는 바뀌지 않으므로 plant 없는 벤치마크는 그대로다.
   시도는 두 번이었다(지연 + 미끄럼, 지연만).</li>
 <li><strong>쓰는 법.</strong> plant가 있는 조건(실물에 가까운 조건)에서는 <code>--stacks &lt;planner&gt;+mppi_plant_lag --plant</code>로 돌린다. 배포 스택을 <code>planner_df+mppi_plant_lag</code>로 볼지는 사용자 결정으로 남긴다(STATE).</li>
+</ul>
+<h3>M.3.23 plant에서 레벨 3 경사로를 지나는 MPPI를 찾지 못했다 — 다섯 시도 뒤 멈추고 plant 모델을 묻는다 (TP-0151)</h3>
+<p><strong>한 줄로.</strong> ==스워브 plant에서 레벨 3 경사로(폭 1.1 m, 중심 통로 0.2 m)는 <code>mppi_plant_lag</code>로 1/90만 지나간다. 다섯 가지를 시도했지만 하나도 열지 못했다.==
+경사로 자체는 오를 수 있다(가운데 미끄럼 0.07, 정상 속도 0.44 m/s). 로봇은 경사로 발치까지 오지만 그 앞에서 제자리 회전만 한다.
+그러다 시뮬 plant에 의도하지 않은 것으로 보이는 겹침을 찾았다. 명령의 가속 한계를 실현 속도 기준으로 걸어 지연과 겹친다. 그래서 plant 모델을 사용자에게 묻고 멈춘다.</p>
+<ul>
+<li><strong>멈춘 모습(L0 인식 + plant, seed 0).</strong> 로봇은 경사로 입구를 한 번 지나쳤다가 돌아온다. 35초부터 60초까지 경사로 발치 0.5 m 앞에서 0.2 rad/s로 돈다.
+  그 순간 표본의 68 %는 치명이 아니고 진행 비용도 멈춤보다 낮다. 하지만 경사로 위로 들어가는 표본은 모두 치명이다.
+  중심 통로가 ±0.1 m라 정밀한 정렬이 필요한데, 지연이 있는 표본으로는 거기에 들어가지 못한다.</li>
+<li><strong>시도(L0 인식 + plant, curb_ramp 레벨 3 seed 0–3, <code>results/tp0151</code>).</strong> 모두 시간 초과다.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>시도</th>
+<th>결과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>여유를 두는 Guidance 경로(<code>guidance_c</code>)</td>
+<td>0/4</td>
+</tr>
+<tr>
+<td>rollout에 모듈 조향 한계(±56.2°)를 넣음(<code>mppi_plant_steer</code>)</td>
+<td>0/8</td>
+</tr>
+<tr>
+<td>온도 0.1 · 반복 3 · 표본 1,536</td>
+<td>각각 0/4</td>
+</tr>
+<tr>
+<td>지평 6 s · 8 s</td>
+<td>각각 0/4</td>
+</tr>
+<tr>
+<td>지연을 아는 추종기로 사전 표본을 만듦(<code>mppi_plant_prior</code>)</td>
+<td>0/8 (치명 1)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>조향 한계: plant는 옆걸음 명령을 그대로 못 한다. 옆으로 0.5 m/s를 명령하면 모듈이 56.2°에서 멈춰 앞으로 0.23, 옆으로 0.35 m/s의 대각선으로 간다.
+    <code>steer_project</code>가 모듈마다 이 투영을 하고 최소제곱으로 차체 속도를 되돌린다. 정상 상태에서 plant와 0.02 m/s 안으로 맞는다(테스트로 고정). 그래도 경사로는 열리지 않았다.</li>
+<li>지연을 아는 추종기(<code>LagAwareTracker</code>): pure pursuit를 지연 모델의 예측 상태로 굴려 사전 명령열을 만든다. 그 명령열을 지연 모델로 다시 굴리면 같은 궤적이 나온다(테스트로 고정).</li>
+<li><strong>plant 모델에서 찾은 겹침.</strong> 시뮬은 <code>step</code>에서 명령의 가속 한계를 직전 <strong>실현</strong> 속도 기준으로 건다. 그 뒤 plant가 1차 지연으로 따라간다.
+  plant가 없으면 실현 속도가 곧 직전 명령이라 문제가 없다. plant가 있으면 두 한계가 겹쳐 실제 가속이 1.0이 아니라 약 0.33 m/s²가 된다.
+  미끄럼이 있으면 더 심해서, 미끄럼 0.2에서는 1 m/s 명령의 정상 속도가 0.13 m/s, 0.35에서는 0.06 m/s다. 실물의 속도 제어기는 보통 자기 명령을 기준으로 변화율을 제한한다.
+  이것이 의도한 모델인지에 따라 plant 결과 전부(TP-0068·0120·0131·0149·0150)의 해석이 달라진다.</li>
+<li><strong>판단.</strong> 비평가 재시도 규칙에 따라 멈춘다. 다음을 사용자에게 묻는다(STATE).</li>
+<li>plant의 명령 한계를 직전 명령 기준으로 바꿀지.</li>
+<li>레벨 3 경사로를 이 로봇의 설계 한계로 둘지.</li>
+<li>NMPC 갈래를 이 PC에서 돌리려면 acados 설치가 필요하다.
+  <code>mppi_plant_steer</code>·<code>mppi_plant_prior</code>는 선택 항목으로만 남긴다.</li>
 </ul></div></div>
   </section>
   <section class="tab" id="tab-design" role="tabpanel" aria-labelledby="tabbtn-design" data-math="17">
