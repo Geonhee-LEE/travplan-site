@@ -1552,3 +1552,7 @@ python scripts/run_benchmark.py --stacks planner_df+mppi --ckpt-d checkpoints/pl
   - 레벨 3 경사로를 이 로봇의 설계 한계로 둘지.
   - NMPC 갈래를 이 PC에서 돌리려면 acados 설치가 필요하다.
   `mppi_plant_steer`·`mppi_plant_prior`는 선택 항목으로만 남긴다.
+
+**추가(2026-10-04): 명령 한계의 기준을 바꿔 보면.** `SimConfig(plant_rate_limit="command")`(`--plant-rate-limit command`, 선택)는 명령의 가속 한계를 직전 명령 기준으로 건다.
+그러면 1 m/s 명령의 1초 뒤 속도가 0.33 → 0.80 m/s로 오른다. 하지만 권장 L1 + plant의 `mppi`는 같은 에피소드에서 레벨 3 221 → 220/360(치명 55 → 53, 짝 32 : 31), 레벨 0 112 → 114/120으로 그대로다(`results/tp0151/l1_plant_cmdlimit`).
+가속 겹침은 plant 격차의 원인이 아니다. 경사로를 막는 것은 지연·조향 한계·미끄럼이 만드는 추종 오차다. 그래서 기본값은 그대로(실현 기준) 두고 결정 A는 닫았다.
