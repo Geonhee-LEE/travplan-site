@@ -1460,6 +1460,20 @@ plant curb_ramp 72 에피소드의 도달 수는 잡음 안이다(57 대 52, 짝
 **판단.** 기본값은 끈 채 둔다. Guidance 폴백 스택(`planner_df`)과 함께 운동학 평가에서 켜기를 권한다(`--ctrl-cfg reach_margin_m=0.5`).
 `mppi_ccgp`의 TP-0130 장면(s14·s18)은 잔차 GP 체크포인트가 이 PC에 없어 돌리지 못했다. GP가 있는 PC에서 같은 명령으로 확인한다.
 
+**`mppi_ccgp` 확인(2026-10-03, 사용자 결정 6 뒤).** 이 PC에 casadi를 깔고 잔차 GP를 다시 맞춰(`residual_sgp_wide_refit-2026-10-03.pt`, 릴리스 `ckpt-2026-10-03`) 남은 스택을 쟀다.
+plant curb_ramp × seed 0–23 × 난수 오프셋 3, 72 에피소드다.
+
+| `guidance+mppi_ccgp` | 끄기 | 켜기 |
+|---|---|---|
+| 도달 | 56/72 | **65/72** (짝 5 : 14, p = 0.064) |
+| 치명 · 시간 초과 | 13 · 3 | **7 · 0** |
+| 도달 시간 평균 | 44.3 s | 42.2 s |
+| TP-0130 장면 s14 · s18 (오프셋 0) | 60 s 시간 초과 · 60 s 시간 초과 | 40.4 s · 51.7 s |
+
+- 다시 맞춘 GP에서도 TP-0130의 두 멈춤 장면이 그대로 재현되고, 끝점 제한을 켜면 둘 다 도달한다. TP-0131의 원래 판정("두 장면 해소")을 이 스택에서 채운다.
+- `mppi_ccgp`에서는 치명이 줄어(13 → 7) 안전 원칙(`docs/prd.md` 7절)에 걸리지 않는다. `mppi`·`mppi_cc`에서는 치명이 각각 3건 늘었으므로 그 둘의 기본값은 끈 채 둔다.
+- 기본값은 아직 바꾸지 않는다. 이 GP는 다른 PC의 원본(`residual_sgp_wide.pt`, TP-0068–0130 결과에 쓴 것)과 같지 않을 수 있다. 원본 GP로 같은 72 에피소드를 다시 재고 `mppi_ccgp`의 기본값을 정한다(TP-0144).
+
 ```bash
 python scripts/run_benchmark.py --plant --scenarios curb_ramp --seeds $(seq -s ' ' 0 23) --stacks guidance+mppi guidance+mppi_cc \
     --ctrl-cfg reach_margin_m=0.5 --rng-offset 0 --out results/tp0131/plant_cr_on     # 끄기는 reach_margin_m=none
