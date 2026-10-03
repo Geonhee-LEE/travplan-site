@@ -1480,3 +1480,43 @@ python scripts/run_benchmark.py --plant --scenarios curb_ramp --seeds $(seq -s '
 python scripts/run_benchmark.py --stacks planner_df+mppi --ckpt-d checkpoints/planner_d_L0123_dagger.pt --scenarios curb_ramp --levels 3 \
     --seeds 0 1 2 3 4 5 6 7 8 9 --rng-offset 0 --ctrl-cfg reach_margin_m=0.5 --out results/tp0131/cr3_df_on_o0
 ```
+
+### M.3.22 MPPI rollout에 스워브 plant의 지연을 넣는다 — 레벨 3 plant 치명 55 → 4 (TP-0150)
+
+**한 줄로.** ==MPPI rollout이 스워브 plant의 액추에이터 지연을 알게 하면, 권장 L1 + plant 레벨 3의 치명이 55 → 4로 줄고 도달은 221 → 239/360으로 는다(`mppi_plant_lag`).==
+최적화기는 그대로 두고 rollout 모델만 바꿨다. 미끄럼까지 예측하면 치명은 같이 줄지만 진행이 막힌다(도달 189). 레벨 3 경사로(폭 1.1 m)는 plant에서 여전히 거의 지나가지 못한다(1/90).
+
+![TP-0150](assets/figs/tp0150_plant_mppi.webp)
+
+*그림 — TP-0150 (Fig. 1): 권장 L1 + 스워브 plant 레벨 3(4 지형 × seed 0–9 × 오프셋 3)의 도달 수다. 회색은 `mppi`, 주황은 지연 + 미끄럼 예측, 파랑은 지연만 예측한 rollout이다. 왼쪽은 스택별, 오른쪽은 지형별이다.*
+
+- **무엇이 문제였나(TP-0149, 인식 문서 A.13.19).** MPPI rollout은 명령이 곧 속도라고 본다(가속 1.0 m/s²).
+  시뮬은 명령의 가속 한계를 실현 속도 기준으로 걸고, plant가 그 차이를 1차 지연(0.2 s, 한 스텝에 3분의 1)으로 따라간다. 그래서 실제 가속은 약 0.33 m/s²다.
+  plant는 경사·거칠기에 비례해 이동 속도도 깎는다(최대 35 %, 회전은 그대로). 권장 L1 레벨 3이 335 → 221/360(치명 6 → 55)이 된 이유다.
+- **무엇을 바꿨나.** `LagSlipSwerveModel`(`control/mppi/plant_aware.py`)이 rollout의 자세를 plant가 실현할 속도로 적분한다.
+  - MPPI가 평균하고 보내는 `applied`는 그대로 '시뮬처럼 가속 한계를 건 명령'이다. 최적화기(`mppi.py`)는 그대로이고, `MPPIController.model`만 바꿔 끼운다.
+  - 지연: 실현 속도가 명령을 한 스텝에 $\Delta t / (\tau + \Delta t)$만큼 따라간다($\tau$ = 0.2 s). 평지에서 30 스텝 위치가 plant와 5 cm 안에서 맞는다(테스트로 고정).
+  - 미끄럼(선택): belief 지도의 경사·거칠기로 plant와 같은 식의 이동 감속을 건다. `PlantAwareMPPIController`가 매 제어 전에 belief 지도를 모델에 넘긴다.
+  - 두 Controller를 벤치마크에 넣었다: `mppi_plant`(지연 + 미끄럼)와 `mppi_plant_lag`(지연만).
+
+- **벤치마크(권장 L1 + `--plant`, seed 0–9 × 오프셋 3, 같은 (seed, 오프셋)끼리 짝 비교).** 결과는 `results/tp0149/l1_plant`(`mppi`), `results/tp0150/plant_aware`(지연 + 미끄럼), `results/tp0150/plant_lag`(지연만)다.
+
+| 레벨 3 (스택마다 120) | mppi | 지연 + 미끄럼 | **지연만 (`mppi_plant_lag`)** |
+|---|---|---|---|
+| guidance | 65 (치명 20, 시간 초과 35) | 47 (0, 73) | **79 (1, 40)** |
+| planner_df (배포) | 77 (22, 21) | 73 (1, 46) | **81 (3, 36)** |
+| planner_d (단독) | 79 (13, 28) | 69 (3, 48) | **79 (0, 41)** |
+| 레벨 0 (40씩, guidance · planner_df · planner_d) | 39 · 36 · 37 | 26 · 28 · 28 | **39 · 40 · 37** |
+
+  - 지연만 대 `mppi`의 짝 비교는 레벨 3에서 41 : 23(p = 0.03), 레벨 0에서 7 : 3이다.
+  - 지형별 레벨 3(세 스택 합 90)은 bumps_potholes 60 → 78, random_mix 62 → 70, slope_crossfall 84 → 90, curb_ramp 15 → 1이다.
+  - 안전 원칙: 스택·레벨별 치명 수가 는 곳이 없다(레벨 3 guidance 20 → 1, planner_d 13 → 0, planner_df 22 → 3, 레벨 0은 4 → 0). 새로 생긴 치명은 레벨 3에서 3건이다(guidance 1, planner_df 2, 모두 curb_ramp·bumps_potholes).
+- **미끄럼 예측이 진행을 막은 이유.** guidance + 지연 + 미끄럼은 bumps_potholes 레벨 3에서 30개 중 28개가 첫 과속방지턱 0.8 m 앞에서 멈췄다.
+  멈춘 자리에서 보면, 추종 기준 명령의 rollout이 지연 + 미끄럼 모델에서는 치명 칸에 닿는다(비용 1,045). 기존 모델에서는 닿지 않는다(25).
+  미끄럼은 이동만 깎고 회전은 그대로라 rollout이 더 휘고, 포트홀에 붙은 Guidance 경로에서는 앞으로 가는 표본이 모두 치명이 된다.
+  그래서 멈춤만 남는다. 미끄럼 예측은 선택 항목(`mppi_plant`)으로만 남긴다.
+- **경사로 레벨 3.** plant에서는 세 Controller 모두 거의 지나가지 못한다(`mppi` 15/90, 지연만 1/90). 중심이 지날 띠가 0.2 m인 경사로를 굼뜬 동역학으로 지나는 것은 설계 한계로 본다.
+  `mppi`가 지나간 15개 가운데 일부는 치명과 맞바꾼 통과다(같은 지형에서 치명 15).
+- **판정.** TP-0150의 기준(plant 레벨 3 치명 55 → 절반 이하, plant 없는 권장 L1 벤치마크 유지)을 넘었다. 기본 Controller(`mppi`)는 바뀌지 않으므로 plant 없는 벤치마크는 그대로다.
+  시도는 두 번이었다(지연 + 미끄럼, 지연만).
+- **쓰는 법.** plant가 있는 조건(실물에 가까운 조건)에서는 `--stacks <planner>+mppi_plant_lag --plant`로 돌린다. 배포 스택을 `planner_df+mppi_plant_lag`로 볼지는 사용자 결정으로 남긴다(STATE).
