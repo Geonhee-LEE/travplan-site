@@ -518,38 +518,115 @@ E.1(MPPI 계보), E.2(학습 동역학·적응 마일스톤), C.4(안전 필터 
 
 ### D.14 강화학습 (§R)
 
-강화학습 문서(R.1–R.16)에서 다룬 연구다. 순서는 arXiv 첫 게재 순이다. 기울기 없는 학습기 PolyStep은 MPOT와 함께 D.5b에 있다.
+강화학습 문서(R.0–R.18)에서 다룬 연구다. 강의 자료가 먼저 오고, 논문은 arXiv 첫 게재 순이다.
+기울기 없는 학습기 PolyStep은 MPOT와 함께 D.5b에 있다. MPPI(D.7b), BADGR(D.3b), GNM(D.4), Diffusion Policy(D.5b)는 각 절에 있다.
 
 | 이름 | 연·발표 | 요약 | 본문 | 링크 |
 |---|---|---|---|---|
 | CS 185/285 Deep RL | 2026 봄 · UC Berkeley | Sergey Levine의 심층 강화학습 강의 25강. 강화학습 문서의 순서 | R 전체 | [과목](https://rail.eecs.berkeley.edu/deeprlcourse/) |
+| CS 285 2023 영상 | 2023 가을 · UC Berkeley | RAIL 채널의 재생목록. 강의 22개를 부분 영상 95개로 나눴고, 초청 강연이 넷이다 | R 전체 | [재생목록](https://www.youtube.com/playlist?list=PL_iWQOsE6TfVYGEGiAOMaOzzv41Jfm_Ps) |
+| CS294-112 2018 영상 | 2018 가을 · UC Berkeley | 날짜별 영상 25개. 다른 정책을 따라 배우기, 병렬 RL, 초청 강연 셋은 이 재생목록에만 있다 | R.2, R.9, R.15 | [재생목록](https://www.youtube.com/playlist?list=PLkFD6_40KJIxJMR-j5A1mkxK26gh_qg37) |
+| RL 이론 교재 | 온라인 교재 · Agarwal, Jiang, Kakade, Sun | 표본 복잡도와 근사 오차 분석의 교재. 강의 20의 바탕 | R.14 | [교재](https://rltheorybook.github.io) |
 | DAgger | 2010.11 · AISTATS 2011 | 실행 분포에서 전문가 라벨을 다시 모아 행동 복제의 분포 이동을 줄인다 | R.2, 0.12 | [논문](https://arxiv.org/abs/1011.0686) |
 | DQN | 2013.12 | 재생 버퍼와 목표망으로 영상 입력 Q-learning | R.6 | [논문](https://arxiv.org/abs/1312.5602) |
 | TRPO | 2015.02 · ICML 2015 | KL 신뢰 영역 안의 정책 개선 | R.5 | [논문](https://arxiv.org/abs/1502.05477) |
+| Guided Policy Search(시각운동 정책) | 2015.04 · JMLR 2016 | 궤적 최적화가 만든 지도 신호로 영상 입력 정책을 끝에서 끝으로 학습 | R.2 | [논문](https://arxiv.org/abs/1504.00702) |
 | GAE | 2015.06 · ICLR 2016 | 편향과 분산을 λ로 고르는 이점 추정 | R.4 | [논문](https://arxiv.org/abs/1506.02438) |
+| 최대 엔트로피 심층 IRL | 2015.07 | 최대 엔트로피 IRL의 보상을 신경망으로 나타낸다. 주행 비용 지도 학습에 쓰였다 | R.17 | [논문](https://arxiv.org/abs/1507.04888) |
 | DDPG | 2015.09 · ICLR 2016 | 연속 행동의 결정적 actor-critic | R.6 | [논문](https://arxiv.org/abs/1509.02971) |
 | Double DQN | 2015.09 · AAAI 2016 | 행동 선택과 평가를 나눠 과대평가를 줄인다 | R.6 | [논문](https://arxiv.org/abs/1509.06461) |
+| Policy Distillation | 2015.11 · ICLR 2016 | 여러 교사 정책을 학생 망 하나로 증류 | R.2 | [논문](https://arxiv.org/abs/1511.06295) |
+| A3C | 2016.02 · ICML 2016 | 여러 일꾼이 비동기로 기울기를 더하는 actor-critic | R.4, R.15 | [논문](https://arxiv.org/abs/1602.01783) |
+| Bootstrapped DQN | 2016.02 · NeurIPS 2016 | 부트스트랩 Q 머리 가운데 하나를 에피소드마다 골라 깊이 탐색 | R.11 | [논문](https://arxiv.org/abs/1602.04621) |
+| Guided Cost Learning | 2016.03 · ICML 2016 | 표본 기반 최대 엔트로피 IRL. 보상과 정책을 번갈아 학습 | R.17 | [논문](https://arxiv.org/abs/1603.00448) |
+| NVIDIA 끝에서 끝 주행 | 2016.04 | 카메라 영상에서 조향을 행동 복제. 좌우 카메라로 복구 자료를 만든다 | R.2 | [논문](https://arxiv.org/abs/1604.07316) |
+| VIME | 2016.05 · NeurIPS 2016 | 베이즈 동역학 모델의 정보 이득을 탐색 보너스로 | R.11 | [논문](https://arxiv.org/abs/1605.09674) |
+| 의사 횟수 | 2016.06 · NeurIPS 2016 | 밀도 모델로 방문 횟수를 추정해 탐색 보너스로 | R.11 | [논문](https://arxiv.org/abs/1606.01868) |
+| GAIL | 2016.06 · NeurIPS 2016 | 판별기를 보상으로 쓰는 적대적 모방 | R.17 | [논문](https://arxiv.org/abs/1606.03476) |
+| 후속 특징 | 2016.06 · NeurIPS 2017 | 특징의 할인 누적으로 새 보상의 Q를 곧바로 얻고, 여러 정책 가운데 상태마다 고른다 | R.15 | [논문](https://arxiv.org/abs/1606.05312) |
+| Watch This | 2016.07 | 사람 주행 시연으로 도시 경로 계획의 비용 함수를 학습 | R.17 | [논문](https://arxiv.org/abs/1607.02329) |
+| Option-Critic | 2016.09 · AAAI 2017 | 옵션과 종료 조건을 정책 기울기로 끝에서 끝 학습 | R.15 | [논문](https://arxiv.org/abs/1609.05140) |
+| 신경망 구조 탐색(NAS) | 2016.11 · ICLR 2017 | RNN 제어기가 구조를 내고, 검증 정확도를 보상으로 REINFORCE | R.15 | [논문](https://arxiv.org/abs/1611.01578) |
+| RL² | 2016.11 | 에피소드 사이에 은닉 상태를 잇는 순환 정책으로 메타 RL | R.15 | [논문](https://arxiv.org/abs/1611.02779) |
+| GAN, IRL, 에너지 모델의 연결 | 2016.11 | 판별기의 특정 꼴이 최대 엔트로피 IRL과 같음을 보인다 | R.17 | [논문](https://arxiv.org/abs/1611.03852) |
+| #Exploration | 2016.11 · NeurIPS 2017 | 상태를 해시로 묶어 세는 탐색 보너스 | R.11 | [논문](https://arxiv.org/abs/1611.04717) |
+| VIC | 2016.11 | 선택지와 끝 상태의 상호정보로 내재 제어를 배운다 | R.11 | [논문](https://arxiv.org/abs/1611.07507) |
+| Soft Q-learning | 2017.02 · ICML 2017 | 에너지 기반 정책의 최대 엔트로피 Q-learning | R.8 | [논문](https://arxiv.org/abs/1702.08165) |
 | OpenAI ES | 2017.03 | 파라미터에 잡음을 주는 진화 전략, 대규모 병렬. TP-0128의 학습기 | R.3, E.12 | [논문](https://arxiv.org/abs/1703.03864) |
+| EX2 | 2017.03 · NeurIPS 2017 | 새 상태를 지난 상태와 가리는 분류기로 새로움을 잰다 | R.11 | [논문](https://arxiv.org/abs/1703.01260) |
+| MAML | 2017.03 · ICML 2017 | 기울기 몇 번으로 적응하는 초기값을 메타 학습 | R.15 | [논문](https://arxiv.org/abs/1703.03400) |
+| ICM(호기심) | 2017.05 · ICML 2017 | 학습한 특징 공간에서 다음 상태 예측 오차를 보상으로 | R.11 | [논문](https://arxiv.org/abs/1705.05363) |
 | PPO | 2017.07 | 비율을 자르는 정책 기울기. 보행·조작·언어 모델의 표준 | R.5 | [논문](https://arxiv.org/abs/1707.06347) |
 | HER | 2017.07 · NeurIPS 2017 | 실패 궤적을 실제로 간 곳을 목표로 다시 라벨링 | R.15 | [논문](https://arxiv.org/abs/1707.01495) |
+| GCG | 2017.09 · ICRA 2018 | 영상과 행동열로 충돌 같은 사건을 예측하는 계산 그래프. RC카가 스스로 배운다 | R.9 | [논문](https://arxiv.org/abs/1709.10489) |
 | SAC | 2018.01 · ICML 2018 | 최대 엔트로피 off-policy actor-critic | R.8 | [논문](https://arxiv.org/abs/1801.01290) |
 | DIAYN | 2018.02 · ICLR 2019 | 보상 없이 서로 구별되는 기술을 배운다 | R.11 | [논문](https://arxiv.org/abs/1802.06070) |
 | TD3 | 2018.02 · ICML 2018 | 두 critic의 작은 값과 지연 갱신으로 과대평가를 줄인다 | R.6 | [논문](https://arxiv.org/abs/1802.09477) |
+| IMPALA | 2018.02 · ICML 2018 | 행위자와 학습자를 나누고 V-trace로 정책 지연을 보정 | R.15 | [논문](https://arxiv.org/abs/1802.01561) |
+| MVE | 2018.03 | 모델로 목표를 몇 스텝 늘려 가치를 추정 | R.9 | [논문](https://arxiv.org/abs/1803.00101) |
+| Ape-X | 2018.03 · ICLR 2018 | 많은 행위자와 중앙 우선순위 재생 버퍼 | R.15 | [논문](https://arxiv.org/abs/1803.00933) |
 | 제어를 추론으로(튜토리얼) | 2018.05 | 최적성 변수로 RL을 확률 추론으로 본다. soft Bellman, MPPI의 바탕 | R.8 | [논문](https://arxiv.org/abs/1805.00909) |
 | PETS | 2018.05 · NeurIPS 2018 | 확률 앙상블 동역학 + CEM 계획 | R.9 | [논문](https://arxiv.org/abs/1805.12114) |
+| HIRO | 2018.05 · NeurIPS 2018 | 위층이 중간 목표를 내는 off-policy 계층 RL | R.15 | [논문](https://arxiv.org/abs/1805.08296) |
+| RIG | 2018.07 · NeurIPS 2018 | 생성 모델에서 상상한 목표로 영상 목표 조건 RL | R.11 | [논문](https://arxiv.org/abs/1807.04742) |
+| HG-DAgger | 2018.10 · ICRA 2019 | 사람이 개입할 때만 라벨을 받는 DAgger | R.2 | [논문](https://arxiv.org/abs/1810.02890) |
+| 배치 능동 선호 학습 | 2018.10 · CoRL 2018 | 물을 궤적 쌍을 골라 적은 질문으로 보상을 배운다 | R.12 | [논문](https://arxiv.org/abs/1810.04303) |
+| RND | 2018.10 · ICLR 2019 | 고정된 무작위 망을 따라 배우는 오차를 새로움으로 | R.11 | [논문](https://arxiv.org/abs/1810.12894) |
+| PlaNet | 2018.11 · ICML 2019 | 잠재 동역학 모델 안에서 CEM으로 계획 | R.9 | [논문](https://arxiv.org/abs/1811.04551) |
+| Go-Explore | 2019.01 | 유망한 곳으로 먼저 돌아간 뒤 거기서 탐색 | R.11 | [논문](https://arxiv.org/abs/1901.10995) |
+| Skew-Fit | 2019.03 · ICML 2020 | 드문 상태 쪽으로 목표 분포를 기울여 상태를 넓게 덮는다 | R.11 | [논문](https://arxiv.org/abs/1903.03698) |
+| PEARL | 2019.03 · ICML 2019 | 잠재 문맥을 변분 추론하는 off-policy 메타 RL | R.15 | [논문](https://arxiv.org/abs/1903.08254) |
+| Ray Interference | 2019.04 | 쉬운 과제가 학습을 독차지해 생기는 정체 | R.15 | [논문](https://arxiv.org/abs/1904.11455) |
+| 인과 혼동 | 2019.05 · NeurIPS 2019 | 행동 복제가 원인 대신 상관된 단서를 배우는 문제 | R.2 | [논문](https://arxiv.org/abs/1905.11979) |
+| SlateQ | 2019.05 · IJCAI 2019 | 슬레이트의 Q를 항목별 Q로 나누는 추천 RL | R.15 | [논문](https://arxiv.org/abs/1905.12767) |
 | MBPO | 2019.06 · NeurIPS 2019 | 짧은 모델 rollout으로 자료를 늘린 SAC | R.9 | [논문](https://arxiv.org/abs/1906.08253) |
+| 상태 주변 분포 맞추기 | 2019.06 | 정책의 상태 분포를 목표 분포에 맞추는 탐색 | R.11 | [논문](https://arxiv.org/abs/1906.05274) |
+| 시연과 선호로 보상 학습 | 2019.06 · RSS 2019 | 시연으로 보상의 사전분포를 잡고 선호 질문으로 좁힌다 | R.12 | [논문](https://arxiv.org/abs/1906.08928) |
+| PDDM | 2019.09 · CoRL 2019 | 앙상블 모델과 보상 가중 MPC로 손 조작 | R.9 | [논문](https://arxiv.org/abs/1909.11652) |
 | AWR | 2019.10 | 이점의 지수로 가중한 회귀. TP-0066의 갱신 | R.10 | [논문](https://arxiv.org/abs/1910.00177) |
+| MuZero | 2019.11 · Nature 2020 | 학습한 잠재 모델 안의 MCTS | R.18 | [논문](https://arxiv.org/abs/1911.08265) |
+| 목표 조건 정책으로 계획 | 2019.11 · NeurIPS 2019 | 목표 조건 가치로 중간 목표를 골라 계획 | R.15 | [논문](https://arxiv.org/abs/1911.08453) |
+| BRAC | 2019.11 | 보상이나 가치에 행동 정책과의 발산을 벌점으로 넣는다 | R.10 | [논문](https://arxiv.org/abs/1911.11361) |
 | Dreamer | 2019.12 · ICLR 2020 | 잠재 동역학 안의 actor-critic | R.9 | [논문](https://arxiv.org/abs/1912.01603) |
+| GCSL | 2019.12 · ICLR 2021 | 자기 궤적을 다시 라벨링해 목표 조건 행동 복제를 반복 | R.2 | [논문](https://arxiv.org/abs/1912.06088) |
+| MOReL | 2020.05 · NeurIPS 2020 | 모델이 모르는 곳을 흡수 상태로 두는 비관적 MDP | R.10 | [논문](https://arxiv.org/abs/2005.05951) |
+| MOPO | 2020.05 · NeurIPS 2020 | 보상에서 모델 불확실성을 뺀다 | R.10 | [논문](https://arxiv.org/abs/2005.13239) |
 | CQL | 2020.06 · NeurIPS 2020 | 자료 밖 행동의 Q를 끌어내리는 보수적 오프라인 RL | R.10 | [논문](https://arxiv.org/abs/2006.04779) |
+| AWAC | 2020.06 | AWR식 actor와 Q critic으로 오프라인에서 온라인으로 | R.10 | [논문](https://arxiv.org/abs/2006.09359) |
+| LaND | 2020.10 | 보도 로봇의 안전 요원 개입을 라벨로 내비게이션 학습 | R.9 | [논문](https://arxiv.org/abs/2010.04689) |
+| C-learning | 2020.11 · ICLR 2021 | 미래 상태 분류기로 목표 도달 확률을 배운다 | R.15 | [논문](https://arxiv.org/abs/2011.08909) |
+| 배치 RL의 지수 하한 | 2020.12 · ICML 2021 | 선형 실현성과 고른 덮음에도 배치 RL은 지수적인 표본이 들 수 있다 | R.14 | [논문](https://arxiv.org/abs/2012.08005) |
+| COMBO | 2021.02 · NeurIPS 2021 | 모델이 만든 상태–행동의 Q를 누르는 보수적 모델 기반 오프라인 RL | R.10 | [논문](https://arxiv.org/abs/2102.08363) |
+| 초기화 없는 다과제 RL | 2021.04 · ICRA 2021 | 과제끼리 서로의 초기화가 되어 사람 개입 없이 손 조작을 배운다 | R.15 | [논문](https://arxiv.org/abs/2104.11203) |
+| TD3+BC | 2021.06 · NeurIPS 2021 | TD3 actor 목표에 행동 복제 항을 더한 최소한의 오프라인 RL | R.10 | [논문](https://arxiv.org/abs/2106.06860) |
 | RMA | 2021.07 · RSS 2021 | 문맥 인코더로 동역학을 추정해 빠르게 적응 | R.15, 0.11 | [논문](https://arxiv.org/abs/2107.04034) |
+| Isaac Gym | 2021.08 | 물리 시뮬과 학습을 한 GPU에 올려 환경 수천 개를 돌린다 | R.15 | [논문](https://arxiv.org/abs/2108.10470) |
+| 통계적 벼랑(rliable) | 2021.08 · NeurIPS 2021 | 적은 실행의 점 추정 대신 신뢰구간과 IQM을 보고 | R.14 | [논문](https://arxiv.org/abs/2108.13264) |
 | IQL | 2021.10 · ICLR 2022 | expectile 가치와 AWR로 자료 밖 행동을 묻지 않는다 | R.10 | [논문](https://arxiv.org/abs/2110.06169) |
 | InstructGPT(RLHF) | 2022.03 · NeurIPS 2022 | 사람 선호 보상 모델 + PPO + KL 제약 | R.12 | [논문](https://arxiv.org/abs/2203.02155) |
+| SayCan | 2022.04 · CoRL 2022 | 언어 모델이 고른 기술을 가치 함수의 실행 가능성으로 거른다 | R.15 | [논문](https://arxiv.org/abs/2204.01691) |
+| 보행과 로컬 내비게이션 끝에서 끝 학습 | 2022.09 · ICRA 2023 | 4족 로봇이 험지 내비게이션을 끝에서 끝 RL로 배운다 | R.0, R.15 | [논문](https://arxiv.org/abs/2209.12827) |
+| 보상 모델 과최적화의 규모 법칙 | 2022.10 · ICML 2023 | 대리 보상을 최적화할수록 실제 보상이 꺾인다 | R.12 | [논문](https://arxiv.org/abs/2210.10760) |
+| 큰 규모의 오프라인 Q-learning | 2022.11 · ICLR 2023 | 여러 Atari 게임 자료로 CQL. 망이 클수록 좋아진다 | R.10 | [논문](https://arxiv.org/abs/2211.15144) |
+| DreamerV3 | 2023.01 · Nature 2025 | 한 설정으로 여러 영역을 푸는 세계 모델 RL | R.9 | [논문](https://arxiv.org/abs/2301.04104) |
+| RLPD | 2023.02 · ICML 2023 | 배치 절반을 오프라인 자료에서 뽑는, 처음부터의 온라인 RL | R.10 | [논문](https://arxiv.org/abs/2302.02948) |
+| Cal-QL | 2023.03 · NeurIPS 2023 | 몬테카를로 수익 아래로는 누르지 않는 보정된 CQL | R.10 | [논문](https://arxiv.org/abs/2303.05479) |
+| IDQL | 2023.04 | IQL critic이 확산 행동 정책의 표본을 다시 고른다 | R.10 | [논문](https://arxiv.org/abs/2304.10573) |
+| ACT | 2023.04 · RSS 2023 | 조건부 VAE 트랜스포머로 행동 덩어리를 낸다. 양팔 조작 | R.2, R.7 | [논문](https://arxiv.org/abs/2304.13705) |
 | DPO | 2023.05 · NeurIPS 2023 | 보상 모델 없이 선호 쌍으로 정책을 바로 학습 | R.12 | [논문](https://arxiv.org/abs/2305.18290) |
+| DDPO | 2023.05 · ICLR 2024 | 확산 모델의 denoising을 MDP로 보고 정책 기울기로 미세조정 | R.0 | [논문](https://arxiv.org/abs/2305.13301) |
+| Let's Verify Step by Step | 2023.05 · ICLR 2024 | 사고 과정의 단계마다 평가하는 과정 보상 | R.12 | [논문](https://arxiv.org/abs/2305.20050) |
 | TD-MPC2 | 2023.10 · ICLR 2024 | 잠재 모델 + MPPI 계획 + 가치로 끝을 잇는다 | R.9 | [논문](https://arxiv.org/abs/2310.16828) |
+| 상상한 대화의 RL | 2023.11 | LLM이 만든 그럴듯한 대화 위에서 목표 지향 대화 에이전트를 RL로 | R.15 | [논문](https://arxiv.org/abs/2311.05584) |
+| Diffusion-DPO | 2023.11 · CVPR 2024 | 가능도 대신 ELBO로 확산 모델에 DPO를 쓴다 | R.12 | [논문](https://arxiv.org/abs/2311.12908) |
 | QSM | 2023.12 · ICML 2024 | 확산 정책의 점수를 Q의 행동 기울기에 맞춘다 | R.13 | [논문](https://arxiv.org/abs/2312.11752) · [코드](https://github.com/escontra/score_matching_rl) |
 | DeepSeekMath(GRPO) | 2024.02 | 그룹 상대 이점, critic 없는 PPO. TP-0066의 이점 | R.12 | [논문](https://arxiv.org/abs/2402.03300) |
+| ArCHer | 2024.02 · ICML 2024 | 발화 단위 가치와 토큰 단위 정책 기울기의 계층 RL | R.10, R.15 | [논문](https://arxiv.org/abs/2402.19446) |
 | DPPO | 2024.09 · ICLR 2025 | denoising MDP를 환경 MDP에 넣어 확산 정책을 PPO로 미세조정 | R.13 | [논문](https://arxiv.org/abs/2409.00588) |
+| FQL | 2025.02 | flow 행동 복제 곁에 Q를 키우는 한 스텝 정책을 둔다 | R.10 | [논문](https://arxiv.org/abs/2502.02538) |
 | ReinFlow | 2025.05 · NeurIPS 2025 | 학습 잡음으로 flow 정책의 가능도를 정확히 계산해 미세조정 | R.13 | [논문](https://arxiv.org/abs/2505.22094) |
+| VideoMimic | 2025.05 · CoRL 2025 | 사람 영상을 따라 배운 휴머노이드 제어 | R.0 | [논문](https://arxiv.org/abs/2505.03729) |
+| DSRL | 2025.06 | 확산·flow 정책의 잠재 잡음 공간에서 온라인 RL | R.10 | [논문](https://arxiv.org/abs/2506.15799) |
 | FPO | 2025.07 | flow matching 손실의 차이를 PPO 비율로 쓴다 | R.13 | [논문](https://arxiv.org/abs/2507.21053) · [코드](https://github.com/akanazawa/fpo) |
 | Safe Score Matching | 2026.09 · NeurIPS 2026 | HJ 도달 가능성 critic으로 확산 정책의 점수 목표를 보상과 회복 두 갈래로 나눈다 | R.13, C | [논문](https://arxiv.org/abs/2609.33337) · [코드](https://github.com/byli888/safe-score-matching) |
 
