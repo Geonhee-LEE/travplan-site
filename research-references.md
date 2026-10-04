@@ -313,6 +313,7 @@ arXiv가 없어 DOI로 링크했다.
 | NaVILA | 2024.12 | 언어로 된 중간 행동 + 보행 RL 정책의 두 층 VLA | B.6b | [논문](https://arxiv.org/abs/2412.04453) · [코드](https://github.com/AnjieCheng/NaVILA) |
 | Uni-NaVid | 2024.12 | 내비 과제 넷을 한 영상 VLA로, 5 Hz | B.6b | [논문](https://arxiv.org/abs/2412.06224) · [코드](https://github.com/jzhzhang/Uni-NaVid) |
 | CityWalker | 2024.11 · CVPR 2025 | 웹 도시 보행 영상 2,000시간 이상으로 학습한 도시 내비 | B.6b | [논문](https://arxiv.org/abs/2411.17820) · [코드](https://github.com/ai4ce/CityWalker) |
+| VAMOS | 2025.10 | 범용 VLM이 영상 위 경로 후보를 내고, 로봇별 affordance(시뮬 rollout의 성공 확률)가 고르는 계층형 VLA. 실제 6코스 90 %, 장애물 시험 3배 | B.6b | [논문](https://arxiv.org/abs/2510.20818) · [코드](https://github.com/vamos-vla/vamos) · [프로젝트](https://vamos-vla.github.io/) |
 | MIMIC | 2026.03 | Coco 배달로봇 원격조종 로그 50시간으로 보도 자율주행. 다중 규모 모방 + 교정 행동 확장, 400 m당 개입 4회 | B.6d | [논문](https://arxiv.org/abs/2603.22527) |
 | Can Vision Foundation Models Navigate? | 2026.03 | 시각 내비 기반 모델 다섯 개의 실제 환경 평가, 잦은 충돌 | B.6b | [논문](https://arxiv.org/abs/2603.25937) |
 | InternNav | GitHub | 내비 기반 모델을 만드는 공개 플랫폼 | B.0 | [코드](https://github.com/InternRobotics/InternNav) |

@@ -1033,6 +1033,7 @@ $$ c_t = f\big(\psi(o_i),\ \phi(o_t, o_g),\ m\big) $$
 | 2024 | NaVILA | 영상 + 지시 → 언어로 된 중간 행동 → 보행 RL 정책 | 4족·휴머노이드 3종 배포 | [AnjieCheng/NaVILA](https://github.com/AnjieCheng/NaVILA) 0.7k |
 | 2024 | Uni-NaVid | 영상 + 지시 → 다음 행동 4개 | 네 과제 360만 샘플, 5 Hz | [jzhzhang/Uni-NaVid](https://github.com/jzhzhang/Uni-NaVid) 0.4k |
 | 2024 | CityWalker | 영상 + 과거 궤적 + 목표 → waypoint | 도시 보행 영상 2,000시간 이상 | [ai4ce/CityWalker](https://github.com/ai4ce/CityWalker) 0.2k |
+| 2025 | VAMOS | 영상 + 목표 좌표 문장 → 영상 위 2D 경로 후보. 로봇별 affordance 모델이 후보를 고른다 | PaliGemma 2 3B, 공개 자료 3종 + Spot 29.8시간 | [vamos-vla/vamos](https://github.com/vamos-vla/vamos) 0.1k(추론·배포만, 라이선스 표기 없음) |
 | 2026 | Can VFMs Navigate? | GNM, ViNT, NoMaD, NaviBridger, CrossFormer 실측 평가 | 로봇 2종, 실내외 환경 5곳 | 공개 예정 |
 
 **OpenVLA — 공개된 7B VLA**([arXiv:2406.09246](https://arxiv.org/abs/2406.09246), 2024, Stanford 등,
@@ -1076,6 +1077,55 @@ VLA가 관절 명령까지 곧장 내면 로봇마다 다시 학습해야 한다
 ![CityWalker Fig. 2](https://arxiv.org/html/2411.17820v3/2pipeline.png)
 *그림 — CityWalker (Fig. 2): 인터넷 영상에서 시각 오도메트리로 프레임 사이 자세를 얻고, 과거 관측·궤적·목표로 행동과 도착 여부를 예측한다. 학습 때는 미래 프레임 토큰이 transformer를 지도한다. 출처: [arXiv:2411.17820](https://arxiv.org/abs/2411.17820)*
 
+**VAMOS — 범용 Planner가 후보를 내고, 로봇별 능력 모델이 고른다**([arXiv:2510.20818](https://arxiv.org/abs/2510.20818), 2025-10, University of Washington·미 육군연구소,
+[프로젝트](https://vamos-vla.github.io/), [코드](https://github.com/vamos-vla/vamos)).
+==어디로 갈지(의미 계획)와 이 로봇이 갈 수 있는지(몸체 판단)를 두 모델로 나눴다.==
+- **위층.** PaliGemma 2 3B를 LoRA로 미세조정한 VLM이다. 단안 RGB 한 장과 목표 좌표 문장을 받아 영상 위 2D waypoint 열을 낸다.
+  학습 자료는 SCAND·CODa·TartanDrive 2와 Spot 자료를 합한 29.8시간이다(로봇 3종).
+- **아래층.** 로봇마다 따로 두는 affordance 함수다. 높이 지도, 지점, 방향(45° 간격 8개)을 받아 그 로봇의 저수준 정책이 지나갈 확률을 낸다.
+  Isaac Lab의 10 m × 10 m 지형 1,000개(계단, 둔덕, 경사로)에서 정책을 굴려, 성공 여부를 라벨로 썼다.
+- **고르기와 실행.** VLM의 후보를 높이 지도에 올리고, 경로 위 affordance의 최솟값으로 점수를 매긴다. 가장 높은 것을 고르거나 softmax로 뽑는다.
+  실행은 Spot의 내장 보행 제어기와, 바퀴 로봇 Hound의 pure pursuit가 맡는다.
+- **결과.** 실제 코스 6곳(실내 3, 실외 3) × 5회에서 성공률 90 %다. ViPlanner 67 %, 모듈식 스택 53 %, NoMaD 27 %, NaVILA 10 %보다 높다.
+  - 계단과 경사로가 갈리는 곳에서는 몸체 판단이 길을 바꾼다. 판단이 없으면 두 로봇 모두 계단을 4번, 경사로를 6번 골랐고 Hound는 60 %만 성공했다.
+    판단을 켜면 Spot은 짧은 계단을 8번, Hound는 경사로를 9번 골라 Hound가 90 %가 됐다(10회씩).
+  - 장애물(드럼통) 시험에서는 판단을 켜면 20 %가 60 %가 된다(10회). 논문이 말하는 "3배"다.
+- **한계.** 학습 자료가 정적이라 움직이는 장애물에 약하고, 가려진 모퉁이에서 돌기를 지나치거나 덜 한다.
+  VLM은 노트북 RTX 3080에서 1 Hz(배터리로는 0.5 Hz)이고, affordance 함수는 Jetson Orin AGX에서 돈다.
+- **공개.** 코드는 추론·배포(VLM, ROS 패키지)뿐이고 라이선스 표기가 없다. 그래서 설계만 참고한다.
+
+![VAMOS Fig. 1](https://arxiv.org/html/2510.20818v1/media/vamos_fig1.jpg)
+*그림 — VAMOS (Fig. 1): 로봇 3종의 자료로 학습한 VLM Planner가 경로를 내고, 높이 표본에서 "이 로봇이 할 수 있는 곳"을 매기는 affordance 모델이 고른다. "나무 왼쪽으로"처럼 언어로 경로를 조종할 수도 있다. 출처: [arXiv:2510.20818](https://arxiv.org/abs/2510.20818)*
+
+![VAMOS Fig. 2](https://arxiv.org/html/2510.20818v1/media/vamos_fig2_narrow.jpg)
+*그림 — VAMOS (Fig. 2): 영상과 목표 좌표 문장을 받은 VLM이 영상 위 2D 경로 후보를 내고, 로봇마다 다른 affordance 모듈이 후보를 고른다. 같은 장면에서 Spot은 계단을, 바퀴 로봇은 경사로를 택한다. 출처: [arXiv:2510.20818](https://arxiv.org/abs/2510.20818)*
+
+<details markdown="1">
+<summary>자세히: VAMOS의 affordance 함수와 경로 고르기</summary>
+
+**affordance 함수.** 로봇마다 $F_\pi(M, x, y, a) \in [0, 1]$을 둔다. $M$은 로봇 주변 높이 지도, $(x, y) \in [0, 1]^2$는 지도 안의 정규화한 지점, $a$는 0°부터 315°까지 45° 간격의 방향이다.
+값은 저수준 정책 $\pi$가 그 지점을 그 방향으로 지나갈 확률이다. 라벨은 Isaac Lab 지형 1,000개에서 정책을 굴린 성공·실패이고, 이진 교차 엔트로피로 학습한다.
+몸체마다 정책이 다르므로 $F$도 다르다.
+
+**경로 고르기.** VLM이 낸 후보 $\tau_1, \dots, \tau_K$를 높이 지도 좌표로 옮긴다. 후보는 온도 0.1로 뽑는다. 경로 점수는 경로 위 affordance의 최솟값이다.
+
+$$ F(\tau_k) = \min_{(x_i, y_i, a_i) \in \tau_k} F_\pi(M, x_i, y_i, a_i) $$
+
+가장 높은 것을 고르거나, 온도 $\beta$의 softmax $p_k \propto \exp(F(\tau_k) / \beta)$로 뽑는다. 가장 위험한 한 점이 경로 전체를 대표하므로, 한 곳이라도 못 가는 경로는 버려진다.
+
+**travplan과 겹치는 자리.**
+- 최솟값 점수는 travplan의 "경로 위 한 칸이라도 치명이면 실패" 판정과 같은 꼴이다(MPPI의 치명 판정, Planner D 표본의 치명 검사).
+- 다른 점은 점수의 출처다. travplan의 cost는 경사·단차·거칠기로 손으로 정한 기하 값이라, 어떤 Controller와 plant가 따라가는지 모른다. VAMOS의 점수는 실제 저수준 정책을 굴린 결과다.
+- 방향 조건도 다르다. travplan의 cost는 칸마다 하나라 방향을 모른다. 스워브 plant에는 모듈 조향 한계(±56.2°)가 있고 경사를 가로지르는지 오르는지에 따라 미끄럼이 다르므로, 방향을 넣을 이유가 있다.
+
+</details>
+
+**travplan에 주는 것.** ==Planner의 후보를 "이 로봇과 이 Controller로 갈 수 있는가"로 고르는 층이다.==
+- TP-0150–0152에서 plant가 갈 수 있는 곳을 바꿨다. 레벨 3 경사로는 plant 로봇이 `mppi_plant_lag`로 90번 중 1번만 지나간다(설계 한계). 그런데 TravMap cost는 이것을 모른다.
+  VAMOS처럼 plant + Controller를 굴린 성공 여부로 affordance를 배우면, Planner(Planner D 표본 선택, Guidance 경로)가 처음부터 그 경사로를 피할 수 있다.
+- 예측 모델 계층(TP-0125 메쉬 시뮬레이터, TP-0126 학습 FDM)의 라벨을 정하는 방법이기도 하다. "저수준 정책이 성공했는가"라는 이진 라벨만으로 장애물 시험의 성공률이 3배가 됐다.
+- VLM 부분(1 Hz)은 이 절의 결론대로 위층에만 쓴다.
+
 **Can Vision Foundation Models Navigate? — 성공률 뒤에 숨은 충돌**([arXiv:2603.25937](https://arxiv.org/abs/2603.25937), 2026-03). GNM, ViNT,
 NoMaD, NaviBridger, CrossFormer를 로봇 2종과 실내외 환경 5곳에서 zero-shot으로 평가했다. 성공률에 더해 경로 지표, 목표 인식 점수,
 영상 교란(모션 블러, 햇빛 번짐)에 대한 강건성을 쟀다. 세 가지 체계적 한계가 드러났다. diffusion과 transformer 모델도 충돌이 잦아 기하
@@ -1109,7 +1159,7 @@ $$ L^\tau(\theta) = \mathbb E\, \big\lVert \mathbf v_\theta(\mathbf A^\tau_t, \m
 내비 기반 모델은 충돌이 잦았다. NaVILA도 VLA와 보행 정책을 두 층으로 나눴다. Uni-NaVid의 5 Hz는 travplan 시뮬과 Controller의 제어 주기(0.1 s)보다 느리다. 그래서
 travplan에서는 VLM·VLA가 "어느 보도로, 어디까지"를 정하고, Planner D와 Controller가 기하와 시간을 맡는다(A.10의 PIVOT 구조와 같다).
 CityWalker의 웹 영상 라벨링은 보도 장면 데이터를 싸게 얻는 방법이라, Planner 학습 데이터를 실제 보도 분포로 넓힐 때 참고한다.
-이 분담이 옳다는 것을 수치로 보인 것이 B.6c다.
+이 분담이 옳다는 것을 수치로 보인 것이 B.6c다. VAMOS도 위층 VLM과 아래층 몸체 판단을 나눠 실제 코스에서 90 %를 냈다(NaVILA 10 %).
 
 ### B.6c 시연 투어와 위상 그래프: 멀티모달 지시를 좌표 없이 푼다
 

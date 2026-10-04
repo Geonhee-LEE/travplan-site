@@ -196,9 +196,9 @@ footer { max-width: 1000px; margin: 0 auto; padding: 0 16px 40px; color: var(--m
   nav.subtabs button { min-height: 32px; }
 }
 </style>
-<header data-generated="2026-10-04 06:26 KST">
+<header data-generated="2026-10-04 08:18 KST">
   <h1>travplan 대시보드</h1>
-  <div class="meta" data-site-meta><a href="index.html">← travplan 홈</a> · 갱신 2026-10-04 06:26 KST</div>
+  <div class="meta" data-site-meta><a href="index.html">← travplan 홈</a> · 갱신 2026-10-04 08:18 KST</div>
 </header>
 <nav class="tabs" role="tablist" aria-label="대시보드 탭"><button role="tab" id="tabbtn-state" aria-controls="tab-state" aria-selected="true" tabindex="0" data-tab="state" class="active">진행 현황</button><button role="tab" id="tabbtn-todo" aria-controls="tab-todo" aria-selected="false" tabindex="-1" data-tab="todo">TODO</button><button role="tab" id="tabbtn-prd" aria-controls="tab-prd" aria-selected="false" tabindex="-1" data-tab="prd">PRD</button><button role="tab" id="tabbtn-arch" aria-controls="tab-arch" aria-selected="false" tabindex="-1" data-tab="arch">아키텍처 · 기능 설명</button><button role="tab" id="tabbtn-research" aria-controls="tab-research" aria-selected="false" tabindex="-1" data-tab="research">리서치</button><button role="tab" id="tabbtn-design" aria-controls="tab-design" aria-selected="false" tabindex="-1" data-tab="design">설계 · PoC</button><button role="tab" id="tabbtn-sim" aria-controls="tab-sim" aria-selected="false" tabindex="-1" data-tab="sim">시뮬레이션 ▶</button></nav>
 <main>
@@ -208,7 +208,7 @@ footer { max-width: 1000px; margin: 0 auto; padding: 0 16px 40px; color: var(--m
 <div class="kpi"><div class="kpi-label">진행 중·오늘</div><div class="kpi-val">0</div></div>
 <div class="kpi"><div class="kpi-label">사용자 실행 대기</div><div class="kpi-val">4</div></div>
 <div class="kpi"><div class="kpi-label">열린 PR</div><div class="kpi-val">0</div></div>
-<div class="kpi"><div class="kpi-label">최근 7일 merge</div><div class="kpi-val">115</div></div>
+<div class="kpi"><div class="kpi-label">최근 7일 merge</div><div class="kpi-val">116</div></div>
 </div>
 <div class="card md"><h2>현재 병목</h2><p><mark>스워브 plant에서 치명은 거의 사라졌지만(4/360), 레벨 3의 3분의 1이 시간 초과로 끝난다. 특히 레벨 3 경사로는 거의 지나가지 못한다.</mark></p>
 <ul>
@@ -1380,7 +1380,7 @@ LiDAR 링 사이가 비어 로봇 주변 3 m 안의 10–12%가 미관측으로 
 <td>열린 PR 없음(2026-10-03). <a class="tp tp-done" href="#todo" data-tp="TP-0078" title="완료 · 기록에서 복원 · 이슈 #148(닫힘) · PR #149(merge됨)">✓ TP-0078 ◉</a>·0066·0139·0131·0039·0074는 main에 merge됐다</td>
 </tr>
 </tbody>
-</table><h3>열린 PR</h3><ul class='prs'><li class='empty'>없음</li></ul><h3>최근 merge된 PR</h3><ul class='prs'><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #184</span> TP-0154: 다음 병목 측정 3 — 보행자 5명 + 권장 L1 + plant, 충돌 8/720(1.1 %) <a class="tp tp-done" href="#todo" data-tp="TP-0154" title="완료 · 다음 병목 측정 3: 보행자 5명을 권장 L1 + 스워브 plant에 얹는다(mppi_plant_lag, --device cuda). 레벨 0·3 × seed 0–9 × 오프... · 이슈 #181(닫힘) · PR #184(merge됨)">✓ TP-0154 ◉</a> <span class="date">2026-10-04</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #183</span> TP-0152 (2/2): plant 조건에서 NMPC 갈래는 지연을 아는 MPPI보다 치명이 여덟 배 많다 <a class="tp tp-done" href="#todo" data-tp="TP-0152" title="완료 · NMPC 갈래를 plant 조건에서 MPPI와 비교(사용자 결정 C로 이 PC에 acados v0.3.4 설치). 권장 L1 + 스워브 plant, 레벨 3·0, seed 0... · 이슈 #178(닫힘) · PR #179(merge됨) · PR #183(merge됨)">✓ TP-0152 ◉</a> <span class="date">2026-10-04</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #182</span> TP-0153: L1 벤치마크의 GPU 경로 — CPU와 비트 단위로 같고 약 3.5배 빠르다 <a class="tp tp-done" href="#todo" data-tp="TP-0153" title="완료 · L1 벤치마크의 GPU 경로: run_benchmark.py --device cuda(기본 cpu)로 TravMap 생성(TP-0084의 device 옵션)과 합성 LiDAR... · 이슈 #180(닫힘) · PR #182(merge됨)">✓ TP-0153</a> <span class="date">2026-10-04</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #179</span> TP-0152 (1/2): 사용자 결정 기록과 GPU PC acados 설치 <a class="tp tp-done" href="#todo" data-tp="TP-0152" title="완료 · NMPC 갈래를 plant 조건에서 MPPI와 비교(사용자 결정 C로 이 PC에 acados v0.3.4 설치). 권장 L1 + 스워브 plant, 레벨 3·0, seed 0... · 이슈 #178(닫힘) · PR #179(merge됨) · PR #183(merge됨)">✓ TP-0152 ◉</a> <span class="date">2026-10-04</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #177</span> TP-0151 추가: 명령 한계 기준을 바꿔도 plant 결과는 같다 — 결정 A를 닫는다 <a class="tp tp-done" href="#todo" data-tp="TP-0151" title="완료 · 다음 병목: plant 레벨 3의 진행성 — mppi_plant_lag로 치명은 4/360이 됐지만 시간 초과가 117/360(curb_ramp 86/90, random_mi... · 이슈 #175(닫힘) · PR #176(merge됨) · PR #177(merge됨)">✓ TP-0151</a> <span class="date">2026-10-03</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #176</span> TP-0151: plant 레벨 3 경사로는 다섯 시도로도 열리지 않았다 — 시뮬 plant의 명령 한계 겹침을 묻고 멈춘다 <a class="tp tp-done" href="#todo" data-tp="TP-0151" title="완료 · 다음 병목: plant 레벨 3의 진행성 — mppi_plant_lag로 치명은 4/360이 됐지만 시간 초과가 117/360(curb_ramp 86/90, random_mi... · 이슈 #175(닫힘) · PR #176(merge됨) · PR #177(merge됨)">✓ TP-0151</a> <span class="date">2026-10-03</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #174</span> TP-0150: MPPI rollout에 스워브 plant의 지연을 넣는다 — plant 레벨 3 치명 55 → 4, 도달 221 → 239/360 <a class="tp tp-done" href="#todo" data-tp="TP-0150" title="완료 · 다음 병목: 레벨 3에서 plant를 아는 Controller — 권장 L1 + 스워브 plant에서 레벨 3이 335 → 221/360(치명 6 → 55). MPPI rol... · 이슈 #173(닫힘) · PR #174(merge됨)">✓ TP-0150 ◉</a> <span class="date">2026-10-03</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #172</span> TP-0149: 다음 병목 측정 2 — 권장 L1에 스워브 plant를 얹으면 레벨 3이 335 → 221/360 <a class="tp tp-done" href="#todo" data-tp="TP-0149" title="완료 · 다음 병목 측정 2: 권장 L1(정렬 + 낮은 채움 + 구덩이 여유)이 레벨 3에서 335/360(치명 6)으로 거의 포화. 아직 같이 재지 않은 현실 요소를 얹어 잰다 — ... · 이슈 #171(닫힘) · PR #172(merge됨)">✓ TP-0149 ◉</a> <span class="date">2026-10-03</span></li></ul><p class="note">GitHub 인덱스 갱신: 2026-10-04 06:26 · <code>python3 automation/gh_index.py</code></p></div>
+</table><h3>열린 PR</h3><ul class='prs'><li class='empty'>없음</li></ul><h3>최근 merge된 PR</h3><ul class='prs'><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #186</span> 리서치 B.6b: VAMOS(arXiv:2510.20818) — 범용 VLM이 후보를 내고 로봇별 affordance가 고르는 계층형 VLA  <span class="date">2026-10-04</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #184</span> TP-0154: 다음 병목 측정 3 — 보행자 5명 + 권장 L1 + plant, 충돌 8/720(1.1 %) <a class="tp tp-done" href="#todo" data-tp="TP-0154" title="완료 · 다음 병목 측정 3: 보행자 5명을 권장 L1 + 스워브 plant에 얹는다(mppi_plant_lag, --device cuda). 레벨 0·3 × seed 0–9 × 오프... · 이슈 #181(닫힘) · PR #184(merge됨)">✓ TP-0154 ◉</a> <span class="date">2026-10-04</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #183</span> TP-0152 (2/2): plant 조건에서 NMPC 갈래는 지연을 아는 MPPI보다 치명이 여덟 배 많다 <a class="tp tp-done" href="#todo" data-tp="TP-0152" title="완료 · NMPC 갈래를 plant 조건에서 MPPI와 비교(사용자 결정 C로 이 PC에 acados v0.3.4 설치). 권장 L1 + 스워브 plant, 레벨 3·0, seed 0... · 이슈 #178(닫힘) · PR #179(merge됨) · PR #183(merge됨)">✓ TP-0152 ◉</a> <span class="date">2026-10-04</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #182</span> TP-0153: L1 벤치마크의 GPU 경로 — CPU와 비트 단위로 같고 약 3.5배 빠르다 <a class="tp tp-done" href="#todo" data-tp="TP-0153" title="완료 · L1 벤치마크의 GPU 경로: run_benchmark.py --device cuda(기본 cpu)로 TravMap 생성(TP-0084의 device 옵션)과 합성 LiDAR... · 이슈 #180(닫힘) · PR #182(merge됨)">✓ TP-0153</a> <span class="date">2026-10-04</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #179</span> TP-0152 (1/2): 사용자 결정 기록과 GPU PC acados 설치 <a class="tp tp-done" href="#todo" data-tp="TP-0152" title="완료 · NMPC 갈래를 plant 조건에서 MPPI와 비교(사용자 결정 C로 이 PC에 acados v0.3.4 설치). 권장 L1 + 스워브 plant, 레벨 3·0, seed 0... · 이슈 #178(닫힘) · PR #179(merge됨) · PR #183(merge됨)">✓ TP-0152 ◉</a> <span class="date">2026-10-04</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #177</span> TP-0151 추가: 명령 한계 기준을 바꿔도 plant 결과는 같다 — 결정 A를 닫는다 <a class="tp tp-done" href="#todo" data-tp="TP-0151" title="완료 · 다음 병목: plant 레벨 3의 진행성 — mppi_plant_lag로 치명은 4/360이 됐지만 시간 초과가 117/360(curb_ramp 86/90, random_mi... · 이슈 #175(닫힘) · PR #176(merge됨) · PR #177(merge됨)">✓ TP-0151</a> <span class="date">2026-10-03</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #176</span> TP-0151: plant 레벨 3 경사로는 다섯 시도로도 열리지 않았다 — 시뮬 plant의 명령 한계 겹침을 묻고 멈춘다 <a class="tp tp-done" href="#todo" data-tp="TP-0151" title="완료 · 다음 병목: plant 레벨 3의 진행성 — mppi_plant_lag로 치명은 4/360이 됐지만 시간 초과가 117/360(curb_ramp 86/90, random_mi... · 이슈 #175(닫힘) · PR #176(merge됨) · PR #177(merge됨)">✓ TP-0151</a> <span class="date">2026-10-03</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #174</span> TP-0150: MPPI rollout에 스워브 plant의 지연을 넣는다 — plant 레벨 3 치명 55 → 4, 도달 221 → 239/360 <a class="tp tp-done" href="#todo" data-tp="TP-0150" title="완료 · 다음 병목: 레벨 3에서 plant를 아는 Controller — 권장 L1 + 스워브 plant에서 레벨 3이 335 → 221/360(치명 6 → 55). MPPI rol... · 이슈 #173(닫힘) · PR #174(merge됨)">✓ TP-0150 ◉</a> <span class="date">2026-10-03</span></li></ul><p class="note">GitHub 인덱스 갱신: 2026-10-04 08:18 · <code>python3 automation/gh_index.py</code></p></div>
 <div class="card md"><h2>작업 환경</h2><details><summary>체크포인트, 가상환경, 그림·인덱스 재생성</summary><ul>
 <li><strong>브랜치.</strong> 두 PC 모두 main에서 이어간다.</li>
 <li><strong>체크포인트.</strong> <code>checkpoints/</code>는 git에 없다. 릴리스에서 받는다.
@@ -2920,7 +2920,7 @@ Controller·안전, 시뮬레이션이고, 보조 문서는 여러 논문이 함
 <tr>
 <td>2025</td>
 <td>DINOv3, Depth Anything 3, SAM 3, RF-DETR, MoFlow</td>
-<td>Diffusion Planner, GoalFlow, NavDP, CaRL, Alpamayo</td>
+<td>Diffusion Planner, GoalFlow, NavDP, CaRL, Alpamayo, VAMOS</td>
 <td>CVaR-BF, DRA-MPPI</td>
 <td>Isaac Lab, MuJoCo Playground, URBAN-SIM, UrbanVerse, COMPASS, Cosmos</td>
 </tr>
@@ -14321,7 +14321,7 @@ IPOPT 5.47 s로 <strong>46–69배</strong>가 된다. CoDiG도 warm start 없�
 <p>jerk가 2.0에서 3.9로 오른 것은 이제 요철 띠를 실제로 건너기 때문이다(기준선 4.4). 비용 유도 샘플링은 더 이상 필요 없어 계획 시간은 3.4 ms로
 유지된다. 기준선과 같은 12/12라 벤치마크가 포화됐으므로, 다음은 seed 확대와 동적 장애물·미관측 영역 평가다(TP-0027).</p>
 <p><strong>쓰지 않는 것.</strong> 자동차용 벡터 지도(Lanelet2) 인코더는 쓰지 않는다. 보도에는 HD map이 없으므로 TravMap 래스터가 그 자리를 대신한다.
-이웃 보행자와의 공동 생성은 2단계로 미룬다. 먼저 등속 예측과 <code>RiskCost</code>로 충분한지 확인한 뒤 판단한다.</p></div><div class="card md subpanel" id="sub-research-d3-4" role="tabpanel" aria-labelledby="subbtn-research-d3-4" data-math="34"><h3>B.6 foundation model과 의미 기반 내비게이션</h3>
+이웃 보행자와의 공동 생성은 2단계로 미룬다. 먼저 등속 예측과 <code>RiskCost</code>로 충분한지 확인한 뒤 판단한다.</p></div><div class="card md subpanel" id="sub-research-d3-4" role="tabpanel" aria-labelledby="subbtn-research-d3-4" data-math="44"><h3>B.6 foundation model과 의미 기반 내비게이션</h3>
 <p><strong>ViNT / NoMaD / GNM</strong>(<a href="https://arxiv.org/abs/2306.14846">ViNT arXiv:2306.14846</a>, <a href="https://arxiv.org/abs/2310.07896">NoMaD arXiv:2310.07896</a>,
 <a href="https://arxiv.org/abs/2210.03370">GNM arXiv:2210.03370</a>, <a href="https://github.com/robodhruv/visualnav-transformer">코드</a>, 1,300★ 이상) — 이 분야에서
 가장 성숙하고 여러 로봇에 실제로 배포됐다. 공유 transformer 인코더가 이미지 이력과 목표(목표 이미지, 또는 없음)를 받아 waypoint 열(ViNT)이나
@@ -14410,6 +14410,13 @@ transformer $f$가 문맥 $c_t$를 만든다. 장거리 탐색은 위상 기억 
 <td><a href="https://github.com/ai4ce/CityWalker">ai4ce/CityWalker</a> 0.2k</td>
 </tr>
 <tr>
+<td>2025</td>
+<td>VAMOS</td>
+<td>영상 + 목표 좌표 문장 → 영상 위 2D 경로 후보. 로봇별 affordance 모델이 후보를 고른다</td>
+<td>PaliGemma 2 3B, 공개 자료 3종 + Spot 29.8시간</td>
+<td><a href="https://github.com/vamos-vla/vamos">vamos-vla/vamos</a> 0.1k(추론·배포만, 라이선스 표기 없음)</td>
+</tr>
+<tr>
 <td>2026</td>
 <td>Can VFMs Navigate?</td>
 <td>GNM, ViNT, NoMaD, NaviBridger, CrossFormer 실측 평가</td>
@@ -14448,7 +14455,49 @@ VLA가 관절 명령까지 곧장 내면 로봇마다 다시 학습해야 한다
 고정한 영상 인코더와 학습하는 좌표 인코더가 과거 관측, 과거 궤적, 목표 위치를 받고, transformer가 waypoint와 도착 여부를 낸다. 소량의
 원격조종 데이터로 미세조정한 뒤 Unitree Go1 실제 주행에서 성공률 77.3%로, 미세조정한 ViNT(57.1%)와 zero-shot NoMaD(42.9%)를 앞섰다.</p>
 <div class="fig-grid"><figure class="fig"><a class="thumb" href="https://arxiv.org/html/2411.17820v3/2pipeline.png" title="원본 보기"><img alt="CityWalker Fig. 2" src="assets/thumbs/30866f671e67.webp" loading="lazy"></a><figcaption>그림 — CityWalker (Fig. 2): 인터넷 영상에서 시각 오도메트리로 프레임 사이 자세를 얻고, 과거 관측·궤적·목표로 행동과 도착 여부를 예측한다. 학습 때는 미래 프레임 토큰이 transformer를 지도한다. 출처: <a href="https://arxiv.org/abs/2411.17820">arXiv:2411.17820</a></figcaption></figure>
-</div><p><strong>Can Vision Foundation Models Navigate? — 성공률 뒤에 숨은 충돌</strong>(<a href="https://arxiv.org/abs/2603.25937">arXiv:2603.25937</a>, 2026-03). GNM, ViNT,
+</div><p><strong>VAMOS — 범용 Planner가 후보를 내고, 로봇별 능력 모델이 고른다</strong>(<a href="https://arxiv.org/abs/2510.20818">arXiv:2510.20818</a>, 2025-10, University of Washington·미 육군연구소,
+<a href="https://vamos-vla.github.io/">프로젝트</a>, <a href="https://github.com/vamos-vla/vamos">코드</a>).
+<mark>어디로 갈지(의미 계획)와 이 로봇이 갈 수 있는지(몸체 판단)를 두 모델로 나눴다.</mark></p>
+<ul>
+<li><strong>위층.</strong> PaliGemma 2 3B를 LoRA로 미세조정한 VLM이다. 단안 RGB 한 장과 목표 좌표 문장을 받아 영상 위 2D waypoint 열을 낸다.
+  학습 자료는 SCAND·CODa·TartanDrive 2와 Spot 자료를 합한 29.8시간이다(로봇 3종).</li>
+<li><strong>아래층.</strong> 로봇마다 따로 두는 affordance 함수다. 높이 지도, 지점, 방향(45° 간격 8개)을 받아 그 로봇의 저수준 정책이 지나갈 확률을 낸다.
+  Isaac Lab의 10 m × 10 m 지형 1,000개(계단, 둔덕, 경사로)에서 정책을 굴려, 성공 여부를 라벨로 썼다.</li>
+<li><strong>고르기와 실행.</strong> VLM의 후보를 높이 지도에 올리고, 경로 위 affordance의 최솟값으로 점수를 매긴다. 가장 높은 것을 고르거나 softmax로 뽑는다.
+  실행은 Spot의 내장 보행 제어기와, 바퀴 로봇 Hound의 pure pursuit가 맡는다.</li>
+<li><strong>결과.</strong> 실제 코스 6곳(실내 3, 실외 3) × 5회에서 성공률 90 %다. ViPlanner 67 %, 모듈식 스택 53 %, NoMaD 27 %, NaVILA 10 %보다 높다.</li>
+<li>계단과 경사로가 갈리는 곳에서는 몸체 판단이 길을 바꾼다. 판단이 없으면 두 로봇 모두 계단을 4번, 경사로를 6번 골랐고 Hound는 60 %만 성공했다.
+    판단을 켜면 Spot은 짧은 계단을 8번, Hound는 경사로를 9번 골라 Hound가 90 %가 됐다(10회씩).</li>
+<li>장애물(드럼통) 시험에서는 판단을 켜면 20 %가 60 %가 된다(10회). 논문이 말하는 "3배"다.</li>
+<li><strong>한계.</strong> 학습 자료가 정적이라 움직이는 장애물에 약하고, 가려진 모퉁이에서 돌기를 지나치거나 덜 한다.
+  VLM은 노트북 RTX 3080에서 1 Hz(배터리로는 0.5 Hz)이고, affordance 함수는 Jetson Orin AGX에서 돈다.</li>
+<li><strong>공개.</strong> 코드는 추론·배포(VLM, ROS 패키지)뿐이고 라이선스 표기가 없다. 그래서 설계만 참고한다.</li>
+</ul>
+<div class="fig-grid"><figure class="fig"><a class="thumb" href="https://arxiv.org/html/2510.20818v1/media/vamos_fig1.jpg" title="원본 보기"><img alt="VAMOS Fig. 1" src="assets/thumbs/52aad81bfa5e.webp" loading="lazy"></a><figcaption>그림 — VAMOS (Fig. 1): 로봇 3종의 자료로 학습한 VLM Planner가 경로를 내고, 높이 표본에서 "이 로봇이 할 수 있는 곳"을 매기는 affordance 모델이 고른다. "나무 왼쪽으로"처럼 언어로 경로를 조종할 수도 있다. 출처: <a href="https://arxiv.org/abs/2510.20818">arXiv:2510.20818</a></figcaption></figure>
+<figure class="fig"><a class="thumb" href="https://arxiv.org/html/2510.20818v1/media/vamos_fig2_narrow.jpg" title="원본 보기"><img alt="VAMOS Fig. 2" src="assets/thumbs/eb619991296d.webp" loading="lazy"></a><figcaption>그림 — VAMOS (Fig. 2): 영상과 목표 좌표 문장을 받은 VLM이 영상 위 2D 경로 후보를 내고, 로봇마다 다른 affordance 모듈이 후보를 고른다. 같은 장면에서 Spot은 계단을, 바퀴 로봇은 경사로를 택한다. 출처: <a href="https://arxiv.org/abs/2510.20818">arXiv:2510.20818</a></figcaption></figure>
+</div><details>
+<summary>자세히: VAMOS의 affordance 함수와 경로 고르기</summary>
+<p><strong>affordance 함수.</strong> 로봇마다 $F_\pi(M, x, y, a) \in [0, 1]$을 둔다. $M$은 로봇 주변 높이 지도, $(x, y) \in [0, 1]^2$는 지도 안의 정규화한 지점, $a$는 0°부터 315°까지 45° 간격의 방향이다.
+값은 저수준 정책 $\pi$가 그 지점을 그 방향으로 지나갈 확률이다. 라벨은 Isaac Lab 지형 1,000개에서 정책을 굴린 성공·실패이고, 이진 교차 엔트로피로 학습한다.
+몸체마다 정책이 다르므로 $F$도 다르다.</p>
+<p><strong>경로 고르기.</strong> VLM이 낸 후보 $\tau_1, \dots, \tau_K$를 높이 지도 좌표로 옮긴다. 후보는 온도 0.1로 뽑는다. 경로 점수는 경로 위 affordance의 최솟값이다.</p>
+<p>$$ F(\tau_k) = \min_{(x_i, y_i, a_i) \in \tau_k} F_\pi(M, x_i, y_i, a_i) $$</p>
+<p>가장 높은 것을 고르거나, 온도 $\beta$의 softmax $p_k \propto \exp(F(\tau_k) / \beta)$로 뽑는다. 가장 위험한 한 점이 경로 전체를 대표하므로, 한 곳이라도 못 가는 경로는 버려진다.</p>
+<p><strong>travplan과 겹치는 자리.</strong></p>
+<ul>
+<li>최솟값 점수는 travplan의 "경로 위 한 칸이라도 치명이면 실패" 판정과 같은 꼴이다(MPPI의 치명 판정, Planner D 표본의 치명 검사).</li>
+<li>다른 점은 점수의 출처다. travplan의 cost는 경사·단차·거칠기로 손으로 정한 기하 값이라, 어떤 Controller와 plant가 따라가는지 모른다. VAMOS의 점수는 실제 저수준 정책을 굴린 결과다.</li>
+<li>방향 조건도 다르다. travplan의 cost는 칸마다 하나라 방향을 모른다. 스워브 plant에는 모듈 조향 한계(±56.2°)가 있고 경사를 가로지르는지 오르는지에 따라 미끄럼이 다르므로, 방향을 넣을 이유가 있다.</li>
+</ul>
+</details>
+<p><strong>travplan에 주는 것.</strong> <mark>Planner의 후보를 "이 로봇과 이 Controller로 갈 수 있는가"로 고르는 층이다.</mark></p>
+<ul>
+<li>TP-0150–0152에서 plant가 갈 수 있는 곳을 바꿨다. 레벨 3 경사로는 plant 로봇이 <code>mppi_plant_lag</code>로 90번 중 1번만 지나간다(설계 한계). 그런데 TravMap cost는 이것을 모른다.
+  VAMOS처럼 plant + Controller를 굴린 성공 여부로 affordance를 배우면, Planner(Planner D 표본 선택, Guidance 경로)가 처음부터 그 경사로를 피할 수 있다.</li>
+<li>예측 모델 계층(TP-0125 메쉬 시뮬레이터, TP-0126 학습 FDM)의 라벨을 정하는 방법이기도 하다. "저수준 정책이 성공했는가"라는 이진 라벨만으로 장애물 시험의 성공률이 3배가 됐다.</li>
+<li>VLM 부분(1 Hz)은 이 절의 결론대로 위층에만 쓴다.</li>
+</ul>
+<p><strong>Can Vision Foundation Models Navigate? — 성공률 뒤에 숨은 충돌</strong>(<a href="https://arxiv.org/abs/2603.25937">arXiv:2603.25937</a>, 2026-03). GNM, ViNT,
 NoMaD, NaviBridger, CrossFormer를 로봇 2종과 실내외 환경 5곳에서 zero-shot으로 평가했다. 성공률에 더해 경로 지표, 목표 인식 점수,
 영상 교란(모션 블러, 햇빛 번짐)에 대한 강건성을 쟀다. 세 가지 체계적 한계가 드러났다. diffusion과 transformer 모델도 충돌이 잦아 기하
 이해가 약하다. 비슷하게 생긴 다른 장소를 구별하지 못해 반복적인 환경에서 목표를 잘못 짚는다. 분포가 바뀌면 성능이 떨어진다.</p>
@@ -14472,7 +14521,7 @@ min–max 대신 백분위를 써서 이상치 행동이 구간을 넓히는 것
 내비 기반 모델은 충돌이 잦았다. NaVILA도 VLA와 보행 정책을 두 층으로 나눴다. Uni-NaVid의 5 Hz는 travplan 시뮬과 Controller의 제어 주기(0.1 s)보다 느리다. 그래서
 travplan에서는 VLM·VLA가 "어느 보도로, 어디까지"를 정하고, Planner D와 Controller가 기하와 시간을 맡는다(A.10의 PIVOT 구조와 같다).
 CityWalker의 웹 영상 라벨링은 보도 장면 데이터를 싸게 얻는 방법이라, Planner 학습 데이터를 실제 보도 분포로 넓힐 때 참고한다.
-이 분담이 옳다는 것을 수치로 보인 것이 B.6c다.</p>
+이 분담이 옳다는 것을 수치로 보인 것이 B.6c다. VAMOS도 위층 VLM과 아래층 몸체 판단을 나눠 실제 코스에서 90 %를 냈다(NaVILA 10 %).</p>
 <h3>B.6c 시연 투어와 위상 그래프: 멀티모달 지시를 좌표 없이 푼다</h3>
 <p><strong>Mobility VLA — 긴 문맥 VLM은 목표 프레임만 고르고, 기하는 위상 그래프가 맡는다</strong>(<a href="https://arxiv.org/abs/2407.07775">arXiv:2407.07775</a>,
 CoRL 2024, Google DeepMind, 코드 공개 없음). 앞 절의 VLA들이 영상과 지시에서 행동을 곧장 낸다면, 이 연구는 반대로 간다.
@@ -25141,6 +25190,13 @@ arXiv가 없어 DOI로 링크했다.</p>
 <td>웹 도시 보행 영상 2,000시간 이상으로 학습한 도시 내비</td>
 <td>B.6b</td>
 <td><a href="https://arxiv.org/abs/2411.17820">논문</a> · <a href="https://github.com/ai4ce/CityWalker">코드</a></td>
+</tr>
+<tr>
+<td>VAMOS</td>
+<td>2025.10</td>
+<td>범용 VLM이 영상 위 경로 후보를 내고, 로봇별 affordance(시뮬 rollout의 성공 확률)가 고르는 계층형 VLA. 실제 6코스 90 %, 장애물 시험 3배</td>
+<td>B.6b</td>
+<td><a href="https://arxiv.org/abs/2510.20818">논문</a> · <a href="https://github.com/vamos-vla/vamos">코드</a> · <a href="https://vamos-vla.github.io/">프로젝트</a></td>
 </tr>
 <tr>
 <td>MIMIC</td>
