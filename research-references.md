@@ -9,7 +9,7 @@
 
 목차: D.0 E2E 분해 · D.1 지형·traversability·중간 표현(A.10) · D.2 Occupancy · D.3 예측(occupancy flow·world model·
 행위자) · D.3b 인식 마일스톤·시각 기반 모델·동적 장애물 · D.4 학습 Planner · D.4b 비학습 위험 인지 경로 계획 · D.5 생성형 궤적 Planner ·
-D.5b 고전 기준선·마일스톤·VLA·E2E 주행 · D.5c 로봇별 오픈소스 스택 · D.6 Controller(참고) · D.7 안전 필터 · D.7b Controller·안전 마일스톤 ·
+D.5b 고전 기준선·마일스톤·VLA·E2E 주행 · D.5c 로봇별 오픈소스 스택 · D.6 Controller(참고) · D.7 안전 필터 · D.7b Controller·안전 마일스톤 · **D.14 강화학습** ·
 **D.13 연구 그룹과 사람** · D.8 로코모션·시스템 스택 · D.9 데이터셋·벤치마크 · D.10 벤더·산업 자료 ·
 D.12 IROS 2026 수확 · D.11 기타
 (시뮬레이션 참고문헌은 시뮬레이션 문서의 S.8에 있다)
@@ -304,6 +304,7 @@ arXiv가 없어 DOI로 링크했다.
 | ROS 2 내비 알고리즘 개관 | 2023.07 | Nav2 유지보수자들이 쓴 알고리즘 비교 | B.10 | [논문](https://arxiv.org/abs/2307.15236) |
 | Smac Planner | 2024.01 | 비용 인식 A\*, Hybrid-A\*, State Lattice. Nav2 기본 계획기 | B.10, B.12.4 | [논문](https://arxiv.org/abs/2401.13078) |
 | **MPOT** | 2023.09 · **NeurIPS 2023** | 기울기 없이 궤적 다발을 한꺼번에 최적화(Sinkhorn Step). point-mass 0.4 s/99.2%, Panda 0.8 s/71.6%. ==원형은 Controller 자리에 못 쓰고, 제어열 판은 같은 예산의 MPPI를 넘지 못했다(TP-0130). 남는 자리는 Planner D의 다중 모드 교사== | E.11, B.10.1, 0.2b ① | [논문](https://arxiv.org/abs/2309.15970) · [코드](https://github.com/anindex/mpot) ★71 **MIT** · [ssax](https://github.com/anindex/ssax) **MIT** |
+| PolyStep | 2026.05 | MPOT의 Sinkhorn Step에서 Sinkhorn을 떼고 softmax 배정과 무게중심 투영만 남긴 기울기 없는 학습기. 스파이킹 망 93.4 %, RL 정책 탐색은 OpenAI-ES와 같다 | 0.2b, E.11, E.12 | [논문](https://arxiv.org/abs/2605.01928) · [코드](https://github.com/anindex/polystep) |
 | MPC-OT | 2025.08 · IEEE CDC 2025 | 로봇 N대를 목표 M개에 배정하며 경로 비겹침을 LP 제약으로 보장, MPC로 재계획. **D.6의 OT-MPC와 다른 논문이다.** ⚠️ 계산 시간·성공률·기준선 비교 없음, 증명은 다른 곳, 코드 없음 | 0.2b ② | [논문](https://arxiv.org/abs/2508.21205) |
 | iPlanner | 2023.02 · RSS 2023 | 비용 지도의 기울기로 학습하는 경로 Planner, fear loss | B.4b, B.12.2 | [논문](https://arxiv.org/abs/2302.11434) · [코드](https://github.com/leggedrobotics/iPlanner) |
 | ViPlanner | 2023.10 · ICRA 2024 | 의미 비용 지도로 확장, 시뮬 학습만으로 실물 | B.4b, B.12.2 | [논문](https://arxiv.org/abs/2310.00982) · [코드](https://github.com/leggedrobotics/viplanner) |
@@ -313,6 +314,7 @@ arXiv가 없어 DOI로 링크했다.
 | NaVILA | 2024.12 | 언어로 된 중간 행동 + 보행 RL 정책의 두 층 VLA | B.6b | [논문](https://arxiv.org/abs/2412.04453) · [코드](https://github.com/AnjieCheng/NaVILA) |
 | Uni-NaVid | 2024.12 | 내비 과제 넷을 한 영상 VLA로, 5 Hz | B.6b | [논문](https://arxiv.org/abs/2412.06224) · [코드](https://github.com/jzhzhang/Uni-NaVid) |
 | CityWalker | 2024.11 · CVPR 2025 | 웹 도시 보행 영상 2,000시간 이상으로 학습한 도시 내비 | B.6b | [논문](https://arxiv.org/abs/2411.17820) · [코드](https://github.com/ai4ce/CityWalker) |
+| MolmoAct | 2025.08 | 깊이 토큰과 영상 위 궤적 선을 먼저 내는 행동 추론 VLA. SimplerEnv zero-shot 70.5 %, 가중치·데이터·코드 공개 | B.6b | [논문](https://arxiv.org/abs/2508.07917) · [코드](https://github.com/allenai/molmoact) |
 | VAMOS | 2025.10 | 범용 VLM이 영상 위 경로 후보를 내고, 로봇별 affordance(시뮬 rollout의 성공 확률)가 고르는 계층형 VLA. 실제 6코스 90 %, 장애물 시험 3배 | B.6b | [논문](https://arxiv.org/abs/2510.20818) · [코드](https://github.com/vamos-vla/vamos) · [프로젝트](https://vamos-vla.github.io/) |
 | MIMIC | 2026.03 | Coco 배달로봇 원격조종 로그 50시간으로 보도 자율주행. 다중 규모 모방 + 교정 행동 확장, 400 m당 개입 4회 | B.6d | [논문](https://arxiv.org/abs/2603.22527) |
 | Can Vision Foundation Models Navigate? | 2026.03 | 시각 내비 기반 모델 다섯 개의 실제 환경 평가, 잦은 충돌 | B.6b | [논문](https://arxiv.org/abs/2603.25937) |
@@ -512,6 +514,45 @@ E.1(MPPI 계보), E.2(학습 동역학·적응 마일스톤), C.4(안전 필터 
 
 ---
 
+<!-- tab: 강화학습 -->
+
+### D.14 강화학습 (§R)
+
+강화학습 문서(R.1–R.16)에서 다룬 연구다. 순서는 arXiv 첫 게재 순이다. 기울기 없는 학습기 PolyStep은 MPOT와 함께 D.5b에 있다.
+
+| 이름 | 연·발표 | 요약 | 본문 | 링크 |
+|---|---|---|---|---|
+| CS 185/285 Deep RL | 2026 봄 · UC Berkeley | Sergey Levine의 심층 강화학습 강의 25강. 강화학습 문서의 순서 | R 전체 | [과목](https://rail.eecs.berkeley.edu/deeprlcourse/) |
+| DAgger | 2010.11 · AISTATS 2011 | 실행 분포에서 전문가 라벨을 다시 모아 행동 복제의 분포 이동을 줄인다 | R.2, 0.12 | [논문](https://arxiv.org/abs/1011.0686) |
+| DQN | 2013.12 | 재생 버퍼와 목표망으로 영상 입력 Q-learning | R.6 | [논문](https://arxiv.org/abs/1312.5602) |
+| TRPO | 2015.02 · ICML 2015 | KL 신뢰 영역 안의 정책 개선 | R.5 | [논문](https://arxiv.org/abs/1502.05477) |
+| GAE | 2015.06 · ICLR 2016 | 편향과 분산을 λ로 고르는 이점 추정 | R.4 | [논문](https://arxiv.org/abs/1506.02438) |
+| DDPG | 2015.09 · ICLR 2016 | 연속 행동의 결정적 actor-critic | R.6 | [논문](https://arxiv.org/abs/1509.02971) |
+| Double DQN | 2015.09 · AAAI 2016 | 행동 선택과 평가를 나눠 과대평가를 줄인다 | R.6 | [논문](https://arxiv.org/abs/1509.06461) |
+| OpenAI ES | 2017.03 | 파라미터에 잡음을 주는 진화 전략, 대규모 병렬. TP-0128의 학습기 | R.3, E.12 | [논문](https://arxiv.org/abs/1703.03864) |
+| PPO | 2017.07 | 비율을 자르는 정책 기울기. 보행·조작·언어 모델의 표준 | R.5 | [논문](https://arxiv.org/abs/1707.06347) |
+| HER | 2017.07 · NeurIPS 2017 | 실패 궤적을 실제로 간 곳을 목표로 다시 라벨링 | R.15 | [논문](https://arxiv.org/abs/1707.01495) |
+| SAC | 2018.01 · ICML 2018 | 최대 엔트로피 off-policy actor-critic | R.8 | [논문](https://arxiv.org/abs/1801.01290) |
+| DIAYN | 2018.02 · ICLR 2019 | 보상 없이 서로 구별되는 기술을 배운다 | R.11 | [논문](https://arxiv.org/abs/1802.06070) |
+| TD3 | 2018.02 · ICML 2018 | 두 critic의 작은 값과 지연 갱신으로 과대평가를 줄인다 | R.6 | [논문](https://arxiv.org/abs/1802.09477) |
+| 제어를 추론으로(튜토리얼) | 2018.05 | 최적성 변수로 RL을 확률 추론으로 본다. soft Bellman, MPPI의 바탕 | R.8 | [논문](https://arxiv.org/abs/1805.00909) |
+| PETS | 2018.05 · NeurIPS 2018 | 확률 앙상블 동역학 + CEM 계획 | R.9 | [논문](https://arxiv.org/abs/1805.12114) |
+| MBPO | 2019.06 · NeurIPS 2019 | 짧은 모델 rollout으로 자료를 늘린 SAC | R.9 | [논문](https://arxiv.org/abs/1906.08253) |
+| AWR | 2019.10 | 이점의 지수로 가중한 회귀. TP-0066의 갱신 | R.10 | [논문](https://arxiv.org/abs/1910.00177) |
+| Dreamer | 2019.12 · ICLR 2020 | 잠재 동역학 안의 actor-critic | R.9 | [논문](https://arxiv.org/abs/1912.01603) |
+| CQL | 2020.06 · NeurIPS 2020 | 자료 밖 행동의 Q를 끌어내리는 보수적 오프라인 RL | R.10 | [논문](https://arxiv.org/abs/2006.04779) |
+| RMA | 2021.07 · RSS 2021 | 문맥 인코더로 동역학을 추정해 빠르게 적응 | R.15, 0.11 | [논문](https://arxiv.org/abs/2107.04034) |
+| IQL | 2021.10 · ICLR 2022 | expectile 가치와 AWR로 자료 밖 행동을 묻지 않는다 | R.10 | [논문](https://arxiv.org/abs/2110.06169) |
+| InstructGPT(RLHF) | 2022.03 · NeurIPS 2022 | 사람 선호 보상 모델 + PPO + KL 제약 | R.12 | [논문](https://arxiv.org/abs/2203.02155) |
+| DPO | 2023.05 · NeurIPS 2023 | 보상 모델 없이 선호 쌍으로 정책을 바로 학습 | R.12 | [논문](https://arxiv.org/abs/2305.18290) |
+| TD-MPC2 | 2023.10 · ICLR 2024 | 잠재 모델 + MPPI 계획 + 가치로 끝을 잇는다 | R.9 | [논문](https://arxiv.org/abs/2310.16828) |
+| QSM | 2023.12 · ICML 2024 | 확산 정책의 점수를 Q의 행동 기울기에 맞춘다 | R.13 | [논문](https://arxiv.org/abs/2312.11752) · [코드](https://github.com/escontra/score_matching_rl) |
+| DeepSeekMath(GRPO) | 2024.02 | 그룹 상대 이점, critic 없는 PPO. TP-0066의 이점 | R.12 | [논문](https://arxiv.org/abs/2402.03300) |
+| DPPO | 2024.09 · ICLR 2025 | denoising MDP를 환경 MDP에 넣어 확산 정책을 PPO로 미세조정 | R.13 | [논문](https://arxiv.org/abs/2409.00588) |
+| ReinFlow | 2025.05 · NeurIPS 2025 | 학습 잡음으로 flow 정책의 가능도를 정확히 계산해 미세조정 | R.13 | [논문](https://arxiv.org/abs/2505.22094) |
+| FPO | 2025.07 | flow matching 손실의 차이를 PPO 비율로 쓴다 | R.13 | [논문](https://arxiv.org/abs/2507.21053) · [코드](https://github.com/akanazawa/fpo) |
+| Safe Score Matching | 2026.09 · NeurIPS 2026 | HJ 도달 가능성 critic으로 확산 정책의 점수 목표를 보상과 회복 두 갈래로 나눈다 | R.13, C | [논문](https://arxiv.org/abs/2609.33337) · [코드](https://github.com/byli888/safe-score-matching) |
+
 <!-- tab: 연구 그룹 -->
 
 ### D.13 연구 그룹과 사람 — 누구를 따라갈 것인가
@@ -707,6 +748,7 @@ TP-0036에 바로 들어간다)다.
 | BeamDojo | 2025.02 · RSS 2025 | sparse foothold(빔·돌다리) 보행, 발 디딤 보상 + 이중 critic | A.8 | [논문](https://arxiv.org/abs/2502.10363) · [프로젝트](https://why618188.github.io/beamdojo/) |
 | VB-Com | 2025.02 | 인식 실패 시에도 안전 보행 | A.8 | [논문](https://arxiv.org/abs/2502.14814) |
 | elevation_mapping_humanoid | GitHub | MID-360 단일 LiDAR 로봇 중심 elevation map | A.8 | [코드](https://github.com/smoggy-P/elevation_mapping_humanoid) |
+| EgoHTR | 2026.07 · CoRL 2026 | 사람이 험지를 지나는 1인칭 4D 시연(55 시퀀스, 15만 프레임)과 복원 파이프라인, G1 지형 보행. 데이터 CC BY-NC 4.0 | A.8.3 | [논문](https://arxiv.org/abs/2607.13472) · [프로젝트](https://egohtr.github.io/) · [데이터](https://huggingface.co/datasets/leggedrobotics/egohtr) |
 
 ### D.9 데이터셋·벤치마크
 
@@ -738,6 +780,7 @@ TP-0036에 바로 들어간다)다.
 | Flexion Reflect v1.0 | VLM 임무 → VLA·RL 기술 → 전신 제어(Reflex), 16단계 임무 90%(2026-06) | A.8.1 | [공식](https://flexion.ai/news/flexion-reflect-v1.0) |
 | Niantic Spatial·Flexion·NVIDIA | 360° 카메라 → 3DGS + 충돌 메시 → NuRec USDZ, RGB 내비 정책이 깊이와 대등(2026-07) | A.8.1 | [블로그](https://flexion.ai/news/niantic-spatial-flexion-and-nvidia-closing-the-sim2real-gap-for-humanoids) · [영상](https://www.youtube.com/watch?v=1XtBPY4i780) |
 | RealSense + LimX Dynamics | 깊이 + cuVSLAM 휴머노이드 자율 내비게이션(GTC 2026-03) | A.8.1 | [발표](https://www.realsenseai.com/news-insights/news/realsense-unveils-first-of-its-kind-humanoid-autonomous-navigation-at-nvidia-gtc/) |
+| Dyna Robotics DYNA-2.1 | 2026-09 발표. 조향 바퀴 네 개 바닥의 반휴머노이드 Taku, VL 오케스트레이터 + DYNA-2 정책(5 Hz) + RL 전신 제어기(100 Hz). 호텔 세탁 1시간 연속, 사람 영상 100만 시간 사전학습 | A.8.1 | [블로그](https://www.dyna.co/dyna-2.1) |
 
 ### D.12 IROS 2026 수확 (개요 문서 "학회 수확")
 

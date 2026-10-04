@@ -1033,6 +1033,7 @@ $$ c_t = f\big(\psi(o_i),\ \phi(o_t, o_g),\ m\big) $$
 | 2024 | NaVILA | 영상 + 지시 → 언어로 된 중간 행동 → 보행 RL 정책 | 4족·휴머노이드 3종 배포 | [AnjieCheng/NaVILA](https://github.com/AnjieCheng/NaVILA) 0.7k |
 | 2024 | Uni-NaVid | 영상 + 지시 → 다음 행동 4개 | 네 과제 360만 샘플, 5 Hz | [jzhzhang/Uni-NaVid](https://github.com/jzhzhang/Uni-NaVid) 0.4k |
 | 2024 | CityWalker | 영상 + 과거 궤적 + 목표 → waypoint | 도시 보행 영상 2,000시간 이상 | [ai4ce/CityWalker](https://github.com/ai4ce/CityWalker) 0.2k |
+| 2025 | MolmoAct | 영상 + 지시 → 깊이 토큰 → 영상 위 궤적 선 → 행동 토큰 | 7B 두 가지, 사전학습 2,630만 표본 + 자체 궤적 10,689개 | [allenai/molmoact](https://github.com/allenai/molmoact) 0.4k(Apache-2.0), 가중치·데이터 공개 |
 | 2025 | VAMOS | 영상 + 목표 좌표 문장 → 영상 위 2D 경로 후보. 로봇별 affordance 모델이 후보를 고른다 | PaliGemma 2 3B, 공개 자료 3종 + Spot 29.8시간 | [vamos-vla/vamos](https://github.com/vamos-vla/vamos) 0.1k(추론·배포만, 라이선스 표기 없음) |
 | 2026 | Can VFMs Navigate? | GNM, ViNT, NoMaD, NaviBridger, CrossFormer 실측 평가 | 로봇 2종, 실내외 환경 5곳 | 공개 예정 |
 
@@ -1076,6 +1077,26 @@ VLA가 관절 명령까지 곧장 내면 로봇마다 다시 학습해야 한다
 
 ![CityWalker Fig. 2](https://arxiv.org/html/2411.17820v3/2pipeline.png)
 *그림 — CityWalker (Fig. 2): 인터넷 영상에서 시각 오도메트리로 프레임 사이 자세를 얻고, 과거 관측·궤적·목표로 행동과 도착 여부를 예측한다. 학습 때는 미래 프레임 토큰이 transformer를 지도한다. 출처: [arXiv:2411.17820](https://arxiv.org/abs/2411.17820)*
+
+**MolmoAct — 깊이를 보고, 궤적을 그린 뒤, 행동을 낸다**([arXiv:2508.07917](https://arxiv.org/abs/2508.07917), 2025-08, Allen Institute for AI(Ai2)·University of Washington,
+[코드](https://github.com/allenai/molmoact)).
+==행동을 바로 내지 않고, 공간을 이해하는 중간 단계 둘을 토큰으로 먼저 낸다.== 저자들은 이것을 행동 추론 모델(Action Reasoning Model)이라 부른다.
+1. **깊이 인식 토큰.** Depth Anything V2의 깊이 지도를 VQ-VAE로 바꿔, 영상 한 장당 이산 토큰 100개로 낸다.
+2. **시각 추론 궤적.** 영상 위에 그리는 1–5점짜리 2D 선으로, 손끝이 갈 길이다. 사람이 이 선을 고쳐 그리면 행동이 따라 바뀐다.
+3. **행동 토큰.** 차원마다 256구간으로 나눈 이산 토큰이다(OpenVLA와 같은 방식).
+
+- **모델과 학습.** Molmo VLM 위에 쌓은 7B 두 가지다(SigLIP2 + Qwen2.5-7B, OpenCLIP + OLMo2-7B). Open X-Embodiment 일부를 포함한 2,630만 표본으로 사전학습하고(H100 256장, 9,728 GPU시간),
+  자체 데이터 10,689 궤적(가정 과제 73개, 탁자 과제 20개)으로 중간 학습한다. 배포할 과제마다 원격조종 시연 30–50개로 LoRA 미세조정한다.
+- **결과.** SimplerEnv(Google 로봇, 시각 일치) zero-shot 70.5 %로 π0·GR00T N1.5보다 높고, LIBERO 평균 86.6 %다.
+  실제 Franka에서는 π0-FAST보다 과제 진행이 한 팔 +10 %, 두 팔 +22.7 %, 분포 밖 조건(지시 바꿔 말하기, 위치 변화, 방해물, 새 물체)에서 +23.3 % 높다.
+  궤적 선으로 조종하면 75 % 성공해, 언어로 조종할 때보다 33 % 높다.
+- **공개.** 가중치, 학습 코드, 데이터를 모두 공개했다(코드 Apache-2.0).
+
+**travplan에 주는 것.** 조작 모델이라 그대로 쓰지는 않는다. 다만 깊이, 궤적, 행동을 차례로 내는 분해는 travplan이 TravMap, Planner 궤적, Controller 명령으로 나눈 것을 한 모델 안에서 한 것이다.
+중간 궤적을 사람이 고쳐 행동을 바꾸는 조종은, 보도에서 원격 운영자가 Planner D의 후보를 고르거나 고쳐 주는 방식의 근거가 된다. VAMOS(아래)도 영상 위 경로를 중간 표현으로 쓴다.
+
+![MolmoAct Fig. 1](https://arxiv.org/html/2508.07917v4/fig1_overview.png)
+*그림 — MolmoAct (Fig. 1): 영상과 지시를 받아 깊이 인식 토큰과 영상 위 궤적 선을 먼저 내고("공간에서 추론"), 그다음 로봇 행동을 낸다. 오른쪽 아래처럼 사용자가 선을 그려 행동을 조종할 수 있다. 출처: [arXiv:2508.07917](https://arxiv.org/abs/2508.07917)*
 
 **VAMOS — 범용 Planner가 후보를 내고, 로봇별 능력 모델이 고른다**([arXiv:2510.20818](https://arxiv.org/abs/2510.20818), 2025-10, University of Washington·미 육군연구소,
 [프로젝트](https://vamos-vla.github.io/), [코드](https://github.com/vamos-vla/vamos)).

@@ -1871,6 +1871,33 @@ $\lVert \tau_{k+1} - \tau_k \rVert \le T \alpha_k$로 묶는데(식 25), ==이 �
 [anindex/ssax](https://github.com/anindex/ssax) ★50 **MIT**(JAX). 둘 다 LICENSE 원문을 확인했다.
 오프라인 교사로만 쓰므로 라이선스가 걸림돌이 아니다.
 
+#### ①b PolyStep — 같은 저자가 Sinkhorn을 떼고 신경망 학습으로 옮겼다
+
+**PolyStep**(*Training Non-Differentiable Networks via Optimal Transport*, [arXiv:2605.01928](https://arxiv.org/abs/2605.01928), 2026-05,
+An T. Le, VinUniversity·TU Darmstadt, [코드](https://github.com/anindex/polystep) Apache-2.0)은 MPOT의 Sinkhorn Step을 ==기울기 없이 신경망 가중치를 학습하는 최적화기==로 넓혔다.
+순전파만 쓰므로 스파이킹 망, 정수 양자화, argmax, 계단 활성화처럼 기울기가 없거나 0인 망도 학습한다. 한 스텝은 다섯 단계다.
+1. **부분공간 압축.** 층마다 투영 행렬로 가중치 $\theta \in \mathbb R^d$를 작은 부분공간 좌표로 줄인다.
+2. **다면체 꼭짓점.** 입자 $x_i$마다 무작위 회전 $R_i$를 뽑아, 정축체(orthoplex) 꼭짓점 $\pm e_j$ 방향으로 후보 $v_{i,j} = x_i + r\,\varepsilon\,R_i e_j$를 둔다.
+3. **비용 행렬.** 꼭짓점 쪽으로 탐침 $K$개를 두고 손실 평균을 $C_{iv}$로 쓴다. 스텝당 순전파는 입자 수 × 꼭짓점 수 × $K$다(기본 $6\,d_{\text{sub}}$).
+4. **소프트 배정.** 온도 $\varepsilon$로 $T_{iv} \propto \operatorname{softmax}_v(-C_{iv}/\varepsilon)$를 계산한다.
+5. **무게중심 투영.** 입자를 $x_i \leftarrow \sum_v T_{iv}\,v_{i,v} / \sum_v T_{iv}$로 옮긴다. 온도는 $\varepsilon_t = \varepsilon_0/\sqrt{t+1}$ 꼴로 줄인다.
+
+논문은 4단계의 softmax를 "KL 벌점을 건 불균형 OT의 한쪽 극한($\lambda \to 0$)"으로 보인다. 반대 극한($\lambda \to \infty$)이 Sinkhorn 반복을 도는 완전한 엔트로피 OT, 곧 MPOT다.
+
+| 과제 | 결과 |
+|---|---|
+| 하드 LIF 스파이킹 망 | 테스트 정확도 93.4 %, 다른 기울기 없는 방법보다 60 %p 넘게 높다 |
+| MAX-SAT(변수 100 → 100만) | 절 만족 92 % 넘게 유지, CMA-ES·OpenAI-ES는 8–12 %p 떨어진다 |
+| RL 정책 탐색(고전 제어) | OpenAI-ES와 같고, INT8·이진 양자화 정책에서도 성능을 지킨다 |
+| 매끄러운 망(MNIST 등) | Adam이 분명히 낫다(정확한 기울기가 있으면 그것을 쓴다) |
+
+한계도 적었다. 4.2M 파라미터 NLP 과제(SST-2)에서는 무작위 수준으로 무너지고, RL의 표본 효율은 기울기 방법보다 낮으며, 스텝마다 순전파를 많이 묶어 돌려야 한다.
+
+**MPPI와의 관계.** 4–5단계는 MPPI의 갱신 $u \leftarrow \sum_k w_k u_k$, $w_k \propto e^{-J_k/\lambda}$(0.2)와 같은 꼴이다. 다른 것은 표본을 뽑는 방식이다.
+MPPI는 가우시안 잡음으로, PolyStep은 회전한 다면체 꼭짓점으로 뽑는다. 그래서 새 Controller를 기대할 곳은 아니다. Sinkhorn Step도 같은 예산의 MPPI를 넘지 못했다(Controller E.11, TP-0130).
+**travplan에서 쓸 곳은 기울기가 없는 학습 쪽이다.** Playground의 학습 Controller(Controller E.12, TP-0128)는 보상이 벤치마크 판정 그 자체라 OpenAI-ES로 학습했다.
+PolyStep은 같은 자리에서 OpenAI-ES와 같은 성능을 내고 양자화에도 버틴다고 보고하므로, 다음에 바꿔 볼 학습기 후보다.
+
 #### ② MPC-OT — 로봇이 한 대면 성립하지 않는다
 
 **MPC-OT**(*Multi-robot Path Planning and Scheduling via Model Predictive Optimal Transport*,

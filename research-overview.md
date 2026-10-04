@@ -23,7 +23,7 @@ Controller·안전, 시뮬레이션이고, 보조 문서는 여러 논문이 함
 ```
 
 **문서 지도.** 문서마다 첫 탭이 개요(분야 계보, 공개 코드·모델 현황, travplan의 위치)이고, 그 뒤가 주제별 탭이다. 절 번호는 문서를 옮겨도
-그대로 둔다(인식 A, Planner B, Controller E와 안전 필터 C, 시뮬레이션 S, 배경 0, 참고문헌 D).
+그대로 둔다(인식 A, Planner B, Controller E와 안전 필터 C, 시뮬레이션 S, 배경 0, 강화학습 R, 참고문헌 D).
 
 | 문서 | 탭과 절 | 무엇을 보나 | travplan에서 |
 |---|---|---|---|
@@ -32,7 +32,8 @@ Controller·안전, 시뮬레이션이고, 보조 문서는 여러 논문이 함
 | Controller·안전 (§E, §C) | MPPI 계열(E.1, B.5), 학습 동역학·적응(E, E.2), 안전 필터(C.1–C.4) | 궤적 추종과 안전 | MPPIController(유지보수), 시간가변 비용 레이어, CVaR-BF 후보 |
 | 시뮬레이션 (§S) | 물리 엔진(S.1), 보도·도시(S.2), 보행자(S.3), 센서·렌더링(S.4), 지형·바퀴(S.5), sim-to-real(S.6), travplan 권고(S.7) | 검증 환경의 네 층(L0–L3) | 운동학 시뮬(L0), Isaac Sim(L1) |
 | 배경·수식 (§0) | 인식(0.1, 0.8, 0.9, 0.10, 0.14), Planner·학습(0.5, 0.6, 0.7, 0.12, 0.13), 제어·안전(0.2, 0.3, 0.4, 0.11) | 여러 논문이 공유하는 수식 | 각 토글이 "배경 0.N"으로 가리킨다 |
-| 참고문헌 (§D) | 인식(D.1–D.3b), Planner(D.0–D.5b), Controller·안전(D.6–D.7b), 연구 그룹(D.13), 로코모션·데이터·산업(D.8–D.12) | 전체 목록, 발표처, 코드 링크 | — |
+| 강화학습 (§R) | 문제 설정·모방(R.1–R.2), 정책 기울기(R.3–R.5), 가치 기반(R.6), 추론으로서의 제어(R.7–R.8), 모델 기반(R.9), 오프라인·탐색(R.10–R.11), LLM·생성 정책·안전(R.12–R.13), 이론·다과제(R.14–R.15), travplan에서(R.16) | 버클리 CS 185/285 순서의 강화학습과 확산·flow 정책의 RL | TP-0066 후학습(AWR, 그룹 이점), TP-0128 진화 전략, MPPI(제어를 추론으로) |
+| 참고문헌 (§D) | 인식(D.1–D.3b), Planner(D.0–D.5b), Controller·안전(D.6–D.7b), 강화학습(D.14), 연구 그룹(D.13), 로코모션·데이터·산업(D.8–D.12) | 전체 목록, 발표처, 코드 링크 | — |
 
 **전체 연표.** 분야마다 흐름을 바꾼 연구를 한 표에 놓았다. 2023년 전후로 네 분야가 함께 "큰 사전학습 모델 + 생성형 출력"으로
 옮겨 갔다. 인식은 시각 기반 모델로, Planner는 diffusion과 flow matching으로, Controller는 학습 world model로, 시뮬레이션은 GPU 병렬
@@ -47,8 +48,8 @@ Controller·안전, 시뮬레이션이고, 보조 문서는 여러 논문이 함
 | 2021–2022 | BEVFormer, BEVFusion, MonoScene, elevation_mapping_cupy, ByteTrack, BoT-SORT | Diffuser, GNM, FAR Planner, PUTN | Robust MPPI, IKD, RMA, log-MPPI, SMPPI | Learning to Walk in Minutes, ART/ATK |
 | 2023 | DINOv2, Grounding DINO, Occ3D, WVN, RT-DETR | iPlanner, ViNT, NoMaD, Diffusion Policy, MPD, UniAD, VAD, PDM-Closed, ArtPlanner | TD-MPC2, 안전 필터 통합 관점 | HuNavSim, Gazebo Harmonic |
 | 2024 | Depth Anything V2, SAM 2, V-STRONG, RoadRunner, YOLOv10, D-FINE | ViPlanner, OpenVLA, π0, NaVILA, CityWalker, DiffusionDrive, NAVSIM, Hydra-MDP | MPPI-Generic | MetaUrban, Arena 4.0, X-Mobility, Navigation World Models |
-| 2025 | DINOv3, Depth Anything 3, SAM 3, RF-DETR, MoFlow | Diffusion Planner, GoalFlow, NavDP, CaRL, Alpamayo, VAMOS | CVaR-BF, DRA-MPPI | Isaac Lab, MuJoCo Playground, URBAN-SIM, UrbanVerse, COMPASS, Cosmos |
-| 2026 | WalkOCC, ViTA, CATNAV, PIVOT, RayOcc, 4D panoptic occupancy tracking | AgniNav, MILER, PC-Diffuser, JPPD, GRACE, Can VFMs Navigate?, Click-and-Traverse, TNT | ProxPI, Predictive Semantic Safety, HDVIO2.0, OGM-CBF | Isaac Sim 6.x, Newton, SidewalkBench, NavIsaacLab |
+| 2025 | DINOv3, Depth Anything 3, SAM 3, RF-DETR, MoFlow | Diffusion Planner, GoalFlow, NavDP, CaRL, Alpamayo, MolmoAct, VAMOS, FPO | CVaR-BF, DRA-MPPI | Isaac Lab, MuJoCo Playground, URBAN-SIM, UrbanVerse, COMPASS, Cosmos |
+| 2026 | WalkOCC, ViTA, CATNAV, PIVOT, RayOcc, 4D panoptic occupancy tracking, EgoHTR | AgniNav, MILER, PC-Diffuser, JPPD, GRACE, Can VFMs Navigate?, Click-and-Traverse, TNT, DYNA-2.1 | ProxPI, Predictive Semantic Safety, HDVIO2.0, OGM-CBF, Safe Score Matching, PolyStep | Isaac Sim 6.x, Newton, SidewalkBench, NavIsaacLab |
 
 ## ROS/ROS2 costmap의 한계 — travplan이 TravMap을 쓰는 이유
 
