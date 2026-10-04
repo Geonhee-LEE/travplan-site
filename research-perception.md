@@ -2269,6 +2269,37 @@ Planner D·RL 스택, 가림(L0)·L1 인식에서는 재지 않았다.
 - **판단.** 다음 병목은 레벨 3에서 plant를 다루는 Controller다. TP-0150에서 MPPI rollout 모델에 plant의 지연과 미끄럼을 넣는다. `MPPIController.model`만 바꿔 끼우므로 최적화기(`mppi.py`)는 그대로다.
   보행자 5명(TP-0149의 두 번째 후보)은 plant 쪽이 더 크므로 미뤘다.
 
+### A.13.20 TP-0153 — L1 벤치마크의 GPU 경로: CPU와 비트 단위로 같고 3.5배 빠르다
+
+**한 줄로.** ==`run_benchmark.py --device cuda`는 L1의 광선 투사와 belief 지도 생성을 GPU에서 돌리고, 결과는 CPU와 비트 단위로 같다.==
+그래서 지금까지의 CPU 기준선과 그대로 짝 비교할 수 있다.
+TP-0150의 CPU 실행 8 에피소드(권장 L1 + plant, bumps_potholes 레벨 3)를 GPU로 다시 돌렸다. 시간 지표를 뺀 모든 지표가 마지막 자리까지 같다.
+
+- **왜.** TP-0152의 L1 + plant 에피소드 하나는 206 s였다(벤치마크 16개를 함께 돌린 부하 상태).
+  그중 belief 지도 생성이 107 s, LiDAR·스테레오 광선 투사가 86 s로 모두 CPU에서 돌았고, NMPC는 7 s였다.
+  TP-0084가 지도 생성을 GPU로 옮겨 두었지만 벤치마크가 그 옵션을 켜지 않았다.
+- **무엇을 옮겼나.**
+  - 광선 투사(`sim/lidar.py::cast_rays`, 스테레오 포함): [광선 × 표본] 행진을 GPU에서 한다. 적중한 광선만 CPU로 가져와 잡음·필터를 그대로 하므로 난수 흐름이 바뀌지 않는다.
+  - 지도 생성: TP-0084의 `TravMapBuilder(device=...)`를 쓴다.
+  - 연결: `SimConfig.device`와 `--device {cpu,cuda}`(기본 cpu). CUDA가 없으면 `--device cuda`는 오류로 멈춘다.
+- **비트 단위로 맞춘 방법.** 처음 GPU 지도는 CPU와 1–2 ulp(최대 3e-7) 달랐다. 원인은 둘이었다.
+  1. CUDA는 CPU 스칼라로 나누는 연산을 그 역수의 곱으로 바꾼다. 나누는 수를 GPU 텐서로 넘기면 IEEE 나눗셈이 된다(`features.true_div`, `cast_rays`의 격자 좌표).
+  2. CPU의 float `sqrt`·`atan`은 벡터 근사라 정확한 반올림이 아니다. 무작위 입력 200만 개 중 34만 개에서 CPU `sqrt`가 1 ulp 틀렸고, CUDA 쪽은 모두 정확했다.
+     지금까지의 실행은 모두 CPU였으므로 GPU 경로가 CPU 커널을 쓴다(`features._on_cpu`, 지도 하나당 작은 왕복 셋).
+  평균·최대 풀링, 제곱, 원소별 사칙, 첫 적중 찾기는 재 보니 두 장치가 같았다.
+- **확인.**
+
+| 대상 | 비교 | 결과 |
+|---|---|---|
+| 광선 투사 | 4 지형 × 자세 6 × drop edge 둘, LiDAR·스테레오 | 48개 스캔이 모두 같은 점 |
+| belief 지도 | 실제 L1 belief 32장(권장 L1 옵션), 8채널 | 모든 칸이 비트 단위로 같음 |
+| 폐루프 | TP-0150 `mppi_plant_lag` 8 에피소드(guidance·planner_df, seed 0–3) | 성공·시간·경로 길이·roll·pitch·GT cost·jerk가 모두 같음 |
+
+  테스트로 고정했다. `tests/test_gpu_paths.py`는 광선 투사와 플래그 전달을, `tests/test_core.py`는 지도의 비트 단위 동일과 "CPU `sqrt`가 CUDA와 다르다"는 전제를 본다.
+- **속도(벤치마크 16개를 함께 돌린 부하 상태).** LiDAR 스캔 292 → 26 ms, 지도 생성 276 → 30 ms, 에피소드 약 200 → 57 s다.
+  이제 에피소드 시간의 대부분은 CPU에서 도는 Controller다.
+- **판단.** 다음 L1 비교 시리즈부터 `--device cuda`로 돌린다. 결과가 같으므로 따로 결정할 것이 없다.
+
 <!-- tab: Traversability -->
 
 ### A.10 Traversability 추정: 사람 라벨 없이, 불확실성과 함께

@@ -80,7 +80,7 @@ elevation, variance, traversability)이 실제로 발행되고, 로봇이 움직
 
 **여유를 만들었다(TP-0084, 2026-09-30).** `TravMapBuilder(device="cuda")`를 더했다. 왕복(H2D + D2H)을 포함해
 기본 35.0 → **1.35 ms(26배)**, 깊이 prior 70.4 → **1.59 ms(44배)**이고 출력은 CPU와 같다(유한 셀 최대 오차 3.0e-07,
-비유한 패턴 불일치 0). ==외부 계약은 그대로다== — 부른 쪽 device로 돌려주므로 numpy를 쓰는 `GuidancePlanner`도 영향이
+비유한 패턴 불일치 0. TP-0153에서 비트 단위로 맞췄다). ==외부 계약은 그대로다== — 부른 쪽 device로 돌려주므로 numpy를 쓰는 `GuidancePlanner`도 영향이
 없다. CUDA가 없으면 조용히 CPU로 내려간다. 폐루프 8 에피소드가 **결과 동일**하고 벽시계 111.8 s → **31.8 s**다.
 
 이제 실물에 해당하는 비용이 `mapper 3.7 + build 1.6` ≈ **5 ms**, 100 ms 예산의 5%다. 그다음 knob은 격자 해상도이고
