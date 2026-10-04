@@ -174,6 +174,10 @@ cycle 안의 시뮬레이션 실행(Isaac Sim GUI·헤드리스, 대규모 벤�
 - **안전 원칙(2026-10-03 사용자 결정).** 치명 실패가 하나라도 늘면 성공 수가 늘어도 기본값으로 채택하지 않는다. 그런 변경은 선택 항목으로만 둔다.
 - **판정 절차(2026-10-03 사용자 결정).** 레벨 3·plant·보행자 비교는 seed 10개 × 난수 오프셋 3(`--rng-offset 0 1000 2000`)에서
   같은 (seed, 오프셋)끼리 짝지어 판정한다(`scripts/paired_success.py`). 한 번 돌린 차이는 판정 근거가 아니다.
+- **plant 조건의 배포 스택(2026-10-04 사용자 결정).** 스워브 plant(`--plant`, 실물에 가까운 조건)에서는 rollout에 plant 지연을 넣은 MPPI를 쓴다.
+  그래서 plant 조건의 배포 스택은 `planner_df+mppi_plant_lag`다(TP-0150). 기본 벤치마크(plant 없음)의 배포 스택은 그대로 `planner_df+mppi`다.
+- **레벨 3 경사로(2026-10-04 사용자 결정).** 레벨 3 경사로(폭 1.1 m, 중심 통로 0.2 m)는 plant 로봇의 설계 한계로 본다(TP-0151).
+  판정에는 남기고, plant 성적은 경사로를 뺀 값도 함께 보고한다.
 - 시뮬 엔진은 Isaac Sim을 유지한다. 보도 시뮬레이터(URBAN-SIM, UrbanVerse, SidewalkBench, CostNav)가 모두 그 위에 있다. 다른 엔진(Newton MPM,
   Chrono SCM 등)은 변형 지면처럼 분명한 목적이 생길 때만 들인다(`docs/research-simulation.md` S.1, S.7).
 
@@ -184,4 +188,4 @@ cycle 안의 시뮬레이션 실행(Isaac Sim GUI·헤드리스, 대규모 벤�
   `main`에 바로 push할 수 있다(화이트리스트 밖 경로가 섞이면 스크립트가 거부한다).
 - **이 문서와 `docs/ARCHITECTURE.md`**: 사람이 편집하고 cron 에이전트는 읽기만 한다.
 
-_Last updated: 2026-10-03 (사용자 결정: 학습 Planner 성적·안전 원칙·판정 절차) · 2026-09-25 (시뮬레이션 조사 반영) · 관련: `CLAUDE.md`, `docs/ARCHITECTURE.md`, `docs/research-simulation.md`, `TODO.md`_
+_Last updated: 2026-10-04 (사용자 결정: plant 조건의 배포 스택, 레벨 3 경사로) · 2026-10-03 (사용자 결정: 학습 Planner 성적·안전 원칙·판정 절차) · 2026-09-25 (시뮬레이션 조사 반영) · 관련: `CLAUDE.md`, `docs/ARCHITECTURE.md`, `docs/research-simulation.md`, `TODO.md`_

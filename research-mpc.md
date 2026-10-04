@@ -240,6 +240,7 @@ travplan에 주는 의미는 역할 분담이다. 샘플 수백 개는 빠른 �
 | 2026-10-01 | 3 분산 | GP 분산 튜브로 지형·보행자 행을 0차로 조이기(TP-0069), 선택 스택 `mpc_gpcc` | 1번 노드 coverage 97.4%, 그러나 같은 여유끼리 실행 여유 차이 0.00 cm. 설계안 plant 42/48(기준 44/48), 재시도 둘(여유 0.125: plant 46/48·보행자 22/24, 작은 튜브: 40/48)도 미달. 기본값 꺼짐. M.3.18 |
 | 2026-10-01 | MPPI GP | GP 경로 고속화(A1, 기본)와 GP 평균 rollout(M1, 선택 스택 `mppi_ccgpm`)(TP-0120) | A1: 42.9 → 22.2 ms, 결과 동등(24 seed 87 대 89/96, p ≈ 0.38). M1: plant curb_ramp 치명 실패 0(12/12), 대신 timeout 셋 늘어 43/48. M.3.19 |
 | 2026-10-01 | Planner | Guidance 칸 가중치에 치명 거리 힌지(TP-0118), 선택 스택 `guidance_c` | 정적 159 → 160/160, 보류 seed 160/160, 보행자 72/72, plant 221 → 228/240(다섯 컨트롤러 합). 도달 시간 −1.3 ~ −4.3%. 확률 제약 MPPI의 plant curb_ramp는 2 → 7 실패(TP-0127). M.3.17 |
+| 2026-10-04 | 환경 | L1을 돌리는 GPU PC에도 acados v0.3.4 소스 빌드(사용자 결정 C, TP-0152) | qpOASES 포함. `.venv`·`.venv-emap` 둘 다 `acados_template` + casadi 3.6.7. MPC 테스트 127개 통과, 정적 `guidance+mpc` 40/40(제어 9.0 ms). M.3.1 |
 
 ### M.3.1 환경 메모 — 다시 밟지 않도록
 
@@ -250,6 +251,17 @@ travplan에 주는 의미는 역할 분담이다. 샘플 수백 개는 빠른 �
   `mass and inertia of moving bodies must be larger than mjMINVAL`을 피한다.
 - casadi는 `pip install -e ".[mpc]"`로 깐다(3.6.x로 고정돼 있다). acados 자체는 소스 빌드다.
 - **병렬로 돌릴 때는 `TRAVPLAN_ACADOS_BUILD`로 프로세스마다 생성 폴더를 나눈다.** 같은 폴더에 동시에 코드를 생성하면 빌드가 엉킨다.
+- **GPU PC 설치 기록(2026-10-04).** 사용자 결정 C로 L1(`.venv-emap`)을 돌리는 GPU PC에도 깔았다. 처음 acados가 있던 랩탑과 같은 v0.3.4다. 같은 순서를 밟으면 된다.
+  아래 `$ACADOS_SOURCE_DIR`는 위 첫 항목의 값(홈 아래 `acados`)이다.
+  1. `git clone https://github.com/acados/acados.git $ACADOS_SOURCE_DIR`, `git checkout v0.3.4`, `git submodule update --recursive --init`.
+  2. `$ACADOS_SOURCE_DIR/build`에서 `cmake -DACADOS_WITH_QPOASES=ON ..` 뒤 `make install -j12`. `$ACADOS_SOURCE_DIR/lib`에 `libacados.so`·`libblasfeo.so`·`libhpipm.so`·`libqpOASES_e.so`가 생긴다.
+  3. 코드 생성기 tera 렌더러 v0.0.34를 `$ACADOS_SOURCE_DIR/bin/t_renderer`에 미리 받아 두고 실행 권한을 준다. 첫 실행 때 대화형으로 내려받기를 묻는 단계를 건너뛴다.
+  4. `.venv`: `pip install -e $ACADOS_SOURCE_DIR/interfaces/acados_template`. casadi 3.6.7(3.6.x 범위)은 이미 있었다.
+  5. `.venv-emap`: cupy·torch·numpy를 건드리지 않게 `pip install "casadi==3.6.7" cython future-fstrings`를 따로 깔고 `pip install --no-deps -e $ACADOS_SOURCE_DIR/interfaces/acados_template`를 한다.
+  6. 셸 시작 파일(`.bashrc`)에 위 첫 항목의 두 변수를 넣었다.
+     코드의 `_acados_env()`가 import 때 `LD_LIBRARY_PATH`를 바꾸지만, 동적 로더는 프로세스 시작 때의 값만 읽는다. 그래서 셸에서 빠지면 `libqpOASES_e.so.3.1`을 못 찾아 MPC 테스트 20개가 실패한다.
+  - 확인: MPC 관련 테스트 127개가 통과했다. 정적 벤치마크 `guidance+mpc`(4 지형 × seed 0–9)는 40/40, 제어 9.0 ms다.
+  - v0.3.4 docstring의 이스케이프 문자 때문에 Python 3.12+에서 `SyntaxWarning`이 많이 뜬다. 동작과 무관하다.
 - **casadi 함수 이름에는 점(`.`)을 쓸 수 없다.** `MPCConfig.name`에 `0.05` 같은 태그를 넣으면 `Function name is not valid`로 죽는다.
 
 ### M.3.2 단계와 게이트
