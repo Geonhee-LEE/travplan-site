@@ -203,7 +203,9 @@ twist 매듭점으로 바꾼 판을 세워 멈춘 장면에서 같은 예산의 
 datasets ... capturing homotopy classes"*다. ==오프라인 수집은 0.4 s를 신경 쓰지 않는다.==
 코드는 [anindex/mpot](https://github.com/anindex/mpot) ★71 **MIT**(PyTorch)와
 [anindex/ssax](https://github.com/anindex/ssax) ★50 **MIT**(JAX)다. 다만 **지형 비용이 TravMap에서 와야 하므로**
-비용·probe 평가를 travplan 쪽으로 바꿔 끼우는 일이 그대로 남는다(미착수).
+비용·probe 평가를 travplan 쪽으로 바꿔 끼워야 한다. ==그 일을 TP-0136이 Playground에서 했다== —
+Sinkhorn Step을 **Planner 자리**에 놓고 probe 비용을 TravMap 칸 가중치로 바꿔 끼운 판이 Controller 문서
+작업 기록 **E.14**에 있다(저장소 파이썬이 아니라 브라우저 JS 재구성이다).
 
 ---
 

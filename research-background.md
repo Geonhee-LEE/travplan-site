@@ -1866,6 +1866,7 @@ $\lVert \tau_{k+1} - \tau_k \rVert \le T \alpha_k$로 묶는데(식 25), ==이 �
 준다. 그래서 *"12–18스텝 구간만 옆으로"* 같은 지시가 직접 표현된다. travplan의 TP-0127(램프 입구에서 여유 경로가
 오히려 실패)과 TP-0118(한두 칸 틈)이 정확히 그 입도의 문제다. 다만 위의 이유로 ==그 표현력을 쓰려면 Controller가
 아니라 **Planner 자리**여야 한다.==
+그 자리에 실제로 놓아 본 결과가 Controller 문서 작업 기록 **E.14**(TP-0136)에 있다 — Playground JS 재구성이다.
 
 **코드.** [anindex/mpot](https://github.com/anindex/mpot) ★71 **MIT**(PyTorch),
 [anindex/ssax](https://github.com/anindex/ssax) ★50 **MIT**(JAX). 둘 다 LICENSE 원문을 확인했다.

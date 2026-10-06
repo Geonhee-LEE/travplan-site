@@ -127,7 +127,7 @@ export const PRESETS = [
     set: { scenario: "curb_ramp", level: 0, seed: 0, robot: "swerve", perception: "occlusion", controller: "blind" } },
   { id: "TP-0129-quad", tp: "TP-0129", label: "지도 없는 사족: 그냥 넘어간다", group: "robot",
     watch: "같은 입력, 같은 구조인데 로봇만 사족이다. 턱 한계가 20 cm라 15 cm 연석을 지나갈 수 있는 땅으로 읽어 직선으로 간다.",
-    expect: { status: "reached", text: "도달 11.8 s" }, repo: "지도 없는 사족 8/12(지도 봄도 8/12)", pair: "TP-0129",
+    expect: { status: "reached", text: "도달 11.8 s" }, repo: "지도 없는 사족 8/12(지도 봄은 12/12)", pair: "TP-0129",
     set: { scenario: "curb_ramp", level: 0, seed: 0, robot: "quadruped", perception: "occlusion", controller: "blind" } },
   { id: "TP-0027", tp: "TP-0027", label: "보행자 3명", group: "stack",
     watch: "경로 위 보행자 3명. 분홍 점이 4 s 예측이고, MPPI가 이것을 비용으로 피한다.",
