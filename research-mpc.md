@@ -1489,7 +1489,7 @@ plant curb_ramp × seed 0–23 × 난수 오프셋 3, 72 에피소드다.
 
 - 다시 맞춘 GP에서도 TP-0130의 두 멈춤 장면이 그대로 재현되고, 끝점 제한을 켜면 둘 다 도달한다. TP-0131의 원래 판정("두 장면 해소")을 이 스택에서 채운다.
 - `mppi_ccgp`에서는 치명이 줄어(13 → 7) 안전 원칙(`docs/prd.md` 7절)에 걸리지 않는다. `mppi`·`mppi_cc`에서는 치명이 각각 3건 늘었으므로 그 둘의 기본값은 끈 채 둔다.
-- 기본값은 아직 바꾸지 않는다. 이 GP는 다른 PC의 원본(`residual_sgp_wide.pt`, TP-0068–0130 결과에 쓴 것)과 같지 않을 수 있다. 원본 GP로 같은 72 에피소드를 다시 재고 `mppi_ccgp`의 기본값을 정한다(TP-0144).
+- 기본값은 아직 바꾸지 않는다. 이 GP는 다른 PC의 원본(`residual_sgp_wide.pt`, TP-0068–0130 결과에 쓴 것)과 같지 않을 수 있다(랩탑의 이 GP는 2026-10-06에 릴리스 `ckpt-2026-10-06`에 올렸다. 처음 파일이 지워진 뒤 같은 스크립트로 결정적으로 다시 맞춘 판이다). 원본 GP로 같은 72 에피소드를 다시 재고 `mppi_ccgp`의 기본값을 정한다(TP-0144).
 
 ```bash
 python scripts/run_benchmark.py --plant --scenarios curb_ramp --seeds $(seq -s ' ' 0 23) --stacks guidance+mppi guidance+mppi_cc \
