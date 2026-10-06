@@ -213,7 +213,8 @@ $$ \alpha(\mathbf p) = 1 - \prod_i \big(1 - \alpha_i(\mathbf p)\big) $$
 
 **Robot-centric elevation mapping — 칸마다 높이와 분산을 합친다**(Fankhauser 등, CLAWAR 2014, RA-L 2018,
 [ANYbotics/elevation_mapping](https://github.com/ANYbotics/elevation_mapping), BSD-3, ★1.9k). 로봇 중심의 2.5D 격자에서 칸마다 높이와 분산을
-1차원 Kalman 필터로 갱신한다. 로봇 자세의 불확실성을 지도 분산으로 전파해, 멀리서 오래전에 본 칸일수록 믿지 않는다. ANYmal 계열 보행 연구에서
+1차원 Kalman 필터로 갱신한다. 로봇 자세의 불확실성은 칸의 수평 불확실성으로 전파하고, 이웃 높이의 퍼짐을 거쳐 높이 구간으로 바꾼다.
+그래서 오래전에 본 평지는 계속 믿을 만하고, 턱 가장자리만 믿음을 잃는다(Planner 문서 B.14.1). ANYmal 계열 보행 연구에서
 널리 쓰였고, 아래 GPU 판의 출발점이다.
 
 **elevation_mapping_cupy — GPU로 옮기고 기능을 더했다**([arXiv:2204.12876](https://arxiv.org/abs/2204.12876), IROS 2022, ETH RSL,
@@ -529,9 +530,10 @@ Fig. 11의 인페인팅 체인은 **버린다** — 보행 로봇은 발을 디�
 
 **② `art_planner`가 그 상한을 쓰는 공개 소비자다.** Wellhausen & Hutter, *ArtPlanner*, Field Robotics 2023
 ([arXiv:2303.01420](https://arxiv.org/abs/2303.01420), ★256, BSD-3, 2023-08 정지). 상한 칸을 **virtual surface**로
-보고 ==*"only use virtual surfaces for planning if they are **above sensor height**"*==라는 규칙을 쓴다. 그리고 흔한
-두 대안을 **명시적으로 거부한다** — 구멍을 *"image inpainting algorithm or considering them untraversable"*로 다루는 것 —
-이유가 *"We can therefore not rely on the motion cost network to keep a safe distance from negative obstacles."*다.
+보고 ==*"only use virtual surfaces for planning if they are **above sensor height**"*==라는 규칙을 쓴다. 논문은 이 규칙을 흔한
+두 대안 대신 택했다. 두 대안은 구멍을 *"image inpainting algorithm or considering them untraversable"*로 다루는 것이다(원문 §2.4.1).
+*"We can therefore not rely on the motion cost network to keep a safe distance from negative obstacles."*는 낙차 둘레에 안전 여유를 따로 두는 이유로 든 문장이다(§2.4.2).
+공개 코드의 기본값은 `unknown_space_untraversable: true`라, virtual surface로 살리지 못한 칸(센서 높이 아래)은 여전히 비주행이다.
 **고정 깊이(`--shadow-depth 0.10`) 대신 센서 높이로 문턱을 정하는, 논문으로 방어된 대안이다.**
 
 ![ArtPlanner 온보드 영상](https://arxiv.org/html/2303.01420v1/fig/upper_bound/pic_map.jpg)
@@ -544,19 +546,20 @@ Fig. 11의 인페인팅 체인은 **버린다** — 보행 로봇은 발을 디�
 *그림 — ArtPlanner (Fig. 11c): ==상한을 virtual surface로 넣었을 때==. 가려졌지만 안전한 칸이 살아나 경로가 이어진다. 출처: [arXiv:2303.01420](https://arxiv.org/abs/2303.01420)*
 
 <details markdown="1">
-<summary>자세히: ArtPlanner가 왜 인페인팅과 "미관측=비주행" 둘 다를 거부했는지</summary>
+<summary>자세히: ArtPlanner가 인페인팅과 "미관측=비주행" 대신 virtual surface를 쓴 이유</summary>
 
-![ArtPlanner Fig. 10](https://arxiv.org/html/2303.01420v1/map_processing.png)
-*그림 — ArtPlanner (Fig. 10): ==깊이 광선으로 미관측 공간의 virtual surface를 추론한다.== 밟을 수 있는 지형을 먼저 팽창시키고 다시 침식해 잡음을 걸러낸다(CMU의 shrink/expand와 같은 발상). 출처: [arXiv:2303.01420](https://arxiv.org/abs/2303.01420)*
+![ArtPlanner Fig. 6](https://arxiv.org/html/2303.01420v1/map_processing.png)
+*그림 — ArtPlanner (Fig. 6): 높이 지도 처리 세 단계다. ① 깊이 광선으로 미관측 공간의 virtual surface를 추론한다. ② 발 디딜 수 없는 칸을 팽창한 뒤 침식해 위험 지형 둘레에 안전 여유를 만든다(CMU의 shrink/expand와 같은 발상). ③ 거리에 따라 높아지는 문턱으로 천장에서 돌아온 점을 버린다. 출처: [arXiv:2303.01420](https://arxiv.org/abs/2303.01420)*
 
-![ArtPlanner Fig. 14](https://arxiv.org/html/2303.01420v1/safety_threshold.png)
-*그림 — ArtPlanner (Fig. 14): SubT 현장의 날카로운 낙차. (b) 낙관적으로 튜닝한 플래너는 이 모서리를 넘어 경로를 냈다. ==travplan의 포트홀 실패와 같은 실패 모드다.== 출처: [arXiv:2303.01420](https://arxiv.org/abs/2303.01420)*
+![ArtPlanner Fig. 10](https://arxiv.org/html/2303.01420v1/safety_threshold.png)
+*그림 — ArtPlanner (Fig. 10): SubT 첫 Preliminary Run의 날카로운 낙차. (b) 낙관적으로 튜닝한 탐사 경로는 이 모서리를 넘었다. (c) 안전 여유가 없으면 ArtPlanner 경로도 모서리에 붙고, (d) 있으면 떨어진다. travplan의 포트홀 실패와 같은 실패 모드다. 출처: [arXiv:2303.01420](https://arxiv.org/abs/2303.01420)*
 
-**논문이 두 대안을 명시적으로 거부한다.** 가려진 구멍을 (i) *"image inpainting algorithm"*으로 메우거나
-(ii) *"considering them untraversable"*로 막는 것 둘 다다. 이유가 이렇다 —
-*"We can therefore not rely on the motion cost network to keep a safe distance from negative obstacles."*
-==메우면 비용망이 위험을 못 보고, 전부 막으면 로봇이 아무 데도 못 간다.== 그래서 세 번째 길을 택한다:
-**가려진 칸을 "가상 표면"으로 살려두되, 센서 높이보다 위에 있을 때만 계획에 쓴다.**
+**논문은 두 대안 대신 세 번째 길을 택했다.** 두 대안은 가려진 구멍을 (i) *"image inpainting algorithm"*으로 메우거나
+(ii) *"considering them untraversable"*로 막는 것이다(§2.4.1). 전부 막으면 가려진 칸이 아예 빠져 Planner가 지나갈 길을 못 찾는다(Fig. 11b).
+그래서 **가려진 칸을 "가상 표면"으로 살려두되, 센서 높이보다 위에 있을 때만 계획에 쓴다.**
+*"We can therefore not rely on the motion cost network to keep a safe distance from negative obstacles."*는
+이 선택의 이유가 아니라, 낙차 둘레에 안전 여유(Fig. 6의 ②)를 따로 두는 이유다(§2.4.2).
+공개 코드의 기본값 `unknown_space_untraversable: true`는 virtual surface로 살리지 못한 칸을 여전히 비주행으로 둔다.
 
 **왜 센서 높이인가.** 광선이 센서 높이 아래에서 상한을 만들었다면, 그 광선은 **아래를 향해** 내려간 것이므로
 지형이 실제로 꺼져 있을 수 있다. 반대로 상한이 센서 높이보다 위라면 광선은 거의 수평이라 **평지를 스친 것**이다.

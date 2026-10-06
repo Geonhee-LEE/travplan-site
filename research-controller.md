@@ -1386,8 +1386,8 @@ $$ \min_{u_{0:N-1}} \lVert u_0 - u_L \rVert^2 \quad \text{s.t.} \quad x_{k+1} = 
 
 ## F. 하위 제어: 4족 보행 RL
 
-**travplan은 body twist까지만 낸다.** 그 아래(관절 토크·위치)는 스워브의 경우 모듈 역기구학이 해석적으로 풀어 주므로
-RL이 필요 없다. 그런데도 이 계열을 여기 두는 이유가 셋이다.
+**travplan은 body twist까지만 낸다.** 그 아래(관절 토크·위치)는 스워브의 경우 모듈 역기구학이 모델로 풀어 주므로
+RL이 필요 없다(비동축은 닫힌 해가 없어 고정점 반복 3회로 푼다). 그런데도 이 계열을 여기 두는 이유가 셋이다.
 
 1. **커리큘럼이 같은 문제다.** travplan에도 지형 난이도 레벨(TP-0039)과 Planner D의 RL 후학습(TP-0066)이 있고,
    "다음에 어떤 과제를 뽑을 것인가"를 지금은 무작위로 답하고 있다.
@@ -1401,7 +1401,7 @@ RL이 필요 없다. 그런데도 이 계열을 여기 두는 이유가 셋이�
 |---|---|---|---|
 | 2019 | Hwangbo 외, *Learning agile and dynamic motor skills* (Science Robotics) | **actuator net**으로 모터·감속기 동역학을 학습해 sim-to-real 격차를 메움 | 잔차 학습의 원조(E.9) |
 | 2020 | [Lee 외](https://arxiv.org/abs/2010.11251), *Learning quadrupedal locomotion over challenging terrain* (Science Robotics) | 특권 정보 교사 → 고유수용 학생 증류, 험지 | 배경 0.12의 증류 |
-| 2021 | [Rudin 외](https://arxiv.org/abs/2109.11978), *Learning to Walk in Minutes* (CoRL 2022) | GPU 대규모 병렬 + **게임식 지형 커리큘럼**(잘하면 올리고 못하면 내린다) | 지형 난이도 레벨(TP-0039) |
+| 2021 | [Rudin 외](https://arxiv.org/abs/2109.11978), *Learning to Walk in Minutes* (CoRL 2021, PMLR 164) | GPU 대규모 병렬 + **게임식 지형 커리큘럼**(잘하면 올리고 못하면 내린다) | 지형 난이도 레벨(TP-0039) |
 | 2022 | Miki 외 (Science Robotics) | 고유수용 + 외수용을 합치는 belief encoder | 인식 A.7.1 |
 | 2023 | [Hoeller 외](https://arxiv.org/abs/2306.14874), *ANYmal Parkour* (Science Robotics 2024) | 기술별 정책 + 항법, 지각 기반 민첩 주행 | Planner 문서 B.14 |
 | **2026** | [Li·Li·Hutter](https://arxiv.org/abs/2601.17428), *Scaling Rough Terrain Locomotion with Automatic Curriculum RL* | **학습 진척으로 과제 분포를 자동 조절**(LP-ACRL) | 아래 F.2 |
@@ -1518,10 +1518,10 @@ travplan처럼 과제 수가 적으면 균등 표집을 일부 섞는 편이 간
 
 **하나 더 있다 — TP-0055.** 이 논문이 실물 배포에서 겪은 문제가 travplan의 L1 문제와 같다. 높이 격자를
 elevation mapping으로 만들면 잡음이 끼고, 그 위에서 정책이 흔들린다. 논문의 답은 **특권 교사 → LSTM 학생 증류**다.
-travplan의 Planner D는 L0에서 40/40인데 L1 belief에서 32/40으로 떨어진다(TP-0055). 같은 처방을 쓸 자리다.
+travplan의 Planner D는 L0에서 39–40/40이고, L1 belief에서 35/40이다(TP-0098 뒤). 매퍼 상한과 깊이 prior를 켜면 38/40이다. 남은 격차에 같은 처방(TP-0055)을 쓸 자리다.
 
-**그 아래 층 자체는 아직 travplan의 범위가 아니다.** 스워브 모듈은 역기구학이 해석적이라 관절 RL이 필요 없다
-(모듈 모델은 `travplan/robot/plant.py`). 다만 액추에이터 모델은 지금도 관련이 있다 — Hwangbo의 actuator net이
+**그 아래 층 자체는 아직 travplan의 범위가 아니다.** 스워브 모듈은 역기구학을 모델로 풀 수 있어 관절 RL이 필요 없다
+(모듈 모델은 `travplan/robot/plant.py`, 비동축은 고정점 반복 3회). 다만 액추에이터 모델은 지금도 관련이 있다 — Hwangbo의 actuator net이
 Isaac Lab의 `ActuatorNetMLP`로 이어지고, 그 파라메트릭 판이 unitree_rl_lab의 `UnitreeActuator`다
 (시뮬레이션 문서 S.5.3c). travplan의 plant가 넣은 1차 지연이 그 자리의 가장 단순한 형태다.
 
@@ -2217,7 +2217,7 @@ MetaRobotics가 Walk These Ways의 순서를 바꿔, 관측을 먼저 계산하�
    뒤는 L1 지도 잡음에서 정책이 무너져서다. 둘 다 travplan에 이미 열린 TODO(TP-0073·0075, TP-0055)를 겨냥한다.
 2. **확률 제약 MPC는 Controller 트랙의 실물 근거다.** 손으로 맞춘 조이기를 이겼다는 결과가, 지금 0.15 m로 고정해 둔
    TP-0071의 여유를 TP-0069로 옮길 이유가 된다.
-3. ==**관절 RL 자체는 여전히 범위 밖이다.**== 스워브는 모듈 역기구학이 해석적이라 배울 것이 없다. 이 계열에서 가져오는 것은
+3. ==**관절 RL 자체는 여전히 범위 밖이다.**== 스워브는 모듈 역기구학을 모델로 풀 수 있어(비동축은 고정점 반복 3회) 배울 것이 없다. 이 계열에서 가져오는 것은
    **학습 절차**(커리큘럼, 증류, 신뢰도 게이트)이지 정책이 아니다.
 
 ### F.8 휴머노이드 전신 제어: GR00T-WholeBodyControl의 분리형 WBC
