@@ -23,7 +23,7 @@ td.ok { color: var(--ok); font-weight: 600; } td.bad { color: var(--bad); font-w
   <h1>Playground 검사</h1>
   <p>Playground 코어(js/)가 저장소 결과와 같은 방향으로 도는지, 주소 하나로 같은 주행이 다시 나오는지, 화면이 로봇이 본 지형을 그리는지 확인한다.
     각 줄은 한 번의 주행이나 한 번의 확인이고, 기대와 다르면 빨갛게 표시한다. 시연의 기대는 <code>js/presets.js</code>의 <code>expect</code>를 읽는다.
-    <code>scripts/check_playground.sh</code>가 이 페이지를 헤드리스 Chrome으로 열어 판정한다. 약 4분 걸린다.</p>
+    <code>scripts/check_playground.sh</code>가 이 페이지를 헤드리스 Chrome으로 열어 판정한다. 약 5분 걸린다.</p>
   <div id="summary">실행 중…</div>
   <div class="table"><table>
     <thead><tr><th>검사</th><th>설정</th><th>기대</th><th>결과</th><th>시뮬 시간</th></tr></thead>
@@ -105,7 +105,7 @@ for (const p of PRESETS) {
   row(`시연 ${p.id}`, describe(st.o) + (p.peds ? ` · 보행자 ${p.peds}명` : ""), e.text, word(r), ok, `${r.t.toFixed(1)} s`);
 }
 
-// 3) 주소 왕복: parse(serialize(x))가 x와 같다(시연 20개, 사용자 설정 3개, 시연 덮어쓰기 3개).
+// 3) 주소 왕복: parse(serialize(x))가 x와 같다(시연 전부, 사용자 설정 3개, 시연 덮어쓰기 3개).
 function user(set, extra = {}) { const s = baseState(null); Object.assign(s.o, set); return Object.assign(s, extra); }
 const USERS = [
   ["사용자 설정 1", user({ scenario: "bumps_potholes", seed: 4, perception: "occlusion" })],

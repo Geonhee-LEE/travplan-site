@@ -920,7 +920,7 @@ B.8.2에 있다.
 ([arXiv:2110.02710](https://arxiv.org/abs/2110.02710), IROS 2022, Fröhlich·Küttel·Arcari·Hewing·Zeilinger·Carron). 여기서 "문맥"은 학습한
 동역학 모델이 인코딩한 환경 조건이고, 조건이 바뀌어도 이전 조건의 데이터를 재사용해 적은 시행으로 랩타임을 줄인다.
 
-**travplan에서 이게 지금 값이 있는 이유.** ==TP-0067에서 `shadow_depth_m`·`shadow_evidence_m`·`shadow_margin_m`을 손으로 맞췄다.== 규칙
+**travplan에서 이게 지금 값이 있는 이유.** TP-0067에서 `shadow_depth_m`·`shadow_evidence_m`·`shadow_margin_m`을 손으로 맞췄다. 규칙
 설계를 네 번 실패하고 다섯 번째에 통과했는데, 그 과정은 전부 사람이 후보를 내고 벤치마크를 돌린 것이다. travplan은 폐루프 평가가 이미
 자동화돼 있어(`scripts/run_benchmark.py`, `scripts/eval_shadow_false_alarm.py`) 목적 함수가 준비돼 있다. 붙일 자리는 MPPI 가중치가
 아니라 **`TravMapBuilder`의 문턱값들**이다(MPPI는 개발 계획 제외, §E 머리말). 문맥은 시나리오(내리막 연석·포트홀·배수로)로 두면 된다.
@@ -979,8 +979,6 @@ Menner·Worsnop·Zeilinger의 제약 역최적제어(IEEE TCST)로, **시연에�
 
 
 ### E.7 Zeilinger 그룹 더 보기: 경로를 품은 MPC, 성능을 지키는 자동 튜닝, 실험 플랫폼
-
-그룹 전체(E.5–E.7)를 한 화면으로 정리한 설명 페이지는 [Zeilinger 학습 MPC 지도](explainers/zeilinger-lab.html)다.
 
 **E.5와 E.6이 "학습 모델 위의 보장"이었다면, 이 절은 같은 그룹이 그 보장을 로봇 내비게이션과 튜닝 절차에 옮긴 결과다.** 그룹은 ETH Zürich
 IDSC(Institute for Dynamic Systems and Control)의 Intelligent Control Systems 그룹이고, Melanie N. Zeilinger 교수가 이끈다. 아래 논문 대부분에
@@ -2623,7 +2621,7 @@ MPPI가 롤아웃 256 × 40스텝으로 보는 것을 이 정책은 **50개 숫�
 "지도 없음"은 그 정책의 **지형 입력 36개를 0으로 주고 경로 대신 목표 직선만 준 것**이고, 나머지는 같다.
 
 ⚠️ **이 제어 시간은 한 번 틀렸다가 고친 값이다.** 처음에는 0.14–0.16 ms로 적었는데, `sim.js`의 객체 리터럴이
-속성 순서대로 평가돼 ==화면에 그릴 궤적을 만드는 `predict()` 20스텝 롤아웃까지 `ms` 안에 들어가 있었다.==
+속성 순서대로 평가돼 화면에 그릴 궤적을 만드는 `predict()` 20스텝 롤아웃까지 `ms` 안에 들어가 있었다.
 명령을 낸 시각에서 끊으니 0.02 ms다(MPPI의 `nominal`은 평균 갱신의 일부라 그쪽은 포함이 맞다 — 그 비대칭이
 버그였다). 성공 수·도달 시간은 바뀌지 않았다. MPPI 쪽 벽시계는 기계 부하에 흔들린다(2026-10-02~06에 3.6–4.8 ms 관측).
 
@@ -2641,7 +2639,7 @@ PYTHONPATH=. python scripts/run_benchmark.py --stacks guidance+tiny guidance+mpp
 | `guidance+mppi` | **12/12** | 15.9 s | 12.4 ms | — |
 | `guidance+tiny` | 8/12 | **11.8 s** | **0.49 ms** | lethal 4 (curb_ramp s0, bumps s0·s1, random_mix s2) |
 
-==브라우저에서 잰 8/12와 **성공 수가 같고 실패 유형도 모두 `lethal`로 같다.**== 두 환경은 지형 난수·인식
+브라우저에서 잰 8/12와 **성공 수가 같고 실패 유형도 모두 `lethal`로 같다.** 두 환경은 지형 난수·인식
 설정·재계획 주기가 모두 다른데 같은 비율로, 같은 방식으로 진다 — **정책의 성질이지 어느 한 하네스의
 성질이 아니다.**
 
@@ -2651,7 +2649,7 @@ PYTHONPATH=. python scripts/run_benchmark.py --stacks guidance+tiny guidance+mpp
 ⚠️ **이 제어 시간도 한 번 틀렸다가 고친 값이다.** 처음에는 0.18 ms로 적었는데, 그것은 벤치마크 루프 값이
 아니라 **에피소드에서 뽑은 요청 하나를 2000번 다시 먹인** 마이크로 벤치마크였다(캐시가 더워진 값이다).
 원인은 `TinyPolicyController`가 `control_ms`를 `info`에 넣지 않은 것이다 — `eval/runner.py`는 Controller가
-스스로 신고한 값만 모으므로 ==`guidance+tiny`의 `control_ms_mean`이 12행 모두 정확히 0.0으로 기록돼 있었고==,
+스스로 신고한 값만 모으므로 `guidance+tiny`의 `control_ms_mean`이 12행 모두 정확히 0.0으로 기록돼 있었고,
 그 빈자리를 문서가 따로 잰 숫자로 메우고 있었다. 신고를 넣고 다시 재니 **0.49 ms**다(1,257회 호출 평균).
 내역은 `observe()` 0.09 ms + `act()` 0.01 ms + 나머지가 torch·numpy 변환이라, 파이썬 쪽은 호출당 오버헤드가
 지배한다. 같은 가중치가 브라우저에서는 0.02 ms다.
@@ -2698,8 +2696,8 @@ golden: 24/24 cases match python, worst |diff| 5.00e-13
 ### 정직하게 적어 둘 것
 
 1. ==**바퀴에서는 MPPI를 이기지 못한다.**== 8/12 대 12/12다. 롤아웃이 없으니 "지금 보이는 50개"로만
-   결정하고, 실패 4건이 모두 `lethal`이다. ==연석 시연(`TP-0128-limit`)에서 보이듯 경사로를 지나친 뒤
-   되돌아가는 행동이 나오지 않는다== — 그 행동에는 앞을 굴려 보는 과정이 필요하다.
+   결정하고, 실패 4건이 모두 `lethal`이다. 연석 시연(`TP-0128-limit`)에서 보이듯 경사로를 지나친 뒤
+   되돌아가는 행동이 나오지 않는다 — 그 행동에는 앞을 굴려 보는 과정이 필요하다.
 2. **대신 제어 시간이 짧다.** 브라우저 0.02 ms 대 3.6–4.8 ms(약 1/180), 저장소 벤치마크 0.49 ms 대 12.4 ms(약 1/25)
    (파이썬 쪽은 torch·numpy 호출 비용이 지배한다). ==Orin에서 제어 예산이 모자랄 때 어느 쪽을 깎을지의
    자료가 된다== — MPPI의 K를 줄이는 것과 이 정책으로 갈아타는 것이 같은 축의 선택지다.

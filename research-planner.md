@@ -1306,7 +1306,7 @@ $w_{ij} = \gamma R_{\text{lon}} + (1-\gamma) R_{\text{lat}}$, $R_{\text{dir}} = 
 ==같은 땅이 **지나가는 방향에 따라 다른 값**을 갖는다.==
 
 travplan의 `GlobalGuidance`는 `cell_w = 1 + 4·cost + 0.5·σ`라는 **칸당 스칼라**라서 어느 방향으로 지나든
-같다. 그런데 ==`GRAD_X`/`GRAD_Y`가 `TravMap`에 이미 있고 플래너는 한 번도 읽지 않는다.==
+같다. 그런데 `GRAD_X`/`GRAD_Y`가 `TravMap`에 이미 있고 플래너는 한 번도 읽지 않는다.
 `compute_features`가 slope·step·rough를 footprint로 max-pool할 때 방향을 **일부러 버리기** 때문이다.
 그리고 `slope_crossfall` 시나리오(*"직선 횡단이 경사·roll 한계를 넘는 둔덕, 완만한 우회로가 있다"*)가
 글자 그대로 TRG의 둔덕 실험이다 — 지금 travplan은 **우회만 할 수 있고, 안전한 진입 방향을 고를 수는 없다.**
@@ -2497,8 +2497,6 @@ ROS 2 통합(P1) 때는 travplan Planner를 Nav2의 계획기 플러그인 경�
 
 ### B.14 ETH RSL(Marco Hutter)의 계보: 높이 지도에서 배달로봇까지
 
-층별 지도, 연표, RIVR 사양표를 한 화면으로 정리한 설명 페이지는 [ETH RSL 계보](explainers/eth-rsl-lab.html)다.
-
 **travplan이 쓰는 인식 도구 상당수가 한 연구실에서 나왔다.** ETH Zürich의 Robotic Systems Lab(RSL)이고, Marco Hutter 교수가 이끈다.
 elevation_mapping_cupy, traversability_estimation, WVN(Wild Visual Navigation)이 모두 이곳 코드다. 이 연구실은 ANYmal 4족 로봇으로 시작해
 바퀴 달린 다리 로봇, 도시 배송까지 왔다. ==그 끝에 있는 스핀오프 RIVR가 보도 배달로봇을 상용화했고, 2026-03-19 Amazon에 인수됐다.==
@@ -2519,6 +2517,21 @@ travplan과 문제 설정이 가장 가까운 산업 사례다. 이 절은 흩�
 | Controller | DTC (Science Robotics 2024) | 궤적 최적화가 낸 발 궤적을 RL 정책이 추종 | **이 절** |
 | 시뮬레이션 | legged_gym, Isaac Lab | 병렬 RL, 지형 커리큘럼 | S.1.1, S.5.1 |
 | 상용화 | RIVR(구 Swiss-Mile) | 바퀴·다리 배달로봇, 2026-03 Amazon 인수 | **이 절** |
+
+<details markdown="1">
+<summary>자세히: RSL 연표(2014–2026)</summary>
+
+| 연도 | 연구·사건 |
+|---|---|
+| 2014–18 | 로봇 중심 elevation mapping(CLAWAR 2014, RA-L 2018) |
+| 2020–21 | 험지 4족 보행 RL(Science Robotics 2020), legged_gym, Learning to Walk in Minutes |
+| 2022 | Miki 인식 기반 보행(Science Robotics), elevation_mapping_cupy |
+| 2023 | ArtPlanner(DARPA SubT 우승), WVN(RSS 2023), DTC(arXiv:2309.15462) |
+| 2024 | 바퀴·다리 도시 내비(Science Robotics), ViPlanner(ICRA), Swiss-Mile 2,200만 달러 시드 |
+| 2025 | FDM(RSS), SRU(IJRR), RIVR로 개명, 오스틴·취리히 시범 배송 |
+| 2026 | Path-conditioned RL, 03-19 Amazon의 RIVR 인수 |
+
+</details>
 
 **학습 전방 동역학 모델(FDM) — 지형을 보고 "이 명령을 내면 어디로 가고, 넘어질 확률은 얼마인가"를 배운다**([arXiv:2504.19322](https://arxiv.org/abs/2504.19322),
 Roth·Frey·Cadena·Hutter, RSS 2025, [코드](https://github.com/leggedrobotics/fdm)). MPPI의 비용 함수는 보통 사람이 경사·step·거칠기로 손으로
@@ -2615,7 +2628,7 @@ travplan에서는 둘 다 필요하다. 가림으로 못 본 셀(TP-0047)은 앞
 
 ### B.15.1 Planner D를 브라우저에서, 같은 망의 diffusion 샘플러 (TP-0137)
 
-**한 줄로.** ==Planner D(flow matching, `planner_d_L0123_dagger.pt`, 파라미터 1,486,488개)를 float16으로 내보내 Playground에서 돌렸다.==
+**한 줄로.** Planner D(flow matching, `planner_d_L0123_dagger.pt`, 파라미터 1,486,488개)를 float16으로 내보내 Playground에서 돌렸다.
 파이썬과 황금 벡터로 최대 7×10⁻⁶ 안에서 같다(crop, 조건 320, 속도 120 × t 셋). 같은 속도망을 **diffusion**으로도 샘플한다(선형 일정의 DDPM 조상 샘플링).
 두 샘플러 모두 4 지형 × 3 seed에서 12/12다. 그리고 ==배경 0.7b의 "1스텝은 반드시 조건부 평균"은 학습된 망에서 83%만 맞는다.==
 남은 잡음은 변화율이라 두 번 적분돼 끝점이 약 1 m 흩어진다.
@@ -2836,6 +2849,18 @@ Planner D 진단(TP-0074)은 TP-0050의 관계가 레벨 0–3과 네 지형 모
 - bumps_potholes와 random_mix의 실패도 Planner D 진단에서는 치명 표본 비율이 0.95–0.99다. Guidance 폴백(TP-0078)이 켜지는 조건이고, RL + 폴백이 bumps L1 s1·L3 s4를 살렸다.
 
 **정직하게 적어 둘 것.** 스윕은 지형마다 한 번씩만 돌렸다. 스택 사이의 1–3개 차이는 같은 스택을 다시 돌릴 때 생기는 차이와 구별되지 않는다. 경계를 말할 수 있는 것은 "레벨 3까지 급격한 붕괴가 없다"는 것뿐이다.
+
+**TP-0050의 관계는 curb_ramp 레벨 3 seed 0에서 처음 보였다(2026-09-29).** 레벨 0 시연만 배운 Planner D는 경사로를 찾지 못하고 연석 앞을 오가다 60 s에 시간 초과했다.
+MPPI가 시간 참조 대신 경로 참조로 따라가도 seed 0–2의 성공 수는 같았다(각 2/3). 그래서 원인은 추종이 아니라 생성기였다.
+실패한 에피소드는 모두 치명 표본 비율이 0.8을 넘었다.
+레벨 0–3 시연과 레벨 무작위 DAgger로 다시 배운 Planner D(TP-0073·TP-0075)는 같은 seed에서 24.9 s에 도달했다. curb_ramp 레벨 3 seed 0–9로는 7/10에서 8/10이 됐다.
+남은 실패는 Guidance 폴백(B.15.2)과 RL 후학습(B.15.3)이 이어받았다.
+
+![TP-0050](assets/figs/ev_tp0050_curb_l3.webp)
+*그림 — TP-0050 (Fig. 1): curb_ramp 레벨 3 seed 0이다. 2026-09-29에는 이 장면이 병목이었다. 왼쪽 guidance+mppi는 25.9 s에 도달했다. 오른쪽 planner_d+mppi(레벨 0 시연만 배운 Planner D)는 경사로를 찾지 못하고 연석 앞을 오가다 60 s에 시간 초과했다. 흰 선이 지나온 길, 노란 선이 그 순간의 계획, 빨간 칸이 치명 셀이다. 출처: scripts/make_evidence_figures.py --only tp0050*
+
+![TP-0073](assets/figs/ev_tp0073_curb_l3.webp)
+*그림 — TP-0073 (Fig. 1): 같은 장면의 planner_d+mppi다. 왼쪽은 레벨 0 시연만 배운 Planner D로, 60 s에 시간 초과했다. 오른쪽은 레벨 0–3 시연과 레벨 무작위 DAgger로 다시 배운 Planner D(TP-0075)로, 24.9 s에 도달했다. 출처: scripts/make_evidence_figures.py --only tp0073*
 
 ### B.15.5 RL 후학습을 더 돌려도 curb_ramp 레벨 3은 늘지 않는다 (TP-0138)
 

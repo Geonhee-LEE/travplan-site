@@ -7,7 +7,7 @@
 | 페이지 | 주소 |
 |---|---|
 | 첫 화면 | <https://geonhee-lee.github.io/travplan-site/> |
-| 대시보드 (진행 현황, TODO, PRD, 리서치, 시뮬레이션 탭) | <https://geonhee-lee.github.io/travplan-site/dashboard.html> |
+| 대시보드 (진행 현황, TODO, PRD, 아키텍처, 리서치, 설계, 시뮬레이션 탭) | <https://geonhee-lee.github.io/travplan-site/dashboard.html> |
 | Playground (브라우저 실시간 시뮬레이션) | <https://geonhee-lee.github.io/travplan-site/playground/> |
 | Playground 사용법·구조·시연·검사 | [playground/README.md](playground/README.md) |
 

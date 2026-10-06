@@ -168,7 +168,7 @@ Isaac Sim 6.0(GTC'26 릴리스, Python 3.12)은 Ubuntu 24.04와 ROS 2 Jazzy 네�
 | P2.3 🚧 | 동적 장애물 탐지·추적: YOLO + ByteTrack PoC와 ROS 2 `obstacle_tracker_node`를 가짜 카메라로 검증(`docs/poc-yolo-bytetrack.md`). Isaac Sim 카메라(TP-0019)는 코드만 있고, GPU가 복구돼 실행 검증을 진행할 수 있다 | claude(TP-0011) |
 | P2.3b ✅ | 트래커 출력 → world-frame `DynamicObstacles`(`perception/obstacle_bridge.py`). 카메라 in-the-loop 폐루프 5 seed에서 충돌 0/5, 최소 여유 0.69–0.91 m(정답 입력 0.70–0.77 m와 같은 수준, 2026-09-25 분리 후 재측정) | claude(TP-0018) |
 | P2.4 ✅ | 시간가변 동적 장애물 비용 레이어 + MPPI `RiskCost` 통합. 횡단 보행자 충돌 1/3 → 0/3(분리 전 측정). 지금은 `ControlRequest.dynamic_obstacles`로 Controller에 전달 | claude(TP-0012) |
-| ~~P2.5~~ | ~~RA-MPPI/DRA-MPPI 샘플링 동적 리스크~~ — MPPI 개선이라 2026-09-25 계획에서 제외 | — |
+| <del>P2.5</del> | <del>RA-MPPI/DRA-MPPI 샘플링 동적 리스크</del> — MPPI 개선이라 2026-09-25 계획에서 제외 | — |
 | P2.6 (보류) | CBF-QP류 안전 필터를 오픈소스 QP로 대체할 수 있는지 조사(Gurobi 라이선스 회피) | claude(TP-0014) |
 | P2.7 ✅ | 학습 Planner: Planner D(flow matching 시간 인덱스 궤적), planner_d+mppi 12/12 | claude(TP-0025) |
 | P2.8 🚧 | 평가 확장: seed 10개 이상 ✅(TP-0027), 반응형·사건 기반 보행자, 지형 난이도 레벨, 100 m당 실패·충돌 속도·화물 비용 지표 | claude(TP-0027, TP-0036–0039) |
@@ -183,4 +183,4 @@ Isaac Sim 6.0(GTC'26 릴리스, Python 3.12)은 Ubuntu 24.04와 ROS 2 Jazzy 네�
 Jetson **AGX Orin**급을 쓴다. Orin Nano는 여유가 빠듯한 위험 SKU로 본다. 리서치는 주제별 문서로 나뉜다.
 [개요](research-overview.md), [인식](research-perception.md), [Planner](research-planner.md), [Controller·안전](research-controller.md),
 [시뮬레이션](research-simulation.md), [배경·수식](research-background.md), [참고문헌](research-references.md)이다. 각 주제 문서의 첫 탭이
-그 분야의 마일스톤부터 최신(SOTA)까지의 계보다.
+그 분야의 마일스톤부터 최신(SOTA)까지의 계보다. 그 밖에 [센서 배치](research-sensors.md), [강화학습](research-rl.md), [MPC 구축](research-mpc.md) 문서가 있다.

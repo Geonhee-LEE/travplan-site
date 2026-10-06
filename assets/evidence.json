@@ -14,8 +14,7 @@
    "results": "results/tp0047_bp"
   },
   "ev_tp0050_curb_l3": {
-   "caption": "▶ curb_ramp 레벨 3. Guidance는 25.9 s에 도달, Planner D는 경사로를 못 찾고 60 s 시간 초과(현재 병목)",
-   "results": "results/tp0050"
+   "caption": "▶ curb_ramp 레벨 3. Guidance는 25.9 s에 도달, Planner D는 경사로를 못 찾고 60 s 시간 초과(2026-09-29 당시 병목)"
   },
   "ev_tp0067_false_alarm": {
    "caption": "깊이 prior 오탐: 통로 안 오탐 9.1 → 1.3칸, 포트홀 재현율 0.88 유지",

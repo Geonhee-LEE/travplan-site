@@ -63,8 +63,8 @@ elevation, variance, traversability)이 실제로 발행되고, 로봇이 움직
 `GridSpec`으로 바꾸는 `travplan/perception/gridmap_bridge.py`도 만들고 테스트했다(이 포크의 CUDA 커널은 row = Y, col = X로 뒤집힘 없이
 맞는다는 것을 실측으로 확인). `TravMapBuilder`가 합성 heightfield 대신 이 경로를 쓰도록 잇는 일은 다음 단계다.
 
-**시간 예산 실측(TP-0083, 2026-09-30, RTX 4070 Laptop, `results/p2-l1-timing.tsv`).** ==병목은 elevation mapping이
-아니라 그 뒤의 `TravMapBuilder.build`다.==
+**시간 예산 실측(TP-0083, 2026-09-30, RTX 4070 Laptop, `results/p2-l1-timing.tsv`).** 병목은 elevation mapping이
+아니라 그 뒤의 `TravMapBuilder.build`다.
 
 | 단계 | 평균 | 비고 |
 |---|---|---|
@@ -132,7 +132,7 @@ YOLO 계열 검출기와 ByteTrack/BoT-SORT를 묶는다(Jetson급 실시간 보
 LiDAR 모델, 시야각, 장착 높이·기울기, 카메라 사양은 아직 정해지지 않았다. SKU 확정과 구매는 예산이 걸린 **사용자 결정**(TP-0009,
 사양 제공은 TP-0064)이고, 이 PRD는 권장안과 근거만 제공한다.
 
-### ~~R-F-006 (연구) 샘플링 기반 동적 리스크~~ — 계획에서 제외 (2026-09-25)
+### <del>R-F-006 (연구) 샘플링 기반 동적 리스크</del> — 계획에서 제외 (2026-09-25)
 
 MPPI 자체를 개선하는 일이라 Controller 범주다(§7). 조사 기록만 남긴다. RA-MPPI([arXiv 2209.12842](https://arxiv.org/abs/2209.12842))와
 DRA-MPPI([arXiv 2506.21205](https://arxiv.org/abs/2506.21205))는 travplan의 샘플링 + CVaR `RiskCost`(`control/mppi/costs.py`)와 구조가 가장

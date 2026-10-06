@@ -1429,7 +1429,7 @@ python scripts/make_doc_figures.py --followup TP-0130 TP-0130-episodes
 
 ### M.3.21 접힌 참조에서 진행 항의 끝점 투영을 닿을 수 있는 호로 제한한다 (TP-0131)
 
-**한 줄로.** ==MPPI 진행 항이 rollout 끝점을 그 rollout이 실제로 달린 거리 + 0.5 m 안의 호에만 투영하게 했다(`ReferenceCost(reach_margin_m=0.5)`, 선택).==
+**한 줄로.** ==MPPI 진행 항이 rollout 끝점을 그 rollout이 실제로 달린 거리 + 0.5 m 안의 호에만 투영하게 했다==(`ReferenceCost(reach_margin_m=0.5)`, 선택).
 접힌 경로에서 생기던 맴돌기가 풀린다. 운동학 curb_ramp 레벨 3에서는 Guidance 폴백 스택의 도달이 30/30이 되고, 짝지어 9.9 s 빨라진다(23 : 6, p = 0.002).
 plant curb_ramp 72 에피소드의 도달 수는 잡음 안이다(57 대 52, 짝 비교 p = 0.38). 그래서 기본값은 끈 채 둔다.
 
@@ -1500,7 +1500,7 @@ python scripts/run_benchmark.py --stacks planner_df+mppi --ckpt-d checkpoints/pl
 
 ### M.3.22 MPPI rollout에 스워브 plant의 지연을 넣는다 — 레벨 3 plant 치명 55 → 4 (TP-0150)
 
-**한 줄로.** ==MPPI rollout이 스워브 plant의 액추에이터 지연을 알게 하면, 권장 L1 + plant 레벨 3의 치명이 55 → 4로 줄고 도달은 221 → 239/360으로 는다(`mppi_plant_lag`).==
+**한 줄로.** ==MPPI rollout이 스워브 plant의 액추에이터 지연을 알게 하면, 권장 L1 + plant 레벨 3의 치명이 55 → 4로 줄고 도달은 221 → 239/360으로 는다==(`mppi_plant_lag`).
 최적화기는 그대로 두고 rollout 모델만 바꿨다. 미끄럼까지 예측하면 치명은 같이 줄지만 진행이 막힌다(도달 189). 레벨 3 경사로(폭 1.1 m)는 plant에서 여전히 거의 지나가지 못한다(1/90).
 
 ![TP-0150](assets/figs/tp0150_plant_mppi.webp)
@@ -1540,7 +1540,7 @@ python scripts/run_benchmark.py --stacks planner_df+mppi --ckpt-d checkpoints/pl
 
 ### M.3.23 plant에서 레벨 3 경사로를 지나는 MPPI를 찾지 못했다 — 다섯 시도 뒤 멈추고 plant 모델을 묻는다 (TP-0151)
 
-**한 줄로.** ==스워브 plant에서 레벨 3 경사로(폭 1.1 m, 중심 통로 0.2 m)는 `mppi_plant_lag`로 1/90만 지나간다. 다섯 가지를 시도했지만 하나도 열지 못했다.==
+**한 줄로.** 스워브 plant에서 레벨 3 경사로(폭 1.1 m, 중심 통로 0.2 m)는 `mppi_plant_lag`로 ==1/90만 지나간다. 다섯 가지를 시도했지만 하나도 열지 못했다.==
 경사로 자체는 오를 수 있다(가운데 미끄럼 0.07, 정상 속도 0.44 m/s). 로봇은 경사로 발치까지 오지만 그 앞에서 제자리 회전만 한다.
 그러다 시뮬 plant에 의도하지 않은 것으로 보이는 겹침을 찾았다. 명령의 가속 한계를 실현 속도 기준으로 걸어 지연과 겹친다. 그래서 plant 모델을 사용자에게 묻고 멈춘다.
 
@@ -1576,7 +1576,7 @@ python scripts/run_benchmark.py --stacks planner_df+mppi --ckpt-d checkpoints/pl
 
 ### M.3.24 plant 조건에서 NMPC 갈래는 지연을 아는 MPPI보다 치명이 여덟 배 많다 (TP-0152)
 
-**한 줄로.** ==권장 L1 + 스워브 plant의 레벨 3에서 `mpc`는 222/360(치명 34), `mpc_gp`는 215/360(치명 32)이다. rollout에 지연을 넣은 `mppi_plant_lag`는 239/360(치명 4)이다.==
+**한 줄로.** 권장 L1 + 스워브 plant의 레벨 3에서 `mpc`는 222/360(치명 34), `mpc_gp`는 215/360(치명 32)이다. rollout에 지연을 넣은 `mppi_plant_lag`는 239/360(치명 4)이다.
 NMPC 갈래는 plant를 모르는 명목 MPPI(221/360, 치명 55)와 비슷하다. 잔차 GP도, 명령에서 지연을 되돌리는 방법도 그 차이를 메우지 못했다.
 그래서 plant 조건의 배포 Controller는 그대로 `mppi_plant_lag`다(2026-10-04 사용자 결정과 같다).
 
@@ -1585,7 +1585,7 @@ NMPC 갈래는 plant를 모르는 명목 MPPI(221/360, 치명 55)와 비슷하�
 *그림 — TP-0152: 권장 L1 + 스워브 plant, 레벨 3. 왼쪽은 네 지형 전체, 오른쪽은 설계 한계로 정한 경사로를 뺀 값이다. 주황 글자가 NMPC 갈래다. guidance의 NMPC 두 줄은 결정적이라 서로 다른 에피소드 40개를 세 번 센 것이다(본문).*
 
 - **설정.** 권장 L1(`--perception l1 --shadow-ceiling --shadow-depth 0.10 --stereo --unknown-near 1.5 --shadow-low-fill --pit-margin 0.05`) + `--plant`. 레벨 3은 seed 0–9 × 오프셋 0·1000·2000, 레벨 0은 seed 0–9다.
-  - NMPC는 `mpc`(명목)와 `mpc_gp`다. `mpc_gp`는 잔차 GP 평균을 쓰고(이 PC에서 다시 맞춘 `residual_sgp_wide_refit.pt`) 실행 중에도 갱신한다. 이 GP는 plant의 잔차를 배운 것이다.
+  - NMPC는 `mpc`(명목)와 `mpc_gp`다. `mpc_gp`는 잔차 GP 평균을 쓰고(이 PC에서 다시 맞춘 `residual_sgp_wide_refit-2026-10-03.pt`) 실행 중에도 갱신한다. 이 GP는 plant의 잔차를 배운 것이다.
   - MPPI 기준은 `mppi`(TP-0149)와 `mppi_plant_lag`(TP-0150)다. 원자료는 `results/tp0152/mpc`, `results/tp0152/mpc_gp`다.
   - acados는 이번에 이 PC에 깔았다(M.3.1). 레벨 0의 slope_crossfall·random_mix는 TP-0153의 GPU 경로로 돌렸다. 결과는 CPU와 비트 단위로 같다.
 - **guidance + NMPC는 결정적이다.** 오프셋은 Planner와 Controller의 난수만 바꾼다. guidance와 NMPC는 둘 다 난수를 쓰지 않으므로 세 오프셋이 같은 에피소드다(끝난 에피소드 전부에서 확인).
