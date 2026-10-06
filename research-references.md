@@ -787,9 +787,15 @@ TP-0036에 바로 들어간다)다.
 
 | 이름 | 연·발표 | 요약 | 본문 | 링크 |
 |---|---|---|---|---|
-| DreamWaQ | 2023.01 · ICRA 2023 | 고유수용만으로 지형을 암묵 추정(CENet). ICRA 2023 사족보행 대회 1위, 실물은 Unitree A1 한 대. 고도차 22 m는 본문 §III-G에 있고 ==경사 36°만 본문 밖==이다 | F.4 | [논문](https://arxiv.org/abs/2301.10602) |
+| DreamWaQ | 2023.01 · ICRA 2023 | 고유수용만으로 지형을 암묵 추정(CENet). ICRA 2023 사족보행 대회 1위, 실물은 Unitree A1 한 대. 고도차 22 m는 본문 §III-G에 있고 ==경사 36°만 본문 밖==이다. 공식 코드는 없다(프로젝트 페이지는 'Coming soon', 2026-10-06 확인). 비공식 구현은 F.6.1 | F.4, F.6.1 | [논문](https://arxiv.org/abs/2301.10602) |
 | DreamWaQ++ | 2024.09 · T-RO 2026 | PointNet + **학습된 신뢰도 필터**로 외수용을 믿을 때만 쓴다. 확률 proprio 잠재 + MLP-Mixer, 카메라 고장 시 접촉 반사로 복귀. 계단 97.8%. ==실물 넷은 센서 구성이 다른 Go1 셋 + 외수용 없는 A1 하나==(기종 간 일반화는 시뮬) | F.4, A.7.1 | [논문](https://arxiv.org/abs/2409.19709) · [프로젝트](https://dreamwaqpp.github.io/) · [영상](https://www.youtube.com/watch?v=IeBNRQsmKR4) |
 | 복구 동작(통칭 DreamRiser) | 2023.06 · **RSS 2023 워크숍** | 같은 지형 상상으로 넘어진 뒤 복구 동작, 학습 분포 밖 지형. =="DreamRiser"는 논문 제목이 아니라 저자 프로젝트 페이지의 통칭== | F.4 | [논문](https://arxiv.org/abs/2306.12712) · [프로젝트](https://sites.google.com/view/dreamriser) |
+| curieuxjy/go2_dreamwaq | 2024 · GitHub | DreamWaQ 비공식 구현(A1·Go2, Isaac Gym)과 Isaac Lab 이식본. 논문 구성 요소를 가장 많이 구현했지만 DreamWaQ 가중치가 없다. 저장소의 손실 척도로는 문맥 z가 붕괴한다는 것을 합성 점검이 보였고, 같은 코드로 학습한 제3자도 붕괴를 보고했다 | F.6.1, E.15 | [코드](https://github.com/curieuxjy/go2_dreamwaq) |
+| yusongmin1/Dreamwaq | 2025 · GitHub | 바퀴-다리 Lynx M20용 DreamWaQ식 재구현. 가중치·ONNX·MuJoCo sim2sim을 싣고 MuJoCo 계단을 오르지만 z는 붕괴했다. 라이선스 없음 | F.6.1, E.15 | [코드](https://github.com/yusongmin1/Dreamwaq) |
+| wanghg1992/DreamWaQ | 2023 · GitHub | LucienJi/MetaRobotics에서 잘라 낸 사본(Go1). 가중치·AdaBoot·라이선스가 없고 커밋 작성자가 삭제를 요청했다. 상류를 읽는다 | F.6.1, E.15 | [코드](https://github.com/wanghg1992/DreamWaQ) |
+| Teddy-Liao/walk-these-ways-go2 | 2024 · GitHub | Walk These Ways의 Go2 이식과 실물 배포(MIT). DreamWaQ 코드는 없고, 추정기는 DreamWaQ가 이긴 EstimatorNet 계열이다 | F.6, F.6.1, E.15 | [코드](https://github.com/Teddy-Liao/walk-these-ways-go2) |
+| Manaro-Alpha/DreamWaQ | 2024 · GitHub | 커뮤니티의 원조 DreamWaQ 구현(Go1). 여러 파생 저장소의 출발점이고 루트 라이선스가 없다 | F.6.1 | [코드](https://github.com/Manaro-Alpha/DreamWaQ) |
+| LucienJi/MetaRobotics | 2023 · GitHub | DreamWaQ·EstimatorNet·AMP 모듈을 나란히 둔 연구 코드(MIT). wanghg1992 사본의 상류 | F.6.1 | [코드](https://github.com/LucienJi/MetaRobotics) |
 | 지형 인지 발놓기 | 2023.10 | 궤적 생성기의 파라미터만 RL로 조절, 안전 발놓기 보상. 징검다리 25.5 cm | F.4 | [논문](https://arxiv.org/abs/2310.04675) |
 | Extreme Parkour | 2023.09 · ICRA 2024 | 단일 전방 깊이 카메라로 파쿠르, 20시간 학습 | F.4, F.6 | [논문](https://arxiv.org/abs/2309.14341) · [코드](https://github.com/chengxuxin/extreme-parkour) |
 | 확률 제약 볼록 MPC (4족) | 2025 | 불확실성을 전파해 마찰 원뿔·접촉 제약을 적응 조임. **손으로 맞춘 조이기를 이김**, 미지 하중 7.5 kg | F.5 | [코드](https://github.com/RIVeR-Lab/Chance-Constrained-MPC) · [프로젝트](https://cc-mpc.github.io/) |

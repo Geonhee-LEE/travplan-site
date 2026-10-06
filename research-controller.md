@@ -9,8 +9,8 @@ acados NMPC 두 갈래를 함께 개발하고 같은 벤치마크에서 비교�
 | MPPI 계열 | MPPI의 계보, 학습 prior를 넣는 법, SMPPI, 최적 수송으로 샘플을 옮기는 최적화기(MPOT·OT-MPC) | E.1, B.5, E.11 | `MPPIController`, `SmoothMPPIController` |
 | 학습 동역학·적응 | 학습 rollout 모델, 불확실성, 온라인 적응, 마일스톤, Zeilinger 그룹(학습 MPC의 보장·공개 코드·내비 MPC), GP 잔차 | E, E.2–E.10 | 슬립이 커질 때 바꿀 rollout 모델, 잔차 GP |
 | 안전 필터 | 비용 통합형과 외부 필터형, CBF 계열, 계보 | C.1–C.4 | 시간가변 비용 레이어(구현), CVaR-BF(TP-0014) |
-| 하위 제어 · 4족 RL | 4족 보행 RL의 계보, 자동 커리큘럼, RL과 MPC를 섞는 갈래 | F.1–F.7 | 지형 난이도 커리큘럼(TP-0039)과 Planner D RL 후학습(TP-0066) |
-| 작업 기록 | Playground의 학습 Controller와 지도 없는 대조군, 휴머노이드·WBC, MPOT Planner | E.12–E.14 | `travplan/control/tiny_policy.py`, `js/mpot.js`, TP-0128·0129·0135·0136 |
+| 하위 제어 · 4족 RL | 4족 보행 RL의 계보, 자동 커리큘럼, RL과 MPC를 섞는 갈래, DreamWaQ 비공식 구현 코드 분석, 휴머노이드 분리형 WBC | F.1–F.8 | 지형 난이도 커리큘럼(TP-0039)과 Planner D RL 후학습(TP-0066) |
+| 작업 기록 | Playground의 학습 Controller와 지도 없는 대조군, 휴머노이드·WBC, MPOT Planner, DreamWaQ 비공식 구현 점검 | E.12–E.15 | `travplan/control/tiny_policy.py`, `js/mpot.js`, TP-0128·0129·0135·0136·0155 |
 
 **계보 한눈에 보기.**
 
@@ -1545,7 +1545,8 @@ KAIST **Urban Robotics Lab**, Nahrendra·Yu·Myung). ==이 한 편이 **Dream\* 
 관절 이력에서 지형·동역학 문맥을 잠재 벡터로 뽑고, 정책은 그 잠재 벡터를 조건으로 받는다. E.2의 RMA와 같은 뼈대인데
 대상이 "환경 파라미터"가 아니라 **지형**이다. ICRA 2023 자율 사족보행 대회에서 1위였고, 경사 36°·고도차 22 m의 실외
 장거리 주행을 보였다. ⚠️ **정정(2026-10-02)**: 처음에는 "보상 함수를 다시 맞추지 않고도 다른 4족 로봇으로
-옮겨진다"고 적었는데 ==그것은 **다른 논문의 주장**이다.== DreamWaQ 자신은 Unitree A1 **한 대**에서만 돌고,
+옮겨진다"고 적었는데 ==그것은 **논문 본문에 없는 주장**이다.== ⚠️ **보완(2026-10-06)**: 출처는 다른 논문이 아니라
+DreamWaQ 프로젝트 페이지의 Scalability 절이다. 논문 속 DreamWaQ는 Unitree A1 **한 대**에서만 돌고,
 새로움으로 내세우는 것은 단일 플랫폼에서의 blind 보행이다. ==고도차 22 m는 논문 본문에 있고(§III-G
 *"Course B was an on-campus hill with an elevation gain of up to 22 m"*), **경사 36°만 본문 밖**이다== —
 둘을 묶어 프로젝트 자료로 돌린 것은 과한 정정이었다(2026-10-02 재확인).
@@ -1597,9 +1598,12 @@ travplan은 지금 그것을 **GP 잔차로 뭉뚱그려** 흡수한다(`control
 [arXiv:2602.10399](https://arxiv.org/abs/2602.10399))은 언어·영상으로 보행 정책을 고르게 하고,
 **휴머노이드 blind locomotion**(Sim-to-Real 워크숍 @ Humanoids 2025)은 같은 blind 뼈대를 2족으로 옮긴다.
 
-⚠️ ==**다섯 편 모두 공식 코드가 없다.**== `github.com/url-kaist`의 공개 저장소 27개에도, 1저자 계정에도
-Dream\* 저장소가 없다. 이 계열은 **읽고 아이디어만 가져오는** 대상이지 가져다 돌릴 수 있는 것이 아니다.
-같은 연구실에서 코드가 나오는 쪽은 SLAM·지면 분할 라인이다(인식 A.2b.8).
+⚠️ ==**다섯 편 모두 공식 코드가 없다.**== `github.com/url-kaist`의 공개 저장소 27개에도, 1저자와 2저자의 계정에도
+Dream\* 저장소가 없다(2026-10-06 재확인). DreamWaQ 프로젝트 페이지에는 2023년부터 링크 없는 '[Code] (Coming soon)'만 있고,
+DreamFLEX 페이지에는 코드 버튼이 보이지 않는다. 'Code (TBU)' 버튼은 HTML 소스에 주석으로만 남아 있다. 같은 연구실에서 코드가 나오는 쪽은 SLAM·지면 분할 라인이다(인식 A.2b.8).
+
+⚠️ **보완(2026-10-06).** DreamWaQ 자체에는 커뮤니티 재구현이 많다(F.6.1). 코드까지 읽은 넷 가운데 논문 결과를 재현했다는 근거를 갖춘 것은 없었다.
+그래서 이 구현들은 구조를 읽는 참고 자료로 쓴다.
 
 </details>
 
@@ -1634,11 +1638,565 @@ Additive Uncertainties*). 단일 강체 동역학의 관성과 접촉 위치를 
 | [rsl_rl](https://github.com/leggedrobotics/rsl_rl) | GPU 전용 경량 RL 라이브러리. PPO + **교사–학생 증류**, RND, 대칭 증강 | 3.0k | [논문](https://arxiv.org/abs/2509.10771) |
 | [unitree_rl_lab](https://github.com/unitreerobotics/unitree_rl_lab) | Isaac Lab 위의 Unitree 로봇. **바퀴 달린 Go2-W 설정 포함** | 1.4k | 시뮬 문서 S.5.3c |
 | [walk-these-ways](https://github.com/Improbable-AI/walk-these-ways) | 행동 다양성으로 일반화. Go1 배포 코드 포함 | 1.5k | 2024 이후 정체 |
+| [walk-these-ways-go2](https://github.com/Teddy-Liao/walk-these-ways-go2) | Walk These Ways를 Go2로 옮기고 unitree_sdk2 C++ 브리지로 실물에 올렸다 | 631 | MIT, 마지막 코드 변경 2024-03-16. F.6.1 |
 | [extreme-parkour](https://github.com/chengxuxin/extreme-parkour) | 단일 전방 깊이 카메라로 파쿠르, 20시간 학습 | 1.2k | [논문](https://arxiv.org/abs/2309.14341) ICRA 2024 |
 
-==`rsl_rl`이 travplan에 직접 쓸 수 있는 유일한 조각이다.== 4족 환경이 아니라 **PPO와 교사–학생 증류 구현** 자체이고,
+==rsl_rl이 travplan에 직접 쓸 수 있는 유일한 조각이다.== 4족 환경이 아니라 **PPO와 교사–학생 증류 구현** 자체이고,
 TP-0066(Planner D 폐루프 RL 후학습)과 TP-0055(L1 belief 증류)가 필요로 하는 것이 정확히 그 둘이다.
-DreamWaQ 계열은 프로젝트 페이지에 코드 공개 표시가 없다.
+DreamWaQ 공식 코드는 없다. 프로젝트 페이지에는 2023년부터 링크 없는 '[Code] (Coming soon)'만 있다(2026-10-06 확인).
+대신 비공식 구현이 많고, 그 가운데 넷을 코드까지 읽은 결과가 F.6.1이다.
+
+### F.6.1 DreamWaQ 비공식 구현 — 넷을 코드로 읽었다
+
+**DreamWaQ의 공식 코드는 없고, 비공식 구현은 많다.** 2026-10-06에 그 가운데 넷을 코드까지 읽고 CPU에서 돌려 봤다. 셋은 DreamWaQ 재구현이다.
+남은 Teddy-Liao/walk-these-ways-go2에는 DreamWaQ 코드가 없다. 이 저장소는 Walk These Ways(이하 WTW)의 Go2 이식본이다. 추정기는 관측 이력에서
+시뮬레이터 참값을 회귀하는 Ji 외(2022) 방식이다. DreamWaQ가 이긴 기준선 EstimatorNet이 같은 방식이다. curieuxjy/go2_dreamwaq는 논문의
+구성 요소를 가장 많이 구현했다. 그러나 DreamWaQ 가중치가 없고, '계단을 못 오른다'는 이슈가 열려 있으며, 알려진 버그가 여럿이다.
+넷 가운데 DreamWaQ식 가중치를 싣는 것은 yusongmin1/Dreamwaq뿐이다. 로봇은 바퀴-다리 4족 DEEP Robotics Lynx M20이고, 그 정책은 MuJoCo에서
+잘 달린다. 다만 문맥 벡터 z가 붕괴해 있다. wanghg1992/DreamWaQ는 LucienJi/MetaRobotics에서 잘라 낸 사본의 사본이고, 커밋 작성자가 저장소
+삭제를 요청했다. 이 코드를 보려면 MIT 라이선스인 상류 MetaRobotics를 읽는다.
+
+==코드를 읽은 구현 어디에서도 논문의 '암묵적 지형 상상'이 작동하는 것을 찾지 못했다.== 그 상상은 β-VAE(잠재가 싣는 정보량에 가중치 β를 매기는
+변분 오토인코더)가 배우는 문맥 벡터 z가 맡는다. 가중치나 학습 기록이 있는 구현에서는 모두 z가 붕괴했거나 붕괴가 보고됐다. yusongmin1의 체크포인트
+둘은 직접 확인했고, go2_dreamwaq 쪽은 제3자의 학습 보고와 이식본 주석의 기록이다. 세 재구현의 공통점은 손실 척도다. KL(Kullback–Leibler)
+항은 z 16차원의 합으로 더하고, 복원 MSE(평균제곱오차)는 관측 45–57차원의 평균으로 더한다. 그리고 β를 1 이상으로 둔다. 실측은 작업 기록 E.15에 있다.
+M20 정책은 z와 속도 추정을 지워도 MuJoCo 계단을 그대로 오른다. Walk These Ways Go2 정책은 넘어지지 않지만, 속도 추종이 관절 감쇠에 민감하다.
+
+![DreamWaQ Fig. 1](https://arxiv.org/html/2301.10602v2/overview.png)
+*그림 — DreamWaQ (Fig. 1): 위는 시뮬레이션 학습이다. 과거 관측 이력이 CENet(128×64×19)을 거쳐 문맥 벡터와 몸체 속도 추정이 되고, 현재 관측과 함께 정책 망(512×256×128×12)에 들어간다. 높이맵을 담은 특권 상태는 가치 망만 본다. 아래는 같은 망을 A1에 그대로 올린 계단 주행이다. 이 절의 비교는 모두 이 그림의 블록을 기준으로 했다. 출처: [arXiv:2301.10602](https://arxiv.org/abs/2301.10602)*
+
+**용어.** AdaBoot(적응형 부트스트랩)은 학습 중 actor에 넣는 몸체 속도를 확률 $p_{\text{boot}}$로 CENet 추정값에서 고른다.
+논문 v2는 $p_{\text{boot}} = 1 - \tanh(\mathrm{CV})$를 학습 반복마다 정한다. CV(변동계수)는 env들의 에피소드 보상 표준편차를 평균으로 나눈 값이다.
+나머지 경우에 시뮬레이터 참값을 넣는다는 것은 본문이 아니라 문맥에서 나온 해석이다. PPO(Proximal Policy Optimization)는 이 계열이 모두 쓰는
+정책 경사 알고리즘이고, 이점은 GAE(Generalized Advantage Estimation)로 계산한다. sim2sim은 학습에 쓰지 않은 다른 시뮬레이터에서 정책을 돌려
+보는 검증이다. ONNX(Open Neural Network Exchange)는 신경망 교환 형식이고, MJCF는 MuJoCo의 XML 로봇 모델 형식이다.
+LCM(Lightweight Communications and Marshalling)과 DDS(Data Distribution Service)는 로봇 프로세스 사이의 통신 미들웨어다.
+
+**넷을 한 표로.** 별과 날짜는 2026-10-06 기준이다. 마지막 줄은 비교용으로 넣은 커뮤니티의 원조 구현이고, README와 메타데이터 위주로 읽었다.
+
+| 저장소(★, 마지막 코드 변경) | 바탕 · 로봇 | CENet | AdaBoot · critic | 가중치 · 배포 · 라이선스 | 판단 |
+|---|---|---|---|---|---|
+| [curieuxjy/go2_dreamwaq](https://github.com/curieuxjy/go2_dreamwaq) (★34, 2026-09-01) | legged_gym + rsl_rl 1.0.2, Isaac Gym. A1·Go2. Isaac Lab 이식본 동봉 | 225→128→64→35(속도 3, z 평균·로그분산 16씩). 디코더 [v̂, z]→64→128→48→45, 다음 관측 | 1 − tanh(CV), 스텝당 한 번 추첨. critic도 추정 속도를 받는다 | DreamWaQ 가중치 없음(동봉 1 GB는 WTW 정책). 실물 배포 없음. `dreamwaq/`는 MIT + BSD-3 | 구조 참고 1순위. 재현 근거로는 못 쓴다 |
+| [yusongmin1/Dreamwaq](https://github.com/yusongmin1/Dreamwaq) (★121, main 2026-01-23, 별도 브랜치 2026-08-27) | legged_gym + rsl_rl 1.0.2, Isaac Gym. Lynx M20 바퀴-다리 16 자유도 | 285(현재 제외 5프레임)→128→64, 속도·z 모두 확률 헤드. 디코더 19→128→128→57, 잡음 없는 현재 관측 | 없음(늘 추정값). critic은 참 속도·높이 187점, 외란 없음 | 체크포인트·ONNX·TensorBoard 동봉, MuJoCo sim2sim. 실물 코드 없음. 라이선스 없음 | 넷 중 유일하게 돌려 볼 수 있는 가중치. z는 붕괴 |
+| [wanghg1992/DreamWaQ](https://github.com/wanghg1992/DreamWaQ) (★122, 2023-12-25) | MetaRobotics 사본(Walk These Ways 계열 환경), Isaac Gym. Go1 | 225→512→256→64, 확률 헤드 넷. 디코더 [z, 참 속도]→512→256→128→45 | 없음. critic은 참 속도·절대 높이, 외란 없음 | 가중치·내보내기 없음. 라이선스 없음, 작성자 삭제 요청 | 상류 MetaRobotics(MIT)를 읽는다 |
+| [Teddy-Liao/walk-these-ways-go2](https://github.com/Teddy-Liao/walk-these-ways-go2) (★631, 2024-03-16) | Walk These Ways(Go1)의 Go2 이식, Isaac Gym | 없음. MLP 회귀기 2100→256→128→2(마찰·반발) | 없음(늘 추정값). critic은 이력 + 참 마찰·반발 | 제3자가 학습한 Go2 정책, 실물 배포(LCM·C++ 브리지). MIT | DreamWaQ 아님. 배포·커리큘럼 참고 |
+| [Manaro-Alpha/DreamWaQ](https://github.com/Manaro-Alpha/DreamWaQ) (★272, push 2025-12-01) | legged_gym + rsl_rl 1.0.2. Go1 | 128→64(속도 3 + z 16), 디코더 64→128→45, β 1 | 없음 | 가중치·Go1 배포 코드 동봉. 루트 라이선스 없음 | 커뮤니티의 원조. 여러 파생의 출발점 |
+
+**논문 블록이 어느 파일에 있나.** 세 DreamWaQ 재구현의 지도다. 줄 번호가 붙은 링크는 아래 토글에 있다.
+
+| 논문 블록 | go2_dreamwaq | yusongmin1 | wanghg1992 |
+|---|---|---|---|
+| 관측 이력 | `legged_robot.py` | `M20/m20.py` | `history_wrapper.py` |
+| CENet(인코더·헤드·디코더) | `vae/cenet.py` | `modules/vae.py` | `state_estimator.py` |
+| CENet 손실 | `vae/cenet.py` | `ppo_dreamwaq.py` | `state_estimator.py` |
+| AdaBoot | 확률은 `legged_robot.py`, 추첨은 `on_policy_runner.py` | 없음 | 없음(`act_expert`는 호출되지 않음) |
+| actor·critic 입력 | `on_policy_runner.py` | `actor_critic_dreamwaq.py` | `ac.py` |
+| PPO와 CENet 갱신 순서 | `on_policy_runner.py` | `ppo_dreamwaq.py` | `algorithms/ppo.py` |
+| 내보내기·배포 | `play.py`(Isaac Gym 재생, actor만 내보냄) | `helpers.py`(ONNX), `deploy_mujoco.py` | `play_helper.py`(Isaac Gym 재생) |
+
+**공통 함정.** 저장소는 달라도 같은 자리에서 틀린다. 수치의 자세한 내역은 E.15에 있다.
+
+1. **z 붕괴와 손실 척도.** 세 재구현 모두 KL을 z 16차원의 합으로, 복원 MSE를 관측 45–57차원의 평균으로 더하고 β를 1 이상으로 둔다.
+   선형-가우시안 근사에서 요인 k는 $\beta < 2\lambda_k$일 때만 z에 실린다. $\lambda_k$는 그 요인이 복원 목표 한 차원에 평균으로 더하는 분산이다.
+   관측을 분산 1로 정규화하면 이 몫은 1을 넘지 못한다. 그래서 β = 1이면 분산의 절반 넘게 설명하는 요인만 실리고, β가 2 이상이면 이 근사에서는 아무 요인도 실리지 않는다.
+   go2_dreamwaq의 CENet 클래스를 합성 데이터에 그대로 돌리면 저장소의 β 일정(1에서 4로 증가)에서 활성 차원이 0/16이다.
+   같은 코드를 Isaac Gym으로 학습한 1sznkaveesh/DreamWaQ는 500반복에서 KL 0.037 nats, 활성 0/16을 보고했다(제3자 보고, 재현하지 않음).
+   yusongmin1 체크포인트의 z 헤드 행 노름은 약 0.001이고, 동봉 기록의 KL은 10반복 안에 0.065에서 0.001로 떨어졌다.
+   go2_dreamwaq의 Isaac Lab 이식본은 평균 KL의 β 1에서 붕괴를, β 0.35로 낮춘 기본값에서 재발을 주석에 적었다(근거 로그는 저장소에 없다).
+2. **PPO 갱신 때 잠재를 다시 뽑는다.** wanghg1992와 yusongmin1은 롤아웃 때 뽑은 z와 속도 표본을 저장하지 않고 갱신 때 새로 뽑는다.
+   그래서 가중치가 같아도 PPO 확률 비율이 1이 아니다. wanghg1992는 초기화 상태에서 비율의 약 77%가 클립 범위 밖이었다.
+   적응 학습률이 보는 KL은 0.26–0.33으로 감소 임계 0.02를 크게 넘는다. 이 값이면 학습률이 첫 반복의 10번째 미니배치에서 하한 1e-5에 닿는다(계산).
+   yusongmin1은 무작위 초기화에서 KL 0.026–0.035였고, 동봉 기록의 학습률도 반복 0에서 하한 1e-5였다. 둘의 인과는 학습 없이 확인하지 못했다.
+   표본을 버퍼에 저장하거나 평균을 쓰면 비율은 정확히 1이다.
+3. **AdaBoot가 저장소마다 다르다.** 논문 v1은 변동계수 대신 분산을 썼고, v2부터 CV다. go2_dreamwaq는 제어 스텝마다 그 스텝에 끝난 env로
+   CV를 계산한다. 추첨도 스텝당 한 번이라 4,096 env가 같은 출처를 쓴다. 고른 추정 속도는 critic에도 들어간다. yusongmin1과 wanghg1992에는
+   AdaBoot가 없어 actor가 늘 추정값을 받는다. wx839/DreamWaQ는 $p_{\text{boot}} = \tanh(\mathrm{CV})$로 방향이 반대다(해당 줄만 확인했다).
+   go2_dreamwaq의 Isaac Lab 이식본은 시간 램프(학습 앞 절반 동안 0에서 0.9)와 env별 추첨으로 바꿨다.
+4. **에피소드가 바뀌어도 이력을 비우지 않는다.** go2_dreamwaq는 새 에피소드의 첫 4프레임에, yusongmin1은 첫 5스텝에 이전 에피소드 관측이 남는다.
+   walk-these-ways-go2는 학습 중 30스텝이 샌다. 이력을 비우는 래퍼 함수가 학습 중에는 불리지 않는다. wanghg1992는 이력을 비우지만 관측을 먼저
+   만들고 리셋을 나중에 한다. 그래서 새 에피소드의 첫 행동이 이전 에피소드의 마지막 관측으로 정해진다.
+5. **라벨과 목표가 한 스텝 어긋난다.** yusongmin1의 속도 라벨은 제자리 갱신되는 텐서를 가리켜, 저장되는 값이 $v_{t+1}$이다.
+   go2_dreamwaq는 GAE의 마지막 부트스트랩에 env.step 이전의 critic 관측을 넘겨 $V(s_T)$ 대신 $V(s_{T-1})$을 쓴다. 같은 저장소의 EstimatorNet
+   러너는 라벨을 롤아웃 밖에서 한 번 읽어 24스텝 내내 같은 라벨로 배운다. wanghg1992의 done 마스크는 관측-리셋 순서 때문에 한 칸 어긋나,
+   옳은 짝을 지우고 틀린 짝을 남긴다.
+6. **README 그림이 코드와 다르다.** go2_dreamwaq의 방법 그림은 관측 42차원, BatchNorm, 좁은 actor를 그리지만 코드는 45차원, BatchNorm 없음,
+   512-256-128 actor다. 같은 저장소의 속도 추정 그림은 정규화된 추정치를 m/s 참값 옆에 그대로 그렸다. 그림의 큰 오차는 이 단위 차이로 설명된다. walk-these-ways-go2의
+   조이스틱 그림은 Go1 원본의 버튼 배치라 이 저장소 코드와 맞지 않는다. yusongmin1의 README 영상은 어느 체크포인트로 찍었는지 기록이 없다.
+
+<details markdown="1">
+<summary>자세히: curieuxjy/go2_dreamwaq의 구조와 코드</summary>
+
+**무엇인가.** 2024-08-17에 만든 모노레포다(★34, 마지막 push 2026-09-01). README가 'independently implemented'라고 밝히는 비공식 구현이다.
+핵심인 `dreamwaq/`는 leggedrobotics의 legged_gym과 rsl_rl 1.0.2(Isaac Gym Preview 4) 위에 CENet(`cenet.py`)과 러너 셋(Base·WAQ·Est)을 얹었다.
+함께 든 것은 넷이다. 2026-09에 더한 Isaac Lab 3.0 이식본(`dreamwaq_isaaclab/`), Teddy-Liao/walk-these-ways-go2 사본(`wtw/`),
+unitree_rl_gym 사본, Isaac Gym 예제다. 저장소 1.2 GB의 대부분은 Walk These Ways 체크포인트(1.03 GB)와 GIF다.
+==DreamWaQ 체크포인트는 하나도 없다.== README의 결과와 영상은 A1이고, Go2 데모 GIF는 Isaac Gym 시뮬레이션이다.
+
+**코드 흐름.**
+
+**① 관측 이력과 속도 라벨**([legged_robot.py L1293–L1302](https://github.com/curieuxjy/go2_dreamwaq/blob/8f287e41290ab72e6faacafe8394511163cb1da8/dreamwaq/legged_gym/legged_gym/envs/base/legged_robot.py#L1293-L1302)).
+5프레임 × 45차원 = 225를 오래된 것부터 쌓는다. 리셋 때 이 버퍼를 비우지 않아, 새 에피소드 첫 4프레임이 이전 에피소드 값이다.
+라벨 `get_true_vel()`은 지연 보간을 거치기 전의 참 몸체 선속도이고, 러너가 누적 평균과 분산으로 정규화한다.
+
+**② CENet 순전파**([cenet.py L212–L233](https://github.com/curieuxjy/go2_dreamwaq/blob/8f287e41290ab72e6faacafe8394511163cb1da8/dreamwaq/rsl_rl/rsl_rl/vae/cenet.py#L212-L233)).
+인코더 225-128-64-35의 출력을 속도 3, 평균 16, 로그분산 16으로 자른다. z를 재매개변수화로 뽑고, [v̂, z] 19차원을 디코더에 넣어 다음 관측
+45차원을 복원한다. 디코더에 속도가 함께 들어가는 점은 논문 Fig. 2와 같다. 디코더 깊이는 다르다. 논문 라벨 64×128×48은 출력이 48이지만,
+코드는 48을 은닉층으로 두고 45를 낸다. 추론에서도 평균이 아니라 표본 z가 actor로 간다.
+
+**③ 손실과 β 일정**([cenet.py L278–L286](https://github.com/curieuxjy/go2_dreamwaq/blob/8f287e41290ab72e6faacafe8394511163cb1da8/dreamwaq/rsl_rl/rsl_rl/vae/cenet.py#L278-L286), [L321](https://github.com/curieuxjy/go2_dreamwaq/blob/8f287e41290ab72e6faacafe8394511163cb1da8/dreamwaq/rsl_rl/rsl_rl/vae/cenet.py#L321)).
+아래 발췌가 z 붕괴의 출발점이다. 원문 그대로이고, 이 파일의 라이선스는 MIT(© 2024 Jungyeon Lee)다.
+
+```python
+mse_loss = nn.MSELoss()
+vel_loss = mse_loss(est_vel_batch, true_vel_batch)
+recon_loss = mse_loss(est_onext_batch, true_onext_batch)
+
+klds = -0.5 * (1 + logvar_batch - mu_batch.pow(2) - logvar_batch.exp())
+kl_loss = klds.sum(1).mean(0, True) * self.beta
+# kl_loss = (-0.5 * torch.mean(1 + logvar_batch - mu_batch.pow(2) - logvar_batch.exp())) * self.beta
+
+total_loss = vel_loss + recon_loss + kl_loss
+```
+
+복원 MSE는 45차원 평균인데 KL은 16차원 합이다. 주석 처리된 줄이 평균 KL이었다. β는 갱신마다 1.01배씩 1에서 4로 커지고 140회 갱신에 상한에 닿는다.
+그래서 Go2 5,000반복의 97%가 β = 4로 돈다. 교과서 β-VAE 척도(제곱오차 합의 절반 + KL)로 바꾸면 KL 가중이 22.5β, 곧 22.5에서 90이다.
+
+**④ 롤아웃 한 스텝**([on_policy_runner.py L529–L597](https://github.com/curieuxjy/go2_dreamwaq/blob/8f287e41290ab72e6faacafe8394511163cb1da8/dreamwaq/rsl_rl/rsl_rl/runners/on_policy_runner.py#L529-L597)).
+스텝마다 정규화한 이력을 CENet에 넣어 속도 추정과 z를 얻고, AdaBoot로 actor·critic 입력을 조립한다. 아래는 [L546–L559](https://github.com/curieuxjy/go2_dreamwaq/blob/8f287e41290ab72e6faacafe8394511163cb1da8/dreamwaq/rsl_rl/rsl_rl/runners/on_policy_runner.py#L546-L559)의 원문이다.
+파일은 BSD-3(NVIDIA·ETH Zurich)이고 이 부분은 MIT 수정분이다.
+
+```python
+# AdaBoot
+if self.cfg["ada_boot"]:
+    vel_input = (
+        est_vel
+        if self.env.extras["episode"]["boot_prob"].item()
+        > np.random.random()
+        else true_vel
+    )
+else:  # Not use AdaBoot
+    vel_input = est_vel
+
+# prepare observations for actor critic
+critic_obs = torch.cat((obs, vel_input, privileged_obs), dim=-1)
+actor_obs = torch.cat((obs, vel_input, context_vec), dim=-1)
+```
+
+`np.random.random()`을 한 번만 뽑으므로 같은 스텝의 4,096 env가 모두 추정 속도를 쓰거나 모두 참 속도를 쓴다. critic도 같은 `vel_input`을 받아,
+부트스트랩 스텝에서는 참 속도 대신 추정치를 본다. 논문의 특권 상태는 참 속도를 담는다. actor 입력은 64차원(관측 45, 속도 3, z 16)이고
+critic 입력은 238차원(관측 45, 속도 3, 외란 3, 높이 187점)이다. 롤아웃이 `torch.inference_mode` 안이라 정책 기울기는 CENet으로 가지 않는다.
+
+**⑤ 부트스트랩 확률 계산**([legged_robot.py L273–L312](https://github.com/curieuxjy/go2_dreamwaq/blob/8f287e41290ab72e6faacafe8394511163cb1da8/dreamwaq/legged_gym/legged_gym/envs/base/legged_robot.py#L273-L312)).
+`reset_idx` 안에서, 이번 제어 스텝에 끝난 env들의 에피소드 보상 합으로 CV를 구한다. 논문은 학습 반복마다 m개 env로 정의한다.
+여기서는 m이 스텝마다 달라 값이 흔들린다. 벌점 항이 많아 보상 평균이 0 근처면 CV가 커지고, $p_{\text{boot}}$가 0으로 가 참 속도를 주로 쓴다.
+보상 항별로 기록하는 CV는 평균만 에피소드 길이 20 s로 나눠 실제의 20배다. 로그에만 영향이 있다.
+
+**⑥ 반복 하나의 순서**([on_policy_runner.py L618–L630](https://github.com/curieuxjy/go2_dreamwaq/blob/8f287e41290ab72e6faacafe8394511163cb1da8/dreamwaq/rsl_rl/rsl_rl/runners/on_policy_runner.py#L618-L630)).
+24스텝 롤아웃 뒤 GAE 계산, CENet 갱신, PPO 갱신 순서로 돈다. CENet은 별도 Adam(lr 0.01)으로 98,304개 표본 전체에 기울기 스텝을 한 번만 밟는다.
+GAE에 넘기는 critic 관측은 마지막 `env.step` 이전 값이라 마지막 부트스트랩이 한 스텝 어긋난다. 기본 러너에는 이 문제가 없다.
+
+**⑦ 추론**([play.py L136–L174](https://github.com/curieuxjy/go2_dreamwaq/blob/8f287e41290ab72e6faacafe8394511163cb1da8/dreamwaq/legged_gym/legged_gym/scripts/play.py#L136-L174)).
+저장소의 주 추론 스크립트다. 기본값 `TRUE_VEL = True`에서 참 속도를 루프 전에 한 번만 계산해, 첫 스텝의 속도를 매 스텝 넣는다.
+그래서 기본 실행은 DreamWaQ 평가도 참 속도 평가도 아니다. 추정 속도로 도는 것은 테스트 스크립트 `mini_test.py`(`TRUE_VEL = False`)다. 내보내기는 actor MLP만 TorchScript로 저장하고 CENet과 정규화 통계를 빼서,
+그 파일만으로는 배포할 수 없다.
+
+**⑧ Isaac Lab 이식본**([dreamwaq_isaaclab/](https://github.com/curieuxjy/go2_dreamwaq/tree/8f287e41290ab72e6faacafe8394511163cb1da8/dreamwaq_isaaclab)).
+같은 CENet을 Isaac Lab 3.0(beta)으로 옮겼다. KL을 16차원 평균으로 바꾸고 β를 0.35로 고정했으며, Adam 1e-3으로 반복당 20스텝을 밟는다.
+AdaBoot는 시간 램프와 env별 추첨으로 바꿨다. 이력은 에피소드가 끝날 때마다 비우고, GAE는 step 이후 관측으로 부트스트랩한다.
+주 실험은 논문 레시피가 아니라 Isaac Lab 공식 Go2 레시피 위에서 돈다. README는 논문 레시피로는 로봇이 안정적으로 걷지 못했다고 적는다(몸통 접촉 종료 약 78%).
+결과가 `DWQ_`로 시작하는 환경변수 스위치 여럿에 좌우되므로, 이식본의 수치를 인용할 때는 그 값을 함께 적는다.
+
+**논문과 다른 점.** 행동 배율 0.25는 논문에 값이 없어 '논문 근거 없음'이다. legged_gym 기본값을 쓴 것이다.
+
+| 항목 | 논문 | 이 저장소 |
+|---|---|---|
+| β와 KL 축소 | β 값 없음 | 1에서 4로 증가, KL은 16차원 합, 복원은 45차원 평균 |
+| 디코더 | 64×128×48 | 19→64→128→48→45(48을 은닉층으로 둠) |
+| AdaBoot 단위 | 반복마다 m개 env | 제어 스텝마다, env 전체에 한 번 추첨 |
+| critic의 속도 | 참값 | 부트스트랩 스텝에는 추정값 |
+| CENet 최적화 | Adam 1e-3, 정책과 동시 | Adam 0.01 + 학습률 감소, 반복당 1스텝 |
+| 반복 수 | 1,000 | Go2 5,000, A1 1,500 |
+| 시스템 지연 | 0–15 ms | 직전 스텝과의 보간(약 0–5 ms) |
+| 지형 | 경사 0–22°, 10단계 | 최대 12.2°, 계단 최대 0.124 m |
+| 외란 | 몸체에 무작위 힘 | 1초마다 ±1 m/s 속도 증분 |
+| 명령 커리큘럼 | grid-adaptive | 없음(범위가 처음부터 상한) |
+
+**버그·주의.**
+
+- **높음.** z가 붕괴한다는 합성 점검 결과와 제3자 학습 보고가 있다(공통 함정 1). play.py 기본 추론은 CENet의 속도 추정 대신 첫 스텝의 참 속도를 쓴다(⑦). DreamWaQ 가중치와 배포 경로가 없다.
+  재현 실패 신호가 둘이다. 이슈 #2 '계단을 못 오른다'(2026-08-20, 미해결)와 Isaac Lab 이식본 README의 레시피 교체다.
+- **중간.** critic이 추정 속도를 받는다(④). GAE 마지막 부트스트랩이 한 스텝 어긋난다(⑥). 발 들기 보상의 발밑 지형 조회가 yaw를 두 번 돌려,
+  디딤면 0.31 m 계단에서 발의 56%가 엉뚱한 칸을 읽는다(E.15). EstimatorNet 대조군은 24스텝 내내 같은 라벨로 배우고, 라벨 정규화도 WAQ와 다르다.
+  Base 대조군은 관측 잡음 벡터가 어긋나고 높이 보상이 절대 높이 기준이다. 그래서 README의 DreamWaQ 대 Base 곡선은 CENet 효과만 떼어 보지 못한다.
+- **낮음.** 리셋 때 이력이 남는다. 지연 흉내가 리셋 직후 첫 관측을 왜곡한다. 속도와 중력은 최대 25% 줄고, 관절 위치에는 최대 0.25·|q| rad의
+  편향이 붙는다(종아리 약 0.375 rad). 추론에서도 z를 표본으로 뽑는다. play.py의 EstimatorNet 경로는 이력을 갱신하지 않고, 기본값에서는 첫 스텝에 `NameError`로 멈춘다.
+  README 그림이 코드와 다르다(공통 함정 6). 루트 `.gitignore`가 하위 경로에
+  맞지 않아 Walk These Ways 체크포인트 1 GB가 커밋됐다.
+
+**travplan에 주는 것.** `cenet.py`는 Isaac Gym 의존이 없는 순수 PyTorch(MIT)라 그대로 import된다. 쓰려면 KL 축소와 β부터 고친다.
+Isaac Lab 이식본은 같은 환경에서 blind, blind + 추정기, 참 속도, 높이맵의 네 팔을 나란히 둔다. TP-0129 대조군을 넓힐 때의 본보기이고,
+'팔 사이에 입력 말고 다른 것이 달라지지 않았나'를 보는 점검표다. 이식본 주석에는 critic 그룹이 빠진 상한 팔(Oracle)이 blind 팔과 같고
+추정기 팔보다 낮게 나온 기록이 있다.
+
+</details>
+
+<details markdown="1">
+<summary>자세히: Teddy-Liao/walk-these-ways-go2의 구조와 코드</summary>
+
+**무엇인가.** MIT Improbable AI Lab의 Walk These Ways(Margolis·Agrawal, CoRL 2022, Unitree Go1)를 Unitree Go2로 옮긴 저장소다(★631, MIT 라이선스,
+2024-01-28 생성). 마지막 코드 변경은 2024-03-16이고, 그 뒤로는 문서만 바뀌었다. GitHub 포크 표시는 없지만 README가 포크라고 밝힌다.
+학습 코어는 원본과 같다. 코드 파일 43개가 원본과 바이트까지 같고(메시·텍스처까지 세면 79개), 15개는 go1을 go2로 바꾼 이름만 다르다. 새로 쓴 것은 Go2 URDF(Unified Robot Description Format),
+unitree_sdk2의 DDS와 LCM을 잇는 C++ 브리지, 설정 몇 줄, 그리고 제3자가 학습한 Go2 체크포인트다. ==DreamWaQ 코드는 한 줄도 없다.== 추정기는 Ji 외(2022) 방식의
+결정적 회귀기라 DreamWaQ가 이긴 기준선 EstimatorNet과 같은 계열이다. 쓰이지 않는 `go2_gym_learn/ppo` 변형은 RMA 계열(교사 잠재를 MLP 학생이
+회귀)이라 DreamWaQ의 기준선 AdaptationNet에 대응한다. 다만 1D CNN이 아니고 교사와 학생을 함께 학습한다. 명령 격자 커리큘럼은 DreamWaQ가 [23]으로 인용한
+grid-adaptive 커리큘럼이다. curieuxjy/go2_dreamwaq가 이 저장소를 `wtw/`로 통째로 넣었다.
+
+![Walk These Ways Fig. 1](https://arxiv.org/html/2212.03238v1/figures/wtw-main-5.png)
+*그림 — Walk These Ways (Fig. 1): 평지에서만 학습한 정책 하나를 사람이 행동 파라미터로 조율한다. 위 줄은 미끄러운 바닥 질주(높은 걸음 주파수), 계단(낮은 주파수와 높은 발 스윙), 밀기 버티기(낮은 스윙과 넓은 자세)에 맞는 걸음새가 각각 다르다는 것을 보인다. 아래 줄은 연석 오르기, 짐 내리기, 낮은 장애물 밑 기기, 춤이다. 출처: [arXiv:2212.03238](https://arxiv.org/abs/2212.03238)*
+
+**코드 흐름.** 파이썬 발췌의 저작권은 © 2022 MIT Improbable AI Lab(MIT)이고, Go2 이식은 Teddy-Liao다. C++ 브리지는 Teddy-Liao가 새로 쓴 코드(MIT)다.
+
+**① 추정값은 actor로, 참값은 critic으로**([actor_critic.py L113–L144](https://github.com/Teddy-Liao/walk-these-ways-go2/blob/d00320778c61567379b4a304047955c0c0dcae43/go2_gym_learn/ppo_cse/actor_critic.py#L113-L144)).
+L113–L116과 L142–L144의 원문이다.
+
+```python
+def update_distribution(self, observation_history):
+    latent = self.adaptation_module(observation_history)
+    mean = self.actor_body(torch.cat((observation_history, latent), dim=-1))
+    self.distribution = Normal(mean, mean * 0. + self.std)
+
+def evaluate(self, observation_history, privileged_observations, **kwargs):
+    value = self.critic_body(torch.cat((observation_history, privileged_observations), dim=-1))
+    return value
+```
+
+관측 이력 2,100차원(70 × 30스텝)을 추정기 MLP(2100-256-128-2)에 넣어 2차원 출력을 얻는다. actor는 이력과 그 출력을 이은 2,102차원을 받는다.
+critic은 같은 이력에 추정값 대신 참 특권값을 붙인다. 롤아웃과 갱신이 모두 이 추정 경로를 쓰므로, DreamWaQ식으로 말하면 부트스트랩 확률이 늘 1이다.
+latent를 detach하지 않아 PPO 손실의 기울기가 추정기까지 흐른다(CPU 점검에서 0이 아니었다).
+
+**② 추정기 손실**([ppo.py L163–L192](https://github.com/Teddy-Liao/walk-these-ways-go2/blob/d00320778c61567379b4a304047955c0c0dcae43/go2_gym_learn/ppo_cse/ppo.py#L163-L192)).
+PPO 미니배치마다 정책 갱신 직후 추정기를 MSE로 한 번 더 갱신한다(반복당 5에폭 × 4미니배치 = 20번). 미니배치의 앞 4/5로 학습하고,
+뒤 1/5은 기울기 없는 테스트 손실로 기록해 과적합을 본다. 이 옵티마이저도 actor-critic 전체 파라미터로 만들어져, 같은 파라미터를 Adam 둘이 따로 갱신한다.
+
+**③ 특권값은 마찰과 반발 둘뿐이다**([legged_robot.py L383–L414](https://github.com/Teddy-Liao/walk-these-ways-go2/blob/d00320778c61567379b4a304047955c0c0dcae43/go2_gym/envs/base/legged_robot.py#L383-L414)).
+배포된 설정에서 켜진 특권 관측은 마찰과 반발 계수 둘이다. 몸체 선속도 분기는 코드에 있지만 꺼져 있다. WTW 논문 본문은 '몸체 속도와 지면 마찰'을
+추정한다고 적어 코드와 다르고, 이 차이는 원본 Go1 run에도 있다.
+
+**④ 관측 70차원과 이력 30스텝**([legged_robot.py L319–L338](https://github.com/Teddy-Liao/walk-these-ways-go2/blob/d00320778c61567379b4a304047955c0c0dcae43/go2_gym/envs/base/legged_robot.py#L319-L338), [history_wrapper.py L18–L35](https://github.com/Teddy-Liao/walk-these-ways-go2/blob/d00320778c61567379b4a304047955c0c0dcae43/go2_gym/envs/wrappers/history_wrapper.py#L18-L35)).
+관측은 중력 3, 명령 15, 관절 위치 12, 관절 속도 12, 직전 행동 12, 그 전 행동 12, 걸음 시계 4다. DreamWaQ와 달리 몸체 각속도가 없다.
+학습 중에는 에피소드가 끝나도 이력이 지워지지 않는다. 이력을 비우는 래퍼 함수가 학습 중에는 불리지 않고, 그 함수의 주석도 이를 경고한다.
+배포 쪽은 관측을 먼저 만들고 시계를 진행해, 배포의 걸음 시계가 한 제어 스텝 늦다.
+
+**⑤ 행동에서 토크까지**([legged_robot.py L919–L946](https://github.com/Teddy-Liao/walk-these-ways-go2/blob/d00320778c61567379b4a304047955c0c0dcae43/go2_gym/envs/base/legged_robot.py#L919-L946)).
+행동에 0.25를 곱하고(엉덩이 관절은 0.5를 한 번 더) 기본 자세에 더한다. 지연은 플래그 이름과 달리 무작위가 아니라 30 ms 고정이다.
+토크는 Go1 데이터로 학습한 액추에이터 망이 낸다. 이 망은 Kp 약 19, 감쇠 약 0.8 N·m·s/rad처럼 동작한다. 실물은 Kp 20·Kd 0.5 PD로 돈다.
+현재 설정의 Kp 25·Kd 0.6은 학습에는 쓰이지 않지만, 재학습한 run의 설정 파일에 저장돼 실물 배포의 이득이 된다.
+
+**⑥ 내보내기와 배포**([deploy_policy.py L62–L77](https://github.com/Teddy-Liao/walk-these-ways-go2/blob/d00320778c61567379b4a304047955c0c0dcae43/go2_gym_deploy/scripts/deploy_policy.py#L62-L77)).
+학습기는 400반복마다 추정기와 actor만 TorchScript로 저장한다. 배포는 두 파일을 50 Hz로 이어 행동을 내고, LCM으로 C++ 브리지에 보낸다.
+브리지는 unitree_sdk2의 DDS로 2 ms(500 Hz)마다 저수준 명령을 쓴다. 정책은 PC나 Go2의 Jetson Orin에서 돈다.
+
+**⑦ C++ 안전 분기**([lcm_position_go2.cpp L356–L423](https://github.com/Teddy-Liao/walk-these-ways-go2/blob/d00320778c61567379b4a304047955c0c0dcae43/go2_gym_deploy/unitree_sdk2_bin/lcm_position_go2.cpp#L356-L423)).
+구조만 보이도록 의사 코드로 줄였다.
+
+```
+LowCmdWrite():                        # DDS 쓰기 스레드, 2 ms마다
+  if |roll| > 0.8 or |pitch| > 0.8 or (L2+B):
+      low_cmd = 감쇠값(kp 0, kd 5)
+      sleep(1.5)                      # POSIX 정수 sleep이라 1 s
+      while true:                     # 같은 스레드 안에서 대기
+          L2+B: exit(0)               # 감쇠 명령을 한 번도 보내지 않고 끝난다
+          L2+Y: break
+  else: low_cmd = LCM으로 받은 목표
+  Write(low_cmd)                      # 송신은 함수 끝에만 있다
+```
+
+감쇠값을 채운 뒤 같은 스레드에서 대기하므로 기다리는 동안 어떤 명령도 나가지 않는다. L2+B로 빠지면 `exit(0)`이라 감쇠 명령은 끝내 나가지 않는다.
+LCM 명령 감시(watchdog)도 없어, Python 정책이 멈추거나 SSH가 끊겨도 브리지는 마지막 목표각을 500 Hz로 계속 보낸다. 수신 스레드와 쓰기 스레드가
+함께 쓰는 명령 구조체에는 뮤텍스가 없다. 이슈 #23의 '몇 초 뒤 멈칫하다 넘어진다'는 보고가 이 정황과 맞지만 원인은 확인하지 못했다.
+실제 동작은 명령이 끊겼을 때 Go2 펌웨어가 무엇을 하는지에 달렸고, 실물 없이 확인하지 못했다.
+
+**DreamWaQ·WTW 논문과 다른 점.**
+
+| 항목 | 이 저장소 | WTW 논문 | DreamWaQ |
+|---|---|---|---|
+| 추정기 | MLP 회귀 2100→256→128→2 | 같은 방식의 회귀 | CENet(β-VAE + 속도 헤드) |
+| 추정 대상 | 마찰·반발 | 몸체 속도·지면 마찰 | 몸체 속도 + 문맥 z |
+| 이력 | 30스텝 × 70 | 30스텝 | 5스텝 |
+| critic 특권 | 이력 + 참 마찰·반발 | 이력 + 특권값 | 관측, 참 속도, 외란, 높이맵 |
+| 부트스트랩 | 늘 추정값 | 늘 추정값 | AdaBoot |
+| 지형 | 평지 | 평지 | 험지 4종, 10단계 커리큘럼 |
+| 지연 | 30 ms 고정 | 약 20 ms | 0–15 ms 무작위 |
+| 마찰 무작위화 | 0.1–3.0 | 0.40–1.00 | 0.2–1.25 |
+| 액추에이터 | Go2 몸체에 Go1 망 | Go1 망 | PD |
+
+**버그·주의.**
+
+- **높음.** C++ 안전 분기가 대기하는 동안 감쇠 명령을 송신하지 않고, 명령 감시가 없다(⑦). Python(1.6 rad)과 C++(0.8 rad)의 비상 문턱도 다르다.
+- **높음.** 학습은 Go1 액추에이터 망, 실물은 PD라 구동기 모델이 다르다(⑤). Go2용 망은 없다(이슈 #28). 사용자들이 실물 미끄러짐과 표류를 보고했다(이슈 #25,
+  해결 없이 닫힘). 원인은 확인되지 않았다. 커뮤니티 포크(min-ku)에 Go2 액추에이터 망이 있지만 출처와 학습 데이터는 확인하지 못했다.
+- **중간.** 동봉 Go2 체크포인트는 저장소가 생기기 전(2024-01-18–19) 제3자가 약 30시간 학습한 것이다. 설정도 지금 코드와 다르다(env 6,800 대 4,096 등).
+  `scripts/tmp`의 TorchScript는 사실상 학습되지 않은 가중치라 MuJoCo에서 서 있기만 한다. 2차원 추정값은 물리량이 아니다(E.15).
+  LICENSE가 원 저작권 줄(© 2022 MIT Improbable AI Lab)을 지웠는데, MIT 라이선스는 원 고지를 남기라고 요구한다.
+- **낮음.** 학습 이력의 에피소드 누수, 배포 걸음 시계의 한 스텝 지연, 버튼 주석과 그림의 오표기(실제는 A가 trot, B가 pronk, X가 bound, Y가 pace)가 있다.
+  학습 커리큘럼의 pace와 bound 범주 이름이 뒤바뀌어 있다(원본에서 물려받음). 학습은 0.2 m/s 이하 명령을 0으로 만드는데 배포는 그대로 쓴다.
+  이슈 #25에서 바꿔 본 `domain_rand.ground_friction_range`는 어디서도 읽히지 않는 설정이다. headless 학습이 막혀 있고, 의존성(Isaac Gym Preview, numpy 1.23.5)이 낡았다.
+
+**travplan에 주는 것.** 동시 추정기 패턴은 TP-0055 belief 증류에 그대로 맞는다. 미니배치 4/5로 배우고 1/5로 과적합을 재는 분할도 같이 쓴다.
+다만 추정기가 '참값 추정'이어야 하면 latent를 detach한다. 명령 격자 커리큘럼과 안전 분기의 교훈은 아래 'travplan에 주는 것' 4·5에 있다.
+
+</details>
+
+<details markdown="1">
+<summary>자세히: yusongmin1/Dreamwaq의 구조와 코드</summary>
+
+**무엇인가.** CENet 구조를 바퀴-다리 4족 DEEP Robotics Lynx M20(다리 12 + 바퀴 4 = 16 자유도, 약 34.5 kg)에 옮긴 재구현이다(★121, 2025-12-24 생성).
+main의 마지막 커밋은 2026-01-23이고, 따로 자라는 `highplatform` 브랜치는 2026-08-27에 바뀌었다. 바탕은 legged_gym과 rsl_rl 1.0.2(Isaac Gym)다. DreamWaQ 모듈은 두 계보를 섞었다.
+클래스 이름, PPO와 VAE의 두 옵티마이저, done 마스크, VAE 클래스를 따로 두는 구조와 Hardtanh 클램프는 lupinjia/LeggedGym-Ex(BSD-3)를 따른다.
+인코더 층(128-64, 헤드 16 + 3)과 재매개변수화 함수는 ShengqianChen/DreamWaQ_Go2W(Manaro 계열)와 같다. 그 계열이 가진 속도 로그분산 버그는 고쳤다.
+학습된 체크포인트(18,000반복), ONNX, TensorBoard 로그, MuJoCo sim2sim 스크립트를 싣는다. 실물 배포 코드는 없다. README는 실물 M20의 계단 등반
+GIF를 싣지만 어느 가중치로 찍었는지 기록이 없다. 라이선스 파일이 없고, legged_gym에서 온 파일 여럿에서 BSD-3 헤더가 지워졌다.
+저장소 설명의 'Dreamwaq+'와 'PIE'는 구현되어 있지 않다. 소유자는 이슈 #7에서 KAIST는 코드를 공개하지 않았고 지금의 DreamWaQ는 모두 민간 재현이라고 적었다.
+==넷 가운데 돌려 볼 수 있는 DreamWaQ식 가중치는 이것뿐이고, 그 가중치에서 z는 붕괴해 있다.==
+
+**코드 흐름.** 라이선스가 없어 원문 대신 의사 코드로 적는다.
+
+**① CENet**([vae.py L6–L60](https://github.com/yusongmin1/Dreamwaq/blob/27ef3805c79bb88f996481faec154fcd8be681ce/rsl_rl/rsl_rl/modules/vae.py#L6-L60)).
+
+```
+# 의사 코드
+h = MLP(285 → 128 → 64, ELU)(지난 5프레임)
+z ~ N(평균_z(h), 분산 exp(clip(로그분산_z(h), −5, 5)))    # 16차원
+v ~ N(평균_v(h), 분산 exp(clip(로그분산_v(h), −5, 5)))    # 3차원, 속도도 표본
+복원 = MLP(19 → 128 → 128 → 57)([v, z])
+```
+
+속도도 확률 변수로 두고 표본에 MSE를 걸어, 학습된 속도 로그분산이 하한 −5(σ 0.082 m/s)에 붙는다. 논문은 속도 헤드가 결정적인지 적지 않으므로
+이것은 '논문에 없는 구현 선택'이다.
+
+**② 관측, 이력, 속도 라벨**([m20.py L200–L225](https://github.com/yusongmin1/Dreamwaq/blob/27ef3805c79bb88f996481faec154fcd8be681ce/legged_gym/envs/M20/m20.py#L200-L225)).
+
+```
+# 의사 코드
+이력 = 이력[1:] + [직전 관측(잡음 포함)]       # o(t−5) … o(t−1), 리셋해도 남는다
+o_t = [명령, 각속도, 중력, 관절 오차(바퀴 0), 관절 속도, 직전 행동]   # 57
+속도 라벨 = base_lin_vel                    # 같은 텐서, 다음 step에서 제자리 갱신
+critic 관측 = [참 속도 × 2, 높이 187점, 잡음 전 o_t]          # 247
+o_t += 균일 잡음 × 잡음 벡터                  # 잡음 벡터는 옛 관측 순서 그대로
+```
+
+CENet 입력은 현재 프레임이 빠진 5프레임이고, 현재 관측은 actor로 직접 간다. 정책이 쓰는 정보는 논문 정의의 6프레임과 같지만 현재 관측은
+CENet을 거치지 않는다. critic 관측의 마지막 57칸이 디코더의 복원 목표다. 속도 라벨은 다음 `step()`에서 제자리 갱신되는 텐서를 가리켜,
+저장되는 값이 $v_{t+1}$이다. [잡음 벡터](https://github.com/yusongmin1/Dreamwaq/blob/27ef3805c79bb88f996481faec154fcd8be681ce/legged_gym/envs/M20/m20.py#L482-L487)는
+각속도, 중력, 명령 순서를 가정하는데 실제 관측은 명령, 각속도, 중력 순서다(이슈 #2). 그래서 명령에 잡음이 들어가고(요 명령으로 ±0.2 rad/s),
+투영 중력에는 잡음이 없다. 각속도 잡음은 우연히 의도한 크기와 같다.
+
+**③ actor와 critic**([actor_critic_dreamwaq.py L49–L133](https://github.com/yusongmin1/Dreamwaq/blob/27ef3805c79bb88f996481faec154fcd8be681ce/rsl_rl/rsl_rl/modules/actor_critic_dreamwaq.py#L49-L133)).
+actor는 속도 3, z 16, 현재 관측 57을 이은 76차원을 512-256-128 ELU로 받아 행동 16개를 낸다. critic은 특권 247차원을 받는다.
+같은 가중치라도 실행 장소마다 입력이 다르다. 학습 롤아웃과 ONNX는 표본을 쓰고, play.py는 평균을 쓴다.
+
+**④ PPO와 CENet 갱신**([ppo_dreamwaq.py L133–L211](https://github.com/yusongmin1/Dreamwaq/blob/27ef3805c79bb88f996481faec154fcd8be681ce/rsl_rl/rsl_rl/algorithms/ppo_dreamwaq.py#L133-L211)).
+
+```
+# 의사 코드
+for 5에폭 × 4미니배치:
+    코드를 다시 표본 → PPO 손실 → PPO Adam(actor, critic, std만) 한 스텝
+    CENet을 다시 표본 → L = 속도 MSE + 복원 MSE + 1.0 × KL
+    VAE Adam(lr 1e-3) 한 스텝            # 인코더에 흘러온 정책 기울기는 여기서 지운다
+```
+
+함정이 둘이다. 갱신 때 코드를 다시 뽑아 같은 가중치에서도 PPO 비율이 1이 아니다(공통 함정 2). KL 줄은 표본별 KL 벡터에 [B, 1] 마스크를 곱해
+[B, B]로 브로드캐스트된다. 값은 우연히 비슷하지만, 설정값 B = 24,576이면 순전파에만 2.25 GiB가 든다.
+
+**⑤ 바퀴-다리 혼합 PD**([m20.py L361–L381](https://github.com/yusongmin1/Dreamwaq/blob/27ef3805c79bb88f996481faec154fcd8be681ce/legged_gym/envs/M20/m20.py#L361-L381)).
+행동 16개 가운데 다리 12개는 위치, 바퀴 4개는 속도 명령으로 해석한다. 다리는 $\tau = K_p(0.25a + q_0 - q) - K_d \dot q$이고 Kp 80, Kd 2다.
+바퀴는 $\tau = K_d(5a - \dot q)$이고 Kd 0.6이다. 이득과 토크에 에피소드마다 0.85–1.15배를 곱하고, 행동은 0–15 ms 지연 버퍼를 거친다.
+README는 바퀴 쪽 배율(5)이 다리(0.25)보다 커서 바퀴로 구르는 해가 쉽게 학습된다고 설명한다.
+
+**⑥ ONNX 내보내기**([helpers.py L308–L353](https://github.com/yusongmin1/Dreamwaq/blob/27ef3805c79bb88f996481faec154fcd8be681ce/legged_gym/utils/helpers.py#L308-L353)).
+배포 정책은 지난 5프레임과 현재 프레임을 이은 342차원을 받아 행동 16개를 내는 ONNX 하나다. 주석은 '학습 때와 같다'고 하지만 평균이 아니라
+재매개변수화 표본을 써서, 그래프에 RandomNormalLike 노드 둘이 들어간다. 그래서 같은 입력에도 출력이 달라지고, 배치 크기 1에서만 돈다.
+57과 342가 하드코딩되어 Go2 과제에서는 내보내기가 실패한다.
+
+**⑦ MuJoCo sim2sim**([deploy_mujoco.py L122–L200](https://github.com/yusongmin1/Dreamwaq/blob/27ef3805c79bb88f996481faec154fcd8be681ce/deploy/deploy_mujoco/deploy_mujoco.py#L122-L200)).
+5 ms 물리, 50 Hz 정책, 학습과 같은 PD 식과 관측 순서, 6프레임 이력을 쓴다. 다만 작성자 PC의 절대 경로가 하드코딩되어 있고 root 권한이 필요한
+모듈을 import해 그대로는 돌지 않는다. onnxruntime 인자의 오타(`provifers`)는 조용히 무시된다. 같은 논리를 헤드리스로 다시 옮겨 돌린 결과가 E.15다.
+
+**논문과 다른 점.**
+
+| 항목 | 논문 | 이 저장소 |
+|---|---|---|
+| 로봇 | A1, 다리 12 자유도 | M20, 다리 12 + 바퀴 4 |
+| 이력 | 현재 관측을 포함(H = 5) | 현재 제외 5프레임, 현재 관측은 actor로 직접 |
+| 속도 헤드 | 결정적인지 적지 않음 | 확률 헤드, 표본에 MSE |
+| 속도 라벨 | 그 스텝의 참 속도 | 다음 스텝의 참 속도(텐서 별칭) |
+| 디코더 | [v, z] → 64×128×48 → 다음 관측 | 19→128→128→57 → 잡음 없는 현재 관측 |
+| β와 정규화 | β 값 없음, 관측 평균 0·분산 1 | β 1, 고정 배율 |
+| AdaBoot | 1 − tanh(CV) | 없음 |
+| critic | 관측, 속도, 외란, 높이맵 | 속도, 높이 187점, 관측(외란 없음) |
+| 보상 | Table I 12항 | 16항, 추종 3.0·1.5, 발 들림·평활·전력 분산 없음 |
+| 학습 | 1,000반복 | 18,000반복 체크포인트(약 8.8시간) |
+
+**버그·주의.**
+
+- **높음.** 체크포인트 둘 모두 z가 붕괴했고, 속도 추정도 행동에 거의 영향이 없다(E.15). main의 잡음 벡터가 관측 순서와 어긋난다(②, `highplatform`에서 고침).
+- **중간.** 속도 라벨이 한 스텝 미래다(②). KL 항이 [B, B]로 커진다(④). PPO 갱신 때 코드를 다시 뽑는다(④). ONNX가 표본을 써서 확률적이고 배치 1만 받는다.
+  분포 밖 입력에서는 표본 잡음이 수십 배로 커진다(E.15). 설정했지만 적용되지 않는 강건화가 있다(모터 영점 오프셋, 회전 밀기, 관측 지연 버퍼, 외란).
+  MJCF와 URDF가 다르다. 다리 관절 12개의 범위 부호가 뒤집혀 있고 링크 질량도 다르다. 라이선스가 없다.
+- **낮음.** 리셋 때 이력이 남는다. 체크포인트에 VAE 옵티마이저 상태가 없어, 재개하면 CENet의 Adam 모멘트가 초기화된다. 영명령에서 0.04 m/s로
+  미끄러진다(이슈 #4). 원인은 확인하지 못했다. 보상의 stand_still은 다리 편차만 벌하고 바퀴 표류는 벌하지 않는다. 소유자는 이슈 #3에서 28 cm 계단으로 학습했다고
+  답했지만, 실린 설정의 계단 최대 높이는 0.257 m다. `highplatform` 브랜치는 잡음 순서만 고쳤고 KL, 재표집, 라벨, ONNX 문제는 그대로다.
+
+**travplan에 주는 것.** 이 정책은 travplan Controller가 내는 것과 같은 body twist를 명령으로 받는다. 저장소의 MJCF와 ONNX를 로컬에서 블랙박스 하위 보행기로
+두면 Playground 바퀴 사족 프로필을 실제 접촉 동역학으로 보정할 수 있다(아래 'travplan에 주는 것' 1·6). 다리는 위치, 바퀴는 속도로 한 정책 출력에
+섞은 행동 설계는 스워브의 조향(위치)과 구동(속도)을 정책 하나로 낼 때의 선례다. 라이선스가 없으므로 코드와 가중치는 travplan에 들이지 않는다.
+
+</details>
+
+<details markdown="1">
+<summary>자세히: wanghg1992/DreamWaQ의 구조와 코드</summary>
+
+**무엇인가.** 독립 재구현이 아니라 사본의 사본이다(★122, 2023-12-26 생성, 마지막 커밋 2023-12-25). fan-ziqi(Ziqi Fan)가 2023-12-25에
+LucienJi/MetaRobotics(MIT 라이선스, TTIC, 2023-09 생성)에서 DreamWaQ 폴더와 Go1 환경을 잘라 냈다. README가 MetaRobotics를 '코드 참고'로 밝히고,
+파이썬 파일 28개가 MetaRobotics와 같은 blob이다. fan-ziqi의 원본 저장소는 지금 404다. 이 저장소는 그 포크였다가 원본이 지워진 뒤 독립한
+것과 정황이 맞지만, GitHub가 옛 부모를 더 보여 주지 않아 확인하지 못했다. Go1 환경은 MetaRobotics를 거쳐 Walk These Ways에서 왔다.
+루트에 라이선스 파일이 없다. 벤더링한 legged_gym과 rsl_rl의 BSD-3 파일만 있고, 상류 두 곳의 MIT 고지는 빠졌다. 커밋 작성자 본인이 PR #1(2024-03-26, 'PLEASE DELETE MY REPOSITORY')로 삭제를 요청했고,
+이 PR은 병합되지 않았다. 학습과 Isaac Gym 안 재생만 있고, 학습된 정책, 내보내기, sim2sim, 실물 배포는 없다.
+==이 사본 대신 MIT 라이선스인 상류 LucienJi/MetaRobotics를 읽는다.==
+
+**코드 흐름.** 라이선스가 없어 원문 대신 의사 코드로 적는다.
+
+**① CENet은 VAE 클래스다**([state_estimator.py L7–L67](https://github.com/wanghg1992/DreamWaQ/blob/a27fd944e867f50fc7a51b243dea0a9d91980d04/DreamWaQ/modules/state_estimator.py#L7-L67)).
+5 × 45 이력을 225차원으로 펴서 512-256-64 MLP에 넣고, 64차원 특징에서 선형 헤드 넷을 낸다. z의 평균·로그분산(16씩)과 속도의 평균·로그분산(3씩)이다.
+논문 그림(128×64×19)보다 훨씬 넓고, 파라미터는 446,227개다. 디코더는 19-512-256-128-45다.
+
+**② 손실**([state_estimator.py L81–L106](https://github.com/wanghg1992/DreamWaQ/blob/a27fd944e867f50fc7a51b243dea0a9d91980d04/DreamWaQ/modules/state_estimator.py#L81-L106)).
+
+```
+# 의사 코드
+(z, v̂), (평균_z, 로그분산_z, …) = vae(이력)           # 새 표본
+복원 = 디코더([z, 참 속도 × 2])                     # 추정 속도가 아니라 참값
+L = 평균45((복원 − 다음 관측)²) + 평균3((v̂ − 참 속도 × 2)²) + 1.0 × 합16(KL)
+배포: (평균_z, 평균_v)를 그대로 쓴다                  # 표본 없음
+```
+
+디코더에 추정 속도 대신 참 속도가 들어가, 복원 손실의 기울기가 속도 헤드에 가지 않는다(CPU 점검에서 0.0). 속도 MSE는 평균이 아니라 표본에 걸린다.
+KL은 합이고 복원은 평균이라, 합 기준 복원에 견주면 KL 가중이 약 45배다.
+
+**③ actor-critic**([ac.py L76–L173](https://github.com/wanghg1992/DreamWaQ/blob/a27fd944e867f50fc7a51b243dea0a9d91980d04/DreamWaQ/modules/ac.py#L76-L173)).
+actor는 현재 관측 45, z 16, 속도 3을 이은 64차원을 받고, critic은 관측 45, 참 속도 3, 높이 187점을 이은 235차원을 받는다. 높이는 몸체 기준이
+아니라 절대 지형 높이에 5를 곱한 값이다. 행동 경로는 셋이다. `act_student`는 z와 속도를 표본으로 쓰고, 롤아웃과 갱신이 모두 이것을 부른다.
+참 속도를 쓰는 `act_expert`는 정의만 있고 호출되지 않는다. `act_inference`는 두 평균으로 결정적 행동을 낸다.
+
+**④ 이력 래퍼**([history_wrapper.py L5–L39](https://github.com/wanghg1992/DreamWaQ/blob/a27fd944e867f50fc7a51b243dea0a9d91980d04/legged_gym/legged_gym/envs/wrapper/history_wrapper.py#L5-L39)).
+[N, 5, 45]로 쌓고, 리셋된 env의 이력을 0으로 지운 뒤 현재 관측을 맨 뒤에 붙인다. 그래서 이력은 현재를 포함한 5프레임이다.
+이 클래스는 Walk These Ways의 HistoryWrapper에서 내려왔고, 원본의 리셋 누수를 고쳤다.
+
+**⑤ 롤아웃**([onpolicy_runner.py L64–L105](https://github.com/wanghg1992/DreamWaQ/blob/a27fd944e867f50fc7a51b243dea0a9d91980d04/DreamWaQ/runners/onpolicy_runner.py#L64-L105)).
+수집은 언제나 `act_student`라 actor는 학습 내내 추정 속도만 받는다. 매 스텝 부르는 `env.reset_idx`는 주석과 달리 이력이 아니라 로봇을 한 번 더
+리셋해 초기 상태, 명령, 마찰을 다시 뽑는다. 반복 수는 하드코딩된 10,000이고 설정의 1,500은 쓰이지 않는다. 에피소드 길이의 초기값을 무작위로
+두지 않아, 4,096 env가 같은 박자로 명령을 바꾸고 시간 초과를 맞는다.
+
+**⑥ 갱신**([ppo.py L75–L161](https://github.com/wanghg1992/DreamWaQ/blob/a27fd944e867f50fc7a51b243dea0a9d91980d04/DreamWaQ/algorithms/ppo.py#L75-L161)).
+
+```
+# 의사 코드
+for 5에폭 × 4미니배치:
+    act_student(미니배치)                    # z와 속도를 새로 표본
+    PPO 손실 → Adam(VAE 포함 모든 파라미터, lr 5e-4, KL 적응) 한 스텝
+    done이 아닌 표본으로 CENet 손실 → VAE 전용 Adam(lr 1e-3) 한 스텝
+```
+
+CENet은 반복마다 PPO 기울기 20회와 추정 손실 20회를 함께 받는다. 재표집 때문에 초기화 상태에서 비율의 약 77%가 클립 밖이다(공통 함정 2).
+done 마스크는 이 저장소의 관측-리셋 순서에서 한 칸 어긋난다.
+
+**⑦ Go1 환경의 step 후처리**([Go1/legged_robot.py L116–L168](https://github.com/wanghg1992/DreamWaQ/blob/a27fd944e867f50fc7a51b243dea0a9d91980d04/legged_gym/legged_gym/envs/Go1/legged_robot.py#L116-L168)).
+MetaRobotics가 Walk These Ways의 순서를 바꿔, 관측을 먼저 계산하고 리셋을 나중에 한다. 작성자 주석도 순서를 바꿨는데 영향이 있는지 모르겠다고 적었다.
+그래서 새 에피소드의 첫 행동이 이전 에피소드의 마지막 관측으로 정해진다.
+
+**⑧ 지형**([terrain_lib.py L23–L55](https://github.com/wanghg1992/DreamWaQ/blob/a27fd944e867f50fc7a51b243dea0a9d91980d04/legged_gym/legged_gym/utils/terrain_lib.py#L23-L55)).
+설정은 계단, 경사, 징검다리, 장애물을 가중치와 함께 나열한다. 그러나 `selected = True`면 모든 타일이 가중치가 가장 큰 random_uniform을
+난이도 1.0으로 만든다. 그래서 타일 100개가 모두 ±5 cm 요철이고, 커리큘럼도 꺼져 있다. 두 스위치를 뒤집어도 계단 열은 생기지 않는다.
+같은 파일이 쓰는 SciPy `interp2d`는 SciPy 1.14에서 사라져, 최신 SciPy에서는 지형 생성이 멈춘다.
+
+**논문과 다른 점.** 보상은 추종 두 항(1.0, 0.5)과 관절 가속(−2.5e−7)만 논문과 같다.
+
+| 항목 | 논문 | 이 저장소 |
+|---|---|---|
+| 로봇 | A1 | Go1 |
+| 인코더 | 128×64×19 | 225→512→256→64 + 선형 헤드 넷 |
+| 디코더 | 64×128×48, 인코더의 추정을 받음 | 19→512→256→128→45, 참 속도를 받음 |
+| 속도 헤드 | 결정적인지 적지 않음 | 가우시안, 표본에 MSE |
+| β와 정규화 | β 값 없음, 평균 0·분산 1 | 1.0, 고정 배율 |
+| AdaBoot | 1 − tanh(CV) | 없음 |
+| critic | 관측, 속도, 외란, 높이맵 | 관측, 참 속도, 절대 높이(외란 모듈은 있지만 꺼짐) |
+| 지형 | 4종, 10단계, 경사 0–22° | ±5 cm 요철 100타일 |
+| 도메인 무작위화 | Kp·Kd·모터 세기·질량중심, 지연 0–15 ms | 모두 꺼짐, 지연 30 ms 고정, 마찰 0.1–3.0 |
+| 학습 | 1,000반복, Adam 1e-3 | 10,000반복, PPO Adam 5e-4 |
+
+**버그·주의.**
+
+- **높음.** 라이선스가 없고 상류 MIT 고지가 빠졌으며, 작성자가 삭제를 요청했다. AdaBoot가 없다. 설정한 지형이 생성되지 않는다(⑧).
+  고정된 옛 의존성(Isaac Gym Preview, SciPy 1.14 미만, 옛 gym API)에서만 돈다.
+- **중간.** 잠재 재표집(⑥). 관측-리셋 순서(⑦)와 한 칸 어긋난 done 마스크. 마찰은 충돌 형상 17개 중 앞 12개에만 다시 뽑히고, 다시 뽑은 질량은
+  물리에 반영되지 않는다. critic 높이가 절대 높이다. 손실 척도(②). 같은 설정으로 지형을 두 번 만들면 형 오류로 멈춘다.
+- **낮음.** 매 스텝의 중복 리셋, 에피소드 길이 초기값의 동기화, 체크포인트의 'iter'가 늘 0인 문제, 죽은 코드(`TCNHistoryEncoder`, `act_expert`).
+
+**travplan에 주는 것.** '미니배치마다 보조 손실 한 스텝 + done 마스크' 골격은 쓸 만하다. 다만 done 마스크는 리셋 뒤에 관측하는 순서와 함께 옮긴다.
+명령 격자 커리큘럼과 이 골격은 상류 MetaRobotics나 Walk These Ways(둘 다 MIT 라이선스)에서 가져오고 저작권 고지를 남긴다.
+
+</details>
+
+<details markdown="1">
+<summary>자세히: 그 밖의 비공식 구현</summary>
+
+아래 저장소는 README와 GitHub 메타데이터 위주로 읽었다(2026-10-06). AdaBoot 식처럼 표에 적은 코드 사실은 해당 줄만 확인했고, 학습이나 실행은 하지 않았다.
+
+| 저장소 | ★ | 마지막 push | 한 줄 |
+|---|---|---|---|
+| [Manaro-Alpha/DreamWaQ](https://github.com/Manaro-Alpha/DreamWaQ) | 272 | 2025-12-01 | 커뮤니티의 원조(Go1, legged_gym + rsl_rl 1.0.2). 가중치와 Walk These Ways 배포 코드 동봉. 속도 로그분산이 평균 헤드를 재사용하는 버그가 있고 AdaBoot가 없다. 루트 라이선스 없음 |
+| [lupinjia/LeggedGym-Ex](https://github.com/lupinjia/LeggedGym-Ex) | 373 | 2026-08-24 | Isaac Gym·Genesis·Isaac Sim 다중 시뮬레이터 프레임워크(BSD-3). Go2 DreamWaQ 환경이 다른 보행 방법들과 함께 있다. yusongmin1 구현의 구조 출처 |
+| [wty-yy/go2_rl_gym](https://github.com/wty-yy/go2_rl_gym) | 308 | 2026-07-06 | RSS 2026 MoE-CTS 논문의 공식 코드. DreamWaQ를 기준선으로 두고 Go2 체크포인트를 공개했다. 표에서 CTS(동시 교사-학생 학습)와 HIMLoco보다 낮다 |
+| [yusongmin1/My_unitree_go2_gym](https://github.com/yusongmin1/My_unitree_go2_gym) | 301 | 2026-09-12 | yusongmin1의 Go2 저장소. DreamWaQ 파일은 2026-08에 Dreamwaq 저장소에서 들어왔다 |
+| [haozhang04/LeggedSkillDeploy](https://github.com/haozhang04/LeggedSkillDeploy) | 213 | 2026-09-10 | 상태기계 기반 다중 정책 배포(MuJoCo·실물). M20 바퀴-다리 정책에 DreamWaQ가 있다 |
+| [tbai-lab/tbai_ros](https://github.com/tbai-lab/tbai_ros) | 189 | 2026-04-18 | ROS Noetic 제어 모음. Go2W 바퀴-다리용 C++ DreamWaQ 제어기와 MuJoCo 예제 |
+| [LucienJi/MetaRobotics](https://github.com/LucienJi/MetaRobotics) | 188 | 2023-12-23 | DreamWaQ·EstimatorNet·AMP 모듈을 나란히 둔 연구 코드(MIT). β 1, 다음 관측 복원, AdaBoot 없음. wanghg1992 사본의 상류 |
+| [liuyufei-nubot/G1DWAQ_Lab](https://github.com/liuyufei-nubot/G1DWAQ_Lab) | 165 | 2026-03-11 | G1 휴머노이드의 blind 계단 오르기(Isaac Lab). DreamWaQ 부분은 Manaro를 참고했다. MuJoCo sim2sim과 실물 |
+| [ShengqianChen/DreamWaQ_Go2W](https://github.com/ShengqianChen/DreamWaQ_Go2W) | 124 | 2026-05-12 | Go2W 바퀴-다리(Isaac Gym, Manaro 계열). 실물 배포 영상이 있다. 바퀴라서 travplan과 가장 가깝다 |
+| [scutrobotlab/wheeled-legged_RL](https://github.com/scutrobotlab/wheeled-legged_RL) | 79 | 2026-08-24 | 바퀴-다리 2족(Isaac Lab). AdaBoot를 1 − tanh(0.5·CV)로 구현했다 |
+| [evronix/quadruped_sim2sim](https://github.com/evronix/quadruped_sim2sim) | 60 | 2025-11-20 | Isaac Gym에서 학습한 DreamWaQ·WTW·HIMLoco 정책을 ROS 2 Humble Gazebo(Go1)에서 확인한다(MIT) |
+| [WaxberryS/DreamWaq_train_go2](https://github.com/WaxberryS/DreamWaq_train_go2) | 19 | 2025-12-19 | Manaro 기반 Go2, 실물 미시험. 약 7,000반복에 15 cm 계단을 올랐지만 더 학습하면 보상이 떨어진다고 적었다 |
+| [romankalyna/dreamwaq-isaaclab](https://github.com/romankalyna/dreamwaq-isaaclab) | 12 | 2026-07-28 | Isaac Lab 2.0 Go2(MIT). CENet 출력을 detach한다. seed 하나, 2,000반복 결과 |
+| [wx839/DreamWaQ](https://github.com/wx839/DreamWaQ) | 8 | 2026-02-06 | unitree_rl_lab 기반 Go2, MuJoCo sim2sim과 실물. AdaBoot가 tanh(CV)로 논문과 방향이 반대다 |
+| [1sznkaveesh/DreamWaQ](https://github.com/1sznkaveesh/DreamWaQ) | 5 | 2026-08-29 | go2_dreamwaq를 들여와 학습하고 z 붕괴를 보고했다(500반복 KL 0.037 nats, 활성 0/16, z를 0으로 고정해도 행동 변화 약 4%) |
+| [UIE47061/dreamwaq_mjlab](https://github.com/UIE47061/dreamwaq_mjlab) | 0 | 2026-10-05 | mjlab(MuJoCo Warp) 재구현. Isaac Gym 없이 도는 드문 갈래지만 2026-10-05에 만들어져 검증 기록이 없다 |
+
+</details>
+
+**travplan에 주는 것.**
+
+1. **바퀴-다리에서 지도와 추정기의 몫(TP-0129, TP-0068).** M20 정책은 평지에서 다리를 거의 고정한 채 바퀴로 구르고(다리 관절 속도 평균 0.02 rad/s),
+   계단에서만 다리를 쓴다(1.52 rad/s). 지도도, 쓸모 있는 z도 없이 MuJoCo의 20 cm 계단을 넘는다. E.12의 '지도는 바퀴에게만 필수다'와 같은 방향이고,
+   이 결과는 실제 다리 접촉 동역학 위에서 나왔다. 다만 M20은 다리가 있어서, 다리 없는 스워브의 0/12 결론은 바뀌지 않는다. 바퀴 관절 속도가 관측에
+   있으면 속도 추정을 0으로 지워도 마찰 0.2와 측면 밀기에서 결과가 같았다. 그래서 학습 속도 추정기는 바퀴 오도메트리가 크게 틀리는 큰 미끄럼
+   영역에서만 값이 있다는 가설이 선다. 그 영역은 travplan이 GP 잔차(TP-0068)로 다루는 곳이고, Controller 모델 계층(TP-0124)에서 학습 모델을 비교할 자리다.
+2. **VAE 병목을 두면 붕괴부터 잰다(TP-0055).** 학습 Planner나 belief 증류(TP-0055)에 VAE 병목을 둔다면 KL 축소 방식(합 또는 평균)과 β를 함께 정한다.
+   그리고 차원별 KL, 활성 차원 수, 디코더의 z 가중치 노름을 학습 로그에 남긴다. 붕괴는 보상 곡선에 보이지 않는다. yusongmin1의 기록에서 보상은
+   0.08에서 54로 올랐지만, 반복 100 이후 KL은 95%가 0.0005 아래였다. 롤아웃 때 뽑은 잠재는 버퍼에 저장하거나 평균을 써서 PPO 비율을 오염시키지 않는다.
+3. **AdaBoot로 GT 지도와 belief 지도를 섞는다(TP-0055).** TP-0128의 정책은 GT 지도로 배우고 belief 지도로 돌았다(E.12 '정직하게 적어 둘 것' 3).
+   AdaBoot의 발상은 학습 중 참값과 추정값을 확률로 섞고, env들의 성과가 고르면 추정값 비율을 올리는 것이다. 이것을 GT 지도와 L1 belief 지도의 혼합으로
+   옮길 수 있다. 옮길 때는 env마다 따로 추첨하고, critic은 늘 GT를 보게 한다. go2_dreamwaq는 두 가지를 모두 반대로 했다.
+4. **명령 격자 커리큘럼(F.2, F.3).** Walk These Ways의 [RewardThresholdCurriculum](https://github.com/Teddy-Liao/walk-these-ways-go2/blob/d00320778c61567379b4a304047955c0c0dcae43/go2_gym/envs/base/curriculum.py#L113-L154)은
+   명령 격자(전진 속도 × 요 속도, 21 × 21칸)에서 과업 보상이 모두 문턱(추종 0.8·0.7, 접지 0.9)을 넘은 칸과 그 이웃의 표집 가중치를 0.2씩 올린다.
+   파일 전체가 numpy 위주의 181줄이고 MIT 라이선스다. F.3이 지적한 균등 표집을 바꿀 가장 단순한 코드 수준 대안이고, LP-ACRL(F.2)보다 단순하다.
+   지형 레벨 표집(F.3 표에서 TP-0039는 고정 또는 무작위, TP-0073은 균등)에 옮기면 칸은 (시나리오, 레벨)이 되고 문턱은 도달률이 된다.
+5. **안전 정지는 안전 명령을 계속 보내는 것이다.** walk-these-ways-go2의 C++ 브리지는 감쇠 분기에서 명령을 보내지 않은 채 쓰기 스레드를 멈추고,
+   LCM 명령 감시도 없다. travplan Controller가 실물 구동기에 붙을 때는 그 사이의 브리지에 두 가지를 둔다. 명령이 끊기면 정해진 시간 안에
+   안전 명령(정지 속도와 감쇠)으로 바꾸는 감시기, 그리고 비상 분기에서도 송신을 멈추지 않는 구조다.
+6. **Playground 바퀴 사족 프로필 보정(TP-0102).** `docs/playground/js/robots.js`의 `wheelLeg`는 턱 한계를 0.15 m로 가정하고(`trav.maxStep`),
+   평지에서도 걸음새 흔들림을 넣는다. M20 정책은 MuJoCo에서 20 cm 계단을 넘었고, 평지에서는 다리를 거의 움직이지 않았다. 저장소의 MJCF와 ONNX를
+   로컬에서 블랙박스 하위 보행기로 두면 MPPI가 낸 twist를 그대로 넣어 추종 오차(평지 0.06 m/s 이내, 영명령 크리프 0.04 m/s)와 턱 한계를
+   실제 접촉 동역학으로 잴 수 있다. 라이선스가 없으므로 로컬 평가에만 쓰고 travplan에는 커밋하지 않는다.
 
 ### F.7 장단점 비교 — travplan 관점에서
 
@@ -1689,6 +2247,229 @@ Playground에서 이를 쟀다(E.13, TP-0135). 하체 지연(0.4 s 가정)을 �
 ---
 
 <!-- tab: 작업 기록 -->
+
+## E.15 DreamWaQ 비공식 구현 넷 — 작동하는 문맥 z는 없었고, 바퀴-다리 M20 정책은 z 없이도 계단을 오른다 (TP-0155)
+
+**한 줄로.** ==코드를 읽은 비공식 구현 넷에서 문맥 z가 작동하는 구현을 하나도 찾지 못했다.== 넷 가운데 DreamWaQ식 가중치를 싣는 유일한 저장소(yusongmin1,
+바퀴-다리 Lynx M20)의 정책은 MuJoCo에서 20 cm 계단 10단을 오르내린다. 그런데 z를 0이나 큰 잡음으로, 속도 추정을 0이나 참값으로
+바꿔도 결과가 같다. 평지에서는 다리를 거의 고정한 채 바퀴로 구른다. Walk These Ways Go2 정책은 MuJoCo에서 넘어지지 않는다. 다만 속도 추종이
+관절 수동 감쇠 하나에 따라 명령의 약 40%와 약 100% 사이를 오간다. 코드 분석은 F.6.1에 있다.
+
+![TP-0155 실측 요약](assets/figs/tp0155_dreamwaq_checks.webp)
+*그림 — TP-0155 실측 요약. (a) M20 체크포인트의 actor 첫 층 열 노름이다. z 입력 열은 관측 입력 열의 약 1/200이다. (b) 평지 전진 1.0 m/s 명령에서 z나 속도 추정을 지운 다섯 변형의 실측 속도(측정 1)다. 계단도 다섯 변형 모두 통과했다. (c) Walk These Ways Go2 정책의 명령 대비 실측 전진 속도를 관절 감쇠, frictionloss, Kd 설정별로 그렸다. 그림은 `python -m scripts.make_evidence_figures --only tp0155`로 다시 만든다.*
+
+### 무엇을 했나
+
+학습 없이 아래 여덟 가지를 CPU에서 했다(2026-10-06). 학습하지 않은 이유는 '정직하게 적어 둘 것' 1에 있다.
+sim2sim은 학습에 쓰지 않은 다른 시뮬레이터에서 정책을 돌려 보는 검증이다. ONNX는 신경망 교환 형식이고, MJCF는 MuJoCo의 XML 로봇 모델 형식이다.
+
+| 점검 | 대상 | 방법 |
+|---|---|---|
+| 모듈 점검 | 넷 모두 | Isaac Gym을 스텁으로 바꾸고 저장소 모듈을 그대로 import했다. 차원, 파라미터 수, 손실, 기울기 경로를 쟀다 |
+| 러너 실행 | go2_dreamwaq, yusongmin1 | 실제 러너의 `learn()`을 돌렸다. go2_dreamwaq는 무작위 스텁 환경(64 env, 2반복), yusongmin1은 버퍼 의미를 옮긴 모의 환경(1반복)이다 |
+| PPO 갱신 한 번 | walk-these-ways-go2, yusongmin1, wanghg1992 | 합성 롤아웃으로 `update()`를 돌렸다. wanghg1992는 옵티마이저 스텝을 끈 건식 실행이다 |
+| 합성 붕괴 점검 | go2_dreamwaq | CENet 클래스와 `update()`를 고치지 않고, 숨은 요인이 있는 합성 데이터에 돌렸다 |
+| 가중치 감식 | yusongmin1, walk-these-ways-go2 | 체크포인트의 행·열 노름, ONNX 그래프, TorchScript 동일성 |
+| TensorBoard 판독 | yusongmin1 | 동봉 기록 19,153반복 |
+| MuJoCo sim2sim | yusongmin1, walk-these-ways-go2 | M20은 저장소의 MJCF와 ONNX, Go2는 mujoco_menagerie의 unitree_go2와 직접 만든 하네스 |
+| 실물 로그 재생 | walk-these-ways-go2 | 동봉된 실물 로그 452스텝을 동봉 정책으로 다시 계산했다 |
+
+MuJoCo 하네스는 저장소마다 두 번 독립으로 만들어 쟀다. 두 측정이 다른 곳은 둘 다 적는다.
+
+### 결과 ① M20 정책(yusongmin1)의 MuJoCo sim2sim
+
+M20 정책은 평지와 계단에서 넘어지지 않았고, z와 속도 추정을 지워도 결과가 같았다.
+
+**평지 명령 추종.** 9 s 중 4–9 s 평균이고, 체크포인트의 평균 경로 기준이다. ONNX 표본 경로도 0.005 안에서 같았다. 낙상은 없었고, 기울기는 최대 5.1°,
+기저 높이는 0.486–0.527 m였다.
+
+| 명령 | 측정 1 | 측정 2 |
+|---|---|---|
+| 전진 0.3 m/s | 0.317 | 0.319 |
+| 전진 0.6 m/s | 0.611 | 0.611 |
+| 전진 1.0 m/s | 0.963 | 0.971 |
+| 전진 1.2 m/s | 1.146 | 1.149 |
+| 후진 0.5 m/s | −0.488 | −0.489 |
+| 측면 0.3 m/s | 0.271 | 0.268 |
+| 요 0.5 rad/s | 0.494 | 0.487 |
+| 영명령(크리프) | 0.040 | 0.039 |
+
+영명령에서 몸체가 0.04 m/s로 미끄러지고 바퀴가 천천히 돈다. 저장소 이슈 #4와 같은 증상이다.
+
+**계단.** 저장소 장면(20 cm × 30 cm 계단 10단, 2.0 m 높이 층계참, 내려가는 계단 10단)이다. 층계참 도달은 기저 높이 2.4 m 이상,
+하강 완료는 x 9.6 m 이상으로 쟀다. 측정 1은 5번 모두, 측정 2는 6번 모두 넘어지지 않고 오르내렸다.
+
+| 실행 | 성공 | 층계참 도달 | 하강 완료 | 최대 기울기 |
+|---|---|---|---|---|
+| 측정 1, 전진 0.5 m/s(표본 seed 0–2, 평균) | 4/4 | 11.38–11.48 s | 20.86–21.10 s | 24.5–25.2° |
+| 측정 1, 전진 1.0 m/s(표본) | 1/1 | 6.68 s | 11.94 s | — |
+| 측정 2, 전진 0.5 m/s(표본 seed 0–2, 평균) | 4/4 | 10.58–10.70 s | 20.06–20.26 s | 24.3–24.9° |
+| 측정 2, 전진 1.0 m/s | 2/2 | 5.82–5.84 s | 10.9 s | — |
+
+최대 기저 높이는 모두 2.51 m였고, 0.5 m/s 명령에서 오르는 동안의 전진 속도는 0.506–0.514 m/s였다. 측정 2가 약 0.8 s 빨랐고, 원인은 확인하지 못했다.
+
+**z와 속도 추정을 지워도 같다.** ==z를 0이나 큰 잡음으로, 속도 추정을 0이나 참값으로 바꿔도 어느 시험에서도 결과가 달라지지 않았다.==
+평균 정책에서 그 입력만 바꿨다. 변형은 기준, z = 0, z = 3·N(0, 1), 속도 추정 = 0, 속도 추정 = 참값의 다섯이다.
+
+| 시험 | 측정 1 | 측정 2 |
+|---|---|---|
+| 평지 전진 1.0 m/s | 0.962–0.970 | 0.969–0.977 |
+| 계단 전진 0.5 m/s | 다섯 모두 층계참과 하강 완료 | 다섯 모두 층계참과 하강 완료 |
+| 바닥 마찰 0.3 | 0.96–0.99(0.2와 함께) | 0.960–0.966 |
+| 바닥 마찰 0.2 | 위와 같음 | 0.971–0.995 |
+| 측면 0.8 m/s 밀기 | 측면 속도 최대 0.81, RMS 0.128–0.129(변형 셋) | 4 s에 밀기. 최대 0.81–0.82, 2 s RMS 0.160–0.162 |
+
+**다리와 바퀴를 언제 쓰나.** 평지에서는 다리를 거의 고정하고 바퀴로 구른다. 계단에서만 다리를 쓴다.
+
+| 구간 | 다리 관절 속도 평균 | 바퀴 |
+|---|---|---|
+| 평지 전진 1.0 m/s | 0.02 rad/s | −10.8 rad/s. 반지름 0.09 m로 0.97 m/s, 순수 구름이다 |
+| 계단 오르기 | 1.52 rad/s, 기본 자세에서 최대 1.32 rad | — |
+
+**속도 추정과 확률 잠재.** 속도 추정의 RMSE는 평지 혼합 명령에서 x·y·z 각각 0.117·0.059·0.054 m/s였다(측정 2는 0.126·0.063·0.052).
+x에는 −0.065 m/s의 편향이 있었다. 계단에서는 0.178·0.283·0.280(측정 2는 0.173·0.286·0.273)이었다. 정상 주행 내내 속도 로그분산은 하한 −5에 붙어 있었고,
+z의 평균은 절댓값 0.021 이하, 로그분산은 0.018 이하였다. 사후분포가 사전분포 N(0, I)와 같다는 뜻이다. ONNX 표본 경로의 행동 잡음은 정상 주행에서
+관절마다 표준편차 0.02 이하였다. 그러나 배포 스크립트처럼 관절각 0, 높이 1 m에서 떨어뜨린 직후의 첫 정책 스텝(0.04 s)에서는 속도 로그분산이 +2.8까지
+올랐다. 이때 행동 표준편차는 바퀴 0.44, 다리 0.13으로 수십 배 커졌다. 0.06 s부터는 정상으로 돌아왔다.
+
+### 결과 ② Walk These Ways Go2 정책의 MuJoCo sim2sim과 실물 로그 재생
+
+**넘어지지 않는다.** 저장소의 runs/pretrain-go2 정책은 trot 0–2.0 m/s, pronk·bound·pace 0.5 m/s, 30 ms 지연을 더한 trot 1.0 m/s에서 모두 넘어지지 않았다.
+좌우 표류는 0.03 m/s, 요 표류는 0.06 rad/s 이하였다. 두 측정이 같은 값을 냈다.
+
+**추종은 관절 수동 감쇠에 민감하다.** trot 명령에 대한 전진 속도(m/s)다. 관절 감쇠와 frictionloss(관절 건마찰)는 Menagerie MJCF의 관절 기본값이고,
+Kd는 PD의 속도 이득이다. 비율은 명령 1.0–2.0 m/s에서 실측을 명령으로 나눈 평균이다.
+
+| 관절 감쇠 · frictionloss · Kd | 0.5 | 1.0 | 1.5 | 2.0 | 비율 |
+|---|---|---|---|---|---|
+| 2.0 · 0.2 · 0.5(Menagerie 기본) | 0.20 | 0.40 | 0.60 | 0.77 | 약 40% |
+| 2.0 · 0 · 0.5 | 0.22 | 0.42 | 0.62 | 0.79 | 약 41% |
+| 1.0 · 0.1 · 0.5 | 0.31 | 0.59 | 0.88 | 1.13 | 약 58% |
+| 0 · 0.2 · 0.5 | 0.53 | 1.00 | 1.48 | 1.90 | 약 98% |
+| 0 · 0 · 0.5 | 0.56 | 1.03 | 1.52 | 1.94 | 약 100% |
+| 0 · 0 · 0.8 | 0.46 | 0.85 | 1.25 | 1.61 | 약 83% |
+
+==추종을 약 40%에서 약 100%로 바꾸는 변수는 Menagerie Go2의 관절 수동 감쇠(2.0 N·m·s/rad)다.== 이 항은 학습(액추에이터 망)에도 배포 PD 명령에도 없다. 학습이 Kp·Kd를
+무작위화하지 않으므로, 정책이 감쇠 변화에 약한 것은 예상과 맞다. 그래서 이 실험은 '액추에이터 망으로 학습하고 PD로 배포한다'는 불일치를
+따로 떼어 보지 못한다. 그 불일치에 가장 가까운 대리 실험은 수동 감쇠 0에서 Kd 0.5와 0.8을 비교한 것이고, 차이는 약 17%다.
+저장소 이슈 #25(실물 미끄러짐과 표류)와의 인과는 확인하지 못했다. 원본 Go1 정책도 Go2 모델 위에서 걷는다(기본값, 1.0 m/s 명령에 0.40).
+`scripts/tmp`의 정책은 모든 명령에서 0.00 m/s로 서 있다. 물리 200 Hz, 30 ms 지연, 배포 순서의 걸음 시계는 결과를 바꾸지 않았다.
+
+**실물 로그 재생.** 동봉된 실물 로그(452스텝, 9.0 s, 제자리 pronk 444스텝과 bound 8스텝)를 runs/pretrain-go2 정책에 다시 넣었다.
+기록된 latent는 5.8e-6, 행동은 3.3e-6 안에서 재현됐다. 실물에 올라간 것이 바로 이 체크포인트다. `scripts/tmp` 정책과 원본 Go1 정책은 오차 3.6–6.8로
+재현하지 못한다. 학습에 쓴 Go1 구동기 망을 위치 오차 $e$와 관절 속도 $v$로 프로브하면 최소제곱 맞춤이 $\tau = -19.29\,e - 0.817\,v + 0.024$다. Kp 약 19, 감쇠 약 0.8 N·m·s/rad처럼 동작한다.
+
+**2차원 '마찰' 추정은 물리량이 아니다.** 실물 로그 9 s 동안 비정규화한 마찰 추정은 −0.05에서 2.29 사이를 오갔다(평균 0.65).
+반발은 음수까지 내려갔다(−0.33에서 0.09). 학습 범위는 마찰 0.1–3.0, 반발 0–0.4다. MuJoCo에서는 바닥이 같아도 걸음새에 따라 값이 바뀐다.
+
+| 설정 | trot | pronk | bound | pace |
+|---|---|---|---|---|
+| Menagerie 기본(감쇠 2.0) | 2.01 | 1.03 | 2.11 | 0.36 |
+| 감쇠 0, frictionloss 0 | 1.77 | 0.35 | 2.30 | 1.82 |
+
+순위까지 뒤집힌다. 시뮬 안에서도 이 목표는 로봇 형상(발 포함)의 마찰계수이고 지형 마찰(1.0)과 결합되므로, MuJoCo 발 마찰 0.8과 같은 척도가 아니다.
+그래도 같은 바닥에서 걸음새와 감쇠에 따라 값이 크게 바뀐다는 결론은 그대로다. TravMap의 지면 성질 채널이나 σ 게이트 입력으로 쓸 수 없다.
+
+### 결과 ③ 문맥 z의 붕괴
+
+**선형-가우시안 근사의 규칙.** 복원 MSE를 차원 평균으로, KL(Kullback–Leibler)을 차원 합으로 더하면 요인 k는 다음 조건에서만 z에 실린다.
+
+$$ \beta < 2\lambda_k $$
+
+$\lambda_k$는 요인 k가 복원 목표 한 차원에 평균으로 더하는 분산이다. 관측을 분산 1로 정규화하면 $\lambda_k \le 1$이므로, β가 2 이상이면 이 근사에서는
+어떤 요인도 실리지 않는다. 규칙은 독립 요인마다 따로 적용된다. 율-왜곡 이론에서 가우시안이 가장 불리한 분포이므로, 드물고 꼬리가 두꺼운 요인은
+원리상 2λ보다 큰 β에서도 실릴 수 있다. go2_dreamwaq의 β 일정에서는 70회 갱신 뒤 β가 2를 넘고, Go2 5,000반복의 98.6%가 그 구간이다.
+
+**규칙의 시험.** go2_dreamwaq의 CENet 클래스와 `update()`를 고치지 않고, 2차원 숨은 요인을 선형으로 45차원에 펴고 잡음을 더한 데이터에 돌렸다.
+요인의 몫은 $\lambda = 0.173, 0.227$이라 예측 문턱은 0.347, 0.453이다. 로코모션 데이터가 아니다.
+
+| 설정 | KL(nats) | 활성 차원 | 복원 MSE | z를 사전분포 표본으로 바꾼 복원 |
+|---|---|---|---|---|
+| 저장소 일정(β 1에서 4로) | 0.0001 | 0/16 | 0.669 | 0.669 |
+| β 1 고정 | 0.0003 | 0/16 | 0.669 | — |
+| β 0.680 고정 | 0.0003 | 0/16 | 0.669 | 0.669 |
+| β 0.272 고정 | 0.25 | 1/16 | 0.587 | 0.744 |
+| β 0.022(이식본의 평균 KL β 0.35를 합 KL로 바꾼 값) | 2.90 | 2/16 | 0.322 | 1.041 |
+
+z가 붕괴하면 디코더가 z를 쓰지 않으므로, z를 사전분포 표본으로 바꿔도 복원이 같다. 붕괴했을 때는 속도 추정 헤드가 숨은 요인의 일부를 대신
+실었다(속도 MSE 0.019 대 0.001). 이진 요인으로 바꿔도 저장소 일정에서는 0/16이었다. 규칙대로 β 0.272에서는 실렸고 0.680에서는 붕괴했다.
+
+**체크포인트와 기록.**
+
+| 근거 | 수치 | 성격 |
+|---|---|---|
+| yusongmin1 main 체크포인트(18,000반복) | z 평균·로그분산 헤드 행 노름 0.0006–0.0016, 편향 0.0005 이하 | 직접 감식 |
+| 같은 체크포인트의 actor 첫 층 | 열 노름: 속도 추정 0.72, z 0.047, 명령 9.7, 각속도 11.6, 중력 13.2, 관절 9.9–10.0 | 직접 감식 |
+| yusongmin1 `highplatform` 체크포인트(14,000반복) | z 헤드 0.0009 이하, z 열 0.062 대 관측 열 7.5 | 직접 감식 |
+| yusongmin1 TensorBoard | KL 0.0646(반복 0), 0.00114(10), 5.0e-5(1,000), 1.65e-4(18,000) | 동봉 기록 |
+| 1sznkaveesh/DreamWaQ(go2_dreamwaq 코드로 학습) | 500반복 KL 0.037 nats, 활성 0/16, 사후 σ 평균 0.9996, z를 0으로 고정해도 행동 변화 약 4% | 제3자 보고 |
+| go2_dreamwaq Isaac Lab 이식본 | 평균 KL β 1에서 붕괴(약 300반복), β 0.35 기본값에서 두 번 중 한 번 재발 | 코드 주석, 근거 로그 없음 |
+
+yusongmin1의 기록에서 보상은 반복 0의 0.08에서 18,000반복 54.1로 올랐고, 지형 레벨은 최고 6.15/9였다. 같은 기간 KL은 반복 100 이후 95%가
+0.0005 아래였다. 1sznkaveesh/DreamWaQ도 보상(1.84에서 13.59)과 지형 레벨(0에서 6.22)은 올랐다고 보고한다. 붕괴는 보상 곡선에 보이지 않는다.
+
+### 결과 ④ PPO 갱신 때의 재표집
+
+롤아웃 때 뽑은 z와 속도 표본을 저장하지 않으면, 같은 가중치에서도 PPO 확률 비율이 흔들린다. 가중치를 고정하고 표본만 다시 뽑아 쟀다.
+적응 학습률은 KL이 0.02(목표 0.01의 두 배)를 넘으면 학습률을 1.5로 나눈다.
+
+| 저장소 | 상태 | 클립 범위 밖 비율 | 적응 학습률이 보는 KL |
+|---|---|---|---|
+| wanghg1992 | 초기화(초기화 5종) | 75–80% | 0.26–0.33 |
+| wanghg1992 | 사후 표준편차 0.3 흉내 | 33–41% | 0.025–0.034 |
+| wanghg1992 | 사후 표준편차 0.1 흉내 | 3.4% | 0.0039 |
+| yusongmin1 | 무작위 초기화(seed 0–2) | 35–42% | 0.026–0.035 |
+| yusongmin1 | 학습된 가중치, MuJoCo 입력 2,850스텝 | 0.04% 이하 | 0.00086 |
+
+잠재를 결정적으로 두면 비율은 정확히 1이다. wanghg1992에서 학습률은 5e-4에서 미니배치마다 1.5로 나뉘어, 첫 반복의 10번째 미니배치에서 하한 1e-5에
+닿는다(계산). 사후 표준편차가 0.3 이상인 동안 하한에 머문다. yusongmin1의 동봉 기록에서도 학습률이 반복 0에서 하한 1e-5였고, 10반복에 6.6e-3까지
+오른 뒤 10,000–18,000반복의 30%를 하한에서 보냈다. 이 기록과 재표집의 인과는 학습 없이 확인하지 못했다.
+
+### 결과 ⑤ 모듈 점검에서 확인한 것
+
+모듈을 직접 돌려 F.6.1의 코드 분석 가운데 아래 항목을 확인했다.
+
+| 저장소 | 확인한 것 |
+|---|---|
+| go2_dreamwaq | CENet 57,456 파라미터, actor 입력 64, critic 입력 238. 같은 입력을 두 번 넣으면 z가 다르다(표본). AdaBoot에서 참 속도를 받은 env 비율은 스텝마다 0 또는 1뿐이다. critic의 속도 칸은 모든 스텝에서 actor와 같다. GAE에 넘긴 값은 마지막 스텝의 step 이전 critic 관측이다. EstimatorNet 러너의 라벨은 24스텝 모두 같다. 리셋 직후 이력에 이전 에피소드 4프레임이 남는다 |
+| go2_dreamwaq | 발밑 지형 조회는 yaw 90°에서 네 발 중 둘, 180°에서 넷 모두 틀린다. yaw를 고르게 뽑은 2,000자세에서 조회 위치 오차는 평균 0.30 m였고, 디딤면 0.31 m 계단에서 발의 56.1%가 엉뚱한 높이를 읽었다 |
+| go2_dreamwaq | 가장 어려운 지형 행은 경사 12.2°, 계단 0.124 m로 원본 legged_gym(19.8°, 0.212 m)보다 낮다. Base 대조군의 절대 높이 보상은 바르게 선 로봇에도 평균 0.036, 최대 1.166의 벌점을 준다. 스텝 보상으로 최대 −0.023이고 추종 보상의 최대 +0.03과 맞먹는다(지형 생성기는 다시 구현해 계산했다) |
+| yusongmin1 | 체크포인트가 저장소 클래스에 strict로 실린다(570,816 파라미터). ONNX 상수 20개가 체크포인트와 같고, 배치 2에서 실패한다. KL 항의 입력 형태가 [B]와 [B, B]다. 모의 환경 학습 한 번에서 저장된 속도 라벨만 다음 스텝 값이었다 |
+| wanghg1992 | 930,476 파라미터이고 PPO 옵티마이저가 VAE 446,227개를 함께 갱신한다. 복원 손실의 기울기는 속도 헤드에 0.0이다. 설정대로 만든 지형 100타일이 모두 ±5 cm 요철이고, SciPy 1.15.3에서는 지형 생성이 NotImplementedError로 멈춘다 |
+| walk-these-ways-go2 | 추정기 571,010, actor 1,242,508, critic 1,241,089 파라미터. 정책 손실의 기울기가 추정기에 닿고, 적응 학습률은 PPO 학습률만 바꾼다. `scripts/tmp` 가중치는 초기화 분포 그대로다(첫 층 표준편차 0.0128 대 기본 초기화 0.0126) |
+
+### 정직하게 적어 둘 것
+
+1. ==학습은 하지 않았다.== Isaac Gym이 설치되어 있지 않다. 학습 동역학에 대한 주장(KL 추이, 학습률 하한)은 동봉 TensorBoard 기록, 정적 분석,
+   초기화 상태의 측정에 근거한다.
+2. MuJoCo는 이 정책들을 학습한 시뮬레이터가 아니다(Isaac Gym, PhysX). sim2sim 수치는 다른 물리 엔진에서의 거동이고 실물 성능을 말하지 않는다.
+   M20의 MJCF는 저장소 것이지만 URDF와 다르다. 다리 관절 12개의 범위 부호가 뒤집혀 있고 링크 질량도 다르다.
+3. MuJoCo 수치는 장면마다 seed 하나다. ONNX 표본 경로만 seed 0–2를 돌렸다.
+4. Walk These Ways 하네스는 직접 만들었다. 저장소에 sim2sim이 없다(이슈 #26). Menagerie Go2의 관절 감쇠 2.0과 frictionloss 0.2가 실물 Go2에
+   가까운지는 확인하지 못했다. 그래서 '약 40%'를 실물의 추종률로 읽을 수 없다.
+5. 제3자 수치(1sznkaveesh/DreamWaQ, Isaac Lab 이식본의 주석과 README, 저장소 이슈의 실물 거동)는 보고이고 재현하지 않았다.
+6. 라이선스 때문에 제3자 코드와 가중치를 travplan에 커밋하지 않았다. yusongmin1과 wanghg1992에는 라이선스가 없고, go2_dreamwaq는 폴더마다 다르다.
+7. 감쇠 분기가 실물에서 어떻게 동작하는지는 명령이 끊겼을 때 Go2 펌웨어가 무엇을 하는지에 달렸다. 실물이 없어 확인하지 못했다.
+
+### 재현
+
+하네스와 점검 스크립트는 travplan 저장소에 넣지 않았다. 라이선스가 없는 저장소의 코드와 가중치를 불러 쓰기 때문이다. 다시 하려면 아래 설정으로
+같은 하네스를 만든다. 대상 커밋은 go2_dreamwaq 8f287e4, walk-these-ways-go2 d003207, yusongmin1 27ef380, wanghg1992 a27fd94다.
+
+**M20(yusongmin1).** 저장소의 M20 MJCF와 계단 장면(위 표의 계단, 25–55 cm 상자 7개)을 쓰고, 평지 시험은 바닥만 남긴 장면을 쓴다. 물리는 5 ms,
+정책은 50 Hz다. PD는 학습과 같다(다리 Kp 80·Kd 2와 위치 배율 0.25, 바퀴 Kd 0.6과 속도 배율 5). 관측은 57차원 6프레임(342차원)이다.
+배포 스크립트처럼 관절각 0, 높이 1 m에서 떨어뜨리며 시작하고, 첫 네 서브스텝은 관절 상태 0으로 PD를 돈다. ONNX(onnxruntime CPU)의 표본 경로와
+체크포인트의 평균 경로를 둘 다 돌린다. 절제는 평균 정책에서 z나 속도 입력만 바꾸고, 마찰 시험은 바닥 마찰을 0.3과 0.2로, 밀기 시험은 4 s에
+측면 0.8 m/s를 더한다.
+
+**Walk These Ways Go2.** mujoco_menagerie의 unitree_go2(커밋 f054586a)와 MuJoCo 3.14를 쓴다. 물리 1 kHz, 관절 PD Kp 20·Kd 0.5(실물 배포가 보내는 이득)를
+ctrlrange로 자르고, 정책은 50 Hz다. 관측은 70차원과 30스텝 이력을 다시 만들고, 걸음 시계는 Walk These Ways의 식(주파수와 위상 셋)을 따른다.
+관절은 이름으로 짝짓는다. 학습처럼 0.2 m/s 이하 명령은 0으로 둔다. 1 s 정지 뒤 10 s 명령을 주고 마지막 5 s를 평균한다. 감쇠와 frictionloss는
+MJCF의 관절 기본값을 바꿔 시험한다. 실물 로그 재생은 저장소의 logs/example_experiment 아래 log.pkl을 runs/pretrain-go2의 두 TorchScript에 넣어
+기록된 latent·행동과 비교한다.
+
+**CPU 점검.** 각 저장소 모듈을 Isaac Gym 스텁과 함께 import한다(PyTorch CPU). PPO 재표집 측정은 가중치를 고정하고 배치 4,096에서 표본만 다시 뽑아
+확률 비율과 KL을 잰다.
 
 ## E.14 Playground의 MPOT Planner — Dijkstra와 같은 도달률, 매끄러운 경로, 국소 최솟값 하나 (TP-0136)
 

@@ -5954,6 +5954,7 @@ PointNet은 이 중 max를 쓴다.
 **무엇인가.** CENet(Context-aided Estimator Network)은 DreamWaQ(Nahrendra 외, ICRA 2023, [arXiv:2301.10602](https://arxiv.org/abs/2301.10602))가
 제안한 추정기다. 과거 proprioception $\mathbf o^H_t = [\mathbf o_t, \mathbf o_{t-1}, \dots, \mathbf o_{t-H}]$($H=5$)를 받아, 인코더 하나에서
 몸체 선속도 $\mathbf v_t$와 잠재 맥락 $\mathbf z_t$를 함께 낸다. 관측 $\mathbf o_t$는 각속도·중력 벡터·속도 명령·관절각·관절 속도·직전 행동이다.
+이력 정의를 글자 그대로 읽으면 6프레임이지만, 비공식 구현 대부분은 5프레임을 쓴다.
 
 **왜 필요한가.** blind 정책은 지형을 볼 수 없다. 하지만 발이 닿은 뒤의 관절 움직임에는 지형 정보가 남는다. 몸체 선속도도 IMU 적분만으로는
 드리프트가 쌓인다. CENet은 이 둘을 한 인코더로 추정한다. 원문은 지형 추정과 속도 추정이 서로 도와 속도 추정이 더 정확해진다고 본다.
@@ -5961,10 +5962,15 @@ PointNet은 이 중 max를 쓴다.
 **어떻게 동작하나.** 인코더 하나, 헤드 둘이다.
 
 ```
-o^H_t ─ 공유 인코더 ─┬─ 속도 헤드 → ṽ_t        (MSE로 참 속도에 맞춤)
-                     └─ z_t ~ q(z|o^H_t) ─ 디코더 → õ_{t+1}   (β-VAE: 다음 관측 복원)
-정책 π(a_t | o_t, v_t, z_t)
+o^H_t ─ 공유 인코더(128×64×19) ─┬─ ṽ_t (3)                  MSE로 참 속도에 맞춤
+                                └─ z_t (16) ~ q(z|o^H_t)
+[ṽ_t, z_t] (19) ─ 디코더(64×128×48) ─→ õ_{t+1}               β-VAE: 다음 관측 복원
+[o_t, ṽ_t, z_t] ─ 정책 π(512×256×128×12) ─→ a_t
 ```
+
+망 크기는 본문에 없고 Fig. 1·2의 라벨에만 있다. 128×64×19는 은닉층 128·64에 출력 19(속도 3 + 맥락 16)라는 뜻이다.
+Fig. 2의 화살표로 보면 디코더는 $\mathbf z_t$만이 아니라 $[\tilde{\mathbf v}_t, \mathbf z_t]$ 19차원을 받는다. 디코더 출력 48은 식 (1)의 성분을
+센 45(명령을 3차원으로 볼 때)와 3이 다르고, 논문은 $\mathbf o_t$의 차원을 적지 않는다.
 
 $$ \mathcal L_{\text{CE}} = \mathrm{MSE}(\tilde{\mathbf v}_t, \mathbf v_t) + \mathrm{MSE}(\tilde{\mathbf o}_{t+1}, \mathbf o_{t+1}) + \beta D_{\text{KL}}\big(q(\mathbf z_t \mid \mathbf o^H_t) \,\|\, \mathcal N(0, I)\big) $$
 
@@ -5984,6 +5990,9 @@ $\mathrm{CV}$는 에이전트들 에피소드 보상의 변동계수(표준편�
 
 **이 탭에서 쓰는 곳.** DreamRiser는 CENet을 그대로 써서 넘어진 뒤의 지형을 추정한다. DreamWaQ++는 층을 MLP-Mixer로 바꾸고 점군 잠재와 합친다.
 DreamFLEX는 헤드를 하나 더 붙여 관절 고장 벡터를 추정한다(FEMNet). OpenHEART는 하위 제어기의 이력 인코더와 몸체 선속도 추정에 DreamWaQ를 인용한다. 상위 actor의 이력 인코더는 β-VAE로 학습하는 점은 같지만, 다음 관측이 아니라 가장 최근 proprioception을 복원한다.
+
+**비공식 구현.** DreamWaQ의 공식 코드는 없다(2026-10-06 확인). 커뮤니티 저장소 넷(DreamWaQ 재구현 셋과 Walk These Ways Go2 이식본)의 코드 분석은 Controller·안전 문서 F.6.1에 있다.
+직접 확인한 체크포인트(yusongmin1/Dreamwaq)에서는 $\mathbf z_t$가 붕괴해 있었고, go2_dreamwaq 코드로 학습한 제3자도 붕괴를 보고했다(같은 문서 작업 기록 E.15).
 
 </details>
 
