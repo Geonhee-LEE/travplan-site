@@ -2828,7 +2828,7 @@ RL은 보상과 하이퍼파라미터를 여러 번 돌려 맞춰야 하므로 �
 기존 시뮬레이터(MuJoCo, Bullet, RaiSim)는 CPU에서 돌아 병렬 수가 코어 수에 묶였다. CPU에서 모은 데이터는 갱신 때마다 GPU로 옮겨야 하고, PCIe 전송은 GPU 계산보다 최대 50배 느릴 수 있다.
 이 논문은 수집과 갱신을 모두 GPU에 두고, 그 규모에서 on-policy RL의 설정을 어떻게 바꿔야 하는지 잰다.
 학습이 분 단위가 되자 설정을 여러 번 바꿔 돌릴 수 있었고, 저자들은 그렇게 꼭 필요한 요소만 남겼다.
-이 코드 위에서 시작한 후속 공개 구현으로는 walk-these-ways와 Robot Parkour Learning(B.12.2), DreamWaQ 비공식 구현들(Controller 문서 F.6.1)이 있다.
+이 코드 위에서 시작한 후속 공개 구현으로는 walk-these-ways와 Robot Parkour Learning(B.12.2), Extreme Parkour(Controller 문서 F.6.2), DreamWaQ 비공식 구현들(Controller 문서 F.6.1)이 있다.
 
 **한 장면, 한 메시.** 로봇 수천 대가 한 시뮬레이션에 있으므로 리셋마다 지형을 바꿀 수 없다.
 그래서 모든 지형 종류와 레벨을 메시 하나에 나란히 깔고, 레벨을 바꿀 때는 로봇을 메시 위에서 옮긴다.

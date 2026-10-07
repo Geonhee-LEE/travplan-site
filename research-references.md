@@ -382,11 +382,11 @@ TEB, Smac, iPlanner, ViPlanner, X-Mobility, COMPASS, legged_gym, autonomy_stack_
 | TARE | RSS 2021 | 계층형 탐사 계획 | B.12.2, B.12.4 | [DOI](https://doi.org/10.15607/RSS.2021.XVII.018) · [코드](https://github.com/caochao39/tare_planner) |
 | CMU 탐사 개발 환경 | 2021.10 · ICRA 2022 | 지형 분석, 로컬 Planner, waypoint 추종 | B.12.2, B.12.4 | [논문](https://arxiv.org/abs/2110.14573) · [코드](https://github.com/HongbiaoZ/autonomous_exploration_development_environment) · [사이트](https://www.cmu-exploration.com/) |
 | OCS2 | GitHub | 전환 시스템 최적 제어(SLQ, iLQR, SQP, IPM), ROS 2 가지 | B.12.2 | [코드](https://github.com/leggedrobotics/ocs2) |
-| legged_control | GitHub | OCS2 기반 NMPC + WBC + 상태 추정(유지보수 종료) | B.12.2 | [코드](https://github.com/qiayuanl/legged_control) |
+| legged_control | GitHub | OCS2 기반 NMPC + WBC + 상태 추정(유지보수 종료) | B.12.2, F.6 | [코드](https://github.com/qiayuanl/legged_control) |
 | TOWR | RA-L 2018 | 접촉 위상까지 최적화하는 다리 로봇 궤적 최적화 | B.12.2 | [DOI](https://doi.org/10.1109/LRA.2018.2798285) · [코드](https://github.com/ethz-adrl/towr) |
 | CHAMP | GitHub | MIT Cheetah I 계층 제어기 + ROS 내비 | B.12.2 | [코드](https://github.com/chvmp/champ) |
-| Walk These Ways | 2022.12 · CoRL 2022 | 여러 걸음새를 한 정책에 담은 보행 제어기 | B.12.2 | [논문](https://arxiv.org/abs/2212.03238) · [코드](https://github.com/Improbable-AI/walk-these-ways) |
-| Robot Parkour Learning | 2023.09 · CoRL 2023 | 깊이 영상 한 정책의 파쿠르 기술 | B.12.2 | [논문](https://arxiv.org/abs/2309.05665) · [코드](https://github.com/ZiwenZhuang/parkour) |
+| Walk These Ways | 2022.12 · CoRL 2022 | 여러 걸음새를 한 정책에 담은 보행 제어기 | B.12.2, F.6 | [논문](https://arxiv.org/abs/2212.03238) · [코드](https://github.com/Improbable-AI/walk-these-ways) |
+| Robot Parkour Learning | 2023.09 · CoRL 2023 | 깊이 영상 한 정책의 파쿠르 기술. 코드(MIT)에 Go1 체크포인트와 Go1·Go2 배포 코드가 있다 | B.12.2, F.6 | [논문](https://arxiv.org/abs/2309.05665) · [코드](https://github.com/ZiwenZhuang/parkour) |
 | humanoid_navigation (footstep planner) | Humanoids 2012 | anytime 탐색 발자국 계획 | B.12.3 | [DOI](https://doi.org/10.1109/HUMANOIDS.2012.6651592) · [코드](https://github.com/ahornung/humanoid_navigation) |
 | IHMC Open Robotics Software | GitHub | 평면 영역 A\* 발자국 계획 + 운동량 기반 전신 제어 | B.12.3 | [코드](https://github.com/ihmcrobotics/ihmc-open-robotics-software) |
 | BaselineFootstepPlanner | GitHub (AIST) | 그래프 탐색 기준 발자국 계획 | B.12.3 | [코드](https://github.com/isri-aist/BaselineFootstepPlanner) · [문서](https://isri-aist.github.io/BaselineFootstepPlanner/) |
@@ -395,7 +395,7 @@ TEB, Smac, iPlanner, ViPlanner, X-Mobility, COMPASS, legged_gym, autonomy_stack_
 | Pinocchio, TSID, Aligator | GitHub | 강체 동역학, 작업 공간 역동역학, 제약 궤적 최적화 | B.12.3 | [Pinocchio](https://github.com/stack-of-tasks/pinocchio) · [TSID](https://github.com/stack-of-tasks/tsid) · [Aligator](https://github.com/Simple-Robotics/aligator) |
 | MuJoCo MPC | 2022.12 | iLQG, 경사 하강, Predictive Sampling 예측 제어 | B.12.3 | [논문](https://arxiv.org/abs/2212.00541) · [코드](https://github.com/google-deepmind/mujoco_mpc) |
 | Drake | GitHub | 수리 계획과 다물체 동역학 | B.12.3 | [코드](https://github.com/RobotLocomotion/drake) |
-| humanoid-gym, unitree_rl_gym, booster_gym | 2024.04(humanoid-gym) · GitHub | Isaac Gym RL 보행 + sim-to-sim 검증 | B.12.3 | [논문](https://arxiv.org/abs/2404.05695) · [humanoid-gym](https://github.com/roboterax/humanoid-gym) · [unitree_rl_gym](https://github.com/unitreerobotics/unitree_rl_gym) · [booster_gym](https://github.com/BoosterRobotics/booster_gym) |
+| humanoid-gym, unitree_rl_gym, booster_gym | 2024.04(humanoid-gym) · GitHub | Isaac Gym RL 보행 + sim-to-sim 검증 | B.12.3, F.6 | [논문](https://arxiv.org/abs/2404.05695) · [humanoid-gym](https://github.com/roboterax/humanoid-gym) · [unitree_rl_gym](https://github.com/unitreerobotics/unitree_rl_gym) · [booster_gym](https://github.com/BoosterRobotics/booster_gym) |
 | HOVER | 2024.10 · ICRA 2025 | 여러 명령 모드를 증류한 전신 제어 정책 | B.12.3 | [논문](https://arxiv.org/abs/2410.21229) · [코드](https://github.com/NVlabs/HOVER) |
 | ASAP | 2025.02 · RSS 2025 | 실물 데이터 잔차 행동 모델로 sim-to-real 정렬 | B.12.3 | [논문](https://arxiv.org/abs/2502.01143) · [코드](https://github.com/LeCAR-Lab/ASAP) |
 | Gallant | 2025.11 | LiDAR 복셀 격자 휴머노이드 보행·로컬 내비 | B.12.3 | [논문](https://arxiv.org/abs/2511.14625) · [코드](https://github.com/InternRobotics/Gallant) · [프로젝트](https://gallantloco.github.io/) |
@@ -493,7 +493,7 @@ E.1(MPPI 계보), E.2(학습 동역학·적응 마일스톤), C.4(안전 필터 
 
 | 이름 | 연·발표 | 요약 | 본문 | 링크 |
 |---|---|---|---|---|
-| ABS (Agile But Safe) | 2024.01 · RSS 2024 | 빠른 정책 + 정책 조건 도달-회피 가치 감시 + 회복 정책, Go1 3 m/s 이상 | B.9, C.4 | [논문](https://arxiv.org/abs/2401.17583) · [코드](https://github.com/LeCAR-Lab/ABS) · [프로젝트](https://agile-but-safe.github.io) |
+| ABS (Agile But Safe) | 2024.01 · RSS 2024 | 빠른 정책 + 정책 조건 도달-회피 가치 감시 + 회복 정책, Go1 3 m/s 이상. 코드는 CC BY-NC 4.0(README 표기) | B.9, C.4, F.6 | [논문](https://arxiv.org/abs/2401.17583) · [코드](https://github.com/LeCAR-Lab/ABS) · [프로젝트](https://agile-but-safe.github.io) |
 | Poisson Safety Functions | 2025.05 | 점유 지도에서 Poisson 방정식으로 CBF 안전 함수, GPU SOR 0.2–0.3 ms, Go2·G1 | C.4 | [논문](https://arxiv.org/abs/2505.06794) · [영상](https://youtu.be/fBRdkAJGixI) |
 | Geometry-Aware Predictive Safety Filters | 2025.08 · Humanoids 2025 | Poisson 안전 함수 + Minkowski 로봇 모양 + CBF MPC 100 Hz, G1·Go2 | C.4 | [논문](https://arxiv.org/abs/2508.11129) |
 | Risk-Aware Poisson Safety + Laplace Guidance | 2025.10 | 장애물별 위험도를 Laplace 안내장의 경계 유출량으로 | C.4 | [논문](https://arxiv.org/abs/2510.25913) |
@@ -713,9 +713,9 @@ TP-0036에 바로 들어간다)다.
 | 이름 | 연도 | 한 줄 요약 | 절 | 링크 |
 |---|---|---|---|---|
 | Isaac Sim | 2026.09(6.1) | USD·PhysX·RTX 로봇 시뮬레이터, ROS 2 브릿지 | S.1.1 | [GitHub](https://github.com/isaac-sim/IsaacSim) |
-| Isaac Lab | 2025.11 | Isaac Sim 위 GPU 병렬 학습 프레임워크, 3.0은 다중 백엔드 | S.1.1 | [arXiv:2511.04831](https://arxiv.org/abs/2511.04831), [GitHub](https://github.com/isaac-sim/IsaacLab) |
+| Isaac Lab | 2025.11 | Isaac Sim 위 GPU 병렬 학습 프레임워크, 3.0은 다중 백엔드 | S.1.1, F.6 | [arXiv:2511.04831](https://arxiv.org/abs/2511.04831), [GitHub](https://github.com/isaac-sim/IsaacLab) |
 | Newton | 2026(1.x) | Warp 기반 GPU 물리, MuJoCo Warp·MPM·VBD, Linux Foundation | S.1.2 | [GitHub](https://github.com/newton-physics/newton) |
-| MuJoCo Playground | 2025.02 | MJX 기반 학습 프레임워크, zero-shot sim-to-real | S.1.3 | [arXiv:2502.08844](https://arxiv.org/abs/2502.08844) |
+| MuJoCo Playground | 2025.02 | MJX 기반 학습 프레임워크, zero-shot sim-to-real | S.1.3, F.6 | [arXiv:2502.08844](https://arxiv.org/abs/2502.08844) |
 | MuJoCo Warp | 2026.09(3.14) | MuJoCo의 GPU판 | S.1.3 | [GitHub](https://github.com/google-deepmind/mujoco_warp) |
 | Genesis | 2026.09(1.4.2) | 범용 시뮬레이터, 속도 주장 재검증 논란 | S.1.4 | [GitHub](https://github.com/Genesis-Embodied-AI/genesis-world), [issue #181](https://github.com/Genesis-Embodied-AI/genesis-world/issues/181) |
 | Gazebo Harmonic·Jetty | 2023.09·2025.09 | ROS 2 표준 CPU 시뮬레이터 | S.1.5 | [gazebosim.org](https://gazebosim.org/docs/latest/releases/) |
@@ -791,7 +791,7 @@ TP-0036에 바로 들어간다)다.
 
 | 이름 | 연·발표 | 요약 | 본문 | 링크 |
 |---|---|---|---|---|
-| DreamWaQ | 2023.01 · ICRA 2023 | 고유수용만으로 지형을 암묵 추정(CENet). ICRA 2023 사족보행 대회 1위, 실물은 Unitree A1 한 대. 고도차 22 m는 본문 §III-G에 있고 ==경사 36°만 본문 밖==이다. 공식 코드는 없다(프로젝트 페이지는 'Coming soon', 2026-10-06 확인). 비공식 구현은 F.6.1 | F.4, F.6.1 | [논문](https://arxiv.org/abs/2301.10602) |
+| DreamWaQ | 2023.01 · ICRA 2023 | 고유수용만으로 지형을 암묵 추정(CENet). ICRA 2023 사족보행 대회 1위, 실물은 Unitree A1 한 대. 고도차 22 m는 본문 §III-G에 있고 ==경사 36°만 본문 밖==이다. 공식 코드는 없다(프로젝트 페이지의 '[Code] (Coming soon)' 항목은 2024-11 스냅숏부터 없고 지금은 논문 링크만 있다, 2026-10-07 확인). 비공식 구현은 F.6.1 | F.4, F.6, F.6.1 | [논문](https://arxiv.org/abs/2301.10602) |
 | DreamWaQ++ | 2024.09 · T-RO 2026 | PointNet + **학습된 신뢰도 필터**로 외수용을 믿을 때만 쓴다. 확률 proprio 잠재 + MLP-Mixer, 카메라 고장 시 접촉 반사로 복귀. 계단 97.8%. ==실물 넷은 센서 구성이 다른 Go1 셋 + 외수용 없는 A1 하나==(기종 간 일반화는 시뮬) | F.4, A.7.1 | [논문](https://arxiv.org/abs/2409.19709) · [프로젝트](https://dreamwaqpp.github.io/) · [영상](https://www.youtube.com/watch?v=IeBNRQsmKR4) |
 | 복구 동작(통칭 DreamRiser) | 2023.06 · **RSS 2023 워크숍** | 같은 지형 상상으로 넘어진 뒤 복구 동작, 학습 분포 밖 지형. =="DreamRiser"는 논문 제목이 아니라 저자 프로젝트 페이지의 통칭== | F.4 | [논문](https://arxiv.org/abs/2306.12712) · [프로젝트](https://sites.google.com/view/dreamriser) |
 | curieuxjy/go2_dreamwaq | 2024 · GitHub | DreamWaQ 비공식 구현(A1·Go2, Isaac Gym)과 Isaac Lab 이식본. 논문 구성 요소를 가장 많이 구현했지만 DreamWaQ 가중치가 없다. 저장소의 손실 척도로는 문맥 z가 붕괴한다는 것을 합성 점검이 보였고, 같은 코드로 학습한 제3자도 붕괴를 보고했다 | F.6.1, E.15 | [코드](https://github.com/curieuxjy/go2_dreamwaq) |
@@ -801,12 +801,21 @@ TP-0036에 바로 들어간다)다.
 | Manaro-Alpha/DreamWaQ | 2024 · GitHub | 커뮤니티의 원조 DreamWaQ 구현(Go1). 여러 파생 저장소의 출발점이고 루트 라이선스가 없다 | F.6.1 | [코드](https://github.com/Manaro-Alpha/DreamWaQ) |
 | LucienJi/MetaRobotics | 2023 · GitHub | DreamWaQ·EstimatorNet·AMP 모듈을 나란히 둔 연구 코드(MIT). wanghg1992 사본의 상류 | F.6.1 | [코드](https://github.com/LucienJi/MetaRobotics) |
 | 지형 인지 발놓기 | 2023.10 | 궤적 생성기의 파라미터만 RL로 조절, 안전 발놓기 보상. 징검다리 25.5 cm | F.4 | [논문](https://arxiv.org/abs/2310.04675) |
-| Extreme Parkour | 2023.09 · ICRA 2024 | 단일 전방 깊이 카메라로 파쿠르, 20시간 학습 | F.4, F.6 | [논문](https://arxiv.org/abs/2309.14341) · [코드](https://github.com/chengxuxin/extreme-parkour) |
+| Extreme Parkour | 2023.09 · ICRA 2024 | Unitree A1과 앞쪽 깊이 카메라 하나, 지도 없음. scandots 교사(RL)를 깊이 학생으로 DAgger 증류하고, 진행 방향도 학생이 예측한다(MTS). 내적 진행 보상과 가장자리 5 cm 벌점. 실물 0.5 m 오르기·0.8 m 건너기·37° 경사로, RTX 3090 한 장 20시간 미만. 코드는 CC BY-NC 4.0이고 가중치·실물 코드가 없으며, MTS 판정·커리큘럼 문턱이 논문과 다르다 | F.4, F.6.2 | [논문](https://arxiv.org/abs/2309.14341) · [프로젝트](https://extreme-parkour.github.io) · [코드](https://github.com/chengxuxin/extreme-parkour) |
+| CAI23sbP/Isaaclab_Parkour | 2025 · GitHub | Extreme Parkour를 Isaac Lab과 Unitree Go2로 옮긴 커뮤니티 구현(GPL-3.0). 교사·학생 과제와 학습된 정책 링크를 싣고, 원저자가 이슈 #61에서 반겼다. 프로젝트 페이지의 브라우저 데모가 이 재현의 Go2 교사 정책을 돌린다 | F.6.2 | [코드](https://github.com/CAI23sbP/Isaaclab_Parkour) |
+| CAI23sbP/Isaaclab_Parkour | 2025 · GitHub | Extreme Parkour를 Isaac Lab과 Unitree Go2로 옮긴 커뮤니티 구현(GPL-3.0). 교사·학생 과제와 학습된 정책 링크를 싣고, 원저자가 이슈 #61에서 반겼다. 프로젝트 페이지의 브라우저 데모가 이 재현의 Go2 교사 정책을 돌린다 | F.6.2 | [코드](https://github.com/CAI23sbP/Isaaclab_Parkour) |
 | 확률 제약 볼록 MPC (4족) | 2025 | 불확실성을 전파해 마찰 원뿔·접촉 제약을 적응 조임. **손으로 맞춘 조이기를 이김**, 미지 하중 7.5 kg | F.5 | [코드](https://github.com/RIVeR-Lab/Chance-Constrained-MPC) · [프로젝트](https://cc-mpc.github.io/) |
 | MULE | 2025.05 | 미지 하중과 다지형에 적응하는 RL | F.5 | [논문](https://arxiv.org/abs/2505.00488) |
-| RSL-RL | 2025.09 | GPU 전용 경량 RL 라이브러리: PPO + 교사–학생 증류, RND, 대칭 증강 | F.6 | [논문](https://arxiv.org/abs/2509.10771) · [코드](https://github.com/leggedrobotics/rsl_rl) |
-| legged_gym | 2021 | Rudin 2021의 학습 환경, 이 계열의 출발점 | F.6 | [코드](https://github.com/leggedrobotics/legged_gym) |
-| walk-these-ways | 2022 | 행동 다양성으로 일반화, Go1 배포 코드 | F.6 | [코드](https://github.com/Improbable-AI/walk-these-ways) |
+| RSL-RL | 2025.09 | GPU 학습에 맞춘 경량 RL 라이브러리(BSD-3). v5.5.1(2026-09-09)은 PPO와 DAgger식 증류, RND·대칭 증강, MLP·RNN·CNN 모델과 ONNX 내보내기를 담는다. Isaac Lab·mjlab·MuJoCo Playground가 학습기로 쓴다. 러너의 기본 장치는 CPU다 | F.6 | [논문](https://arxiv.org/abs/2509.10771) · [코드](https://github.com/leggedrobotics/rsl_rl) |
+| legged_gym | 2021 | Rudin 2021의 Isaac Gym 학습 환경(BSD-3), 이 계열의 출발점. 마지막 코드 변경 2022-05-04, 2024-01 README 공지로 Isaac Lab 이전을 권한다 | F.6, B.14.1 | [코드](https://github.com/leggedrobotics/legged_gym) |
+| walk-these-ways | 2022 · GitHub | Walk These Ways(논문 행은 D.5c)의 Go1 학습·배포 키트(MIT). 사전 학습 정책과 액추에이터 망 동봉, 마지막 코드 변경 2024-06-16 | F.6, F.6.1 | [코드](https://github.com/Improbable-AI/walk-these-ways) |
+| mjlab | 2026.01 | Isaac Lab의 manager 기반 API를 MuJoCo Warp 위로 옮긴 학습 틀(Apache-2.0). rsl_rl 5.5.1 고정, Go1·G1 velocity 작업, Isaac Sim 없이 설치. Unitree판은 unitree_rl_mjlab | F.6 | [논문](https://arxiv.org/abs/2601.22074) · [코드](https://github.com/mujocolab/mjlab) · [Unitree판](https://github.com/unitreerobotics/unitree_rl_mjlab) |
+| unitree_rl_lab | 2025.06 · GitHub | Isaac Lab 위 Unitree 학습 환경(Apache-2.0). Go2·H1·G1 velocity 작업, Go2-W 로봇 설정과 C++ 배포, 토크-속도 곡선 액추에이터 모델, unitree_mujoco로 sim2sim | F.6, S.5.3c | [코드](https://github.com/unitreerobotics/unitree_rl_lab) |
+| robot_lab | 2024.07 · GitHub | Isaac Lab 확장(Apache-2.0). 로봇 24종 velocity 작업(4족 8, 바퀴-다리 6, 휴머노이드 10). 바퀴-다리는 다리 위치·바퀴 속도 행동 | F.6 | [코드](https://github.com/fan-ziqi/robot_lab) |
+| rl_sar | 2024.03 · GitHub | 학습 정책의 sim2sim(Gazebo·MuJoCo)과 실물 배포를 맡는 C++ 틀(Apache-2.0). ROS Noetic·ROS 2, 정책 16개 동봉(Go2W 포함). 내려받는 로봇 모델 저장소 rl_sar_zoo에는 라이선스가 없다 | F.6 | [코드](https://github.com/fan-ziqi/rl_sar) |
+| unitree_mujoco | 2021.11 · GitHub | Unitree 로봇의 MuJoCo 모델과 시뮬레이터(BSD-3). Go2W MJCF와 높이장 장면이 있고, unitree_rl_lab의 sim2sim이 쓴다 | F.6 | [코드](https://github.com/unitreerobotics/unitree_mujoco) |
+| HIMLoco (Hybrid Internal Model) | 2023.12 · ICLR 2024 | 고유수용 이력에서 속도와 대조 학습 잠재를 추정하는 4족 보행(A1·Aliengo·Go1), RTX 4090 한 장에서 1시간 학습. 코드는 CC BY-NC-SA 4.0(비상업)이고 배포 안내는 공개되지 않았다 | F.6 | [논문](https://arxiv.org/abs/2312.11460) · [코드](https://github.com/InternRobotics/HIMLoco) |
+| AMP for hardware | 2022.03 · IROS 2022 | 모션 캡처 몇 초(저장소 기준 4.5초)로 배운 판별기 스타일 보상이 손으로 짠 규제 보상 항을 대신하고, 속도 추종 과업 보상과 더해진다. 실물 A1. 코드는 legged_gym 기반(BSD-3)이고 escontra 계정으로 옮겨졌다 | F.6 | [논문](https://arxiv.org/abs/2203.15103) · [코드](https://github.com/escontra/AMP_for_hardware) |
 | LP-ACRL (자동 커리큘럼 RL) | 2026.01 | 학습 진척으로 과제 표집 분포를 자동 조절, 600과제에서 1,500 iter에 80%. ANYmal D 평지 3.0 m/s·험지 2.5 m/s | F.2 | [논문](https://arxiv.org/abs/2601.17428) |
 | Learning to Walk in Minutes | 2021.09 · CoRL 2021(PMLR 164, 2022-01 발행) | GPU 대규모 병렬 + 게임식 지형 커리큘럼 | F.1, B.14.1 | [논문](https://arxiv.org/abs/2109.11978) |
 | Learning Quadrupedal Locomotion over Challenging Terrain | 2020.10 · Science Robotics | 특권 교사 → 고유수용 학생 증류 | F.1, B.14.1 | [논문](https://arxiv.org/abs/2010.11251) |

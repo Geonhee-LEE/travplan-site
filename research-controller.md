@@ -9,7 +9,7 @@ acados NMPC 두 갈래를 함께 개발하고 같은 벤치마크에서 비교�
 | MPPI 계열 | MPPI의 계보, 학습 prior를 넣는 법, SMPPI, 최적 수송으로 샘플을 옮기는 최적화기(MPOT·OT-MPC) | E.1, B.5, E.11 | `MPPIController`, `SmoothMPPIController` |
 | 학습 동역학·적응 | 학습 rollout 모델, 불확실성, 온라인 적응, 마일스톤, Zeilinger 그룹(학습 MPC의 보장·공개 코드·내비 MPC), GP 잔차 | E, E.2–E.10 | 슬립이 커질 때 바꿀 rollout 모델, 잔차 GP |
 | 안전 필터 | 비용 통합형과 외부 필터형, CBF 계열, 계보 | C.1–C.4 | 시간가변 비용 레이어(구현), CVaR-BF(TP-0014) |
-| 하위 제어 · 4족 RL | 4족 보행 RL의 계보, 자동 커리큘럼, RL과 MPC를 섞는 갈래, DreamWaQ 비공식 구현 코드 분석, 휴머노이드 분리형 WBC | F.1–F.8 | 지형 난이도 커리큘럼(TP-0039)과 Planner D RL 후학습(TP-0066) |
+| 하위 제어 · 4족 RL | 4족 보행 RL의 계보, 자동 커리큘럼, RL과 MPC를 섞는 갈래, DreamWaQ 비공식 구현과 Extreme Parkour의 논문·코드 분석, 휴머노이드 분리형 WBC | F.1–F.8 | 지형 난이도 커리큘럼(TP-0039), Planner D RL 후학습(TP-0066), L1 belief 증류(TP-0055) |
 | 작업 기록 | Playground의 학습 Controller와 지도 없는 대조군, 휴머노이드·WBC, MPOT Planner, DreamWaQ 비공식 구현 점검 | E.12–E.15 | `travplan/control/tiny_policy.py`, `js/mpot.js`, TP-0128·0129·0135·0136·0155 |
 
 **계보 한눈에 보기.**
@@ -1534,7 +1534,7 @@ travplan이 어느 쪽을 참고할지는 이 갈래에 달려 있다.
 |---|---|---|---|---|
 | (a) **외수용 격자** | 고유수용 + 높이 지도 | Miki 2022, LP-ACRL, ANYmal Parkour | 지형을 미리 보고 발을 놓는다. 계단·징검다리에 강하다 | 지도가 틀리면 같이 틀린다. 매핑 파이프라인이 필요하다 |
 | (b) **고유수용만(blind)** | 관절·IMU만 | **DreamWaQ**, DreamRiser | 센서가 싸고 매핑이 없다. 지도 오류에 면역이다 | 앞을 못 보니 미리 대비하지 못한다. 높은 계단에서 약하다 |
-| (c) **카메라 직접** | 깊이 영상 | Extreme Parkour, Robot Parkour | 지도를 거치지 않아 지연이 적다 | 시야·조명에 약하고 학습이 무겁다 |
+| (c) **카메라 직접** | 깊이 영상 | Extreme Parkour(F.6.2), Robot Parkour | 지도를 거치지 않아 지연이 적다 | 시야·조명에 약하고 학습이 무겁다 |
 
 ==(a)와 (b)의 차이는 travplan 지형에서 직접 재 봤다== — 결과와 수치는 작업 기록 E.12(TP-0129)에 있다.
 
@@ -1597,7 +1597,7 @@ travplan은 지금 그것을 **GP 잔차로 뭉뚱그려** 흡수한다(`control
 **휴머노이드 blind locomotion**(Sim-to-Real 워크숍 @ Humanoids 2025)은 같은 blind 뼈대를 2족으로 옮긴다.
 
 ⚠️ ==**다섯 편 모두 공식 코드가 없다.**== `github.com/url-kaist`의 공개 저장소 27개에도, 1저자와 2저자의 계정에도
-Dream\* 저장소가 없다(2026-10-06 재확인). DreamWaQ 프로젝트 페이지에는 2023년부터 링크 없는 '[Code] (Coming soon)'만 있고,
+Dream\* 저장소가 없다(2026-10-06 재확인). DreamWaQ 프로젝트 페이지의 링크 없는 '[Code] (Coming soon)' 항목은 2023년 스냅숏(2023-01, 2023-03)에만 있고, 2024-11 스냅숏부터는 논문 링크만 남았다(2026-10-07 재확인).
 DreamFLEX 페이지에는 코드 버튼이 보이지 않는다. 'Code (TBU)' 버튼은 HTML 소스에 주석으로만 남아 있다. 같은 연구실에서 코드가 나오는 쪽은 SLAM·지면 분할 라인이다(인식 A.2b.8).
 
 ⚠️ **보완(2026-10-06).** DreamWaQ 자체에는 커뮤니티 재구현이 많다(F.6.1). 코드까지 읽은 넷 가운데 논문 결과를 재현했다는 근거를 갖춘 것은 없었다.
@@ -1627,22 +1627,127 @@ Additive Uncertainties*). 단일 강체 동역학의 관성과 접촉 위치를 
 화물까지 견뎠다.== travplan의 TP-0071은 지금 여유를 **손으로 0.15 m 고정**해 두었고(M.3.5), 그것이 이 논문이 이긴
 기준선이다. TP-0069가 가야 할 방향을 실물로 보여 준다.
 
-### F.6 오픈소스 — 이 계열은 코드가 잘 열려 있다
+### F.6 오픈소스 — 학습 틀은 Isaac Lab·mjlab과 rsl_rl로 모였다
 
-| 저장소 | 무엇 | 별 | 비고 |
-|---|---|---|---|
-| [IsaacLab](https://github.com/isaac-sim/IsaacLab) | 학습 환경 표준. LP-ACRL·unitree_rl_lab이 이 위에 있다 | 8.3k | BSD-3 |
-| [legged_gym](https://github.com/leggedrobotics/legged_gym) | Rudin 2021의 환경. 이 계열 거의 전부의 출발점 | 3.1k | Isaac Gym 기반(구세대) |
-| [rsl_rl](https://github.com/leggedrobotics/rsl_rl) | GPU 전용 경량 RL 라이브러리. PPO + **교사–학생 증류**, RND, 대칭 증강 | 3.0k | [논문](https://arxiv.org/abs/2509.10771) |
-| [unitree_rl_lab](https://github.com/unitreerobotics/unitree_rl_lab) | Isaac Lab 위의 Unitree 로봇. **바퀴 달린 Go2-W 설정 포함** | 1.4k | 시뮬 문서 S.5.3c |
-| [walk-these-ways](https://github.com/Improbable-AI/walk-these-ways) | 행동 다양성으로 일반화. Go1 배포 코드 포함 | 1.5k | 2024 이후 정체 |
-| [walk-these-ways-go2](https://github.com/Teddy-Liao/walk-these-ways-go2) | Walk These Ways를 Go2로 옮기고 unitree_sdk2 C++ 브리지로 실물에 올렸다 | 631 | MIT, 마지막 코드 변경 2024-03-16. F.6.1 |
-| [extreme-parkour](https://github.com/chengxuxin/extreme-parkour) | 단일 전방 깊이 카메라로 파쿠르, 20시간 학습 | 1.2k | [논문](https://arxiv.org/abs/2309.14341) ICRA 2024 |
+**4족 보행 RL의 공개 코드는 두 층이다.** 아래층은 시뮬레이터 위의 학습 틀이다. 환경과 RL 라이브러리가 여기 든다. 위층은 그 틀 위에 선 논문 구현과 실물 배포 코드다.
+학습 틀에서는 Isaac Lab, mjlab, MuJoCo Playground가 활발하다. 셋 다 rsl_rl로 학습할 수 있다. legged_gym과 그 위의 논문 구현 대부분은 Isaac Gym 세대다.
+NVIDIA는 Isaac Gym을 더 지원하지 않는 레거시로 둔다([Isaac Gym 페이지](https://developer.nvidia.com/isaac-gym)). 이 세대의 legged_gym과 논문 저장소는 코드가 2022–2025년에 멈췄다.
+==새로 시작한다면 Isaac Lab이나 mjlab 위에서 rsl_rl로 배우고, Isaac Gym 세대 저장소는 방법을 읽는 데만 쓴다.==
 
-==rsl_rl이 travplan에 직접 쓸 수 있는 유일한 조각이다.== 4족 환경이 아니라 **PPO와 교사–학생 증류 구현** 자체이고,
-TP-0066(Planner D 폐루프 RL 후학습)과 TP-0055(L1 belief 증류)가 필요로 하는 것이 정확히 그 둘이다.
-DreamWaQ 공식 코드는 없다. 프로젝트 페이지에는 2023년부터 링크 없는 '[Code] (Coming soon)'만 있다(2026-10-06 확인).
-대신 비공식 구현이 많고, 그 가운데 넷을 코드까지 읽은 결과가 F.6.1이다.
+**travplan이 지금 코드째 들일 저장소는 없다.** rsl_rl을 TP-0066과 TP-0055에 바로 쓸 조각으로 본 판단은 2026-10-07에 고쳤다.
+TP-0066은 PPO(Proximal Policy Optimization) 없이 끝났다. critic 없이 그룹 상대 이점을 AWR(advantage-weighted regression) 가중치로 바꿔 flow matching을 미세 조정했다(Planner 문서 B.15.3).
+TP-0055가 쓸 DAgger(Dataset Aggregation) 골격도 `scripts/dagger_planner_d.py`에 이미 있다. 그래서 rsl_rl이 들어올 자리는 둘로 줄었다.
+하나는 학습 루프를 Isaac Lab이나 같은 API의 mjlab으로 옮기는 일(TP-0042)이고, 다른 하나는 TinyPolicy(TP-0128) 같은 작은 MLP 정책의 증류다.
+비상업 라이선스인 Extreme Parkour, HIMLoco, ABS는 코드를 들이지 않고 방법만 읽는다.
+
+**표 읽는 법.** 별과 날짜는 2026-10-07 기준이다. 마지막 코드 변경은 기본 브랜치에서 README·문서·그림만 바꾼 커밋을 뺀 날짜(UTC)다.
+상태는 그 날짜로 나눴다. 석 달 안이면 활발, 1년 안이면 유지, 그보다 오래면 정체다. README가 지원 종료를 밝힌 곳은 그렇게 적었다.
+GitHub에서 보관(archived)된 저장소는 없다. sim2sim은 학습에 쓰지 않은 다른 시뮬레이터에서 정책을 돌려 보는 검증이다.
+
+**학습 틀.**
+
+| 저장소(★, 마지막 코드 변경) | 무엇이 들어 있나 | 시뮬레이터 · 로봇 | 라이선스 | 상태 | travplan 판단 |
+|---|---|---|---|---|---|
+| [IsaacLab](https://github.com/isaac-sim/IsaacLab) (★8,289, develop 2026-10-06) | velocity 작업(높이 스캔 1.6 m × 1.0 m, 지형 레벨 커리큘럼), 학습기 설정(rsl_rl, skrl, rl_games, SB3(Stable-Baselines3)), ANYmal-D 증류 설정, 사전 학습 체크포인트 재생. sim2real 안내의 예는 팔(기어 조립, reach), 내비게이션(COMPASS), main의 휴머노이드(HOVER)이고 4족 실물 배포 코드는 없다 | Isaac Sim(PhysX). 3.0 개발 브랜치의 velocity 작업은 Newton(MuJoCo Warp)이 기본이고, 이 경로에는 Isaac Sim이 필요 없다. 4족 A1·Go1·Go2·ANYmal-B·C·D·Spot, 2족 Cassie·Digit·G1·H1 | BSD-3(mimic 확장은 Apache-2.0) | 활발 | 학습 루프 이식(TP-0042)의 표준 틀. 시뮬레이션 문서 S.1.1 |
+| [mjlab](https://github.com/mujocolab/mjlab) (★3,174, 2026-10-06)<br>Unitree판 [unitree_rl_mjlab](https://github.com/unitreerobotics/unitree_rl_mjlab) (★669, 2026-04-13) | Isaac Lab의 manager 기반 API를 MuJoCo Warp 위로 옮긴 틀. velocity 작업(Go1·G1), G1 모션 추적, rsl_rl 5.5.1 고정. Isaac Sim 없이 pip·uv로 설치한다. Unitree판은 Go2·G1 등 7종과 실물 배포 | MuJoCo Warp 3.11. 학습에는 NVIDIA GPU가 필요하다 | Apache-2.0 | 활발(Unitree판은 유지) | plant 1순위 엔진(S.5.3c) 위에서 Isaac Lab식 작업을 짠다. 스워브 MJCF(MuJoCo 모델 파일)가 생기면 첫 후보 |
+| [mujoco_playground](https://github.com/google-deepmind/mujoco_playground) (★2,243, 2026-10-05) | 4족 작업(Go1 조이스틱·일어서기·물구나무, Spot, Barkour)과 휴머노이드 작업. 학습은 Brax PPO나 rsl_rl. Go1 ONNX(Open Neural Network Exchange) 정책과 네이티브 MuJoCo 재생 스크립트(sim2sim) | MJX(MuJoCo의 JAX판)·MuJoCo Warp. Go1·Spot·Barkour, G1·H1·T1 등 | Apache-2.0 | 활발 | 보도 에셋과 ROS 2 브릿지가 없어 따로 고를 이유가 적다. S.1.3 |
+| [rsl_rl](https://github.com/leggedrobotics/rsl_rl) (★3,045, 2026-09-09, v5.5.1) | 알고리즘은 PPO와 DAgger식 증류 둘이다. 확장은 RND(random network distillation) 호기심 보상과 대칭 증강이다. MLP·RNN(LSTM·GRU)·CNN 모델과 ONNX 내보내기. 환경은 없다 | 시뮬레이터와 무관하다(VecEnv 인터페이스, 관측은 TensorDict) | BSD-3 | 활발 | 들인다면 1순위. 자리는 TP-0042와 MLP 정책 증류(아래 3) |
+| [legged_gym](https://github.com/leggedrobotics/legged_gym) (★3,134, 2022-05-04) | Rudin 2021의 험지 환경과 ANYmal 액추에이터 망(LSTM) 가중치. 정책 가중치와 배포 코드는 없다 | Isaac Gym Preview 3, rsl_rl v1.0.2. ANYmal-B·C, A1, Cassie | BSD-3 | 정체. 2024-01 README 공지가 Isaac Lab 이전을 권한다 | 읽기만 한다. 같은 작업이 Isaac Lab에 있다. Planner 문서 B.14.1 |
+| [unitree_rl_lab](https://github.com/unitreerobotics/unitree_rl_lab) (★1,386, main 2025-11-19) | Isaac Lab 확장. velocity 작업(Go2·H1·G1)과 G1 모방 둘. Go2-W 로봇 설정과 C++ 배포, 토크-속도 곡선 액추에이터 모델. 동봉 정책은 G1 ONNX뿐이다 | Isaac Lab 2.3.0 · Isaac Sim 5.1, sim2sim은 unitree_mujoco. isaaclab3.0 브랜치(2026-05-25)는 Isaac Lab 3.0 | Apache-2.0 | 유지 | 학습, sim2sim, 실물로 이어지는 순서와 액추에이터 모델의 본보기. S.5.3c |
+| [robot_lab](https://github.com/fan-ziqi/robot_lab) (★1,933, 2026-05-27) | Isaac Lab 확장. 로봇 24종의 velocity 작업(4족 8, 바퀴-다리 6, 휴머노이드 10). rsl_rl(대칭 증강, ANYmal-D 증류 예), CusRL(실험), skrl AMP(adversarial motion priors). 가중치와 배포 코드는 없고 배포는 rl_sar가 맡는다 | Isaac Lab 2.3.2 · Isaac Sim 5.1. 바퀴-다리는 Go2W·B2W·M20·Tita 등 | Apache-2.0 | 유지 | 바퀴-다리 로봇 여섯의 행동 규약(다리는 위치, 바퀴는 속도) 모음(아래 4) |
+| [unitree_rl_gym](https://github.com/unitreerobotics/unitree_rl_gym) (★3,586, 2025-07-25) | legged_gym 파생. Go2·G1·H1·H1_2 학습. 사전 학습 정책, MuJoCo sim2sim, 실물 배포는 휴머노이드 셋에만 있다 | Isaac Gym, rsl_rl v1.0.2, MuJoCo 3.2.3 | BSD-3 | 정체 | 4족 쪽은 학습과 재생뿐이다. 같은 회사의 Isaac Lab판이 unitree_rl_lab이다 |
+
+**논문 구현과 배포.**
+
+| 저장소(★, 마지막 코드 변경) | 무엇이 들어 있나 | 시뮬레이터 · 로봇 | 라이선스 | 상태 | travplan 판단 |
+|---|---|---|---|---|---|
+| [walk-these-ways](https://github.com/Improbable-AI/walk-these-ways) (★1,459, 2024-06-16) | Walk These Ways(CoRL 2022) 학습 코드. Go1 사전 학습 정책과 Go1 액추에이터 망, Go1 실물 배포(도커 이미지) | Isaac Gym Preview 4. Go1 | MIT(legged_gym에서 온 파일은 BSD-3) | 정체 | 명령 격자 커리큘럼이 쓸 만하다(F.6.1 'travplan에 주는 것' 4) |
+| [walk-these-ways-go2](https://github.com/Teddy-Liao/walk-these-ways-go2) (★631, 2024-03-16) | 위 저장소의 Go2 이식. 제3자가 학습한 Go2 정책, unitree_sdk2 C++ 브리지로 실물 배포 | Isaac Gym. Go2 | MIT | 정체 | 브리지의 안전 분기는 반면교사다(F.6.1, E.15) |
+| [extreme-parkour](https://github.com/chengxuxin/extreme-parkour) (★1,182, 2023-09-25) | Extreme Parkour(ICRA 2024). 높이 점을 보는 기본 정책을 배운 뒤 깊이 영상 학생으로 증류한다. RTX 3090에서 기본 8–10시간, 증류 5–10시간. 가중치와 실물 배포 코드는 지금 main에 없다 | Isaac Gym, rsl_rl 1.0.2 개조판. A1. Go1 설정도 등록돼 있지만 원저자는 Go1 지원 전이라고 답했다([이슈 #2](https://github.com/chengxuxin/extreme-parkour/issues/2)) | CC BY-NC 4.0(비상업) | 정체 | 방법만 읽는다. 자세한 것은 F.6.2 |
+| [parkour](https://github.com/ZiwenZhuang/parkour) (★1,133, 2025-05-21) | Robot Parkour Learning(CoRL 2023). 기술 다섯(오르기, 뛰어넘기, 기어가기, 좁은 틈 지나가기, 달리기)을 따로 배운 뒤 깊이 영상 정책 하나로 DAgger 증류한다. A1 증류는 24 GB 이상 GPU 두 장을 요구한다. Go1 체크포인트 둘, Go1·Go2 실물 배포 코드 | Isaac Gym Preview 4, rsl_rl 1.0.2 개조판. A1·Go1·Go2 | MIT | 정체 | 여러 기술 교사를 학생 하나로 합치는 증류의 공개 예. Planner 문서 B.12.2 |
+| [HIMLoco](https://github.com/InternRobotics/HIMLoco) (★965, 2024-05-14) | HIM(ICLR 2024) 학습 코드. 관측 이력 6스텝에서 속도 3개와 단위 길이 잠재 16개를 추정한다. 잠재는 다음 관측과의 대조 학습(원형 32개, Sinkhorn)으로 배운다. 배포 안내와 H∞ 학습 코드는 공개되지 않았다 | Isaac Gym Preview 4, rsl_rl 1.0.2 개조판. A1·Aliengo·Go1 | CC BY-NC-SA 4.0(비상업) | 정체 | KL(Kullback–Leibler) 항이 없어 F.6.1 공통 함정 1(β와 손실 척도)은 해당하지 않는다. 방법만 읽는다 |
+| [ABS](https://github.com/LeCAR-Lab/ABS) (★632, 2024-04-25) | Agile But Safe(RSS 2024). 빠른 정책, 회복 정책, 도달-회피 가치망 학습과 광선 거리 예측망 데이터 수집. 회복 정책 가중치 넷, Go1 실물 배포(ROS Noetic, ZED mini, Orin NX) | Isaac Gym Preview 4, rsl_rl 1.0.2 개조판. Go1 | CC BY-NC 4.0(README 표기, LICENSE 파일 없음) | 정체 | 학습한 가치로 정책을 바꾸는 폴백 규칙의 원형. 방법만 읽는다. Planner 문서 B.9, 이 문서 C.4 |
+| [AMP_for_hardware](https://github.com/escontra/AMP_for_hardware) (★846, 2022-04-27) | AMP(IROS 2022). 모션 캡처 4.5초로 배운 판별기 스타일 보상이 손으로 짠 규제 보상 항을 대신한다. 속도 추종 과업 보상은 남는다. 참조 동작과 A1 예제 체크포인트를 싣는다. 배포 코드는 기본 브랜치에 없고, retarget_scripts 브랜치(2022-06-09)에 A1 실물 환경과 재타기팅 스크립트가 있다 | Isaac Gym Preview 3, rsl_rl 1.0.2 개조판. A1 | BSD-3(legged_gym 라이선스 파일) | 정체 | travplan에는 참조 동작이 없어 쓸 자리가 적다 |
+| DreamWaQ 비공식 구현 | 공식 코드는 없다(표 아래). 재구현 셋을 코드까지 읽은 결과가 F.6.1이다 | 대부분 Isaac Gym. A1·Go1·Go2, 바퀴-다리 M20 | 저장소마다 다르고, 없는 곳이 많다 | — | 구조를 읽는 참고 자료다. 작동하는 문맥 z는 없었다(E.15) |
+| [rl_sar](https://github.com/fan-ziqi/rl_sar) (★1,475, 2026-08-16) | C++ 배포 틀(libtorch·ONNX Runtime, ROS Noetic·ROS 2 Foxy·Humble 또는 ROS 없이). 정책 가중치 16개 동봉(legged_gym·HIMLoco·robot_lab 등). 바퀴 관절 행동은 속도 목표로 보낸다 | Gazebo Classic·MuJoCo sim2sim. 로봇 12종, 실물은 A1·Go2·Go2W·G1·Lite3·D1·L4W4 | Apache-2.0(내려받는 로봇 모델 저장소 rl_sar_zoo는 라이선스 없음) | 활발 | Go2W 정책이 MuJoCo 하위 보행기의 첫 후보다(아래 5) |
+| [legged_control](https://github.com/qiayuanl/legged_control) (★1,817, 2024-02-01) | 기본 브랜치는 RL이 아니다. OCS2 기반 NMPC(nonlinear MPC), 전신 제어(WBC), 상태 추정, ros-control 실물 연결. rl 브랜치(2023-09-03)에 ONNX 정책을 돌리는 ros-control 플러그인이 있다 | ROS 1 Gazebo. A1 | BSD-3 | 지원 종료(README 공지) | RL 정책과 견줄 모델 기반 기준선. Planner 문서 B.12.2 |
+
+**travplan의 일마다 무엇을 쓰나.**
+
+1. **TP-0066(Planner D RL 후학습)에는 라이브러리를 들이지 않는다.** 지금 구현은 critic 없이 그룹 상대 이점을 AWR 가중치로 바꿔 flow matching을 미세 조정한다.
+   rsl_rl의 PPO는 가우시안이나 베타처럼 행동의 log-확률을 바로 내는 정책을 전제한다. flow matching 정책인 Planner D는 그 값을 싸게 내지 못한다.
+   critic을 쓰는 PPO로 옮겨 간다면 가져올 것은 시간 초과 부트스트랩과 KL 적응 학습률이다(Planner 문서 B.14.1 토글).
+2. **TP-0055(L1 belief 재학습)는 `scripts/dagger_planner_d.py`를 넓힌다.** 학생이 굴리고 전문가가 GT 지도로 라벨을 붙이는 골격은 이미 있다.
+   바꿀 것은 학생의 학습 입력이다. 지금은 L0 rollout에서 GT로 만든 TravMap을 저장한다. TP-0055는 L1 rollout에서 학생이 실제로 본 belief를 저장해야 한다.
+   rsl_rl의 증류가 같은 구조다. 한 rollout에서 학생과 교사가 서로 다른 관측 그룹을 본다. 하나 더 빌릴 것은 LSTM·GRU 학생을 잘린 시간 역전파(truncated BPTT)로 배우는 장치다.
+   F.2의 LP-ACRL도 RSL-RL 학습 틀을 따르고, elevation mapping 잡음에 LSTM 학생을 썼다. Isaac Lab과 robot_lab의 ANYmal-D 증류 예는 학생과 교사가 같은 관측 그룹(`policy`)을 본다. 그래서 특권 관측을 떼는 예로는 쓸 수 없다.
+3. **TP-0128(Playground TinyPolicy)의 지도 불일치에는 rsl_rl 증류가 그대로 맞는다.** TinyPolicy는 GT 지도로 배우고 belief 지도로 돈다(E.12 '정직하게 적어 둘 것' 3).
+   rsl_rl의 결정적 MLPModel을 입력 50, 은닉 24·16, tanh, 출력 3으로 만들면 파라미터가 TinyPolicy와 같은 1,675개다. 다른 점은 출력의 tanh 하나다.
+   교사는 GT 관측 그룹을, 학생은 belief 관측 그룹을 본다.
+   travplan 쪽 일은 운동학 시뮬을 rsl_rl의 VecEnv로 감싸는 것이다. VecEnv는 같은 스텝에서 리셋하고, PyTorch 텐서를 돌려주고, 관측을 TensorDict로 내야 한다.
+4. **스워브 plant에는 RL이 아니라 바퀴 관절 규약을 가져온다.** travplan의 plant는 지연, 모듈 기구학, 미끄럼을 넣은 운동학 모델이다(`travplan/robot/plant.py`, TP-0033·0034).
+   unitree_rl_lab의 Go2-W 설정은 바퀴 관절 강성을 0으로 두어 속도 제어로 만든다. robot_lab의 Go2W 작업은 다리 관절 12개를 위치(배율 0.25, 고관절 0.125)로, 바퀴 4개를 속도(배율 5.0)로 명령한다.
+   rl_sar는 배포 때 바퀴 행동을 위치 목표에서 빼고 속도 목표로 보낸다. 조향은 위치로, 구동은 속도로 내는 스워브 학습 정책을 만든다면 이 셋이 본보기다. 액추에이터 모델은 S.5.3c에 있다.
+5. **Playground 바퀴 사족(TP-0102)의 하위 보행기는 rl_sar의 Go2W 정책이 먼저다.** F.6.1 'travplan에 주는 것' 6은 라이선스 없는 M20 가중치를 로컬 평가에만 쓰자고 했다.
+   rl_sar의 Go2W 정책은 robot_lab으로 학습했고 Apache-2.0 저장소에 들어 있다. 로봇 모델은 rl_sar가 내려받는 rl_sar_zoo 대신 BSD-3인 unitree_mujoco의 Go2W MJCF를 쓴다.
+   두 MJCF는 공백 한 줄만 다르다. 이렇게 고르면 고지만 남기고 하네스를 travplan에 둘 수 있다. rl_sar 표는 Go2W의 MuJoCo 지원을 적지만, 그 조합에서 정책이 걷는지는 확인하지 못했다.
+6. **Isaac Lab 이식(TP-0042)은 저장소 밖 확장 패키지로 한다.** robot_lab과 unitree_rl_lab이 그 구조다. 두 저장소의 main은 아직 Isaac Lab 2.3이다.
+   3.0의 예는 unitree_rl_lab의 isaaclab3.0 브랜치다(Isaac Lab 3.0 · Isaac Sim 6.0, Go2·H1·G1을 Newton 백엔드로도 돌린다). Isaac Lab 3.0 개발 브랜치는 rsl_rl 5.5.1을 기본 학습기로 고정한다.
+   rsl_rl의 PPO는 Planner D에 맞지 않지만(항목 1), 러너는 알고리즘을 설정의 [`class_name`](https://github.com/leggedrobotics/rsl_rl/blob/857de6165c5fd479726ec8ac5c9303a497766f30/rsl_rl/runners/on_policy_runner.py#L39-L40)으로 불러온다. 그래서 Planner D의 학습은 그 자리에 직접 짠 클래스로 넣는다.
+   velocity 작업의 높이 스캔과 지형 레벨 커리큘럼 자리에 TravMap 관측과 TP-0039 레벨이 앉는다. Isaac Lab 3.0의 Newton 경로도 Isaac Sim 없이 돈다. 같은 API를 MuJoCo Warp만으로 더 가볍게 쓰는 틀이 mjlab이다.
+
+![RSL-RL Fig. 1](https://arxiv.org/html/2509.10771v1/rsl_rl_fig.png)
+*그림 — RSL-RL (Fig. 1): 라이브러리는 Runner, Algorithm, Network 세 부분이다. Runner 안에서 VecEnv와 Agent가 관측·보상·종료·부가 정보와 행동을 주고받고, 관측은 TensorDict로 묶여 간다. 환경(MuJoCo Playground, Isaac Lab, Genesis)은 VecEnv로 붙고, 확장과 로거는 따로 끼운다. travplan의 운동학 시뮬이 들어갈 자리가 VecEnv다. 출처: [arXiv:2509.10771](https://arxiv.org/abs/2509.10771)*
+
+![robot_lab Unitree Go2W](https://raw.githubusercontent.com/fan-ziqi/robot_lab/500399ed75f510aeaff28705a8ce736c514dbec3/docs/imgs/unitree_go2w.png)
+*그림 — robot_lab (README 환경 표, Unitree Go2W): 다리 끝마다 바퀴가 달린 4족이다. 이 로봇의 velocity 작업은 다리 관절 12개를 위치로, 바퀴 관절 4개를 속도로 명령한다. 출처: [robot_lab](https://github.com/fan-ziqi/robot_lab)*
+
+<details markdown="1">
+<summary>자세히: 저장소마다 확인한 파일과 줄(표의 근거)</summary>
+
+별, 라이선스, 보관 여부는 GitHub API로, 마지막 코드 변경은 기본 브랜치 이력으로 확인했다(2026-10-07). 아래 링크는 그날의 커밋에 고정했다.
+
+- **rsl_rl v5.5.1.** 증류의 [act](https://github.com/leggedrobotics/rsl_rl/blob/857de6165c5fd479726ec8ac5c9303a497766f30/rsl_rl/algorithms/distillation.py#L116-L123)에서 학생은 확률적으로 행동하고, 교사는 같은 관측 묶음에서 자기 그룹을 읽어 라벨을 붙인다.
+  [update](https://github.com/leggedrobotics/rsl_rl/blob/857de6165c5fd479726ec8ac5c9303a497766f30/rsl_rl/algorithms/distillation.py#L143-L203)는 MSE나 Huber 손실로 학생만 배운다. 증류는 v2.3.0(2025-03)에 들어왔다.
+  관측 그룹을 쓰는 자리 다섯(actor, critic, student, teacher, rnd_state)은 [VecEnv 설명](https://github.com/leggedrobotics/rsl_rl/blob/857de6165c5fd479726ec8ac5c9303a497766f30/rsl_rl/env/vec_env.py#L69-L76)에 있다.
+  행동 분포는 [가우시안](https://github.com/leggedrobotics/rsl_rl/blob/857de6165c5fd479726ec8ac5c9303a497766f30/rsl_rl/modules/distribution.py#L132), 이분산 가우시안, 베타 셋이다.
+  [러너](https://github.com/leggedrobotics/rsl_rl/blob/857de6165c5fd479726ec8ac5c9303a497766f30/rsl_rl/runners/on_policy_runner.py#L26)의 기본 장치는 CPU다. 논문은 'GPU-only training'에 맞췄다고 적고, v1.0.2를 Rudin 2021에 쓴 첫 판으로 밝힌다.
+- **Isaac Lab.** main(2.3.2)의 [velocity 설정](https://github.com/isaac-sim/IsaacLab/tree/b0542fe2d45bf91c4e1d9ef6952b9c709c80b4e8/source/isaaclab_tasks/isaaclab_tasks/manager_based/locomotion/velocity/config)에 4족 일곱과 2족 넷이 있다.
+  높이 스캔은 [1.6 m × 1.0 m, 0.1 m 격자](https://github.com/isaac-sim/IsaacLab/blob/b0542fe2d45bf91c4e1d9ef6952b9c709c80b4e8/source/isaaclab_tasks/isaaclab_tasks/manager_based/locomotion/velocity/velocity_env_cfg.py#L66-L73)이고, 지형 레벨 커리큘럼은 [같은 파일 281행](https://github.com/isaac-sim/IsaacLab/blob/b0542fe2d45bf91c4e1d9ef6952b9c709c80b4e8/source/isaaclab_tasks/isaaclab_tasks/manager_based/locomotion/velocity/velocity_env_cfg.py#L281)이다.
+  ANYmal-D 증류 설정은 [학생과 교사가 같은 `policy` 그룹](https://github.com/isaac-sim/IsaacLab/blob/b0542fe2d45bf91c4e1d9ef6952b9c709c80b4e8/source/isaaclab_tasks/isaaclab_tasks/manager_based/locomotion/velocity/config/anymal_d/agents/rsl_rl_distillation_cfg.py#L22)을 본다.
+  3.0 개발 브랜치는 velocity 작업의 [기본 물리를 Newton(MuJoCo Warp)](https://github.com/isaac-sim/IsaacLab/blob/f5383e7feb4c433372caf0d4d537e1e6c03ef0f2/source/isaaclab_tasks/isaaclab_tasks/core/velocity/velocity_env_cfg.py#L50-L72)으로 두고 PhysX를 선택지로 남긴다.
+  README는 [Newton 경로에 Isaac Sim이 필요 없다](https://github.com/isaac-sim/IsaacLab/blob/f5383e7feb4c433372caf0d4d537e1e6c03ef0f2/README.md#L135-L137)고 적는다.
+  rsl_rl은 개발 브랜치가 [5.5.1을 기본 학습기로](https://github.com/isaac-sim/IsaacLab/blob/f5383e7feb4c433372caf0d4d537e1e6c03ef0f2/pyproject.toml#L84), main이 [5.0.1](https://github.com/isaac-sim/IsaacLab/blob/b0542fe2d45bf91c4e1d9ef6952b9c709c80b4e8/source/isaaclab_rl/setup.py#L49)을 고정한다.
+  파이썬은 개발 브랜치가 3.12, main이 3.11이다.
+- **unitree_rl_lab.** [Go2-W 설정](https://github.com/unitreerobotics/unitree_rl_lab/blob/4960b84732b0c2ec593dccbfe963fda1bcd7b1e3/source/unitree_rl_lab/unitree_rl_lab/assets/robots/unitree.py#L131-L172)은 바퀴 관절(`.*_foot_.*`)에 강성 0, 감쇠 0.5를 준다.
+  [UnitreeActuator](https://github.com/unitreerobotics/unitree_rl_lab/blob/4960b84732b0c2ec593dccbfe963fda1bcd7b1e3/source/unitree_rl_lab/unitree_rl_lab/assets/robots/unitree_actuators.py#L11)는 Isaac Lab의 DelayedPDActuator를 상속한다. [배포 폴더](https://github.com/unitreerobotics/unitree_rl_lab/tree/4960b84732b0c2ec593dccbfe963fda1bcd7b1e3/deploy/robots)에는 Go2W를 포함한 로봇 설정 일곱이 있다.
+- **robot_lab.** Go2W 작업은 [다리를 위치(고관절 0.125, 나머지 0.25), 바퀴를 속도(5.0)](https://github.com/fan-ziqi/robot_lab/blob/500399ed75f510aeaff28705a8ce736c514dbec3/source/robot_lab/robot_lab/tasks/manager_based/locomotion/velocity/config/wheeled/unitree_go2w/rough_env_cfg.py#L100-L106)로 명령한다.
+  ANYmal-D 증류 예도 [같은 `policy` 그룹](https://github.com/fan-ziqi/robot_lab/blob/500399ed75f510aeaff28705a8ce736c514dbec3/source/robot_lab/robot_lab/tasks/manager_based/locomotion/velocity/config/quadruped/anymal_d/agents/rsl_rl_distillation_cfg.py#L25)을 쓴다.
+  [devel-mjlab 브랜치](https://github.com/fan-ziqi/robot_lab/tree/698d9c904b071fdc595619ce09b1965f89ea47fd)(2026-05-30)는 같은 작업을 Isaac Lab과 mjlab 양쪽에 붙이는 어댑터 층을 만들고 있다.
+- **rl_sar.** [ComputeOutput](https://github.com/fan-ziqi/rl_sar/blob/376d42c9b128f963ab08579762d5a216a976ce39/src/rl_sar/library/core/rl_sdk/rl_sdk.cpp#L256-L271)이 바퀴 행동을 위치 목표에서 빼고 속도 목표로 바꾼다.
+  Go2W 설정은 [바퀴 Kp 0](https://github.com/fan-ziqi/rl_sar/blob/376d42c9b128f963ab08579762d5a216a976ce39/policy/go2w/robot_lab/config.yaml#L22-L26)과 [바퀴 배율 5.0](https://github.com/fan-ziqi/rl_sar/blob/376d42c9b128f963ab08579762d5a216a976ce39/policy/go2w/robot_lab/config.yaml#L43-L47)이다.
+  로봇별 sim2sim과 실물 지원은 [README 표](https://github.com/fan-ziqi/rl_sar/blob/376d42c9b128f963ab08579762d5a216a976ce39/README.md#L29-L42)에 있다.
+  로봇 모델은 빌드 때 [rl_sar_zoo](https://github.com/fan-ziqi/rl_sar_zoo)에서 받는데, 이 저장소에는 라이선스 파일이 없다.
+  그 [Go2W MJCF](https://github.com/fan-ziqi/rl_sar_zoo/blob/7dd30bdc7806898950b354260655d5a7f0ce844e/go2w_description/mjcf/go2w.xml)는 BSD-3인 [unitree_mujoco의 것](https://github.com/unitreerobotics/unitree_mujoco/blob/1eb6642e3f3fdfb7fb13a9794fd6a2dd93ea0e7d/unitree_robots/go2w/go2w.xml)과 공백 한 줄만 다르다.
+- **mjlab, MuJoCo Playground.** mjlab은 [rsl-rl-lib 5.5.1을 고정](https://github.com/mujocolab/mjlab/blob/bd37751b15af90863c5a84cbbc24653a4edd985c/pyproject.toml#L50)하고, PyTorch 2.14 이상과 파이썬 3.10–3.14를 요구한다. [velocity 설정](https://github.com/mujocolab/mjlab/tree/bd37751b15af90863c5a84cbbc24653a4edd985c/src/mjlab/tasks/velocity/config)은 Go1과 G1이다.
+  Playground의 보행 작업 목록은 [`locomotion/__init__.py`](https://github.com/google-deepmind/mujoco_playground/blob/86bfcd999619ad8d058383feefc1dd16d4cc57a7/mujoco_playground/_src/locomotion/__init__.py#L45-L87)에, Go1 ONNX 정책과 재생 스크립트는 [`experimental/sim2sim`](https://github.com/google-deepmind/mujoco_playground/tree/86bfcd999619ad8d058383feefc1dd16d4cc57a7/mujoco_playground/experimental/sim2sim)에 있다.
+- **Isaac Gym 세대.** legged_gym README는 [2024-01 공지](https://github.com/leggedrobotics/legged_gym/blob/8fa29acc6fd1910c3d9659eef6310bdd301cde0a/README.md#L11-L13)로 Isaac Lab 이전을 권하고, 파이썬 3.6–3.8을 요구한다.
+  공지의 이전 대상은 처음에 Orbit이었고, 2024-08에 새 이름 Isaac Lab으로 고쳤다.
+  Extreme Parkour, Robot Parkour, HIMLoco, ABS, AMP는 rsl_rl을 고쳐 함께 싣고, 그 판은 모두 [`version='1.0.2'`](https://github.com/chengxuxin/extreme-parkour/blob/d2ffe27ba59a3229fad22a9fc94c38010bb1f519/rsl_rl/setup.py#L4)다.
+  관측을 TensorDict로 받는 지금의 rsl_rl(v5)과 API가 달라, 그 위로 옮기려면 다시 써야 한다. unitree_rl_gym은 [v1.0.2 체크아웃](https://github.com/unitreerobotics/unitree_rl_gym/blob/276801e46c5d433564f24658bac64f254b7d2d4b/doc/setup_en.md#L101-L105)을 안내한다.
+- **비상업 라이선스.** Extreme Parkour의 [LICENSE](https://github.com/chengxuxin/extreme-parkour/blob/d2ffe27ba59a3229fad22a9fc94c38010bb1f519/LICENSE#L1)는 CC BY-NC 4.0이다. HIMLoco의 [LICENSE](https://github.com/InternRobotics/HIMLoco/blob/ef289acaa62795009363b7b819c9186690630441/LICENSE#L1)는 CC BY-NC-SA 4.0이다. 코드 공개 사흘 뒤인 2024-04-29 커밋에서 MIT가 이것으로 바뀌었다.
+  ABS는 [README](https://github.com/LeCAR-Lab/ABS/blob/9b95329ffb823c15dead02be620ff96938e4d0a3/README.md#L13)에만 CC BY-NC 4.0을 적었다. 셋 다 상업 목적의 사용을 막는다.
+- **HIMLoco.** [추정기 갱신](https://github.com/InternRobotics/HIMLoco/blob/ef289acaa62795009363b7b819c9186690630441/rsl_rl/rsl_rl/modules/him_estimator.py#L76-L116)은 속도 MSE와 대조 손실의 합이고, KL 항이 없다.
+  README의 [할 일 목록](https://github.com/InternRobotics/HIMLoco/blob/ef289acaa62795009363b7b819c9186690630441/README.md#L10-L13)에 배포 안내와 H∞ 학습 코드가 아직 남아 있다. 저장소는 OpenRobotLab에서 InternRobotics 계정으로 옮겨졌다.
+- **AMP_for_hardware.** 원래 주소(Alescontrela 계정)는 404이고, 지금은 escontra 계정에 있다. [참조 동작](https://github.com/escontra/AMP_for_hardware/tree/bfb0dbdcf32bdf83a916790bddf193fffc7e79b8/datasets/mocap_motions)과 [예제 체크포인트](https://github.com/escontra/AMP_for_hardware/tree/bfb0dbdcf32bdf83a916790bddf193fffc7e79b8/logs/a1_amp_example)가 들어 있다.
+  A1 실물 환경은 [retarget_scripts 브랜치](https://github.com/escontra/AMP_for_hardware/tree/799ded43ed6fca725344f28eefc0fb97cb932e53/legged_gym/envs/a1_robot)에만 있다.
+- **legged_control.** README 첫머리가 [지원 종료](https://github.com/qiayuanl/legged_control/blob/a7f381c0367e98e31c01336e678eef47e304d40d/README.md#L3-L4)를 밝힌다. ONNX 정책을 돌리는 ros-control 플러그인은 [rl 브랜치](https://github.com/qiayuanl/legged_control/tree/7522dad8f1d5059ee5b523cb61a4431a12518f0f/legged_rl_controllers)에 있다.
+
+</details>
+
+**DreamWaQ에는 공식 코드가 없다.** 프로젝트 페이지의 '[Code] (Coming soon)' 항목은 [2023-01](https://web.archive.org/web/20230126060121/https://sites.google.com/view/dreamwaq)과 [2023-03 스냅숏](https://web.archive.org/web/20230315071704/https://sites.google.com/view/dreamwaq)에는 있었다.
+[2024-11 스냅숏](https://web.archive.org/web/20241108084526/https://sites.google.com/view/dreamwaq)부터는 그 항목이 없고, [지금 페이지](https://sites.google.com/view/dreamwaq)에도 논문 링크만 있다(2026-10-07 확인).
+대신 재구현이 많다. 그 가운데 셋과 비교용 Walk These Ways Go2 이식본 하나를 코드까지 읽은 결과가 F.6.1이다.
 
 ### F.6.1 DreamWaQ 비공식 구현 — 넷을 코드로 읽었다
 
@@ -2196,6 +2301,401 @@ MetaRobotics가 Walk These Ways의 순서를 바꿔, 관측을 먼저 계산하�
    로컬에서 블랙박스 하위 보행기로 두면 MPPI가 낸 twist를 그대로 넣어 추종 오차(평지 0.06 m/s 이내, 영명령 크리프 0.04 m/s)와 턱 한계를
    실제 접촉 동역학으로 잴 수 있다. 라이선스가 없으므로 로컬 평가에만 쓰고 travplan에는 커밋하지 않는다.
 
+### F.6.2 Extreme Parkour — 논문과 공개 코드를 읽었다
+
+**Extreme Parkour는 값싼 4족 로봇 Unitree A1이 앞쪽 깊이 카메라 하나와 신경망 하나로 자기 키 두 배 높이에 오르고 몸길이 두 배 간격을 건너게 한 연구다.**
+2026-10-07에 논문(arXiv v1, ICRA 2024)과 공개 코드(chengxuxin/extreme-parkour, 커밋 d2ffe27)를 끝까지 읽었다. 코드는 순수 PyTorch 모듈만 CPU에서 만들어
+형상과 파라미터 수를 확인했고, 학습과 시뮬레이션은 돌리지 않았다. 코드는 두 단계 학습 절차를 거의 다 담았다. 그러나 학습된 가중치와 실물 배포 코드는
+지금 저장소에 없다. 방향 증류의 판정, 커리큘럼 문턱, 보상 항은 논문과 다르다. 별과 날짜는 2026-10-07 기준이다.
+
+**무엇인가.** CMU Deepak Pathak 연구실의 Xuxin Cheng·Kexin Shi(공동 1저자)·Ananye Agarwal·Deepak Pathak이 썼다([arXiv:2309.14341](https://arxiv.org/abs/2309.14341),
+ICRA 2024 pp. 11443–11450, [프로젝트](https://extreme-parkour.github.io), [코드](https://github.com/chengxuxin/extreme-parkour)). 로봇은 관절 12개의 Unitree A1이다.
+서 있을 때 허벅지 관절 높이가 26 cm, 몸길이가 40 cm다. 외수용 센서는 머리 속 Intel RealSense D435 하나다. 지도도 경로 계획도 없이, 깊이 영상과 고유수용을 받은
+신경망 하나가 관절 목표각을 낸다. 실물 A1은 0.5 m 상자에 오르고(로봇 키의 두 배), 0.8 m 간격을 건넜다(몸길이의 두 배). 앞다리 둘로 물구나무 걷기를 했고,
+기울어진 경사로를 뛰어 건넜다(논문 표 1은 37°로 적는다). F.4의 세 갈래 가운데 (c) 카메라 직접의 대표다.
+
+**어떻게 하나.** 학습은 두 단계다. 1단계는 시뮬레이션에서만 알 수 있는 특권 정보를 받는 교사 정책을 PPO로 학습한다. 특권 정보는 로봇 둘레의 지형 높이 표본(scandots, 코드 기본값 132점),
+질량·마찰 같은 환경 값, 지형에 미리 놓은 웨이포인트가 주는 진행 방향이다. 보상의 중심은 "다음 웨이포인트 쪽 속도 성분을 명령 속도까지 준다"는 내적 항 하나다. 가장자리 5 cm 안에 디딘 발에는
+벌점을 준다. 기술마다 보상을 따로 짜지 않았는데도 상자에 뛰어오르는 높이뛰기와 간격을 건너는 멀리뛰기가 저절로 나왔다.
+물구나무에만 몸통 방향을 정하는 항을 하나 더했다. 2단계는 교사의 행동을 깊이 영상 학생에게 DAgger(배경 0.12)로 증류한다.
+학생은 scandots 대신 58 × 87 깊이 영상을 합성곱 망과 GRU(gated recurrent unit)로 읽고, 웨이포인트 방향도 스스로 예측한다. 실물에서는 Jetson NX가 깊이 인코더를 10 Hz, 정책을 50 Hz로 돌린다.
+배포 정책은 RTX 3090 한 장에서 20시간 안에 학습된다.
+
+**travplan에 주는 의미.** travplan은 TravMap을 공통 표현으로 쓰는 (a) 외수용 격자 갈래라서, 깊이 영상을 관절로 바로 잇는 구조는 들어올 자리가 없다. 바퀴 로봇이라
+점프와 물구나무도 쓸 데가 없다. ==travplan이 가져올 것은 카메라 직결 구조가 아니라 특권 교사에서 온보드 학생으로 가는 증류 절차와 가장자리 벌점이다.==
+증류 절차는 L1 belief 증류(TP-0055)에 맞고, 가장자리 벌점은 TravMap의 STEP 채널과 스워브 바퀴 접지점에 맞는다. 하나의 진행 보상과 지형 커리큘럼은 지형 레벨(TP-0039)과
+Planner D RL 후학습(TP-0066)에 닿는다. 코드는 비상업 라이선스(CC BY-NC 4.0)라 travplan에는 구조와 숫자만 들인다. 자세한 대응은 이 절 끝의 'travplan에 주는 것'에 있다.
+
+![Extreme Parkour Fig. 1](https://arxiv.org/html/2309.14341v1/teaser_compressed.png)
+*그림 — Extreme Parkour (Fig. 1): 왼쪽 위는 Unitree A1의 치수(몸길이 0.4 m, 높이 0.26 m)다. 윗줄은 0.8 m 간격 멀리뛰기, 0.5 m 상자 오르기, 잔디 위 물구나무, 기울어진 경사로다. 가운데 줄은 실내 코스(허들, 상자 오르기, 간격, 기울어진 경사로)를 이어 달리는 합성 사진이고, 아랫줄은 야외 벤치와 콘크리트 블록 오르기, 벤치 사이 뛰어 건너기, 돌판 위 물구나무다. 원문 캡션은 이 모두를 앞쪽 깊이 카메라 하나로 도는 신경망 하나가 했다고 적는다. 출처: [arXiv:2309.14341](https://arxiv.org/abs/2309.14341)*
+
+![Extreme Parkour Fig. 2](https://arxiv.org/html/2309.14341v1/method_compressed.png)
+*그림 — Extreme Parkour (Fig. 2): 위는 1단계다. scandots, 웨이포인트(빨간 점)가 주는 정답 방향, 고유수용이 actor에 들어가 교사 행동이 나온다. 아래는 2단계다. 깊이 영상을 GRU 인코더가 읽어 잠재와 예측 방향을 내고, 1단계 actor를 복사한(Deepcopy) 학생이 교사 행동의 감독(Supervise)을 받는다. 출처: [arXiv:2309.14341](https://arxiv.org/abs/2309.14341)*
+
+![Extreme Parkour Fig. 7](https://arxiv.org/html/2309.14341v1/realworldcomp_compressed.png)
+*그림 — Extreme Parkour (Fig. 7): 실물 A1의 지형별 성공률이다. 허들, 계단, 간격, 기울어진 경사로의 크기마다 5번씩 시도했다. 파랑이 이 논문, 빨강이 가장자리 벌점을 뺀 것(NoClear), 초록이 사람이 조이스틱으로 방향을 준 것(NoDir), 보라가 동시 연구 Zhuang 외다. 원문 캡션은 가장 어려운 단계에서 성공률이 기준선보다 20–80% 높다고 적는다. 출처: [arXiv:2309.14341](https://arxiv.org/abs/2309.14341)*
+
+<details markdown="1">
+<summary>자세히: Extreme Parkour의 방법과 수식</summary>
+
+**풀려는 문제.** 파쿠르는 한 번의 실수가 곧 실패다. 넓은 간격을 넘으려면 가장자리에 닿기 전에 운동량을 미리 만들어야 하고, 넘어진 뒤에 고칠 기회가 없다.
+고전적 방법은 장애물의 위치·크기·종류를 미리 재고 최적화로 매 순간의 동작을 정했다. 그래서 미리 잰 실험실 코스에서만 됐다. 저자들의 가설은 사람이 같은 감각기로
+연습만 해서 파쿠르를 배우듯, 값싼 로봇도 시뮬레이션의 대규모 RL로 정밀한 동작을 배운다는 것이다. 이 로봇의 구동기는 부정확하고, 깊이 카메라는 주파수가 낮고
+떨리며 결함이 많다. 지도를 만들면 그 오차가 계획을 망친다. 개념상의 어려움도 둘이다. 첫째, 로봇이 장애물에 맞춰 진행 방향을 스스로 정해야 한다.
+사람이 방향을 주면 긴 점프에서 몇 도의 오차로도 실패한다. 둘째, 높이뛰기와 물구나무처럼 성격이 다른 기술을 신경망 하나에 담아야 한다.
+
+**1단계 입력.** 교사는 고유수용, scandots $\mathbf m$, 목표 방향 $\hat{\mathbf d}$, 걷기 플래그 $W$, 명령 속도 $v_{\text{cmd}}$를 받는다.
+scandots는 같은 연구실의 이전 연구인 Agarwal 외([arXiv:2211.07638](https://arxiv.org/abs/2211.07638), CoRL 2022)가 쓴 로봇 둘레 지형 높이 표본이다. 동시 연구 Robot Parkour Learning(Planner B.12.2)은
+장애물의 종류·폭·높이 같은 추상 정보를 특권으로 썼다. 저자들은 scandots가 그와 달리 지형 모양이 바뀌어도 일반화된다고 본다. 방향은 지형마다 놓은 웨이포인트로 정한다.
+
+$$ \hat{\mathbf d}_w = \frac{\mathbf p - \mathbf x}{\lVert \mathbf p - \mathbf x \rVert} $$
+
+$\mathbf p$는 다음 웨이포인트, $\mathbf x$는 로봇의 세계 좌표 위치다.
+
+**통합 보상.** 속도 추종을 방향과의 내적으로 바꾼 것이 핵심이다. $\mathbf v$는 세계 좌표의 수평 속도다.
+
+$$ r_{\text{tracking}} = \min\big(\langle \mathbf v, \hat{\mathbf d}_w \rangle,\ v_{\text{cmd}}\big) $$
+
+Agarwal 외는 몸체 좌표에서 속도를 추종했다. 그러면 로봇이 장애물을 넘지 않고 돌아가는 꼼수를 배운다. 세계 좌표의 내적은 그 꼼수를 막는다. 이 항만으로도 여러 동작이
+나왔지만, 어려운 장애물에서는 에너지를 아끼려 가장자리 가까이 디뎠고 실물에서 위험했다. 그래서 가장자리 벌점을 더했다.
+
+$$ r_{\text{clearance}} = -\sum_{i} c_i\, M[p_i] $$
+
+$c_i$는 발 $i$가 땅에 닿았으면 1이고, $M[p_i]$는 발 위치 $p_i$가 가장자리 5 cm 안이면 1이다. 걷는 모양을 바꾸는 항도 같은 내적 원리로 만들었다.
+
+$$ r_{\text{stylized}} = W \big[\, 0.5\, \langle \hat{\mathbf v}_{\text{fwd}}, \hat{\mathbf c} \rangle + 0.5 \,\big]^2 $$
+
+$\hat{\mathbf v}_{\text{fwd}}$는 몸통 앞쪽 단위 벡터다. 물구나무에서는 $\hat{\mathbf c} = [0, 0, -1]^\top$로 둔다. $W$는 학습 때 0과 1에서 무작위로 뽑고, 실물에서는 리모컨으로 켠다.
+나머지 정규화 항은 같은 연구실의 Legs as Manipulator([arXiv:2303.11330](https://arxiv.org/abs/2303.11330), ICRA 2023)에서 가져왔다. 논문에는 항별 가중치가 없다.
+아래 표는 코드 기본값이다(`legged_robot_config.py`). 코드는 각 가중치에 제어 주기 0.02 s를 곱해 더하고, 합이 음수면 0으로 자른다.
+
+| 항(코드 이름) | 가중 | 무엇을 재나 |
+|---|---|---|
+| tracking_goal_vel | 1.5 | 위 진행 항을 명령 속도로 나눈 값 |
+| tracking_yaw | 0.5 | 목표 방향과 몸 yaw의 차이에 지수 감쇠. 논문에 없는 항 |
+| feet_edge | −1 | 가장자리 띠에 닿은 발 수. 지형 레벨 4 이상에서만 |
+| collision | −10 | 허벅지·종아리·몸통이 닿은 수 |
+| feet_stumble | −1 | 발의 수평 접촉력이 수직의 4배를 넘으면 1 |
+| lin_vel_z | −1.0 | 수직 속도 제곱. 평지가 아닌 지형에서는 절반 |
+| orientation | −1 | 중력 방향의 수평 성분 제곱. 평지 걷기 지형에서만 |
+| ang_vel_xy | −0.05 | roll·pitch 각속도 제곱 |
+| action_rate | −0.1 | 연속한 행동 차이의 노름 |
+| hip_pos | −0.5 | 엉덩이 관절의 기본 자세 편차 제곱 |
+| dof_error | −0.04 | 전 관절의 기본 자세 편차 제곱 |
+| dof_acc | −2.5e−7 | 관절 가속 제곱 |
+| torques | −1e−5 | 토크 제곱 |
+| delta_torques | −1e−7 | 토크 변화 제곱 |
+
+**ROA와 속도 추정.** 질량, 마찰, 모터 세기 같은 환경 값은 ROA(regularized online adaptation)로 다룬다. 같은 연구실의 Deep Whole-Body Control([arXiv:2210.10044](https://arxiv.org/abs/2210.10044))이
+쓴 방법이다. RMA(E.2)는 특권 인코더를 먼저 학습하고 적응 모듈을 나중에 따로 학습한다. ROA는 이 둘을 한 단계로 합친다. 코드에서는 특권 값 29개를 20차원으로 줄인
+잠재 $z_{\text{priv}}$와, 고유수용 이력 10스텝을 20차원으로 줄인 잠재 $z_{\text{hist}}$를 서로 당긴다.
+
+$$ \mathcal L = \mathcal L_{\text{PPO}} + \lambda \lVert z_{\text{priv}} - \operatorname{sg}(z_{\text{hist}}) \rVert_2, \qquad \mathcal L_{\text{hist}} = \lVert \operatorname{sg}(z_{\text{priv}}) - z_{\text{hist}} \rVert_2 $$
+
+$\operatorname{sg}$는 기울기 차단이다. 코드에서 $\lambda$는 갱신 2,000회에서 5,000회 사이에 0에서 0.1로 오른다. 이력 인코더는 20반복마다 한 번, 그 반복의 롤아웃을 이력 잠재로
+모은 뒤 갱신한다. 몸체 선속도는 따로 MLP 추정기가 고유수용에서 회귀하고, 롤아웃 때 actor는 참 속도 대신 이 추정값을 받는다. 배포 때는 이력 잠재와 추정 속도만 쓴다.
+
+**지형과 커리큘럼.** 기울어진 경사로, 허들, 간격, 높은 계단의 네 지형을 난이도 순으로 깐다(아래 그림 3). 로봇은 쉬운 단계에서 시작한다. 지형 길이의 절반 넘게 가면
+올라가고, 기대 거리 $v_{\text{cmd}} T$의 절반도 못 가면 내려간다($T$는 에피소드 길이). legged_gym의 게임식 커리큘럼(Planner B.14.1)과 같은 규칙이다.
+논문에는 지형 크기가 없다. 아래 표는 코드 기본값이다. 지형은 10단계 × 40열이고, 칸마다 18 m × 4 m에 웨이포인트 8개를 놓는다. 난이도는 단계 $i$에서 $d = i/9$다.
+모든 칸에 ±2–6 cm 요철을 더한다.
+
+| 유형(코드 이름) | 비율 | 장애물 | 가장 어려운 단계 |
+|---|---|---|---|
+| 기울어진 경사로(parkour) | 20% | 폭 1 m 판을 좌우로 엇갈려 놓는다. 판 높이는 폭 방향으로 −0.25·d m에서 +0.25·d m까지 변한다. 아래는 깊이 0.2–1.0 m 구덩이 | 기울기 약 28°(설정값에서 계산) |
+| 허들(parkour_hurdle) | 20% | 높이 (0.1 + 0.1·d)–(0.15 + 0.25·d) m의 띠, 간격 1.2–2.2 m | 0.2–0.4 m |
+| 평지 걷기(parkour_flat) | 20% | 장애물 없이 웨이포인트만. 논문에 없는 유형 | — |
+| 계단(parkour_step) | 20% | 단 높이 0.1 + 0.35·d m로 세 단 올랐다가 내려온다 | 단 0.45 m |
+| 간격(parkour_gap) | 20% | 간격 0.1 + 0.7·d m, 깊이 0.2–1.0 m, 발판 폭 1.2–2.4 m | 0.8 m |
+
+![Extreme Parkour Fig. 3](https://arxiv.org/html/2309.14341v1/figures/terrain_compressed.jpg)
+*그림 — Extreme Parkour (Fig. 3): 시뮬레이션 지형 넷이다. 왼쪽부터 기울어진 경사로, 허들, 간격, 계단이고, 빨간 점이 진행 방향을 정하는 웨이포인트다. 출처: [arXiv:2309.14341](https://arxiv.org/abs/2309.14341)*
+
+**2단계 증류.** 교사가 쓰던 정보 둘이 실물에는 없다. scandots 대신 앞쪽 깊이 영상만 있고, 방향을 알려 줄 웨이포인트도 없다. 그래서 Agarwal 외처럼 scandots 입력을
+깊이 영상을 읽는 합성곱 망과 GRU로 바꾸고, 교사 행동을 정답으로 DAgger 학습한다(배경 0.12). 환경은 학생이 낸 행동으로 진행한다. actor는 1단계 것을 복사해 시작하므로
+학생 행동으로 굴려도 상태 분포가 크게 흔들리지 않는다. 방향 예측 부분은 사전 학습이 없어 처음에는 엉뚱한 방향을 낸다. 그 값을 그대로 관측에 넣으면 상태 분포가 무너지고
+교사 라벨도 틀어진다. 그래서 교사와 학생의 방향을 섞는다(MTS, mixture of teacher and student).
+
+$$ o_\theta = \begin{cases} \theta_{\text{pred}}, & \lvert \theta_{\text{pred}} - \hat d_w \rvert < 0.6 \\ \hat d_w, & \text{그 밖} \end{cases} $$
+
+$\theta_{\text{pred}}$는 예측 yaw, $\hat d_w$는 정답 yaw, $o_\theta$는 학생이 관측하는 yaw다. 예측이 정답에서 0.6 rad 안이면 예측을 보여 주고, 아니면 정답을 보여 준다.
+코드의 판정은 이 식과 다르다(아래 코드 토글 ⑥).
+
+**실물 설정.** 깊이 영상은 왼쪽의 죽은 픽셀을 자르고 58 × 87로 줄인다. 카메라는 10 ± 2 Hz로 찍는다. 깊이 인코더(10 Hz)와 정책(50 Hz)은 Jetson NX에서 따로 돌고 UDP로 통신한다.
+떨림을 막으려 깊이 지연을 0.08 s로 고정한다. 영상을 받고 잠재를 보내기까지 걸린 시간 $t_p$가 0.08 s보다 짧으면 $0.08 - t_p$만큼 기다린다. 고유수용 지연도 0.016 s로 고정한다.
+
+**네트워크.** 논문은 층 크기를 적지 않는다. 아래 표는 코드 기본값이고, 파라미터 수는 모듈을 CPU에서 만들어 센 값이다.
+
+| 모듈 | 구조(코드 기본값) | 파라미터 |
+|---|---|---|
+| actor 본체 | 입력 114(고유수용 53, scandots 잠재 32, 속도 칸 9, 환경 잠재 20) → 512 → 256 → 128 → 관절 목표 12, ELU | 224,652 |
+| scandots 인코더 | 132 → 128 → 64 → 32, 마지막 tanh | 27,360 |
+| 이력 인코더(ROA) | 스텝마다 53 → 30, 1D 합성곱 둘(30 → 20, 20 → 10), 30 → 20 | 5,070 |
+| 특권 인코더 | 29 → 64 → 20 | 3,220 |
+| critic | 관측 753개 전부 → 512 → 256 → 128 → 1 | 550,401 |
+| 속도 추정기 | 고유수용 53 → 128 → 64 → 9(정답은 몸체 선속도 셋과 늘 0인 여섯) | 15,753 |
+| 깊이 인코더 | 58 × 87 → 합성곱 5×5(32) → 최대 풀링 → 합성곱 3×3(64) → 128 → 32. 고유수용과 이어 128 → 32, GRU 512, 출력 34(tanh) | 8,882,018 |
+
+깊이 인코더 출력 34개 가운데 32개가 scandots 잠재를 대신하고, 2개는 1.5를 곱해 yaw 예측(±1.5 rad)이 된다. 깊이 인코더 파라미터의 90%(7,987,328개)가
+입력 62,400개를 128개로 줄이는 선형층 하나에 있다. 배포되는 학생은 깊이 인코더, actor(인코더 포함 260,302), 추정기를 합쳐 약 916만 개다.
+이 수에는 배포 때 쓰지 않는 scandots 인코더와 특권 인코더도 들어 있다.
+
+**도메인 무작위화.** 논문은 항목을 적지 않는다. 코드 기본값은 이렇다. 마찰 0.6–2.0, 몸통 질량 +0–3 kg, 무게중심 축마다 ±0.2 m, 모터 세기 0.8–1.2배(P와 D 항 따로)를 둔다.
+8 s마다 몸통 수평 속도를 ±0.5 m/s 안에서 새로 뽑아 민다. 행동 지연은 처음부터 학습하면 8,000반복 동안 0이고 그 뒤 1스텝(20 ms)이며, README의 증류 명령(`--delay`)으로는 처음부터 1스텝이다.
+카메라는 env마다 pitch를 −5°–5°에서 뽑는다. 관절 PD는 Kp 40, Kd 1, 행동 배율 0.25다. 관측과 깊이 영상에 넣는 잡음은 기본값에서 없다(코드 토글 '버그·주의').
+
+**학습 비용.** 논문은 배포 정책을 RTX 3090 한 장에서 20시간 안에 학습한다고 적는다. README는 교사 10–15k반복(3090에서 8–10시간, 15k 이상 권장)과 증류 5–10k반복(5–10시간,
+5k 이상 권장)을 적는다. 코드 기본값으로 교사 반복 하나는 6,144 env × 24스텝 = 147,456 전이이고, 증류 반복 하나는 192 env × 120스텝이다. 공동 1저자 Kexin Shi(GitHub tenhearts, 이하 공저자)는
+이슈 #18에서 1단계에 4,096 env, 2단계에 128 env를 썼다고 답했다. 저장소 주인인 공동 1저자 Xuxin Cheng(이하 원저자)은 GPU 메모리 16 GB 이상, 가능하면 3090이나 4090을 권했다(이슈 #22).
+
+**저절로 나온 동작.** 저자들은 보상에 동작의 사전 지식을 넣지 않았는데 세 동작이 나왔다고 적는다. 다만 셋째인 물구나무에는 식 (4)의 전용 항이 있다. 높이뛰기에서는 상자에 다가가며 보폭을 줄이고 앞발과 뒷발을
+상자에서 알맞은 거리에 맞춘다. 그다음 뒷다리를 큰 토크로 차올리면서 앞다리를 뻗고, 앞발이 윗면에 닿으면 몸을 끌어올린 뒤 뒷다리를 접는다.
+
+![Extreme Parkour Fig. 4](https://arxiv.org/html/2309.14341v1/emergent-step.png)
+*그림 — Extreme Parkour (Fig. 4): 0.5 m 상자(로봇 키의 두 배) 오르기의 연속 사진이다. 다가가며 보폭을 줄이고, 뒷다리로 차올리며 앞다리를 뻗고, 앞다리로 윗면을 끌어당긴 뒤 뒷다리를 접는다. 출처: [arXiv:2309.14341](https://arxiv.org/abs/2309.14341)*
+
+멀리뛰기에서는 앞발을 가장자리에 맞추고 뒷발도 가장자리 가까이 당긴다. 뒷다리로 앞위쪽으로 밀어 뛰고, 공중에서 앞다리를 뻗으며 뒷다리를 앞으로 모아 네 발로 건너편에 내린다.
+
+![Extreme Parkour Fig. 5](https://arxiv.org/html/2309.14341v1/emergent-gap_compressed.png)
+*그림 — Extreme Parkour (Fig. 5): 0.8 m 간격(몸길이의 두 배) 멀리뛰기의 연속 사진이다. 앞발과 뒷발을 가장자리에 모으고, 뒷다리로 밀어 건넌 뒤 네 발로 착지한다. 출처: [arXiv:2309.14341](https://arxiv.org/abs/2309.14341)*
+
+물구나무에서는 앞으로 숙여 무게를 앞다리에 싣고, 뒷다리를 알맞게 차올려 수직 자세로 선 뒤 뒷다리로 균형을 미세하게 맞춘다. 이 정책은 잔디의 완만한 경사에서 걸었고,
+시각 없이 물구나무 자세로 계단을 내려갔다.
+
+**시뮬레이션 결과.** 표 2는 지형마다 장애물을 난이도 순으로 이은 코스에 로봇 256대를 두고 30 s 동안 잰다. MXD(mean x-displacement)는 표 캡션 기준으로 도달한 웨이포인트 수를 0–1로 정규화한 평균이다.
+본문은 같은 지표를 '넘어지기 전 x 방향 변위'로 설명한다. MEV(mean edge violation)는 스텝당 가장자리에 디딘 발 수의 평균이다. 네 지형을 합친 값이다.
+
+| 설정 | MXD(높을수록 좋음) | MEV(낮을수록 좋음) | 비고 |
+|---|---|---|---|
+| 이 논문 | 0.98 ± 0.09 | 0.03 ± 0.18 | |
+| NoInner(몸체 좌표 속도 추종) | 0.75 ± 0.36 | 0.04 ± 0.20 | 계단 0.14. 허들은 돌아가고, 계단에는 부딪혔다가 다시 시도한다 |
+| NoClear(가장자리 벌점 없음) | 0.99 ± 0.06 | 0.08 ± 0.32 | 도달은 거의 같고 가장자리 위반은 늘었다 |
+| Noisy(잡음 낀 높이 지도로 학습) | 0.82 ± 0.29 | 0.20 ± 0.50 | 분산이 크다 |
+
+표 3은 방향 증류를 비교한다(네 지형 평균). 학생이 늘 예측 방향을 보면(Both) MXD 0.12 ± 0.07, 방향을 0으로 가리면(Mask) 0.05 ± 0.07이다. MTS(이 논문)는 0.92 ± 0.19로,
+늘 정답 방향을 보는 상한(Oracle) 0.94 ± 0.19에 가깝다. 저자들은 앞의 둘이 모방 학습 데이터의 분포가 교사에서 너무 멀어져 손실이 수렴하지 않았다고 설명한다.
+
+**실물 결과.** 그림 7은 지형과 크기마다 5번씩 시도한 성공률이다. 가장 어려운 단계만 옮기면 이렇다(그림에서 읽은 값).
+
+| 지형(가장 어려운 단계) | 이 논문 | NoClear | NoDir |
+|---|---|---|---|
+| 허들 0.40 m | 3/5 | 2/5 | 2/5 |
+| 계단 0.50 m | 3/5 | 0/5 | 2/5 |
+| 간격(그래프의 마지막 점, 약 0.77 m) | 4/5 | 0/5 | 3/5 |
+| 기울어진 경사로 37° | 3/5 | 0/5 | 0/5 |
+
+NoDir은 훈련된 사람이 조이스틱으로 방향을 준 것이다. 마지막 순간의 방향 수정이 분포 밖이라 점프와 간격에서 실패했고, 경사로는 17°부터 37°까지 한 번도 넘지 못했다.
+NoClear는 에너지를 아끼려 가장자리에 붙어 디디다가 헛디뎠다. 동시 연구 Zhuang 외는 계단 0.50 m에서 0, 간격 0.7 m에서 0.3이다.
+표 1은 오를 수 있는 높이와 건널 수 있는 간격을 로봇 키와 몸길이에 대한 배수로 비교한다. 이 논문(A1)은 2배와 2배, Robot Parkour Learning(A1)은 1.6배와 1.5배,
+ANYmal Parkour(ANYmal C)는 2배와 1.5배, Rudin 외(ANYmal C, IROS 2022)는 1.1배와 0.75배다.
+
+**저자가 밝힌 한계.** 본문에 한계 절이 없다. 맺음말은 다음 과제로 같은 방법을 모바일 매니퓰레이터로 넓히는 것만 든다.
+
+**우리가 보는 한계.**
+
+1. 실물 근거가 얇다. 설정마다 5번, 로봇 한 대, 실내 상자 코스다. 가장 어려운 단계의 성공은 5번 중 3–4번이고, 실패 유형의 분류는 없다.
+2. 방향은 지형 생성기가 놓은 웨이포인트를 흉내 낸 것이다. 학생은 '코스 설계자가 놓았을 방향'을 배운다. 갈림길이나 먼 목적지가 있는 항법은 다루지 않는다.
+   원저자는 실물의 방향 명령이 정책에서도 조이스틱에서도 올 수 있다고 답했다(이슈 #13).
+3. 그림 1 캡션은 물구나무까지 모두 신경망 하나가 했다고 적는다. 그러나 4.3.2절은 물구나무 정책을 외수용 없이 학습했다고 적는다.
+4. 시뮬레이션 깊이 영상에는 기본값에서 잡음이 없다. 논문이 강조하는 떨림과 결함을 학습에서 어떻게 다뤘는지는 지연 고정과 전처리 말고는 적혀 있지 않다.
+   실물의 깊이 필터링을 묻는 이슈 #44에는 원저자의 답이 없다.
+5. 실물 시험 범위 일부(계단 0.50 m, 경사로 37°)가 코드 기본 지형의 최댓값(단 0.45 m, 기울기 약 28°)보다 크다. 논문 결과를 낸 설정이 코드 기본값과 같은지는 확인하지 못했다.
+6. 표 2의 MXD 정의가 본문과 캡션에서 다르다.
+
+**travplan에 주는 것.** 방법에서 옮길 것은 세 가지다. 특권 교사에서 온보드 학생으로 가는 증류 순서, 가장자리 벌점과 그 절제 결과, 그리고 기술별 보상 없이 쓰는 진행 보상이다.
+각각이 travplan의 어디에 닿는지는 이 절 끝의 목록에 있다.
+
+</details>
+
+<details markdown="1">
+<summary>자세히: chengxuxin/extreme-parkour 저장소의 구조와 코드</summary>
+
+**무엇인가.** 2023-09-26에 만든 저장소다(★1,182, 포크 179, 열린 이슈 46·PR 1). main에는 커밋이 둘뿐이다. 코드가 마지막으로 바뀐 것은 첫 커밋 dcb2447('Release', 2023-09-25)이다.
+마지막 커밋 d2ffe27(2023-11-10)은 README에 한 줄을 더했고, 마지막 push는 2023-11-28이다. 루트 LICENSE는 CC BY-NC 4.0(© 2023 Xuxin Cheng, Kexin Shi, Deepak Pathak)이다.
+벤더링한 legged_gym과 rsl_rl 폴더에는 BSD-3 LICENSE가 남아 있고, GitHub는 라이선스를 NOASSERTION으로 표시한다.
+
+내용은 둘이다. legged_gym 사본에는 A1 파쿠르 과제(지형 생성기, 웨이포인트, 보상, 깊이 카메라 흉내), 학습·재생·평가·내보내기 스크립트, 화면 없는 서버용 Flask 웹 뷰어가 있다.
+rsl_rl 사본(1.0.2)에는 ROA actor-critic, 속도 추정기, 깊이 인코더, PPO와 증류 러너가 있다. 시뮬레이터는 Isaac Gym Preview다. README는 Preview 3로 학습했고 Preview 4에서도
+버그를 보지 못했다고 적는다. 환경은 Python 3.8, PyTorch 1.10.0(CUDA 11.3), numpy 1.24 미만이다.
+
+없는 것은 넷이다. 학습된 가중치, 실물 배포 코드(깊이 서버, 관측 조립, 모터 명령), 물구나무 보상(식 4), Noisy 기준선 설정이다. 원저자는 이슈 #31(2024-02-29)에서
+하드웨어 코드를 공개하지 않았다고 답하고, cajun·fast_and_efficient·walk-these-ways 같은 공개 배포 구현을 참고하라고 했다.
+공개 직후의 커밋은 달랐다. 원저자가 2023-09–10월 이슈 답변에서 링크한 커밋 4ea4d0f(2023-09-25)와 671a8a0(2023-09-26)에는 학습된 정책 셋이 들어 있었다.
+교사 051-40, 방향 증류가 없는 학생 051-41, 방향 증류 학생 051-42다. 두 커밋의 README에는 'Hardware code and Go1 support coming later'라는 배포 절이 있었다.
+LICENSE는 671a8a0에서는 MIT였고, 4ea4d0f에서는 지금과 같은 CC BY-NC 4.0이었다.
+지금 main의 이력에는 이 커밋들이 없고, 옛 커밋은 SHA로만 열린다. travplan은 지금의 라이선스를 따른다.
+
+**논문 블록이 어느 파일에 있나.** 커밋 d2ffe27 기준이다. 줄 번호가 붙은 링크는 아래 코드 흐름에 있다.
+
+| 논문 블록 | 파일 |
+|---|---|
+| 웨이포인트와 방향(식 1) | `legged_robot.py`의 `_update_goals`, `terrain.py` 지형 함수의 `goals` |
+| 통합 보상(식 2–3)과 정규화 항 | `legged_robot.py`의 `_reward_*`, 가중은 `legged_robot_config.py` |
+| 물구나무 보상(식 4) | 없음 |
+| scandots | `legged_robot.py`의 `_get_heights`, 점 위치는 `legged_robot_config.py` |
+| 지형 넷과 커리큘럼 | `terrain.py`의 `parkour_*_terrain`, `legged_robot.py`의 `_update_terrain_curriculum` |
+| 교사 actor와 ROA | `actor_critic.py`의 `Actor`·`StateHistoryEncoder`, `ppo.py`의 `update`·`update_dagger` |
+| 속도 추정기 | `estimator.py`, `ppo.py`의 `act` |
+| 깊이 카메라와 지연 | `legged_robot.py`의 `attach_camera`·`process_depth_image`·`step`, 지연 일정은 `helpers.py` |
+| 깊이 인코더(합성곱 + GRU) | `depth_backbone.py` |
+| 2단계 증류(DAgger, MTS) | `on_policy_runner.py`의 `learn_vision`, `ppo.py`의 `update_depth_actor` |
+| 시뮬 평가(표 2) | `evaluate.py` |
+| 실물 배포 | 없음. 내보내기만 `save_jit.py` |
+
+**코드 흐름.**
+
+**① 관측 753개**([legged_robot.py L383–L437](https://github.com/chengxuxin/extreme-parkour/blob/d2ffe27ba59a3229fad22a9fc94c38010bb1f519/legged_gym/legged_gym/envs/base/legged_robot.py#L383-L437)).
+고유수용 53개는 몸체 각속도 3, roll·pitch 2, yaw 칸 셋, 명령 칸 셋, 지형 플래그 2, 관절 위치 12, 관절 속도 12, 직전 행동 12, 발 접촉 4다. yaw 칸은 0으로 지운 칸 하나와
+현재 웨이포인트 방향 오차, 다음 웨이포인트 방향 오차다. 명령 칸은 0으로 지운 칸 둘과 전진 속도 명령이다. 그 뒤에 scandots 132개, 속도 칸 9개, 환경 값 29개, 고유수용 이력
+10 × 53이 붙는다. scandots는 몸 기준 x −0.45–1.2 m, y −0.75–0.75 m의 12 × 11 점이고, 값은 (몸통 높이 − 0.3 − 지형 높이)를 ±1로 자른 것이다. 두 yaw 오차와 scandots는
+5 제어 스텝(0.1 s)마다 새로 계산하고, 관측 이력에서는 yaw 오차를 0으로 지운다. 정책 주기는 0.02 s(물리 0.005 s × 4)다.
+
+**② 보상**([legged_robot.py L1224–L1286](https://github.com/chengxuxin/extreme-parkour/blob/d2ffe27ba59a3229fad22a9fc94c38010bb1f519/legged_gym/legged_gym/envs/base/legged_robot.py#L1224-L1286), 가중 [legged_robot_config.py L293–L318](https://github.com/chengxuxin/extreme-parkour/blob/d2ffe27ba59a3229fad22a9fc94c38010bb1f519/legged_gym/legged_gym/envs/base/legged_robot_config.py#L293-L318)).
+진행 항은 식 (2)를 명령 속도로 나눈 값이다. 논문에 없는 yaw 추종 항이 하나 더 있다. 각도 차이를 $[-\pi, \pi]$로 감싸지 않는다.
+
+$$ r_{\text{goal}} = \frac{\min\big(\langle \mathbf v_{xy}, \hat{\mathbf d}_w \rangle,\ v_{\text{cmd}}\big)}{v_{\text{cmd}}}, \qquad r_{\text{yaw}} = \exp\big(-\lvert \psi_{\text{goal}} - \psi \rvert\big) $$
+
+가장자리 벌점([L1278–L1286](https://github.com/chengxuxin/extreme-parkour/blob/d2ffe27ba59a3229fad22a9fc94c38010bb1f519/legged_gym/legged_gym/envs/base/legged_robot.py#L1278-L1286))은
+지형을 만들 때 미리 계산한 가장자리 마스크를 발 위치에서 읽는다. 마스크는 x 방향 이웃 칸과의 높이 차가 0.075 m를 넘는 칸을 x 방향으로 한 칸(5 cm) 넓힌 것이다.
+옆쪽(y 방향) 가장자리는 들어가지 않는다. 벌점은 지형 레벨이 3을 넘는 로봇에게만 준다. 합친 보상이 음수면 0으로 자른다([L374–L375](https://github.com/chengxuxin/extreme-parkour/blob/d2ffe27ba59a3229fad22a9fc94c38010bb1f519/legged_gym/legged_gym/envs/base/legged_robot.py#L374-L375)).
+
+**③ 지형과 커리큘럼**([terrain.py L252–L319](https://github.com/chengxuxin/extreme-parkour/blob/d2ffe27ba59a3229fad22a9fc94c38010bb1f519/legged_gym/legged_gym/utils/terrain.py#L252-L319), [L418–L703](https://github.com/chengxuxin/extreme-parkour/blob/d2ffe27ba59a3229fad22a9fc94c38010bb1f519/legged_gym/legged_gym/utils/terrain.py#L418-L703), [legged_robot.py L668–L696](https://github.com/chengxuxin/extreme-parkour/blob/d2ffe27ba59a3229fad22a9fc94c38010bb1f519/legged_gym/legged_gym/envs/base/legged_robot.py#L668-L696)).
+다섯 유형을 각 20%로 깔고, 칸마다 웨이포인트 8개를 놓는다. 웨이포인트에서 0.2 m 안에 0.1 s 넘게 머물면 다음 웨이포인트로 넘어간다. 시작 단계는 0–5에서 무작위다.
+리셋 때 출발점에서 0.8 · $v_{\text{cmd}}$ · 20 s보다 멀리 갔으면 한 단계 올리고, 0.4배보다 덜 갔으면 내린다. 맨 위 단계를 푼 로봇은 무작위 단계로 보낸다.
+원저자는 평균 단계가 약 6에서 평평해지는 것이 그 때문이고 정상이라고 답했다(이슈 #15). 속도 명령은 0.3–0.8 m/s에서 뽑고 6 s마다 다시 뽑는다.
+에피소드는 20 s이고, roll이나 pitch가 1.5 rad를 넘거나 몸통이 −0.25 m 아래로 떨어지면 끝난다.
+
+**④ 교사, ROA, 속도 추정기**([actor_critic.py L41–L207](https://github.com/chengxuxin/extreme-parkour/blob/d2ffe27ba59a3229fad22a9fc94c38010bb1f519/rsl_rl/rsl_rl/modules/actor_critic.py#L41-L207), [ppo.py L142–L311](https://github.com/chengxuxin/extreme-parkour/blob/d2ffe27ba59a3229fad22a9fc94c38010bb1f519/rsl_rl/rsl_rl/algorithms/ppo.py#L142-L311), [on_policy_runner.py L157–L201](https://github.com/chengxuxin/extreme-parkour/blob/d2ffe27ba59a3229fad22a9fc94c38010bb1f519/rsl_rl/rsl_rl/runners/on_policy_runner.py#L157-L201)).
+PPO 설정은 6,144 env × 24스텝, 학습률 2e-4(KL 목표 0.01로 조정), 5에폭 × 4미니배치, γ 0.99, λ 0.95, 엔트로피 0.01이다. critic은 특권 값을 포함한 관측 753개를 모두 본다.
+롤아웃 때는 추정기가 낸 속도를 관측의 속도 칸에 넣어 행동을 뽑는다. 20반복마다 한 번은 특권 잠재 대신 이력 잠재로 굴린다. 그런데 PPO 갱신은 버퍼의 관측(참 속도)과
+특권 잠재로 확률을 다시 계산한다. 그래서 갱신 첫 미니배치에서도 확률 비율이 1이 아니다. 추정기는 별도 Adam(학습률 1e-4)으로 MSE를 줄인다.
+최대 반복 수 기본값은 50,000이다.
+
+**⑤ 깊이 카메라 흉내**([legged_robot.py L161–L204](https://github.com/chengxuxin/extreme-parkour/blob/d2ffe27ba59a3229fad22a9fc94c38010bb1f519/legged_gym/legged_gym/envs/base/legged_robot.py#L161-L204), [L867–L889](https://github.com/chengxuxin/extreme-parkour/blob/d2ffe27ba59a3229fad22a9fc94c38010bb1f519/legged_gym/legged_gym/envs/base/legged_robot.py#L867-L889), 설정 [legged_robot_config.py L89–L110](https://github.com/chengxuxin/extreme-parkour/blob/d2ffe27ba59a3229fad22a9fc94c38010bb1f519/legged_gym/legged_gym/envs/base/legged_robot_config.py#L89-L110)).
+학습 때 `--use_camera`로 켜면 env가 192개로 줄고, 지형 메시는 0.1 m로 거칠어지고 단순화된다([helpers.py L126–L142](https://github.com/chengxuxin/extreme-parkour/blob/d2ffe27ba59a3229fad22a9fc94c38010bb1f519/legged_gym/legged_gym/utils/helpers.py#L126-L142)).
+지형 비율도 바뀌어 평지 걷기가 5%, 데모 코스가 15%가 된다. 카메라는 몸통 기준 (0.27, 0, 0.03) m에 붙고, 수평 화각 87°로 106 × 60을 5 제어 스텝(10 Hz)마다 그린다.
+영상은 좌우 4픽셀과 아래 2픽셀을 잘라 내고, 거리를 0–2 m로 자른 뒤 58 × 87(세로 × 가로)로 줄여 −0.5–0.5로 정규화한다. 버퍼에는 두 장을 두고, 정책에는 한 주기 전(0.1 s 전)에 그린 장을 준다
+([L153](https://github.com/chengxuxin/extreme-parkour/blob/d2ffe27ba59a3229fad22a9fc94c38010bb1f519/legged_gym/legged_gym/envs/base/legged_robot.py#L153)). 이 한 주기 지연이 실물의 0.08 s 고정 지연에 대응하는지는 코드에도 이슈 #46에도 설명이 없다.
+행동 지연은 행동 이력 버퍼에서 한 스텝 전 행동을 꺼내 쓰는 방식이다([L123–L131](https://github.com/chengxuxin/extreme-parkour/blob/d2ffe27ba59a3229fad22a9fc94c38010bb1f519/legged_gym/legged_gym/envs/base/legged_robot.py#L123-L131)).
+
+**⑥ 증류 루프**([on_policy_runner.py L221–L323](https://github.com/chengxuxin/extreme-parkour/blob/d2ffe27ba59a3229fad22a9fc94c38010bb1f519/rsl_rl/rsl_rl/runners/on_policy_runner.py#L221-L323), [ppo.py L325–L336](https://github.com/chengxuxin/extreme-parkour/blob/d2ffe27ba59a3229fad22a9fc94c38010bb1f519/rsl_rl/rsl_rl/algorithms/ppo.py#L325-L336), [depth_backbone.py L6–L101](https://github.com/chengxuxin/extreme-parkour/blob/d2ffe27ba59a3229fad22a9fc94c38010bb1f519/rsl_rl/rsl_rl/modules/depth_backbone.py#L6-L101)).
+반복 하나는 120스텝(깊이 24장)이다. 깊이 장이 들어온 스텝에서 인코더가 잠재 32개와 yaw 2개를 내고, 다음 장까지 4스텝은 그 값을 그대로 쓴다. 인코더에 들어가는 고유수용은
+yaw 칸을 0으로 지운 것이다. 교사 행동은 1단계 actor가 이력 잠재로 낸다. 학생 actor는 1단계 actor의 복사본이다. 환경은 학생 행동으로 진행한다. 손실은 행동 차이의 L2 노름과
+yaw 차이의 L2 노름의 평균을 더한 것이고, 학생 actor와 깊이 인코더를 Adam(학습률 1e-3) 하나로 함께 갱신한다. 깊이 잠재를 교사의 scandots 잠재에 맞추는 손실은
+주석 처리되어 있다. 원저자는 행동 감독만 쓴다고 답했다(이슈 #19). 그래서 로그의 깊이 인코더 손실은 늘 0이다(이슈 #26). GRU 은닉 상태는 반복마다 기울기만 끊고,
+에피소드가 바뀌어도 비우지 않는다. 원저자는 학습에 영향이 없었다고 답했다(이슈 #12).
+
+MTS는 이 두 줄이다. [legged_robot.py L151](https://github.com/chengxuxin/extreme-parkour/blob/d2ffe27ba59a3229fad22a9fc94c38010bb1f519/legged_gym/legged_gym/envs/base/legged_robot.py#L151)과
+[on_policy_runner.py L270](https://github.com/chengxuxin/extreme-parkour/blob/d2ffe27ba59a3229fad22a9fc94c38010bb1f519/rsl_rl/rsl_rl/runners/on_policy_runner.py#L270)의 원문이고,
+저장소 루트 라이선스는 CC BY-NC 4.0(© 2023 Xuxin Cheng, Kexin Shi, Deepak Pathak)이다. 두 파일의 머리말은 legged_gym·rsl_rl의 BSD-3이다.
+
+```python
+self.extras["delta_yaw_ok"] = self.delta_yaw < 0.6
+obs_student[infos["delta_yaw_ok"], 6:8] = yaw.detach()[infos["delta_yaw_ok"]]
+```
+
+`self.delta_yaw`는 정답 웨이포인트 방향에서 로봇 yaw를 뺀 값이다([L389](https://github.com/chengxuxin/extreme-parkour/blob/d2ffe27ba59a3229fad22a9fc94c38010bb1f519/legged_gym/legged_gym/envs/base/legged_robot.py#L389)).
+판정에 예측 yaw가 들어가지 않고 절댓값도 없다. 그래서 학생은 정답 방향이 로봇 왼쪽으로 0.6 rad 이상 벗어난 스텝에서만 정답 yaw를 보고, 나머지 스텝에서는 늘 자기 예측을 본다.
+논문의 식은 예측과 정답의 차이를 잰다. 이슈 #56(2025-02-09)이 같은 점을 지적했고 답은 없다. 학생 actor의 속도 칸에는 증류 내내 참 속도가 들어간다.
+관측을 복사하고 yaw 칸만 바꾸기 때문이다.
+
+**⑦ 내보내기**([save_jit.py L34–L114](https://github.com/chengxuxin/extreme-parkour/blob/d2ffe27ba59a3229fad22a9fc94c38010bb1f519/legged_gym/legged_gym/scripts/save_jit.py#L34-L114)).
+증류 체크포인트에서 학생 actor와 속도 추정기를 읽어 모듈 하나로 묶고 TorchScript로 trace한다. 입력은 관측 753개와 깊이 잠재 32개다. 추정기가 속도 칸을 채운 뒤
+actor가 이력 잠재로 행동을 낸다. 깊이 인코더는 trace하지 않고 가중치만 따로 저장한다. 그래서 배포 쪽은 깊이 인코더 클래스를 다시 만들어 불러야 한다.
+공저자는 실물에서 깊이 10 Hz와 행동 50 Hz를 두 프로세스로 돌리기 때문에 둘을 따로 저장한다고 답했다(이슈 #34, 2024-07-31). 같은 답에서 실물 영상은 스테레오가 만드는
+가장자리 흰 띠(20–30픽셀)를 자르고 58 × 87로 줄였다고 했다. README 5단계의 예시처럼 1단계 실행 id를 주면 학생 가중치가 없어 KeyError로 멈춘다(이슈 #24).
+
+**⑧ 시뮬 평가**([evaluate.py L65–L216](https://github.com/chengxuxin/extreme-parkour/blob/d2ffe27ba59a3229fad22a9fc94c38010bb1f519/legged_gym/legged_gym/scripts/evaluate.py#L65-L216)).
+로봇 256대를 1,500스텝(30 s) 굴리고, 도달한 웨이포인트 수를 7로 나눈 평균과 스텝당 가장자리 위의 발 수 평균을 출력한다. 표 2의 지표와 같다. 다만 네 지형을 각 25%로 깔고
+칸마다 난이도를 0–1에서 무작위로 뽑는다. 본문의 '난이도 순으로 이은 코스'와 다르다. 표 2를 이 스크립트로 냈는지는 확인하지 못했다(같은 질문인 이슈 #32에 답이 없다).
+
+**논문과 다른 점.**
+
+| 항목 | 논문 | 코드 기본값(d2ffe27) |
+|---|---|---|
+| 방향 입력 | 다음 웨이포인트 방향 하나 | 현재와 다음 웨이포인트의 yaw 오차 둘, 0.1 s마다 갱신, 관측 이력에서는 0 |
+| 진행 보상 | 식 (2) | 식 (2)를 명령 속도로 나눔(가중 1.5), yaw 추종 항 추가(가중 0.5) |
+| 가장자리 벌점 | 가장자리 5 cm 안에 닿은 발 | x 방향 수직면 둘레 한 칸(5 cm)만, 지형 레벨 4 이상에서만 |
+| 물구나무 | 식 (4), 스위치 W | 보상 없음. 2비트 플래그는 평지 걷기 지형 표시이고, 자세 벌점을 그 지형에서만 켠다 |
+| 지형 | 넷 | 다섯(평지 걷기 포함) 각 20%. 증류 때는 평지 5%, 데모 코스 15% |
+| 승급·강등 | 지형 길이 절반, 기대 거리 절반 | 기대 거리의 0.8배 초과 승급, 0.4배 미만 강등 |
+| MTS 판정 | 예측과 정답의 yaw 차이 0.6 미만 | 정답 방향과 로봇 yaw의 차이(부호 있음) 0.6 미만 |
+| 증류 손실 | 행동은 DAgger, 방향은 BC(behavior cloning) | 행동 L2 + yaw L2. 잠재 회귀 손실은 주석 처리 |
+| 깊이 지연 | 실물 0.08 s 고정 | 10 Hz로 그리고 한 주기 전(0.1 s) 장을 준다 |
+| 고유수용·행동 지연 | 실물 고유수용 0.016 s 고정 | 행동 지연 20 ms. 처음부터 학습하면 8,000반복 뒤부터 |
+| 깊이 전처리 | 왼쪽 죽은 픽셀을 자르고 58 × 87 | 좌우 4·아래 2픽셀을 자르고 58 × 87, 잡음 0 |
+| 시뮬 평가 코스 | 난이도 순으로 이은 코스 | 칸마다 무작위 난이도 |
+| env 수 | 값 없음 | 교사 6,144, 학생 192(공저자 답변은 4,096과 128) |
+| 실물 시험과 학습 지형 | 계단 0.50 m, 경사로 37°까지 시험 | 학습 지형 최댓값은 단 0.45 m, 기울기 약 28° |
+
+**버그·주의.**
+
+- **높음.** MTS 판정이 논문 식과 다르다(⑥, 이슈 #56). 논문 결과가 어느 판정으로 나왔는지는 확인하지 못했다. 학생은 증류 내내 참 속도를 보다가, 내보낸 그래프에서는
+  추정 속도를 받는다(⑥·⑦). 원저자는 play.py가 참 속도를 쓴다는 지적을 인정하고, 학습 롤아웃과 save_jit.py는 추정 속도를 쓴다고 답했다(이슈 #8). 증류 루프는 그 답에 들어 있지 않다.
+  실물 배포 코드가 없다(이슈 #31). 이슈에 올라온 실물 배포 보고는 모두 논문 수준에 못 미친다. Go2에서 일부 장애물은 넘지만 논문 수준은 아니라는 보고(이슈 #34, 2025-04-23),
+  실물과 MuJoCo에서 간격을 못 넘는다는 보고(같은 이슈, 2026-02–03), 실물 성공률이 약 40%라는 보고(이슈 #66)가 있다. 모두 제3자 보고이고 재현하지 않았다.
+- **중간.** PPO 갱신이 롤아웃과 다른 입력으로 확률을 다시 계산한다(④). Isaac Gym Preview 전용이다. Isaac Lab으로 옮긴 커뮤니티 구현
+  [CAI23sbP/Isaaclab_Parkour](https://github.com/CAI23sbP/Isaaclab_Parkour)(Go2, GPL-3.0, ★339, 마지막 커밋 2025-12-04)가 있고, 원저자가 이슈 #61에서 반겼다.
+  이식본의 MuJoCo sim2sim 배포는 별도 저장소 [CAI23sbP/go2_parkour_deploy](https://github.com/CAI23sbP/go2_parkour_deploy)(GPL-3.0, ★71, 마지막 커밋 2025-09-09)에 있다.
+  실물 배포 코드는 두 저장소의 README 모두 할 일로 남겨 두었다.
+  GPU 메모리는 원저자가 16 GB 이상을 권했고(이슈 #22), 12 GB GPU에서 증류가 메모리 부족으로 멈춘 보고가 있다(이슈 #23). 깊이 렌더링에는 그래픽 장치가 필요하다.
+  화면 없는 클라우드 서버에서 증류가 세그폴트로 멈춘다는 보고(이슈 #52)와, Ubuntu 22.04에서 오류 999가 나는데 `VK_ICD_FILENAMES`로 풀었다는 보고(이슈 #10)가 있다.
+  학습 스크립트는 W&B(Weights & Biases) 엔티티 'parkour'를 하드코딩했다([train.py L59](https://github.com/chengxuxin/extreme-parkour/blob/d2ffe27ba59a3229fad22a9fc94c38010bb1f519/legged_gym/legged_gym/scripts/train.py#L59)). 원저자는 W&B 오류에 `--no_wandb`를 쓰라고 답했다(이슈 #14).
+  README 5단계의 내보내기 예시는 잘못된 실행 id를 쓴다(⑦). 라이선스가 비상업이다.
+- **낮음.** 관측 잡음 함수는 정의만 있고 불리지 않는다([L440](https://github.com/chengxuxin/extreme-parkour/blob/d2ffe27ba59a3229fad22a9fc94c38010bb1f519/legged_gym/legged_gym/envs/base/legged_robot.py#L440)). 그래서 play.py와 evaluate.py의 `add_noise = True`는 효과가 없다.
+  깊이 잡음(`dis_noise`) 기본값은 0이다. 몸통 접촉 종료를 설정하지만 종료 판정에 쓰지 않는다. yaw 오차를 $[-\pi, \pi]$로 감싸지 않는다.
+  play.py는 추정기를 불러 놓고 쓰지 않으며, `--use_jit` 경로는 save_jit.py가 만든 모듈과 호출 인자가 맞지 않는다. 최대 반복 수 기본값이 50,000이라 README의 반복 수에서
+  멈추려면 `--max_iterations`를 준다. visualize.py는 원저자가 쓸모없는 옛 파일이라고 했다(이슈 #5). `--task go1`로 고르는 Go1 설정이 등록돼 있지만,
+  원저자는 Go1 지원을 아직 넣지 않았고 극한 지형에서 예상과 다르게 동작한다고 답했다(이슈 #2). Go1의 최대 토크가 23.7 N·m로 A1(약 33 N·m)보다 작다는 것이 그 이유다. 그 이슈에는 Go1과 Go2에서 뒷다리 하나를 든 세 다리 걸음새가 학습된다는 보고가 이어진다.
+
+**프로젝트 페이지의 브라우저 데모.** 프로젝트 페이지는 2026-09-24부터 정책을 브라우저에서 돌린다(페이지 저장소 커밋 9699af1). 소스는
+[chengxuxin/chengxuxin.github.io의 _parkour 폴더](https://github.com/chengxuxin/chengxuxin.github.io/tree/f73c1d113230c04f8ee55bf91f562d3ff3e7ec01/_parkour)(MIT)에 있다.
+돌리는 것은 논문의 A1 깊이 학생이 아니다. Isaac Lab 이식본(Isaaclab_Parkour)이 재현한 Go2 교사 정책이다(커밋 메시지). 물리는 MuJoCo 3.14 WASM이고, 정책은 순수 JS forward로 돈다.
+웹 워커가 지형 넷을 즉석에서 만들고, 속도 명령은 0.3–0.8 m/s다. 정책 파일(1,104,220바이트)은 이 저장소 구조의 actor와 추정기 파라미터 276,055개를 float32로 담은 크기와 같다.
+내려받는 양은 약 14 MB이고, 그 가운데 mujoco.wasm이 10.3 MB다.
+
+**travplan에 주는 것.** 이 저장소에서 가져올 것은 코드가 아니라 설계와 숫자다. 증류 루프(⑥)의 순서는 TP-0055에,
+지형에서 미리 계산하는 가장자리 마스크(②)는 MPPI 비용 항에, 진행 보상의 형태(②)는 TP-0066에 옮길 수 있다. 비상업 라이선스라 파일을 들이지 않고 구조만 새로 쓴다. 옮길 때는 ⑥의 두 함정(MTS 판정, 학생이 보는 참 속도)을 피한다.
+
+</details>
+
+**travplan에 주는 것.**
+
+1. **특권 교사에서 온보드 학생으로(TP-0055).** 2단계를 travplan에 옮기면 이렇다. 교사는 GT TravMap을 보는 Planner D이고, 학생은 같은 가중치에서 시작해 L1 belief를 본다.
+   롤아웃은 학생 출력으로 굴리고(DAgger), 정답은 같은 상태에서 교사가 낸 출력이다. Extreme Parkour는 잠재 회귀 없이 행동 손실만으로 깊이 인코더까지 학습했다(이슈 #19).
+   지도 잡음이 정밀한 동작을 망친다는 근거도 같은 논문에 있다. 잡음 낀 높이 지도로 학습한 교사(Noisy)는 시뮬 도달이 0.98에서 0.82로, 가장자리 위반이 0.03에서 0.20으로
+   나빠졌다. 잡음 모델은 Agarwal 외를 따랐다고만 적혀 있다. 학생이 스스로 예측하는 입력을 둔다면(예: belief에서 학습한 subgoal이나 빈칸 보정) MTS 문턱을 함께 둔다.
+   예측이 정답에서 크게 벗어난 스텝에만 정답을 보여 주면 초기 증류가 무너지지 않는다. 문턱은 논문 식대로 예측과 정답의 차이로 잰다. 이 저장소에서 배울 함정도 하나 있다.
+   학생이 증류 때 본 입력과 배포 때 받는 입력이 같아야 한다. TP-0055에서는 학생을 배포와 같은 권장 L1 설정의 belief로 증류해야 한다.
+2. **방향은 지도 위에서 이미 풀려 있다(GuidancePlanner, Planner D).** Extreme Parkour가 방향 증류를 만든 이유는 실물에 웨이포인트가 없어서다. travplan은 배포 때도
+   Guidance가 TravMap 위의 Dijkstra로 1초마다 subgoal을 낸다. 그래서 방향 예측 망은 지금 스택에 필요 없다. 쓸 만한 숫자는 둘이다. 표 3에서 스스로 예측한 방향(0.92)이
+   정답 방향(0.94)과 거의 같았고, 실물에서 사람이 준 방향(NoDir)은 기울어진 경사로를 한 번도 넘지 못했다. 그리고 교사는 현재와 다음 웨이포인트의 방향을 둘 다 본다.
+   Planner D는 지금 subgoal 하나를 받으므로, 다음 subgoal을 하나 더 주는 것은 값싼 입력 확장이다. 효과는 재지 않은 가설이다.
+3. **가장자리 벌점은 바퀴 접지점에(TravMap STEP 채널).** 이 논문에서 가장 옮길 만한 숫자는 가장자리 벌점의 절제 결과다. 벌점을 빼도 시뮬 도달은 거의 같았다(0.99 대 0.98).
+   그러나 가장자리 위반은 0.03에서 0.08로 늘었고, 실물의 가장 넓은 간격에서는 4/5가 0/5로 떨어졌다. 성공률로는 보이지 않던 위험이 실물에서 드러난 것이다.
+   travplan의 MPPI 비용은 몸체 중심 한 점에서 TravMap을 읽는다(`terrain_attitude`). 채널은 footprint만큼 팽창돼 있지만, 바퀴 네 개의 접지점이 STEP 가장자리 띠 위에
+   있는지는 따로 보지 않는다. 옮기는 방법은 둘이다. 첫째, MPPI rollout의 스텝마다 바퀴 접지점 넷에서 STEP 값이나 높이 기울기로 만든 가장자리 마스크를 읽는 `CostTerm`을 더한다.
+   바퀴는 연석을 건너야 하므로 닿는 것 자체가 아니라 가장자리 띠에 머물거나 나란히 달리는 시간을 벌한다. 둘째, 벤치마크에 MEV 같은 지표(스텝당 가장자리 띠 위 바퀴 수)를 더한다.
+   NoClear처럼 성공률이 같아도 이 지표는 달라질 수 있다. 코드는 벌점을 지형 레벨 4 이상에서만 켠다. 이유는 적혀 있지 않지만, travplan의 레벨 0–3에도 같은 단계적 적용을
+   시험할 수 있다.
+4. **하나의 진행 보상과 지형 커리큘럼(TP-0066, TP-0039).** 진행 보상은 목표 방향 속도 성분을 명령 속도에서 자른 값이다. 다섯 지형을 이 항과 yaw 추종 항, 작은 정규화 항들로
+   학습했고, 기술별 항은 없다. 이 항을 몸체 좌표 속도 추종으로 바꾸면(NoInner) 허들은 돌아가고 계단 MXD는 0.14로 떨어졌다. 상한이 있어 과속에는 보상이 없다.
+   Planner D RL 후학습(TP-0066)의 진행 항은 지금 GT cost-to-go가 줄어든 양이고 상한이 없다(`scripts/rl_finetune_planner_d.py`의 `reward`).
+   그 항을 손볼 때 Guidance 경로 방향에 대한 같은 형태로 둘 수 있다. 지형 커리큘럼은 B.14.1이 지형 레벨 표집(TP-0039·TP-0073)에 제안한
+   게임식 규칙과 같고, F.3의 LP-ACRL이나 F.6.1의 보상 문턱 커리큘럼과 나란한 후보다. 다만 실제 문턱은 논문의 절반이 아니라 코드의 0.8배와 0.4배다.
+5. **Playground의 학습 Controller(TP-0128).** TinyPolicy(가중치 1,675개)의 입력은 앞쪽 cost 격자 35칸과 경로 전방 점 넷이 중심이다. Extreme Parkour 교사의 scandots 132점,
+   웨이포인트 방향 둘과 같은 짜임이다. TinyPolicy는 GT 지도로 배우고 belief 지도에서 돈다(E.12). 1번의 증류가 그 격차를 다루는 직접적인 방법이다.
+   프로젝트 페이지의 브라우저 데모(코드 토글 끝)는 Playground 사족 프로필에 접촉 동역학을 넣고 싶을 때의 선례다. 파라미터 276,055개 정책과 MuJoCo WASM을 약 14 MB로 돌린다.
+   데모 코드는 MIT지만 정책은 GPL-3.0 저장소(Isaaclab_Parkour)의 재현에서 나왔고 가중치 라이선스는 따로 적혀 있지 않다. 그래서 travplan에는 들이지 않는다.
+6. **지연은 줄이기보다 고정한다(TP-0150).** Extreme Parkour는 실물에서 깊이 지연을 0.08 s, 고유수용 지연을 0.016 s로 고정했다. 일찍 끝난 처리는 남은 시간만큼 기다린다.
+   논문이 밝힌 이유는 떨림(jitter)을 막는 것이다. travplan은 plant의 지연을 MPPI rollout에 넣었다(TP-0150, `mppi_plant_lag`). 인식 쪽(L1 지도 갱신)의 지연도 같은 방식으로
+   상수에 맞추면, rollout과 학습 정책이 가정한 지연이 실제 지연과 같아진다. 다만 Extreme Parkour도 시뮬은 한 주기(0.1 s) 늦은 장을 주고 실물은 0.08 s로 맞춰,
+   둘이 정확히 같지는 않다.
+
+**옮기지 않는 것.** 깊이 영상에서 관절로 바로 가는 구조는 들이지 않는다. travplan의 모듈은 TravMap과 요청·결과 타입만 주고받는다는 규칙이 있고, 스워브는 모듈 역기구학을
+모델로 풀어 관절 RL이 필요 없다(F.7). 점프와 물구나무는 바퀴 배달로봇에 쓸 데가 없다. 방향 예측 문제도 travplan에는 없다. Extreme Parkour에는 목적지도 지도도 없지만
+travplan에는 둘 다 있다. 코드는 CC BY-NC 4.0이라 읽고 구조만 옮긴다.
+
 ### F.7 장단점 비교 — travplan 관점에서
 
 지금까지의 갈래를 한 표로 모은다. 마지막 열이 판단이다.
@@ -2206,7 +2706,7 @@ MetaRobotics가 Walk These Ways의 순서를 바꿔, 관측을 먼저 계산하�
 | **외수용 격자 + 자동 커리큘럼**<br>(LP-ACRL) | 높이 지도 필요 | 같이 틀린다 | **가장 적음**(1,500 vs 3,000+) | ANYmal D 3.0 m/s | ==**높음** — 우리가 지금 균등 표집을 쓴다(F.3)== |
 | **고유수용만**<br>(DreamWaQ, DreamRiser) | 관절·IMU만 | **면역** | 적음 | 대회 1위, 실외 장거리 | 낮음 — travplan은 이미 지도를 만든다. 다만 **지도 실패 시 폴백**의 사고방식은 가져올 값이 있다 |
 | **신뢰도 필터로 융합**<br>(DreamWaQ++) | 점군 + 고유수용 | **믿을 만할 때만 쓴다** | 큼(두 흐름) | 계단 97.8%, Go1 셋(센서 구성 상이) | ==**높음** — TP-0055(L1에서 40/40 → 32/40)에 그대로 대응== |
-| **카메라 직접**<br>(Extreme Parkour) | 깊이 카메라 | 해당 없음(지도를 안 만듦) | 큼 | 저가 로봇 파쿠르 | 낮음 — travplan은 TravMap이 공통 표현이라 구조가 어긋난다 |
+| **카메라 직접**<br>(Extreme Parkour, F.6.2) | 깊이 카메라 | 해당 없음(지도를 안 만듦) | 큼(두 단계, RTX 3090 한 장 20시간 미만) | 저가 A1 파쿠르, 가장 어려운 단계 5번 중 3–4번 성공 | 낮음 — 구조는 어긋난다(TravMap이 공통 표현). 가져올 것은 증류 순서와 가장자리 벌점이다 |
 | **궤적 생성기 + RL 파라미터**<br>(Shi 2023) | 지도 | 생성기가 받쳐 준다 | 중간 | 징검다리 25.5 cm | 중간 — Planner D의 "제어 공간 생성"과 구조가 닮았다 |
 | **확률 제약 MPC**<br>(RIVeR) | 상태 추정 | 제약을 그만큼 조인다 | 없음(학습 아님) | 7.5 kg 미지 하중 | ==**높음** — TP-0069·0076이 가려는 곳의 실물 선례== |
 | **RL 보강 MPC** | 상태 추정 + 학습 | MPC가 제약을 지킨다 | 중간 | 시뮬 위주 | 중간 — TP-0068 + TP-0071의 조합과 같은 그림 |
