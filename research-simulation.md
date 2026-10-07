@@ -57,8 +57,8 @@ LiDAR에서 TravMap까지 이어지는 인식 경로를 검증한다. 보도 전
 [Isaac Lab arXiv:2511.04831](https://arxiv.org/abs/2511.04831), NVIDIA). Isaac Sim은 OpenUSD 장면을 PhysX로 굴리고 RTX로 그리는
 시뮬레이터다. Isaac Lab은 그 위에서 수천 개 환경을 병렬로 돌려 강화학습과 모방학습을 하는 프레임워크로, Isaac Gym의 후속이다.
 버전은 Isaac Sim 6.0(2026-06-04), 6.1(2026-09-10)이 나왔고 7.0 alpha(2026-09-18)가 공개됐다. Isaac Lab 3.0 Early Access(2026-09-16)는
-Isaac Sim 6.1 기준이고 정식판은 2026-10 말이 목표다. 저장소의 소스는 Apache-2.0이지만, 빌드와 실행에 필요한 Omniverse Kit SDK와
-3D 에셋은 NVIDIA 별도 라이선스를 따른다.
+Isaac Sim 6.1 기준이고 정식판은 2026-10 말이 목표다. Isaac Sim 저장소의 소스는 Apache-2.0이고, Isaac Lab 저장소는 BSD-3-Clause다(Mimic 확장만 Apache-2.0).
+다만 빌드와 실행에 필요한 Omniverse Kit SDK와 3D 에셋은 NVIDIA 별도 라이선스를 따른다.
 
 Isaac Lab 3.0의 핵심 변화는 **백엔드를 설정 한 줄로 고르는 구조**다. 같은 태스크를 `physics=newton_mjwarp`(Newton의 MuJoCo Warp),
 `physics=ovphysx`(PhysX 단독), `physics=isaacsim_physx`(Isaac Sim 전체)로 돌린다. 앞의 둘은 Isaac Sim을 띄우지 않는 kit-less
@@ -121,8 +121,8 @@ MuJoCo의 접촉 모델을 쓰면서 동시에 시뮬을 역전파할 수는 없
 **MuJoCo 계열 — 접촉이 정확한 연구용 엔진과 그 GPU판**([MuJoCo](https://github.com/google-deepmind/mujoco),
 [MuJoCo Warp](https://github.com/google-deepmind/mujoco_warp), [Playground arXiv:2502.08844](https://arxiv.org/abs/2502.08844), Google
 DeepMind). MuJoCo 3.14(2026-09-22)와 같은 버전의 MuJoCo Warp가 GPU 병렬판이다. MuJoCo Playground는 JAX판(MJX) 위의 학습 프레임워크로,
-`pip install playground` 하나로 설치해 GPU 한 장에서 몇 분 만에 정책을 학습한다. 4족, 휴머노이드, 손, 팔에서 상태와 영상 입력 모두
-zero-shot sim-to-real을 보였다. 모두 Apache-2.0이다.
+`pip install playground` 하나로 설치해 GPU 한 장에서 몇 분 만에 정책을 학습한다. 4족, 휴머노이드, 손, 팔에서
+zero-shot sim-to-real을 보였다. 영상 입력의 zero-shot 이전은 조작 과제(Franka 큐브 집기)에서만 보였다. 모두 Apache-2.0이다.
 
 **travplan에 주는 의미.** 보행과 조작에는 강하지만 보도 에셋과 ROS 2 브릿지가 없다. Isaac Lab 3.0이 Newton을 통해 MuJoCo Warp를 품으므로
 따로 고를 이유가 없다. 다만 **바퀴 접촉을 물리로 풀어야 하는 작업에서는 이야기가 다르다**(S.5.2, S.5.3).

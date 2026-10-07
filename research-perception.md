@@ -5237,7 +5237,7 @@ A\*는 (1,0)부터 펼친다. Dijkstra는 둘을 같은 순위로 본다.
 | blind 보행(Lee 2020) | 관절 인코더 + IMU | 관절·IMU 이력으로 지형을 암묵 추론, 미리 보지 못함 | ✅ ANYmal 진흙·눈·잔해 | [KAIST](https://pure.kaist.ac.kr/en/publications/learning-quadrupedal-locomotion-over-challenging-terrain/) |
 | Boston Dynamics Spot | 스테레오 깊이 5쌍 + IMU + 다리 센서 | 기하 SLAM + 학습 계단 분류 | 출시 제품(일부는 벤더 발표) | [BD](https://support.bostondynamics.com/s/article/About-the-Spot-Robot-72005) |
 | ANYbotics ANYmal | 360° LiDAR + 깊이 카메라 6 | 융합 후 신경망으로 지도·발 디딤·이상 감지 | ✅ 산업 현장 | [ANYbotics](https://www.anybotics.com/robotics/anymal/) |
-| Unitree Go2/B2 | 4D LiDAR L1 + D435i(Go2), 3D LiDAR + 깊이 2(B2) | 온보드 Jetson급 SLAM + 인식 | ✅ EDU 다수 | [스펙](https://robostore.com/blogs/news/go2-edu-robot-advanced-sensors-4d-lidar-and-ai-computing-power-for-true-autonomy) |
+| Unitree Go2/B2 | 4D LiDAR L1 + D435i(Go2, 지금 공식 페이지는 LiDAR L2와 EDU 판 깊이 카메라), 3D LiDAR + 깊이 2(B2) | 온보드 Jetson급 SLAM + 인식 | ✅ EDU 다수 | [스펙](https://robostore.com/blogs/news/go2-edu-robot-advanced-sensors-4d-lidar-and-ai-computing-power-for-true-autonomy) · [Go2 공식](https://www.unitree.com/go2) |
 | Wild Visual Navigation | 카메라 + 고유감각(속도 추종 오차) | 고정 DINO 특징 + 온라인 자기지도 헤드, 5분 적응 | ✅ ANYmal 현장 | [Springer](https://link.springer.com/article/10.1007/s10514-025-10202-x) |
 | QuadPiPS | 전방 깊이 카메라 1대(elevation map 대신 egocan) | 시맨틱 affordance로 발 디딤 계획 | 시뮬(ANYmal C) 위주 + Go2 실물 시연 | [arXiv:2501.00112](https://arxiv.org/abs/2501.00112) |
 | Stop to Decide | IMU + 1D 거리 3 + 단안 카메라(선 추적), 발 힘 4채널은 기록만 | 지도 없이 지연을 고려한(latency-aware) proprioception 내비 | ✅ 실제 | [arXiv:2607.11204](https://arxiv.org/abs/2607.11204) |
@@ -8075,7 +8075,7 @@ teacher 정책을 student가 행동 모방으로 배운다. 변분 정보 병목
 <summary>자세히: 지각 보행 + world model의 방법과 수식</summary>
 
 **논문과 이름.** 제목은 "Learning Perceptive Humanoid Locomotion over Challenging Terrain"이고, 제안 모델 이름은 HPC(Humanoid Perception
-Controller)다. 다른 논문(전방향 계단 보행)은 이 논문을 IROS 2025로 인용한다. 로봇 기종은 원문에서 확인하지 못했다.
+Controller)다. IROS 2025에 실렸다([DOI](https://doi.org/10.1109/IROS60139.2025.11247685), pp. 6571–6578). 로봇 기종은 원문에서 확인하지 못했다.
 
 **풀려는 문제.** 가장 믿을 만한 휴머노이드 제어기는 아직 proprioception만 쓰는 blind 정책이다. 높이 지도를 넣으면 미리 걸음을 계획할 수
 있지만, 실제 지도에는 잡음이 많다. 시뮬의 도메인 랜덤화로도 모든 인식 실패(무성한 풀, 깊은 눈)를 재현하기 어렵다. 사람은 눈 위에 발을

@@ -21,7 +21,7 @@
 | 탭 | 다루는 것 | 절 | travplan과의 관계 |
 |---|---|---|---|
 | 자율주행 자동차 | ==한자리에 모았다== — 공개 스택(Autoware·Apollo), 종단간(E2E), 연구 역사와 2026 상용화 | B.12.1, B.11, B.13 | 후보 생성·검증·선택 구조, 폐루프 평가 지표, 규칙 안전 층 |
-| 다리·바퀴 로봇과 계보 | 사족·휴머노이드·바퀴 로봇의 공개 Planner, 그리고 ETH RSL 한 연구실의 층별 계보 | B.12, B.14 | 스워브 모듈 모델, ROS 2 통합, 인식 도구의 출처 |
+| 다리·바퀴 로봇과 계보 | 사족·휴머노이드·바퀴 로봇의 공개 Planner, ETH RSL 한 연구실의 층별 계보, NVIDIA·Google DeepMind·취리히·RAI Institute와 다른 연구실의 사족·휴머노이드 계보 | B.12, B.14, B.16 | 스워브 모듈 모델, ROS 2 통합, 인식 도구의 출처, 학습 절차와 plant 보정 |
 
 **계보 한눈에 보기.** 각 이름의 설명은 해당 탭에 있다.
 
@@ -1055,7 +1055,7 @@ SigLIP 특징을 합친 영상 인코더를 붙이고, 실제 로봇 시연 97�
 ![π0 Fig. 3](https://arxiv.org/html/2410.24164v4/overview.png)
 *그림 — π0 (Fig. 3): 자체 조작 데이터와 공개 데이터를 섞어 사전학습하고, 큰 VLM backbone과 작은 행동 전문가로 된 flow matching VLA가 여러 로봇의 행동을 낸다. 출처: [arXiv:2410.24164](https://arxiv.org/abs/2410.24164)*
 
-**NaVILA — 언어로 된 중간 행동으로 다리 로봇을 움직인다**([arXiv:2412.04453](https://arxiv.org/abs/2412.04453), 2024, UC San Diego·USC·NVIDIA,
+**NaVILA — 언어로 된 중간 행동으로 다리 로봇을 움직인다**([arXiv:2412.04453](https://arxiv.org/abs/2412.04453), RSS 2025, UC San Diego·USC·NVIDIA,
 [코드](https://github.com/AnjieCheng/NaVILA)).
 VLA가 관절 명령까지 곧장 내면 로봇마다 다시 학습해야 한다. NaVILA는 VLA가 "앞으로 75 cm"처럼 공간 정보를 담은 중간 행동을 **언어로**
 내게 하고, 영상 기반 보행 RL 정책이 그것을 실행한다. 사람이 찍은 투어 영상을 연속 환경의 내비 데이터로 바꿔 학습에 섞었다. 기존 VLN
@@ -1500,7 +1500,7 @@ RSS 2024, CMU LeCAR Lab, [코드](https://github.com/LeCAR-Lab/ABS) ★0.6k, [�
 세 부분으로 되어 있다. 빠른 정책은 목표로 달리며 장애물을 피하도록 RL로 학습한다. 감시기는 빠른 정책에 조건을 건 도달-회피(reach-avoid)
 가치 네트워크로, 시뮬에서 빠른 정책이 만든 궤적 데이터로 학습한다. 가치가 위험 쪽으로 넘어가면 회복 정책으로 바꾼다. 회복 정책은 속도
 명령을 추종하고, 그 명령은 가치 네트워크를 목적 함수로 삼아 고른다. 외부 인식은 깊이 영상에서 예측한 광선 거리 11개뿐이다. 시뮬에서 성공률
-79.1%, 충돌률 5.7%, 최고 속도 3.48 m/s였고, Unitree Go1 실물은 실내외에서 10번 중 9–10번 성공했다.
+79.1%, 충돌률 5.7%, 성공 에피소드의 최고 속도 평균 3.48 m/s였고, Unitree Go1 실물은 실내외에서 10번 중 9–10번 성공했다.
 
 **travplan에 주는 의미.** Planner D를 폐루프 RL로 후학습하면(TP-0066) 같은 문제가 생긴다. 빠르지만 가끔 위험한 정책을 언제 믿을지 정해야 한다.
 ABS처럼 정책 조건 도달-회피 가치를 함께 학습하면, 값이 나쁠 때 GuidancePlanner 경로와 MPPI로 넘기는 폴백 규칙을 학습된 기준으로 세울 수 있다.
@@ -2035,7 +2035,7 @@ nuPlan 폐루프 평가 설계다(B.12.1).
 자동차는 교통 규칙과 차량 기구학을, 사족보행은 발 디딜 곳과 몸통 충돌을, 휴머노이드는 발자국 순서와 전신 균형을, 바퀴 로봇은 비용 지도와
 구동 방식(차동, 전방향, 스워브)을 지킨다. travplan의 스워브 보도 로봇은 바퀴 로봇 층위에 있다. 그래도 2.5D 지형 비용은 다리 로봇 스택에서,
 후보 생성과 규칙 선택은 자율주행 스택에서 가장 많이 배울 수 있다. 별 수, 라이선스, 최근 커밋은 2026-09 기준이다. 인식 쪽 공개 코드(지형 지도,
-traversability 필터)는 인식 문서 A.2b와 A.7에 있다.
+traversability 필터)는 인식 문서 A.2b와 A.7에 있다. 사족보행과 휴머노이드의 학습 연구를 조직별 계보로 묶은 것은 B.16에 있다.
 
 | 층 | 자율주행 자동차 | 사족보행 | 휴머노이드 | 바퀴 로봇 | travplan |
 |---|---|---|---|---|---|
@@ -2145,7 +2145,7 @@ Click-and-Traverse, HEAD)는 인식에서 전신 동작까지를 학습 정책�
 | Click-and-Traverse | 로컬 내비 | 휴머노이드 퍼텐셜장(HumanoidPF) + RL | Apache-2.0 | [GalaxyGeneralRobotics/Click-and-Traverse](https://github.com/GalaxyGeneralRobotics/Click-and-Traverse) 0.2k |
 | HEAD | 내비·도달 | 사람 데이터로 배운 상위 정책 + 세 점 추종 전신 정책 | 표기 없음 | [Stanford-TML/HEAD_release](https://github.com/Stanford-TML/HEAD_release) 38 |
 | RoM-Nav | 로컬 내비(다층) | 축소 모델 정책을 고정 보행 제어기 위 정책으로 kickstart, Poisson 안전 필터(B.9) | 표기 없음 | [wdc3iii/rom-nav](https://github.com/wdc3iii/rom-nav) 0 |
-| Isaac GR00T | VLA | VLM(System 2) + 확산 transformer(System 1) | 코드 Apache-2.0, 가중치 표기 없음 | [NVIDIA/Isaac-GR00T](https://github.com/NVIDIA/Isaac-GR00T) 8.1k |
+| Isaac GR00T | VLA | VLM(System 2) + 확산 transformer(System 1) | 코드 Apache-2.0, 가중치 NVIDIA Open Model License | [NVIDIA/Isaac-GR00T](https://github.com/NVIDIA/Isaac-GR00T) 8.1k |
 
 **발자국 계획 — 휴머노이드의 고전 Planner**([Hornung 등, Humanoids 2012](https://doi.org/10.1109/HUMANOIDS.2012.6651592);
 [IHMC 코드](https://github.com/ihmcrobotics/ihmc-open-robotics-software), Apache-2.0). 두 발 로봇은 발을 어디에 둘지가 곧 경로다. 발자국 계획은
@@ -2504,7 +2504,7 @@ travplan과 문제 설정이 가장 가까운 산업 사례다. 이 절은 RSL �
 층마다의 깊은 설명은 제자리에 둔다. 인식 도구의 연표는 인식 문서 A.7.2에, 하위 제어와 커리큘럼은 Controller 문서 F.1에 있다.
 이 절은 그 사이를 잇고, 아직 다룬 곳이 없던 논문은 카드와 상세 토글로 새로 쓴다.
 B.14.1은 토대(2014–2021)이고, B.14.2는 인식 보행과 추종이다. B.14.3은 내비게이션과 Planner, B.14.4는 바퀴·다리 로봇과 상용화를 다룬다.
-B.14.5는 사람들이고, B.14.6은 travplan이 가져올 순서다.
+B.14.5는 사람들이고, B.14.6은 travplan이 가져올 순서다. RSL 밖의 취리히 연구(ETH의 다른 연구실·Disney Research·Flexion)와 다른 조직의 사족·휴머노이드 계보는 B.16에 있다.
 
 | 층 | RSL 연구 | 핵심 | 다룬 곳 |
 |---|---|---|---|
@@ -2541,9 +2541,9 @@ B.14.5는 사람들이고, B.14.6은 travplan이 가져올 순서다.
 | 2020 | 험지 blind 보행(Science Robotics), Rolling in the Deep(RA-L), DARPA SubT 어반 서킷에서 ANYmal-B 두 대의 보행 실패 0 |
 | 2021 | legged_gym(CoRL 2021), 전신 MPC(IROS 2021), Bjelonic 박사 논문, DARPA SubT 결승 우승(Prize Round 09-23, CERBERUS 팀, ANYmal C 네 대와 ArtPlanner), IEEE Spectrum의 Swiss-Mile 소개(12) |
 | 2022 | Miki 인식 보행(Science Robotics, 01), elevation_mapping_cupy(IROS 2022), CERBERUS 팀 논문(Science Robotics, 05), 오프라인 라이브러리와 온라인 MPC(IJRR), Multi-AMP(arXiv, 03) |
-| 2023 | ArtPlanner(Field Robotics), Swiss-Mile Robotics AG 설립(04), WVN(RSS 2023), Multi-AMP(ICRA 2023), ANYmal Parkour(arXiv, 06), DTC(arXiv, 09), ViPlanner(arXiv, 10), Hutter의 Boston Dynamics AI Institute 취리히 책임자 발표(12) |
-| 2024 | DTC(Science Robotics, 01-17), ANYmal Parkour(Science Robotics, 03-13), 바퀴·다리 도시 내비(Science Robotics, 04-24), ViPlanner(ICRA 2024), Swiss-Mile 2,200만 달러 시드(08) |
-| 2025 | RIVR로 개명(01), Rudin·Hoeller의 Flexion 공동 창업(01), FDM(RSS 2025), 오스틴 Veho 시범(05), SRU(arXiv, 06; IJRR 온라인, 12), WVN 확장판(Autonomous Robots, 07), 취리히 Just Eat 시범(08) |
+| 2023 | ArtPlanner(Field Robotics), Swiss-Mile Robotics AG 설립(04), WVN(RSS 2023), Multi-AMP(ICRA 2023), ANYmal Parkour(arXiv, 06), DTC(arXiv, 09), ViPlanner(arXiv, 10), Hutter의 The AI Institute(지금 RAI Institute) 취리히 책임자 발표(12) |
+| 2024 | DTC(Science Robotics, 01-17), ANYmal Parkour(Science Robotics, 03-13), 바퀴·다리 도시 내비(Science Robotics, 04-24), ViPlanner(ICRA 2024), Swiss-Mile 2,200만 달러 시드(08), Flexion Robotics AG 등기(12, Rudin·Hoeller 등 다섯이 공동 창업) |
+| 2025 | RIVR로 개명(01), FDM(RSS 2025), 오스틴 Veho 시범(05), SRU(arXiv, 06; IJRR 온라인, 12), WVN 확장판(Autonomous Robots, 07), 취리히 Just Eat 시범(08) |
 | 2026 | Path-conditioned RL(arXiv, 03; IROS 2026), RIVR TWO 공개(03), Amazon의 RIVR 인수 확인(03-19), SRU(IJRR 45(11)) |
 
 </details>
@@ -3196,7 +3196,7 @@ B.12.2의 Robot Parkour Learning(Zhuang 외)과는 다른 논문이다. 신경�
 - **계보.** 기술 정책의 학습 설정은 Rudin 2022(IROS)의 위치 기반 명령과 거의 같다. DTC와 한 뿌리다.
 - **코드와 판본.** 공개 코드는 없다(leggedrobotics 조직 공개 저장소, 2026-10-06 확인). 프로젝트 페이지에 기술별 영상과 실물 영상이 있다. A.7.1과 이 토글의 수치는 arXiv v1(심사 중 판본)에서 읽었다.
 
-**travplan에 주는 것.** B.15.5는 Planner D 후학습이 curb_ramp 레벨 3에서 멈춘 원인 후보로, 후보를 한 스텝씩 채점하는 보상을 봤다.
+**travplan에 주는 것.** B.15.5는 Planner D 후학습이 curb_ramp 레벨 3에서 멈춘 원인 후보로, 한 계획 시점의 후보(4 s 개루프 rollout)를 한 번씩 채점하는 보상을 봤다.
 B.15.6에서는 경사로를 지나친 상태부터 시작한 DAgger로도 단독 도달이 늘지 않았다(23/30). 그래서 남은 가설은 관측 범위와 지평이다(TP-0145).
 Parkour의 내비게이션 정책은 반대 형태의 보상을 쓴다. 보상은 남은 시간이 0이 되는 마지막 스텝에만 있고, 그때 목표 0.4 m 안이면 큰 보상을 받는다.
 제시간에만 닿으면 돌아가는 길도 손해가 없다. 대가는 느린 수렴이다. 저자들은 목표를 처음엔 가깝게 두고 점점 멀리 옮기는 커리큘럼이 없으면 큰 장애물 앞에서 막혔다고 적었다.
@@ -4300,19 +4300,19 @@ Amazon은 이 인수를 연구 투자로 설명했고, 배송 협력사와 현�
 
 | 사람 | RSL에서 남긴 것 | 이후 |
 |---|---|---|
-| Marco Hutter | RSL을 이끄는 ETH 교수. 이 절 논문 대부분의 마지막 저자 | ANYbotics(2016)와 Swiss-Mile(2023) 공동 창업. 2023-12 Boston Dynamics AI Institute(지금 RAI Institute) 취리히 책임자로 발표됐고, 2025-09 인터뷰 기준 교수 50%, 소장 50%로 일한다. 2024 Rössler 상. 2026-09 SoftBank가 Hyundai에서 RAI Institute를 인수하기로 합의했다는 보도가 있고, 미국 외국인투자심의위원회(CFIUS)가 심사 중이다 |
+| Marco Hutter | RSL을 이끄는 ETH 교수. 이 절 논문 대부분의 마지막 저자 | ANYbotics(2016)·Swiss-Mile(2023)·Flexion(2024-12) 공동 창업. Flexion에서는 자문을 맡는다(팀 페이지). 2023-12 The AI Institute(처음 이름 Boston Dynamics AI Institute, 지금 RAI Institute) 취리히 책임자로 발표됐고, 2025-09 인터뷰 기준 교수 50%, 소장 50%로 일한다. 2024 Rössler 상. 2026-09 SoftBank가 Hyundai에서 RAI Institute를 인수하기로 합의했다는 보도가 있고, 미국 외국인투자심의위원회(CFIUS)가 심사 중이다 |
 | Péter Fankhauser | `elevation_mapping`(CLAWAR 2014, RA-L 2018)과 `grid_map` 저자 | ANYbotics 공동 창업자, CEO |
 | Martin Wermelinger | `traversability_estimation` 저자(Fankhauser, Kaestner와 함께) | 확인하지 못했다 |
 | Jemin Hwangbo | actuator net(Science Robotics 2019) 1저자. 그 접촉 솔버가 RaiSim이 되어 Lee 2020의 시뮬레이터가 됐다 | KAIST RaiLab(Lee 2020에 KAIST 소속을 함께 적음) |
 | Joonho Lee | 험지 blind 보행(2020)과 바퀴·다리 도시 내비(2024) 1저자, Multi-AMP 공저 | 2024 논문 출판 때 Neuromeka(서울) 소속 |
 | Takahiro Miki | 인식 보행(Science Robotics 2022)과 elevation_mapping_cupy(IROS 2022) 1저자 | 확인하지 못했다 |
 | Lorenz Wellhausen | ArtPlanner 1저자, 험지 blind 보행·도시 내비·elevation_mapping_cupy 공저 | Swiss-Mile 공동 창업 |
-| Nikita Rudin | legged_gym(CoRL 2021)과 Rudin 2022(IROS) 1저자, ANYmal Parkour·Multi-AMP 공저 | NVIDIA 연구원(Isaac Gym 논문 공저)을 거쳐 2025-01 취리히에서 Flexion 공동 창업(CEO) |
-| David Hoeller | ANYmal Parkour 1저자, legged_gym·SRU 공저 | Flexion 공동 창업(CTO) |
-| Jonas Frey | WVN(RSS 2023) 1저자, FDM 공저 | 확인하지 못했다 |
+| Nikita Rudin | legged_gym(CoRL 2021)과 Rudin 2022(IROS) 1저자, ANYmal Parkour 공동 1저자(Hoeller와), Multi-AMP 공저 | NVIDIA 연구원(Isaac Gym 논문 공저)을 거쳐 2024-12 취리히에서 Flexion 공동 창업(CEO) |
+| David Hoeller | ANYmal Parkour 공동 1저자(Rudin과), legged_gym·SRU 공저 | Flexion 공동 창업(CTO) |
+| Jonas Frey | WVN(RSS 2023) 1저자, FDM 공저 | Stanford(Marco Pavone)와 UC Berkeley(Jitendra Malik)의 박사후연구원(본인 홈페이지, 2026-10-07) |
 | Pascal Roth | ViPlanner(ICRA 2024)와 FDM(RSS 2025) 1저자 | FDM 프로젝트 페이지 소속은 ETH Zürich와 NVIDIA |
 | Fan Yang | iPlanner(RSS 2023)와 SRU(IJRR) 1저자, Path-conditioned RL 공저 | 확인하지 못했다 |
-| Fabian Jenelten | DTC(Science Robotics 2024) 1저자, elevation_mapping_cupy 공저 | 확인하지 못했다 |
+| Fabian Jenelten | DTC(Science Robotics 2024) 1저자, elevation_mapping_cupy 공저 | 2026 UMV 설계 논문(B.16.4)의 소속 표기는 RAI Institute 취리히 |
 | Marko Bjelonic | 바퀴 ANYmal 다섯 편(2018–2022) 1저자, 박사 논문(2021) | Swiss-Mile과 RIVR 공동 창업자, CEO. 2026-03 Amazon 인수 |
 | Giorgio Valsecchi | 바퀴·다리 로봇 하드웨어(Science Robotics 2024 감사의 글) | Swiss-Mile 공동 창업 |
 | Alexander Reske | MPC 모방 다중 걸음새 학습(ICRA 2021) 1저자, 2024 도시 내비 공저 | Swiss-Mile 공동 창업 |
@@ -4342,11 +4342,3141 @@ travplan은 emap 코어를 벤더링해 쓰므로 상류가 멈춰도 L1 인식 
 ==Zeilinger 그룹은 불확실성을 σ로 재서 제약을 조이고, RSL은 실패를 직접 예측해 비용에 넣는다.==
 travplan의 TP-0068·TP-0069는 앞쪽이고, Planner D 선택기의 실패 확률은 뒤쪽이다. 둘은 배타적이지 않다. 가림으로 못 본 칸(TP-0047)은 σ의 몫이고, 본 포트홀 가장자리는 실패 확률의 몫이다.
 
+### B.16 사족보행·휴머노이드 연구실별 계보: NVIDIA, Google DeepMind, 취리히, RAI Institute와 다른 연구실
+
+**사족보행과 휴머노이드의 학습 연구는 몇 조직이 도구와 사람을 주고받으며 끌어 왔다.**
+NVIDIA는 GPU 시뮬레이터와 학습 틀을 만들었다. Google DeepMind는 sim-to-real의 초기 교훈을 냈고, 2021년에 인수한 MuJoCo 위에 학습 도구를 쌓았다.
+취리히에서는 ETH Zürich의 연구실, 그 출신이 세운 Flexion, Disney Research가 같은 학습 도구를 쓴다.
+RAI Institute(Robotics and AI Institute)와 Boston Dynamics는 같은 Spot과 Atlas 위에서 학습 정책과 MPC를 어느 층에 둘지 시험했다.
+==출발점은 달랐지만, 위 층이 짧은 궤적이나 명령을 내고 아래 층의 학습 정책이 따르는 두 층 구조에 여러 조직이 따로 닿았다.==
+NVIDIA의 SONIC과 PARC, Flexion의 Reflect, RSL의 동작 생성 + 동작 추종 휴머노이드, RAI Institute의 Sumo가 그 예다. travplan의 Planner와 Controller 분리도 같은 경계에 서 있다. 다만 travplan의 아래 층은 학습 정책이 아니라 MPPI와 NMPC다.
+그래서 travplan이 가져올 것은 로봇 형태가 아니라 두 층을 함께 학습하는 절차, plant를 실물에 맞추는 절차, 두 층 사이의 인터페이스다.
+
+이 절은 같은 탭의 두 절과 짝을 이룬다. B.12는 로봇 종류별 공개 Planner 스택을 모았고, B.14는 ETH RSL 한 연구실을 층별로 깊게 읽었다.
+B.16은 RSL 밖의 연구실과 회사를 조직별로 묶는다. B.14가 다룬 RSL 연구는 가리키기만 한다. B.14에 없던 RSL 연구(PACE·AME-2·Parkour in the Wild 등)는 B.16.3에 카드로 둔다.
+하위 제어 쪽의 깊은 읽기는 Controller 문서에 있다. 사족보행 RL의 공개 학습 틀과 코드는 F.6에, Extreme Parkour의 논문·코드 정독은 F.6.2에 있다.
+GR00T 분리형 전신 제어기(WBC, whole-body control)는 F.8에 있다. 휴머노이드 회사의 인식·내비게이션 스택(Figure·LimX·Flexion 등)은 인식 문서 A.8.1에 있다. 이 절은 그 절들을 가리키기만 한다.
+
+**읽는 법.** 아래 표는 조직마다 무엇에 걸었고 travplan의 어디에 닿는지를 한 줄로 준다. 계보 그림 두 장은 사족·바퀴 다리와 휴머노이드로 나눠, 뒤 연구가 앞 연구를 직접 쓴 관계를 잇는다.
+연표는 그림 아래 토글에 있다. B.16.1–B.16.4는 네 조직이고, B.16.5와 B.16.6은 그 밖 연구실의 사족과 휴머노이드다.
+소절마다 첫 문단 아래 토글에 그 소절에서 다룬 연구의 목록 표가 있다. 표의 '다룬 곳'에서 '이 소절'은 그 소절에 카드나 문단이 있다는 뜻이고, 괄호 안은 그 자리(다른 카드나 문단, 갈래 소개, 토글)다.
+'표만'은 그 표에만 있다는 뜻이다. B.16.7은 travplan이 가져올 순서다. 소속과 공개 코드는 2026-10-07에 확인했다.
+
+**이 절에 자주 나오는 travplan 결과.** 카드의 'travplan에 주는 의미'가 자주 기대는 작업이다. 상태는 2026-10-07의 TODO 기준이다.
+
+| TP | 상태 | 무엇인가 | 읽을 곳 |
+|---|---|---|---|
+| TP-0066 | Done | Planner D 폐루프 RL 후학습. 후보 묶음의 상대 이점을 AWR(advantage-weighted regression) 가중치로 바꿔 flow matching을 미세 조정했다 | B.15.3 |
+| TP-0150 | Done | plant 지연을 아는 MPPI rollout(`mppi_plant_lag`). 권장 L1 + 스워브 plant 레벨 3에서 치명이 55에서 4로 줄었다. rollout의 지연을 plant와 같게 둔 시뮬 결과라, 올바른 명목 모델의 값을 보여 줄 뿐 실물 보정의 근거는 아니다 | MPC 문서 M.3.22 |
+| TP-0128 | Done | Playground의 학습 Controller TinyPolicy. GT 지도로 배우고 belief 지도에서 돈다 | Controller 문서 E.12 |
+| TP-0068 | Done | GP 잔차 동역학. 명목 모듈 모델 위의 잔차를 GP로 배운다 | MPC 문서 M.3.12 |
+| TP-0078 | Done | Guidance 폴백(`planner_df`). Planner D 후보가 치명으로 몰린 계획이 이어지면 Guidance 경로를 후보로 쓴다 | B.15.2 |
+| TP-0135 | Done | Playground 휴머노이드와 GR00T 분리형 WBC 층. 위에 앉은 MPPI가 하체 지연을 알아야 했다 | Controller 문서 E.13 |
+| TP-0055 | Backlog | Planner D를 L1 belief로 다시 학습(DAgger) | — |
+| TP-0124 | Backlog | MPPI·MPC 예측 모델의 계층(기구학, 동역학, 학습) | — |
+| TP-0126 | Backlog | 학습 forward dynamics 모델(FDM)을 MPPI rollout 모델로 | — |
+| TP-0032 | Backlog | L0의 지연·자기 위치 잡음 무작위화 | — |
+| TP-0043 | Backlog | sim-to-real 예측력 프로토콜 | — |
+
+| 조직 | 건 것 | 사족 | 휴머노이드·이족 | 시뮬레이터·기반 모델 | travplan과 닿는 곳 | 소절 |
+|---|---|---|---|---|---|---|
+| NVIDIA(GEAR·DAIR 등 연구 조직) | 다리 로봇 학습이 도는 토대(GPU 시뮬레이터, 학습 틀, 모션 데이터)와 범용 휴머노이드 추종기 | DrEureka(Go1), Neural Scene Representation(ANYmal, ETH 공저) | ASE·MaskedMimic·PARC(시뮬레이션 캐릭터), HOVER(H1), SONIC·VIRAL·DoorMan·GRAIL(G1) | Isaac Gym, Orbit·Isaac Lab(ETH 공동), Newton(공동), GR00T N1–N1.7 | PARC의 생성기–추종기 데이터 고리, 보상 인지 물리 prior(RAPP)로 무작위화 범위 재기, HOVER 명령 마스크(TP-0128) | B.16.1 |
+| Google DeepMind(구 Google Brain 로보틱스와 DeepMind) | 시뮬레이터를 실물에 맞추기와 실물 학습에서 기반 모델의 전신 제어까지 | Minitaur sim-to-real, 동물 모방(Laikago), Visual-Locomotion·Safe RL, Barkour | OP3 축구 두 편, Gemini Robotics 2(Apollo 2) | Brax, MuJoCo·MuJoCo MPC·MJX(JAX판)·MuJoCo Playground, Gemini Robotics | 구동기·지연 모델(TP-0150, TP-0032), 학습 위 층 + MPC 아래 층, Barkour 시간 점수(TP-0038), 적응 증류 가중(TP-0066) | B.16.2 |
+| 취리히(RSL 밖 ETH 연구실, Disney Research, Flexion) | 같은 학습 도구를 쓰는 연구실·회사·기업 연구소의 망 | Resilient 내비, PACE, AME-2, Parkour in the Wild, 바퀴 다리 Ascento·LEVA | BDX·Olaf·RobotMDM(Disney), RSL 동작 생성 + 동작 추종(G1), Flexion Reflect | Kamino(Newton 통합), RWM(world model) | 생성기와 추종기 맞추기, plant 측정 보정(PACE, TP-0035), 가림 학습(TP-0055), σ 융합(AME-2, TP-0054), 조향 규칙(LEVA, TP-0034) | B.16.3 |
+| RAI Institute·Boston Dynamics | 학습 정책과 MPC를 어느 층에 둘지 | Spot RL 보행(Boston Dynamics), Spot 고속 RL, ReLIC, Sumo, EVORA, 샘플링 MPC 시연 RL | ZEST(Atlas·G1), Atlas 대형 행동 모델(Boston Dynamics·TRI), Sumo(G1, 시뮬레이션), 바퀴 이족 Roadrunner | judo(MuJoCo 샘플링 MPC), Spot RL Researcher Kit(Isaac Lab) | 하위 정책을 rollout에 넣는 축(TP-0124, TP-0150), 미끄럼 분포(EVORA), 분포로 plant 맞추기(TP-0043) | B.16.4 |
+| 다른 연구실의 사족(UC Berkeley·CMU, MIT, KAIST, CMU LeCAR, Unitree, Tencent) | 적응, 안전, 무른 지면, 시각 | RMA, VP-Nav, 깊이 보행, Rapid Locomotion, Walk These Ways, ABS, Raibo·라이보2, Go2, Lifelike Agility(Tencent MAX) | — | RaiSim, Cheetah-Software, unitree_rl_gym·unitree_rl_lab | 실행 되먹임(VP-Nav), 지연 추정(RMA), 학습 폴백 감시(ABS, TP-0078), 격자 커리큘럼, 에너지 기록(TP-0043) | B.16.5 |
+| 다른 연구실의 휴머노이드(UC Berkeley, CMU LeCAR, Stanford, UC San Diego, 칭화대, Oregon State·Agility) | transformer 정책, 동작 추종, 행동 잔차 | — | HT·NTP·HT-2(Digit), Cassie RL, Berkeley Humanoid, BeyondMimic, H2O·OmniH2O·ASAP, HumanPlus, ExBody·ExBody2, Humanoid Parkour, VideoMimic | 자체 시뮬레이터 없이 Isaac Gym·Isaac Lab·MuJoCo 위에서 학습 | 모방 가중 일정(TP-0066), 명령 쪽 학습 보정과 개루프 재생(TP-0124), 위치 목표 인터페이스 | B.16.6 |
+
+![B.16 계보: 사족·바퀴 다리](assets/figs/legged_labs_quadruped.webp)
+*그림 — B.16 계보(사족·바퀴 다리): 이 절의 사족·바퀴 다리 연구와 그 토대(시뮬레이터·학습 틀) 44개를 연구실별 띠 여섯 개에 처음 공개된 달 순서로 놓았다. 띠는 위에서부터 NVIDIA, Google DeepMind, 취리히(ETH Zürich·Disney Research·Flexion), RAI·BD(RAI Institute·Boston Dynamics), 미국 대학, 아시아·기타다. 상자가 겹치지 않게 가로로 0.3년 안에서 옮겼다. 상자 안 괄호는 발표처이고, 테두리 색은 로봇 갈래다. 바퀴·다리 상자에는 두 바퀴 이족인 Ascento와 Roadrunner도 넣었다. 점선 상자 넷은 B.14에서 다룬 ETH RSL 연구다. 화살표 25개는 뒤 연구가 앞 연구의 코드·방법·로봇을 직접 쓴 관계만 잇는다. 같은 1저자이거나 기준선으로 비교만 한 관계는 잇지 않았다. LEVA는 Ascento 계단 논문(2024)의 방식을 썼지만, 상자는 ICRA 2019 판이라 잇지 않았다. 시뮬레이터는 거의 모든 연구가 쓰므로 Isaac Gym 위의 legged_gym과 Orbit에서 이어진 Isaac Lab만 화살표로 그렸다. 출처: travplan `scripts/make_doc_figures.py`의 `fig_legged_labs_quadruped`*
+
+![B.16 계보: 휴머노이드](assets/figs/legged_labs_humanoid.webp)
+*그림 — B.16 계보(휴머노이드): 이 절의 휴머노이드·이족 연구와 그 토대 31개를 같은 띠 여섯 개에 처음 공개된 달 순서로 놓았다. 휴머노이드 연구는 2021년 뒤에 몰려 있어서 가로축을 2021년부터 그렸다. 상자가 겹치지 않게 가로로 0.3년 안에서 옮겼다. 파란 테두리의 Robot Parkour Learning은 Humanoid Parkour가 이어받은 사족 연구다. 화살표 20개는 뒤 연구가 앞 연구의 코드·방법·데이터를 직접 쓴 관계만 잇는다. 같은 1저자이거나 기준선으로 비교만 한 관계는 잇지 않았다. 시뮬레이터 화살표는 대표만 그렸다(Isaac Gym에서 ASE·HT로, Isaac Lab에서 BeyondMimic·ZEST로). 출처: travplan `scripts/make_doc_figures.py`의 `fig_legged_labs_humanoid`*
+
+<details markdown="1">
+<summary>자세히: 연표(2017–2026)</summary>
+
+연도마다 조직별로 처음 공개된 순서로 적었다. 괄호 안의 두 자리 수는 달이고, 월-일은 발표일이다. 연구의 자세한 내용은 각 소절의 카드에 있다.
+
+| 연도 | 조직 | 연구·사건 |
+|---|---|---|
+| 2017 | Google DeepMind | 다양한 지형과 전진 보상만으로 시뮬레이션 몸체가 달리고 뛰는 것을 보인 Heess 외(arXiv, 07) |
+| 2018 | NVIDIA | FleX 기반 GPU 분산 RL 시뮬레이션(Liang 외, CoRL 2018, 10). Isaac Gym의 전신 |
+| 2018 | Google DeepMind | Minitaur sim-to-real(Tan 외, RSS 2018, 04), PMTG(CoRL 2018, 10), 시뮬레이터 없이 실물 Minitaur가 배운 보행(Haarnoja 외, arXiv 12, RSS 2019) |
+| 2018 | 다른 연구실의 사족 | MIT Cheetah 3의 볼록 MPC(IROS 2018, 10) |
+| 2019 | Google DeepMind | 실물 데이터 4.5분으로 배운 동역학 모델과 MPC(Data Efficient RL, CoRL 2019, 07) |
+| 2019 | 취리히 | 두 바퀴 점프 로봇 Ascento(ETH Autonomous Systems Lab, ICRA 2019, 05) |
+| 2019 | 다른 연구실의 사족 | Mini Cheetah(MIT, ICRA 2019, 05) |
+| 2020 | Google DeepMind | 사람 개입을 줄인 실물 학습(Ha 외, arXiv 02, CoRL 2020), 개 동작 모방(Peng 외, arXiv 04, RSS 2020) |
+| 2020 | 다른 연구실의 휴머노이드 | Cassie의 주기 보상 합성(Siekmann 외, Oregon State, arXiv 11, ICRA 2021) |
+| 2021 | NVIDIA | Isaac Gym(arXiv 08, NeurIPS 2021 Datasets and Benchmarks) |
+| 2021 | Google DeepMind | 학습 걸음새 전환(04), Google Research의 Brax(06), 실물 미세 조정(Smith 외, 10), DeepMind의 MuJoCo 인수(10-18), Visual-Locomotion과 OP3 하드웨어 학습(Bloesch 외, 둘 다 CoRL 2021, 11) |
+| 2021 | 다른 연구실의 사족 | RMA(RSS 2021, 07), 에너지 최소화 걸음새(CoRL 2021, 10), VP-Nav(arXiv 12, CVPR 2022) |
+| 2021 | 다른 연구실의 휴머노이드 | Cassie의 고유감각 계단 보행(Siekmann 외, RSS 2021, 05) |
+| 2022 | NVIDIA | ASE(SIGGRAPH 2022, 05), Neural Scene Representation(ETH·NVIDIA, RA-L 2022, 06) |
+| 2022 | Google DeepMind | Safe RL(03), AMP 스타일 보상(Escontrela 외, 03), Imitate and Repurpose(03), Semantics-Aware(06), PI-ARS(07), NeRF2Real(10), MuJoCo MPC(12) |
+| 2022 | RAI Institute·Boston Dynamics | Hyundai Motor Group의 Boston Dynamics AI Institute 출범 발표(08-12) |
+| 2022 | 다른 연구실의 사족 | 정책·상태 추정기 동시 학습(KAIST, 02), 학습 FDM + 정보 샘플러(KAIST, 04), Rapid Locomotion(MIT, 05), 자기 중심 깊이 보행(CoRL 2022, 11), Walk These Ways(MIT, 12) |
+| 2023 | NVIDIA | Orbit(ETH·NVIDIA·토론토대, 01), Trace and Pace(CVPR 2023, 04), CALM(05), PHC(CMU·Meta, 05), Eureka(UPenn·NVIDIA, 10) |
+| 2023 | Google DeepMind | Google DeepMind 출범(04-20), OP3 1대1 축구(arXiv 04), Barkour(05), SayTap과 Language to Rewards(06), MuJoCo 3.0.0과 MJX(10-18) |
+| 2023 | 취리히 | RL + 모델 기반 제어(ETH Computational Robotics Lab, 05), 다접촉 로코매니퓰레이션 계획(Sleiman 외, 08), Barry(09), Disney 두 발 캐릭터 로봇의 IROS 2023 첫 공개(10), Resilient Legged Local Navigation(10), Risky Terrains(11) |
+| 2023 | RAI Institute·Boston Dynamics | EVORA(MIT·RAI Institute, 11), RAI Institute가 당시 이름 The AI Institute로 Hutter를 취리히 사무소 책임자로 발표(12-06), VLFM(12) |
+| 2023 | 다른 연구실의 사족 | 변형 지형 보행(KAIST, Science Robotics, 01), DribbleBot(04), Unitree Go2 출시(07), Tencent의 계층 사전학습 사족 Lifelike Agility(08), Crop-LSTM(09), Robot Parkour Learning(09), Extreme Parkour(09), unitree_rl_gym 공개(10), ASMP(11), HIMLoco(12) |
+| 2023 | 다른 연구실의 휴머노이드 | Digit의 transformer 보행(HT, arXiv 03) |
+| 2024 | NVIDIA | GTC 2024의 Project GR00T 발표(03), DrEureka(06), Isaac Lab 1.0(06), MaskedMimic과 ProtoMotions(09), HOVER(10), X-Mobility(10), NaVILA(12). 같은 연구진의 Eurekaverse(UPenn, 11) |
+| 2024 | Google DeepMind | LMPC(02), OP3 축구의 Science Robotics 게재(04-10), 시각 축구(Tirumala 외, 05), Gameplay Filters(Princeton·Google DeepMind, 05), barkour_robot 공개(05), Apptronik과 전략 제휴(12-19) |
+| 2024 | 취리히 | FLD(ICLR 2024, 02), Ascento RL 계단(02), 좁은 공간의 3D 표현 보행(02), BDX(RSS 2024, 07), RobotMDM(SIGGRAPH Asia 2024, 10), Flexion Robotics AG 등기(12-12) |
+| 2024 | RAI Institute·Boston Dynamics | Spot 소프트웨어 4.0의 RL 보행 출하(02), Boston Dynamics의 RL 보행 구조 공개와 Spot RL Researcher Kit 발표(03), 전기 Atlas 공개(04), Jacta(08), Sumo 1저자가 공저한 실물 전신 MPPI(CMU, 09) |
+| 2024 | 다른 연구실의 사족 | ABS(01), 라이보2의 첫 마라톤 도전(09, 37 km에서 배터리 소진)과 풀코스 완주(11-17) |
+| 2024 | 다른 연구실의 휴머노이드 | Cassie 다목적 보행(01), ExBody·NTP(02), H2O(03), HT의 Science Robotics 게재(04), OmniH2O·HumanPlus·Humanoid Parkour(06), Berkeley Humanoid(07), HT-2(10), Agility의 Isaac Lab sim-to-real 글(10-31), PIM(11), ExBody2(12) |
+| 2025 | NVIDIA | COMPASS(02), GTC 2025의 GR00T N1 공개와 Newton 발표(03-18), PARC·MaskedManipulator·PDC와 GR00T N1.5 발표(05-18), NeRD(08), Isaac Lab 보고서(11-06), SONIC·VIRAL·DoorMan(11), CHIP과 GR00T N1.6 가중치(12) |
+| 2025 | Google DeepMind | MuJoCo Playground(02), Gemini Robotics 1.0(03-12), Proc4Gem(03), Gemini Robotics 1.5(09-25) |
+| 2025 | 취리히 | RWM(01), Flexion 시드 우선주 등기(01), LEVA(03), 조종자 모방 자율 상호작용(04), Parkour in the Wild와 AMOR(05), AME-1(06), PACE와 RSL-RL 논문(09), Flexion 선언문(11-19)과 Series A·Reflect v0(11-20), Olaf 공개(11-24)와 논문(12) |
+| 2025 | RAI Institute·Boston Dynamics | Boston Dynamics와 RAI Institute의 Atlas RL 협력 발표(02-05, 이때 이름 Robotics and AI Institute, Spot 5.2 m/s 기록 공개), Sumo 1저자의 MuJoCo iLQR 전신 MPC(CMU, 03), Spot 고속 RL(04), judo와 ReLIC(06), Boston Dynamics·TRI의 Atlas 대형 행동 모델(08-20), 타이어 세우기 블로그(10), Spot 탁구 전신 MPC(10) |
+| 2025 | 다른 연구실의 사족 | 라이보2 프리프린트(03-26), Raibo 고속 내비(Science Robotics, 05), unitree_rl_lab 공개(06) |
+| 2025 | 다른 연구실의 휴머노이드 | ASAP(CMU·NVIDIA, 02), BeamDojo(02)와 HPC(03, 둘 다 인식 문서 A.8), Berkeley Humanoid Lite(04), AMO·VideoMimic(05), GMT(06), BeyondMimic(08), Agility 전신 제어 기반 모델(08-28) |
+| 2026 | NVIDIA | GR00T N1.6 기술 블로그(01), GTC 2026의 GR00T N1.7 발표(03-16), MotionBricks(04), HumanoidMimicGen(05), 연구용 기준 휴머노이드 발표(05-31), GRAIL(06), SONIC의 Science Robotics 게재(08-12), Isaac Lab 3.0 Early Access(09-16) |
+| 2026 | Google DeepMind | Boston Dynamics와 새 Atlas에 Gemini Robotics를 얹는 공동 연구 발표(CES, 01-05), Apptronik Apollo 2 공개(06-30), Gemini Robotics 2(07-30) |
+| 2026 | 취리히 | AME-2(01), Kamino(03), RSL 동작 생성 + 동작 추종 휴머노이드(04), Flexion Reflect v1.0(06-29), 인라인 스케이트 휴머노이드(06), Niantic Spatial·Flexion·NVIDIA의 현장 복제 학습(07, A.8.1), 구름사다리 휴머노이드(08) |
+| 2026 | RAI Institute·Boston Dynamics | ZEST(arXiv 01, Science Robotics 08-12), UMV 설계 논문(02)과 후속 셋(03–08), judo v0.0.7(03)과 v0.1.0(04), Roadrunner 영상(03), Sumo(v1 04-09, v3 09-09), 샘플링 MPC 시연 + 희소 보상 RL(08), SoftBank의 RAI Institute 인수 합의 보도(09-18, CFIUS 심사 중) |
+| 2026 | 다른 연구실의 사족 | 라이보2의 Nature 게재(09-23) |
+| 2026 | 다른 연구실의 휴머노이드 | Agility의 세 층 스택 글(03-16), BeyondMimic의 Science Robotics 게재(08-26) |
+
+</details>
+
+#### B.16.1 NVIDIA: GPU 학습 토대에서 범용 휴머노이드 추종기까지
+
+**NVIDIA는 다리 로봇의 몸체를 직접 만들지 않고, 다리 로봇 학습이 돌아가는 토대(GPU 시뮬레이터·학습 틀·모션 데이터)를 쥐는 쪽에 걸었다.**
+그 위에서 2022–2024년에는 캐릭터 애니메이션의 모션 모방을 휴머노이드로 옮겼다(ASE에서 HOVER까지).
+대형 언어 모델(LLM)이 보상과 도메인 무작위화를 짜는 실험(Eureka·DrEureka)도 이때 했다.
+2025–2026년에는 GEAR(Generalist Embodied Agent Research)와 DAIR(Data-Driven AI for Robotics)가 범용 추종기 SONIC과 RGB 휴머노이드 정책(VIRAL·DoorMan·GRAIL)을 냈다.
+==높이 지도를 보는 생성기와 물리 추종기를 데이터 고리로 묶은 PARC가 travplan의 Planner D·Controller·DAgger 구조와 가장 닮았다.==
+Controller 문서 F.8이 다룬 GR00T 분리형 WBC와 인식 문서 A.8의 TANGO는 가리키기만 한다.
+
+<details markdown="1">
+<summary>자세히: 이 소절의 연구 목록(표 31행)</summary>
+
+| 연도 | 연구 | 로봇 | 핵심 | 다룬 곳 |
+|---|---|---|---|---|
+| 2018 | GPU 가속 분산 RL 시뮬레이션 (Liang 외, CoRL 2018) | Ant·Humanoid(시뮬레이션) | FleX GPU 물리, Humanoid 달리기 20분 미만. Isaac Gym의 전신 | 이 소절(Isaac Gym 카드) |
+| 2021 | Isaac Gym (NeurIPS 2021 D&B) | ANYmal 등 | 물리부터 PPO 갱신까지 GPU 텐서, ANYmal 평지 2분 | 이 소절, B.14.1, R.15 |
+| 2022 | ASE (SIGGRAPH 2022) | 시뮬레이션 캐릭터 | AMP 판별기 + 기술 잠재 변수, 재사용 저수준 정책 | 이 소절 |
+| 2022 | Neural Scene Representation (RA-L 2022) | ANYmal | 가려진 지형을 4D 희소 CNN으로 복원, 합성 데이터만으로 학습 | 이 소절 |
+| 2023 | Orbit (RA-L 2023) | ANYmal-D 등 16종 | Isaac Sim 위 모듈형 학습 틀, ETH와 공동 개발 | 이 소절 |
+| 2023 | Trace and Pace (CVPR 2023) | 시뮬레이션 보행자 | diffusion 궤적 + 높이 지도 물리 보행자, 가치 함수 guidance | 이 소절 |
+| 2023 | CALM (SIGGRAPH 2023) | 시뮬레이션 캐릭터 | 방향을 줄 수 있는 적대적 잠재 기술 | 이 소절(ASE 카드) |
+| 2023 | PHC (ICCV 2023, CMU·Meta) | 시뮬레이션 아바타 | 추종 + AMP 보상, AMASS 학습 셋 98.9% | 이 소절(ASE 카드) |
+| 2023 | Eureka (ICLR 2024) | 10종(시뮬레이션) | 코딩 LLM이 보상 코드를 쓰고 보상 반성으로 고친다 | 이 소절 |
+| 2024 | DrEureka (RSS 2024) | Go1 | 안전 지시 보상, RAPP, LLM 도메인 무작위화 | 이 소절 |
+| 2024 | Isaac Lab (1.0, 보고서 2025) | 보행 11종 | Orbit 후속, 지연 PD 구동기, Newton 백엔드 | 이 소절, S.1.1 |
+| 2024 | MaskedMimic (SIGGRAPH Asia 2024) | 시뮬레이션 캐릭터 | 전신 추종기를 부분 목표 학생으로 증류 | 이 소절 |
+| 2024 | ProtoMotions (GitHub) | 시뮬레이션 캐릭터, G1 | 위 연구들의 GPU 학습 틀 | 이 소절(ASE 카드) |
+| 2024 | HOVER (ICRA 2025) | H1 | 명령 마스크 학생 증류, 모드별 전문 정책보다 나음 | 이 소절, B.12.3 |
+| 2024 | X-Mobility, COMPASS | Nova Carter 등 | world model 내비 + 잔차 RL, GR00T 내비 데이터 | B.12.4 |
+| 2024 | Eurekaverse (CoRL 2024, UPenn) | Go1 | LLM이 지형 코드를 진화시키는 커리큘럼 | 이 소절 |
+| 2024 | NaVILA (RSS 2025) | Go2·H1 등 | 언어 중간 행동 VLA + 보행 RL | B.6b |
+| 2025 | ASAP (RSS 2025, CMU·NVIDIA) | G1 | 실물 기록으로 행동 잔차를 배워 시뮬레이터 정렬 | B.16.6 |
+| 2025 | GR00T N1–N1.7 | GR-1, G1 등 | VLM + flow matching DiT, 하체 WBC에 속도 명령 | 이 소절, B.12.3, F.8 |
+| 2025 | Newton | ANYmal 등 | NVIDIA·Google DeepMind·Disney Research GPU 물리 엔진 | S.1.2 |
+| 2025 | PARC (SIGGRAPH 2025) | 시뮬레이션 캐릭터 | 높이 지도 조건 diffusion 생성기 + 물리 추종기 + 데이터 고리 | 이 소절 |
+| 2025 | PDC (CVPR 2025 워크숍) | 시뮬레이션 휴머노이드 | 1인칭 시각 RL로 찾기·집기 | 이 소절(그 밖의 NVIDIA 연구) |
+| 2025 | MaskedManipulator (SIGGRAPH Asia 2025) | 시뮬레이션 캐릭터 | MaskedMimic 증류를 전신 조작으로 | 이 소절(ASE 카드) |
+| 2025 | NeRD (CoRL 2025) | ANYmal 등 6종 | 학습 동역학이 접촉 풀이를 대신하는 신경 시뮬레이터 | 이 소절(그 밖의 NVIDIA 연구) |
+| 2025 | SONIC (Science Robotics 2026) | G1 | 611시간 범용 추종기 + 실시간 운동학 Planner | 이 소절, F.8, A.8 |
+| 2025 | VIRAL (CVPR 2026) | G1 | RGB 학생 증류, 실물 연속 59회 중 54회 | 이 소절 |
+| 2025 | DoorMan (CVPR 2026) | G1 | 단계 리셋 버퍼 + 에피소드 성공 GRPO | 이 소절 |
+| 2025 | CHIP | G1 | 범용 추종기의 끝단 강성 조절 | 이 소절(그 밖의 NVIDIA 연구) |
+| 2026 | MotionBricks (SIGGRAPH 2026) | G1 | 실시간 운동학 동작 생성(2 ms) | 이 소절(그 밖의 NVIDIA 연구) |
+| 2026 | HumanoidMimicGen | G1 | 전신 계획으로 이동·조작 시연을 늘린다 | 이 소절(그 밖의 NVIDIA 연구) |
+| 2026 | GRAIL (CoRL 2026) | G1 | 3D 에셋·영상 생성 데이터, 높이 지도 SONIC | 이 소절 |
+
+</details>
+
+**Isaac Gym, Orbit, Isaac Lab — 물리 시뮬레이션에서 PPO 갱신까지 GPU에 둔 것이 다리 로봇 RL을 몇 분짜리 실험으로 바꿨다**([Isaac Gym arXiv:2108.10470](https://arxiv.org/abs/2108.10470), Makoviychuk 외, NeurIPS 2021 Datasets and Benchmarks, [배포 페이지](https://developer.nvidia.com/isaac-gym); [Orbit arXiv:2301.04195](https://arxiv.org/abs/2301.04195), Mittal 외, IEEE RA-L 8(6) 2023; [Isaac Lab arXiv:2511.04831](https://arxiv.org/abs/2511.04831), 2025-11, [코드](https://github.com/isaac-sim/IsaacLab) BSD-3-Clause).
+뿌리는 2018년의 FleX 기반 GPU 시뮬레이션이다([arXiv:1810.05762](https://arxiv.org/abs/1810.05762), Liang·Makoviychuk·Handa·Chentanez·Macklin·Fox, CoRL 2018). GPU 한 장과 CPU 코어 하나로 Humanoid 달리기를 20분 안에 배웠다.
+Isaac Gym의 핵심은 텐서 API다. PhysX가 GPU에서 계산한 상태를 CPU로 복사하지 않고 PyTorch 텐서로 넘기고, 관측과 보상과 행동도 GPU에 머문다.
+논문은 학습 전체가 100–1000배 빨라졌다고 적는다. A100 한 장과 병렬 로봇 4,096대로 ANYmal 평지 속도 추종을 2분 안에 배웠고, Humanoid 달리기는 2018년 결과보다 4배 빨랐다.
+Orbit(2023)은 같은 GPU 병렬 학습을 Isaac Sim 위로 옮기고 환경 설계를 모듈로 나눈 틀이고, ETH RSL·토론토대와 함께 만들었다. 1저자 Mittal과 Rudin, Hoeller는 ETH Zürich와 NVIDIA에 함께 적을 두었고, Hutter도 저자다.
+실물 ANYmal-D에는 actuator net(B.14.1)을 끼워 시뮬레이션에서만 학습한 보행 정책을 올렸다.
+2024-06의 Isaac Lab 1.0이 Orbit 위에 OmniIsaacGymEnvs의 환경 작성 방식을 합쳐 이었다. 이 판에 지연 PD(proportional-derivative) 구동기와 Spot·H1·G1 보행 환경이 들어왔다. Isaac Gym은 지금 지원이 끝난 레거시로 표시된다.
+2025-11 보고서는 보행 환경이 로봇 11종으로 늘었고 ANYmal과 Spot에서 sim-to-real을 확인했다고 적는다. 구조와 구동기 식은 시뮬레이션 문서 S.1.1에, Newton 백엔드는 S.1.2에, RAI Institute의 Spot 고속 주행은 B.16.4에 있다.
+
+**travplan에 주는 의미.** 가져올 원칙은 rollout 데이터를 GPU 밖으로 내보내지 않는 것이다. curb_ramp 레벨 3의 `guidance+mppi` rollout 하나를 프로파일하자, 시간의 약 3/4이 매 스텝 belief TravMap을 CPU에서 다시 만드는 일이었다(B.14.1 토글).
+RL 후학습(TP-0066)의 한 라운드도 rollout이 208–245 s이고 미세 조정은 5–6 s다(B.15.3).
+TravMap 생성의 GPU 경로(TP-0084, TP-0153)가 첫 처방이고, 운동학 시뮬레이터와 MPPI를 한 GPU 배치로 묶는 것이 다음이다.
+학습 루프를 Isaac Lab으로 옮길 때 구동기 모델은 그대로 맞지 않는다. Isaac Lab의 지연 PD 구동기는 관절 명령을 물리 스텝 몇 개만큼 늦추는 순수 지연이다.
+travplan 스워브 plant는 body twist의 1차 지연(시상수 0.2 s)에 조향 한계와 미끄럼을 더한 모델이라, 사용자 정의 구동기나 바퀴·조향 모터 모델로 넣어야 한다.
+옮긴 plant를 점검하는 기준은 TP-0150의 비교다. 운동학 시뮬에서 plant와 같은 지연(0.2 s)을 rollout에 넣은 `mppi_plant_lag`는 권장 L1과 plant를 켠 레벨 3의 치명을 360 에피소드 중 55회에서 4회로 줄였다(MPC 문서 M.3.22).
+rollout이 plant의 지연을 정확히 아는 시뮬 결과라서, 실물과의 격차를 잰 것은 아니다.
+
+![Isaac Lab Fig. 23](https://arxiv.org/html/2511.04831v1/assets/applications/locomotion/locomotion-montage.png)
+*그림 — Isaac Lab (Fig. 23): Isaac Lab으로 보행을 학습한 플랫폼들이다. 위 줄은 육상 트랙의 Boston Dynamics Spot, 자갈 위의 Magnecko, 계단 위의 바퀴 사족 LEVA다. 아래 줄은 바위와 잔해 더미를 넘는 ANYmal과 실내 시험대 위의 자전거형 로봇 RAI UMV다. 출처: [arXiv:2511.04831](https://arxiv.org/abs/2511.04831)*
+
+ETH와 NVIDIA에 함께 적을 둔 Hoeller·Rudin은 인식 쪽 결과도 냈다.
+Neural Scene Representation([arXiv:2206.08077](https://arxiv.org/abs/2206.08077), IEEE RA-L 7(4) 2022, NVIDIA의 Choy·Anandkumar와 ETH의 Hutter 공저)은 카메라 사각과 가림으로 비어 있는 깊이 점군에서 주변 지형을 4D 희소 합성곱망으로 복원한다.
+합성 데이터만으로 학습해 ANYmal 온보드 컴퓨터에서 돌렸고, 고전 지도 표현보다 낫다고 보고한다. ANYmal Parkour(B.14.2)의 인식 모듈이 이 방법을 다중 해상도로 넓혀 썼다.
+travplan이 그림자 상한과 깊이 prior로 푼 미관측·가림 문제(TP-0044·TP-0047)를 학습으로 푼 쪽이다.
+
+**Eureka — 코딩 LLM이 환경 코드를 읽고 보상 함수를 쓰며, 학습 통계를 글로 받아 고친다**([arXiv:2310.12931](https://arxiv.org/abs/2310.12931), Ma·Liang·Wang·Huang·Bastani·Jayaraman·Zhu·Fan·Anandkumar, ICLR 2024, UPenn·NVIDIA·Caltech·UT Austin, [프로젝트](https://eureka-research.github.io/), [코드](https://github.com/eureka-research/Eureka) MIT).
+Eureka는 보상 부분을 뺀 환경 소스 코드와 과제 설명을 GPT-4에 넣어 실행 가능한 보상 코드를 한 번에 16개 받는다. 후보마다 Isaac Gym에서 PPO를 돌려 과제 점수(적합도 함수)를 잰다.
+가장 좋은 후보의 보상 항목별 값이 학습 중 어떻게 변했는지를 글로 요약해 다음 질의에 붙인다. 이것이 보상 반성(reward reflection)이다.
+로봇 10종, 과제 29개에서 사람이 쓴 보상보다 83%의 과제에서 나았고, 사람 기준 정규화 점수는 평균 52% 올랐다. 보상 반성을 빼면 Isaac 과제의 평균 정규화 점수가 28.6% 떨어졌다.
+개선은 손 조작처럼 차원이 높은 과제에 몰렸고, ANYmal 속도 추종은 1.02로 사람 보상(1.0)과 같았다. 실험은 모두 시뮬레이션이다.
+
+**travplan에 주는 의미.** 보상이 잘 다듬어진 저차원 과제에서 LLM 보상 설계의 몫은 작다. travplan RL 후학습의 채점(진행·cost·치명·부드러움, TP-0066)도 그런 쪽이다.
+가져올 것은 보상 반성의 기록 형식이다. TP-0066 라운드마다 항목별 보상 값을 남기면 사람이든 비평가 루프든 어느 항이 학습을 밀었는지 보고 고칠 수 있다.
+저자들은 PPO 대신 MPPI 같은 모델 예측 제어를 최적화기로 쓰는 것을 다음 일로 꼽았다(v2 부록 H). travplan에서 그 자리는 MPPI의 `CostTerm`이다.
+
+![Eureka Fig. 2](https://arxiv.org/html/2310.12931v2/figures/eureka.png)
+*그림 — Eureka (Fig. 2): 환경 코드와 과제 설명을 받은 코딩 LLM(GPT-4)이 보상 함수 후보를 여럿 쓰고, Isaac Gym의 GPU 병렬 RL이 후보를 평가한다. 보상 항목별 학습 통계를 요약한 보상 반성이 다음 질의로 들어간다. 그림의 예는 Shadow Hand 펜 돌리기다. 출처: [arXiv:2310.12931](https://arxiv.org/abs/2310.12931)*
+
+**DrEureka — 같은 LLM이 안전 지시를 넣은 보상과 도메인 무작위화 범위까지 정해, 요가볼 위를 걷는 Go1을 실물로 옮겼다**([arXiv:2406.01967](https://arxiv.org/abs/2406.01967), Ma·Liang·Wang·Wang·Zhu·Fan·Bastani·Jayaraman, RSS 2024, UPenn·NVIDIA·UT Austin, [프로젝트](https://eureka-research.github.io/dr-eureka/), [코드](https://github.com/eureka-research/DrEureka) MIT).
+sim-to-real에는 보상 말고도 사람이 손으로 정하는 것이 있다. 시뮬레이션 물리 파라미터를 무엇을 얼마나 흔들지 정하는 도메인 무작위화(DR, domain randomization)다.
+DrEureka는 이것까지 세 단계로 LLM에 맡긴다. 첫째, 과제 설명에 안전 지시를 붙여 Eureka로 보상을 만든다. 몸통 높이 유지, 몸통 수평, 부드러운 다리, 관절 한계 회피 같은 문장이다.
+둘째, 그 보상으로 DR 없이 학습한 정책을 파라미터 하나만 바꾼 시뮬레이션에서 굴려, 성공 기준을 지키는 값의 범위를 잰다. 이것이 보상 인지 물리 prior(RAPP, reward-aware physics prior)다.
+셋째, LLM이 RAPP 범위 안에서 흔들 파라미터와 범위를 고른 DR 구성 16개를 쓰고, 구성마다 정책을 다시 학습한다.
+
+로봇은 Unitree Go1이다. 시뮬레이션 환경과 실물 제어기와 정책 학습 코드는 MIT의 Rapid Locomotion(Margolis 외, B.16.5)에서 가져왔고, 저자들이 무작위화 파라미터를 더했다.
+과제는 평지에서 2 m/s로 달리기이고, 실물에서 5 m 트랙을 쟀다. DrEureka 정책 16개의 실물 평균은 1.66 m/s, 4.64 m였고, 가장 좋은 정책은 1.83 m/s로 5 m를 다 갔다.
+사람이 설계한 보상과 DR은 1.32 m/s, 4.17 m였다. 안전 지시 없는 Eureka 보상은 시뮬레이션에서 더 빨랐지만 실물에서는 출발선에서 넘어졌다.
+RAPP 없이 범위를 LLM에 맡기면 16개 중 15개가 거칠고 위험하게 움직였고, 모터 보호 장치가 전원을 끊는 일이 잦았다.
+요가볼 위 걷기는 사람이 만든 설정이 없던 새 과제다. 실험실에서는 사람이 쥔 중심점에 로봇을 느슨하게 묶은 조건으로 평균 15.4 s를 버텼다. 속도를 제한한 야외 시험에서는 잔디, 보도, 나무다리를 4분 넘게 지났다.
+
+**travplan에 주는 의미.** 가장 직접 가져올 것은 RAPP 절차이고, LLM 없이도 쓸 수 있다. 지금 정책을 파라미터 하나만 바꾼 시뮬레이션에서 굴려 아직 성공하는 범위를 재고, 그 안에서 무작위화 범위를 고른다.
+travplan에서 지금 흔들 수 있는 파라미터는 스워브 plant의 지연(`actuator_lag_s`)과 미끄럼(TP-0033)이고, 성공 기준은 치명 없는 도달이다.
+자기 위치 잡음은 TP-0032(Backlog)를 먼저 구현해야 한다. RL 후학습(TP-0066)은 지형 레벨과 가림을 바꿔 가며 rollout하지만, plant 없이 이상 모델로 돌려 지연과 미끄럼은 무작위화하지 않는다. 넣을 때 이 범위 안에서 고른다.
+무작위화 범위를 넓게 잡는 것이 안전한 기본값은 아니다. RAPP 범위 전체를 그대로 쓴 구성은 1.43 m/s에 그쳤고, 실물 엉덩이 관절 토크가 컸다.
+안전 지시는 travplan 채택 규칙과 같은 역할이다. 시뮬레이션 점수만 보는 탐색은 실물에서 깨지는 행동을 고르므로, 치명 실패가 늘면 채택하지 않는 규칙을 점수 밖에 둔다.
+
+![DrEureka Fig. 1](https://arxiv.org/html/2406.01967v1/figures/concept/concept.png)
+*그림 — DrEureka (Fig. 1): 과제와 안전 지시로 Eureka가 보상과 초기 정책을 만들고, 그 정책을 여러 물리 조건에서 시험해 보상 인지 물리 prior를 세운다. LLM이 그 범위 안에서 도메인 무작위화 구성을 고르고, 마지막 정책을 실물에 올린다. 오른쪽 아래 사진은 실물 Go1이 요가볼 위에 선 장면이다. 출처: [arXiv:2406.01967](https://arxiv.org/abs/2406.01967)*
+
+![DrEureka Fig. 6](https://arxiv.org/html/2406.01967v1/figures/robots/walking_globe.png)
+*그림 — DrEureka (Fig. 6): 요가볼 걷기의 시뮬레이션, 실험실, 야외 장면이다. 실험실에서는 사람이 쥔 중심점에 로봇을 줄로 느슨하게 묶었고, 야외에서는 줄을 쥔 사람과 함께 잔디, 벽돌 보도, 횡단보도를 지났다. 실험실 사진의 사람 얼굴은 원문에서 가렸다. 출처: [arXiv:2406.01967](https://arxiv.org/abs/2406.01967)*
+
+<details markdown="1">
+<summary>자세히: Eureka와 DrEureka의 방법과 수치</summary>
+
+**풀려는 문제.** RL은 보상이 있어야 배우고, sim-to-real은 보상 위에 도메인 무작위화 설정까지 있어야 실물로 간다. 둘 다 사람이 시행착오로 맞춰 왔다.
+Eureka는 보상을, DrEureka는 보상과 무작위화를 LLM의 코드 생성과 탐색으로 대신한다.
+
+**Eureka의 탐색.** 보상 설계 문제는 적합도 $F$를 가장 크게 만드는 보상 $R$을 찾는 것이다. $\mathcal A_M(R)$은 환경 $M$에서 $R$로 정책을 학습하는 알고리즘이다.
+
+$$ R^* = \arg\max_{R} F\big(\mathcal A_M(R)\big) $$
+
+반복마다 LLM에서 보상 코드 $K = 16$개를 뽑고, 각각 PPO로 학습해 $F$를 잰다. 가장 좋은 보상과 그 보상 반성을 다음 프롬프트에 붙여 다시 뽑는다.
+보상 반성은 보상 항목마다 학습 중 일정 간격으로 잰 값의 목록과 $F$의 목록이다. 그래서 보상 함수는 항목을 사전으로 내도록 지시받는다. 반복 5번, 독립 실행 5번이다.
+Isaac 과제의 점수는 사람 보상으로 정규화한다. Sparse는 적합도 함수를 그대로 보상으로 쓴 경우이고, 1이면 사람 보상과 같다.
+
+$$ s_{\text{norm}} = \frac{s_{\text{Method}} - s_{\text{Sparse}}}{\lvert s_{\text{Human}} - s_{\text{Sparse}} \rvert} $$
+
+**Eureka의 결과.** GPT-4(gpt-4-0314) 기준이다. Isaac 과제 9개는 모두 사람과 같거나 나았고, Dexterity 20개 중 15개에서 같거나 나았다.
+평균 정규화 점수는 ANYmal 1.02, 휴머노이드 2.06, Ant 1.66이었다. 계산은 A100 8장 서버 한 대에서 실행당 하루 미만이다.
+
+**DrEureka의 세 단계.** 안전 지시를 붙인 과제 설명으로 Eureka를 돌려 보상과 초기 정책을 얻는다. 다음으로 무작위화할 파라미터 $p$마다 탐색 값 $r$을 하나씩 넣고, 다른 파라미터는 기본값에 둔 채 초기 정책을 굴린다.
+성공 기준을 통과한 값의 집합을 $S_p$라 하면, 그 최솟값과 최댓값이 RAPP 범위다.
+
+$$ S_p = \{\, r \in \mathcal R_p : F_p(r) \ge F_{\text{succ}} \,\}, \qquad [\,l_p,\ h_p\,] = [\,\min S_p,\ \max S_p\,] $$
+
+전진 과제의 성공 기준은 매 스텝 $\exp\big(-(v_x - v_x^{t})^2 / 0.25\big)$를 에피소드 동안 더한 값이다. 탐색 범위 $\mathcal R_p$는 범용 범위 넷(0부터 무한대·0–1·0 중심·1 중심) 가운데 하나로 정한다.
+마지막으로 LLM이 RAPP 범위를 보고 무작위화할 파라미터와 범위를 고른다. LLM은 반발 계수를 범위의 아래쪽에서 고르며, 튀는 것은 이 과제의 초점이 아니라고 이유를 적었다.
+정책 학습은 특권 교사가 실물 센서만 보는 학생을 감독하는 PPO 변형이고, DR 구성마다 시드 3개로 학습했다.
+
+**DrEureka의 결과(전진, 실물 5 m 트랙).**
+
+| 구성 | 속도 (m/s) | 거리 (m) |
+|---|---|---|
+| 사람 설계 보상과 DR | 1.32 ± 0.44 | 4.17 ± 1.57 |
+| Eureka(안전 지시 없음, DR 없음) | 0.00 | 0.00 |
+| DrEureka 최고 | 1.83 ± 0.07 | 5.00 ± 0.00 |
+| DrEureka 평균(16개) | 1.66 ± 0.25 | 4.64 ± 0.78 |
+| DR 없음 | 1.21 ± 0.39 | 4.17 ± 1.04 |
+| 사람 설계 DR | 1.35 ± 0.16 | 4.83 ± 0.29 |
+| RAPP 범위 전체(Prompt DR) | 1.43 ± 0.45 | 4.33 ± 0.58 |
+| RAPP 없는 LLM(Without Prior) | 0.09 ± 0.36 | 0.31 ± 1.25 |
+| RAPP 범위 안 무작위 표집 | 0.98 ± 0.45 | 2.81 ± 1.80 |
+| CEM(RAPP 범위에서 초기화) | 1.46 ± 0.12 | 5.00 ± 0.00 |
+| BayRn(RAPP 범위) | 1.28 ± 0.62 | 4.00 ± 1.73 |
+
+CEM(cross-entropy method)과 BayRn은 중간 정책을 실물에서 평가하며 범위를 고치므로 더 많은 정보를 쓴다. 그래도 DrEureka가 나았다. 벽시계 시간도 DrEureka 3시간, CEM 10시간, BayRn 20시간이었다.
+안전 지시를 뺀 보상은 시뮬레이션에서 다리를 비정상적으로 쓰며 달렸고, 실물에서 0 m/s였다.
+서론은 여러 실물 지형(인조 잔디·양말을 신긴 발·보도)에서 사람 설계보다 속도가 34%, 거리가 20% 높았다고 요약한다. 요가볼은 시뮬레이션 평균 10.7 s, 실험실 15.4 s다.
+
+![DrEureka Fig. 13](https://arxiv.org/html/2406.01967v1/figures/results/safety_instruction_ablation.png)
+*그림 — DrEureka (Fig. 13): 안전 지시가 없는 보상(왼쪽)은 시뮬레이션에서 다리를 비정상적으로 쓰며 달리고, 실물에서는 무너진다. 안전 지시가 있는 보상(오른쪽)은 시뮬레이션과 실물 모두 정상 걸음이다. 출처: [arXiv:2406.01967](https://arxiv.org/abs/2406.01967)*
+
+**한계.** 저자가 밝힌 것: 영상 입력을 쓰지 않는다. 무작위화 범위가 학습 중 고정이다. 후보 정책 가운데 실물에 올릴 것을 고르는 장치가 없어서, 16개를 모두 실물에서 쟀다.
+Eureka 쪽은 적합도 함수가 있어야 한다. 실험은 부록 E의 MuJoCo Humanoid를 빼면 시뮬레이터 하나(Isaac Gym)와 PPO 하나로 했다.
+Eureka v2의 한계 절은 부록 F의 예비 실물 실험을 언급하지만, arXiv 판 부록 F에는 그 실험이 없다.
+우리가 보기에: 실물 과제는 평지 직진과 요가볼뿐이고, 실물 반복 횟수는 표준편차로만 드러난다. 요가볼 실험실 수치는 사람이 쥔 지지점이 있는 조건이다.
+LLM이 고른 범위는 같은 범위의 무작위 표집(0.98 m/s)보다 나았다. 범위를 고르는 상식이 성능을 가른다는 뜻이고, 그 상식은 사람 엔지니어가 넣어도 된다.
+
+**travplan에 주는 것.** RAPP를 travplan 말로 옮기면 이렇다. `planner_df+mppi_plant_lag`를 레벨 0 지형에서 plant 지연 하나만 바꿔 가며 굴린다.
+치명 없이 도달하는 지연의 최솟값과 최댓값이 그 파라미터의 RAPP 범위다. 미끄럼비도 같은 방법으로 잰다.
+RL 후학습(TP-0066)에 무작위화를 넣을 때는 이 범위 안에서 고르고, 범위 전체를 쓰지 않는다. 판정은 잡음 바닥 절차의 짝 비교로 한다.
+Eureka식 보상 반성은 TP-0066 라운드 기록에 보상 항목별 값을 더하는 데서 시작한다.
+
+</details>
+
+같은 연구진의 후속 Eurekaverse(Liang 외, CoRL 2024, [arXiv:2411.01775](https://arxiv.org/abs/2411.01775))는 NVIDIA 공저 없이 UPenn에서 나왔다. [코드](https://github.com/eureka-research/eurekaverse)는 MIT다.
+LLM이 장애물 코스 지형을 코드로 쓰고, 정책 무리의 성적을 보며 더 어렵고 다양한 코스로 진화시키는 커리큘럼이다. Extreme Parkour(Controller 문서 F.6.2)의 시뮬레이션 틀 위에서 Go1 파쿠르를 배워 실물로 옮겼고, 사람이 설계한 코스로 학습한 정책보다 나았다.
+travplan의 Planner D 학습은 손으로 정한 지형 레벨 0–3(TP-0039)을 고르게 뽑는다(B.15.3). 그 고정 분포와 비교할 상대다.
+
+**ASE에서 MaskedMimic까지 — 캐릭터 애니메이션의 물리 기반 모션 모방이 휴머노이드 제어의 표준 재료가 됐다**([ASE arXiv:2205.01906](https://arxiv.org/abs/2205.01906), Peng·Guo·Halper·Levine·Fidler, ACM TOG 41(4) SIGGRAPH 2022, [코드](https://github.com/nv-tlabs/ASE) NVIDIA License(비상업); [PHC arXiv:2305.06456](https://arxiv.org/abs/2305.06456), Luo·Cao·Winkler·Kitani·Xu, ICCV 2023, CMU·Meta, [코드](https://github.com/ZhengyiLuo/PHC) BSD-3-Clause Clear; [MaskedMimic arXiv:2409.14393](https://arxiv.org/abs/2409.14393), Tessler·Guo·Nabati·Chechik·Peng, ACM TOG SIGGRAPH Asia 2024; [ProtoMotions](https://github.com/NVlabs/ProtoMotions) Apache-2.0).
+이 계열은 사람 모션 캡처를 시뮬레이션 속 물리 캐릭터가 따라 하게 만드는 연구이고, 적대적 모방 AMP(adversarial motion prior)에서 출발했다. AMP는 B.14.4의 Multi-AMP 카드에, 적대적 모방 일반론은 RL 문서 R.17에 있다.
+ASE(2022)는 AMP의 판별기 보상에 기술 잠재 변수를 더해, 한 번 사전학습한 저수준 정책을 과제마다 다른 상위 정책이 다시 쓰게 했다. 칼과 방패를 든 37자유도 캐릭터를 187개 클립(약 30분)으로 학습했고, 시뮬레이션 약 10년 분량(100억 표본 이상)을 V100 한 장으로 약 10일에 모았다.
+같은 팀의 CALM(Tessler 외, SIGGRAPH 2023, [arXiv:2305.02195](https://arxiv.org/abs/2305.02195))은 ASE를 가장 가까운 선행 연구로 둔다. 동작 인코더를 함께 배워, 사용자가 방향을 줄 수 있는 잠재 기술로 넓혔다.
+PHC(2023)는 프레임마다 목표 자세를 따라가는 추종 보상에 AMP 판별기 보상을 반씩 더한 추종 정책이다. AMASS 학습 셋 11,313개 중 98.9%를 외력 없이 따라 했고, 1저자 Luo는 뒤에 NVIDIA GEAR로 옮겨 SONIC(이 소절)의 공동 1저자가 됐다.
+MaskedMimic(2024)은 전신 추종기를 RL로 먼저 학습하고, 목표 일부만 보는 학생에게 증류한다. 머리 좌표·손·글·물체 같은 부분 목표의 어떤 조합으로도 같은 정책을 움직인다. 계단·경사·거친 지면은 주변 높이 지도로 본다.
+후속 MaskedManipulator([arXiv:2505.19086](https://arxiv.org/abs/2505.19086), SIGGRAPH Asia 2025)는 같은 증류를 전신 물체 조작으로 넓혔다. ProtoMotions는 이 연구들을 한 틀로 묶은 GPU 학습 틀이고, 공개 데이터 BONES-SEED(약 14만 2천 동작)로 학습한 추종 정책을 G1 실물에 zero-shot으로 올렸다고 README에 적는다.
+SONIC 서론은 판별기 기반 방법(AMP, ASE, CALM)이 데이터가 커질수록 모드 붕괴에 빠지기 쉽다고 정리한다. 모션 추종은 프레임마다 목표 자세라는 촘촘한 감독을 줘서 데이터와 모델을 함께 키울 수 있다.
+
+**travplan에 주는 의미.** 스워브 로봇에는 사람 모션 데이터에 해당하는 것이 없어, 이 계열을 Planner나 Controller에 바로 쓰지는 않는다.
+닿는 곳은 목표 일부를 가린 학생 증류다. MaskedMimic과 HOVER(이 소절)가 같은 방식이고, Controller의 두 참조 모드(경로·시간 인덱스 궤적)를 한 학습 Controller로 받는 방법이 된다.
+
+![MaskedMimic Fig. 2](https://arxiv.org/html/2409.14393v1/maskedmimic_castle.png)
+*그림 — MaskedMimic (Fig. 2): 부분 목표만으로 전신 동작을 만든다. (a)는 머리 좌표만 따라 언덕을 오른다. (b)는 글 지시로 손을 흔든다. (c)는 머리 좌표와 글 스타일을 함께 받아 거친 지면을 지난다. (d)는 물체를 조건으로 안락의자에 앉는다. 왼쪽은 위에서 본 경로다. 출처: [arXiv:2409.14393](https://arxiv.org/abs/2409.14393)*
+
+**Trace and Pace — diffusion 모델이 보행자 궤적을 만들고, 높이 지도를 보는 물리 기반 보행자가 그 궤적을 걷는다**([arXiv:2304.01893](https://arxiv.org/abs/2304.01893), Rempe·Luo·Peng·Yuan·Kitani·Kreis·Fidler·Litany, CVPR 2023, NVIDIA·CMU, [프로젝트](https://research.nvidia.com/labs/toronto-ai/trace-pace/), [TRACE 코드](https://github.com/nv-tlabs/trace) NVIDIA Source Code License-NC, [PACER 코드](https://github.com/nv-tlabs/pacer) CC BY-NC-SA 4.0).
+두 모델이 Planner와 Controller처럼 나뉜다. TRACE는 지도와 이웃 보행자를 조건으로, 과거 3 s를 보고 미래 5 s의 2D 궤적을 diffusion 모델로 만든다(10 Hz, diffusion 100단계).
+시험 때는 경유점·속도·무리 짓기·충돌 회피 같은 목표를 손실로 걸어 잡음 제거 단계마다 궤적을 민다(guidance, 배경 0.5). 여러 궤적을 뽑아 guidance 손실이 가장 작은 것을 고른다.
+PACER는 그 궤적을 따라 걷는 물리 기반 휴머노이드 정책이다. 입력은 몸 상태와 체형, 목표 궤적, 그리고 주변 4 m × 4 m의 64 × 64 높이·속도 지도다.
+다른 보행자는 지도 위의 상자로 그려 넣어 움직이는 장애물로 피하게 한다. 학습 지형은 legged_gym(B.14.1)의 절차로 만든 계단·경사·요철·장애물이고, 동작 품질은 AMP로 맞춘다.
+실행 때는 PACER가 2 s를 걷고 TRACE가 다시 계획한다. PACER를 RL로 학습할 때 생긴 가치 함수를 TRACE의 guidance로 더하자, 장애물 지형의 실패율이 0.220에서 0.178로, 무작위 지형에서 0.107에서 0.100으로 줄었다.
+
+**travplan에 주는 의미.** 구조가 Planner D와 거의 같다. 생성 모델이 후보 궤적을 여럿 내고, 비용으로 고르거나 비용 기울기로 민다.
+travplan의 비용 기울기 유도(`planner_dg`)는 치명 항만 부드러운 hinge로 바꾼 선택기 점수 전체를 기울기로 쓴다. 이 유도는 curb_ramp 레벨 3에서 3/30으로 무너졌다(TP-0143, B.15.6). 이 논문은 guidance 목표 둘이 같은 방향으로 밀면 합친 세기가 궤적을 학습 분포 밖으로 밀 수 있다고 적는다. 같은 원인인지는 재지 않았다.
+그래서 가치 함수는 기울기 유도보다 선택 점수 쪽에 먼저 쓴다. critic이 없는 travplan RL 후학습(TP-0066)의 다음 후보다.
+보행자 쪽에서는 시뮬레이션 문서 S.3.4의 NavIsaacLab이 이 틀 위에 군중을 만들었다. 반응형 보행자는 L0에서 ORCA로 먼저 만들고(TP-0036), 물리 기반 보행자는 Isaac 단계로 미룬다. TRACE와 PACER 코드는 비상업 라이선스라 연구용으로만 쓴다.
+
+![Trace and Pace Fig. 1](https://arxiv.org/html/2304.01893v1/content/main/images/teaser.png)
+*그림 — Trace and Pace (Fig. 1): 왼쪽은 TRACE가 잡음에서 궤적을 깎아 내는 동안 목표, 회피, 무리 짓기 guidance가 궤적을 미는 모습이다. 오른쪽은 그 궤적을 PACER 보행자들이 거리에서 걷는 장면으로, 주차된 차를 피하고 무리를 지어 걷는다. 출처: [arXiv:2304.01893](https://arxiv.org/abs/2304.01893)*
+
+**PARC — 지형 높이 지도와 목표 방향을 조건으로 받는 diffusion 동작 생성기와 물리 추종기를 번갈아 키워, 적은 파쿠르 데이터를 스스로 불린다**([arXiv:2505.04002](https://arxiv.org/abs/2505.04002), Xu·Shi·Yin·Peng, SIGGRAPH 2025 Conference Papers, Simon Fraser University·NVIDIA, [프로젝트](https://xbpeng.github.io/projects/PARC/index.html), [코드](https://github.com/mshoe/PARC) BSD-3-Clause).
+PARC(Physics-based Augmentation with Reinforcement Learning for Character controllers)는 파쿠르 모션 캡처 약 14분에서 시작해, 세 부품을 고리로 돌린다.
+생성기는 transformer diffusion 모델이다. 캐릭터 좌표의 31 × 31 국소 높이 지도와 수평 목표 방향, 직전 두 프레임을 조건으로 0.5 s 길이의 동작 조각을 낸다.
+새 지형에서 동작을 만들 때 목표 방향은 높이 지도로 만든 이동 그래프 위의 A* 경로에서 온다.
+긴 동작은 자기 출력을 이어 붙여 만든다. 한 번에 64개를 뽑아 지형 관통, 접촉, 경로 미완 점수가 가장 좋은 것을 고르고 운동학 최적화로 다듬는다.
+추종기는 Isaac Gym에서 PPO로 학습한 물리 기반 정책이고, 접촉 라벨까지 따라 하도록 보상을 받는다. 추종기가 끝까지 따라간 동작만 시뮬레이션에서 기록해 데이터에 더하고, 생성기와 추종기를 이어서 다시 학습한다.
+반복 1에서 4로 가며, 그 반복의 생성기가 만든 시험 동작 100개를 추종기가 끝까지 따라간 비율이 27%에서 68%로 올랐다.
+물리 보정 없이 생성 동작을 그대로 넣어 다시 학습한 생성기는 관절 저크가 원본 최대를 넘는 프레임이 18.7%였다. 보정한 데이터로 학습한 같은 단계는 4.4%다.
+
+**travplan에 주는 의미.** PARC의 부품은 travplan 부품과 하나씩 맞는다. 높이 지도 위 A* 경로는 GuidancePlanner이고, 높이 지도와 목표 방향을 조건으로 받는 diffusion 생성기는 TravMap 크롭과 route subgoal을 조건으로 받는 Planner D(flow matching, B.8.3)다.
+물리 추종기는 Planner D의 궤적을 따라가는 Controller(MPPI)이고, 후보 여럿을 점수로 고르는 것도 Planner D 선택기와 같다. 저자들은 생성기를 diffusion 모델로 둔 것이 핵심이 아니라고 적는다(부록 D).
+다른 것은 고리에 넣는 데이터다. DAgger는 교사(Guidance + MPPI)의 답을, RL 후학습(TP-0066)은 GT 지도로 채점한 자기 후보를 넣는다. PARC는 자기 표본 가운데 추종기가 끝까지 실행한 동작을 넣는다.
+travplan으로 옮기면, Planner D 표본 가운데 Controller가 치명 없이 도달한 실행 궤적을 시연에 더하는 변형이다. B.8.3이 적은 단일 모드 교사의 공백을 Planner D 자신의 여러 모드로 채우는 길이고, 위 절제는 실행으로 거르지 않은 자기 표본을 그대로 넣지 말라는 경고다.
+속도는 다르다. 저자들은 생성기가 실시간 폐루프 계획에 쓸 만큼 빠르지 않다고 적는다(A6000에서 묶음 32로 0.5 s 동작에 약 12 s). Planner D는 한 번 계획에 3.4 ms다.
+
+![PARC Fig. 2](https://arxiv.org/html/2505.04002v1/figures/method-high-2.png)
+*그림 — PARC (Fig. 2): 동작 생성기가 지형 높이 지도(빨간 점) 위에 운동학 동작(초록)을 만든다. 동작 추종기는 시뮬레이션에서 그 동작을 따라 해 물리적으로 맞는 동작(파랑)을 기록한다. 기록한 동작은 데이터에 더해져 다음 반복의 생성기를 학습시킨다. 출처: [arXiv:2505.04002](https://arxiv.org/abs/2505.04002)*
+
+**HOVER — 전신 모션 모방 교사 하나를, 명령 일부를 가린 학생 하나로 증류해 여러 제어 모드를 한 정책이 받는다**([arXiv:2410.21229](https://arxiv.org/abs/2410.21229), He·Xiao·Lin·Luo·Xu·Jiang·Kautz·Liu·Shi·Wang·Fan·Zhu, ICRA 2025, NVIDIA GEAR·CMU·UC Berkeley·UT Austin·UC San Diego, [프로젝트](https://hover-versatile-humanoid.github.io/), [코드](https://github.com/NVlabs/HOVER) Apache-2.0).
+휴머노이드 제어기는 쓰임마다 명령이 달랐다. 내비게이션은 몸통 속도를, VR 원격조종은 머리와 손의 위치를, 표현 동작은 관절각을 받는다. 그래서 명령 종류마다 정책을 따로 학습했다.
+HOVER(Humanoid Versatile Controller)는 이 명령들을 한 명령 공간에 놓는다. 주요 몸 부위의 3D 위치, 관절각, 몸통의 속도·높이·자세 세 종류이고, 상체와 하체에 따로 켜고 끄는 마스크를 단다.
+학습은 두 단계다. 먼저 AMASS 모션을 Unitree H1에 리타기팅해, 모든 몸 부위의 목표를 다 보는 교사 추종 정책을 PPO로 학습한다.
+다음으로 실물에서 얻을 수 있는 고유감각(proprioception)의 25스텝 이력과 마스크로 가린 명령만 보는 학생을 DAgger(dataset aggregation)로 증류한다. 마스크 비트마다 확률 0.5로 켜고 한 에피소드 동안 고정한다.
+논문은 이 공간이 실제로 쓸모 있는 모드 15가지 이상을 덮는다고 적는다.
+
+결과의 요지는 학생 하나가 전문 정책들보다 나았다는 것이다. 시뮬레이션에서 기존 연구 넷(ExBody·HumanPlus·H2O·OmniH2O)의 명령 모드로 고정해 비교했다.
+모드마다 지표 12개 중 적어도 7개에서, 그 모드만 RL로 학습한 전문 정책보다 나았다. 같은 마스크로 처음부터 RL을 돌린 다중 모드 정책과는 모드 8개 × 지표 4개, 32개 모두에서 오차가 작았다.
+실물 H1(19자유도, 논문 표기 약 51.5 kg)에서는 서서 하는 동작 20개를 따라 하며 지표 12개 중 11개에서 전문 정책보다 나았고, 걷는 중에 명령 모드를 바꿔도 이어 걸었다.
+
+**travplan에 주는 의미.** 명령 마스크는 Planner와 Controller 사이의 경계를 하나로 고정하지 않아도 된다는 근거다. travplan Controller는 지금 두 참조를 받는다.
+Guidance 폴백은 시간 없는 경로를, Planner D는 시간 인덱스 궤적을 넘긴다. 폴백의 첫 설계는 경로를 시간 궤적으로 바꿔 넘겼다가 경사로 아래에서 시간 초과됐고, 경로 모드로 넘기자 지나갔다(B.15.2).
+학습 Controller(Playground의 TinyPolicy, TP-0128)를 키울 때 시간 채널을 가린 경로와 시간까지 있는 궤적을 마스크로 섞어 학습하면, 한 정책이 두 모드를 받는다.
+HOVER에서 가장 옮길 만한 결과는 교사에게서 증류한 범용 학생이 모드별로 RL 학습한 전문 정책보다 나았다는 것이다. Planner D도 Guidance + MPPI 교사를 DAgger로 따라 배운 학생이다(B.8.3).
+
+![HOVER Fig. 1](https://arxiv.org/html/2410.21229v2/AnyH2O-fig1-crop.png)
+*그림 — HOVER (Fig. 1): VR·RGB 카메라·외골격·로봇 팔·모션 캡처·조이스틱처럼 서로 다른 입력 장치가 머리·손 자세, 전신 자세, 관절각, 몸통 명령을 낸다. HOVER는 이것을 몸 부위 위치, 관절각, 몸통 추종의 한 명령 공간에 놓고 마스크로 고른다. 아래는 실물 Unitree H1이 따라 하는 장면이다. 출처: [arXiv:2410.21229](https://arxiv.org/abs/2410.21229)*
+
+![HOVER Fig. 2](https://arxiv.org/html/2410.21229v2/HOVER-Distillation-crop.png)
+*그림 — HOVER (Fig. 2): 교사는 특권 고유감각과 모든 추종 목표를 본다. 학생은 실물에서 얻을 수 있는 고유감각과, 모드 마스크와 희소 마스크로 가린 목표를 본다. 학생은 DAgger로 교사 행동을 지도학습한다. 출처: [arXiv:2410.21229](https://arxiv.org/abs/2410.21229)*
+
+<details markdown="1">
+<summary>자세히: HOVER의 방법과 수치</summary>
+
+**풀려는 문제.** 학습 기반 휴머노이드 전신 제어는 명령 공간에 따라 세 갈래로 나뉘었다. 첫째는 몸 부위 위치 추종(H2O·OmniH2O)이고, 둘째는 관절각 추종(HumanPlus 등)이다. 셋째는 보행 RL의 몸통 속도 추종이다.
+같은 하드웨어인데 갈래마다 보상과 인터페이스를 따로 짜야 했고, 한 제어기는 한 모드만 받았다.
+HOVER의 가설은 전신 운동학 모방이 모든 모드의 공통 추상이라는 것이다. 사람 동작을 다 따라 할 줄 아는 교사가 있으면, 모드별 학생은 일부 명령만 보고 그 교사의 행동을 재현하면 된다.
+
+**교사.** 강체마다 위치, 자세, 선속도, 각속도와 직전 행동을 본다. 목표는 다음 프레임 기준 자세와 현재 상태의 한 프레임 차이, 그리고 기준 자세다.
+네트워크는 OmniH2O와 같은 512·256·128 MLP(multilayer perceptron)이고, 도메인 무작위화도 OmniH2O를 따른다(OmniH2O 카드는 B.16.6).
+
+**학생과 마스크.** 고유감각은 관절 위치·관절 속도·몸통 각속도·중력 방향·직전 행동의 25스텝 이력이다. 명령에는 모드 마스크와 희소 마스크를 차례로 곱한다.
+
+$$ s^{g}_{t} = M_{\text{sparsity}} \odot \big[\, M_{\text{mode}} \odot s^{g,\text{upper}}_{t},\ M_{\text{mode}} \odot s^{g,\text{lower}}_{t} \,\big] $$
+
+모드 마스크는 상체와 하체에 따로 모드를 고르고, 희소 마스크는 그 모드 안에서 일부 부위만 남긴다. 비트마다 $\mathcal B(0.5)$에서 뽑아 에피소드 동안 고정한다.
+학생을 굴려 얻은 상태마다 교사 관측을 따로 계산해 교사 행동 $\hat a_t$를 얻고, 지도학습으로 맞춘다.
+
+$$ \mathcal L = \lVert \hat a_t - a_t \rVert_2^2 $$
+
+**결과(시뮬레이션).** AMASS 리타기팅 셋에서 시드 5개로 잰 전역 몸 위치 오차(mm)만 옮긴다(원문 표 3).
+
+| 모드 | 전문 정책 | HOVER |
+|---|---|---|
+| ExBody | 275 | 185 |
+| HumanPlus | 266 | 182 |
+| H2O | 137 | 121 |
+| OmniH2O | 149 | 128 |
+
+처음부터 다중 모드로 RL을 돌린 정책보다는 8개 모드 × 4개 지표 모두에서 나았다.
+
+**결과(실물 H1, 서서 하는 동작 20개).** 전역 몸 위치 오차는 ExBody 모드 48.9 대 51.3 mm, HumanPlus 모드 47.4 대 51.0 mm, OmniH2O 모드 47.5 대 51.2 mm였다(앞이 HOVER). 걷기는 모드 전환 시연으로만 보였다.
+
+![HOVER Fig. 6](https://arxiv.org/html/2410.21229v2/figs/AnyH2O-MultiMode-png200.png)
+*그림 — HOVER (Fig. 6): 실물 H1에서 명령 모드를 바꾸는 시험이다. (a) 앞으로 걷는 중에 ExBody 모드에서 H2O 모드로, (b) 돌고 뒤로 걷는 중에 HumanPlus 모드에서 OmniH2O 모드로 바꾼다. (c) VR 헤드셋을 쓴 사람의 머리와 두 손 가운데 일부만 따라간다. 로봇은 안전 줄에 매달려 있다. 출처: [arXiv:2410.21229](https://arxiv.org/abs/2410.21229)*
+
+**공개 코드.** 논문 실험은 Isaac Gym에서 했고, NVlabs/HOVER는 Isaac Lab 2.0 확장으로 다시 구현한 것이다.
+README 기준(2026-10-07 확인)으로 교사 10만 반복은 RTX 4090에서 약 23시간, 학생 1만 반복은 약 16분이다. AMASS 라이선스 때문에 리타기팅 데이터는 주지 않고, 32코어에서 전체 리타기팅이 최대 4일 걸린다.
+학습된 교사 가중치는 없다. 구현된 모드는 네 가지이고, 기본 설정은 OmniH2O 모드 전문 정책이다.
+README는 논문식 희소 마스크 무작위화가 동작의 모호함을 낳을 수 있다며 끄기를 권한다. 실물 배포 래퍼는 H1만 지원한다.
+
+**한계.** 저자가 밝힌 것: 모드 전환은 사람이 정한다. 상황에 맞춰 모드를 고르는 모듈은 앞으로 할 일로 남겼다.
+우리가 보기에: 실물 정량 평가는 서서 하는 동작 20개뿐이고, 걷기는 정성 시연이다. 실험은 실내 평지에서 안전 줄을 단 채 했고, 지형 인식은 없다.
+공개 저장소가 희소 마스크를 끄라고 권한다는 것은, 논문의 마스크 설계가 그대로는 불안정할 수 있다는 뜻이다.
+
+**travplan에 주는 것.** TinyPolicy는 지금 pure pursuit 회귀로 시작해 진화 전략(ES)으로 다듬는다(E.12). HOVER처럼 바꾸면 교사는 MPPI다.
+학생 입력은 경로 앞 점들이고, 점마다 도달 시각 채널을 두되 확률 0.5로 가린다. 가려진 에피소드는 Guidance 폴백의 경로 모드에, 열린 에피소드는 Planner D의 시간 모드에 해당한다.
+학생이 실제로 간 상태에 교사 행동을 붙이는 DAgger로 학습하고, 모드마다 전용 학생과 짝 비교한다.
+HOVER가 피한 함정도 같이 피한다. 교사 입력에는 학생이 볼 수 없는 정보를 담아도 되지만, 학생 입력의 잡음은 배포 조건과 같아야 한다. DTC 토글(B.14.2)이 지적한 TinyPolicy의 참값 경로 학습이 그 예다.
+
+</details>
+
+같은 1저자의 후속 ASAP(RSS 2025, CMU·NVIDIA)은 실물 기록으로 행동 잔차 모델을 배워 시뮬레이터를 실물에 맞춘다. 카드는 B.16.6에 있다.
+
+**SONIC — 모션 캡처 약 700시간에서 거른 611시간과 GPU 128장으로 범용 전신 추종기를 키우고, 그 위에 실시간 운동학 Planner를 얹었다**([arXiv:2511.07820](https://arxiv.org/abs/2511.07820), Luo·Yuan·Wang·Li·Castañeda 외(공동 1저자 다섯), Science Robotics 11(117) eaed4592, 2026-08, NVIDIA GEAR·DAIR, [프로젝트](https://nvlabs.github.io/GEAR-SONIC/), [코드](https://github.com/NVlabs/GR00T-WholeBodyControl) Apache-2.0, 가중치 NVIDIA Open Model License).
+배포 구조와 분리형 WBC와의 차이는 Controller 문서 F.8에, TANGO의 system-0으로 쓴 예는 인식 문서 A.8에 있다. 여기서는 논문의 수치만 더한다.
+원본 모션 캡처 약 700시간을 G1에 리타기팅한 뒤, 계단 오르기와 앉은 동작처럼 G1이 할 수 없는 동작을 걸러 611시간(50 Hz로 1억 프레임 이상)을 학습에 썼다. 그 가운데 상당 부분이 BONES-SEED(동작 142,220개, 288시간)로 공개됐다. 추종 학습의 환경 설정은 BeyondMimic(B.16.6)의 것을 가져와 키웠다.
+데이터(400만–1억 프레임)와 모델(1.2M–42M 파라미터)과 계산(GPU 16·32·128장)을 키울수록 처음 보는 동작의 성공률이 올랐다. 가장 큰 모델은 Isaac Lab 평가에서 99.6%였다.
+명령 인코더는 미래 10프레임을 본다. 로봇 동작과 혼합 명령은 0.1 s 간격(1 s 앞)이고, 사람 동작만 0.02 s 간격(0.2 s 앞)이다.
+내비게이션은 운동학 Planner가 맡는다. 속도·방향·걸음 스타일 명령에서 0.8–2.4 s 길이의 전신 동작을 만들고, 빠르면 100 ms마다 다시 계획한다. 계획 한 번은 노트북에서 5 ms 미만, Jetson Orin에서 약 12 ms다.
+MuJoCo의 0–5 m/s 속도 추종에서 생존율은 98.5%로, 걷기 전용 제어기 OpenHomie(43.0%)보다 높았다. 실물 124개 동작은 123개를 성공했고, 발의 위치 오차가 가장 컸다(실물 53.7 mm, 시뮬레이션 29.0 mm).
+원격조종 데이터로 미세 조정한 GR00T N1.5(이 소절)를 범용 토큰 인터페이스에 이어 위 층으로도 썼다. 이동·조작 다섯 과제의 평균 성공률은 75%였다(과제마다 10–20회).
+
+**travplan에 주는 의미.** SONIC도 느린 Planner(10 Hz)와 빠른 추종기(50 Hz)를 나눴다. 사용자 속도 명령은 임계 감쇠 스프링 모델을 거쳐 키프레임이 된다. 6 m/s에서 −6 m/s로 갑자기 뒤집는 것 같은 비현실적 명령은 여기서 걸러진다.
+travplan이 Controller rollout에 하위 지연을 넣은 것(TP-0150, 휴머노이드는 E.13의 TP-0135)과 같은 문제를 Planner 쪽에서 푼 것이다.
+우리가 보기에 실물 발 오차가 가장 컸다는 것은 연석과 계단처럼 발 디딤이 중요한 곳에서 추종기 혼자로는 모자랄 수 있다는 신호다. 원문은 실제 접촉 동역학에서 정밀한 발 디딤이 어렵기 때문이라고만 적는다. 높이 지도를 더한 GRAIL(이 소절)이 그 방향의 후속이다.
+
+![SONIC Fig. 3](https://arxiv.org/html/2511.07820v4/fig3_interactive_planner.png)
+*그림 — SONIC (Fig. 3): 운동학 Planner가 실시간으로 만든 동작을 범용 추종기가 따라가는 장면이다. (A)는 속도·방향·걸음 스타일(앞·옆·달리기·기쁜 걸음·살금살금·다친 걸음)을 바꾸는 내비게이션이다. (B)는 쪼그려 앉기·무릎 꿇기·기어가기·일어나기이고, (C)는 권투다. 시뮬레이션 줄과 실물 G1 줄이 번갈아 있다. 출처: [arXiv:2511.07820](https://arxiv.org/abs/2511.07820)*
+
+**GR00T N1–N1.7 — 휴머노이드용 공개 VLA(vision-language-action). 느린 VLM(vision-language model)과 빠른 flow matching 행동 전문가를 나누고, 이동은 하체 WBC에 속도로 맡긴다**([arXiv:2503.14734](https://arxiv.org/abs/2503.14734), NVIDIA(연구 리드 Fan·Zhu), 2025-03, [코드](https://github.com/NVIDIA/Isaac-GR00T) Apache-2.0, 가중치 NVIDIA Open Model License).
+B.12.3과 F.8이 짧게 다뤘고, 여기서는 판의 변천과 이동 쪽만 적는다.
+N1(2025-03-18 공개)은 Eagle-2 VLM을 system 2로, flow matching으로 학습한 diffusion transformer(DiT)를 system 1로 둔다.
+VLM은 L40에서 10 Hz로 돌고, 행동 모듈은 120 Hz로 행동을 낸다. 공개 모델 GR00T-N1-2B는 2.2B 파라미터이고, 행동 16개 묶음을 L40에서 63.9 ms에 뽑는다. N1의 실물 평가는 Fourier GR-1 휴머노이드의 탁자 조작이었다.
+N1.5(2025-05-18 발표·06-11 공개)와 N1.6(Hugging Face 2025-12·기술 블로그 2026-01)을 거쳐 N1.7(2026-03-16 발표)에 이르렀다. N1.7은 VLM을 Cosmos-Reason2-2B로 바꾸고 사람 1인칭 영상 2만 시간을 사전학습에 넣었으며, 행동 지평을 16에서 40으로 늘렸다.
+이동을 붙인 것은 N1.6 기술 블로그의 흐름이다. GR00T-WholeBodyControl이 하체를 맡고, COMPASS(B.12.4)가 Isaac Lab에서 만든 합성 데이터로 점 목표 내비게이션을 미세 조정한다. 내비 머리는 관절 토크가 아니라 속도 명령을 WBC에 넘긴다.
+위치는 미리 만든 지도에서 cuVSLAM과 cuVGL로 잡고, nvblox가 경로 계획용 2D 점유 지도를 만든다. 2026-05에 공개된 G1 흐름은 N1.7을 미세 조정해 SONIC 위에서 돌린다(GR00T-WholeBodyControl README).
+2026-05-31에는 Unitree H2 Plus 몸체에 Sharpa Wave 손 둘과 Jetson AGX Thor T5000을 묶은 연구용 기준 휴머노이드를 발표했고, 첫 사용 기관에 ETH Zürich가 들었다. 언어 중간 행동으로 다리 로봇을 움직이는 NaVILA(RSS 2025, UC San Diego·USC·NVIDIA)는 B.6b에 있다.
+
+**travplan에 주는 의미.** GR00T의 이동 구조는 travplan과 같은 층 나누기다. 위 층이 속도를 내고, 아래 층 학습 정책이 균형과 접촉을 맡는다. 행동 생성기도 Planner D와 같은 flow matching이다.
+다른 점은 위 층이 언어와 영상을 받는 수십억 파라미터 모델이라는 것이고, 보도 배달에 VLA를 쓸 이유는 지금 없다.
+가져올 것은 아래 층을 바꿀 때의 순서다. NVIDIA도 하체 WBC를 Isaac Lab·Isaac Sim에서 학습하고 시험한 뒤 실물로 옮겼고, 내비게이션은 합성 데이터로 따로 학습해 속도 인터페이스로 이었다.
+
+![GR00T N1 Fig. 2](https://arxiv.org/html/2503.14734v2/groot_inference_yuke_v2.png)
+*그림 — GR00T N1 (Fig. 2): VLM(system 2)이 영상과 언어 지시의 토큰을 처리한다. 그 출력과 로봇 상태가 diffusion transformer(system 1)로 들어가 잡음에서 행동 묶음을 깎아 낸다. 오른쪽은 Fourier GR-1 휴머노이드다. 출처: [arXiv:2503.14734](https://arxiv.org/abs/2503.14734)*
+
+**VIRAL — RGB 카메라만 보는 휴머노이드 이동·조작 정책을 시뮬레이션에서만 학습해, 실물 G1이 연속 59회 시도 중 54회를 해냈다**([arXiv:2511.15200](https://arxiv.org/abs/2511.15200), He·Wang·Xue·Ben 외, CVPR 2026, NVIDIA·CMU·UC Berkeley·CUHK, [프로젝트](https://viral-humanoid.github.io/), [코드](https://github.com/NVlabs/GR00T-VisualSim2Real) Apache-2.0).
+과제는 두 탁자 사이를 걸어 물건을 내려놓고 새 물건을 집어 돌아서는 일의 반복이다. 교사는 물체와 탁자의 참 위치를 보는 RL 정책이고, 다리를 직접 움직이지 않는다.
+교사는 하체 WBC(HOMIE, [arXiv:2502.13013](https://arxiv.org/abs/2502.13013), Shanghai AI Lab·CUHK)에 줄 속도 명령과 팔·손가락 목표를 직전 값에 더할 변화량으로 낸다. 절대 목표를 내는 교사는 높은 성공률에 닿지 못했다.
+사람이 시뮬레이션에서 원격조종한 시연 200개의 중간 상태에서 에피소드를 시작하게 하자(reference state initialization), 교사 성공률이 10% 아래에서 약 95%로 올랐다.
+학생은 RGB 영상(DINOv3 특징)과 실물 고유감각만 본다. 교사 rollout의 행동 복제와 학생 rollout의 DAgger를 반씩 섞어 증류했고, 교사 rollout만 쓰면 손실은 빨리 줄지만 실수를 고치지 못했다.
+시각 무작위화를 다 끄면 시뮬레이션 성공률이 0.649배로 떨어졌다. 교사는 L40S 16장, 학생은 64장으로 학습했다.
+실물에서는 59번 연속 시도 중 54번 성공했다. 1,000시간 넘게 원격조종한 전문가는 100% 성공에 한 바퀴 21.4 s였고, VIRAL은 20.2 s였다(추론은 로봇 밖 RTX 4090 데스크톱).
+
+**travplan에 주는 의미.** 하위 제어기 명령을 API로 쓰고 변화량을 내는 설계는 Planner D와 같은 방향이다. Planner D도 제어 변화율 열을 내고 적분한다(B.8.3).
+VIRAL의 절대 목표 대 변화량 비교는 이 선택에 대한 외부 근거다. 저자들은 한계 절에서 sim-to-real이 보행, 기하 인식, 강체 조작처럼 떨어진 능력에서는 이미 성공했다고 적는다.
+막히는 곳으로는 범용 이동·조작으로 넓힐 때의 범위 격차 넷을 꼽는다. 물리 다양성, 과제의 긴 꼬리, 보상 설계, 하드웨어와 시뮬레이션의 차이다. 보도 주행은 이미 성공한 쪽인 강건한 보행에 가깝다.
+
+![VIRAL Fig. 1](https://arxiv.org/html/2511.15200v2/fig/VisitReal-Fig1__8_-crop.jpg)
+*그림 — VIRAL (Fig. 1): 가운데는 실물 Unitree G1이 RGB 정책만으로 두 탁자 사이를 오가며 물건을 놓고 집는 장면이다. 원문은 이 반복을 54바퀴로 적는다. 작은 창은 정책이 보는 RGB 입력이다. 아래 줄은 탁자보 색·탁자 종류·조명·물체를 바꾼 조건이고, 둘레는 학습에 쓴 무작위화된 시뮬레이션 장면이다. 출처: [arXiv:2511.15200](https://arxiv.org/abs/2511.15200)*
+
+**DoorMan — RGB만 보는 휴머노이드가 문을 열고 지나간다. 증류한 학생을 에피소드 성공 신호의 GRPO로 다시 다듬었다**([arXiv:2512.01061](https://arxiv.org/abs/2512.01061), Xue·He·Wang·Ben 외, CVPR 2026, NVIDIA·UC Berkeley·CMU·CUHK, [프로젝트](https://doorman-humanoid.github.io/), 코드는 VIRAL과 같은 [GR00T-VisualSim2Real](https://github.com/NVlabs/GR00T-VisualSim2Real)).
+VIRAL과 같은 팀의 같은 틀에 세 번째 단계를 더했다. 1단계 교사는 문과 손잡이의 참 자세와 손의 접촉력을 보며 PPO로 학습하고, 구현은 ETH RSL의 rsl_rl이다.
+다가가기, 열기, 지나가기로 나눈 단계 보상을 썼더니, 손잡이를 잡는 단계의 충돌 벌점 때문에 정책이 그 단계에 들어서기를 피했다.
+그래서 단계에 들어설 때마다 시뮬레이터 상태를 버퍼(최근 100개)에 저장하고, 리셋 때 그 상태에서 다시 시작하게 했다. 버퍼가 100이면 약 1,700번 반복에 모든 단계에 닿았고, 10이면 4,000번 넘게 걸렸으며, 없으면 2단계에 들지 못했다.
+2단계에서 RGB 학생(ResNet과 LSTM)을 DAgger로 증류하자, 교사가 80–90%일 때 학생은 50–70%에 머물렀다. 3단계에서 학생을 GRPO(group relative policy optimization)로 미세 조정했고, 보상은 에피소드 성공 여부와 작은 규제 항뿐이다.
+학생은 80.8–85.8%로 올랐고, 손잡이를 시야 가운데 두도록 몸을 맞추는 행동을 스스로 배웠다.
+실물 G1의 성공률 83%는 전문 원격조종자(80%)와 비슷했고 비전문가(60%)보다 높았다. 원문 3.1절은 전문가와의 관계를 'on par'로 적는다.
+
+**travplan에 주는 의미.** 학생이 교사보다 덜 보는 문제는 travplan에도 있다. Planner D는 belief 지도를 보고, RL 후학습의 채점은 GT 지도로 한다(TP-0066).
+TP-0066도 그룹 상대 이점을 쓰지만, 보상은 한 계획 시점에서 뽑은 후보(4 s 개루프 rollout)를 그 자리에서 채점한 값이다. TP-0138은 이 보상이 경사로를 지나친 뒤 몇 초 걸리는 재탐색을 보상하지 못한다고 해석했다(B.15.5).
+DoorMan은 에피소드 전체의 성공 여부로 GRPO를 돌려 관측 공백을 메웠다. 같은 지형과 시작 상태에서 Planner D 표본을 여러 번 끝까지 굴리고, 치명 없는 도달 여부로 이점을 매기는 것이 travplan에서 아직 시도하지 않은 변형이다. 판정은 잡음 바닥 절차의 짝 비교로 한다.
+
+![DoorMan Fig. 1](https://arxiv.org/html/2512.01061v1/fig_result.png)
+*그림 — DoorMan (Fig. 1): 실물 G1의 일반화 시험이다. 위는 모양과 색이 다른 손잡이 셋을 잡는 손의 장면, 가운데는 벽 패널 색을 바꾼 장면, 아래는 문을 밀고 당겨 열고 지나가는 연속 장면이다. 출처: [arXiv:2512.01061](https://arxiv.org/abs/2512.01061)*
+
+**GRAIL — 3D 에셋과 영상 생성 모델로 휴머노이드 이동·조작 데이터를 만들고, 높이 지도를 더한 SONIC으로 계단을 오른다**([arXiv:2606.05160](https://arxiv.org/abs/2606.05160), Xie·Zhang·Park 외, 2026-06, NVIDIA DAIR·GEAR, CoRL 2026 구두 발표(저장소 표기), [프로젝트](https://research.nvidia.com/labs/dair/grail/), [코드](https://github.com/NVlabs/GRAIL) NVIDIA License(비상업)).
+원격조종이나 모션 캡처 없이 데이터를 만든다. 물체 형상·카메라·축척·깊이를 아는 3D 장면을 먼저 짜고, 영상 생성 모델이 그 장면에서 로봇 체형의 사람이 움직이는 영상을 만든다.
+장면을 알고 있으므로 영상에서 4D 사람·물체 궤적을 미터 단위로 되살리기 쉽다. 되살린 동작을 G1에 리타기팅해 2만 개가 넘는 시퀀스를 만들었다(집기·조작·앉기·지형 통과).
+이 데이터로 SONIC 위에 두 추종기를 학습한다. 조작 쪽은 SONIC을 얼린 채 잠재 토큰에 잔차를 더하는 어댑터를 배운다.
+지형 쪽은 로봇 주변 11 × 11 높이 지도(한 변 1.5 m, 0.15 m 간격, 아래로 쏜 광선)를 CNN(convolutional neural network)으로 읽어 SONIC 자체를 미세 조정한다. 연석 넘기, 경사, 계단, 의자에 앉기가 대상이다.
+둘 다 Isaac Lab에서 L40 64장으로 3만 번 반복 학습했다(한 번에 약 30시간). 실물에는 머리 RGB 카메라만 보는 시각 정책으로 증류해 올렸다.
+계단 오르기는 90%, 물체 집기는 84%였다(물체마다 10회, 처음 보는 물체 80%). 계단의 시행 횟수는 밝히지 않았다. 추론은 로봇 밖 RTX 5090 데스크톱에서 10 Hz로 했다.
+
+**travplan에 주는 의미.** 평지에서 잘 걷는 추종기에 연석과 계단을 가르친 방법은 작은 높이 지도를 추종기 입력에 더해 미세 조정하는 것이었다.
+travplan에서 같은 자리는 학습 Controller다. Playground의 TinyPolicy(TP-0128)는 이미 앞쪽 7 × 5 격자(앞 0–2.4 m, 옆 ±0.6 m)의 belief cost를 본다.
+이 입력의 몫은 쟀다. 같은 정책에서 지형 입력 36개를 0으로 두고 경로 대신 목표 직선만 주면 스워브는 8/12에서 0/12가 됐다(브라우저, TP-0129). 파이썬에서 지도 없이 따로 학습한 정책은 3/12였다(지도 봄 10/12, E.12).
+다른 점은 입력의 종류와 간격이다. GRAIL은 원시 높이를 0.15 m 간격으로 보고, TinyPolicy는 가공한 cost를 앞 0.4 m, 옆 0.3 m 간격으로 본다.
+0.08 m 턱이 치명인 바퀴 로봇에서 점 사이로 좁은 치명 띠가 빠지지 않는지는, TinyPolicy의 입력을 넓힐 때 함께 잰다.
+
+![GRAIL Fig. 5](https://arxiv.org/html/2606.05160v1/figures/deployment.003.jpeg)
+*그림 — GRAIL (Fig. 5): GRAIL이 만든 데이터만으로 학습한 1인칭 RGB 정책이 실물 G1에서 계단을 오르고(위), 탁자로 걸어가 물체를 집는다(가운데와 아래). 작은 창은 머리 카메라 영상과 손 확대다. 계단 장면의 로봇은 안전 줄을 달았다. 출처: [arXiv:2606.05160](https://arxiv.org/abs/2606.05160)*
+
+**그 밖의 NVIDIA 연구(한 줄씩).**
+- CHIP([arXiv:2512.14689](https://arxiv.org/abs/2512.14689), 2025-12)은 범용 추종기에 끝단 강성을 명령으로 조절하는 모듈을 더했다. 하체 기준 자세는 SONIC의 운동학 Planner로 만들고, 상자 운반·닦기·문 열기 같은 힘 쓰는 조작이 대상이다(G1).
+- MotionBricks([arXiv:2604.24833](https://arxiv.org/abs/2604.24833), SIGGRAPH 2026)는 동작 클립 35만 개 이상을 한 모델로 다루는 실시간 운동학 동작 생성기다(초당 15,000 프레임, 지연 2 ms). G1에 올렸고, 코드는 GR00T-WholeBodyControl 저장소에 있다.
+- HumanoidMimicGen([arXiv:2605.27724](https://arxiv.org/abs/2605.27724), 2026-05)은 몇 개의 시연을 전신 이동·조작 계획으로 새 배치에 맞춰 늘린다. G1 시뮬레이션 벤치마크 9과제를 함께 냈고, 생성 데이터로 공동 학습한 시각 정책이 실물 데이터만 쓴 정책보다 20% 높았다.
+- PDC([arXiv:2505.12278](https://arxiv.org/abs/2505.12278), 2025-05, 공동 1저자 Luo·Tessler)는 1인칭 영상만 보고 물체를 찾고 집고 놓는 시뮬레이션 휴머노이드다. CVPR 2025 Humanoid Agents 워크숍 최우수 논문이고, 실물 실험은 없다.
+- NeRD([arXiv:2508.15755](https://arxiv.org/abs/2508.15755), CoRL 2025)는 시뮬레이터의 동역학·접촉 풀이를 로봇별 학습 모델로 바꾼 신경 시뮬레이터다. ANYmal을 포함한 여섯 시스템으로 시험했고, 천 스텝 넘게 안정하며 실물 데이터로 미세 조정할 수 있다고 보고한다. 학습 forward 모델로 MPPI를 굴리는 travplan 계획(TP-0126)과 같은 방향이다.
+
+**사람.** 소속은 2026-10-07에 본인 홈페이지와 NVIDIA Research 페이지에서 확인했다.
+
+| 사람 | 이 소절에서 남긴 것 | 지금 소속 |
+|---|---|---|
+| Yuke Zhu, Linxi "Jim" Fan | GEAR 공동 리드. Eureka·DrEureka·HOVER·SONIC·VIRAL·DoorMan 공저, GR00T N1 연구 리드 | Zhu는 UT Austin 부교수이자 NVIDIA Research Director·Distinguished Research Scientist. Fan의 지금 직함은 확인하지 못했다 |
+| Viktor Makoviychuk | Liang 2018과 Isaac Gym 공저(Isaac Gym 1저자) | 확인하지 못했다 |
+| Mayank Mittal | Orbit과 Isaac Lab 보고서 1저자 | ETH Zürich 박사 과정(Hutter 지도)이면서 NVIDIA Senior Research Scientist |
+| Xue Bin (Jason) Peng | ASE·CALM·MaskedMimic·PARC·Trace and Pace 공저 | Simon Fraser University(SFU) 조교수이자 NVIDIA 연구원. 2027년 UBC로 옮긴다고 본인 홈페이지에 적었다 |
+| Chen Tessler | CALM·MaskedMimic·MaskedManipulator 1저자, PDC 공동 1저자 | NVIDIA 텔아비브 연구소 연구원 |
+| Zhengyi Luo | PHC 1저자(CMU 박사 과정), SONIC 공동 1저자 | NVIDIA GEAR Senior Research Scientist |
+| Umar Iqbal | SONIC·GRAIL 공저 | DAIR 팀 리드 |
+| Tairan He | HOVER·ASAP·VIRAL 1저자. CMU 박사 과정 중 GEAR에서 2년 인턴 | 2026-05부터 OpenAI Member of Technical Staff |
+| Haoru Xue | DoorMan 1저자, 2025년 GEAR 인턴 | UC Berkeley 박사 과정, Amazon Frontier AI & Robotics 인턴 |
+| Yecheng Jason Ma | Eureka·DrEureka 1저자, Eurekaverse 공저 | Dyna 공동 창업자이자 연구 리드(홈페이지는 2026년부터 갱신하지 않는다고 표기) |
+| Nikita Rudin, David Hoeller | Isaac Gym 공저, legged_gym·Neural Scene Representation·ANYmal Parkour(ETH·NVIDIA 이중 소속) | 취리히에서 Flexion 공동 창업(Rudin CEO, Hoeller CTO, B.16.3). Flexion의 Series A에는 NVIDIA의 투자 조직 NVentures가 참여했다(B.16.3) |
+
+#### B.16.2 Google DeepMind: 실물에서 배우기, 동물 모방, 축구, MuJoCo
+
+**Google의 다리 로봇 연구는 시뮬레이터를 실물에 맞추는 일에서 출발해, 지금은 기반 모델 하나가 휴머노이드의 몸 전체를 움직이는 데까지 왔다.**
+2018–2022년 Google Brain의 Jie Tan 팀은 Minitaur·Laikago·A1 같은 작은 사족으로 구동기 모델과 지연, 실물 학습, 동물 동작 모방, 학습 위 층과 MPC 아래 층의 계층을 차례로 다뤘다.
+DeepMind의 Nicolas Heess 팀은 소형 휴머노이드 OP3를 하드웨어에서 직접 걷게 한 뒤(2021), 시뮬레이션에서만 배운 1대1 축구를 실물에 올렸다(2023).
+두 조직이 2023-04에 Google DeepMind로 합쳐진 뒤 직접 만든 사족 Barkour, 언어 모델 인터페이스, MuJoCo 위의 GPU 학습 도구가 나왔고, 이 갈래들은 지금 Gemini Robotics 팀에 모여 있다.
+==구동기 모델과 지연 가운데 하나만 빠져도 시뮬레이션에서 배운 정책이 실물에서 걷지 못했다는 2018년 결과가 travplan이 가장 먼저 가져올 교훈이다.==
+그다음은 Barkour의 시간 점수, 학습 위 층과 MPC 아래 층의 경계, MPC 전문가를 조건부 정책으로 증류하는 절차다.
+
+<details markdown="1">
+<summary>자세히: 이 소절의 연구 목록(표 28행)</summary>
+
+| 연도 | 연구 | 로봇 | 핵심 | 다룬 곳 |
+|---|---|---|---|---|
+| 2017 | Emergence of Locomotion Behaviours (Heess 외, arXiv) | 시뮬레이션 몸체 여럿 | 다양한 지형과 전진 보상만으로 달리기·뛰기·웅크리기가 나왔다 | 표만 |
+| 2018 | Sim-to-Real: Learning Agile Locomotion (Tan 외, RSS 2018) | Minitaur | 해석 DC 모터 모델·실측 지연·무작위화·작은 관측으로 gallop과 trot을 실물에 바로 올림 | 이 소절, B.14.1 |
+| 2018 | PMTG (Iscen 외, CoRL 2018) | Minitaur | 정책이 궤적 생성기의 파라미터를 바꾸고 보정을 더함 | 이 소절(Tan 2018 카드) |
+| 2018 | Learning to Walk via Deep RL (Haarnoja 외, RSS 2019) | Minitaur | 자동 온도 SAC로 실물에서 약 2시간 학습 | 이 소절 |
+| 2019 | Data Efficient RL for Legged Robots (Yang 외, CoRL 2019) | Minitaur | 실물 데이터 4.5분으로 배운 동역학 모델과 계획 지연을 보정하는 MPC | 이 소절 |
+| 2020 | Learning to Walk in the Real World with Minimal Human Effort (Ha 외, CoRL 2020) | Minitaur | 반대 방향 과제를 번갈아 배우고 기울기를 제약으로 둔 SAC | 이 소절 |
+| 2020 | Learning Agile Robotic Locomotion Skills by Imitating Animals (Peng 외, RSS 2020) | Laikago | 개 모션 캡처 모방, 실물에서는 잠재 동역학 코드만 탐색 | 이 소절 |
+| 2021 | Fast and Efficient Locomotion via Learned Gait Transitions (Yang 외, CoRL 2021) | A1 | ES로 배운 상위 걸음새 정책과 볼록 MPC | 이 소절(계층 갈래 소개) |
+| 2021 | Brax (Freeman 외, NeurIPS 2021 Datasets and Benchmarks) | 시뮬레이션 과제 | JAX로 짠 GPU 강체 물리와 같은 장치에서 도는 PPO·SAC·ES 구현. MuJoCo Playground의 학습기 | 이 소절(MuJoCo 카드) |
+| 2021 | Legged Robots that Keep on Learning (Smith 외, ICRA 2022) | A1 | 시뮬레이션 사전 학습 뒤 실물에서 계속 미세 조정 | 이 소절 |
+| 2021 | Visual-Locomotion (Yu 외, CoRL 2021) | Laikago | 깊이 영상 상위 정책이 발 디딤과 몸통 목표를 내고 볼록 MPC가 따름 | 이 소절 |
+| 2021 | Towards Real Robot Learning in the Wild (Bloesch 외, CoRL 2021) | OP3 | 하드웨어에서 직접 이족 보행 학습, 두 장소의 로봇이 데이터 공유 | 이 소절(OP3 갈래 소개) |
+| 2022 | Safe Reinforcement Learning for Legged Locomotion (T.-Y. Yang 외, IROS 2022) | Laikago(시뮬레이션), A1 | 학습 정책과 안전 복구 정책의 전환 | 이 소절 |
+| 2022 | Adversarial Motion Priors Make Good Substitutes for Complex Reward Functions (Escontrela 외, IROS 2022) | A1 | 개 모션 캡처 4.5초로 배운 적대적 스타일 보상 | 이 소절(Peng 2020 카드), B.14.4 |
+| 2022 | Imitate and Repurpose (Bohez 외, arXiv) | ANYmal, OP3 | 모션 캡처로 배운 동작 모듈을 다른 과제에 재사용 | 이 소절(OP3 갈래 소개) |
+| 2022 | Learning Semantics-Aware Locomotion Skills (Yang 외, CoRL 2022) | A1 | 카메라 영상에서 전진 속도를, 속도에서 걸음새를 고름 | 이 소절 |
+| 2022 | PI-ARS (Lee 외, IROS 2022) | Laikago | Visual-Locomotion의 계층에 표현 학습을 더해 ARS로 학습 | 이 소절(Visual-Locomotion 카드) |
+| 2022 | NeRF2Real (Byravan 외, ICRA 2023) | OP3 | 휴대폰 영상 NeRF와 MuJoCo로 시각 정책 학습 | 이 소절(OP3 갈래 소개), S.4.2 |
+| 2022 | MuJoCo MPC, MJX, MuJoCo Playground (2022–2025) | A1(시뮬레이션), Go1, Berkeley Humanoid, G1, T1 | Predictive Sampling, GPU 병렬 학습, 보행 정책의 zero-shot 이전 | 이 소절, B.12.3, S.1.3 |
+| 2023 | Learning Agile Soccer Skills for a Bipedal Robot (Haarnoja 외, Science Robotics 2024) | OP3 | 기술 증류와 자기 대국, 시뮬레이션만으로 1대1 축구 | 이 소절 |
+| 2023 | Barkour (Caluwaerts 외, arXiv) | Barkour v0 | 어질리티 코스와 시간 점수, 전문가 셋과 증류 transformer | 이 소절 |
+| 2023 | SayTap (Tang 외, CoRL 2023) | A1 | 발 접지 패턴을 언어 모델과 보행 정책 사이의 인터페이스로 씀 | 이 소절 |
+| 2023 | Language to Rewards (Yu 외, CoRL 2023) | 사족(시뮬레이션) | 언어 모델이 보상을 쓰고 MJPC가 동작을 만듦 | 이 소절 |
+| 2024 | LMPC (Liang 외, RSS 2024) | Barkour | MJPC 전문가에서 보상 조건 정책을 DAgger로 증류 | 이 소절(Language to Rewards 카드) |
+| 2024 | Gameplay Filters (Nguyen 외, CoRL 2024) | Spirit S40, Go2 | 가상 적대자와 미리 겨뤄 위험한 행동을 막는 안전 필터 | 이 소절(Safe RL 카드) |
+| 2024 | Learning Robot Soccer from Egocentric Vision (Tirumala 외, CoRL 2024) | OP3 | 머리 카메라 RGB로 끝단 학습 | 이 소절 |
+| 2025 | Proc4Gem (Lin 외, arXiv) | Barkour | 시뮬레이션 데이터만으로 미세 조정한 Gemini가 사족에 속도 명령을 냄 | 이 소절(Gemini 갈래 소개) |
+| 2025 | Gemini Robotics 1.0·1.5·2 (2025–2026) | ALOHA, 양팔 Franka, Apollo, Apollo 2 | VLA와 ER 모델, 상체 조작에서 전신 제어로 | 이 소절 |
+
+</details>
+
+**사족 sim-to-real과 실물 학습(2018–2022).** Google Brain 로보틱스의 Jie Tan 팀은 sim-to-real 격차를 두 방향에서 풀었다.
+한쪽은 시뮬레이터를 실물에 맞춰 시뮬레이션에서만 배우고, 다른 쪽은 실물에서 직접 배우거나 실물에서 계속 고친다. 아래 여섯 카드는 두 방향을 번갈아 오간다.
+
+**Sim-to-Real(Minitaur) — 구동기 모델과 지연을 시뮬레이터에 넣자 gallop이, 여기에 관측을 4차원으로 줄이자 trot도 시뮬레이션에서만 배워 실물에서 바로 돌았다**([arXiv:1804.10332](https://arxiv.org/abs/1804.10332), Tan·Zhang·Coumans·Iscen·Bai·Hafner·Bohez·Vanhoucke, RSS 2018, Google Brain, [환경 코드(PyBullet Minitaur)](https://github.com/bulletphysics/bullet3/tree/master/examples/pybullet/gym/pybullet_envs/minitaur), zlib).
+로봇은 Ghost Robotics의 Minitaur다. 직접 구동 모터 여덟 개가 다리 넷을 시상면에서만 움직인다.
+정책은 PyBullet에서 PPO(proximal policy optimization)로 배우고, 실물에서는 로봇에 실은 Jetson TX2가 돌린다.
+행동은 열린 루프 기준 신호와 학습한 피드백의 합이다. 피드백 범위를 좁히면 사람이 정한 걸음새에 가깝고, 넓히면 처음부터 배운다.
+같은 팀의 PMTG(Iscen 외, CoRL 2018)는 이 구조에서 영감을 받아, 피드백이 궤적 생성기의 주파수와 파라미터까지 바꾸게 했다.
+격차는 두 쪽에서 줄였다. 시뮬레이터에는 분해해서 잰 질량, DC 모터 모델과 토크 포화, 실측 지연을 넣었다.
+정책 쪽에는 물리 파라미터 무작위화, 무작위 밀기, 작은 관측 공간을 썼다.
+원래 시뮬레이터에서는 느린 걸음만 나왔고, 그 정책을 올린 실물 Minitaur는 바로 넘어졌다.
+고친 시뮬레이터에서는 gallop이 저절로 나왔고 실물에서 1.18 m/s로 달렸다. 제조사가 손으로 짠 비슷한 속도의 걸음새보다 평균 기계 일률이 gallop에서 35%, trot에서 23% 적었다.
+
+**travplan에 주는 의미.** 지연과 구동기를 모르는 시뮬레이터에서 배운 정책은 실물에서 무너진다는 결론을, ETH의 actuator net(B.14.1, 2019-01)보다 먼저 다른 구동기에서 냈다.
+Hwangbo 2019는 이 논문을 인용하며, 해석 모델이 통한 것은 직접 구동 모터라서이고 ANYmal의 SEA에는 통하지 않는다고 적었다.
+travplan의 스워브 plant(`robot/plant.py`)도 손으로 쓴 해석 모델이다. twist에 1차 지연(0.2 s)과 조향 속도 한계(5 rad/s)를 두고, 경사와 거칠기에 따라 미끄러진다. 그래서 이 논문의 길에 더 가깝다.
+travplan은 같은 교훈을 시뮬 안에서 Controller rollout으로 쟀다. 권장 L1과 plant의 레벨 3에서 지연을 모르는 MPPI는 치명 55회였고, rollout에 지연을 넣은 `mppi_plant_lag`는 4회였다(TP-0150, MPC 문서 M.3.22).
+아직 들어오지 않은 것은 L0의 지연·자기 위치 잡음 무작위화(TP-0032)다. 범위는 이 논문처럼 실측값에 작은 여유만 더해 정한다. 무작위화로 배운 제어기는 수익 평균이 낮았고, 저자들은 지나치게 보수적인 걸음을 피하려고 범위를 신중하게 골랐다.
+
+![Sim-to-Real Minitaur Fig. 1](https://arxiv.org/html/1804.10332v2/images/gallop_2.png)
+*그림 — Sim-to-Real Minitaur (Fig. 1): 학습한 gallop을 시뮬레이션(위 두 칸)과 실물(아래 두 칸)에서 찍은 장면이다. 실물 사진은 실험실 바닥에서 찍었고, 빠르게 움직이는 다리가 흐리게 보인다. 출처: [arXiv:1804.10332](https://arxiv.org/abs/1804.10332)*
+
+![Sim-to-Real Minitaur Fig. 9](https://arxiv.org/html/1804.10332v2/observation_randomization_h.png)
+*그림 — Sim-to-Real Minitaur (Fig. 9): trot 제어기의 기대 수익을 관측 크기(작음 4차원, 큼 12차원)와 무작위화 유무의 네 조합으로 비교했다. 파랑은 시뮬레이션, 빨강은 실물이다. 큰 관측은 시뮬레이션 수익이 가장 높지만 실물 수익이 가장 낮고, 작은 관측에 무작위화를 더한 조합에서 두 막대가 가장 가깝다. 출처: [arXiv:1804.10332](https://arxiv.org/abs/1804.10332)*
+
+<details markdown="1">
+<summary>자세히: Sim-to-Real(Minitaur)의 구동기·지연 모델, 무작위화, ANYmal과의 비교</summary>
+
+**풀려는 문제.** 접촉이 자주 바뀌는 빠른 보행에서는 작은 모델 오차가 큰 차이로 자란다. 실물에서 직접 배우면 리셋과 낙상 파손이 문제다.
+그래서 시뮬레이션에서 배우되, 격차를 시뮬레이터 개선과 강건한 정책의 두 쪽에서 줄인다.
+
+**행동·관측·보상.** 다리마다 스윙 $s$와 신장 $e$를 내고, 두 모터 각은 $\theta_1 = e + s$와 $\theta_2 = e - s$로 바꾼다. 다리 공간에서는 사각형 범위 하나로 자기 충돌하는 행동을 거를 수 있다.
+관측은 몸통 roll·pitch와 두 축 각속도이고, 필요하면 모터 각 여덟 개를 더한다. yaw는 IMU 값이 빨리 흘러 뺐다.
+보상은 원하는 방향으로 간 거리에서 에너지를 뺀다.
+
+$$ r = (\mathbf p_n - \mathbf p_{n-1}) \cdot \mathbf d - w\, \Delta t\, \lvert \boldsymbol\tau_n \cdot \dot{\mathbf q}_n \rvert, \qquad w = 0.008 $$
+
+에피소드는 1000스텝이 지나거나 몸통이 0.5 rad 넘게 기울면 끝난다. 정책은 열린 루프 성분과 피드백 성분의 합이다.
+
+$$ \mathbf a(t, \mathbf o) = \bar{\mathbf a}(t) + \pi(\mathbf o) $$
+
+gallop은 $\bar{\mathbf a} = 0$에 넓은 피드백 범위(스윙 ±0.5 rad, 신장 $\pi/2 \pm 0.5$ rad)로 처음부터 배웠다.
+trot은 대각 다리 쌍이 반대 위상인 사인 기준 신호에 ±0.25 rad 피드백을 더했다. 기준 신호만으로는 실물이 뒷다리로 주저앉았다.
+
+**구동기 모델.** Bullet의 위치 제어는 스텝 끝의 각과 속도가 PD 식을 만족하도록 구속을 푼다. 그래서 이득이 커도 시뮬레이션에서는 안정하지만 실물에서는 떨린다.
+이것을 이상 DC 모터 모델로 바꿨다.
+
+$$ \tau = K_t I, \qquad I = \frac{V_{\mathrm{pwm}} - K_t \dot q}{R}, \qquad V_{\mathrm{pwm}} = V\big(k_p(\bar q - q_n) + k_d(\dot{\bar q} - \dot q_n)\big) $$
+
+이상 모델만 쓰면 실물이 주저앉거나 발을 들지 못했다. 실제 모터는 전류가 커지면 토크가 포화하기 때문이다. 그래서 전류에서 토크로 가는 구간 선형 함수를 넣었다.
+
+**지연.** Bullet에서는 명령이 바로 적용되고 센서가 바로 읽힌다. 그래서 시뮬레이션에서 피드백 제어기가 안정한 영역이 실물보다 훨씬 넓다.
+관측과 측정 시각의 이력을 두고, 지연만큼 이전의 관측을 이웃한 두 관측의 선형 보간으로 준다.
+지연은 한 스텝짜리 PWM(pulse-width modulation) 스파이크를 보낸 뒤 모터가 움직였다고 보고될 때까지의 시간으로 쟀다. 마이크로컨트롤러의 PD는 3 ms, Jetson TX2의 정책은 보통 15–19 ms였다.
+
+![Sim-to-Real Minitaur Fig. 2](https://arxiv.org/html/1804.10332v2/images/hardware.png)
+*그림 — Sim-to-Real Minitaur (Fig. 2): Jetson TX2가 신경망 정책을 돌리고, STM32 마이크로컨트롤러가 행동을 모터 명령으로 보내며 모터 각과 IMU 값을 관측으로 돌려준다. 둘은 UART로 이어진다. 출처: [arXiv:1804.10332](https://arxiv.org/abs/1804.10332)*
+
+**무작위화(원문 표 I).** 매 에피소드 시작에 아래 범위에서 균일하게 뽑는다. 질량과 모터 마찰은 실측했으므로 좁게, 균일 밀도로 추정한 관성은 넓게 잡았다.
+모터 세기는 마모로, 제어 주기와 지연은 실시간이 아닌 OS로 흔들리고, 전압은 충전 상태로 바뀐다. 이런 값은 실측값에 작은 여유만 더했다.
+
+| 파라미터 | 범위 |
+|---|---|
+| 질량 | 80–120% |
+| 모터 마찰 | 0–0.05 N·m |
+| 관성 | 50–150% |
+| 모터 세기 | 80–120% |
+| 제어 주기 | 3–20 ms |
+| 지연 | 0–40 ms |
+| 배터리 전압 | 14.0–16.8 V |
+| 접촉 마찰 | 0.5–1.25 |
+| IMU 편향 | ±0.05 rad |
+| IMU 잡음(표준편차) | 0–0.05 rad |
+
+무작위 밀기는 200 시뮬레이션 스텝(1.2 s)마다 0.06 s 동안 130–220 N을 무작위 방향으로 준다. 저자들은 두 장치의 효과가 비슷해 둘을 묶어 무작위화라 부른다.
+
+**학습 규모(원문 표 II).** 반복마다 rollout 25개(각 1000스텝 이하)를 병렬로 모으고, 700만 시뮬레이션 스텝에서 멈춘다.
+trot은 관측 4차원에 정책 은닉층 125·89, 가치 은닉층 89·55로 4.35시간이 걸렸다. gallop은 관측 12차원에 정책 185·95, 가치 95·85로 3.25시간이었다.
+
+**결과.**
+- 속도: gallop은 시뮬레이션 1.34 m/s, 실물 1.18 m/s다. trot은 시뮬레이션 0.50 m/s, 실물 0.60 m/s다.
+- 손으로 짠 걸음새 대비(원문 표 III, 실물): trot은 0.56 m/s·92.72 W 대 학습 0.60 m/s·71.78 W다. gallop은 1.21 m/s·290.00 W 대 학습 1.18 m/s·188.79 W다.
+- 격차의 척도: 성공 여부 대신 시뮬레이션과 실물의 기대 수익 차이를 쓴다. 조건마다 제어기 100개를 배우고, 시뮬레이션 상위 3개를 실물에서 3번씩 돌린 9번의 평균을 냈다.
+- 시뮬레이터 개선(원문 그림 6): 원래 시뮬레이터와 원래 시뮬레이터에 밀기를 더한 묶음은 시뮬레이션에서 잘했지만 실물에서 크게 떨어졌다. 고친 시뮬레이터에 밀기를 더한 묶음만 두 값이 비슷했다.
+- 무작위화의 대가(원문 그림 7·8): 무작위화로 배운 제어기는 수익의 평균과 표준편차가 함께 낮았다. 저자들은 무작위화가 공짜가 아니므로 필요할 때만 쓰라고 적는다.
+- 관측 크기(원문 그림 9): 12차원은 시뮬레이션 수익이 높았지만 실물에서 더 나빴다. 저자들은 관측 공간이 클수록 학습 때 본 관측이 듬성해져, 실물에서 비슷한 관측을 만날 확률이 낮아진다고 설명한다.
+  4차원에 무작위화를 더한 묶음은 상위 3개 제어기의 9번 주행 모두 3 m 넘게 trot하며 끝까지 균형을 잡았다.
+
+![Sim-to-Real Minitaur Fig. 7](https://arxiv.org/html/1804.10332v2/sensitivity_inertia.png)
+*그림 — Sim-to-Real Minitaur (Fig. 7): 몸통 관성을 기본값의 50–150%로 바꾼 시뮬레이션 환경의 기대 수익이다. 무작위화 없이 배운 제어기(파랑)는 기본값 근처(80–110%)에서만 높고, 벗어나면 1–2로 떨어진다. 무작위화로 배운 제어기(빨강)는 봉우리는 낮지만 전 범위에서 약 2.6–3.2로 고르다(그래프에서 읽은 값). 출처: [arXiv:1804.10332](https://arxiv.org/abs/1804.10332)*
+
+**ANYmal의 actuator net(B.14.1)과 나란히 보면.**
+
+| 항목 | Tan 2018 (Minitaur) | Hwangbo 2019 (ANYmal) |
+|---|---|---|
+| 구동기 | 직접 구동 모터, 해석 DC 모터 모델과 토크 포화 | SEA, 실물 데이터로 학습한 actuator net |
+| 지연 | 실측 지연만큼 이전 관측을 보간해 준다 | actuator net의 입력 이력(0.01·0.02 s 전)이 응답 지연을 담는다 |
+| 관측에서 얻은 교훈 | 이전성: 큰 관측(12차원)에서 실물 격차가 커졌다 | 학습 가능성: 속도 관측이나 관절 이력을 빼면 학습 자체가 실패했다 |
+| 학습 | PPO, 700만 스텝, 3.25–4.35시간 | TRPO, 시뮬레이션 9일치(실제 4시간) |
+| 실물 결과 | gallop 1.18 m/s, 손으로 짠 걸음새보다 일률 23–35% 적음 | 1.6 m/s 명령에 1.5 m/s |
+
+두 교훈은 축이 다르다. Tan 2018은 관측이 크면 실물 격차가 커졌다는 이전성의 교훈이고, Hwangbo 2019는 속도나 관절 이력을 빼면 학습이 실패했다는 학습 가능성의 교훈이다.
+두 논문은 서로의 관측 설계를 비교하지 않았다.
+
+**한계.** 저자가 밝힌 것: 평지와 단순한 보상(앞으로 빨리)이다. 속도와 방향을 바꾸는 정책과 시각으로 지형을 보는 정책을 다음 과제로 꼽았다.
+우리가 보기에: 실험은 실내 바닥 한 종류다. 정책은 명령을 받지 않는 단일 속도 정책이라, 위 층이 속도를 고르는 구조에는 그대로 쓸 수 없다. 관측 크기의 교훈은 기준 신호가 있는 trot에서 잰 것이다.
+
+**후속.** PMTG는 ARS(augmented random search)와 PPO로 배웠다. 선형 정책(파라미터 77개)과 IMU 4차원 관측으로 1000 rollout 안에 속도를 조절하는 보행을 배워 실물 Minitaur에 올렸다.
+travplan의 TinyPolicy(TP-0128)도 진화 전략(OpenAI-ES)으로 배웠다.
+
+**travplan에 주는 것.** 셋이다.
+첫째, TP-0032의 범위를 정하는 법이다. 제어 주기, 지연, 전압처럼 실물에서 흔들리는 값은 실측 범위에 작은 여유만 더했다.
+TP-0032는 L0의 제어 주기 0.1 s 위에 센서와 계획 지연을 얹는다. 실물 기록(S.6.2)이 생기기 전의 첫 값은 TP-0083·TP-0084가 RTX 4070 랩탑에서 잰 L1 단계별 시간이다. Orin 실측이 생기면 그 값으로 바꾼다.
+둘째, 관측을 넓힐 때의 검사다. TP-0145는 Planner D의 관측(±3.2 m)을 넓히려 한다. 이 논문에서는 관측이 클수록 시뮬레이션 수익은 오르고 실물 수익은 내렸다.
+다만 이 논문의 관측은 고유감각의 차원이라, 지도 창의 크기에는 간접 근거다. travplan에서 실물 대신 쓸 수 있는 것은 L1 belief다. 넓힌 관측의 이득이 L0 GT 지도만이 아니라 권장 L1 조건에서도 남는지 잰다.
+셋째, 기준과 피드백의 합이라는 정책 형태다. 피드백 출력 범위가 학습의 자유도를 정한다.
+travplan에서는 Guidance 경로를 기준으로 두고, 학습 Planner가 범위를 정한 수정만 내는 형태가 된다. 지금의 폴백(TP-0078)은 둘 중 하나를 고르는 방식이라, 범위를 둔 잔차는 그 사이의 선택지다.
+
+</details>
+
+**Learning to Walk via Deep RL — 시뮬레이터 없이 실물 Minitaur가 약 2시간 만에 걷기를 배웠다**([arXiv:1812.11103](https://arxiv.org/abs/1812.11103), Haarnoja·Ha·Zhou·Tan·Tucker·Levine, RSS 2019, Google Brain·UC Berkeley, [프로젝트](https://sites.google.com/view/minitaur-locomotion/), 같은 저자들의 SAC 공식 구현 [softlearning](https://github.com/rail-berkeley/softlearning) MIT, Minitaur 실물 학습 코드는 찾지 못했다).
+SAC(soft actor-critic)의 온도 $\alpha$를 손으로 맞추지 않는다. 정책 엔트로피의 기댓값이 목표를 넘도록 $\alpha$를 쌍대 변수로 학습한다.
+하드웨어 지연과 부분 관측 때문에 최근 다섯 스텝의 관측과 행동을 붙여 입력으로 썼다.
+16만 제어 스텝(약 400 rollout, 약 2시간)에 0.32 m/s로 걷게 됐다. 평지에서만 배웠는데 경사, 나무 블록, 계단 내려가기를 각각 10번씩 모두 지났다.
+다만 넘어지거나 작업 공간을 벗어나면 사람이 로봇을 다시 놓아야 했다. 후속 Ha 2020은 평지 걷기 학습 한 번에 이 개입이 백 번 넘게 필요했다고 적는다.
+
+**travplan에 주는 의미.** 가져올 것은 실물 학습이 아니라 온도를 목표 엔트로피로 정하는 발상이다. SAC의 $\alpha$와 MPPI의 $\lambda$는 같은 자리다(R.8).
+travplan MPPI의 온도는 0.5로 고정이다(`control/mppi/mppi.py`). 코드 주석은 범위 정규화가 큰 hard 벌점과 함께 깨졌다고 적으므로, 엔트로피 목표 변형은 치명 벌점과의 상호작용부터 잰다.
+
+![Learning to Walk via Deep RL Fig. 1](https://arxiv.org/html/1812.11103v3/figures/minitaur/jenga/seq09.jpg)
+*그림 — Learning to Walk via Deep RL (Fig. 1): 평지에서만 약 2시간 학습한 실물 Minitaur가 학습 때 없던 나무 블록 더미를 지나간다. 원문 Fig. 1의 네 장면 가운데 셋째다. 출처: [arXiv:1812.11103](https://arxiv.org/abs/1812.11103)*
+
+**Data Efficient RL for Legged Robots — 실물 Minitaur의 4.5분 데이터로 배운 동역학 모델을, 계획 지연을 보정하는 MPC로 굴려 걸었다**([arXiv:1907.03613](https://arxiv.org/abs/1907.03613), Yang·Caluwaerts·Iscen·Zhang·Tan·Sindhwani, CoRL 2019(PMLR 100), Robotics at Google).
+신경망 동역학 모델은 다음 상태와의 차이를 예측한다. 한 스텝 오차 대신 20스텝을 이어 굴린 다단계 손실로 학습하는데, 한 스텝이 정확해도 긴 지평에서는 오차가 쌓이기 때문이다.
+계획은 CEM으로, 후보 400개를 다섯 번 반복하고 지평은 75스텝(450 ms)이다. GPU에서 60 ms 안에 풀고 72 ms마다 다시 계획한다.
+계획하는 동안에도 로봇은 움직인다. 그래서 지금 상태가 아니라 계획이 끝날 시점의 상태를 학습 모델로 예측하고, 그 상태에서 계획한다(비동기 제어).
+보행의 뼈대는 PMTG처럼 다리마다 둔 궤적 생성기가 잡고, 계획기는 그 위에 잔차와 위상 속도를 더한다. 모터를 상하게 하는 거친 동작을 막기 위해서다.
+36 에피소드(45,000 제어 스텝, 실험 시간 약 10분)의 데이터로 0.66 m/s를 따라 걸었다. Haarnoja 2019가 같은 로봇에서 낸 가장 빠른 속도의 두 배다.
+시뮬레이션 절제에서 비동기 제어를 빼면 약 0.4 m/s까지만 따라갔다. 같은 모델로 보상만 바꿔 뒤로 걷기와 회전도 했다.
+
+**travplan에 주는 의미.** travplan의 plant 대응 두 길이 이 논문 하나에 함께 있다. 하나는 학습한 모델을 rollout에 쓰는 길(TP-0068의 GP(Gaussian process) 잔차)이고, 다른 하나는 지연을 rollout에서 다루는 길(TP-0150의 `mppi_plant_lag`)이다.
+다른 점은 둘이다. travplan의 GP 잔차는 한 스텝 오차 $d(x_k, u_k)$를 맞추고, 이 논문은 20스텝 지평의 오차로 모델을 맞췄다.
+TP-0150은 plant 구동기의 지연을 넣었고, 이 논문은 계산에 걸리는 시간만큼 앞을 예측했다. TP-0032가 계획 지연을 L0에 넣으면, 이 비동기 보정이 먼저 비교할 후보다.
+
+![Data Efficient RL for Legged Robots Fig. 1](https://arxiv.org/html/1907.03613v2/block_diagram.png)
+*그림 — Data Efficient RL for Legged Robots (Fig. 1): 학습 고리다. 아래(데이터 수집)에서는 MPC가 학습 모델로 계획한 모터 목표를 실물 Minitaur에 보내 rollout을 모으고, 위(모델 학습)에서는 모은 rollout으로 동역학 모델을 다시 맞춘다. 출처: [arXiv:1907.03613](https://arxiv.org/abs/1907.03613)*
+
+**Learning to Walk in the Real World with Minimal Human Effort — 반대 방향의 과제를 번갈아 배우고 기울기를 제약으로 묶어, 평지 실물 학습의 사람 개입을 0–2번으로 줄였다**([arXiv:2002.08550](https://arxiv.org/abs/2002.08550), Ha·Xu·Tan·Levine·Tan, CoRL 2020(PMLR 155), Robotics at Google·UC Berkeley·Georgia Tech).
+사람 손 없이 실물 학습을 돌리는 데 걸림돌은 둘이었다. 로봇이 작업 공간을 벗어나는 것과 넘어지는 것이다.
+이 논문은 앞으로 걷기와 뒤로 걷기를 함께 배우고, 에피소드마다 작업 공간 중심 쪽을 향하는 과제를 고른다.
+넘어짐은 몸통 pitch(π/12)와 roll(π/6) 한계를 기대 제약으로 둔 SAC로 줄였고, 라그랑주 승수는 학습한다.
+평지 5 × 2 m²에서 세 번 학습한 가운데 두 번은 사람 개입이 0번이었고, 한 번은 구석에 끼어 2번이었다. 앞뒤 두 정책을 1.5시간에 배웠다.
+매트리스와 도어매트에서도 앞뒤 걷기를 배웠다. 이때는 작업 공간이 좁아 사람이 20–30번 다시 놓았다.
+
+**travplan에 주는 의미.** 학습한 라그랑주 승수로 안전 제약을 지키는 부분이 TP-0066에 닿는다. TP-0066의 보상은 진행·cost·치명·부드러움 항의 가중치(치명 5.0)를 손으로 정했다.
+이 논문의 시뮬레이션 비교에서 고정 가중 0은 학습 중 100번 넘게 넘어졌고, 가중 100은 수익을 크게 잃었다. 학습 승수는 약 40번 넘어져, 가장 잘 맞춘 고정 가중(1.0)보다는 더 넘어졌다.
+대신 가중을 찾는 탐색이 필요 없다. 벤치마크의 채택 규칙(치명이 늘면 채택하지 않는다)은 그대로 두고, 학습 쪽 벌점만 바꾸는 이야기다.
+
+![Learning to Walk in the Real World Fig. 4](https://arxiv.org/html/2002.08550v3/images/motion2/doormat_forward_55.jpg)
+*그림 — Learning to Walk in the Real World (Fig. 4): 고무 도어매트를 깐 작업 공간에서 실물 Minitaur가 앞으로 걷는다. 원문 Fig. 4 셋째 줄(도어매트 전진)의 한 장면이다. 출처: [arXiv:2002.08550](https://arxiv.org/abs/2002.08550)*
+
+**Learning Agile Robotic Locomotion Skills by Imitating Animals — 개의 모션 캡처를 따라 하는 정책을 시뮬레이션에서 배우고, 실물에서는 잠재 동역학 코드만 약 50번의 시도로 골랐다**([arXiv:2004.00784](https://arxiv.org/abs/2004.00784), Peng·Coumans·Zhang·Lee·Tan·Levine, RSS 2020, Google Research·UC Berkeley, [프로젝트](https://xbpeng.github.io/projects/Robotic_Imitation/), [코드 motion_imitation](https://github.com/erwincoumans/motion_imitation), Apache-2.0).
+세 단계다. 먼저 개 몸의 발과 엉덩이 점을 로봇의 대응 점에 맞추는 역기구학(IK, inverse kinematics)으로, 모션 캡처를 Unitree Laikago의 자세열로 옮긴다.
+다음으로 그 자세열을 따라 하는 정책을 PyBullet에서 PPO로 배운다. 보상은 관절 각과 속도, 발끝 위치, 몸통 자세와 속도가 기준 동작에 가까울수록 커지는 지수형 항의 합이다.
+기술마다 보상을 새로 짜지 않고 기준 동작만 바꾼다.
+마지막으로 학습 때 동역학 파라미터를 무작위로 뽑아 잠재 코드 $\mathbf z$로 압축하고, 정책이 $\mathbf z$를 함께 받게 한다.
+실물에서는 정책 가중치를 고정한 채 $\mathbf z$만 바꾼다. 수익이 높은 $\mathbf z$ 쪽으로 탐색 분포를 옮기는 방법은 AWR(advantage-weighted regression)이다.
+기술마다 약 2억 시뮬레이션 표본으로 학습했고, 실물 적응에는 5–10 s짜리 시도 약 50번을 썼다.
+개 trot을 흉내 낸 정책은 1.08 m/s, 뒤로 가는 trot은 1.20 m/s로 달렸다. 제조사의 가장 빠른 걸음새는 약 0.84 m/s다.
+같은 팀이 공저한 Escontrela 2022(IROS 2022)는 추적형 모방을 AMP의 적대적 스타일 보상으로 바꿨다. 독일 셰퍼드 모션 캡처 4.5초로 배운 스타일 보상이 손으로 짠 복잡한 보상을 대신해 실물 A1을 걷게 했다. AMP의 설명은 Multi-AMP(B.14.4)에 있다.
+
+**travplan에 주는 의미.** 가장 가져올 것은 실물 적응의 크기다. 정책 전체가 아니라 저차원 $\mathbf z$ 하나를 수익만으로 고르므로, 동역학을 따로 재지 않아도 50번 정도의 시도로 끝난다.
+travplan의 plant 대응은 지금 두 길이다. rollout에 plant의 지연을 넣거나(TP-0150), 명목 모델 위의 잔차를 GP로 배운다(TP-0068).
+이 논문의 방식은 셋째 길이다. 모듈 지연과 미끄럼을 $\mathbf z$로 묶어 Controller rollout 모델을 $\mathbf z$에 조건화하고, 실물 첫 주행에서 $\mathbf z$만 고른다.
+$\mathbf z$를 고르는 가중 $\exp((\mathcal R - \bar v)/\alpha)$는 TP-0066의 AWR 가중, MPPI의 $\exp(-S/\lambda)$와 같은 꼴이다(R.10, 배경 0.2).
+정보 병목의 교훈도 함께 온다. $\mathbf z$가 파라미터를 너무 많이 담으면 정책이 시뮬레이터의 세부에 맞춰져 실물에서 깨졌다.
+
+![Imitating Animals Fig. 1](https://arxiv.org/html/2004.00784v3/figures/teaser.png)
+*그림 — Imitating Animals (Fig. 1): 개의 trot(왼쪽 네 칸)과 제자리 회전(오른쪽 네 칸)을 세 줄로 보인다. 위는 개의 모션 캡처, 가운데는 그것을 따라 하는 시뮬레이션 Laikago, 아래는 같은 정책을 올린 실물 Laikago다. 출처: [arXiv:2004.00784](https://arxiv.org/abs/2004.00784)*
+
+![Imitating Animals Fig. 2](https://arxiv.org/html/2004.00784v3/figures/overview.png)
+*그림 — Imitating Animals (Fig. 2): 세 단계 구조다. 모션 캡처를 로봇의 기준 동작으로 옮기는 재지정, 시뮬레이션의 모방 학습, 실물로 옮길 때의 도메인 적응이다. 점선 위가 시뮬레이션, 아래가 실물이다. 출처: [arXiv:2004.00784](https://arxiv.org/abs/2004.00784)*
+
+<details markdown="1">
+<summary>자세히: Imitating Animals의 재지정, 모방 보상, 잠재 적응</summary>
+
+**풀려는 문제.** RL은 기술마다 보상을 손으로 짜야 하고, 그래도 실물에서 위험하거나 부자연스러운 동작이 나오기 쉽다.
+동물 동작 데이터를 기준으로 쓰면 한 틀로 여러 기술을 만든다. 남는 문제는 시뮬레이션에서 배운 민첩한 기술을 실물로 옮기는 것이다.
+
+**① 재지정.** 개와 로봇의 몸에 발과 엉덩이 대응 점을 정하고, 매 프레임 그 점을 따라가는 자세열을 IK로 푼다. 기본 자세 $\bar{\mathbf q}$에서 너무 벗어나지 않게 관절별 가중 $\mathbf W$로 묶는다.
+
+$$ \min_{\mathbf q_{0:T}} \sum_t \sum_i \lVert \hat{\mathbf x}_i(t) - \mathbf x_i(\mathbf q_t) \rVert^2 + (\bar{\mathbf q} - \mathbf q_t)^\top \mathbf W (\bar{\mathbf q} - \mathbf q_t) $$
+
+모션 캡처는 공개 개 데이터셋과 애니메이터가 만든 동작을 섞었다.
+
+**② 모방.** 상태는 지난 세 스텝의 자세와 행동이다. 몸통 위치는 실물에서 추정하기 어려워 넣지 않았다.
+목표는 1·2·10·30스텝 뒤의 기준 자세로 약 1초를 덮는다. 정책은 30 Hz로 PD 목표를 내고, 그 목표는 저역 통과 필터를 거친다. 보상은 DeepMimic(Peng 2018)과 같은 꼴이다.
+
+$$ r_t = 0.5\, r^{p}_t + 0.05\, r^{v}_t + 0.2\, r^{e}_t + 0.15\, r^{rp}_t + 0.1\, r^{rv}_t, \qquad r^{p}_t = \exp\Big[-5 \sum_j \lVert \hat q^{\,j}_t - q^{\,j}_t \rVert^2\Big] $$
+
+나머지 네 항은 관절 속도, 몸통 기준 발끝 위치, 몸통 위치·자세, 몸통 속도의 같은 지수형 항이다.
+
+**③ 잠재 적응.** 에피소드마다 동역학 파라미터 $\boldsymbol\mu$를 뽑고, 인코더 $E(\mathbf z \mid \boldsymbol\mu)$가 가우시안 잠재로 압축한다. 정책 $\pi(\mathbf a \mid \mathbf s, \mathbf g, \mathbf z)$와 인코더를 함께 학습한다.
+$\mathbf z$가 $\boldsymbol\mu$를 너무 많이 담으면 정책이 시뮬레이터의 정확한 동역학에 맞춰진다. 그래서 $\mathbf z$와 $\boldsymbol\mu$의 상호정보에 상한을 두는 정보 병목을 KL(Kullback–Leibler) 벌점으로 근사했다.
+
+$$ \max_{\pi, E}\ \mathbb E_{\boldsymbol\mu,\, \mathbf z,\, \tau}\Big[\sum_t \gamma^t r_t\Big] - \beta\, \mathbb E_{\boldsymbol\mu}\Big[ D_{\mathrm{KL}}\big(E(\cdot \mid \boldsymbol\mu) \,\Vert\, \mathcal N(0, I)\big) \Big], \qquad \beta = 10^{-4} $$
+
+$\beta \to \infty$면 동역학을 모르는 강건한 정책이 되고, $\beta \to 0$이면 동역학에 과적합한 정책이 된다.
+실물에서는 탐색 분포 $\omega(\mathbf z)$를 $\mathcal N(0, I)$에서 시작한다. 한 번 뽑아 한 에피소드를 돌리고, 지금까지의 모든 표본을 수익의 지수로 가중해 분포를 다시 맞춘다.
+
+$$ \omega_{k+1} = \arg\max_\omega \sum_{i \in \mathcal D} \log \omega(\mathbf z_i)\, \exp\Big(\frac{\mathcal R_i - \bar v}{\alpha}\Big), \qquad \alpha = 0.01 $$
+
+$\bar v$는 버퍼 전체의 평균 수익이다. 가우시안이라 닫힌 해가 있지만, 그 해는 너무 일찍 나쁜 해로 수렴했다. 그래서 반복마다 경사 하강 10스텝씩 조금씩 옮겼고, 마지막 분포의 평균을 배포에 쓴다.
+
+**결과(실물 정규화 수익, 방법마다 seed 3개 × 5 에피소드, 원문 부록의 실물 표).**
+
+| 기술 | 무작위화 없음 | 강건(무작위화) | 적응 전 | 적응 후 |
+|---|---|---|---|---|
+| Dog Pace | 0.128 | 0.350 | 0.395 | **0.827** |
+| Dog Trot | 0.171 | 0.471 | 0.237 | **0.593** |
+| Dog Backwards Pace | 0.067 | **0.421** | 0.401 | 0.390 |
+| Dog Backwards Trot | 0.072 | 0.120 | 0.167 | **0.656** |
+| Dog Spin | 0.098 | 0.209 | 0.121 | **0.751** |
+| In-Place Steps | 0.822 | **0.845** | 0.771 | 0.778 |
+| Side-Steps | 0.541 | **0.782** | 0.310 | 0.710 |
+| Turn | 0.108 | 0.410 | 0.594 | **0.606** |
+| Hop-Turn | 0.174 | 0.478 | 0.493 | **0.518** |
+| Running Man | 0.149 | 0.430 | 0.488 | **0.503** |
+
+- 열 가지 가운데 일곱에서 적응 후가 가장 높았고, 셋에서는 강건 정책이 가장 높았다. 무작위화 없이 배운 정책은 대부분 실물로 옮겨지지 않았다.
+- 시뮬레이션의 기준 동역학에서는 세 방법의 수익이 비슷했다(0.544–0.945). 차이는 실물에서만 났다.
+- 시험 범위를 넓힌 시뮬레이션 환경 100개에서, Dog Pace의 적응 정책은 환경의 50%에서 수익 0.6을 넘었고 강건 정책은 38%였다.
+- 원문 부록의 본문은 실물 표와 시뮬레이션 표의 번호를 캡션과 반대로 부른다. 위 표는 캡션이 실물이라고 적은 표다.
+
+![Imitating Animals Fig. 5](https://arxiv.org/html/2004.00784v3/curves/bars_return_all.png)
+*그림 — Imitating Animals (Fig. 5): 기술 열 가지의 실물 정규화 수익이다. 파랑은 무작위화 없음, 주황은 강건 정책, 진한 초록은 적응 전, 연한 초록은 적응 후다. 대부분의 기술에서 적응 후가 가장 높고, 뒤로 pace·제자리 걸음·옆걸음의 셋에서는 강건 정책이 가장 높다. 출처: [arXiv:2004.00784](https://arxiv.org/abs/2004.00784)*
+
+![Imitating Animals Fig. 10](https://arxiv.org/html/2004.00784v3/curves/curves_ib_pace.png)
+*그림 — Imitating Animals (Fig. 10, Dog Pace): 정보 벌점 계수 β별로 시뮬레이션 환경을 수익 순으로 늘어놓은 곡선이다. 점선은 적응 전, 실선은 적응 후다. 병목이 없으면(파랑) 적응 전 수익이 가장 낮고, β가 클수록 적응 전 수익이 오른다. 출처: [arXiv:2004.00784](https://arxiv.org/abs/2004.00784)*
+
+**한계.** 저자가 밝힌 것: 하드웨어와 알고리즘의 한계로 큰 점프와 빠른 달리기는 배우지 못했다. 학습한 기술은 가장 잘 짠 수동 제어기만큼 안정적이지 않다. 다음으로 영상에서 동작을 배우는 것을 꼽았다.
+우리가 보기에: 실물 평가는 방법·기술마다 15번이고, 표준편차가 큰 칸이 많다(Dog Pace 강건 정책 ±0.172). 적응은 기술마다 따로 하고, 지형이 바뀌면 다시 해야 한다. 평지 실험실 바닥에서만 쟀다.
+
+**후속.** Smith 2022(이 소절)는 이 논문의 모방 틀과 보상을 그대로 쓰고, 잠재 탐색 대신 정책 미세 조정을 택했다.
+
+**travplan에 주는 것.** 잠재 탐색의 비용은 정책 학습이 아니라 에피소드 수다. 셋째 길을 시도하려면 plant의 1차 지연과 미끄럼비를 무작위로 뽑아 학습하는 L0 설정이 먼저다.
+미끄럼비는 TP-0033의 plant가 이미 경사·거칠기와 잡음으로 뽑고, 지연 쪽 무작위화는 TP-0032(Backlog)의 몫이다.
+그 위에서 Controller rollout을 $\mathbf z$에 조건화하고, 벤치마크 지형 몇 개로 $\mathbf z$를 고르는 실험을 시뮬레이션 안에서 먼저 한다. 정보 병목은 $\mathbf z$를 1–2차원으로 작게 두는 것으로 대신할 수 있다.
+
+</details>
+
+**Legged Robots that Keep on Learning — 시뮬레이션에서 미리 배운 A1 정책을 잔디와 메모리폼 위에서 2–2.5시간 안에 실물로 미세 조정했다**([arXiv:2110.05457](https://arxiv.org/abs/2110.05457), Smith·Kew·Peng·Ha·Tan·Levine, ICRA 2022, UC Berkeley·Google Research, [프로젝트](https://sites.google.com/berkeley.edu/fine-tuning-locomotion), [코드](https://github.com/lauramsmith/fine-tuning-locomotion), Apache-2.0).
+Peng 2020의 모방 틀과 보상으로 pace와 옆걸음을 시뮬레이션에서 배운 뒤, 같은 off-policy 알고리즘으로 실물에서 계속 배운다. 실물로 넘어갈 때 재생 버퍼는 비운다.
+알고리즘은 REDQ(randomized ensembled double Q-learning)다. Q 함수 10개 가운데 무작위 2개의 최솟값으로 목표를 잡는다.
+사람 손을 빼는 장치가 둘이다. 넘어진 로봇은 시뮬레이션에서 배운 복구 정책이 일으키고, 보상은 IMU와 발 접촉으로 보정한 칼만 필터의 속도 추정으로 계산한다.
+시뮬레이션 비교에서 학습 때 적응 장치를 익힌 두 방법은 학습과 비슷한 평지에서 잘했다. RMA(rapid motor adaptation)와 Peng 2020의 잠재 탐색이다. 거친 높이장과 저마찰면에서는 크게 떨어졌고, 미세 조정만 계속 나아졌다.
+
+**travplan에 주는 의미.** 학습 때 넣은 적응 장치는 학습 분포 안에서만 적응한다. travplan의 `mppi_plant_lag`(TP-0150)도 시뮬레이터가 아는 지연만 고친다.
+젖은 타일이나 자갈처럼 모델에 없는 변화는 데이터로 다시 맞추는 길만 남고, travplan에서 그 자리는 GP 잔차(TP-0068)다.
+이 논문은 실물로 넘어갈 때 시뮬레이션 버퍼를 버렸다. GP 잔차도 실물 데이터가 생기면 시뮬레이션 plant 데이터와 섞기 전에 따로 맞춰 비교한다. RMA는 B.16.5와 배경 0.11에 있다.
+
+![Legged Robots that Keep on Learning Fig. 2](https://arxiv.org/html/2110.05457v1/overview.png)
+*그림 — Legged Robots that Keep on Learning (Fig. 2): 왼쪽은 시뮬레이션에서 앞으로·뒤로 가는 정책과 복구(reset) 정책을 off-policy RL로 미리 배우는 단계다. 오른쪽은 잔디밭의 실물 A1이 두 방향을 번갈아 걸으며 계속 배우고, 넘어지면 복구 정책으로 일어나는 단계다. 출처: [arXiv:2110.05457](https://arxiv.org/abs/2110.05457)*
+
+**학습한 위 층과 볼록 MPC 아래 층(2021–2022).** 같은 팀은 2021년부터 학습 정책을 위에, 모델 기반 볼록 MPC를 아래에 두는 계층을 여러 번 썼다.
+아래 층은 모두 MIT Cheetah 3에서 나온 볼록 MPC(IROS 2018)이고, 위 층이 넘기는 것만 논문마다 다르다. travplan의 Planner D와 MPPI·NMPC Controller도 위가 학습이고 아래가 모델 기반이다. RL과 MPC를 섞는 다른 갈래는 Controller 문서 F.5에 있다.
+첫 예는 걸음새 전환([CoRL 2021, PMLR 164:773–783](https://proceedings.mlr.press/v164/yang22d.html), Yang·Zhang·Coumans·Tan·Boots)이다. 진화 전략으로 배운 상위 정책이 걸음 주파수·스윙 비율·다리 사이 위상 차를 고르고, 볼록 MPC가 모터 명령을 푼다.
+에너지 최소화 보상만으로 속도에 따라 walk, trot, fly-trot이 저절로 바뀌었다(A1). 학습 위 층과 모델 기반 아래 층으로 나눈 점만 travplan과 닮았다. 위 층이 고르는 것은 경로가 아니라 발 접지 시점이다.
+
+| 연구 | 위 층이 넘기는 것 | 갱신 | 아래 층 |
+|---|---|---|---|
+| 걸음새 전환(2021) | 걸음 주파수, 스윙 비율, 다리 사이 위상 차 | 상위 20 Hz, 하위 500 Hz | 스윙 제어와 볼록 MPC |
+| Visual-Locomotion(2021) | 몸통 목표 자세와 속도, 스윙 발의 착지점 xy | 상위 20 Hz, 하위 250 Hz | 스윙 위치 제어와 볼록 MPC |
+| Safe RL(2022) | 걸음 주파수, 스윙 비율, 위상 차, 발의 옆 위치 | 상위 125 Hz, 하위 250 Hz | 스윙 제어와 볼록 MPC |
+| Semantics-Aware(2022) | 전진 속도(걸음새는 속도로 정해진다) | 상위 3 Hz, 하위 400 Hz | 스윙 제어와 볼록 MPC |
+| travplan 벤치마크 | 경로 또는 4 s 시간 인덱스 궤적(`PlanResult`) | Planner·Controller 모두 0.1 s마다 | MPPI·NMPC가 body twist를 낸다 |
+
+**Visual-Locomotion — 깊이 영상을 보는 상위 정책이 발 디딤과 몸통 목표를 내고, 볼록 MPC를 쓴 하위 제어기가 그 목표를 따른다**([CoRL 2021, PMLR 164:1291–1302](https://proceedings.mlr.press/v164/yu22a.html), Yu·Jain·Escontrela·Iscen·Xu·Coumans·Ha·Tan·Zhang, Robotics at Google, [OpenReview](https://openreview.net/forum?id=NDYbXf-DvwZ)).
+Laikago 앞쪽(D435)과 배 아래(L515)에 단 깊이 카메라 두 대의 영상을 32 × 24로 줄여 상위 정책에 넣는다.
+정책은 20 Hz로 몸통의 목표 자세와 속도, 스윙 발의 착지점 xy를 낸다. 착지점의 높이는 깊이 영상에서 읽어, 장애물 속이나 공중에 디디는 행동을 처음부터 없앤다.
+아래 층은 250 Hz로 돈다. 스윙 다리는 위치 제어로 따르고, 지지 다리는 무게중심 동역학의 볼록 MPC가 지면 반력을 푼다.
+상위 정책은 PyBullet에서 ARS로 배웠다. 시뮬레이션 깊이 영상에는 잡음과 구멍을 넣고, 실물 영상과 함께 인페인팅해 두 영상의 분포를 맞췄다.
+실물에서는 틈 셋(0.12–0.18 m)으로 나뉜 디딤판 넷을 건넜다. 다리별로 건넌 틈을 세는 점수(최대 12)가 8번 평균 10.1이었고, 끝까지 간 것은 2번이다. 눈을 가린 정책은 0.9였다.
+같은 계층과 같은 실물 코스를 쓴 후속 PI-ARS(Lee 외, IROS 2022)는 표현 학습을 더해 10번 모두 끝까지 갔다. PI-ARS는 앞 연구의 성공률을 40%로 적는다.
+
+**travplan에 주는 의미.** Google 계보에서 travplan의 Planner D와 Controller 배치에 가장 가까운 예다. 위 층이 학습이고 아래 층이 모델 기반 최적화다.
+다른 점은 경계다. 이 논문의 상위 정책은 경로 대신 다음 착지점과 몸통 목표를 0.05 s마다 낸다. travplan의 Planner D는 4 s 궤적을 0.1 s마다 낸다.
+저자들이 꼽은 실물 실패의 주된 원인은 디딤판 가장자리에 너무 가깝게 디딘 발이다. 같은 행동열에서 시뮬레이션과 실물의 착지점이 2–4 cm 달랐다. travplan에서 같은 자리는 치명 셀 둘레의 여유다(TP-0076의 확률 제약).
+
+![PI-ARS Fig. 4](https://arxiv.org/html/2207.13224v1/paper/figs/real_exp.jpg)
+*그림 — PI-ARS (Fig. 4): Visual-Locomotion과 같은 실물 코스에서 후속 PI-ARS 정책으로 걷는 Laikago다. 틈으로 나뉜 색 디딤판을 차례로 건넌다. Visual-Locomotion 논문의 그림은 PDF로만 공개돼 있어 이 그림을 싣는다. 출처: [arXiv:2207.13224](https://arxiv.org/abs/2207.13224)*
+
+**Safe Reinforcement Learning for Legged Locomotion — 학습 정책이 위험 경계에 닿으면 안전 복구 정책이 넘겨받고, 앞으로의 위반이 없을 때만 돌려준다**([arXiv:2203.02638](https://arxiv.org/abs/2203.02638), T.-Y. Yang·Zhang·Luu·Ha·Tan·Yu, IROS 2022, Google Research·Princeton, [프로젝트](https://sites.google.com/view/saferlleggedlocomotion/)).
+두 정책 모두 볼록 MPC 위의 상위 정책이다. 학습 정책은 걸음 주파수, 스윙 비율, 다리 사이 위상 차, 발의 옆 위치를 낸다.
+몸통 높이, 기울기, 옆 속도와 roll 각속도가 정한 범위를 벗어나면(트리거 집합) 안전 복구 정책이 제어를 넘겨받는다.
+넘겨받은 뒤에는 무게중심 동역학 모델로 학습 정책의 행동을 $w$ 스텝 앞까지 굴려 본다. 굴린 상태가 모두 트리거 집합 밖일 때만 제어를 돌려준다. 바로 돌려주면 두 정책이 자주 바뀌어 탐색이 막혔다.
+시뮬레이션 캣워크에서 굴려 보는 지평 $w$를 0에서 20스텝으로 늘리자 넘어짐은 551번에서 204번으로 줄고, 복구 정책을 쓴 스텝은 늘었다.
+학습 데이터에는 학습 정책의 행동을 넣고, 복구 정책이 쓰인 스텝에는 벌점을 준다. 학습 정책이 복구가 필요 없는 쪽으로 배우게 하려는 장치다.
+실물 실험은 계산 예산 때문에 앞날 굴리기를 끄고($w = 0$), 복구 정책을 1 s 쓴 뒤 돌려줬다. 실물 A1의 효율 걸음(45분)과 캣워크(29분) 학습에서는 한 번도 넘어지지 않았다. 두 발 균형(28분)에서는 5번 미만으로 넘어졌다.
+캣워크의 첫 갱신에서 복구 정책을 쓴 스텝은 6.8%였고, 안전 critic으로 전환하는 Recovery RL은 75.6%였다. 실물의 복구 정책은 학습한 MLP보다 시뮬레이션에서 맞춘 MPC 제어기가 더 잘 됐다.
+같은 갈래의 후속 Gameplay Filters([arXiv:2405.00846](https://arxiv.org/abs/2405.00846), Nguyen·Hsu·Yu·Tan·Fisac, CoRL 2024)는 Princeton과 Google DeepMind의 공동 연구다. 시뮬레이션에서 배운 안전 전략을 가상 적대자와 미리 겨뤄 보고, 실패로 이어질 행동을 막는 예측 안전 필터를 사족 전체 동역학(36차원)에 세웠다. 실물 Spirit S40과 Go2에서 잡아당기기를 대부분 견뎠고, S40은 모델에 없는 지형도 안전하게 지났다. 안전 필터의 계보는 Controller 문서 C.4에 있다.
+
+**travplan에 주는 의미.** `planner_df`의 Guidance 폴백(TP-0078)과 닮은 '학습 쪽과 안전한 쪽의 전환'이다. 다만 넘기는 방식과 돌려주는 기준이 다르다.
+이 논문은 상태가 위험 경계에 닿으면 제어를 통째로 넘기고, 모델로 앞을 굴려 안전할 때 돌려준다. `planner_df`는 학습 표본의 치명 비율이 0.9 이상인 계획이 3번 이어지면 Guidance 경로를 20번 동안 후보로 넣고, 학습 표본과 같은 점수로 겨루게 한다.
+통째로 넘기는 쪽은 경쟁 없이 경로를 내는 `fallback_commit=1` 변형(B.15.2)에 가깝다.
+가져올 것은 둘이다. 하나는 돌려주는 조건을 고정 횟수(20번) 대신 학습 쪽 계획을 앞으로 굴려 본 결과로 정하는 것이다. 다른 하나는 폴백이 이긴 계획을 RL 후학습(TP-0066)의 벌점으로 쓰는 것이다.
+
+![Safe RL for Legged Locomotion Fig. 2](https://arxiv.org/html/2203.02638v1/figure/set_v2.png)
+*그림 — Safe Reinforcement Learning for Legged Locomotion (Fig. 2): 초록 원은 안전 집합, 노란 띠는 트리거 집합, 바깥의 빨강은 실패 집합이다. 초록 화살표는 학습 정책의 행동, 빨간 화살표는 복구 정책의 행동이다. 왼쪽처럼 트리거 집합만 기준으로 넘기고 돌려주면 두 정책이 자주 바뀐다. 오른쪽처럼 학습 정책의 앞날을 굴려 보고 돌려주면 학습 정책이 트리거 집합에서 멀리 머문다. 출처: [arXiv:2203.02638](https://arxiv.org/abs/2203.02638)*
+
+**Learning Semantics-Aware Locomotion Skills — 카메라 영상에서 전진 속도를 고르고 속도에 맞는 걸음새를 붙여, 야외 지형 6 km 넘게 넘어지지 않고 걸었다**([arXiv:2206.13631](https://arxiv.org/abs/2206.13631), Y. Yang·Meng·Yu·Zhang·Tan·Boots, CoRL 2022(PMLR 205), Robotics at Google·University of Washington).
+출발점은 지형의 마찰과 무른 정도가 모양보다 종류(풀, 진흙, 아스팔트)에서 더 잘 드러난다는 관찰이다.
+속도 정책은 비포장 주행 데이터셋 RUGD로 미리 배운 분할망의 마지막 은닉층 특징(픽셀당 48차원)을 쓴다.
+특징에서 픽셀마다 속도를 내는 속도 지도를 만들고, 로봇 앞 약 1 m × 0.3 m 영역을 평균해 목표 속도로 쓴다.
+속도 정책은 사람이 조이스틱으로 준 속도 40분(7,239 프레임)을 행동 복제로 배웠다. 걸음새(걸음 주파수, 발 높이, 몸통 높이)는 속도에서 손으로 정한 선형 보간으로 고른다.
+위 층은 3 Hz로, 아래의 볼록 MPC는 400 Hz로 돈다.
+여러 지형이 섞인 450 m 시험 길을 9.6분에 넘어짐 없이 걸었다. 고정 저속(0.5 m/s)은 15분이 걸렸다. 더 빠른 고정 속도와, 속도나 걸음새 하나만 바꾸는 변형은 완주하지 못했다.
+학습한 속도는 지형마다 넘어지지 않는 최대 속도에 가까웠다. 포장길은 1.25 m/s까지, 돌길은 0.5 m/s까지가 안전했다.
+
+**travplan에 주는 의미.** 보도 배달로봇의 속도 상한 문제에 가장 직접 닿는 Google 연구다. travplan MPPI의 `TraversabilityCost`는 rollout이 지나는 칸의 cost를 시간으로 적분하고 치명 셀에 hard 벌점을 줄 뿐이다. 기본 비용 항 어디에도 지형에 따른 속도 상한은 없다.
+이 논문처럼 지형에서 안전한 최대 속도를 정하는 항을 두면, 같은 경로라도 거친 칸에서 속도를 줄인다. MPPI에서는 cost나 rough 채널로 속도 상한을 정하는 `CostTerm` 하나로 시험할 수 있다.
+저자들이 밝힌 한계도 travplan과 같은 자리다. 이 인식은 앞에 못 지나갈 장애물이 없다고 가정해 방향을 바꾸지 않고, 경로 계획은 다음 과제로 남겼다.
+
+![Learning Semantics-Aware Locomotion Skills Fig. 5](https://arxiv.org/html/2206.13631v2/speed_spectrum.png)
+*그림 — Learning Semantics-Aware Locomotion Skills (Fig. 5): 학습한 속도 정책이 카메라 영상마다 고른 목표 속도다. 왼쪽 끝의 굵은 돌길은 약 0.5 m/s, 오른쪽 끝의 평평한 포장길은 약 1.4 m/s에 놓인다(그래프에서 읽은 값). 출처: [arXiv:2206.13631](https://arxiv.org/abs/2206.13631)*
+
+**DeepMind의 OP3(2021–2024).** DeepMind의 Heess 팀은 같은 소형 휴머노이드 Robotis OP3로 세 단계를 밟았다.
+Bloesch 2021([CoRL 2021, PMLR 164:1502–1511](https://proceedings.mlr.press/v164/bloesch22a.html))은 OP3 두 대를 두 장소에 두고 데이터를 나눠 쓰며, 고유감각 보상만으로 하드웨어에서 직접 걷기를 배웠다. 저자들은 이족 신경망 제어기를 하드웨어에서 직접 학습한 첫 사례라고 적는다.
+Imitate and Repurpose([arXiv:2203.17138](https://arxiv.org/abs/2203.17138), 2022)는 사람과 개의 모션 캡처로 배운 동작 모듈을 다시 써서 ANYmal과 OP3의 걷기와 공 몰기를 배우고, zero-shot으로 실물에 올렸다.
+NeRF2Real([arXiv:2210.04932](https://arxiv.org/abs/2210.04932), ICRA 2023)은 휴대폰 영상으로 만든 NeRF(neural radiance field) 장면을 MuJoCo 물리와 합쳐 OP3의 시각 정책을 시뮬레이션에서 배웠다. 실제 장소를 시뮬레이션에 넣는 일반론은 시뮬레이션 문서 S.4.2에 있다.
+축구 두 편은 그 위에 있다.
+
+**Learning Agile Soccer Skills for a Bipedal Robot — 20관절 소형 휴머노이드가 시뮬레이션에서만 배운 1대1 축구를 실물에서 했다**([arXiv:2304.13653](https://arxiv.org/abs/2304.13653), Haarnoja·Moran·Lever·Huang·Tirumala 외 23명, Science Robotics 9(89) eadi8022, 2024-04-10, Google DeepMind, [DOI](https://doi.org/10.1126/scirobotics.adi8022), [프로젝트](https://sites.google.com/view/op3-soccer), [데이터](https://zenodo.org/records/10793725) Apache-2.0).
+로봇은 키 51 cm, 무게 3.5 kg의 Robotis OP3이고 서보 20개를 위치 제어로 움직인다. 정책은 40 Hz로 관절 위치 목표를 낸다.
+학습은 두 단계다. 먼저 일어서기 기술과, 쓰러진 상대를 두고 골을 넣는 축구 기술을 따로 배운다. 일어서기는 기존 스크립트 동작에서 뽑은 핵심 자세를 따라가게 했다.
+다음으로 두 기술을 한 정책에 증류하면서 자기 대국(self-play)으로 1대1을 배운다. 서 있는 상태에서는 축구 기술, 넘어진 상태에서는 일어서기 기술에 KL 정규화를 건다.
+예측 가치가 정한 문턱을 넘으면 그 정규화를 스스로 0으로 줄여 순수 RL로 넘어간다. 상대는 저장해 둔 자기 스냅숏의 앞쪽 4분의 1에서 뽑았다.
+관측은 고유감각과, 모션 캡처로 얻은 공·상대·골대의 위치다. 알고리즘은 분포형 critic을 쓴 MPO(maximum a posteriori policy optimization)다.
+sim-to-real 장치는 작다. 간단한 구동기 식별, 몇 가지 무작위화(관측 지연 10–50 ms 포함), 무작위 충격이다. 이것들 없이 배운 정책은 실물에서 한두 걸음마다 넘어졌다.
+실물에서 학습 정책은 스크립트 제어기보다 걷기가 181% 빨랐다(0.57 대 0.20 m/s). 회전은 302% 빨랐고(2.85 대 0.71 rad/s), 일어서는 시간은 63% 짧았다(0.93 대 2.52 s).
+
+**travplan에 주는 의미.** 가장 가져올 것은 증류 가중을 고정하지 않는 법이다. TP-0066은 모방 손실 가중을 0.5로 고정했다.
+이 논문은 가중을 예측 가치가 문턱을 넘을 때까지만 두고, 넘으면 스스로 내린다. 교사(시연, Guidance)보다 나아질 여지를 학습이 스스로 연다.
+sim-to-real 쪽 교훈은 Tan 2018과 같다. 저자들은 과한 무작위화가 보수적인 정책을 만든다며 무작위화 축을 일부러 적게 골랐다. S.6.1의 '너무 넓은 무작위화는 보수적인 정책을 만든다'와 Tan 2018의 '무작위화는 필요할 때만'이 같은 방향이다.
+travplan Playground의 휴머노이드(TP-0135, Controller 문서 E.13)는 학습 정책이 아니라 걸음 시계와 발 디딤 규칙으로 걷는다. 그래서 이 논문은 travplan 쪽에서는 간접적인 참고다.
+
+![Learning Agile Soccer Skills Fig. 3](https://arxiv.org/html/2304.13653v2/assets/behaviors_final_policy.png)
+*그림 — Learning Agile Soccer Skills (Fig. 3): 실물 OP3가 학습 정책으로 보인 행동 일곱 줄이다. 위에서부터 움직이는 공 차기·슛 막기·빠른 회전·등으로 누운 상태에서 일어서기·엎드린 상태에서 일어서기·공과 자기 골대 사이로 들어가는 수비·사람이 민 뒤 회복이다. 출처: [arXiv:2304.13653](https://arxiv.org/abs/2304.13653)*
+
+![Learning Agile Soccer Skills Fig. 2](https://arxiv.org/html/2304.13653v2/assets/method_omni.png)
+*그림 — Learning Agile Soccer Skills (Fig. 2): 학습의 두 단계다. 1단계(왼쪽)는 학습하지 않은 상대를 두고 축구 기술을, 따로 일어서기 기술을 배운다. 2단계(오른쪽)는 두 기술에 KL로 정규화하면서 이전 스냅숏을 상대로 한 정책을 배운다. 출처: [arXiv:2304.13653](https://arxiv.org/abs/2304.13653)*
+
+<details markdown="1">
+<summary>자세히: OP3 축구의 학습 단계, 증류 가중, sim-to-real 설정</summary>
+
+**풀려는 문제.** 사족보행 RL은 많이 나아갔지만, 휴머노이드와 이족은 안정성과 자유도와 파손 위험 때문에 걷기·달리기 같은 단일 기술의 학습과 이전에 머물렀다.
+이 논문은 저가 소형 휴머노이드가 여러 기술을 매끄럽게 섞어야 하는 긴 과제(1대1 축구)를 학습만으로 풀 수 있는지 묻는다.
+
+**환경.** MuJoCo와 DeepMind Control Suite 위의 5 × 4 m 경기장이고, 골대 폭은 0.8 m다. 실물 경기장은 OptiTrack 카메라 14대로 로봇 두 대와 공을 추적한다.
+행동은 지수 필터 $\mathbf u_t = 0.8\,\mathbf u_{t-1} + 0.2\,\mathbf a_t$를 거쳐 위치 제어로 간다. 고유감각은 5스텝을 쌓고, 공·상대·골대는 쌓지 않는다. 로봇 컴퓨터는 GPU 없는 Intel Core i3 NUC다.
+
+**보상(원문 표 S3).** 축구 기술과 1대1 전체의 가중이다.
+
+| 보상 항 | 축구 기술 | 1대1 전체 |
+|---|---|---|
+| 득점 | 1000 | 1000 |
+| 실점 | 0 | 1000 |
+| 공 쪽 속도 | 0.05 | 0.05 |
+| 전진 속도 | 0.1 | 0.1 |
+| 상대 방해 벌점(1 m 안) | 1 | 1 |
+| 종료 벌점(넘어짐, 경기장 밖, 골 금지 구역) | — | 0.5 |
+| 직립 | 0.015 | 0.02 |
+| 무릎 토크 벌점 | 0.01 | 0.01 |
+
+전진 속도 항을 빼면 축구 기술을 아예 배우지 못했다. 탐색을 돕는 항이 필요했다는 뜻이다.
+
+**증류.** 상태 $\mathbf s$가 서 있는 집합 $\mathcal U$에 있으면 축구 기술 $\pi_s$로, 아니면 일어서기 기술 $\pi_g$로 정규화한다.
+
+$$ (1-\lambda_s)\, \mathbb E_{\mathbf a \sim \pi_\theta}\big[Q(\mathbf s, \mathbf a)\big] - \lambda_s\, \mathrm{KL}\big(\pi_\theta(\cdot \mid \mathbf s)\, \Vert\, \pi_s(\cdot \mid \mathbf s)\big), \qquad \mathbf s \in \mathcal U $$
+
+가중 $\lambda_s$는 $c(\lambda_s) = \lambda_s\,(\mathbb E[Q] - Q_s)$를 줄이는 방향으로 학습하고, softplus와 자르기로 0과 1 사이에 둔다.
+예측 가치가 문턱 $Q_s$보다 낮으면 $\lambda_s$가 1로 가서 행동 복제가 되고, 넘으면 0으로 가서 순수 RL이 된다.
+자기 대국 상대는 저장한 스냅숏의 앞쪽 4분의 1에서 뽑았다. 모든 스냅숏에서 뽑으면 학습이 불안정했다.
+
+**학습 규모(원문 표 S5, 40 Hz).** 일어서기는 2.4억 스텝(시뮬레이션 70일치, 실제 14시간)이다. 축구 기술은 20억 스텝(580일치·158시간)이다. 1대1 전체는 9억 스텝(262일치·68시간)이고, 모두 분산 학습이다.
+
+**sim-to-real.** 알려진 부하를 단 서보 하나를 여러 주파수의 사인 신호로 움직여 구동기 파라미터를 맞췄다. 맞춘 값은 감쇠 1.084 N·m/(rad/s)와 관성 0.045 kg·m²이다. 마찰은 0.03, 최대 토크는 4.1 N·m, 비례 이득은 21.1이다.
+전류 제어도 시도했지만 격차가 너무 커서 zero-shot 이전이 실패했다.
+무작위화 축은 다섯이다. 바닥 마찰은 0.5–1.0, 관절 오프셋은 ±2.9°, IMU 자세와 위치는 2°와 5 mm 이하다. 몸통 임의 위치에 0.5 kg 이하의 질량을 달고, 관측에 10–50 ms의 지연을 준다. 에피소드마다 다시 뽑는다.
+충격은 1–3 s마다 0.05–0.15 s 동안 몸통 임의 점에 준다. 크기는 원문이 '5 to 15 Nm'으로 적어 단위를 확인하지 못했다.
+빠른 걸음과 킥은 무릎 기어를 부러뜨렸다. 그래서 5 N·m를 넘는 무릎 토크 봉우리의 시간 적분을 벌했다. 앞으로 기울어 빨라진 걸음은 실물에서 앞으로 넘어졌다. 그래서 11.5° 안의 직립에 보상을 줬다.
+
+**결과.**
+- 시뮬레이션 대 실물(원문 표 1): 학습 정책의 실물 값은 시뮬레이션보다 걷기가 13% 빠르고, 회전이 11% 느리고, 일어서기가 28% 오래 걸렸다. 저자들은 극단적인 격차는 없다고 본다.
+- 일어나 슛하기(10 s 안에 일어서서 득점)는 시뮬레이션에서 50번 중 35번, 실물에서 29번 성공했다. 실물에서 일어나 공을 차는 데는 매번 성공했다.
+- 회전 비교에서 학습 정책은 13번 중 3번 넘어졌고, 스크립트 제어기는 10번 연속 서 있었다. 빠른 대신 덜 안전한 쪽이다.
+- 상대가 길을 막은 실물 장면 10번에서 모두 상대를 돌아갔고, 9번 득점했다.
+- 절제(원문 그림 7): 기술 정규화 없이 득점 보상만 주면 굴러서 다리로 공을 미는 국소 최적에 빠졌다. 넘어짐 벌점을 더하면 일어서서 가만히 서 있기만 했다.
+
+![Learning Agile Soccer Skills Fig. S5](https://arxiv.org/html/2304.13653v2/assets/walking_learned.png)
+*그림 — Learning Agile Soccer Skills (Fig. S5): 학습 정책의 걸음을 100 ms 간격으로 그린 장면이다. 본문은 몸을 앞으로 기울이고 발판 가장자리로 밀어 뒤꿈치로 딛는다고 적고, 보충 자료는 팔로 균형을 잡는다고 적는다. 출처: [arXiv:2304.13653](https://arxiv.org/abs/2304.13653)*
+
+![Learning Agile Soccer Skills Fig. S6](https://arxiv.org/html/2304.13653v2/assets/walking_scripted.png)
+*그림 — Learning Agile Soccer Skills (Fig. S6): 같은 로봇의 스크립트 보행 제어기를 96 ms 간격으로 그린 장면이다. 몸을 곧게 세우고 발판을 바닥과 거의 평행하게 둔 채, 정적으로 안정한 자세 근처에 머문다. 출처: [arXiv:2304.13653](https://arxiv.org/abs/2304.13653)*
+
+**한계.** 저자가 밝힌 것: 보상 설계와 일어서기 핵심 자세에 도메인 지식이 들어가고, 증류할 기술은 상태마다 사람이 정한다. 실물 데이터는 쓰지 않았다.
+서보를 모델링하지 않아 배터리 충전 상태에 민감했고, 충전 한 번에 5–10분만 운용했다. 제어 주기 25 ms를 자주 지키지 못했고, 엉덩이 관절이 헐거워지고 엔코더 보정이 틀어져 정비가 잦았다.
+우리가 보기에: 외부 모션 캡처가 공과 상대 위치를 준다. 시각만으로 한 후속(Tirumala 2024, 이 소절)에서는 실물 득점률이 더 떨어졌다. 학습 코드는 공개되지 않았고, 정량 결과를 재현하는 데이터와 노트북만 Zenodo에 있다.
+
+**travplan에 주는 것.** 적응형 증류 가중을 TP-0066에 옮기면 이렇다. 지금은 AWR 가중 flow matching에 모방 손실을 0.5의 가중으로 더한다.
+이 가중을 쌍대 변수로 바꾸고, 문턱을 같은 상태의 Guidance 경로 점수로 둔다. 그러면 '교사만큼 잘할 때까지는 교사를 따른다'는 규칙이 된다.
+무릎 토크 봉우리 벌점은 travplan의 승차감(화물 손상) 지표와 같은 자리다. TP-0038이 jerk 기반 화물 손상 비용을 제안했고, 이 논문은 문턱을 넘는 봉우리만 적분해 벌했다.
+
+</details>
+
+**Learning Robot Soccer from Egocentric Vision — 머리 카메라 RGB(40 × 30)와 고유감각만으로 1대1 축구를 끝단까지 배워 실물 OP3에 올렸다**([arXiv:2405.02425](https://arxiv.org/abs/2405.02425), Tirumala·Wulfmeier·Moran 외 13명, CoRL 2024(PMLR 270), Google DeepMind, [프로젝트](https://sites.google.com/view/vision-soccer)).
+OP3 축구(Haarnoja 2024)의 두 단계 학습을 그대로 쓰되, 모션 캡처 대신 머리 카메라 영상을 정책에 준다.
+시뮬레이션의 카메라 영상은 실제 경기장을 사진 250–300장으로 찍어 만든 NeRF 렌더링에, MuJoCo가 그린 공과 상대를 겹친 것이다.
+정책은 긴 기억을 위해 LSTM(long short-term memory)을 쓰고, critic만 공·상대·골대의 참값을 받는다. 이전 실험들의 데이터도 버리지 않고 섞어 다시 쓴다.
+공을 찾으라는 보상이 없는데도 공을 찾아 고개를 돌리고, 시야 밖으로 나간 공을 계속 추적하는 행동이 나왔다.
+시뮬레이션에서 시각 정책의 걷기와 킥 속도는 상태 정책과 비슷했다. 페널티 득점률은 시뮬레이션 0.86이었지만, 실물 20번에서는 0.40(상태 정책 0.58)으로 떨어졌다.
+
+**travplan에 주는 의미.** critic에만 참값을 주는 비대칭 구조는 R.16이 꼽은 다음 후보(비대칭 critic)와 같다. TP-0066은 belief에서 후보를 뽑고 GT 지도로 채점하므로, critic을 넣는다면 GT TravMap과 plant 상태를 critic에만 준다.
+실험 사이 데이터 재사용도 TP-0066에 맞는다. 라운드마다 rollout이 208–245 s이고 미세 조정은 5–6 s라, 이전 라운드의 rollout을 버리지 않는 것만으로 표본이 몇 배가 된다.
+다만 정책이 많이 바뀐 라운드의 표본은 가중을 따로 재야 한다(R.10). 3DGS(3D Gaussian splatting)로 실제 장소를 시뮬레이션에 넣는 real-to-sim은 S.4.2에 있다.
+
+![Learning Robot Soccer from Egocentric Vision Fig. 1](https://arxiv.org/html/2405.02425v1/figures/vision_env3.png)
+*그림 — Learning Robot Soccer from Egocentric Vision (Fig. 1): 왼쪽은 시뮬레이션 경기장과 그 카메라 영상(NeRF 렌더링 위에 공과 로봇을 겹침), 오른쪽은 실물 경기장과 OP3 머리 카메라 영상이다. 양쪽 모두 정책에는 40 × 30으로 줄인 영상이 들어간다. 출처: [arXiv:2405.02425](https://arxiv.org/abs/2405.02425)*
+
+**합병 뒤의 Barkour와 언어 인터페이스(2023–2024).** 두 조직이 합쳐진 2023년, 사족 쪽은 직접 만든 로봇 Barkour와 그 위의 벤치마크를 냈다. 같은 해 언어 모델과 보행 정책을 잇는 인터페이스 두 가지가 나왔고, 2024년의 LMPC가 그 하나를 실물 Barkour에 올렸다.
+
+**Barkour — 개 어질리티 대회를 본뜬 5 × 5 m 장애물 코스와 시간 기반 점수, 그리고 전문가 정책 셋을 증류한 Locomotion-Transformer**([arXiv:2305.14654](https://arxiv.org/abs/2305.14654), Caluwaerts·Iscen·Kew·Yu·Zhang 외 39명, Google DeepMind, 2023, 학회판은 확인하지 못했다, [프로젝트](https://sites.google.com/view/barkour), [MuJoCo 모델 v0](https://github.com/google-deepmind/mujoco_menagerie/tree/main/google_barkour_v0) Apache-2.0, 후속 기체 vB의 설계와 펌웨어 [barkour_robot](https://github.com/google-deepmind/barkour_robot) 소프트웨어 Apache-2.0·그 밖 자료 CC BY-NC 4.0).
+코스는 출발·도착 탁자, 기둥 다섯 개의 위브 폴, 30° A자 경사, 0.5 m 멀리뛰기 판이다.
+점수는 1에서 시작한다. 실패하거나 건너뛴 장애물마다 0.1을, 허용 시간을 넘긴 1초마다 0.01을 뺀다. 허용 시간은 명목 거리 18 m를 작은 개의 목표 속도 1.69 m/s로 나눈 10.64 s다.
+로봇은 직접 만든 11.5 kg 사족이고, 정책은 50 Hz로 관절 위치 명령을 낸다.
+첫 기준선은 전문가 정책 셋이다. 전방향 걷기·경사 오르기·멀리뛰기를 legged_gym(B.14.1)에서 PPO로 따로 배운다. 지형은 Miki 2022(B.14.2)처럼 로봇 둘레의 높이 샘플로 본다.
+참 위치를 아는 상태 기계가 waypoint마다 정해 둔 전문가를 고르고 속도 명령을 낸다.
+둘째 기준선은 세 전문가를 시뮬레이션에서 굴린 17,636 에피소드(로봇 시간 57.58시간)를 오프라인 행동 복제로 증류한 transformer 하나다. 이 정책은 장애물 종류를 모른 채 속도 명령만 받는다.
+실물 평균은 전문가 조합이 0.77점(24.6 s), Locomotion-Transformer가 0.73점(25.8 s)이었다. 어질리티 훈련을 받지 않은 작은 개 두 마리는 코스에 익숙해진 뒤 1.0점(9.02 s)을 냈다.
+2024-05에 공개된 barkour_robot은 후속 기체 vB의 설계다. 공개 문서 기준 약 14 kg이라, 논문의 11.5 kg 기체와 같은 판은 아니다.
+
+**travplan에 주는 의미.** 첫째는 점수 설계다. travplan 벤치마크는 레벨 0에서 12/12로 포화돼 스택을 가르지 못한다.
+Guidance 경로 길이를 목표 속도로 나눈 허용 시간을 두고 초과 시간만 깎으면, 지형마다 다른 길이를 정규화한 시간 점수가 된다. 지표 확장 TP-0038에 넣을 후보다. 치명 셀 진입은 점수로 깎지 않고 지금처럼 따로 거는 게이트로 남긴다.
+둘째는 전문가 전환과 증류의 비교다. `planner_df`의 Guidance 폴백은 Barkour의 첫 기준선과 닮았지만 다르다.
+Barkour는 waypoint마다 미리 정한 전문가로 바꾸고, `planner_df`는 치명 표본 비율이 문턱을 넘을 때만 Guidance 경로를 후보로 넣어 학습 표본과 같은 점수로 겨룬다.
+증류한 단일 정책은 점수가 조금 낮았지만 전환이 매끄러웠다. 경사로를 지나친 상태에서 시작하는 DAgger로 Planner D 혼자 되돌아가게 가르친 시도(TP-0143, B.15.6)는 단독 성적을 올리지 못했다.
+
+![Barkour Fig. 1a](https://arxiv.org/html/2305.14654v1/images/barkour_top_view_annotated.png)
+*그림 — Barkour (Fig. 1a): 5 × 5 m 코스를 위에서 찍은 사진이다. 빨간 출발 탁자에서 시작해 위브 폴을 지그재그로 지나고, 인조 잔디를 덮은 A자 경사를 넘고, 색 띠의 멀리뛰기 판을 건너 노란 도착 탁자에 오른다. 흰 점선이 그 경로다. 출처: [arXiv:2305.14654](https://arxiv.org/abs/2305.14654)*
+
+![Barkour Fig. 1b](https://arxiv.org/html/2305.14654v1/images/jump_collage_straight_jump.png)
+*그림 — Barkour (Fig. 1b): 0.5 m 멀리뛰기를 겹쳐 찍은 사진이다. 직접 만든 사족 로봇이 웅크렸다가 색 띠 판 위를 날아 넘어 내린다. 출처: [arXiv:2305.14654](https://arxiv.org/abs/2305.14654)*
+
+<details markdown="1">
+<summary>자세히: Barkour의 점수, 로봇, 전문가 정책, Locomotion-Transformer</summary>
+
+**풀려는 문제.** 보행 연구는 저마다 다른 임시 지표로 결과를 낸다. 민첩성은 빠르기만이 아니라 여러 기술을 제어된 방식으로 이어 쓰는 능력이라, 한 숫자로 비교하기 어렵다.
+Barkour는 개 어질리티 대회의 규정에서 코스, 시간 점수, 벌점을 가져왔다.
+
+**점수.**
+
+$$ R_{\mathrm{agility}} = 1 - 0.01 \max(t_{\mathrm{run}} - t_{\mathrm{allotted}}, 0) - \text{벌점}, \qquad t_{\mathrm{allotted}} = \sum_{\mathrm{obstacle}} d_{\mathrm{obstacle}} / v_{\mathrm{target}} $$
+
+벌점은 실패하거나 건너뛴 장애물마다 0.1이고, 점수가 0이 되면 에피소드를 끝낸다. 명목 거리는 위브 폴 6 m, A자 경사 6 m, 멀리뛰기 4 m, 탁자 둘이 1 m씩이다.
+모두 18 m이고 $v_{\mathrm{target}} = 1.69$ m/s에서 허용 시간은 10.64 s다. 대회와 달리 재시도 같은 작은 감점은 뺐다. 시뮬레이션과 실물에서 똑같이 계산하기 쉽게 하려는 선택이다.
+
+**로봇(v0).** 무게 11.5 kg, 윗다리 220 mm, 아랫다리 190 mm로 Unitree A1이나 MIT Mini Cheetah와 비슷한 크기다. 관절은 T-Motor AK80-6(관절당 최대 12 N·m)이다.
+정책은 바깥 워크스테이션에서 50 Hz로 돌고, PD는 1 kHz다. 코스 위의 위치와 자세는 모션 캡처로 쟀다.
+로봇 두 대로 약 3600번 코스를 시도했다. 약 24시간의 연속 운용과 약 60 km의 이동에 해당한다.
+2024년에 공개된 후속 vB 판은 약 14 kg이고, AK80-9 모터, 온보드 NUC11, RealSense D435i와 Luxonis 카메라를 단다.
+
+**전문가 정책.** 셋 모두 legged_gym에서 PPO로 배운다. 관측은 속도 명령·중력 방향·관절 각·yaw 속도·높이 지도·직전 행동이고, 고유감각에는 0.3 s 이력을 붙인다.
+- 전방향 걷기: 위브 폴과 탁자를 맡고, Rudin 2021의 지형 커리큘럼을 쓴다.
+- 경사 오르기: 경사를 5°에서 33°까지 3°씩 올리는 커리큘럼이다. 걷기 학습에 30° 경사를 섞는 것만으로는 풀리지 않았다.
+- 멀리뛰기: bound로 2.25 m/s까지 달리기, 0.3–0.6 m 틈, 0.6 m 틈에서 토크 한계를 흔드는 미세 조정의 3단계다.
+- 무작위화: Rudin 2021의 기본 설정은 1 m/s 아래에서 충분했다. 2 m/s를 넘는 뛰기와 경사에서는 격차가 커서 몸통 관성, 모터 모델, 관절 정지 마찰을 더 흔들었다.
+
+**Locomotion-Transformer.** 2층 인과 transformer다. 0.3 s 문맥의 고유감각·명령·행동과 가장 최근의 높이 지도를 받아, 다음 행동을 L2 회귀로 배운다.
+데이터는 PyBullet에서 전문가를 학습 때와 같은 무작위화로 굴려 모았다. 가장 어려운 뛰기에 가장 많이 배정했다. 뛰기는 10,635 에피소드이고, 나머지 다섯 지형은 각 1,000–3,000 에피소드다.
+저자들은 학습과 같은 무작위화로 최적에 가까운 궤적을 모으는 것이 증류 정책의 sim-to-real에 중요하다고 적는다.
+
+**결과(실물).**
+- 전문가 조합 71회(원문 그림 8 캡션은 70회): 6번 넘어지거나 뒤집혔다. 25회는 다섯 장애물을 모두 해내 평균 0.87점이었다. 전체 평균은 0.77 ± 0.064점, 24.6 ± 1.1 s다.
+- 장애물별로는 위브 폴과 A자 경사가 100% 성공했고, 멀리뛰기는 38%였다. 위브 폴은 9.27 s가 걸렸고, 개는 같은 구간을 4 s 안에 지난다.
+- Locomotion-Transformer 19회: 평균 0.73 ± 0.062점, 25.8 ± 1.6 s다. 전문가를 바꿀 때 생기던 덜컹거림이 없었고, 장애물 순서를 바꾼 새 코스도 waypoint만 바꿔 지났다.
+- 하나의 다과제 RL 정책은 A자 경사와 멀리뛰기를 해내지 못했다. 저자들은 이것을 전문가 학습이 필요한 근거로 든다.
+- 시뮬레이션 절제에서 같은 데이터로 배운 MLP는 transformer보다 크게 나빴다. 문맥이 길수록, 모델이 클수록 좋았다.
+- 실물 데이터 증류(부록 D): 성공한 실물 주행 64개(11.2만 표본)로 내비게이션까지 흡수한 코스 전용 정책을 배웠다. 코스를 끝까지 돌았지만 멀리뛰기는 다 넘지 못했다.
+
+![Barkour Fig. 14](https://arxiv.org/html/2305.14654v1/images/distilled_hardware_trajectories.png)
+*그림 — Barkour (Fig. 14): 실물 주행 64개로만 증류한 코스 전용 정책의 실물 궤적이다. 빨간 출발 탁자에서 위브 폴을 지그재그로 지나 초록 A자 경사를 넘고, 위쪽의 멀리뛰기 판과 노란 도착 탁자로 간다. 원문 캡션은 주황 궤적 하나가 기둥을 놓친 뒤에도 같은 모양의 지그재그를 옆으로 밀린 채 이어 갔다고 적는다. 출처: [arXiv:2305.14654](https://arxiv.org/abs/2305.14654)*
+
+**한계.** 저자가 밝힌 것: 환경의 CAD 모델과 모션 캡처 위치 같은 특권 정보를 썼다. 온보드 센서만으로 하위 기술과 내비게이션을 모두 하는 것이 다음 과제다.
+우리가 보기에: 코스는 실내 한 곳이고 장애물 배치는 고정이다. 같은 코스로 낸 다른 연구실의 결과는 확인하지 못했다.
+
+**travplan에 주는 것.** 시간 점수를 travplan에 옮기면 이렇다. 허용 시간은 그 지형에서 Guidance가 낸 경로 길이를 목표 속도로 나눈 값이다.
+목표 속도는 `SwerveLimits`의 전진 최대 1.5 m/s보다 낮은 보도 주행 속도로 정한다. 도달하지 못하면 0점이고, 도달하면 초과 1초마다 깎는다. 치명 셀 진입은 점수와 따로 센다.
+레벨 0·L0 인식에서 같은 설정을 다시 돌리면 도달 시각까지 같다(CLAUDE.md의 스모크 게이트). Planner·Controller의 난수 오프셋(0·1000·2000)을 바꾸면 도달 시각이 흔들린다. 그래서 시간 점수의 잡음 바닥은 seed 10개 × 오프셋 3판의 짝 비교로 잰다(`scripts/paired_success.py`, B.15.2).
+증류 데이터의 배분도 참고가 된다. Barkour는 가장 어려운 뛰기에 가장 많은 에피소드를 배정했다. Planner D 시연에서 curb_ramp 레벨 3 같은 어려운 지형의 비율을 정할 때 같은 원칙을 쓸 수 있다.
+
+</details>
+
+**SayTap — 언어 모델이 네 발의 접지 패턴(0과 1의 행렬)을 쓰고, 그 패턴을 따르는 보행 정책이 실물 A1을 움직인다**([arXiv:2306.07580](https://arxiv.org/abs/2306.07580), Tang·Yu·Tan·Zen·Faust·Harada, CoRL 2023(PMLR 229), Google DeepMind·도쿄대, [프로젝트](https://saytap.github.io/)).
+LLM은 관절 목표 같은 저수준 명령을 잘 내지 못한다. 그래서 중간 표현으로 발 접지 패턴을 골랐다. 네 발마다 땅에 닿으면 1, 떨어지면 0인 4 × T 행렬이다.
+GPT-4는 걸음새 정의와 예시를 담은 고정 프롬프트를 받아, 명령을 이 행렬과 속도로 옮긴다. 보행 정책은 행렬의 앞 5스텝 창과 고유감각을 받아 관절 목표를 낸다.
+정책은 다섯 걸음새의 주기와 접지 비율을 무작위로 뽑는 패턴 생성기로 Isaac Gym에서 약 15분 배웠고, 실물에는 미세 조정 없이 올렸다.
+걸음새 이름이나 사인 함수 파라미터를 인터페이스로 쓴 기준선보다 패턴 정확도가 약 50% 높았다.
+
+**travplan에 주는 의미.** 직접 쓸 곳은 지금 없다. travplan에는 언어 입력이 없고 스워브에는 걸음새도 없다. 가져올 것은 인터페이스를 고르는 기준이다.
+위 층이 쉽게 쓸 수 있어야 하고, 아래 층이 그 분포 전체를 무작위로 뽑아 미리 배울 수 있어야 한다.
+travplan의 학습 Controller(TinyPolicy, TP-0128)는 GT 지도의 Dijkstra 경로로만 배웠다. Planner D 궤적이나 belief 경로를 넘기려면 그 분포를 학습 때 무작위로 덮어야 한다. 언어 기반 내비게이션은 B.6b에 있다.
+
+![SayTap Fig. 1](https://arxiv.org/html/2306.07580v3/cover_image_v3.png)
+*그림 — SayTap (Fig. 1): 실물 A1이 "천천히 trot으로 앞으로"와 "좋은 소식이야, 이번 주말에 소풍 간다!"를 차례로 받는다. 가운데는 LLM이 낸 네 발의 목표 접지 패턴, 아래는 실제로 실현된 패턴이다. 앞 명령에서는 대각 다리가 함께 닿는 trot이, 뒤 명령에서는 앞다리끼리와 뒷다리끼리 닿는 bound가 나온다. 출처: [arXiv:2306.07580](https://arxiv.org/abs/2306.07580)*
+
+**Language to Rewards — 언어 모델이 보상 함수의 가중치와 목표값을 쓰고, MuJoCo MPC가 그 보상으로 동작을 실시간에 만든다**([arXiv:2306.08647](https://arxiv.org/abs/2306.08647), Yu·Gileadi·Fu 외 17명, CoRL 2023(PMLR 229), Google DeepMind, [프로젝트](https://language-to-reward.github.io/), [코드](https://github.com/google-deepmind/language_to_reward_2023) Apache-2.0).
+보상은 잔차 항의 가중합 $R = -\sum_i w_i\, n_i\big(r_i(\mathbf s, \mathbf a, \psi_i)\big)$이고, GPT-4는 가중치 $w_i$와 파라미터 $\psi_i$만 코드로 정한다. MJPC(MuJoCo MPC, 아래 MuJoCo 카드)가 그 보상으로 동작을 만든다.
+사족 9개와 손 조작 8개, 모두 17개 과제에서 90%를 풀었고, 기본 동작을 코드로 부르는 기준선은 50%였다. 사족 과제는 시뮬레이션으로만 쟀다.
+후속 LMPC([arXiv:2402.11450](https://arxiv.org/abs/2402.11450), Liang 외, RSS 2024)가 이 인터페이스를 실물 Barkour에 올렸다. MJPC를 계획기로 쓰는 방식은 빠른 피드백이 필요한 사족에 통하지 않았다.
+그래서 MJPC를 전문가로 두고, 보상 항을 조건으로 받는 Locomotion-Transformer(약 320만 파라미터)를 DAgger로 증류했다. 과제 분포가 넓고 무작위화가 있어 오프라인 행동 복제는 실패했다고 저자들은 적는다.
+
+**travplan에 주는 의미.** travplan의 Controller도 비용 항의 합이다(`control/mppi/costs.py`의 `CostTerm`). Planner가 궤적 대신 비용 가중치와 목표값을 넘기는 인터페이스가 가능하다는 사례다.
+다만 Planner–Controller 경계는 `PlanResult`(경로, 시간)로 정해 두었으므로, 이것은 경계를 넓히는 결정이 필요하다.
+LMPC의 절차는 학습 Controller(TP-0128)에 바로 닿는다. MPPI를 전문가로 두고 비용 파라미터를 조건으로 받는 작은 정책을 배운다면, 오프라인 회귀가 아니라 DAgger로 조건 분포를 덮는다.
+Barkour는 같은 transformer를 전문가 셋의 오프라인 행동 복제로 증류해 실물에서 돌렸다. LMPC에서 실패한 것은 조건이 보상 항 전체로 넓어진 뒤다.
+
+![Language to Rewards Fig. 1](https://arxiv.org/html/2306.08647v2/l2r_overview.png)
+*그림 — Language to Rewards (Fig. 1): "로봇 개를 두 발로 서게 해"라는 명령의 세 처리 방식이다. 왼쪽은 LLM이 동작을 말로 잘 서술하지만 행동으로 옮기지 못하고, 가운데는 관절 목표를 직접 쓰게 하면 틀린다. 오른쪽은 Reward Translator가 몸통·발 높이 보상 코드를 쓰고 Motion Controller가 그 보상을 최적화해 시뮬레이션 로봇을 두 발로 세운다. 출처: [arXiv:2306.08647](https://arxiv.org/abs/2306.08647)*
+
+**MuJoCo MPC, MJX, MuJoCo Playground — 같은 물리 엔진 위의 실시간 예측 제어기와 GPU 학습 도구, 그리고 보행 sim-to-real**(MJPC [arXiv:2212.00541](https://arxiv.org/abs/2212.00541), Howell·Gileadi·Tunyasuvunakool·Zakka·Erez·Tassa, 2022-12, [코드](https://github.com/google-deepmind/mujoco_mpc) Apache-2.0; MJX는 [MuJoCo 3.0.0](https://github.com/google-deepmind/mujoco/releases/tag/3.0.0)(2023-10-18)에 포함; Playground [arXiv:2502.08844](https://arxiv.org/abs/2502.08844), Zakka·Tabanpour·Liao 외 10명, RSS 2025, [코드](https://github.com/google-deepmind/mujoco_playground) Apache-2.0).
+DeepMind는 2021-10에 MuJoCo를 인수했다. 엔진 자체와 MuJoCo Warp는 시뮬레이션 문서 S.1.3에 있고, 여기서는 보행 부분만 적는다.
+MJPC는 iLQG, 경사 하강, Predictive Sampling을 바꿔 가며 실시간으로 동작을 만드는 예측 제어 도구다. Predictive Sampling은 명목 행동열에 고정 표준편차의 잡음을 더한 후보를 굴려, 가장 좋은 후보로 명목을 바꾼다.
+시뮬레이션의 Unitree A1이 이것으로 가파른 경사를 오르고 뒤집혔다가 일어섰다. 원문 예시는 모두 CPU 한 대에서 계획 한 번에 1–20 ms였다.
+MJX는 MuJoCo의 JAX판으로, GPU에서 환경 수천 개를 함께 돌린다. 3.0.0의 첫 튜토리얼은 Barkour v0와 휴머노이드를 V100에서 각각 12–13분에 학습했다.
+지금 튜토리얼은 2023-10-24에 Menagerie에 추가된 Barkour vB를 A100에서 약 6분에 학습한다.
+MJX보다 먼저 Google Research는 JAX로 짠 GPU 강체 물리 엔진에 PPO·SAC·ES 구현을 묶은 Brax([arXiv:2106.13281](https://arxiv.org/abs/2106.13281), Freeman 외, NeurIPS 2021 Datasets and Benchmarks, [코드](https://github.com/google/brax) Apache-2.0)를 냈다.
+MuJoCo Playground는 MJX 위의 환경 모음이다. 보행 sim-to-real은 고유감각 입력으로만 했고, Go1의 네 정책과 Berkeley Humanoid·G1·T1의 조이스틱 보행을 실물에 올렸다.
+평지 학습은 RTX 4090 두 장에서 5–30분이었다. 영상 입력의 zero-shot 이전은 조작 과제에서만 보였다.
+학습기는 Brax의 PPO·SAC 구현이다. 논문은 Go1에서 Brax와 RSL-RL의 PPO를 맞댄 비교 하나를 빼고 모든 결과를 이것으로 냈다.
+
+**travplan에 주는 의미.** Predictive Sampling은 travplan MPPI의 가장 단순한 기준선이다. 원문은 이것을 '온도가 무한대인 MPPI'라 부른다.
+travplan의 가중 $\exp(-S/\lambda)$로 쓰면 최선 표본 하나를 고르는 것은 $\lambda \to 0$ 극한이므로, 원문의 온도는 $\lambda$의 역수로 읽는다.
+지금의 $\lambda = 0.5$ 고정 MPPI와 이 극한을 같은 벤치마크에서 비교하면, 가중 평균이 실제로 얼마나 버는지 잴 수 있다.
+TP-0080의 AntBot MJCF(MuJoCo 모델 파일)를 만들면 MJX로도 병렬 rollout할 수 있다. S.1.3은 MuJoCo Warp를 Newton으로 품는 Isaac Lab 경로를 택했으므로, MJX를 따로 쓰는 것은 그 결정을 다시 여는 선택지다.
+
+![MuJoCo Playground Fig. 4](https://arxiv.org/html/2502.08844v1/figures/action_reels_4.png)
+*그림 — MuJoCo Playground (Fig. 4): 실물에 올린 네 정책이다. (A) 약 2 m/s로 가던 Go1이 발에 차인 뒤 회복한다. (B) Berkeley Humanoid가 미끄러운 바닥에서 회전 속도 명령을 따른다. (C)와 (D)는 손의 큐브 돌리기와 팔의 블록 돌리기다. 출처: [arXiv:2502.08844](https://arxiv.org/abs/2502.08844)*
+
+**Gemini Robotics(2025–2026).** 이 계보의 두 갈래인 MuJoCo 시뮬레이션과 Gemini가 다리 로봇에서 처음 만난 것은 Proc4Gem([arXiv:2503.08593](https://arxiv.org/abs/2503.08593), Lin 외, 2025-03)이다.
+시뮬레이션 데이터로만 미세 조정한 Gemini가 언어 지시를 받아 Barkour 로봇에 2 Hz로 몸통 속도 명령을 내고, 처음 보는 실물 거실에서 트롤리를 목표 물체까지 밀었다. 그 아래의 보행 정책은 MJX에서 RL로 배웠다.
+학습에 없던 목표(키 1.5 m 기린 인형)에서 성공은 10번 중 7번이었고, 같은 데이터로 배운 SPOC 기준선은 0번이었다.
+
+**Gemini Robotics — 2025년에는 휴머노이드의 상체 조작만 하던 기반 모델이, 2026-07의 2판에서 걷기와 웅크리기까지 낸다**(Gemini Robotics [arXiv:2503.20020](https://arxiv.org/abs/2503.20020), 2025-03; Gemini Robotics 1.5 [arXiv:2510.03342](https://arxiv.org/abs/2510.03342), 2025-10; [Gemini Robotics 2 발표](https://deepmind.google/blog/gemini-robotics-2-brings-whole-body-intelligence-to-robots/), 2026-07-30; Google DeepMind Gemini Robotics 팀).
+VLA 모델은 영상과 지시를 받아 행동을 직접 내고, ER(embodied reasoning) 모델은 공간 이해와 계획을 맡는다.
+1판(2025-03-12)은 주로 ALOHA 2 양팔 데이터로 학습했고, 미세 조정으로 Apptronik의 휴머노이드 Apollo에 옮겼다. Apollo가 한 일은 서서 하는 상체 조작이다.
+1.5판(2025-09-25)은 세 로봇(ALOHA·양팔 Franka·Apollo)의 데이터를 함께 배워, 한 체크포인트로 셋을 움직인다.
+2판(2026-07-30)에서 처음으로 Apollo 2의 몸 전체를 제어한다. 발표 예시에서 Apollo 2는 탁자로 걸어가 물뿌리개를 집고, 몇 걸음 옮겨 선반 아래 칸에 넣는다. 발표는 이동 속도가 아직 더 나아져야 한다고 적는다.
+휴머노이드 하드웨어와의 공식 제휴는 둘이다. Apptronik과는 2024-12-19에 전략 제휴를 맺었고, Boston Dynamics와는 2026-01-05 CES에서 새 Atlas에 Gemini Robotics를 얹는 공동 연구를 발표했다.
+Gemini 1.5 Pro를 고수준 내비게이션에 쓴 Mobility VLA는 B.6c에 있다.
+
+**travplan에 주는 의미.** 보행 연구로서의 내용은 아직 적다. 2판의 전신 제어는 발표 블로그와 영상으로만 공개됐고, 방법을 설명한 기술 보고서는 찾지 못했다(2026-10-07 확인).
+가져올 것은 평가 방식 하나다. 1.5판은 개발 중 평가 에피소드의 90% 넘게를 MuJoCo 시뮬레이션에서 돌렸고, 시뮬레이션과 실물의 순위가 강하게 일치한다고 적었다.
+travplan의 sim-to-real 예측력 프로토콜(TP-0043, S.6.4의 SRCC)과 같은 질문이다.
+Apptronik은 2026-06-30에 Apollo 2를 두 발 구성과 바퀴 받침 구성으로 공개했다. 휴머노이드 업체가 기존 산업용 이동 로봇의 안전 기준에 맞추려고 바퀴 구성을 따로 둔 사례이고, 두 발 구성도 함께 내고 계속 다듬는다.
+
+![Gemini Robotics 2 발표 대표 이미지](https://lh3.googleusercontent.com/VZ5KwQMxv9xBcQnYipsQB2EUj3oX1yvFYLktIamY8V2a76Y6ctEEuaLF59TuPdnaVn6OAMINDilqnuhju1O-AXc7QlOVmcogjskrWxS7xVQ1mc5S7g=w1200-h630-n-nu-rw)
+*그림 — Gemini Robotics 2 (발표 대표 이미지): 휴머노이드가 무릎과 허리를 굽혀 바닥 가까이 놓인 물뿌리개를 집으려 한다. 물뿌리개의 색 점 무늬와 왼쪽 제목 글자는 원 이미지의 그래픽이다. 출처: [Google DeepMind 블로그 2026-07-30](https://deepmind.google/blog/gemini-robotics-2-brings-whole-body-intelligence-to-robots/)*
+
+**사람.** 이 계보는 Google Brain의 Tan 팀, DeepMind의 Heess 팀, MuJoCo 팀의 세 갈래가 만들었다. 2026-07-30 Gemini Robotics 2 발표의 팀 명단에는 세 갈래의 사람이 함께 있다.
+소속은 2026-10-07에 확인한 1차 출처(최근 논문의 저자 소속, 공식 발표, 본인 페이지)만 적었다. 명단에 없다고 떠났다는 뜻은 아니다.
+
+| 사람 | 이 소절에서 남긴 것 | 지금 소속 |
+|---|---|---|
+| Jie Tan | Minitaur sim-to-real 1저자, Brain 사족 연구 대부분과 Barkour·SayTap·Language to Rewards 공저 | Google DeepMind(Gemini Robotics 2 팀 명단) |
+| Tingnan Zhang, Wenhao Yu, Yuxiang Yang, Ken Caluwaerts | Visual-Locomotion·Language to Rewards(Yu), Data Efficient RL·걸음새 전환·Semantics-Aware(Yang), Barkour(Caluwaerts)의 1저자. Zhang은 이 계보 대부분의 공저자 | Google DeepMind(같은 명단) |
+| Nicolas Heess | OP3 갈래 다섯 편의 마지막 저자 | Google DeepMind(같은 명단) |
+| Tuomas Haarnoja | SAC 저자, Learning to Walk와 OP3 축구 1저자 | 2024 논문 기준 Google DeepMind. 그 뒤는 확인하지 못했다 |
+| Xue Bin (Jason) Peng | 동물 모방 보행 1저자, DeepMimic·AWR·AMP 저자 | B.16.1의 사람 표와 같다 |
+| Sehoon Ha | Learning to Walk 공동 1저자, Minimal Human Effort 1저자 | Georgia Institute of Technology(2026-09 논문 소속) |
+| Erwin Coumans | Bullet·PyBullet 저자, Minitaur·Imitating Animals·Visual-Locomotion 공저 | 본인 GitHub 프로필은 NVIDIA를 적는다 |
+| Yuval Tassa | MJPC·Language to Rewards·MuJoCo Playground 공저 | MuJoCo Playground 논문(2025-02) 소속 Google DeepMind. 그 뒤는 확인하지 못했다 |
+| Carolina Parada | Barkour 지휘진, LMPC 프로그램 책임자, Gemini Robotics 발표 | Google DeepMind 로보틱스 시니어 디렉터(Boston Dynamics 2026-01-05 발표의 직함) |
+
+#### B.16.3 취리히: RSL 밖의 ETH Zürich, Disney Research, Flexion
+
+**취리히의 다리·휴머노이드 연구는 ETH 연구실, 그 출신이 세운 회사, 같은 학습 도구를 쓰는 기업 연구소가 사람과 코드를 주고받는 망이다.**
+RSL(B.14)에서 legged_gym과 ANYmal Parkour를 낸 Rudin과 Hoeller는 NVIDIA 소속으로 Isaac Gym·Orbit·Isaac Lab 논문에 참여했고(B.16.1), 2024-12 RSL 동료들과 휴머노이드 자율 소프트웨어 회사 Flexion을 세웠다.
+Disney Research는 같은 GPU 병렬 RL로 캐릭터 로봇 BDX와 Olaf를 걷게 했고, RSL과 지도 인코더 논문(AME-1)을 함께 냈다.
+B.14가 다루지 않은 RSL 연구로는 망가진 인식 아래의 내비게이션, 측정으로 맞추는 sim-to-real, 바퀴 달린 다리의 물류 로봇이 있다.
+==travplan이 이 묶음에서 가져올 것은 로봇 형태가 아니라, 생성기와 추종기를 서로에게 맞춰 학습하는 절차와 plant를 측정으로 맞추는 절차다.==
+카드는 Flexion과 Disney Research를 먼저 두고, RSL과 바퀴·다리 로봇, ETH의 다른 연구실을 차례로 놓는다.
+
+<details markdown="1">
+<summary>자세히: 이 소절의 연구 목록(표 23행)</summary>
+
+| 연도 | 연구 | 로봇 | 핵심 | 다룬 곳 |
+|---|---|---|---|---|
+| 2019 | Ascento(ETH Autonomous Systems Lab, ICRA 2019), RL 계단(ICRA 2024) | Ascento(두 바퀴 다리) | 두 바퀴 균형은 선형 2차 제어(LQR), 점프와 일어서기는 앞먹임과 되먹임. RL로 15 cm 단 오르기 | 이 소절 |
+| 2023 | RL + 모델 기반 제어(ETH Computational Robotics Lab, RA-L 2023), 후속 RAMBO(RA-L 2025) | Go1, Aliengo, Go2 | 학습 중 최적 제어로 기준 동작을 만들어 RL이 모방. 후속은 2차 계획 전신 제어의 앞먹임에 RL 되먹임 | 이 소절 |
+| 2023 | 다접촉 로코매니퓰레이션 계획(RSL, Science Robotics 2023) | 팔 달린 ANYmal | 작업·운동 계획으로 접촉 순서를 자동으로 찾는다 | 이 소절(Flexion 토글), B.16.4(ZEST) |
+| 2023 | Barry(RSL, RA-L 2023) | Barry(사족) | 모델에 없는 짐을 90 kg까지 싣는 사족, RL 제어기 | 이 소절(PACE 카드), B.14.3 |
+| 2023 | Resilient Legged Local Navigation(RSL, ICRA 2024) | ANYmal C | 보이지 않는 장애물·구덩이 아래의 RL 로컬 내비 | 이 소절 |
+| 2023 | Risky Terrains(RSL, IROS 2024) | ANYmal D | 징검돌 generalist 정책을 specialist로 미세 조정, 내비게이션 정식화 | 이 소절(Parkour in the Wild 카드) |
+| 2024 | FLD(MIT, ICLR 2024) | MIT Humanoid(시뮬레이션) | 주기 동작의 잠재 동역학, 분포 밖 목표 거부 | 이 소절 |
+| 2024 | 좁은 공간의 3D 표현 보행(RSL, ICRA 2024) | ANYmal C, D | 3D 부피 표현을 보는 상위 정책으로 오버행 밑을 지난다 | 이 소절(Resilient 카드) |
+| 2024 | 두 발 캐릭터 로봇 BDX(Disney Research, RSS 2024) | BDX | 동작 종류별 조건부 RL 정책, 애니메이션 엔진, 1원리 구동기 모델 | 이 소절 |
+| 2024 | RobotMDM(Disney Research, SIGGRAPH Asia 2024) | 20자유도 두 발 캐릭터 | 추종 결과를 예측하는 critic으로 동작 diffusion을 미세 조정 | 이 소절 |
+| 2024 | Flexion(취리히 회사, 2024-12 등기) | 휴머노이드(기종 비공개) | 명령·운동·제어 3층 자율 스택, 층마다 RL | 이 소절, A.8.1 |
+| 2025 | RWM(ETH AI Center·RSL, arXiv) | ANYmal D, G1 | 예측을 다시 넣는 다스텝 손실의 world model 안에서 PPO | 이 소절 |
+| 2025 | LEVA(RSL·ZHAW, ICRA 2025) | LEVA(조향 바퀴 다리) | 굴림 제어기와 RL 계단 제어기, 상자 자율 적재 | 이 소절 |
+| 2025 | 조종자 모방 자율 상호작용(Disney Research, IROS 2025) | BDX | 조종자의 연속·이산 명령을 transformer 하나로 모방 | 이 소절(BDX 토글) |
+| 2025 | Parkour in the Wild(RSL·NVIDIA, IJRR 2026) | ANYmal D | 전문가 9개를 증류한 뒤 RL 미세 조정 | 이 소절 |
+| 2025 | AMOR(Disney Research, SIGGRAPH 2025) | 20자유도 두 발 캐릭터 | 보상 가중치를 입력으로 받는 정책 하나 | 이 소절(BDX 토글) |
+| 2025 | PACE(RSL, IJRR 2026) | ANYmal, Tytan, Minimal 외 | 엔코더 기록 20 s로 관절 동역학을 맞춰 동역학 무작위화 없이 이식 | 이 소절 |
+| 2025 | Olaf(Disney Research, RA-L 2026) | Olaf(캐릭터) | 구동기 온도와 발소리를 보상으로 다룬다 | 이 소절 |
+| 2026 | AME-2(RSL, T-RO 조건부 채택), AME-1(RSL·Disney Research, Science Robotics 2025) | ANYmal D, TRON1 | 주의 기반 지도 인코더, 칸별 분산을 내는 신경 지도 | 이 소절, A.2b.6 |
+| 2026 | Kamino(Disney Research, arXiv) | DR Legs(시뮬레이션) | 닫힌 기구 사슬을 직접 푸는 GPU 다물체 솔버, Newton에 통합 | 이 소절(BDX 토글), S.1.2 |
+| 2026 | 동작 생성 + 동작 추종 휴머노이드(RSL, RA-L 2026) | G1 | 지형을 보는 diffusion 생성기와 RL 추종기 | 이 소절 |
+| 2026 | 인라인 스케이트 휴머노이드(ETH 동역학·제어 연구소 IDSC와 RSL, IROS 2026) | Booster T1 | 수동 인라인 스케이트로 날을 밀어 나아간다. 걷기보다 수송 비용(CoT)이 최대 50% 낮다 | 이 소절(Ascento 카드) |
+| 2026 | 구름사다리 휴머노이드(RSL, arXiv) | EngineAI PM01 | LiDAR 원시 스캔을 AME-2 인코더로 읽어 매달려 건넌다 | 이 소절(AME-2 카드) |
+
+</details>
+
+**Flexion — legged_gym과 Isaac Lab의 핵심 개발자들이 세운 휴머노이드 자율 소프트웨어 회사**([flexion.ai](https://flexion.ai), [팀](https://flexion.ai/about), [선언문](https://flexion.ai/news/the-hard-part-of-robotics-is-robotics) 2025-11-19, [Series A 발표](https://flexion.ai/news/flexion-raises-50m-to-build-the-brain-of-humanoid-robots-at-scale) 2025-11-20, [Reflect v0](https://flexion.ai/news/flexion-reflect-v0-towards-generalizable-robot-autonomy) 2025-11-20, [Reflect v1.0](https://flexion.ai/news/flexion-reflect-v1.0) 2026-06-29; Flexion Robotics AG, 취리히).
+Flexion은 로봇 몸이 아니라 그 위에서 도는 자율 소프트웨어를 만든다. Series A 발표의 표현으로는 "몸이 아니라 두뇌"다.
+스위스 상업등기에는 2024-12-12에 새로 올랐고(정관 2024-12-02), 등기 목적은 휴머노이드 로봇을 제어하는 소프트웨어다([Zefix](https://www.zefix.ch/en/search/entity/list/firm/1669416)).
+공동 창업자는 다섯이다(팀 페이지, 2026-10-07 확인). Nikita Rudin이 CEO, David Höller(논문 표기 Hoeller)가 CTO다. Julian Nubert는 인식 팀을, Fabian Tischhauser는 하드웨어 팀을 이끌고, Marco Hutter는 자문을 맡는다.
+투자는 시드 735만 달러(Frst·Moonfire·redalpine) 뒤의 Series A 5,000만 달러(DST Global Partners·NVentures·redalpine·Prosus Ventures·Moonfire)다. NVentures는 NVIDIA의 투자 조직이다.
+
+두 창업자는 RSL의 학습 도구를 만든 사람들이다. Rudin은 legged_gym(B.14.1)의 1저자이고, ANYmal Parkour(B.14.2)는 Hoeller와 Rudin이 공동 1저자다.
+둘은 NVIDIA 소속으로 Isaac Gym 기술 보고서에, ETH와 NVIDIA 소속으로 Orbit에 이름을 올렸다(B.16.1). 2025-11 Isaac Lab 논문(S.1.1)에서 Hoeller는 핵심 리더 셋 가운데 하나이고, 둘은 소속에 Flexion을 함께 적었다.
+Series A 발표가 적은 스택은 명령, 운동, 제어의 세 층이다. Reflect v0 글이 적은 목표 구조도 셋이다. 임무를 쪼개고 도구를 부르는 LLM·VLM agent, 짧은 충돌 인지 궤적을 내는 운동 생성기, 그 궤적을 따르는 RL 전신 추종기다.
+당시 구현은 따로 학습한 기술(지각 험지 보행·전신 손끝 추종·내비게이션·물체 집기)을 agent가 도구 호출로 엮는 단계였고, diffusion 운동 생성기는 다음 판으로 예고했다.
+Reflect v1.0은 같은 구조에서 RL을 기술 하나에 가두지 않고 전신 제어부터 VLM 임무 제어까지 모든 층에 쓴다. 아래 층 제어 모듈의 이름은 Reflex다.
+v1.0의 임무 시연과 16단계 임무 완주율(지도 미세 조정만 38%, RL을 더하면 90%)은 인식 문서 A.8.1에 있다.
+
+**travplan에 주는 의미.** Reflect v0의 목표 구조에서 운동 생성기와 전신 추종기의 경계는 travplan의 Planner와 Controller 경계와 같다. 짧은 궤적을 내는 생성기 아래에서 학습한 추종기가 그 궤적을 따른다.
+travplan은 생성기(Planner D)만 학습하고 추종기는 MPPI와 NMPC로 둔다. 학습 Controller는 아직 Playground용 작은 정책(`TinyPolicy`, TP-0128)이다. 그래서 바로 옮길 것은 층 구성이 아니라 선언문의 sim-to-real 주장이다.
+선언문은 넓은 도메인 무작위화가 현실에 없는 세계까지 덮어 정책을 지나치게 조심스럽게 만든다고 본다. 그래서 동역학·접촉·구동·센서를 real-to-sim으로 맞추고, 실제로 변하는 파라미터(지면 마찰, 짐의 무게 분포)만 무작위화하자고 한다.
+글마다 표현은 다르다. v0은 운동 기술을 '대규모 무작위화와 외란'으로 학습했다고 적고, v1.0은 '표적(targeted) 도메인 무작위화'라고만 적는다.
+권장 L1 레벨 3의 360 에피소드에서 스워브 plant의 지연을 MPPI rollout에 넣자 치명 실패가 55회에서 4회로 준 결과(TP-0150)가 선언문과 같은 방향이다. 다만 rollout이 plant의 지연을 정확히 아는 시뮬 결과라서, 보정과 무작위화를 맞대 본 근거는 아니다.
+travplan이 학습 루프를 옮겨 갈 후보로 둔 Isaac Lab(TP-0042)과, Controller 문서 F.6이 들인다면 첫 후보로 꼽은 rsl_rl을 만든 사람 가운데 몇이 이 회사를 세웠다. Isaac Lab 논문은 Rudin과 Hoeller를 핵심 기여자로 적고, rsl_rl의 첫 관리자는 Rudin이었다(2021 README).
+다만 Reflex와 VLA 모델에 대한 논문은 없고, 수치는 모두 회사 발표다.
+
+![Flexion 홈페이지 사진](https://framerusercontent.com/images/2C9PvIqqGgbt9ibpP48bpuLkLRk.webp)
+*그림 — Flexion (홈페이지 사진): 이끼 낀 숲속 오솔길을 걸어오는 흰 휴머노이드다. 회사는 로봇 기종을 밝히지 않는다. 출처: [flexion.ai](https://flexion.ai)*
+
+![Flexion Reflect v1.0 구조도](https://framerusercontent.com/images/2PHekS1sv2Xtqf8K4BPppi4Mo.png)
+*그림 — Flexion Reflect v1.0 (구조도): 임무 문장 하나를 Agent가 받아 하위 과제로 바꾸고, 필요하면 의미 지도(Semantic Map)를 도구로 부른다. Motion Generator가 하위 과제를 짧은 궤적으로, Whole-Body Controller가 그 궤적을 모터 명령으로 바꾼다. Neural Perception은 운동 생성과 전신 제어 둘 다에 들어간다. 출처: [Reflect v1.0](https://flexion.ai/news/flexion-reflect-v1.0)*
+
+<details markdown="1">
+<summary>자세히: Flexion의 계보, 법인과 투자, 스택의 층, Reflect v0</summary>
+
+**풀려는 문제.** 선언문이 꼽는 문제는 일반화다. 사람의 시연을 따라 하게 하면 과제, 로봇, 현장이 바뀔 때마다 사람이 다시 가르쳐야 한다.
+Flexion은 시뮬레이션 RL을 엔진으로 삼고, 로봇 형태를 가리지 않는 수평 소프트웨어 층을 목표로 한다. 휴머노이드를 먼저 풀면 다른 형태로 단순화할 수 있지만 반대는 안 된다는 것이 선언문의 논리다.
+
+**계보(논문 저자 표기 기준).** 표의 소속은 각 논문 표지의 표기다. 2025년부터 Flexion이 더해진다.
+
+| 시점 | 무엇 | Rudin·Hoeller의 소속 표기 | 다룬 곳 |
+|---|---|---|---|
+| 2021-08 | Isaac Gym 기술 보고서(NeurIPS 2021 Datasets and Benchmarks) | NVIDIA | B.16.1, 강화학습 R.15 |
+| 2021-09 | legged_gym(CoRL 2021) | ETH Zurich와 NVIDIA | B.14.1 |
+| 2022-09 | 위치 명령 국소 내비(IROS 2022, Rudin 2022) | RSL과 NVIDIA | B.14.2 |
+| 2023-01 | Orbit(RA-L 2023), Isaac Lab의 전신 | ETH와 NVIDIA | B.16.1 |
+| 2023-06 | ANYmal Parkour(Science Robotics 2024) | ETH와 NVIDIA | B.14.2 |
+| 2024-12 | Flexion Robotics AG 상업등기 | 해당 없음 | 이 카드 |
+| 2025-05 | Parkour in the Wild(Rudin 1저자) | RSL과 NVIDIA Switzerland | 이 소절 |
+| 2025-09 | RSL-RL 논문 | ETH, NVIDIA, Flexion Robotics | Controller 문서 F.6 |
+| 2025-11 | Isaac Lab 논문(Hoeller 핵심 리더) | NVIDIA, Flexion Robotics | 시뮬레이션 S.1.1 |
+
+**법인과 투자(1차 출처).**
+- 스위스 상업등기 공고(SHAB)에서 Flexion Robotics AG는 2024-12-12 신규 등록이고, 정관 날짜는 2024-12-02다. 등기 목적은 휴머노이드 로봇 제어용 소프트웨어의 개발, 제조, 판매, 유지보수다.
+- 시드 735만 달러는 Frst·Moonfire·redalpine에서 받았다. Series A 발표(2025-11-20)는 그 몇 달 뒤 5,000만 달러를 DST Global Partners·NVentures·redalpine·Prosus Ventures·Moonfire에서 받았다고 적는다.
+- 상업등기 공고에는 시드 우선주(Vorzugsaktien Seed)가 2025-01-28에, Series A 우선주가 2025-07-23에 처음 나온다(정관 변경일은 각각 2025-01-17과 2025-07-17).
+- 쓰임은 취리히 R&D 확대, 연산과 로봇 대수 확대, 미국 거점, 자율 스택 상용화다. 주요 로봇 제조사(OEM)와 협력 중이라고 밝혔지만 이름은 없다.
+
+**스택의 층(공식 글의 표현).** 두 글이 VLA의 데이터를 다르게 적는다. Series A 글은 '주로 합성 데이터'로, v1.0은 정교한 손 조작에 '원격조종 실제 데이터'로 학습한 VLA를 쓴다고 적는다.
+
+| 층 | Series A 글(2025-11) | Reflect v0(2025-11) | Reflect v1.0(2026-06) |
+|---|---|---|---|
+| 명령 | 언어 모델이 자연어 과제를 하위 과제로 쪼갠다 | LLM·VLM agent가 도구를 부른다(클라우드) | 자체 VLM 임무 제어기, 의미 지도 도구, 지도 미세 조정 뒤 RL |
+| 운동 | 주로 합성 데이터로 학습한 VLA, 실제 예외 상황으로 미세 조정 | 짧은 지평의 충돌 인지 궤적 생성기(diffusion 판은 예정) | 실제 데이터 VLA와 RL 기술(문, 승강기, 상자) |
+| 제어 | transformer 기반 저지연 전신 제어, 기술 묶음 | RL 전신 추종기, 지각 험지 보행, 손끝 추종 | Reflex: 힘을 아는 전신 제어, 다른 형태로 이식 |
+
+**v0의 기술(2025-11).**
+- 지각 험지 보행: 넓은 지면 분포에 밀기, 센서 지연, 마찰 변화를 더해 학습했다. 외수용 센서로 발 디딤을 정한다.
+- 전신 손끝 추종: 골반 높이와 두 손 목표 자세를 따로 명령한다. 원격조종에도 쓴다.
+- 내비게이션 기술: 지형 요철과 위치 추정 잡음을 보정하며 A에서 B로 가고, 물체를 잡을 만큼 정확히 멈춘다.
+- 하드웨어: 맞춤 배낭의 Jetson Orin이 하위·상위 제어 루프, 운동 추정, 3D 장면 이해를 돌린다. 앞의 ZED 스테레오 카메라가 RGB-D를 준다. VLM agent는 클라우드에서 돌고, 다음 판은 Jetson Thor로 모두 온보드에 올린다고 적었다.
+
+![Flexion Reflect v0 하드웨어](https://framerusercontent.com/images/kKoUYjUP72legtPJlKRgK69Jkg.png)
+*그림 — Flexion Reflect v0 (하드웨어 사진): 왼쪽 앞모습은 머리 아래에 스테레오 카메라 막대가 달렸고, 오른쪽 뒷모습은 Flexion 표식의 배낭이 달렸다. 글은 배낭에 Jetson Orin을, 앞에 ZED 스테레오 카메라를 달았다고 적는다. 출처: [Reflect v0](https://flexion.ai/news/flexion-reflect-v0-towards-generalizable-robot-autonomy)*
+
+**v1.0에서 A.8.1에 없는 것.**
+- 상자 집기 정책 하나가 100 g에서 3.5 kg까지의 상자를 다룬다. 집은 상자는 한 팔 밑으로 옮겨 다른 손을 비운다.
+- 도구로 상자를 여는 손 조작은 원격조종 데이터로 학습한 VLA가 전신 제어기를 낀 채 맡는다. 회사는 자유롭게 움직이는 휴머노이드에서 이 신뢰도를 얻기 어렵다고 적고, 다음 해법을 RL로 본다.
+- 런타임 FlexComm은 같은 호스트 통신 지연이 수십에서 수백 µs이고, ROS DDS보다 최대 40% 빠르며 CPU를 30% 덜 쓴다고 밝혔다.
+- 배포 전에 3D Gaussian splatting 기반 시뮬레이터에서 전체 파이프라인을 돌린다. Niantic Spatial·NVIDIA와의 현장 복제 학습은 A.8.1에 있다.
+
+**사람(팀 페이지, 2026-10-07).** Julian Nubert는 ViPlanner(B.14.3) 공저자다. Fabian Tischhauser는 Barry(RA-L 2023)와 PACE(이 소절)의 공저자다.
+제어 팀의 Jean-Pierre Sleiman은 ETH에서 팔 달린 사족 로봇의 다접촉 계획([Science Robotics 8(81) 2023](https://doi.org/10.1126/scirobotics.adg5014), [arXiv:2308.09179](https://arxiv.org/abs/2308.09179))을 1저자로 냈다. 궤적 최적화와 그래프·샘플링 탐색을 섞어 무거운 식기세척기와 스프링 문을 다루는 접촉 순서를 스스로 찾았다.
+그 뒤 RAI Institute 연구원으로 Atlas의 첫 곡예 RL 정책을 주로 개발했다(ZEST, B.16.4).
+
+**한계.** 저자가 밝힌 것(v1.0 7절): 과제 분포가 아직 좁고, 잡기 어려운 물체가 남아 있다. 임무 제어기가 시각 입력에서 틀린 가정을 하고, 복구는 일부 실패 유형에만 통한다.
+우리가 보기에: Reflex의 구조, 관측, 보상은 공개되지 않았고 논문도 없다. 90%와 100회는 시도 조건이 일부만 적힌 회사 발표다. 로봇 기종을 밝히지 않아 하드웨어와 소프트웨어의 몫을 가를 수 없다.
+
+**travplan에 주는 것.**
+- **층마다 RL.** Flexion은 RL을 아래 층 운동 기술(v0)에서 모든 층(v1.0)으로 넓혔다. travplan은 Controller를 MPPI와 NMPC로 두고 Planner D만 RL로 후학습한다(TP-0066). 학습 Controller(TP-0128)는 저장소 벤치마크에서 `guidance+tiny` 8/12로 `guidance+mppi`의 12/12에 못 미쳤다(Controller 문서 E.12). Controller까지 학습으로 바꿀 근거는 아직 없다.
+- **무작위화보다 보정.** TP-0035(배달로봇 스워브 모듈 파라미터, 사용자 대기)가 풀리면 PACE 절차로 잴 수 있는 항부터 맞추고 무작위화 범위를 그 둘레로 좁힌다.
+- **도구.** rsl_rl(Controller 문서 F.6)과 Isaac Lab(시뮬레이션 S.1.1)이 이 계보의 결과물이다. P1(TP-0005)은 Isaac Sim 6.0으로 끝내고, Planner D 학습 루프를 Isaac Lab으로 옮길 때(TP-0042) 이 조합이 후보다.
+
+</details>
+
+**두 발 캐릭터 로봇 BDX(Disney Research) — 애니메이터의 동작을 동작 종류별 조건부 RL 정책으로 옮기고, 실시간 애니메이션 엔진이 그 조건을 낸다**([RSS 2024](https://doi.org/10.15607/RSS.2024.XX.103), Grandia·Knoop·Hopkins·Wiedebach·Bishop·Pickles·Müller·Bächer, Disney Research(스위스·미국)와 Walt Disney Imagineering R&D, [arXiv:2501.05204](https://arxiv.org/abs/2501.05204), [Disney Research 페이지](https://la.disneyresearch.com/publication/design-and-control-of-a-bipedal-robotic-character/)).
+Disney Research는 기능이 아니라 캐릭터를 기준으로 두 발 로봇을 설계하고, 애니메이터가 만든 동작을 RL로 실물에 옮겼다. 키 0.66 m(안테나 제외), 무게 15.4 kg이고 다리마다 5자유도, 목과 머리에 4자유도가 있다.
+발목 roll 구동기를 빼고 둥근 우레탄 폼 발바닥으로 수동 roll을 받으며, 무릎은 캐릭터 설정대로 뒤로 꺾인다. 저자들은 이 로봇을 한 해가 안 되는 기간에 만들었다고 적는다.
+2023-10 IROS(디트로이트) 저녁 기조연설에서 처음 공개됐고([IEEE Spectrum 2023-10-06](https://spectrum.ieee.org/disney-robot)), 논문은 RSS 2024에 실렸다.
+논문은 로봇에 이름을 붙이지 않는다. Disney Research는 BDX 드로이드가 이 팀의 보행 로봇·RL 연구에서 나왔고, 조종하는 캐릭터로 여러 행사·학회·쇼에 나왔다고 적는다. 파크에서는 시범 운영을 예고했다([BDX 페이지](https://la.disneyresearch.com/bdx-droids/)). 이 소절에서는 논문의 로봇을 BDX라고 부른다.
+
+정책 하나로 모든 동작을 다루지 않고, 시간 성질이 다른 동작마다 정책을 따로 학습한다. 시작과 끝이 없는 서기, 위상이 계속 도는 걷기, 길이가 정해진 짧은 연기(춤·점프·떼쓰기)다.
+각 정책은 저차원 명령 $g_t$를 조건으로 받는다. 서기는 머리 높이·방향 오프셋과 몸통 높이·자세를, 걷기는 머리 오프셋과 경로 속도를 받는다. 학습 때는 $g_t$를 전 범위에서 무작위로 뽑는다.
+보상은 기준 동작 모방, 정규화, 생존의 셋이다. 실행 중에는 애니메이션 엔진이 배경 애니메이션, 버튼으로 부른 짧은 클립, 조이스틱 입력을 겹쳐 $g_t$와 정책 전환을 만든다. 안테나·눈·머리등·소리도 동작에 맞춘다.
+조종자가 조이스틱 둘 달린 원격조종기로 움직이는 인형극이다. 정책은 50 Hz로 관절 목표를 내고, 저수준이 600 Hz로 보간한다. Isaac Gym에서 정책 하나를 RTX 4090 한 장으로 약 2일 학습했다.
+
+**travplan에 주는 의미.** 로봇 형태는 travplan과 멀다. 가져올 것은 둘이다.
+첫째는 아래 층 정책을 위 층 명령의 전 범위에서 학습하는 것이다. BDX는 학습 때 명령 $g_t$를 전 범위에서 뽑아, 애니메이션 엔진이 실행 중 어떤 명령을 내도 정책이 받게 했다. 학습 Controller(TP-0128)를 키울 때 Planner D가 낼 수 있는 기준 궤적의 범위를 학습 분포로 덮어야 한다는 같은 원칙이다.
+둘째는 구동기를 시험대에서 재고, 잰 범위 안에서만 무작위화한 것이다. 다만 travplan plant(`robot/plant.py`)는 관성과 토크가 없는 운동학 모델이다. 이 식의 항 가운데 운동학 plant에 그대로 옮길 수 있는 것은 속도 한계(plant에 이미 있다)와 조향 엔코더 오프셋 정도다. PD 토크, 마찰, 백래시, 반사 관성은 조향·구동 축의 동역학을 plant에 더할 때 쓸 항목이다.
+
+![Design and Control of a Bipedal Robotic Character Fig. 1](https://arxiv.org/html/2501.05204v1/figures/teaser_2.jpeg)
+*그림 — Design and Control of a Bipedal Robotic Character (Fig. 1): 겉모습의 도색만 다르고 구조는 같은 로봇 셋이 대본 없는 쇼를 한다. 로봇마다 조종자가 따로 있다. 출처: [arXiv:2501.05204](https://arxiv.org/abs/2501.05204)*
+
+![Design and Control of a Bipedal Robotic Character Fig. 3](https://arxiv.org/html/2501.05204v1/bd2_exploded_view_colorized_v2.png)
+*그림 — Design and Control of a Bipedal Robotic Character (Fig. 3): 기계 구성이다. 노랑은 구동기이고 주황은 그 밖의 모듈이다. 초록은 표정 기능(안테나·빛나는 눈·머리등·스피커)이고 파랑은 도색한 외피다. 몸통에 통신 보드, 배터리, IMU가 있고 머리에 온보드 PC가 있다. 출처: [arXiv:2501.05204](https://arxiv.org/abs/2501.05204)*
+
+<details markdown="1">
+<summary>자세히: BDX의 정책 정식화, 구동기 모델, 애니메이션 엔진, 후속 연구</summary>
+
+**풀려는 문제.** 오락용 다리 로봇은 넘어지지 않는 것만으로 부족하다. 관객에게 그럴듯한 성격이 보여야 하고, 애니메이터의 의도가 동작에 남아야 한다.
+애니메이션 도구에는 물리가 없어 그대로 옮기면 실물이 넘어진다. 모델 기반 최적화로 기준 동작을 실현 가능하게 다듬어도, 밀렸을 때 동작과 접촉 순서를 실시간으로 함께 다시 짜기는 어렵다.
+
+**정책의 입력과 출력.** 경로 프레임을 $\mathcal P$, 몸통 프레임을 $\mathcal T$로 쓴다.
+
+$$ a_t \sim \pi(a_t \mid s_t, \phi_t, g_t), \qquad s_t = \big(p^{\mathcal P}_t,\ \theta^{\mathcal P}_t,\ v^{\mathcal T}_t,\ \omega^{\mathcal T}_t,\ q_t,\ \dot q_t,\ a_{t-1},\ a_{t-2}\big) $$
+
+위상 $\phi_t$는 그대로 넣지 않는다. 걷기는 첫째와 둘째 조화 성분($k = 1, 2$의 사인과 코사인)으로, 짧은 연기는 가우시안 기저 50개로 바꾼다. 둘째 조화 성분은 걸음 주기의 두 배로 까딱이는 머리를 배우기 쉽게 한다.
+행동은 PD 관절 목표이고, 측정 관절 위치 둘레의 최대 편차로 자른다. 편차는 최대 토크를 낼 수 있을 만큼 크게 잡는다.
+
+**경로 프레임.** 서 있을 때는 두 발 가운데로 천천히 수렴하고, 걸을 때는 명령 경로 속도를 적분한다. 모든 기준 동작은 이 프레임 좌표로 저장한다.
+프레임은 몸통에서 정한 거리 이상 떨어지지 않게 투영한다. 그래서 정책을 바꿔도 기준이 튀지 않고, 로봇이 밀려도 기준이 로봇에서 멀어지지 않는다.
+걷기 기준은 애니메이터가 속도별로 만든 걸음 표본을 절차적으로 섞어 만든다(같은 팀의 양식화된 걸음 설계 도구, SIGGRAPH 2024).
+
+**보상(표 I).** 모방 항은 지수형이다. 몸통 xy 위치 $\exp(-200\lVert\cdot\rVert^2)$, 자세 $\exp(-20\lVert\cdot\rVert^2)$, 선속도 $\exp(-8\lVert\cdot\rVert^2)$, 각속도 $\exp(-2\lVert\cdot\rVert^2)$이다.
+다리 관절 위치는 가중 15, 목 관절 위치는 가중 100의 제곱 벌점이다. 발 접촉 상태가 기준과 같으면 보상하고, 생존 보상(가중 20)이 학습 초반에 일찍 끝내는 쪽을 막는다.
+점프와 흥분 동작은 특정 위상 구간의 가중을 키웠다. 그러지 않으면 정책이 발끝을 땅에 붙인 채 점프를 흉내 낸다.
+
+**학습(부록 A).** 정책마다 PPO 10만 반복이고, RTX 4090 한 장에서 약 2일이 걸린다. 1,500 반복(30분)이면 대략의 동작을 미리 볼 수 있다.
+배치는 환경 8,192개 × 24스텝이고, 할인은 0.99, GAE(generalized advantage estimation)는 0.95다. 적응 학습률(목표 KL 0.01)은 legged_gym을 따랐다. 정책과 critic은 각각 512 × 3 ELU MLP이고, critic은 잡음 없는 상태와 마찰 계수를 특권 정보로 본다.
+외란은 세 종류다. 골반에 주는 수평 90–150 N 힘(0.1 s, 12–15 s 간격)이 가장 크고, 1,500 반복에 걸쳐 키운다. 걷기 정책은 지형도 무작위로 바꾼다.
+
+**구동기 모델(부록 B).** 구동기를 하나씩 시험대에 올려 출력 토크를 재고 파라미터를 맞췄다(표 VI). 다리의 준직접 구동기는 Unitree A1(최대 34 N·m)과 Go1(23.7 N·m) 모듈이다. 머리는 Dynamixel XH540-V150(4.8 N·m)이다.
+
+$$ \tau = \operatorname{clamp}_{[\underline\tau(\dot q),\ \overline\tau(\dot q)]}\big(k_P(a - \tilde q) - k_D\,\dot q\big) - \big(\mu_s \tanh(\dot q/\dot q_s) + \mu_d\,\dot q\big), \qquad \tilde q = q + \epsilon_q $$
+
+토크 상한은 정한 속도까지 $\tau_{\max}$이고, 그 뒤 직선으로 줄어 $\dot q_{\max}$에서 0이 된다. 측정 위치에는 백래시 $0.5\,b\tanh(\tau_m/\tau_b)$와 속도에 비례하는 잡음을 더한다.
+엔코더 오프셋 $\epsilon_q$(최대 0.02 rad)와 백래시 $b$는 에피소드마다 뽑고, 반사 관성(armature)은 최대 20% 흔든다. 파라미터는 실험에서 관찰한 범위 안에서만 무작위화한다. 이 식에는 명령 지연 항이 없다.
+
+**애니메이션 엔진.** 표정 기능과 소리는 동역학에 영향이 없어 정책 밖에서 열린 루프로 돈다. 배경 애니메이션, 버튼으로 부른 클립, 조이스틱 입력의 세 층을 차례로 겹친다.
+걷는 속도가 빨라질수록 안테나가 뒤로 눕고 눈이 가늘어져 힘든 모습을 낸다. 걷기로 들어갈 때는 회전 방향 쪽 발부터 딛고, 걷기에서 나올 때는 다음 양발 지지까지 전환을 늦춘다.
+
+![Design and Control of a Bipedal Robotic Character Fig. 6](https://arxiv.org/html/2501.05204v1/figures/standing_controls.jpg)
+*그림 — Design and Control of a Bipedal Robotic Character (Fig. 6): 서 있을 때의 조이스틱 명령이다. 왼쪽 막대(자세 제어)는 시선을 고정한 채 몸통만 움직이고, 오른쪽 막대(시선 제어)는 주로 머리를 돌리되 범위를 넓히려고 몸통 회전을 더한다. 출처: [arXiv:2501.05204](https://arxiv.org/abs/2501.05204)*
+
+**결과.**
+- 걷기 최대 속도는 전진 0.7 m/s, 옆 0.4 m/s, 회전 1.8 rad/s다. 측정 속도가 명령을 가깝게 따른다(원문 그림 7).
+- 관절 위치 평균 절대 오차(표 III)는 서기 0.035 rad, 걷기 0.123 rad, 짧은 연기 넷 0.027–0.043 rad다.
+- 점프에서 무릎과 목 구동기가 속도에 따라 줄어드는 토크 한계에 닿는다(원문 그림 8).
+- 집필 시점까지 최대 세 대를 함께 쓴 공개 시연에서 약 10시간 동안 한 번도 넘어지지 않았다.
+
+**후속 연구(같은 팀).** 추종 정책 VMP(SCA 2024)와 위의 걸음 설계 도구가 아래 연구의 공통 부품이다.
+
+| 연구 | 발표 | 무엇 |
+|---|---|---|
+| RobotMDM | SIGGRAPH Asia 2024 | 추종 정책의 기대 보상을 예측하는 critic으로 동작 diffusion을 미세 조정(이 소절) |
+| 조종자 모방 자율 상호작용([arXiv:2504.02724](https://arxiv.org/abs/2504.02724)) | IROS 2025 | BDX 플랫폼에서 조종자의 연속 명령(diffusion)과 이산 명령(분류기)을 transformer 하나로 학습. 데이터는 한 시간이 안 되고, 사용자 20명이 자율과 조종을 거의 가르지 못했다(정답률 55%, 54%) |
+| AMOR([arXiv:2505.23708](https://arxiv.org/abs/2505.23708)) | SIGGRAPH 2025 | 보상 가중치 벡터를 입력으로 받는 정책 하나가 보상들의 Pareto 전선을 덮는다. 학습 뒤 실물 20자유도 두 발 로봇에서 가중치를 골라, 고정 가중치 정책(VMP)이 못 하던 두 번 도는 피루엣을 했다 |
+| Olaf | RA-L 2026 | 구동기 온도와 발소리를 보상으로 다룬다(이 소절) |
+| Kamino([arXiv:2603.16536](https://arxiv.org/abs/2603.16536)) | arXiv 2026-03 | 닫힌 기구 사슬을 트리로 근사하지 않고 비선형 상보성 문제로 푸는 GPU 다물체 솔버. Newton(시뮬레이션 S.1.2)에 통합됐고, 기구 고리 여섯 개가 겹친 두 발 로봇 DR Legs의 보행 정책을 GPU 한 장의 환경 4,096개로 학습했다 |
+
+같은 팀의 Grandia와 Bächer는 RSL과 지도 인코더 논문 AME-1(Science Robotics 2025)도 함께 냈다(이 소절의 AME-2 카드).
+
+**한계.** 저자가 밝힌 것: 동작마다 정책을 나누면 정밀하지만, 짧은 연기가 늘수록 학습 부담이 커진다. 관객은 로봇이 보고 듣는다고 여겼고, 조종자가 보이면 몰입이 깨진다는 의견도 있었다.
+우리가 보기에: 로봇에는 지각이 없다. 평지와 작은 장애물만 다루고, 정량 결과는 관절 오차와 속도 추종뿐이다. 10시간 무낙상은 조건이 적히지 않은 운용 기록이다.
+
+**travplan에 주는 것.**
+- **명령을 전 범위에서 뽑는다.** 학습 Controller(TP-0128)는 Planner D가 낼 수 있는 기준 궤적 전체를 학습 분포로 덮어야 한다. Planner D 쪽에서도 조건(route subgoal과 현재 속도)이 시연 분포 밖에서 쓰이므로, DAgger(TP-0075)에서 조건을 넓게 흔드는 것이 같은 처방이다.
+- **식별한 범위 안에서만 흔든다.** 구동기를 재고 그 범위 안에서만 무작위화한 것은 Flexion 선언문, PACE와 같은 원칙이다. travplan에서는 plant의 지연과 조향 한계를 실물로 잰 뒤(TP-0035) 그 둘레만 흔든다.
+- **기준을 로봇에 묶는 장치는 필요 없다.** 경로 프레임은 정책 전환과 외란 뒤에 기준이 튀지 않게 한다. travplan은 0.1 s마다 다시 계획해 기준이 늘 로봇 위치에서 다시 시작한다. 그 대가로 추종이 쉬워지는 함정은 B.14.2 DTC 토글에 있다.
+
+</details>
+
+**RobotMDM — 추종 정책이 따라갈 수 있는 동작만 내도록, 추종 결과를 예측하는 critic으로 동작 diffusion을 미세 조정했다**([SIGGRAPH Asia 2024](https://doi.org/10.1145/3680528.3687626), Serifi·Grandia·Knoop·Gross·Bächer, Disney Research(ETH Zürich 공저), [Disney Research 페이지](https://la.disneyresearch.com/publication/robot-motion-diffusion-model-motion-generation-for-robotic-characters/)).
+문장으로 동작을 만드는 diffusion(MDM, motion diffusion model)은 물리를 모른다. 그대로 로봇에 주면 떠 있거나, 발이 미끄러지거나, 몸이 겹치거나, 균형을 잃는 동작이 나온다.
+저자들은 먼저 추종 정책(VMP)을 고정하고, 동작 창 $m$만 보고 그 정책의 할인 누적 보상을 예측하는 critic $v_\theta(m)$를 학습한다. 상태를 보지 않는 critic이라 동작 하나에 매기는 미분 가능한 실현 가능성 점수가 된다. 그다음 diffusion 손실에 이 점수를 더해 40만 스텝(약 12시간) 미세 조정한다.
+
+$$ \mathcal L_{\text{RobotMDM}} = \mathcal L_{\text{MDM}} - \beta \sum_{t} v_\theta(m_t), \qquad \beta = 0.001 $$
+
+로봇은 20자유도, 0.84 m, 16.2 kg의 두 발 캐릭터이고 다리는 Unitree A1 구동기다. critic 값을 동작 전체에 누적한 Realism은 MDM 8.730에서 9.562로 올랐다(표 2).
+문장 일치(R-Precision 상위 3)는 0.680 대 0.684, FID(Fréchet inception distance)는 0.415 대 0.472로 비슷했다. 의자 없이 앉는 동작은 쪼그려 앉기로, 지나친 발차기는 균형 잡힌 발차기로 바뀌었다. 생성에 드는 계산은 MDM과 같다.
+
+**travplan에 주는 의미.** Planner D와 MPPI의 관계가 RobotMDM과 추종 정책의 관계와 같다. 생성기가 낸 궤적을 아래 층이 실제로 따라갈 수 있어야 한다.
+RL 후학습(TP-0066)은 후보를 GT 지도에서 채점하고 그 점수를 가중치로 쓴다. RobotMDM은 채점기 자체를 작은 망으로 학습해 미분 가능한 손실로 쓴다.
+RL 후학습은 라운드마다 상태 약 4,100–4,400개에서 후보 16개씩을 채점한다(B.15.3). 이 상태·후보·점수로 critic을 학습하면 flow matching 손실에 더하거나 Planner D 선택기의 점수로 쓸 수 있다. B.14.6이 제안한 실패 확률 머리와 같은 자리다.
+
+![RobotMDM Fig. 1](https://la.disneyresearch.com/wp-content/uploads/image-12.png)
+*그림 — RobotMDM (Fig. 1): 'a person who performed a right-handed uppercut'이라는 문장으로 만든 동작을 위의 시뮬레이션(초록)과 아래의 실물 두 발 로봇이 같은 순서로 수행한다. 출처: [Disney Research](https://la.disneyresearch.com/publication/robot-motion-diffusion-model-motion-generation-for-robotic-characters/)*
+
+**Olaf — 만화 캐릭터를 걷게 하려고 구동기 온도와 발소리를 보상에 넣었다**([arXiv:2512.16705](https://arxiv.org/abs/2512.16705), Müller·Knoop(공동 1저자)·Mylonopoulos·Serifi·Hopkins·Grandia·Bächer, Disney Research Imagineering, [RA-L 11(6) 2026](https://doi.org/10.1109/LRA.2026.3685938), [Disney Research 페이지](https://la.disneyresearch.com/publication/olaf-bringing-an-animated-character-to-life-in-the-physical-world/)).
+BDX의 경로 프레임과 정책 구조를 이어받고, 캐릭터가 로봇답지 않아 생긴 문제 셋을 풀었다. 키 88.7 cm(머리카락 제외), 무게 14.9 kg, 25자유도다.
+첫째, 발이 몸 아래 눈덩이처럼 보이도록 비대칭 6자유도 다리 둘을 부드러운 폼 치마 밑에 숨겼다. 둘째, 무거운 머리를 가는 목의 작은 구동기가 받쳐 과열된다.
+그래서 구동기 온도 $T$를 관측에 넣고, 시뮬레이션에서 1차 열 모델 $\dot T = -\alpha(T - T_{\text{amb}}) + \beta\tau^2$로 온도를 굴린다. 보상은 제어 장벽 함수(CBF, control barrier function) 조건 $-\dot T + \gamma_T(T_{\max} - T) \ge 0$의 위반량을 벌한다.
+셋째, 딱딱한 발소리가 캐릭터를 깨므로 발의 수직 속도 변화를 벌한다.
+열 보상이 없으면 목 pitch 구동기가 40 s 만에 100 °C에 닿아 실험을 멈췄다. 열 보상이 있으면 같은 동작을 1시간 돌려 마지막 1분 평균 77.3 °C(상한 80 °C)에 머물렀다. 발소리 보상은 5분 주행의 평균 음량을 13.5 dB 낮췄다.
+Isaac Sim에서 환경 8,192개, RTX 4090 한 장으로 10만 반복(약 2일) 학습했다. Disney는 2025-11-24 이 로봇을 공개하며 Disneyland Paris의 World of Frozen 쇼에 내보낸다고 밝혔다([Disney Parks Blog](https://disneyparksblog.com/disney-experiences/robotic-olaf-marks-new-era-of-disney-innovation/)).
+
+**travplan에 주는 의미.** 느리게 변하는 한계를 RL에서 다루는 형식이 쓸모 있다. 한계와 관련된 상태(온도)를 관측에 넣고, 한계를 넘은 순간이 아니라 한계로 다가가는 속도(CBF 조건)를 벌한다.
+travplan에는 온도 제약이 없지만 치명 셀까지의 거리에 같은 형식을 쓸 수 있다. 지금 RL 후학습(TP-0066)은 치명 후보를 채점에서 벌한다. 거리 $h$에 대해 $\dot h + \gamma h \ge 0$의 위반을 벌하면, 경계로 빠르게 다가가는 계획을 닿기 전에 벌한다.
+acados NMPC는 같은 형식의 이산 CBF 감쇠($\gamma = 0.2$)를 벌점 큰 soft 제약 행으로 쓴다(TP-0093, MPC 문서 M.3.10). 제약을 hard로 두면 노드 1이 그 하한을 지킬 수 없어 감쇠를 끈다. RL 보상과 NMPC 제약의 결과를 같은 장면에서 맞댈 수 있다.
+
+![Olaf Fig. 1](https://arxiv.org/html/2512.16705v2/figures/olaf_robot.jpg)
+*그림 — Olaf (Fig. 1): 'FROZEN' 간판이 걸린 시계탑 건물 앞의 Olaf 로봇이다. 본문은 늘어나는 천 코스튬이 기계를 덮고, 다리는 아래쪽 눈덩이 모양의 폼 치마 안에 있다고 적는다. 출처: [arXiv:2512.16705](https://arxiv.org/abs/2512.16705)*
+
+<details markdown="1">
+<summary>자세히: Olaf의 기구, 보상 식, 수치</summary>
+
+**기구.** 25자유도 가운데 다리가 12, 어깨가 4, 목이 3이고, 나머지 6은 턱·눈썹·눈이다. 한 다리는 뒤집어 달아서, 다리가 yaw로 돌 때 두 hip roll 구동기와 두 무릎이 부딪히지 않는다.
+어깨는 몸통 안 구동기가 구면 5절 링크로 움직이고, 위턱과 눈 pitch·눈꺼풀은 4절 링크로 원격 구동한다. 팔·코·단추·눈썹·머리카락은 자석으로 붙어 넘어질 때 떨어진다. 온보드 컴퓨터는 셋이다.
+
+**보상.** 모방과 정규화 항의 형태는 BDX와 같고, 가중치는 표 III에서 다시 정했다(목 관절 위치 가중은 BDX 100, Olaf 40). 여기에 한계와 충격 항을 더했다.
+
+$$ r_T = -\big\lVert \min\big(-\dot T_n + \gamma_T (T_{\max} - T_n),\ 0\big)\big\rVert_1, \qquad r_{\text{impact}} = -\sum_{i \in \{L, R\}} \min\big(\Delta v_{i,z}^2,\ \Delta v_{\max}^2\big) $$
+
+관절 한계도 같은 CBF 형식으로 벌한다(여유 $q_m = 0.1$ rad, $\gamma_q = 20$). 두 발이 부딪히면 벌점을 준다. 충격 항은 물리 엔진의 접촉 해결이 큰 속도 변화를 내 critic을 흔들지 않도록 포화시켰다.
+열 모델은 20분 기록으로 맞췄다($\alpha = 0.038$, $\beta = 0.377$, $T_{\text{amb}} = 43.94$). $T_{\max}$는 80 °C, 관측과 보상의 온도는 70–85 °C로 자르고, $\gamma_T = 0.312$를 쓴다.
+
+**결과.** 관절 추종 평균 절대 오차는 서기 3.87° ± 2.40°, 걷기 4.02° ± 2.01°다(제어 입력 전 범위, 각 5분). 열 모델은 처음 보는 10분 궤적에서 평균 1.87 °C 틀렸다.
+열 보상을 쓴 정책은 상한에 가까워지면 머리를 수평 쪽으로 옮겨 토크를 줄였고, 1시간 실험의 마지막 1분 관절 추종 오차는 0.14 rad였다.
+
+![Olaf Fig. 3](https://arxiv.org/html/2512.16705v2/figures/olaf_section_view_v2.png)
+*그림 — Olaf (Fig. 3): 외피와 치마를 잘라 낸 단면이다. 노랑은 구동기(Unitree 8010-6·4010-25와 Dynamixel)이고 하늘색은 부드러운 PU 폼이다. 보라는 연산기(Jetson·Aaeon·Raspberry Pi)다. 오른쪽에 눈, 턱, 어깨 링크를 확대했다. 출처: [arXiv:2512.16705](https://arxiv.org/abs/2512.16705)*
+
+**한계.** 저자가 밝힌 것: 열 모델은 마찰열과 구동기 하우징이 서서히 데워지는 효과를 담지 않는다. 코스튬과 다리 사이의 힘은 무작위 외란으로만 다뤘다.
+우리가 보기에: 공원 운용의 시간과 실패 기록은 공개되지 않았다.
+
+</details>
+
+**Resilient Legged Local Navigation — 인식 실패를 보이지 않는 장애물과 구덩이로 모델링하고, 망가진 지도를 받는 RL 로컬 내비 정책이 부딪힘과 헛디딤에 반응하게 했다**([arXiv:2310.03581](https://arxiv.org/abs/2310.03581), Jin·C. Zhang(공동 1저자)·Frey·Rudin·Mattamala·Cadena·Hutter, ETH RSL(Oxford·MPI-IS 공저), [ICRA 2024](https://doi.org/10.1109/ICRA57147.2024.10611254)).
+어둠·비·안개, 투명한 물체, 가려진 구덩이 때문에 지도에 나타나지 않는 장애물과 구덩이를 이 논문은 '인식 실패'라고 부른다. 지도를 믿고 경로를 짜는 고전 로컬 Planner는 보이지 않는 장애물 앞에서 멈춘다.
+상위 내비 정책은 PPO로 학습해 속도 명령을 내고, 아래 보행은 Miki 2022(B.14.2)의 정책을 그대로 쓴다. 정책 입력에는 elevation_mapping_cupy 방식의 traversability 지도(로봇 둘레 3 m를 12 cm 격자로)뿐 아니라 보행 층의 높이 스캔 208점, 관절 토크 이력, 몸통 가속도 이력이 들어간다. 그래서 몸 여러 부위의 부딪힘과 발의 헛디딤을 느낀다.
+학습 때 장애물과 구덩이의 절반을 지도에서 지웠다. actor는 망가진 지도와 LSTM 기억을 보고, critic은 참값 지도와 외력을 본다. actor의 LSTM 출력을 critic의 잠재 특징 쪽으로 끌어당기는 정규화가 성능에 결정적이었다.
+시뮬레이션에서 장애물이 전혀 보이지 않을 때(가시도 0%) 성공률은 이 정책 84.0%, 고전 Planner 53%, 가시도 100%로 학습한 Oracle 33.3%였다. 구덩이는 각각 93.0%, 57%, 57.3%다.
+실물 ANYmal C는 인식을 끈 채 장애물에 부딪힌 뒤 옆으로 비켜 목표에 갔고, 보이지 않는 구덩이에 한 발이 빠지면 옆으로 끌어내 회복했다. 추론은 CPU에서 10 ms 아래다.
+같은 해 RSL의 Miki 외([ICRA 2024](https://doi.org/10.1109/ICRA57147.2024.10610271), [arXiv:2403.00187](https://arxiv.org/abs/2403.00187))는 3D 부피 표현을 보는 상위 정책과 6D 명령을 따르는 하위 정책으로 오버행 밑과 좁은 공간을 지나게 했다. travplan이 알려진 한계로 적은 '오버행 미표현'에 대한 RSL의 답이다.
+
+**travplan에 주는 의미.** 이 논문의 인식 실패는 travplan의 가림 실패와 같은 종류다. L0 가림(TP-0031)을 켜면 포트홀 둘레에서 실패가 났다(36–38/40).
+travplan은 지도 쪽 규칙인 그림자 상한과 깊이 prior(TP-0044·TP-0047)로 40/40을 되찾았다.
+이 논문은 지도를 고치지 않고, 정책이 부딪힘과 헛디딤을 느껴 반응하게 했다. 스워브 바퀴는 포트홀에 빠지는 순간이 실패라서 반응형 회복을 그대로 쓸 수는 없다. 옮길 것은 학습과 평가의 설계다.
+첫째, 가시도 100%로 학습한 Oracle은 0% 가시도의 장애물에서 33.3%로 무너졌다. 실패를 학습 중에 보여 주지 않으면 대처를 배우지 못한다는 뜻이다.
+Planner D의 시연은 참값 높이로 만든 지도를 보고, 지도 가운데 절반쯤에만 원판 모양의 미관측 구역을 무작위로 1–3개 뚫는다. DAgger의 라벨도 참값 지도에서 만든다. RL 후학습(TP-0066)은 가림을 켠 rollout과 끈 rollout을 함께 돌리고, 로봇이 본 belief에서 후보를 뽑아 GT 지도에서 채점한다.
+actor는 망가진 지도를, critic은 참값 지도를 보는 이 논문의 비대칭과 같은 구조다. L1 매퍼가 만드는 지도 오차는 아직 어느 단계에도 없고, Planner D를 L1 belief로 다시 배우는 TP-0055가 그 자리다.
+둘째, 가시도를 0·50·100%로 나눠 재는 평가는 belief에서 포트홀 일부를 지워 그대로 만들 수 있다.
+저자들이 밝힌 한계도 travplan과 겹친다. 정책은 지도의 통과 불가 칸을 늘 피하므로, 인식이 만든 가짜 장애물이 로봇을 세운다. 그림자 깊이 prior의 오탐 점검(TP-0048)이 같은 질문이다.
+
+![Resilient Legged Local Navigation Fig. 1](https://arxiv.org/html/2310.03581v1/figure_first_impression.png)
+*그림 — Resilient Legged Local Navigation (Fig. 1): (A) 장애물이 보이면 고전 Planner와 학습 정책 모두 돌아간다. (B) 보이지 않는 장애물 앞에서 고전 Planner는 멈춘다. (C) 학습 정책은 부딪힌 뒤 옆으로 비켜 목표에 닿는다. (D) 인식을 끈 실물 ANYmal C가 같은 동작으로 목표에 간다. 출처: [arXiv:2310.03581](https://arxiv.org/abs/2310.03581)*
+
+**Parkour in the Wild — 전문가 정책 아홉을 깊이 카메라 학생 하나로 증류한 뒤 RL로 미세 조정해, 증류만으로는 못 가던 지형을 간다**([arXiv:2505.11164](https://arxiv.org/abs/2505.11164), Rudin·He·Aurand·Hutter, ETH RSL과 NVIDIA Switzerland, [IJRR 2026](https://doi.org/10.1177/02783649261455067)).
+ANYmal Parkour(B.14.2)의 후속이다. 거기서는 상위 정책이 기술 다섯 가운데 하나를 골랐는데, 기술을 아홉으로 늘리자 상위 정책이 일부 기술을 아예 쓰지 않았다. 그래서 학습을 세 단계로 바꿨다.
+높이 지도를 보는 전문가 아홉(걷기·오르기·내려가기·점프·탁자·바위 더미·낮은 벽·빔·징검돌)을 지형마다 RL로 따로 학습한다. 깊이 카메라 네 대만 보는 학생 하나로 DAgger 증류를 하고, 그 학생을 RL로 미세 조정하며 수색 구조 훈련장의 3D 스캔 지형을 더한다.
+지형마다 시뮬레이션 1,000회의 성공률(표 4)로, 학습에 없던 스캔 지형은 증류 직후 14.9%에서 미세 조정 뒤 94.9%가 됐고 파쿠르 코스는 5.8%에서 98.5%가 됐다. 미세 조정한 정책은 해당 전문가보다 평균 3.1% 높다. 실물 ANYmal D가 처음 보는 잔해 더미와 실내 장애물을 넘었다.
+같은 연구실의 Risky Terrains(C. Zhang·Rudin·Hoeller·Hutter, [IROS 2024](https://doi.org/10.1109/IROS58592.2024.10801909), [arXiv:2311.10484](https://arxiv.org/abs/2311.10484))도 징검돌 generalist 정책을 빔·징검돌 specialist로 미세 조정했다. 이 논문이 그것을 인용한다.
+그쪽 실물은 참값 지도와 모션 캡처로 돌렸고, 징검돌과 빔에서 최고 2.5 m/s 넘게 달렸다.
+
+**travplan에 주는 의미.** Planner D의 학습 순서(시연·DAgger·RL 후학습)와 같은 구조이고, 새 지형을 더할 때의 처방을 하나 준다.
+모든 지형으로 다시 미세 조정한 쪽이 새 지형 하나로만 한 쪽보다 새 지형에서도 높았다. 이때 새 지형 표본은 3%뿐이었다.
+travplan의 TP-0138에서는 curb_ramp 레벨 3만으로 돌린 2단계와 모든 지형 레벨 2–3으로 돌린 재시도가 둘 다 26/30이었다(B.15.5). 30 에피소드의 잡음 바닥 안이라 이 처방을 확인하지도 반박하지도 못한다.
+안정화 요령은 셋이다. 증류 때 행동 잡음, 줄인 초기 표준편차, 정책을 고정한 critic 사전 학습이다. 마지막 요령은 critic 없는 그룹 상대 이점(GRPO식)을 쓰는 Planner D 후학습에는 해당하지 않는다.
+
+![Parkour in the Wild Fig. 1](https://arxiv.org/html/2505.11164v1/figures/cover.png)
+*그림 — Parkour in the Wild (Fig. 1): 정책 하나로 실물 ANYmal D가 콘크리트 잔해와 바위 더미, 풀 비탈, 차량 경사판을 넘는다. 아래 두 줄은 실내 상자와 탁자 장애물이다. 출처: [arXiv:2505.11164](https://arxiv.org/abs/2505.11164)*
+
+<details markdown="1">
+<summary>자세히: 증류와 미세 조정의 설정, 깊이 잡음 모델, 결과 표</summary>
+
+**전문가.** ANYmal Parkour의 보행 모듈을 따르고, 위치 기반 명령(정한 시간 안에 목표 위치와 방향, Rudin 2022)을 쓴다. 전문가마다 커리큘럼, 보상, 학습 절차가 따로다.
+
+**학생.** 앞 두 대와 뒤 두 대의 깊이 영상을 영상마다 CNN으로 줄이고, 고유감각과 합쳐 LSTM 2층에 넣는다. LSTM 출력에 고유감각과 명령을 다시 붙여 MLP 3층이 행동을 낸다.
+DAgger 수집 때 학생 행동에 가우시안 잡음을 더해 일부 궤적에 과적합하지 않게 했다. 이 잡음은 뒤의 RL 탐색 잡음에도 학생을 미리 익숙하게 한다.
+
+**미세 조정.** 증류한 정책에 그대로 RL을 걸면 성능이 계속 떨어졌다. 행동 잡음에 강한 학생, 줄인 초기 표준편차, 보수적인 하이퍼파라미터, 정책을 고정한 critic 사전 학습으로 이것을 막았다.
+
+**깊이 잡음 모델.** 48 × 32로 렌더링한 시뮬레이션 깊이에 다섯 단계를 건다. 2 m에서 자르고 0.15 m 아래는 비운다. 모서리 둘레 화소를 지우거나 섞고, 천천히 변하는 Perlin 잡음으로 구멍을 낸다. 왼쪽 1–5열을 지우고(스테레오 근거리 사각), 가우시안 흐림을 건다.
+
+**배치.** ANYmal D의 깊이 카메라 여섯 가운데 넷만 쓰고 LiDAR는 쓰지 않는다. 정책은 온보드 CPU에서 50 Hz, 영상은 15 Hz로 갱신한다. 학습 때 카메라마다 지연을 무작위로 넣어, 배치 때 동기화 없이 가장 최근 영상을 넣는다.
+
+**결과(표 4, 지형마다 1,000회, 최대 난이도의 90%).**
+
+| 지형 | 증류 | 미세 조정 | 다시 미세 조정 |
+|---|---|---|---|
+| 스캔 지형(학습에 없음) | 14.9 | 94.9 | 93.9 |
+| 파쿠르 코스(학습에 없음) | 5.8 | 98.5 | 98.7 |
+| 징검돌로 내려가기(학습에 없음) | 11.3 | 54.4 | 92.4 |
+
+마지막 열은 '징검돌로 내려가기'를 모든 지형과 함께 다시 미세 조정한 정책이다. 다른 지형의 성공률은 거의 그대로였다. 증류 직후는 전문가 대비 평균 10.4% 낮았다.
+
+**한계.** 저자가 밝힌 것: 징검돌과 빔에서 헛디딘 뒤 회복하는 일이 잦고, 오르내릴 때 무릎을 많이 써 하드웨어가 빨리 닳는다. LSTM의 기억이 짧아, 상자 앞에 몇 초 서 있으면 상자를 잊고 부딪힌다. 깊이 해상도를 높이고 잡음 모델의 영향을 줄이면 동작이 나아질 것으로 본다.
+우리가 보기에: 실물 결과는 영상과 사진뿐이고 성공률이 없다.
+
+**travplan에 주는 것.** 미세 조정 뒤 정책이 상자에서 더 멀리 멈추고 몸을 기울여, 다리가 닿기 전에 상자 윗면을 시야에 넣는 행동을 스스로 배웠다. 학습한 정책이 관측을 얻으려고 움직임을 바꾼 예다.
+Planner D가 경사로를 지나친 뒤 경사로가 관측 밖으로 나가 실패한 문제(TP-0143, TP-0145)와 같은 축의 문제다. 짧은 기억의 한계는 SRU(B.14.3)가 다룬 주제다.
+
+</details>
+
+**PACE — 들어 올린 로봇의 엔코더 기록 20 s로 관절 동역학 파라미터 몇 개를 맞추면, 동역학 무작위화 없이도 보행 정책이 실물로 옮겨 간다**([arXiv:2509.06342](https://arxiv.org/abs/2509.06342), F. Bjelonic·Tischhauser·Hutter, ETH RSL, [IJRR 2026](https://doi.org/10.1177/02783649261459628), [코드](https://github.com/leggedrobotics/pace-sim2real) Apache-2.0).
+PACE(Precise Adaptation through Continuous Evolution)는 RSL의 관절 동역학 맞춤 절차이고, NVIDIA의 보행자 애니메이션 연구 Trace and Pace(B.16.1)와는 다르다.
+로봇 몸통을 고정대에 매달고 관절을 넓은 주파수로 흔들어(chirp) 엔코더 궤적만 모은다. 맞추는 것은 관절마다 넷(armature 관성·점성 감쇠·쿨롱 마찰·위치 편향)과 로봇 전체에 하나인 명령 지연이다.
+위치 편향은 엔코더 영점 같은 고정 오프셋이다. 토크와 속도의 포화는 맞추지 않고 제조사 값으로 둔다.
+시뮬레이션 궤적이 측정과 겹치도록 CMA-ES(covariance matrix adaptation evolution strategy)로 맞추고, 토크 센서는 쓰지 않는다. 로봇 한 대에 공중 데이터 약 20 s면 된다.
+주 플랫폼 셋(ANYmal, Tytan, Minimal)에서는 이렇게 맞춘 시뮬레이터로 동역학 무작위화 없이 학습한 blind 보행 정책을 zero-shot으로 올렸다. 같은 절차를 Aibo, NAO, LEVA, GR-1과 로봇 손 둘을 포함한 열 대에 더 적용했다.
+ANYmal에서 로봇 기술 파일(URDF)의 값만 쓴 정책은 전진하다 넘어졌고, PACE와 actuator net(B.14.1)은 둘 다 정상 상태 약 0.85 m/s로 걸었다. actuator net은 토크를 잰 데이터 약 4분을 썼다.
+전동기 손실 모델을 넣은 4항 보상으로 400 m 트랙에서 ANYmal D의 전체 수송 비용(CoT, cost of transport)이 1.27이었다. 같은 트랙에서 잰 이전 actuator net 기반 ANYmal C 기록 1.86보다 약 32% 낮지만, 하드웨어 세대 차이가 섞인 비교다. 저자들은 PACE가 무작위화의 가치를 없앤다고 주장하지 않고, 둘이 보완 관계라고 적는다.
+주 실험 로봇 Tytan은 같은 연구실의 Barry(Valsecchi·Rudin·Nachtigall·Mayer·Tischhauser·Hutter, [RA-L 8(11) 2023](https://doi.org/10.1109/LRA.2023.3313923))를 바탕으로 했다. Barry는 모델에 없는 짐을 90 kg까지 싣고 걷는 사족 로봇이다.
+
+**travplan에 주는 의미.** TP-0035(배달로봇 스워브 모듈 파라미터, 사용자 대기)가 풀리면 쓸 절차다. 다만 travplan plant(`robot/plant.py`)는 관성이 없는 운동학 모델이라 PACE의 항을 그대로 맞출 수 없다.
+들어 올린 스워브의 엔코더 기록으로 맞출 수 있는 것은 명령 지연(plant는 지금 1차 지연 0.2 s를 가정한다)과, plant에 항을 하나 더하면 조향 엔코더 영점이다.
+조향 속도 한계는 PACE가 포화를 다루듯 사양 값으로 두고, 미끄럼 계수는 지면 접촉이 있어야 해서 공중 데이터로는 맞추지 못한다. armature와 감쇠를 쓰려면 바퀴·조향 축의 동역학을 plant에 먼저 넣어야 한다.
+지연을 측정값으로 바꾸면 plant를 아는 MPPI(TP-0150)의 rollout 모델과 GP 잔차(TP-0068)의 명목 모델이 같은 근거 위에 선다. 공동 저자 Tischhauser는 Flexion 공동 창업자이고, Flexion 선언문의 '무작위화보다 보정'과 같은 방향이다.
+
+![PACE Fig. 4](https://arxiv.org/html/2509.06342v2/4_robots_compressed.png)
+*그림 — PACE (Fig. 4): 위 줄은 주 실험 로봇 ANYmal, Tytan, Minimal이다. 아래 두 줄은 같은 절차로 파라미터를 맞춰 움직인 Aibo·NAO·ALMA·Spacehopper·LEVA·Magnecko v2와 v1·GR-1이다. 출처: [arXiv:2509.06342](https://arxiv.org/abs/2509.06342)*
+
+**AME-2 — 높이 지도에서 발 디딜 곳과 지형의 성격을 주의(attention)로 골라 읽고, 지도는 칸마다 분산을 함께 낸다**([arXiv:2601.08485](https://arxiv.org/abs/2601.08485), C. Zhang·Klemm·F. Yang·Hutter, ETH RSL, arXiv 표기 IEEE T-RO 조건부 채택; 전작 AME-1 [Science Robotics 10(105) 2025](https://doi.org/10.1126/scirobotics.adv3604), He·C. Zhang·Jenelten·Grandia·Bächer·Hutter, ETH RSL과 Disney Research Zurich, [arXiv:2506.09588](https://arxiv.org/abs/2506.09588)).
+보행 정책 하나가 학습에 없던 지형까지 가도록 만드는 지도 인코더와 지도 파이프라인이다. 인코더는 로봇 중심 높이 지도에서 국소 특징과 전역 특징을 따로 뽑는다. 국소 주의는 다음 발 디딤과 무릎 지지 자리에 모이고, 전역 특징은 지형 종류를 말해 주는 몇 점에 모인다(원문 그림 15).
+지도는 깊이 점을 국소 격자에 투영하고(칸마다 최대 높이), 작은 U-Net이 칸마다 높이와 로그 분산을 예측한다. 이것을 전역 지도에 합칠 때 베이즈 융합 대신 확률적 승자 독식(probabilistic winner-take-all)을 쓴다. 같은 예측이 반복될 뿐인 칸에서 분산이 줄지 않게 하려는 것이다.
+교사(참값 지도)와 학생(신경 지도)의 두 단계로 ANYmal D와 두 발 로봇 LimX TRON1을 학습했다. 표 II에서 ANYmal D는 1 m를 오르내리고, TRON1은 0.48 m를 오르고 0.88 m를 내려간다. 학습에 없던 파쿠르 코스를 최대 2 m/s로 지났다.
+같은 연구실의 구름사다리 휴머노이드(Ongan·C. Zhang 외, [arXiv:2608.29769](https://arxiv.org/abs/2608.29769))는 이 인코더를 머리 LiDAR의 원시 스캔에 맞게 고쳐 썼다. EngineAI PM01이 막대 배치 셋에 걸쳐 15회 중 14회 뛰어올라 매달려 건너고 내려왔고, 같은 인식 구조의 다른 정책은 2 cm 굵기의 머리 위 장애물 밑을 숙여 지났다.
+
+**travplan에 주는 의미.** 가장 직접 닿는 곳은 TravMap σ다. 인식 문서 A.13.13(TP-0054)에서 L1 매퍼의 높이 분산은 틀린 cost 칸을 약하게만 가려냈고(AUROC 0.67), 오차의 주된 원인은 모서리 칸에서 턱의 위아래가 섞이는 것이었다.
+AME-2의 융합 규칙은 다른 축의 과신을 다룬다. 칼만식 융합은 같은 값을 거듭 보면 분산이 줄어, 늘 같은 쪽으로 틀린 칸까지 확신하게 된다.
+승자 독식 규칙은 새 분산을 직전 분산의 0.5배 아래로 내리지 않고, 1.5배를 넘는 갱신은 버리되 표준편차 0.2 m 아래면 받는다. 이 규칙을 L1 매퍼의 융합(`perception/emap_mapper.py`가 감싼 elevation_mapping_cupy 커널)에 넣어 볼 수 있다. A.13.13 설정에서 모서리 칸의 과신($z^2$)이 주는지 재는 후보다.
+다만 매퍼 분산이 오차 순위를 맞히지 못한 원인(모서리 섞임 항이 없음)은 이 규칙으로 풀리지 않는다. 원문 그림 19는 elevation_mapping_cupy의 가림 결측이 보행을 떨어뜨린 예를 보인다. travplan L1과 같은 코어다.
+
+![AME-2 Fig. 1](https://arxiv.org/html/2601.08485v3/figs/fig1_compress.png)
+*그림 — AME-2 (Fig. 1): 온보드 센서와 연산만으로 ANYmal D(빨강)와 두 발 로봇 TRON1(검정)이 지형을 넘는 장면들이다. 상자 사이 틈·징검돌·기운 팔레트·계단·상자 오르내리기가 있다. 출처: [arXiv:2601.08485](https://arxiv.org/abs/2601.08485)*
+
+<details markdown="1">
+<summary>자세히: 승자 독식 지도 융합과 지도 모델의 손실</summary>
+
+**융합.** 칸마다 새 예측 $(h_t, \sigma_t^2)$와 지도의 값 $(h_{\text{prior}}, \sigma_{\text{prior}}^2)$가 있을 때, 새 분산을 아래로 묶고 이길 확률을 정밀도로 정한다.
+
+$$ \hat\sigma_t^2 = \max\big(\sigma_t^2,\ 0.5\,\sigma_{\text{prior}}^2\big), \qquad p_{\text{win}} = \frac{\hat\sigma_t^{-2}}{\hat\sigma_t^{-2} + \sigma_{\text{prior}}^{-2}} $$
+
+갱신은 $\hat\sigma_t^2 < 1.5\,\sigma_{\text{prior}}^2$이거나 $\hat\sigma_t^2 < 0.2^2$일 때만 유효하다. 유효하면 $\xi \sim \mathcal U[0, 1]$을 뽑아 $\xi < p_{\text{win}}$일 때 새 값으로 바꾼다.
+그래서 같은 가림 칸의 불확실성은 같은 예측이 반복돼도 줄지 않고, 일관되지 않은 과신 예측은 칸을 차지하지 못하며, 확신 높은 새 측정은 바뀐 지형을 바로 반영한다.
+
+**지도 모델 학습.** 높이와 분산을 β-NLL 손실($\beta = 0.5$)로 학습한다. 음의 로그 우도(NLL)를 그대로 쓰면 어려운 표본에서 분산을 키워 손실을 쉽게 줄이는데, 아래 식의 가중이 그쪽을 막는다.
+
+$$ L_{0.5} = \mathbb E\Big[\operatorname{sg}\big[\hat\sigma(X)\big]\Big(\tfrac12\log\hat\sigma^2(X) + \frac{(Y - \hat\mu(X))^2}{2\hat\sigma^2(X)}\Big)\Big] $$
+
+$\operatorname{sg}$는 기울기 멈춤이다. 평지 표본이 배치를 지배하지 않게 표본마다 총변동(total variation)으로 가중한다. 입력은 무작위 메시에서 Warp 광선 추적으로 뽑은 국소 격자이고, RTX 4090 한 장에서 초당 수십만 프레임을 만든다.
+잡음·테두리 자르기·무작위 센서 자세의 가림·높이 자르기·빠진 점과 이상치를 섞어 입력을 망가뜨린다.
+
+**travplan에 주는 것.** travplan은 L0 가림(TP-0031)으로 생긴 미관측 칸을 그림자 상한과 깊이 prior(TP-0044·TP-0047)라는 규칙으로 채운다. 이 논문은 같은 일을 학습한 예측과 분산으로 하고, 반복 예측으로 분산이 줄지 않게 융합 규칙을 바꿨다.
+지금 travplan은 매퍼 분산을 σ로 쓰지 않고 이진 σ를 기본값으로 둔다(TP-0054). 위의 규칙은 그 결정을 바꿀 근거가 아니라, 매퍼 분산을 다시 시험할 때의 후보 하나다.
+
+</details>
+
+**동작 생성 + 동작 추종 휴머노이드(RSL) — 지형을 보는 diffusion이 0.5 s 기준 동작을 내고, RL 추종기가 그것을 걸러 따라간다**([arXiv:2604.17335](https://arxiv.org/abs/2604.17335), Z. Zhang·Wen·Xu·He·C. Li·Miki·Schwarke·C. Zhang·Peng·Hutter, ETH RSL과 Simon Fraser University, [RA-L 11(9) 2026](https://doi.org/10.1109/LRA.2026.3710365)).
+Unitree G1이 상자 오르내리기, 허들 넘기, 계단, 섞인 지형을 손과 무릎까지 쓰며 지나간다. 사람 동작 약 5분(영상 복원과 공개 데이터)을 리타기팅하고, 지형을 바꿔 가며 늘려 약 1시간의 데이터로 만든다.
+이 데이터로 지형을 보는 diffusion 동작 생성기와 RL 추종기를 따로 사전 학습한다. 마지막에 생성기를 고정하고, 폐루프에서 추종기만 RL로 미세 조정한다. 미세 조정한 추종기는 '동작 필터'가 되어, 생성기의 기준이 위험하면 높이 스캔을 보고 실행을 바꾼다.
+생성기는 denoising 2스텝으로 Jetson Thor에서 약 0.02 s(TensorRT)에 돌고, 0.5 s 지평을 0.25 s마다 갱신한다. 지형은 MID-360 LiDAR, DLIO(direct LiDAR-inertial odometry) 자세 추정, elevation_mapping_cupy로 만든다.
+시뮬레이션 500대씩의 비교(표 III)에서 고정 기준만 따르는 추종기는 80 cm 상자에서 성공률 0.230, 생성기를 붙인 전체는 0.962였다.
+
+**travplan에 주는 의미.** 생성기와 추종기를 나눈 것이 travplan의 Planner와 Controller 분리와 같고, 높이 지도 코어도 travplan L1(TP-0053)과 같다. 두 층을 맞추는 방향은 RobotMDM과 반대다.
+RobotMDM은 생성기를 추종기에 맞추고, 이 논문은 고정한 생성기 앞에서 추종기를 학습한다. 미세 조정한 추종기는 다섯 지형 과제 모두에서 성공률이 올랐고, 어려운 높이일수록 차이가 컸다(원문 그림 4).
+travplan은 지금까지 이 맞춤을 손으로 했다. Planner D를 그대로 두고 MPPI 시간 참조에 진행 항을 더해 8/12를 12/12로 만든 것(B.8.3)이 추종기를 생성기에 맞춘 쪽이다.
+학습 Controller(TP-0128)를 Planner D 위에서 키울 때는 생성기를 고정하고 그 출력의 잡음과 끊김을 그대로 보여 주는 이 절차가 출발점이다. 계획을 매 스텝 다시 풀면 추종이 쉬워지는 함정(B.14.2의 DTC)도 함께 본다.
+
+![동작 생성 + 동작 추종 휴머노이드 Fig. 3](https://arxiv.org/html/2604.17335v2/hardware_results.png)
+*그림 — 동작 생성 + 동작 추종 휴머노이드 (Fig. 3): 실물 G1이다. (A) 상자를 정면으로, 오른 뒤 90° 돌아 옆으로, 모서리로 오르내린다. (B) 계단과 연속 허들. (C) 목표로 가려고 상자를 옆으로 돌아간다. (D) 허들, 계단, 상자가 섞인 지형. 출처: [arXiv:2604.17335](https://arxiv.org/abs/2604.17335)*
+
+**Ascento — 두 바퀴로 균형을 잡고 다리로 뛰는 로봇, 연구실 과제에서 경비 로봇 회사까지**([arXiv:2005.11435](https://arxiv.org/abs/2005.11435), Klemm·Morra·Salzmann(공동 1저자) 외, ETH Autonomous Systems Lab(ASL, Siegwart), ICRA 2019; 전신 제어 [arXiv:2005.11431](https://arxiv.org/abs/2005.11431), RA-L 2020; RL 계단 [arXiv:2402.06143](https://arxiv.org/abs/2402.06143), Chamorro·Klemm·de la Iglesia Valls·Pal·Siegwart, ICRA 2024; 회사 [ascento.ai](https://www.ascento.ai)).
+다리 끝마다 허브 모터 바퀴가 달린 두 바퀴 균형 로봇이다. ICRA 2019 판은 10.4 kg, 높이 31–66 cm, 최고 8 km/h이고 최대 0.4 m를 뛴다(표 II).
+다리 링크는 위상 최적화로 설계해 3D 프린팅했고, 바퀴가 무게중심을 지나는 직선에 가깝게 움직여 뛰어도 몸통이 돌지 않는다. 균형과 주행은 LQR(linear quadratic regulator)이, 점프와 넘어진 뒤 일어서기는 단계별 앞먹임과 되먹임이 맡는다.
+RL 계단 논문은 이 로봇으로 15 cm 단을 올랐다. 저자들은 이 판의 Ascento가 어떤 제어기로도 이 높이를 오르지 못했다고 적는다.
+속도 대신 목표 위치를 명령하는 정식화(Rudin 2022, B.14.2)와 계단 모드를 켜는 이진 관측을 썼고, 단은 고유감각으로 부딪혀 알아챈다. 지연 무작위화가 없으면 관절 속도가 15 rad/s까지 튀며 떨렸고, 넣으면 1.5 rad/s 아래로 매끄럽게 올랐다.
+Ascento 논문들의 공저자 넷(Morra·de la Iglesia Valls·Salzmann·Mannhart)은 Ascento Robotics를 세웠다. 회사는 바퀴·다리 야외 경비 로봇 Ascento Guard를 로봇 서비스(robotics-as-a-service)로 판다(회사 페이지).
+1저자 Klemm은 회사의 로봇 자문이다. RSL 소속으로는 수동 인라인 스케이트를 신은 휴머노이드(Booster T1, [arXiv:2606.31807](https://arxiv.org/abs/2606.31807), IROS 2026)도 공저했다. 그 정책은 사람 동작 없이 보상만으로 날을 밀어 나아가며, 걷기보다 수송 비용이 최대 50% 낮다.
+
+**travplan에 주는 의미.** 바퀴 로봇이 턱을 넘는 다른 해법이다. travplan 스워브는 턱 한계(0.08 m)를 넘는 칸을 피해야 하지만, Ascento는 다리로 바퀴를 들어 15 cm를 오른다. 옮길 것은 학습 쪽 교훈 둘이다.
+하나는 지연을 학습에 넣지 않은 정책이 실물에서 떨렸다는 것이다. 바퀴 plant의 지연을 MPPI rollout에 넣자 치명 실패가 55회에서 4회로 준 TP-0150과 같은 방향이다. 다만 Ascento는 학습 때 지연을 무작위로 넣었고, TP-0150은 예측 모델에 지연을 넣었다.
+다른 하나는 속도 대신 위치를 명령하면 정책이 장애물 앞에서 속도를 스스로 고른다는 것이다. B.15.2에서 같은 Guidance 경로를 시간 없이 넘기자 MPPI가 한 칸 폭의 통로를 지난 관찰과 같은 방향이다. 다만 B.15.2의 원인 분석은 아직 추정이다.
+
+![Ascento Fig. 1](https://arxiv.org/html/2005.11435v1/tina_front_right_PDF.png)
+*그림 — Ascento (Fig. 1): ICRA 2019 시점의 시제품이다. 붉은 위상 최적화 다리 끝에 허브 모터 바퀴가 달렸고, 몸통은 짙은 회색이다. 출처: [arXiv:2005.11435](https://arxiv.org/abs/2005.11435)*
+
+**LEVA — 조향 바퀴를 단 다리 네 개로 계단을 오르고, 상자를 스스로 싣는 물류 로봇**([arXiv:2503.10028](https://arxiv.org/abs/2503.10028), Arnold 외 17명, ETH RSL과 취리히 응용과학대(ZHAW), [ICRA 2025](https://doi.org/10.1109/ICRA55743.2025.11128847)).
+다리 넷은 각각 4자유도이고, 평면으로 움직이는 다리 끝에 조향 축이 달린 바퀴(반지름 14 cm)를 달았다. 조향 축은 바퀴 접지점에서 비켜 있다(비동축). 로봇은 85 kg이고, 길이 1.2 m, 폭 0.75 m, 굴림 높이 0.6–0.9 m다.
+평지에서는 역기구학 굴림 제어기가 몸체 속도 명령에서 조향각과 바퀴 속도를 계산한다. 조향하는 동안 바퀴가 끌리지 않게 바퀴 속도를 보정하고, 케이블 때문에 조향 범위가 막혀 있어 해가 여럿이면 지금 각에서 가까운 해를 고르되 조향 한계에서 먼 각 쪽으로 치우친다.
+계단은 RL 제어기가 맡는다. Orbit(B.16.1)에서 rsl_rl로 학습했고, 교사–학생 구조와 계단 여부를 알리는 이진 관측(Ascento 계단 논문의 방식)을 썼다.
+시뮬레이터가 타이어 미끄럼을 현실적으로 내지 못해 바퀴 축 방향 속도를 벌했고, 개체의 10%는 행동 잡음을 0으로 두었다. 저자도 잡음 끄기는 검증이 더 필요한 휴리스틱이라고 적었다.
+상자 싣고 내리기 50회 연속(짐 0–70 kg)은 86% 성공했고, 구동기·카메라 연결 고장 6회를 빼면 97.7%다. 수송 비용은 다리로 버틸 때 0.23, 다리를 범프 스톱에 얹으면 0.15다. 30° 경사와 15 cm 연석·팔레트는 굴림 제어기만으로 넘었다.
+
+**travplan에 주는 의미.** RSL 계열에서 travplan 로봇과 가장 닮은 기구다. 비동축 조향 바퀴 넷이고, 짐을 싣고, 연석과 경사가 과제다.
+굴림 제어기의 두 규칙은 travplan plant(TP-0034, `robot/plant.py`)와 맞대 볼 수 있다. plant는 바퀴를 앞으로 굴리는 해와 180° 돌려 뒤로 굴리는 해 가운데 지금 각에서 조향이 덜 필요한 쪽을 고른 뒤, 조향 범위(±56.2°)로 자른다. LEVA는 해를 고를 때부터 조향 한계에서 먼 각 쪽으로 치우친다.
+조향 중 바퀴 속도 보정은 plant에도 선택 항목(`scrub_compensation`)으로 있고, 기본값은 끔이다.
+RL 쪽 두 요령(바퀴 축 방향 속도 벌점과 일부 개체의 행동 잡음 끄기)은 학습 Controller를 물리 시뮬레이터(Isaac)에서 PPO로 학습할 때 쓸 것이다. 지금 `TinyPolicy`(TP-0128)는 운동학 시뮬에서 진화 전략으로 학습하므로 해당하지 않는다.
+
+![LEVA Fig. 1](https://arxiv.org/html/2503.10028v4/images/uneven_terrain.png)
+*그림 — LEVA (Fig. 1): 원문 캡션은 '여러 환경의 LEVA'다. 왼쪽 위는 계단을 오르는 모습, 왼쪽 아래는 풀밭에서 팔레트를 넘는 모습, 오른쪽 두 장은 회색 상자를 몸 아래에 실은 모습이다. 출처: [arXiv:2503.10028](https://arxiv.org/abs/2503.10028)*
+
+**RL + 모델 기반 제어(CRL) — 학습 중에 최적 제어로 기준 동작을 그때그때 만들어 RL이 따라 하게 한다**([arXiv:2305.17842](https://arxiv.org/abs/2305.17842), Kang·Cheng·Zamora·Zargarbashi·Coros, ETH Computational Robotics Lab, [RA-L 8(10) 2023](https://doi.org/10.1109/LRA.2023.3307008); 후속 RAMBO [arXiv:2504.06662](https://arxiv.org/abs/2504.06662), Cheng·Kang·Fadini·Shi·Coros, [RA-L 10(9) 2025](https://doi.org/10.1109/LRA.2025.3594984)).
+CRL(Computational Robotics Lab)은 ETH 컴퓨터과학과의 Stelian Coros 연구실이다. 이 논문은 가변 높이 역진자 모델의 유한 지평 최적 제어로 기준 동작을 만든다.
+학습 에피소드마다 속도 명령과 걸음새(trot·pace·pronk·bound·gallop)를 뽑고, 그 명령에 맞는 기준을 미리 만든 데이터셋이 아니라 학습 중에 필요할 때마다 새로 만든다.
+RL 정책은 그 기준을 모방하고, 배치 때는 걸음 계획기와 정책만 로봇에 올린다. 단순 모델이 담지 못하는 몸통 회전과 고르지 않은 지형은 RL이 실제 동역학으로 메운다.
+로봇마다 보상과 하이퍼파라미터를 바꾸지 않고 Unitree Go1(12 kg)과 Aliengo(22.6 kg)에 같은 틀을 썼고, 시뮬레이션에 30 ms 구동기 지연을 넣었다.
+후속 RAMBO는 역할을 나눈다. 2차 계획(QP, quadratic program) 전신 제어기가 앞먹임 토크를 내고, RL 정책이 되먹임 보정을 더한다. Unitree Go2가 네 발과 두 발 자세에서 쇼핑 카트를 밀고, 접시를 받치고, 부드러운 물체를 든다.
+BDX 논문은 이 논문을 모델 기반 계획을 RL이 모방하는 선행으로 인용한다. Parkour in the Wild는 이 갈래가 MPC의 가정과 RL의 튜닝 부담을 함께 지닌다고 비판한다.
+
+**travplan에 주는 의미.** Planner D는 Guidance와 MPPI가 미리 만든 시연으로 학습한다(B.8.3의 첫 판은 32,768개). RL 후학습(TP-0066)에서도 고정된 시연 데이터로 모방 손실(λ = 0.5)을 건다.
+이 논문은 기준을 데이터셋으로 미리 만들지 않고, 학습이 뽑은 명령마다 교사를 다시 불러 만든다. RL 후학습은 라운드마다 새 지형 64개를 뽑으므로, 모방 목표도 그 지형에서 Guidance와 MPPI를 다시 돌려 만들 수 있다. 그러면 모방 항이 RL rollout과 같은 지형 분포를 본다.
+방문한 상태에 라벨을 붙이는 DAgger(TP-0075)와는 다른 처방이다. RAMBO와 travplan의 GP 잔차(TP-0068)는 명목 모델 위에 학습 보정을 얹는 점은 같지만, TP-0068은 예측 모델을 고치고 RAMBO는 제어 출력을 고친다.
+
+![RL + Model-based Control Fig. 1](https://arxiv.org/html/2305.17842v4/teaser.png)
+*그림 — RL + Model-based Control (Fig. 1): 위 두 장은 Unitree Go1이다(발에 차여도 버티기, 흩어진 나무판 위 걷기). 아래 두 장은 Unitree Aliengo가 돌길과 풀밭을 걷는다. 출처: [arXiv:2305.17842](https://arxiv.org/abs/2305.17842)*
+
+**FLD(Fourier Latent Dynamics) — 주기 동작을 위상·주파수·진폭·오프셋의 잠재 동역학으로 표현하고, 학습 분포 밖의 목표는 거부해 안전한 동작으로 되돌린다**([arXiv:2402.13820](https://arxiv.org/abs/2402.13820), C. Li·Stanger-Jones·Heim·S. Kim, MIT 기계공학과, ICLR 2024 spotlight).
+1저자 Chenhao Li가 2023년 MIT Biomimetic Robotics Lab을 방문하며 한 연구라 소속 표기는 MIT다. 주기 오토인코더(PAE, periodic autoencoder)의 잠재를 한 걸음 더 밀었다. 구간 안에서 주파수 $f$·진폭 $a$·오프셋 $b$는 일정하고, 위상만 $\phi_{t+i} = \phi_t + i f \Delta t$로 나아간다고 강제한다. 손실은 여러 스텝 앞 예측 오차의 감쇠 합이다.
+
+$$ L^N_{\text{FLD}} = \sum_{i=0}^{N} \alpha^i\, \mathrm{MSE}\big(\hat s'_{t+i},\ s_{t+i}\big) $$
+
+이 잠재 공간에서 동작 사이를 매끄럽게 보간하고, 추종 정책(Isaac Gym의 PPO)의 학습 목표를 학습 진척 기반 자동 커리큘럼(ALPGMM)으로 뽑는다.
+실행 중 사용자가 새 목표 동작을 주면 같은 손실로 그 동작의 동역학이 학습 데이터와 닮았는지 잰다. 학습 통계로 정한 문턱 $\epsilon_{\text{FLD}}$를 넘으면 거부하고, 직전 동작의 잠재를 계속 굴려 안전한 대안을 낸다.
+MIT Humanoid 시뮬레이션에서 학습 분포 밖의 회전 발차기를 거부하고 앞으로 걷기를 이어 갔다. 실물 실험은 없다.
+
+**travplan에 주는 의미.** Guidance 폴백(TP-0078)은 Planner D의 새 표본 가운데 치명 비율이 0.9 이상인 계획이 3번 이어질 때 켜진다. 결과(치명)를 보고 켜는 신호다. FLD는 '입력이 학습 분포 밖'이라는 신호로 폴백을 켠다.
+Planner D에도 분포 밖 신호를 따로 둘 수 있다. 다만 Planner D의 flow는 관측을 조건으로 궤적의 분포를 모델링하므로, 그 우도로는 관측 자체가 분포 밖인지 재지 못한다.
+TravMap 크롭을 재구성하는 작은 오토인코더의 오차처럼, 입력 쪽을 따로 모델링한 신호가 문턱을 넘으면 Guidance 경로를 후보로 올리는 식이다. FLD의 가정(구간 안에서 거의 일정한 주파수·진폭·오프셋)은 주기 동작에서 잘 맞고, 비주기 전환에서는 잠재 동역학을 정하기 어려워 재구성이 부정확해진다고 저자도 적었다.
+
+![FLD Fig. 2](https://arxiv.org/html/2402.13820v1/system_overview_training.png)
+*그림 — FLD (Fig. 2): 학습 때의 구조다. 기술 표본기가 잠재 파라미터 θ를, 균등분포가 초기 위상 φ를 뽑고, 잠재 동역학(LD)이 위상을 앞으로 민다. 둘은 사인 재구성과 복호기를 거쳐 목표 상태가 되고, 정책은 목표 상태와 측정 상태의 차이로 보상을 받는다. 출처: [arXiv:2402.13820](https://arxiv.org/abs/2402.13820)*
+
+**RWM(Robotic World Model) — 자기 예측을 다시 넣으며 학습한 world model 안에서 PPO로 정책을 학습해 ANYmal D와 G1에 올렸다**([arXiv:2501.10100](https://arxiv.org/abs/2501.10100), C. Li·Krause·Hutter, ETH AI Center·Learning & Adaptive Systems Group·RSL, 2025-01, [코드 rsl_rl_rwm](https://github.com/leggedrobotics/rsl_rl_rwm) BSD-3 형식; 후속 RWM-U [arXiv:2504.16680](https://arxiv.org/abs/2504.16680)).
+GRU 기반 world model이 관측과 행동의 이력 $M$스텝을 받아 다음 관측을 예측하고, 그 예측을 다시 입력에 넣으며 $N$스텝을 굴린다. 학습 손실도 이 굴림 위의 여러 스텝 오차이고, 접촉 같은 특권 정보도 함께 예측한다.
+
+$$ \mathcal L = \frac{1}{N}\sum_{k=1}^{N} \alpha^k \big[L_o(o'_{t+k}, o_{t+k}) + L_c(c'_{t+k}, c_{t+k})\big] $$
+
+teacher forcing은 $N = 1$인 특수한 경우다. 정책은 이 모델 안의 상상 rollout으로 PPO를 돌리는 MBPO-PPO(MBPO는 model-based policy optimization)로 학습했고, 100스텝 넘는 자기회귀 rollout에서도 안정적이었다. 1차 기울기를 쓰는 SHAC(short-horizon actor-critic)와 DreamerV3는 배치할 정책을 내지 못했다.
+시뮬레이션 데이터로 미리 학습한 world model(전이 600만 개, 50분) 위에서 정책 학습은 5분이 걸렸다. 실물 속도 추종 보상은 0.90 ± 0.04였다. 고충실도 시뮬레이터에서 전이 2억 5천만 개로 10분 학습한 PPO(0.90 ± 0.03)와 같다. 그래도 저자들은 잘 맞춘 고충실도 시뮬레이터의 model-free RL에 아직 못 미친다고 적는다.
+RWM은 NeurIPS 2025 Embodied World Models for Decision Making 워크숍에서 우수 논문상을 받았다(저자 페이지).
+후속 RWM-U는 모델(epistemic) 불확실성을 rollout 내내 전파한다. 그 불확실성만큼 보상을 깎는 MOPO-PPO(MOPO는 model-based offline policy optimization)로, 오프라인 데이터만으로 사족과 휴머노이드 정책을 학습했다.
+
+**travplan에 주는 의미.** TP-0126(학습 전방 동역학 모델을 MPPI rollout 모델로, 대기)을 학습할 때의 손실 설계다. 한 스텝 오차만 줄이면 MPPI의 40스텝(4 s) rollout에서 오차가 쌓인다.
+저자 비교로는 예측을 다시 넣는 여러 스텝 손실로 학습하면 긴 rollout에서 오차가 덜 쌓였다. B.14.3의 FDM이 몇 초 앞을 예측하는 같은 연구실의 학습 동역학이다.
+travplan의 운동학 시뮬은 싸서 Planner D 후학습을 world model 안으로 옮길 이유는 없다. 이 계열이 쓸모 있는 곳은 실물 스워브 기록으로 plant를 맞출 때다. RWM-U의 불확실성 벌점은 GP σ로 보수성을 조절한 TP-0069와 같은 발상이다.
+
+![RWM Fig. 1](https://arxiv.org/html/2501.10100v5/visualization_environments_compressed.png)
+*그림 — RWM (Fig. 1): 환경마다 위 줄은 RWM이 자기회귀로 상상한 궤적, 아래 줄은 시뮬레이터의 참값이다. ANYmal D와 Unitree G1 묶음에는 셋째 줄에 실물 배치 장면이 있다. 출처: [arXiv:2501.10100](https://arxiv.org/abs/2501.10100)*
+
+**사람.** 이 소절의 연구와 회사를 잇는 사람만 적는다. 지금의 소속은 2026-10-07에 각 출처에서 확인했다.
+
+| 사람 | 이 소절에서 남긴 것 | 지금 소속 |
+|---|---|---|
+| Nikita Rudin, David Höller(Hoeller), Julian Nubert, Fabian Tischhauser, Marco Hutter | legged_gym·Parkour in the Wild(Rudin), ANYmal Parkour·Isaac Lab(Hoeller), ViPlanner(Nubert), Barry·PACE(Tischhauser), RSL을 이끈다(Hutter) | Flexion 공동 창업자 다섯. Rudin CEO, Höller CTO, Nubert 인식 팀 책임, Tischhauser 하드웨어 팀 책임, Hutter 자문(ETH 교수, RAI Institute 취리히 사무소 책임자) (Flexion 팀 페이지) |
+| Jean-Pierre Sleiman | 다접촉 로코매니퓰레이션 계획(Science Robotics 2023) 1저자, RAI Institute에서 Atlas RL 정책(ZEST, B.16.4) | Flexion 제어 팀 (Flexion 팀 페이지) |
+| Moritz Bächer, Ruben Grandia | BDX·RobotMDM·Olaf의 마지막 저자(Bächer), BDX 1저자와 ETH 시절 인식 NMPC 1저자(Grandia) | Disney Research Imagineering의 Associate Lab Director와 Research Scientist (Disney Research 연구자 페이지) |
+| Chong Zhang | Risky Terrains·AME-2 1저자, Resilient Legged Local Navigation 공동 1저자, 구름사다리 휴머노이드 공저 | ETH RSL, ETH의 Secure, Reliable, and Intelligent Systems Lab, ETH AI Center (AME-2 v3 소속 표기, 2026-09) |
+| Chenhao Li | FLD·RWM 1저자, 동작 생성 + 동작 추종 휴머노이드 공저 | ETH AI Center 박사 과정(Hutter·Krause 지도), 2026-04부터 Google DeepMind Gemini Robotics 팀 Student Researcher (개인 페이지) |
+| Stelian Coros | CRL을 이끈다 | ETH 컴퓨터과학과 부교수 (CRL 페이지) |
+| Victor Klemm, Alessandro Morra, Miguel de la Iglesia Valls | Ascento 1저자(Klemm), Ascento 공저와 회사 창업(Morra·de la Iglesia Valls) | Ascento Robotics의 로봇 자문(Klemm), CEO(Morra), CTO(de la Iglesia Valls) (회사 페이지). Klemm은 2026 논문들에 RSL 소속을 적는다 |
+
+#### B.16.4 RAI Institute와 Boston Dynamics: 학습 정책과 MPC를 어느 층에 둘 것인가
+
+**RAI Institute와 Boston Dynamics는 같은 Spot과 Atlas 위에서 학습 정책과 MPC를 어느 층에 둘지 여러 배치를 시험했다.**
+Boston Dynamics는 Spot 4.0(2024)에서 RL 정책을 MPC 보행 제어기 위에 얹었고, RAI Institute는 MPC 없는 RL 정책으로 Spot을 5.2 m/s로 달리게 했다.
+Atlas에서는 Boston Dynamics가 TRI와 함께, 원격조종 시연으로 학습한 행동 모델을 MPC 위에 얹었다(2025).
+travplan에 가장 가까운 것은 RL로 학습한 하위 정책 위에서 샘플링 MPC가 실행 중에 명령을 찾는 배치이고, Sumo(2026)는 그 하위 정책을 rollout 안에 그대로 넣었다.
+RAI Institute는 2022-08 Hyundai Motor Group이 Boston Dynamics AI Institute로 세웠고, 2026-09에는 SoftBank가 인수하기로 합의했다는 업계 보도가 나왔다(이름과 소유의 변화는 아래 연표).
+travplan과 닿는 질문은 MPPI rollout이 아래 층의 닫힌 루프를 얼마나 알아야 하는가이다. 1차 지연만 넣은 travplan(TP-0150), 미끄럼 분포를 배운 EVORA, 실제 하위 정책과 물리를 굴린 Sumo가 그 축 위의 세 점이다.
+
+<details markdown="1">
+<summary>자세히: 이 소절의 연구 목록(표 15행)</summary>
+
+| 연도 | 연구 | 로봇 | 핵심 | 다룬 곳 |
+|---|---|---|---|---|
+| 2023 | EVORA (IEEE T-RO 2024) | Spot, RC 차 | 실현 속도와 명령 속도의 비(견인)를 분포로 배워, 그 나쁜 꼬리로 MPPI rollout을 굴린다 | 이 소절 |
+| 2023 | VLFM (ICRA 2024) | Spot | 깊이로 만든 점유 지도의 프런티어 가운데 VLM 가치가 높은 곳으로 가서 처음 보는 물체를 찾는다. 학습 없이 실물 사무실에서 시연했다 | B.6 |
+| 2024 | Spot RL 보행 (Boston Dynamics, Spot 4.0) | Spot | RL 정책이 경로 계획기와 MPC 보행 제어기 사이에서 궤적과 걸음새를 고른다. 고객 로봇에 출하했다 | 이 소절 |
+| 2024 | 실물 전신 MPPI (Alvarez-Padilla 외, ICRA 2025) | Go1 | MuJoCo rollout 30개로 관절 목표를 직접 찾는 샘플링 MPC를 실물 다리 로봇에 처음 올렸다고 적는다 | 이 소절(Sumo 첫째 토글) |
+| 2025 | MuJoCo iLQR 전신 MPC (Zhang 외, ICRA 2026) | Go1, Go2, H1 | MuJoCo 동역학과 유한차분 미분으로 iLQR를 돌려 실물 전신 MPC를 했다. Sumo 1저자의 앞선 논문 | 이 소절(Sumo 첫째 토글) |
+| 2025 | Spot 고속 RL (ICRA 2025) | Spot | 상태 분포의 거리로 시뮬 파라미터를 맞춘 RL 단독 정책, 3.8에서 5.2 m/s | 이 소절 |
+| 2025 | judo (RSS 2025 워크숍) | Spot 외 | MuJoCo로 굴리는 파이썬 샘플링 MPC 도구. Sumo가 이 위에 섰다 | 이 소절 |
+| 2025 | ReLIC (CoRL 2025) | Spot(팔) | 팔다리마다 조작(역기구학)과 보행(RL)을 마스크로 나눠 맡긴다. 실물 12과제 평균 78.9%. Sumo와 SMPC(샘플링 MPC) 시연 논문의 하위 정책이고, 코드는 RAI Institute Research License(비상업)다 | 이 소절(Sumo 카드) |
+| 2025 | Atlas 대형 행동 모델 (Boston Dynamics·TRI, 블로그) | Atlas, Atlas MTS | 원격조종 시연으로 학습한 4.5억 파라미터 diffusion transformer(flow matching)가 손·발·몸통 목표를 MPC에 넘긴다 | 이 소절 |
+| 2025 | Spot 탁구 전신 MPC (arXiv, RAI Institute 페이지는 IROS 2026) | Spot(팔) | 물리 모델 위 잔차망으로 공의 회전을 추정한다. 평균 반환율은 회전 추정 없이 27.2%, 물리 모델로 52.0%, 잔차를 더해 75.2%다. 100 Hz로 다시 푸는 SQP 운동학 계획 아래에 QP 전신 제어기를 두고, 발은 고정한다 | 표만 |
+| 2026 | ZEST (Science Robotics 2026) | Atlas, G1, Spot | 모션 캡처·영상·애니메이션을 따라 하는 RL 정책을 Boston Dynamics 전신 MPC와 비교했다 | 이 소절, B.16.6, B.16.3 |
+| 2026 | UMV (arXiv) | 자전거 로봇 | 23.5 kg 자전거에 반동 질량을 얹었다. 제약 RL을 실물에 바로 올려 최고 8 m/s, 1 m 장애물 점프. 후속은 앞공중제비(ICRA 2026), LineRides(RA-L 2026), 곡예 묶음 | 표만 |
+| 2026 | Roadrunner (RAI Institute 영상 페이지) | 바퀴 이족 | 약 15 kg 시제품. 바퀴를 나란히 또는 앞뒤로 바꾸고, 한 정책이 두 주행을 맡는다. 논문은 없다(2026-10-07). 인식 문서 A.10.1의 RoadRunner와 다른 것이다 | 표만 |
+| 2026 | Sumo (arXiv) | Spot, G1(시뮬) | 학습한 전신 정책을 rollout 안에 넣은 샘플링 MPC. 15 kg 타이어 세우기 10/10 | 이 소절 |
+| 2026 | SMPC 시연 + 희소 보상 RL (CoRL 2026) | Spot(팔), G1 | 샘플링 MPC 시연으로 off-policy RL을 띄워, 희소 보상만으로 교사보다 빠른 정책을 얻었다 | 이 소절 |
+
+</details>
+
+<details markdown="1">
+<summary>자세히: RAI Institute와 Boston Dynamics 연표(2022–2026)</summary>
+
+| 시기 | 사건 | 출처 |
+|---|---|---|
+| 2022-08 | Hyundai Motor Group이 Boston Dynamics AI Institute 출범을 발표했다. Hyundai와 Boston Dynamics가 처음 4억 달러 이상을 넣고, Boston Dynamics 창업자 Marc Raibert가 이끈다. 본부는 미국 Cambridge다 | [보도자료 2022-08-12](https://rai-inst.com/resources/press-release/hyundai-launches-boston-dynamics-ai-institute/) |
+| 2023-11 | EVORA가 arXiv에 나왔다. Spot 실험은 1저자가 이 연구소에서 인턴으로 일할 때 했다 | [arXiv:2311.06234](https://arxiv.org/abs/2311.06234) |
+| 2023-12 | RAI Institute가 당시 이름 The AI Institute로 Marco Hutter를 새 취리히 사무소(유럽 본부) 책임자로 발표했다. Hutter는 2023-03부터 방문 연구원이었다 | [보도자료 2023-12-06](https://rai-inst.com/resources/press-release/the-institute-recruits-dr-marco-hutter-to-lead-its-zurich-office/) |
+| 2024-02 | Spot 소프트웨어 4.0이 RL 보행 정책을 고객 로봇에 올렸다 | [Boston Dynamics 블로그 2024-02-13](https://bostondynamics.com/blog/robot-fleet-management-lifts-off-with-spot/) |
+| 2024-03 | Boston Dynamics가 RL 보행의 구조와 검증 절차를 공개했다. NVIDIA GTC에서 NVIDIA, AI Institute와 함께 Spot RL Researcher Kit를 발표했다 | [Boston Dynamics 블로그 2024-03-19](https://bostondynamics.com/blog/starting-on-the-right-foot-with-reinforcement-learning/) |
+| 2024-05 | VLFM이 ICRA 2024에 실렸다 | [arXiv:2312.03275](https://arxiv.org/abs/2312.03275) |
+| 2025-02 | Boston Dynamics와 RAI Institute가 전기 Atlas의 RL 학습 파이프라인을 함께 만든다고 발표했다. 같은 발표가 RL 키트로 낸 Spot의 5.2 m/s 기록을 알렸고, 연구소 이름을 Robotics and AI Institute(옛 The AI Institute)로 적었다 | [보도자료 2025-02-05](https://rai-inst.com/resources/press-release/boston-dynamics-atlas-partnership/) |
+| 2025-04 | Spot 고속 RL 논문(ICRA 2025)이 arXiv에 나왔다 | [arXiv:2504.17857](https://arxiv.org/abs/2504.17857) |
+| 2025-06 | judo(RSS 2025 워크숍)와 ReLIC(CoRL 2025)이 arXiv에 나왔다 | [arXiv:2506.17184](https://arxiv.org/abs/2506.17184), [arXiv:2506.07876](https://arxiv.org/abs/2506.07876) |
+| 2025-08 | Boston Dynamics와 TRI가 Atlas의 대형 행동 모델(LBM)을 블로그로 공개했다 | [Boston Dynamics 블로그 2025-08-20](https://bostondynamics.com/blog/large-behavior-models-atlas-find-new-footing/) |
+| 2025-10 | RAI Institute 블로그가 Spot의 15 kg 타이어 세우기를 소개했다(Sumo의 앞선 결과). Spot 탁구 전신 MPC가 arXiv에 나왔다 | [RAI Institute 블로그 2025-10-14](https://rai-inst.com/resources/blog/combining-sampling-and-learning-for-dynamic-whole-body-manipulation/), [arXiv:2510.08754](https://arxiv.org/abs/2510.08754) |
+| 2026-01 | ZEST가 arXiv에 나왔다 | [arXiv:2602.00401](https://arxiv.org/abs/2602.00401) |
+| 2026-02 | UMV 설계 논문이 arXiv에 나왔다 | [arXiv:2602.22118](https://arxiv.org/abs/2602.22118) |
+| 2026-03 | judo v0.0.7이 Spot 과제와 C++ 정책 rollout을 더했다. Roadrunner 영상 페이지가 공개됐고, sumo 저장소가 만들어졌다 | judo CHANGELOG, [RAI Institute 영상 페이지](https://rai-inst.com/resources/videos/meet-roadrunner-a-bipedal-wheeled-robot-for-multi-modal-locomotion/) |
+| 2026-04 | Sumo arXiv v1(04-09)이 나왔고, judo v0.1.0이 MuJoCo Warp 백엔드를 더했다 | [arXiv:2604.08508](https://arxiv.org/abs/2604.08508) |
+| 2026-08 | ZEST가 Science Robotics에 실렸다(08-12). 같은 날 SMPC 시연 + 희소 보상 RL 논문이 arXiv에 나왔다 | [doi:10.1126/scirobotics.aec7695](https://doi.org/10.1126/scirobotics.aec7695), [arXiv:2608.12063](https://arxiv.org/abs/2608.12063) |
+| 2026-09 | Sumo arXiv v3(09-09)이 나왔다. SoftBank Group이 Hyundai Motor Group에서 RAI Institute를 인수하기로 합의했다는 보도가 나왔다. 조건은 공개되지 않았고, 미국 외국인투자심의위원회(CFIUS)가 심사 중이며, RAI Institute는 논평하지 않았다. 1차 발표는 찾지 못했다 | [The Robot Report 2026-09-18](https://www.therobotreport.com/softbank-agrees-to-acquire-robotics-and-ai-institute/) |
+
+</details>
+
+**judo — MuJoCo로 굴리는 샘플링 MPC를 파이썬으로 짜고, 브라우저 GUI로 조율하고, 같은 제어기 코드로 실물에 올리는 도구 상자**([arXiv:2506.17184](https://arxiv.org/abs/2506.17184), Li·Hung·Ames·Wang·Le Cléac'h·Culbertson, Caltech·RAI Institute, RSS 2025 워크숍, [확장판 PDF](https://rai-inst.com/wp-content/uploads/2026/03/ICRA2026__Judo-1.pdf)는 RAI Institute 페이지가 ICRA 2026으로 표기, [코드](https://github.com/rai-opensource/judo) MIT, [문서](https://pages.rai-inst.com/judo/)).
+MuJoCo MPC(MJPC, B.16.2)를 본뜬 파이썬 패키지이고, Sumo가 이 위에 섰다. 과제는 MuJoCo 모델과 보상을 정하고, 최적화기는 스플라인 매듭의 표집과 명목 매듭의 갱신을 정한다.
+공개 코드에는 Predictive Sampling(PS), CEM, MPPI가 있다. 확장판 논문은 CMA-ES를 더해 비교했지만, 그 구현은 공개 저장소에 없다(2026-10-07 확인).
+rollout은 MuJoCo의 멀티스레드 C 구현(`mujoco.rollout`)을 부르므로, 파이썬인데도 갱신 한 번이 C++ MJPC와 비슷하다. 확장판 표 III의 LEAP 손 정육면체 과제에서 갱신 한 번은 judo 28.7 ms, MJPC 32.4 ms였다. 조건은 AMD EPYC 9354, PS, 1,000스텝 평균이다.
+v0.0.7(2026-03)은 하위 정책이 있는 로봇을 위해 ONNX(Open Neural Network Exchange) 정책을 rollout 안에서 돌리는 C++ 확장을 더했다. v0.1.0(2026-04)은 MuJoCo Warp GPU 백엔드를 더했다.
+GUI는 viser 기반 브라우저 화면이고, 설정 데이터클래스의 필드가 슬라이더와 드롭다운으로 자동으로 바뀐다. 시뮬레이터, 시각화, 제어기는 비동기 노드로 나뉜다(기본 미들웨어는 dora). 시뮬 노드를 하드웨어 노드로 바꾸면 같은 제어기 코드가 실물에서 돈다.
+확장판은 지평 뒤쪽 매듭일수록 잡음을 키우는 '잡음 ramp'가 모든 최적화기를 크게 낫게 했다고 적었지만, 그 수치는 싣지 않았다. 저자들은 이것이 DIAL-MPC의 행동 수준 담금질과 닮았다고 적는다. DIAL-MPC(CMU의 Xue 외, ICRA 2025)는 반복마다 잡음을 줄이고 지평 위치마다 잡음을 달리하는 두 겹의 담금질로 Go2의 관절 토크를 직접 찾는다([arXiv:2409.15610](https://arxiv.org/abs/2409.15610), [코드](https://github.com/LeCAR-Lab/dial-mpc) Apache-2.0).
+
+**travplan에 주는 의미.** travplan의 MuJoCo plant 계획(MPC 문서 M.2)은 CPU 로봇 한 대로 시작해 MuJoCo Warp 배치로 넘어간다. judo의 두 백엔드가 같은 순서다.
+스워브 MJCF가 생기면, 물리를 MPPI rollout 모델로 넣는 실험(TP-0124의 동역학 층)을 judo 과제 하나로 먼저 돌려 볼 수 있다.
+가장 가까운 출발점은 judo의 `spot_navigate` 과제다. 보행 정책을 rollout에 넣고 목표점까지 걷게 하며, 비용은 목표 거리(가중 60)와 넘어짐 벌점(2500)뿐이다. 바닥이 평면이라 지형은 travplan 쪽에서 넣어야 한다.
+judo의 보상은 numpy 함수 하나이고 travplan의 비용은 torch `CostTerm` 목록이라, 옮기려면 비용 항을 다시 써야 한다. 잡음 ramp는 SMPPI(`control/mppi/smooth.py`)처럼 `_noise` 하나만 바꾸는 Controller로 시험할 수 있다. 수치 근거가 없고 TP-0130이 최적화기 쪽 여지가 작다고 보였으므로 우선순위는 낮다.
+
+![judo Fig. 1](https://arxiv.org/html/2506.17184v1/img/judo_banner.png)
+*그림 — judo (Fig. 1): 브라우저 GUI다. 오른쪽 패널의 드롭다운으로 과제(cartpole), 최적화기(cem), 스플라인 차수(zero)를 바꾸고, 지평과 제어 주기 같은 값은 슬라이더로 실행 중에 고친다. 왼쪽의 노란 곡선은 보상이 가장 높은 표본이, 자홍 곡선은 그다음 상위 표본들이 지평 동안 그리는 궤적(trace)이다. 출처: [arXiv:2506.17184](https://arxiv.org/abs/2506.17184)*
+
+**Sumo — 미리 학습한 전신 정책을 샘플링 MPC가 실행 중에 조종해, Spot이 팔의 들기 한계보다 무거운 타이어를 세운다**([arXiv:2604.08508](https://arxiv.org/abs/2604.08508), 원제 'Sumo: Dynamic and Generalizable Whole-Body Loco-Manipulation', John Z. Zhang 외 16명, 마지막 저자 Simon Le Cléac'h, RAI Institute·MIT·Cornell, arXiv 2026-04 v1·2026-09 v3, 발표처 표기 없음, [프로젝트](https://sumo.rai-inst.com), [코드](https://github.com/rai-opensource/sumo) MIT).
+층은 둘이다. 아래 층은 RL로 미리 학습한 전신 정책이고, 50 Hz로 관절 명령을 낸다. Spot은 같은 연구소의 ReLIC 정책을 쓴다. G1은 mjlab(MuJoCo Warp 위에서 Isaac Lab식 API로 RL을 돌리는 학습 틀)의 기본 속도 추종 정책을 쓴다.
+위 층은 샘플링 MPC이고, 20 Hz로 그 정책에 줄 명령을 다시 계획한다. 명령은 몸통의 평면 속도와 팔 관절 목표이고, 과제에 따라 앞다리 관절·몸통 자세·그리퍼를 더한다.
+핵심은 rollout이다. 후보 명령열마다 MuJoCo 안에서 정책을 실제로 돌리고, 정책이 낸 관절 명령으로 로봇과 물체를 함께 굴린다(policy-in-the-loop).
+균형과 걸음은 정책이 맡으므로, 분석 과제의 비용은 조작 목표 세 항 이하다. 실물 과제는 넘어짐 벌점 같은 안전 항을 더한다. 최적화기는 CEM이고, 1.5 s 지평에 둔 스플라인 매듭(knot) 4개를 표본 32개로 찾는다.
+
+실물 Spot은 여덟 과제를 10회씩 해서 72번 성공했다(우리 합산). 15 kg 타이어 세우기는 10/10이었고, Spot 팔의 최대 들기 하중은 11 kg이다.
+G1은 시뮬레이션에서만 시험했고, 문 열기 10/10, 탁자 밀기 8/10이었다. 시뮬 분석에서 다섯 물체를 목표로 옮기는 성공률은 Sumo가 0.85–1.00, 같은 CEM으로 관절 명령을 직접 찾는 MPC가 0.00–0.50이었다.
+물체와 몸통의 자세는 모션 캡처로 쟀고, 계산은 외부 데스크톱(64코어)이 했다. 정책을 넣은 물리 rollout 자체는 처음이 아니다. 원문이 가장 가깝다고 꼽은 Kim 외(2025, MPC 문서 M.1.3)가 지형 통과에서 먼저 썼고, Sumo는 그 구조를 무거운 물체의 접촉 조작으로 옮겼다.
+
+**travplan에 주는 의미.** travplan의 MPPI도 아래 층 위에 앉는다. 하나는 스워브 plant(1차 지연 0.2 s, 미끄럼, 모듈 기구학)다. 다른 하나는 Playground 휴머노이드다. 이 하체는 GR00T 분리형 WBC의 닫힌 루프를 1차 지연과 서기 문턱으로 본뜬다(시정수 0.4 s는 가정, Controller 문서 E.13).
+스워브 쪽은 rollout에 지연을 넣자 권장 L1 + plant 레벨 3의 치명이 55에서 4로 줄었다(TP-0150). 휴머노이드는 지연과 서기 전환을 넣자 도달이 10번 중 6번에서 10번이 됐다(TP-0135). 두 결과 모두 시뮬의 하위 모델 자체가 1차 지연이라 rollout 모델과 거의 같다. 실제 하위 제어기와의 차이는 아직 재지 않았다.
+Sumo는 같은 축의 끝에서 근사 대신 실제 하위 정책과 물리 엔진을 rollout에 넣는다. ==명령 공간을 하위 정책의 입력으로 바꾸고 그 정책을 rollout에 넣은 Sumo는, 같은 CEM으로 관절 명령을 직접 찾은 MPC가 절반을 넘기지 못한 옮기기 과제를 85% 이상 풀었다.== 85%는 그림 5의 막대 값이고, 본문은 '80% 이상'이라 적는다.
+대가는 계산이다. 정책을 넣으면 rollout 시간이 두 배가 되고(표본 32개 × 1.5 s에 21.73 ms에서 43.45 ms), 표본 수는 travplan 파이썬 MPPI(768개 × 4 s)의 24분의 1이다.
+그리고 아래 층에 가까운 rollout이 늘 낫지는 않다. 미끄럼까지 예측한 travplan의 `mppi_plant`는 belief 지도의 경사·거칠기로 미끄럼을 걸자 진행이 막혀, 도달이 239에서 189로 줄었다(MPC 문서 M.3.22).
+예측 모델 계층(TP-0124)에서 잴 빈칸과, 메쉬 forward 샘플링(TP-0125)·학습 FDM(TP-0126)에 주는 것은 둘째 토글에 있다.
+
+![Sumo Fig. 7](https://arxiv.org/html/2604.08508v3/img/task_freeze_frames_graded/tire_upright_frame_2.jpg)
+*그림 — Sumo (Fig. 7a): 실물 Spot이 바닥에 누운 15 kg 타이어를 세우는 중간 장면이다. 그리퍼를 타이어 안쪽 테두리에 걸어 한쪽을 들어 올리고 있다. 원문은 이 과제를 팔, 몸통, 다리를 함께 써서 푼다고 적는다. 원문 그림 7은 여덟 과제의 연속 프레임을 모았고, 이 장은 (a) 타이어 세우기의 둘째 프레임이다. 출처: [arXiv:2604.08508](https://arxiv.org/abs/2604.08508)*
+
+![Sumo Fig. 2](https://arxiv.org/html/2604.08508v3/system_overview.png)
+*그림 — Sumo (Fig. 2): 위의 샘플링 MPC(초록)가 멀티스레드 rollout으로 비용을 줄여 20 Hz로 몸통·팔·다리 명령을 낸다. 아래 전신 정책(보라)은 그 명령과 로봇 상태로 50 Hz 관절 명령을 낸다. 물체 상태는 모션 캡처에서, 로봇 상태는 하위 API에서 온다. 오른쪽 아래가 Spot과 G1이다. 출처: [arXiv:2604.08508](https://arxiv.org/abs/2604.08508)*
+
+<details markdown="1">
+<summary>자세히: Sumo의 방법과 수식, 결과, 한계</summary>
+
+**풀려는 문제.** 로봇보다 크거나 팔의 들기 한계보다 무거운 물체를 다리 로봇이 다루려면 몸 전체를 동적으로 써야 한다. 기존의 두 길은 저마다 막힌다.
+끝에서 끝까지(E2E, end-to-end) RL은 새 조작 과제마다 보상을 짜고 다시 학습해야 하고, 학습 분포 밖의 물체로 넓히기 어렵다.
+샘플링 MPC는 학습 없이 접촉이 많은 조작을 풀지만, 자유도가 높고 스스로 불안정한 과제에서는 좋은 해를 찾기 어렵다. 단일 사격(single shooting) rollout이 불안정계에서 발산하기 때문이다.
+Sumo는 둘을 층으로 나눈다. RL은 험지에서도 강건한 보행을 오프라인으로 배우고, 접촉 조작의 결정은 실행 중 탐색이 맡는다.
+
+**계보.**
+- 샘플링 MPC 도구는 같은 연구소의 judo다(바로 앞 카드). Spot의 C++ 정책 rollout도 judo의 `mujoco_extensions`를 쓴다.
+- Spot의 하위 정책은 ReLIC(CoRL 2025)이다. 세 다리로 걸으면서 네 번째 다리를 팔·몸통과 함께 조작에 쓸 수 있다. 코드는 [rai-opensource/relic](https://github.com/rai-opensource/relic)에 있다. README 배지는 MIT지만 LICENSE 파일은 비상업 연구용 RAI Institute Research License다.
+- 원문이 가장 가깝다고 꼽은 선행 연구는 Kim 외(Science Robotics 2025)다. 샘플링 계획기 아래에 RL 정책을 두고 험지를 빠르게 지난다(MPC 문서 M.1.3 셋째 항목). Sumo는 같은 구조를 지형 통과가 아니라 물체 조작에 썼다.
+- Sumo 1저자가 참여한 앞선 두 편이 이 논문의 관절 수준 기준선과 같은 계열이다. 첫째는 CMU의 Alvarez-Padilla 외(ICRA 2025)다([arXiv:2409.10469](https://arxiv.org/abs/2409.10469), [코드](https://github.com/jrapudg/RTWholeBodyMPPI) MIT).
+  MuJoCo 병렬 rollout 30개로 관절 목표의 스플라인 매듭을 찾는 MPPI를 실물 Go1에 올렸고, 실물 다리 로봇의 첫 전신 샘플링 MPC라고 적는다.
+  100 Hz로 0.4 s 앞을 보고, 로봇 키만 한 0.24 m 상자를 올랐다. 3.5 kg 상자는 정면 목표로 10번 중 9번, 오른쪽 앞 목표로 10번 중 6번 밀었다.
+  둘째는 CMU에서 수행한 Zhang 외(ICRA 2026 예정)다([arXiv:2503.04613](https://arxiv.org/abs/2503.04613), [코드](https://github.com/johnzhang3/mujoco_mpc_deploy) MIT). MuJoCo 동역학과 유한차분 미분으로 iLQR를 돌려 Go1·Go2·H1 실물 전신 MPC를 했다.
+  이 논문은 샘플링 MPC와 달리 iLQR가 두 다리 보행 같은 열린 루프 불안정 과제를 푼다고 적는다.
+  그래서 Sumo의 기준선 결과를 '관절 수준 샘플링 MPC는 다리 로봇에서 안 된다'로 읽으면 안 된다. 같은 계열이 보행과 가벼운 상자 밀기는 실물로 해냈고, 차이는 무겁고 큰 물체의 접촉 조작에서 난다.
+- 원문 II-D는 DTC를 포함한 선행 혼합 연구 넷을 '위 RL, 아래 MPC'로 묶고, Sumo를 그 반대라고 소개한다. 그런데 DTC는 궤적 최적화(TAMOLS)를 위에, RL 추종 정책을 아래에 둔다(B.14.2).
+  둘의 차이는 층 배치가 아니다. DTC는 학습 루프 안에서 계획기가 낸 해를 기준으로 정책을 학습했고, Sumo는 따로 학습한 정책을 rollout 안의 예측 모델로 쓴다.
+- 같은 팀의 Jacta(RAI Institute 페이지 표기 CoRL 2024, [arXiv:2408.01258](https://arxiv.org/abs/2408.01258))는 샘플링과 기울기 행동으로 탐색 트리를 키우는 계획기를 만들고, 그 해를 RL의 시연으로 넣었다. 실행 중 계획이 아니라 학습 자료를 만드는 쪽이다. Sumo는 Jacta를 인용하지 않는다.
+- 앞선 형태가 둘 있다. judo 확장판의 Spot 의자 사례는 RL 보행 정책 위에서 CEM(17스레드, 3 s 지평)이 16 kg 의자를 10번 중 7번 세웠다. RAI Institute 블로그(2025-10)의 Spot 타이어 세우기는 평균 5.9 s(최고 3.7 s)였다. 타이어 굴리기는 계획기 대신 따로 학습한 상위 RL 정책이 맡았고, 학습에 GPU 한 장으로 약 24시간이 들었다.
+
+**구조와 수식(III-C).** 전체 상태 $\mathbf s$는 로봇 부유 기저의 자세, 관절 위치와 속도, 물체의 자세와 속도를 쌓은 것이다. 표준 rollout은 관절 명령 $\mathbf u$로 다물체 시뮬레이터를 민다.
+
+$$ \mathbf s_{k+1} = f(\mathbf s_k, \mathbf u_k) $$
+
+Sumo의 계획기는 행동 $\mathbf a$를 표집한다. 사상 $g$가 행동을 정책 명령 $\mathbf c = g(\mathbf a)$로 바꾸고, 정책이 상태와 명령에서 관절 명령 $\mathbf u = \pi(\mathbf s, \mathbf c)$를 낸다. 계획기가 굴리는 것은 정책을 품은 동역학이다.
+
+$$ \mathbf s_{k+1} = f'(\mathbf s_k, \mathbf a_k) \triangleq f\big(\mathbf s_k,\ \pi(\mathbf s_k, g(\mathbf a_k))\big) $$
+
+정책은 50 Hz로 추론하고, 그 사이의 물리 스텝에는 같은 관절 명령을 유지한다. 공개 코드의 Spot은 0.01 s 물리 스텝 두 번마다 정책을 한 번 부른다(judo `tasks/spot/spot_base.py`의 `physics_substeps`).
+원문이 꼽은 이점은 셋이다. 표본 공간이 작아진다. 정책이 안정화한 닫힌 루프를 굴리므로 단일 사격의 발산을 피한다. 보행을 정책이 맡으므로 비용에는 조작 목표만 적으면 된다.
+
+![Sumo Fig. 3](https://arxiv.org/html/2604.08508v3/dynamics_comparison.png)
+*그림 — Sumo (Fig. 3): (a) 표준 rollout은 관절 명령 u로 다물체 동역학 f를 바로 굴린다. (b) 정책을 넣은 rollout은 계획기 행동 a를 정책 π에 넣고, 정책이 현재 상태를 보고 낸 관절 명령 u로 f를 굴린다. 이 두 단계를 묶은 것이 f′다. 출처: [arXiv:2604.08508](https://arxiv.org/abs/2604.08508)*
+
+**표집하는 것(III-D).** Spot 정책의 명령 $\mathbf c \in \mathbb R^{25}$는 다섯 묶음이다. 기본 표본은 몸통 속도와 팔 관절, 모두 9차원이다. 나머지 명령은 기본값으로 채운다.
+
+| 명령 묶음 | 차원 | 기본 설정에서 |
+|---|---|---|
+| 몸통 SE(2) 속도 | 3 | 표집 |
+| 팔 관절 | 6 | 표집 |
+| 그리퍼 | 1 | 닫힘으로 고정 |
+| 네 다리 관절 목표 | 12 | 0(다리는 정책이 낸다) |
+| 몸통 pitch·roll·높이 | 3 | 기본 자세 |
+
+과제가 필요로 하면 세 묶음을 더한다. 몸통 자세 3차원, 앞다리 7차원(선택 변수 $s_{\text{leg}} \in [-1, 1]$과 앞다리 관절 6개), 그리퍼 1차원이다.
+$s_{\text{leg}} < -0.5$면 왼쪽, $s_{\text{leg}} > 0.5$면 오른쪽 앞다리만 명령을 받고, 그 사이면 다리 명령은 0이다. 그리퍼 행동은 0보다 크면 닫고, 아니면 연다(원문 식 4).
+이산 선택도 연속값으로 표집하고 rollout 안에서 문턱으로 자른다. 그래서 어느 다리를 쓸지도 같은 분포 갱신이 함께 고른다.
+G1은 몸통 SE(2) 속도와 팔 관절 목표를 표집한다. 이 정책은 팔 명령을 입력으로 받지 않으므로, 계획기의 팔 명령이 정책의 팔 출력을 덮어쓴다. 공개 코드의 G1 속도 범위는 전후·좌우 ±0.25 m/s, 회전 ±0.1 rad/s다(`sumo/tasks/g1/g1_base.py`).
+v3는 계획에 중요한 하위 정책 인터페이스의 성질을 셋으로 정리했다. 명령 공간의 차원이 낮을 것, 닫힌 루프에서 명령의 효과가 일관될 것(표본 섭동이 예측 가능한 행동 변화를 낼 것), 빠르게 바뀌는 명령에도 안정할 것이다.
+팔다리 끝점 목표를 받는 정책은 계획기가 접촉 위치를 직접 정하게 해 주지만, 힘이 지배하는 접촉 근처에서 정확한 추종을 학습하기 어렵다고 덧붙였다.
+
+**분포와 최적화기(III-E, IV-A).**
+- 표본 분포는 대각 공분산 가우시안이다. 매듭과 차원마다 잡음을 따로 뽑는다. 정규화 단위에서 뽑아 정책의 명령 한계로 자르고, 물리 단위로 옮긴다.
+- 지평 1.5 s에 매듭 4개를 두고, 매듭 사이는 선형 보간한다. 0차 보간과 3차 보간도 고를 수 있다.
+- 잡음 분산은 지평을 따라 0.02에서 0.6까지 선형으로 키운다. 계획의 앞부분은 다음 재계획 전에 실행되고, 앞선 반복에서 이미 다듬어졌기 때문이다.
+- 직전 계획을 시간만큼 밀어 분포의 평균으로 쓰고(warm start), 잡음 없는 그 계획도 표본 하나로 남긴다.
+- 갱신은 CEM이다. 비용이 가장 낮은 $E = 3$개 표본(elite)의 평균과 표준편차가 다음 분포다. 공개 코드는 표준편차를 $[\sigma_{\min}, \sigma_{\max}]$로 자른다(judo `optimizers/cem.py`).
+
+$$ \bar{\mathbf A} \leftarrow \frac{1}{E} \sum_{i \in \mathcal E} \mathbf A^i, \qquad \boldsymbol\sigma \leftarrow \operatorname{std}_{i \in \mathcal E}\, \mathbf A^i $$
+
+- 원문은 CEM, MPPI, CMA-ES가 같은 0차 정책 개선의 변형이라 갱신 규칙은 핵심이 아니라고 적는다. 공개 코드는 CEM, MPPI, Predictive Sampling을 바꿔 끼울 수 있다.
+
+**비용(식 5·6·8, 부록 A).** 분석 과제의 비용은 세 항 이하다. 옮기기는 물체와 목표의 거리, 그리퍼와 물체의 거리, 물체 속도의 가중합이다.
+
+$$ J_{\text{Move}} = w_{\text{goal}} \lVert \mathbf p_{\text{obj}} - \mathbf p_{\text{goal}} \rVert + w_{\text{gripper}} \lVert \mathbf p_{\text{gripper}} - \mathbf p_{\text{obj}} \rVert + w_{\text{vel}} \lVert \mathbf v_{\text{obj}} \rVert $$
+
+세우기는 물체의 위쪽 축과 세계 $z$축의 정렬에 그리퍼 거리를 더한다. v1은 쿼터니언 차를 썼고, v3는 쿼터니언 비교의 모호함을 피하려고 축 정렬로 바꿨다.
+
+$$ J_{\text{Upright}} = w_{\text{Upright}} \big(1 - \hat{\mathbf z}_{\text{obj}} \cdot \hat{\mathbf z}_{\text{world}}\big) + w_{\text{gripper}} \lVert \mathbf p_{\text{gripper}} - \mathbf p_{\text{obj}} \rVert $$
+
+가중치는 다섯 물체에 공통이다. 옮기기는 순서대로 60·4·20이고, 세우기는 100·0.5다. 성공은 30 s 안에 목표 0.1 m(세우기는 0.1 rad) 안으로 들어와 속도가 0.05 m/s(세우기는 0.05 rad/s) 아래로 떨어지는 것이다.
+실물 과제와 G1 과제는 과제별 항과 정규화 항을 더한다. 모든 과제에 공통인 안전 항은 지평 안에서 한 번이라도 몸통 높이가 문턱 아래로 내려간 rollout에 큰 벌점을 준다.
+
+$$ J_{\text{safety}} = w_{\text{fall}} \cdot \mathbf 1\big[\min_t h^t_{\text{torso}} < h_{\min}\big], \qquad w_{\text{fall}} = 2500 $$
+
+문턱은 Spot 0.35 m, G1 0.6 m다. 잡기 항은 그리퍼가 닫히다 막힌 정도로 잡았는지를 판정한다. 명령과 측정 관절각의 차이가 0.15 rad를 넘고 그리퍼가 완전히 닫히지 않았으면 잡은 것이다.
+빈 공간에서 그리퍼를 끝까지 닫은 표본에는 벌점 1000을 준다. 계획기가 시뮬레이터 안의 가짜 잡기를 이용하지 못하게 하는 장치다. 원문은 이런 항이 시뮬에서는 무해하지만 실물에서는 비싼 국소 최소를 피하게 한다고 적는다.
+
+**구현과 계산(III-C, 표 I).**
+- rollout은 CPU MuJoCo를 C++ 스레드 풀로 병렬화했다. 32개를 1.5 s 굴리는 데 정책을 넣으면 43.45 ± 1.88 ms, 빼면 21.73 ± 1.86 ms였다(Intel Core i7-12700K). 둘 다 20 Hz 주기(50 ms) 안이다.
+- 원문은 CPU를 고른 이유로 지연을 든다. GPU 배치는 처리량이 크지만 지연이 길고, 실시간 제어에서는 더 좋은 해를 늦게 내는 것보다 빨리 다시 계획하는 편이 낫다고 본다. 표본이 수백–수천 개 필요해지면 GPU 시뮬레이터(MuJoCo Warp)를 쓸 만하다고 적었다.
+- 정책 추론의 부담이 작은 이유는 RL이 최적화 비용을 학습 때 미리 치렀기 때문이다. 원문은 rollout마다 QP 기반 제어기를 넣는 것보다 싸다고 적는다.
+- 공개 코드의 Spot 경로에서는 rollout마다 스레드 하나가 MuJoCo 모델 사본을 맡는다. 제어 스텝마다 84차원 관측을 만들어 ONNX 정책을 한 번 부른다.
+- 정책은 Isaac Lab에서 학습했고(ReLIC 부록), 코드에 Isaac Lab과 MuJoCo의 관절 순서 변환표가 있다. rollout 안에서 정책은 학습 때와 다른 시뮬레이터에서 도는 셈이다.
+
+**sim-to-real(V-A, V-C).**
+- 실물에도 분석과 같은 최적화기 설정(1.5 s, 표본 32개, 매듭 4개)을 썼다고 원문은 명시한다.
+- 상태는 Spot 관절 엔코더(333 Hz)와 모션 캡처의 몸통·물체 자세(120 Hz)를 저역 통과 필터로 합친 것이다. 온보드 인식은 없다.
+- rollout과 CEM 갱신은 AMD Threadripper Pro 5995WX(64코어) 데스크톱에서 비동기로 돈다. 관절 수준 명령은 WiFi로 Spot에 간다.
+- 로봇과 물체의 MuJoCo 모델(MJCF)을 공개했고, 질량과 형상을 실물에 맞췄다. 타이어끼리의 높은 마찰처럼 시뮬레이터가 정확히 다루지 못하는 접촉은 sim-to-real 격차로 남는다(타이어 쌓기).
+
+**결과 1: 실물 Spot(표 II, 과제마다 10회).** 모두 72/80이다(우리 합산). 실물에는 기준선이 없다.
+
+| 과제 | 물체 | 성공 | 완료 시간 | 제한 |
+|---|---|---|---|---|
+| 타이어 세우기 | 타이어 15 kg | 10/10 | 9.2 ± 4.7 s | 30 s |
+| 바리케이드 세우기 | 군중 통제용 바리케이드 16 kg | 9/10 | 10.5 ± 7.1 s | 30 s |
+| 원뿔 세우기 | 교통 원뿔 3.5 kg | 9/10 | 10.2 ± 7.9 s | 30 s |
+| 의자 세우기 | 의자 16.5 kg | 8/10 | 27.3 ± 19.1 s | 60 s |
+| 타이어 쌓기 | 타이어 15 kg | 8/10 | 16.5 ± 8.4 s | 30 s |
+| 바리케이드 끌기 | 바리케이드 15 kg | 9/10 | 20.2 ± 6.7 s | 30 s |
+| 타이어 랙 끌기 | 랙 10 kg | 9/10 | 19.1 ± 6.2 s | 30 s |
+| 상자 밀기 | 상자 20 kg | 10/10 | 38.3 ± 16.9 s | 90 s |
+
+**결과 2: G1 시뮬레이션(표 III, 과제마다 10회, 제한 30 s).** 하위 정책은 mjlab의 기본 속도 추종 정책이고, 조작용으로 학습하지 않았다.
+
+| 과제 | 성공 | 완료 시간 |
+|---|---|---|
+| 상자 10 kg 밀기 | 9/10 | 11.83 ± 2.97 s |
+| 문 열고 지나가기 | 10/10 | 4.73 ± 0.98 s |
+| 의자 16.5 kg 밀기 | 10/10 | 6.86 ± 0.288 s |
+| 탁자 10 kg 밀기 | 8/10 | 4.86 ± 1.65 s |
+
+**결과 3: 시뮬 분석(그림 4·5·6, v3 번호).** v1에서는 그림 4와 5가 서로 바뀌어 있다. 원문은 세 그림의 수치를 표로 적지 않았고, arXiv HTML판의 세 그림은 SVG다.
+아래 값은 SVG의 막대 높이와 곡선 좌표를 눈금으로 환산한 것이고, 프로젝트 페이지의 래스터 그림과 맞는다. Sumo는 과제마다 20회 평가했다(IV-B). 기준선의 평가 횟수는 원문에 없다.
+
+| 옮기기 성공률(그림 5) | 상자 | 의자 | 원뿔 | 타이어 | 타이어 랙 |
+|---|---|---|---|---|---|
+| Sumo | 0.85 | 0.95 | 1.00 | 1.00 | 1.00 |
+| E2E RL, 물체마다 학습 | 0.98 | 1.00 | 1.00 | 0.16 | 0.00 |
+| E2E MPC, 관절 명령 50 Hz | 0.00 | 0.30 | 0.10 | 0.50 | 0.30 |
+
+- E2E RL은 mjlab에서 PPO로 환경 4,096개, 5,000회 반복 학습했다. 보상 항은 15개이고, 과제마다 GPU 약 2시간이 든다. 상자에서 보상을 맞춘 뒤 다른 물체에는 같은 설정을 썼다. Sumo의 비용은 세 항이다.
+- E2E MPC는 같은 CEM이 관절 명령을 직접 찾는다. 비용은 Predictive Sampling 논문(MuJoCo MPC)의 보행 비용에 옮기기 비용을 더했고, 50 Hz로 갱신했다.
+
+![Sumo Fig. 5](https://sumo.rai-inst.com/assets/img/hierarchy_comparison_standalone.png)
+*그림 — Sumo (Fig. 5): 다섯 물체를 목표로 옮기는 시뮬 과제의 성공률이다(v3 번호이고, v1에서는 그림 4였다). 노랑은 Sumo, 보라는 물체마다 같은 보상 설계로 학습한 E2E RL, 남색은 같은 CEM으로 관절 명령을 직접 찾는 E2E MPC다. E2E RL은 상자·의자·원뿔에서 Sumo와 비슷하지만 타이어와 타이어 랙에서 무너지고, E2E MPC는 어느 물체에서도 0.5를 넘지 못한다. 출처: [arXiv:2604.08508](https://arxiv.org/abs/2604.08508), 이미지 파일은 [프로젝트 페이지](https://sumo.rai-inst.com)*
+
+| 상자로만 맞춘 위 층을 다른 물체와 목표에(그림 4) | 상자 | 의자 | 원뿔 | 타이어 | 타이어 랙 |
+|---|---|---|---|---|---|
+| 옮기기, Sumo(물체 모델만 바꿈) | 0.85 | 0.95 | 1.00 | 1.00 | 1.00 |
+| 옮기기, E2E RL | 1.00 | 0.40 | 0.62 | 0.20 | 0.10 |
+| 옮기기, 계층형 RL(HRL) | 0.96 | 0.56 | 0.00 | 0.00 | 0.02 |
+| 세우기, Sumo(비용만 바꿈) | 1.00 | 0.95 | 1.00 | 0.95 | 0.95 |
+| 세우기, E2E RL | 0.04 | 0.14 | 0.04 | 0.16 | 0.02 |
+| 세우기, HRL | 0.00 | 0.18 | 0.14 | 0.02 | 0.16 |
+
+- HRL은 Sumo와 같은 하위 정책을 같은 명령 공간으로 조종하는 학습 상위 정책이다. 1.5 kg 상자의 크기, 무게, 마찰을 무작위화해 학습했다.
+- 어느 상위 정책도 물체의 형상이나 관성을 입력으로 받지 않는다. Sumo에서 물체 정보는 계획기의 시뮬 모델로만 들어간다.
+- 조율 비용(그림 6). 상자 옮기기의 비용 가중치를 베이즈 최적화로 다섯 번 따로 찾았다. 다섯 번 평균의 최고 성공률이 0.8에 닿는 데 Sumo는 CPU 약 0.5시간, HRL은 GPU 약 16시간이 걸렸다.
+  0.9에는 약 2시간과 약 35시간이 걸렸고, 마지막 값은 둘 다 0.92–0.93이다. 이 값도 SVG에서 읽었다. 원문은 하드웨어를 맞춘 비교가 아니라 실무 조율 루프의 벽시계 비교라고 적는다.
+
+**한계.** 저자가 밝힌 것:
+- 상태 추정과 계획을 외부 장치에 기댄다. 완전한 온보드 배치는 앞으로 할 일로 남겼고, 소형 컴퓨터(M 시리즈 Mac mini)라면 계산이 가능할 것으로 본다.
+- 시뮬에만 기대는 방법이라 sim-to-real 격차가 남는다. 저자들은 충분히 좋은 모델을 만드는 일이 시행착오가 필요한 기술이라고 적었고, 실행 중에 물체 파라미터를 고치는 시스템 식별과 모델 학습이 도움이 될 것으로 본다.
+- 사람의 사전 지식을 쓰지 않는다. 기반 모델이 목표, 물체 모델, 비용을 주고 Sumo가 실행하는 방향을 다음 과제로 들었다.
+- RAI Institute 블로그(2025-10)는 앞선 버전이 물체 크기에 대해 조금만 일반화한다고 적었다.
+
+우리가 보기에:
+- 정책을 넣은 rollout의 비교 대상은 정책 없는 관절 수준 MPC뿐이다. 하위 루프를 단순화한 모델(명령이 곧 속도라는 기구학, 1차 지연, 학습 전방 모델)과는 비교하지 않았다. 그래서 정책 자체가 필요한지, 닫힌 루프의 근사로 충분한지는 이 논문으로 답할 수 없다.
+- E2E MPC는 Sumo와 세 가지가 함께 다르다. 행동 공간은 관절 명령이고, 비용에는 보행 비용이 더해지고, 갱신 주기는 50 Hz다(Sumo는 20 Hz). 표본 수는 원문에 없다. 그래서 그림 5의 차이를 하위 정책 하나의 효과로 읽지 않는다.
+- 실물은 과제마다 10회이고, 분석 기준선의 평가 횟수는 적혀 있지 않다. 기준선 막대가 0.02 간격이라 약 50회로 보이지만 추정이다.
+- 공개 코드의 Spot 기본값은 원문 설정과 다르다(`sumo/controller/overrides.py`·`optimizer_overrides.py`). 지평 2.0 s에 표본 24개, 매듭 3개, ramp 계수 3.5다.
+  원문은 분석과 실물 모두에 1.5 s 지평, 표본 32개, 매듭 4개를 썼다고 적는다. 그래서 공개 기본값으로는 표 II의 설정을 그대로 재현하지 않는다.
+- 공개 G1 rollout은 정책을 물리 한 스텝(5 ms)마다 부른다(`g1_extensions/g1_rollout.cpp`). 본문의 '50 Hz로 추론하고 사이 스텝에는 유지한다'와 맞는 것은 Spot 경로다.
+- 공개 코드는 rollout 하나가 벽시계로 0.125 s(Spot), 0.2 s(G1)를 넘으면 남은 스텝을 마지막 상태로 채운다. 잘린 rollout의 비용이 달라지는데, 원문은 이 장치를 적지 않았다.
+- 그리퍼 선택의 부호가 원문과 공개 코드에서 다르다. 식 4는 행동이 0보다 크면 닫지만, 공개 judo 코드는 선택 값이 0보다 작으면 닫힘으로 고정한다.
+- 기여 목록은 데이터셋도 적지만, 공개 저장소에서 데이터셋 내려받기는 찾지 못했다(2026-10-07 확인). 실행과 rollout 기록을 HDF5로 남기는 도구(`run_mpc`)는 있다.
+- 원문 안에 작은 불일치가 있다. IV-C는 계층형 RL이 상자에서 100%라 적지만 그림 4의 막대는 0.96이다. 그림 6 캡션의 색 설명(파랑, 빨강)은 실제 선 색(노랑, 보라)과 다르다. 바리케이드 끌기의 무게는 프로젝트 페이지가 16 kg, 원문이 15 kg이다.
+
+</details>
+
+<details markdown="1">
+<summary>자세히: Sumo에서 travplan이 가져올 것</summary>
+
+**travplan에 주는 것.** 다섯 가지다.
+
+첫째, 예측 모델 계층(TP-0124)의 빈칸이다. travplan의 계층은 셋이다(MPC 문서 M.1.3). 기구학은 `SwerveModel`, 동역학은 plant의 지연과 미끄럼을 넣은 `LagSlipSwerveModel`이다. 학습 층은 지금 GP 잔차뿐이고, FDM은 대기 중이다(TP-0126). Sumo의 rollout은 그 위의 점이고, 하위 제어기 자체와 전체 물리를 굴린다.
+아래 표는 rollout에 아래 층을 얼마나 넣었는지의 축만 보여 준다. 과제가 달라 숫자끼리는 비교하지 않는다.
+
+| rollout에 넣은 아래 층 | 어디서 | 결과 |
+|---|---|---|
+| 없음(명령이 곧 속도) | travplan `mppi`, 권장 L1 + plant 레벨 3 | 360 중 221 도달, 치명 55(TP-0149) |
+| 1차 지연 0.2 s | travplan `mppi_plant_lag`, 같은 조건 | 239 도달, 치명 4(TP-0150) |
+| 1차 지연과 belief 지도로 건 기댓값 미끄럼 | travplan `mppi_plant`, 같은 조건 | 189 도달, 치명 4, 시간 초과 167(MPC 문서 M.3.22) |
+| 1차 지연 0.4 s(가정)와 서기 문턱 | Playground 휴머노이드 MPPI(GR00T WBC를 본뜬 하체) | 10번 중 10번 도달, 지연을 모르면 6번(TP-0135) |
+| 학습한 견인 분포의 왼쪽 꼬리 | EVORA, Spot 실외(이 소절의 EVORA 카드) | 기준선과 기댓값 견인보다 도달 시간이 짧다(왕복 3번) |
+| 정책 없이 관절 명령을 직접 계획 | Sumo의 E2E MPC | 옮기기 0.00–0.50 |
+| 실제 하위 정책과 전체 물리 | Sumo | 옮기기 0.85–1.00, 실물 72/80 |
+
+Sumo가 보인 것은 마지막 두 줄의 차이이고, travplan이 보인 것은 처음 네 줄의 차이다. 1차 지연 근사와 실제 하위 제어기 사이는 아무도 재지 않았다.
+시뮬에서는 스워브 plant(`robot/plant.py`)를 정확히 안다. 그 plant를 참값 지형과 함께 rollout에 넣은 줄이 '오라클 상한'이고, belief 지도와 함께 넣은 줄은 따로 잰다. M.3.22처럼 plant에 더 가까운 모델이 belief 지도 위에서는 진행을 막을 수 있으므로, 정확도와 성적이 함께 오른다고 가정하지 않는다.
+`SwervePlant`는 조향각 상태와 난수 미끄럼을 가진 로봇 한 대용 numpy 모델이라, 배치로 바꾸는 일이 먼저다. 이 줄은 근사의 손실을 재는 상한이지 검증이 아니다. 명목 모델과 plant가 같으면 아무것도 검증되지 않는다는 경계(MPC 문서 M.2)는 그대로다.
+
+둘째, 계산 예산이다. Sumo는 계획 한 번에 정책을 2,400번 추론한다(32개 × 1.5 s × 50 Hz, 우리 계산). Playground MPPI는 표본 256개를 4 s 굴린다(`docs/playground/js/control.js`).
+여기서 1차 지연 근사 대신 GR00T 하체 정책(50 Hz, Controller 문서 F.8)을 rollout에 넣으면 계획 한 번에 51,200번 추론한다. Sumo의 약 21배다(우리 계산).
+그래서 표본 전체에 실제 하위 루프를 넣는 길보다 두 단계가 현실적이다. 모든 표본은 싼 모델로 굴리고, 상위 몇 개만 실제 하위 루프로 다시 굴린다. Sumo가 가장 가깝다고 꼽은 Kim 외(2025)가 이 구조다(MPC 문서 M.1.3).
+
+셋째, 메쉬 forward 샘플링(TP-0125)과의 관계다. Sumo의 rollout은 로봇(기본 도형 충돌 모델)과 물체(충돌 메쉬)의 접촉을 물리로 굴리고, 표본 32개에 43 ms가 든다.
+TP-0125는 물리가 아니라 2.5D 지도 위의 기하 판정(접지 높이, 자세, 하부 간섭, 전복 여유)이다. 그래서 훨씬 싸고 표본 전체에 쓸 수 있다. 물리와 하위 제어기를 함께 굴리는 판정은 그 위의 마지막 검증 단계로 둔다.
+
+넷째, 학습 FDM(TP-0126)과 다른 점이다. Sumo는 전방 모델을 배우지 않는다. 시험 때 물체 모델(MJCF)을 바꿔 끼우고, 세계 상태는 모션 캡처가 준다.
+FDM(B.14.3)은 정책·로봇·지형을 함께 자료로 배우고 실패 확률로 위험을 낸다. travplan의 세계는 가림이 있는 2.5D belief 지도이고, 틀린 지도 위의 물리 rollout은 틀린 답을 확신한다. M.3.22의 미끄럼 예측이 그 예다.
+travplan은 불확실성을 따로 다룬다. 가림으로 못 본 칸은 belief 지도의 채움과 상한으로(TP-0044·TP-0047), 동역학의 불확실성은 GP 분산과 확률 제약으로(TP-0076) 들어간다. Sumo의 rollout에는 그런 장치가 없다. 그래서 Sumo식 rollout은 지도가 정확한 곳(시뮬레이션, P1 Isaac)에 먼저 맞는다.
+TP-0126의 자료에는 쓸 것이 있다. 무작위 명령열뿐 아니라 MPPI가 실제로 고른 표본에서도 자료를 모아야 한다(FDM도 학습 후반에 계획기 명령을 섞었다, B.14.3). Sumo의 `run_mpc`가 계획 스텝마다 모든 rollout의 상태와 비용을 HDF5로 남기는 방식이 그 예다.
+
+다섯째, 온라인 탐색을 위에 남긴다는 근거다. 그림 4에서 같은 하위 정책 위의 학습 상위 정책(HRL)은 상자 밖에서 무너졌고, 실행 중 계획은 물체 모델과 비용만 바꿔 넘어갔다.
+travplan에서 이 손잡이는 MPPI의 `CostTerm` 목록이다. 확률 제약(TP-0076)도 재학습 없이 비용 항 하나로 들어갔다. 학습 Controller(`TinyPolicy`, TP-0128)는 새 항마다 다시 학습해야 한다.
+갱신 규칙보다 rollout 모델과 비용이 중요하다는 점도 같다. Sumo는 갱신 규칙이 핵심이 아니라고 적었고, travplan에서도 더 센 최적화기가 같은 예산의 MPPI를 넘지 못했다(TP-0130, MPC 문서 M.3.20).
+아래 층의 인터페이스 조건(첫째 토글의 셋)은 travplan에서도 보인다. Playground 휴머노이드의 서기 문턱(0.05)은 명령 효과가 갑자기 바뀌는 불연속이고, travplan MPPI는 그 전환을 rollout에 함께 넣었다(Controller 문서 E.13).
+스워브 plant에서 명령 방향이 빨리 바뀌면 모듈이 반전하고 조향 속도 한계에 걸린다. 우리가 보기에 이 둘이 둘째 조건(명령 효과의 일관성)과 셋째 조건(빠른 명령 변화에도 안정할 것)이 travplan에서 나타나는 모습이다.
+
+다른 점도 분명하다. Sumo는 모션 캡처 실험실에서 모델을 아는 무거운 물체를 다뤘다. travplan은 LiDAR와 스테레오로 만든 지도 위에서 보도를 달리고 물체 접촉이 없다.
+travplan의 오차는 지도와 plant 양쪽에서 온다. 지도 쪽은 가림과 belief 채움이고, plant 쪽은 지연과 미끄럼이다(TP-0149·TP-0150). 가져올 것은 조작 기법이 아니라 rollout 설계와 계산 예산이다.
+
+</details>
+
+**SMPC 시연 + 희소 보상 RL(RAI Institute) — 시뮬레이션의 샘플링 MPC가 만든 시연으로 off-policy RL을 띄우고, 희소 보상만으로 교사보다 빠른 정책을 얻는다**([arXiv:2608.12063](https://arxiv.org/abs/2608.12063), Schuck·Sorokin·Manni·Ta·Schoellig·Hutter·Le Cléac'h·Brüdigam, RAI Institute·TU Munich·ETH Zürich, 2026-08, 프로젝트 페이지 표기 CoRL 2026 spotlight, [프로젝트](https://pages.rai-inst.com/smpc2rl/)).
+Sumo와 같은 팀의 다른 갈래다. Sumo가 샘플링 MPC를 실행 중에 돌린다면, 이 논문은 샘플링 MPC(SMPC, sample-based MPC)를 시뮬레이션에서만 돌려 시연 자료를 만든다.
+위 층이 몸통 평면 속도와 팔 관절 목표의 변화량을 내고, 고정한 ReLIC 방식 정책이 균형을 잡는다. 교사 SMPC는 Predictive Sampling 계열이고 MuJoCo Warp에서 돈다. 지평은 1 s(50 Hz × 50스텝)이고, 스플라인 매듭 10개와 타일당 표본 256개를 쓴다.
+밀집 비용을 몇 분 만에 손으로 맞추고, 타일 여러 개를 GPU에서 묶어 시간당 표본 100만 개를 만든다. 가장 어려운 과제는 400만 개(GPU 4시간)가 필요했다.
+학생은 FastTD3(병렬 시뮬레이션용 TD3 변형)를 고친 off-policy RL이다. 보상은 목표 도달 0, 넘어짐 $-2/(1-\gamma)$, 그 밖 $-1$뿐이다. 처음에는 재생 버퍼의 50%를 시연으로 채우고(RLPD 방식, 강화학습 문서 R.10), 성공률이 10%를 넘으면 시연을 뺀다.
+팔 달린 Spot(목표점 이동, 상자 밀기, 타이어 세우기와 굴리기)과 G1(상자 밀기)에 올렸다. 학습한 정책은 과제를 SMPC보다 빨리 끝냈고(일부 과제는 50% 넘게), 소요 시간의 표준편차가 11–45% 줄었다.
+반대로 교사의 해가 여러 갈래(다리로 차기, 어깨로 밀기, 타이어 안으로 들어가기)로 섞이면 학습이 완전히 실패했다. 다리·몸통 접촉 항을 넣어 팔을 쓰는 한 갈래로 모으자 학습됐다. 시연을 오래 남겨 두어도 학습이 느려졌다.
+
+**travplan에 주는 의미.** Planner D의 시연도 Guidance 경로를 따르는 MPPI(샘플링 MPC)가 만든다(B.8.3). 이 논문은 같은 종류의 교사로 두 가지를 보였다. 시연은 탐색을 여는 데만 쓰고 일찍 빼야 학생이 교사를 넘는다. 그리고 교사의 해가 여러 갈래로 섞이면 학습이 무너진다.
+원문은 원인을 둘로 적는다. 단봉·마르코프 RL 정책과, warm start에 따라 해가 갈려 관측만으로 정해지지 않는 SMPC다. Planner D(flow matching)는 앞의 문제를 덜 겪는다.
+travplan의 교사 MPPI는 상태마다 새 제어기를 만들어 0에서 시작하므로 직전 상태의 해를 물려받지 않는다(`scripts/train_planner_d.py`). 그래도 표본 난수에 따라 고르는 갈래가 달라질 수 있어, 비슷한 관측에 다른 갈래의 라벨이 붙을 수 있다.
+B.8.3이 적은 '단일 모드 교사'의 공백을 MPOT 같은 다봉 교사(B.10.1)로 메울 때도, 교사의 해가 관측의 함수인지부터 확인해야 한다. 희소 보상은 지금 RL 후학습(TP-0066)의 밀집 보상과 맞대 볼 후보다. 지금 후학습은 후보를 진행, cost, 치명, 부드러움으로 채점한다(B.15.3).
+
+![SMPC 시연 + 희소 보상 RL Fig. 2](https://arxiv.org/html/2608.12063v1/figures/tire_roll_blurred.png)
+*그림 — SMPC 시연 + 희소 보상 RL (Fig. 2 일부): 희소 보상만으로 학습한 정책을 실물에 올린 장면 가운데 하나로, 팔 달린 Spot이 타이어(14.3 kg)를 굴린다. 원문 그림 2는 다섯 과제의 실물 장면을 모았다. 출처: [arXiv:2608.12063](https://arxiv.org/abs/2608.12063)*
+
+**EVORA — 명령 대비 실현 속도의 비(견인)를 분포로 배워, MPPI rollout을 그 분포의 나쁜 꼬리로 굴린다**([arXiv:2311.06234](https://arxiv.org/abs/2311.06234), Cai·Ancha·Sharma·Osteen·Bucher·Phillips·Wang·Everett·Roy·How, MIT·Boston Dynamics AI Institute 등, IEEE T-RO 40, 2024, [프로젝트](https://xiaoyi-cai.github.io/evora/), [코드](https://github.com/mit-acl/mppi_numba) MIT).
+견인(traction)은 실현 속도를 명령 속도로 나눈 값이다. 단륜 모델에서 직진 속도에 $\psi_1$, 회전 속도에 $\psi_2$를 곱하고, 둘 다 0과 1 사이다.
+신경망이 높이·의미 분할 지도 조각을 받아 0–1을 나눈 칸 위의 견인 분포를 낸다. 출력이 디리클레 분포의 모수인 증거 학습(evidential learning)이라, 한 번의 추론으로 두 불확실성을 함께 낸다.
+우연 불확실성(같아 보이는 풀도 견인이 다르다)은 분포의 퍼짐에 담는다. 인식 불확실성(학습 때 못 본 지형)은 잠재 특징의 밀도로 잰다(normalizing flow).
+계획기는 MPPI다. 표본 명령열마다 견인 분포의 왼쪽 꼬리 CVaR(conditional value at risk)로 상태를 굴린다(CVaR-Dyn). CVaR는 가장 나쁜 $\alpha$ 비율의 평균이다(배경 0.3). 밀도가 문턱 아래인 칸은 분포 밖(OOD, out-of-distribution) 지형으로 보고 벌점을 준다.
+
+$$ \bar{\mathbf x}_{t+1} = F\big(\bar{\mathbf x}_t,\ \mathbf u_t,\ \bar{\boldsymbol\psi}_t\big), \qquad \bar\psi_{i,t} = \mathrm{CVaR}^{\leftarrow}_{\alpha}\big(\psi_{i,t} \mid \mathbf o(\bar{\mathbf x}_t)\big) $$
+
+$\alpha = 1$이면 기댓값 견인으로 굴리는 WayFAST와 같다. 비용의 CVaR를 견인 지도 표본으로 직접 줄이는 CVaR-Cost보다 rollout이 한 번이라 싸다.
+Spot 실험은 1저자가 Boston Dynamics AI Institute에서 인턴으로 일할 때 했다. 명령 속도와 Spot 내장 오도메트리로 견인을 재고 5분 걸은 자료로 학습했으며, Jetson AGX Orin에서 5 Hz, 8 s 지평, rollout 800개로 계획했다.
+왕복 3번(6회)에서 CVaR-Dyn($\alpha$ 0.9)의 도달 시간이 가장 짧았다. 비교 대상은 견인을 명목값으로 두고 풀·덤불에 벌점을 준 기준선, 기댓값 견인(WayFAST), CVaR-Cost다. 학습 때보다 키 큰 풀이 있는 시험장에서는 OOD 벌점을 켜야 사람 개입 없이 도달했다.
+
+**travplan에 주는 의미.** RAI Institute 공저 연구 가운데 travplan의 plant와 가장 직접 닿는다. 스워브 plant의 미끄럼은 이동 속도에 $(1 - s)$를 곱하고 회전은 그대로 둔다(TP-0033). EVORA의 직진 견인이 바로 이 $(1 - s)$이고, travplan에서 회전 견인은 1이다.
+travplan이 이미 가진 세 장치와 짝이 맞는다. 미끄럼을 rollout에 넣은 `mppi_plant`(TP-0150), 명목 모델 위의 GP 잔차(TP-0068), GP 분산으로 세운 확률 제약(TP-0076)이다.
+다른 점은 미끄럼을 어디서 읽느냐다. `mppi_plant`는 plant의 미끄럼 식을 잡음 없이 belief 지도의 경사·거칠기에 적용한다. EVORA로 치면 $\alpha = 1$(기댓값)에 가깝다. 그러자 Guidance 스택의 bumps_potholes 레벨 3에서 30개 중 28개가 첫 과속방지턱 앞에서 멈췄다(MPC 문서 M.3.22).
+EVORA는 같은 종류의 지형을 실제로 지나간 기록으로 분포를 배웠고, 비관의 정도를 $\alpha$ 하나로 조절했다. travplan에서 시험할 순서는 셋이다. 미끄럼을 plant·실물 기록에서 분포로 배우고(Controller 문서 E.10의 ② 지형에서 미끄럼으로 가는 자리), $\alpha$를 짝 비교로 훑고, 치명이 하나라도 늘면 채택하지 않는다.
+WVN(인식 문서 A.7)도 명령 대비 실제 속도를 라벨로 쓰지만 점수 하나로 줄인다. 같은 연구실의 코드 `mppi_numba`는 참고문헌 D.13.2(ACL)에 이미 있다. EVORA의 계획기는 명목 명령의 변화율 공간에서 표본을 뽑는 SMPPI(Controller 문서 B.5)를 썼고, 이것도 travplan에 있다.
+
+![EVORA Fig. 2](https://arxiv.org/html/2311.06234v2/Figs/intro_figure_overall_architecture.png)
+*그림 — EVORA (Fig. 2): (a) Spot을 몰아 지나간 길의 견인 값과 높이·의미 지도를 모은다. (b) 견인 분포(디리클레)를 내는 예측기와 그 잠재 특징의 밀도를 내는 normalizing flow를 함께 학습한다. (c) 배치 때 샘플링 MPC가 같은 명령열을 명목 견인으로 굴리면(빨간 점선) 멀리 나아가 크게 돌지만, 견인 분포의 왼쪽 꼬리 CVaR로 굴리면(파란 화살표) 덜 나아가고 덜 돈다. 밀도가 문턱 아래인 지형(하늘색)은 OOD로 피한다. 출처: [arXiv:2311.06234](https://arxiv.org/abs/2311.06234)*
+
+**Spot의 RL 보행(Boston Dynamics) — 경로 계획기와 MPC 보행 제어기 사이에 RL 정책을 넣어 고객 로봇에 출하했다**([Boston Dynamics 블로그 2024-03-19](https://bostondynamics.com/blog/starting-on-the-right-foot-with-reinforcement-learning/), Spot 소프트웨어 4.0(2024-02), [RL Researcher Kit](https://bostondynamics.com/reinforcement-learning-researcher-kit/)).
+이전 Spot은 걸음 기준이 서로 다른 MPC 지평 수십 개를 1 ms 안에 함께 풀고, 점수 함수로 하나를 골랐다. 넘어짐 사이 평균 시간은 수백 시간이었다.
+Boston Dynamics가 든 단점은 둘이다. MPC 여럿을 함께 푸는 계산이 비싸고, 새 실패를 고치려 선택 함수를 바꾸면 다른 상황이 나빠질 위험이 있다.
+새 구조에서는 RL 정책이 경로 계획기의 궤적과 상태·지도를 받아, 궤적과 걸음새를 기존 모델 기반 보행 제어기에 넘긴다. 학습은 계단 치수·노면 거칠기·마찰을 무작위로 바꾼 시뮬레이션 백만 번 이상이다.
+검증은 두 단계다. 병렬 시뮬레이션에서 새 장면은 나아지고 기존 수백 장면은 그대로인지 본 뒤, 주당 2,000시간 넘게 도는 사내 Spot 무리에 올린다. 무리에서 나온 넘어짐 가운데 시뮬레이션에서 재현되는 것은 학습 또는 평가 집합에 넣는다.
+Boston Dynamics는 미끄럽고 고르지 않은 바닥에서 덜 넘어진다고 적었지만 수치는 공개하지 않았다. 2024-03에는 NVIDIA, AI Institute(지금 RAI Institute)와 함께 RL Researcher Kit를 발표했다. 관절 수준 API 사용권, Jetson AGX Orin 탑재 장치, Isaac Lab 기반 Spot 시뮬레이션 환경을 묶은 것이고, 첫 고객이 AI Institute였다(다음 카드).
+
+**travplan에 주는 의미.** 이전 Spot의 '후보 여럿을 풀고 점수로 고르기'는 Planner D의 표본과 선택기에 해당한다. Boston Dynamics가 든 위험(새 실패를 고치려 선택 함수를 바꾸면 다른 상황이 나빠질 수 있다)은 travplan 선택기에도 생길 수 있다. 지금까지 Guidance 폴백(TP-0078)은 레벨 0과 보행자 성적을 지켰다(B.15.2).
+'새 장면은 나아지고 기존 수백 장면은 그대로'라는 출하 기준은 짝 비교와 잡음 바닥으로 가르는 travplan의 판정(B.15.2)과 같은 생각이다. 실패를 시뮬레이션으로 옮겨 학습·평가 집합에 넣는 순환은 실물 주행이 시작된 뒤의 절차로 sim-to-real 프로토콜(TP-0043)에 넣을 만하다.
+
+![Spot RL 보행 제어](https://bostondynamics.com/wp-content/uploads/2024/03/locomotion-with-rl.png)
+*그림 — Spot RL 보행 제어 (Boston Dynamics 블로그 그림): 경로 계획기가 명령과 장애물에서 궤적을 내고, RL 정책이 그 궤적과 상태·지도를 받아 궤적과 걸음새를 보행 제어기에 넘긴다. 보행 제어기가 구동 명령을 낸다. 출처: [Boston Dynamics 블로그](https://bostondynamics.com/blog/starting-on-the-right-foot-with-reinforcement-learning/)*
+
+**Spot 고속 RL(RAI Institute) — 시뮬레이션 파라미터를 분포 거리로 맞춘 RL 단독 정책으로 Spot이 5.2 m/s로 달렸다**([arXiv:2504.17857](https://arxiv.org/abs/2504.17857), Miller·Yu·Brauckmann·Farshidian, ICRA 2025, [RAI Institute 페이지](https://rai-inst.com/resources/papers/high-performance-reinforcement-learning-on-spot/), [학습 환경](https://github.com/isaac-sim/IsaacLab/tree/main/source/isaaclab_tasks/isaaclab_tasks/manager_based/locomotion/velocity/config/spot) BSD-3-Clause).
+RL Researcher Kit의 관절 수준 API로 MPC 없이 정책 하나가 Spot을 몰고, 원문은 이것을 Spot 실물의 첫 공개 끝에서 끝까지 RL 정책이라고 적는다. 학습은 Isaac Lab과 rsl_rl, 배포는 Jetson Orin이다.
+명령열 넷을 실물에서 5번씩, 시뮬레이션에서 여러 번 굴린다. 4 m/s 달리기, 여섯 방향 1.5 m/s 이동, 무작위 명령, 사람 조종이다. 관절 위치·속도·행동의 분포 차이를 Wasserstein 거리와 MMD(maximum mean discrepancy)로 잰다.
+그 차이를 목적 함수로 CMA-ES가 관절 마찰 2개와 토크-속도 곡선 6개, 모두 8개의 파라미터를 맞췄다(반복 100회, 개체 10). 원문은 토크 측정이 필요한 블랙박스 actuator net(B.14.1) 대신 이 회색 상자 모델을 골랐다.
+한 번 맞추고 다시 학습하자 실물 최고 속도가 3.8에서 5.2 m/s로 올랐고, 이전 정책이 실물에서 실패하던 네 발이 모두 뜨는 걸음도 됐다. 원문은 기본 Spot 제어기의 최고 속도를 1.6 m/s로 적는다.
+
+**travplan에 주는 의미.** 실물 주행이 시작되면 첫 주행 기록으로 plant 파라미터를 맞추는 절차가 필요하다(시뮬레이션 문서 S.6.2, TP-0043). 이 논문은 궤적을 시점마다 맞추지 않고 분포로 맞춘다. 시작 상태를 같게 만들 필요가 없고, 시간에 따라 오차가 쌓이는 문제를 피한다.
+travplan에서는 같은 명령열로 실물과 plant를 굴린 뒤, 명령 대비 실현 twist의 분포 차이를 줄이도록 스워브 plant의 지연과 미끄럼 파라미터를 맞추면 된다. plant는 `robot/plant.py`(TP-0033·TP-0034)이고, 맞춘 값은 지연 rollout(TP-0150)과 잔차 학습(TP-0068)이 함께 쓴다. 같은 연구소의 ReLIC도 무릎 토크-속도 한계를 실물·시뮬 rollout의 Wasserstein 거리를 CMA-ES로 줄여 맞췄다.
+
+![Spot 고속 RL Fig. 1](https://arxiv.org/html/2504.17857v3/images/spot_track.png)
+*그림 — Spot 고속 RL (Fig. 1): 이 정책으로 트랙을 5.2 m/s로 달리는 Spot이 네 발이 모두 뜬 순간이다. 등에 탑재 장치가 얹혀 있다. 원문 캡션은 이 걸음을 gallop으로, 본문은 flying trot으로 적는다. 출처: [arXiv:2504.17857](https://arxiv.org/abs/2504.17857)*
+
+**ZEST — 모션 캡처·영상·애니메이션을 따라 하는 RL 정책을 시뮬레이션에서만 학습해 Atlas·G1·Spot에 바로 올렸다**([arXiv:2602.00401](https://arxiv.org/abs/2602.00401), Sleiman 외 27명, 교신 저자 Farshidian, RAI Institute·Boston Dynamics, Science Robotics 11(117) eaec7695, 2026-08, [doi:10.1126/scirobotics.aec7695](https://doi.org/10.1126/scirobotics.aec7695), [협력 발표 2025-02-05](https://rai-inst.com/resources/press-release/boston-dynamics-atlas-partnership/)).
+두 기관은 2025-02에 전기 Atlas의 공동 RL 학습 파이프라인을 발표했고, ZEST는 두 기관이 함께 쓴 방법 논문이다. 정책은 현재 고유감각과 바로 다음 한 스텝의 기준 상태만 보고, 기준 관절각에 더할 잔차를 낸다. 이력은 직전 행동 하나뿐이고, 미래 기준 창과 상태 추정기는 쓰지 않는다.
+어려운 구간을 실패율에 따라 더 자주 뽑는 적응 표집과, 몸통을 받쳐 주다가 줄여 가는 보조 렌치 커리큘럼으로 옆돌기, 브레이크댄스, 포복을 배웠다. 기술 하나의 정책을 NVIDIA L4 GPU 한 장으로 약 10시간 학습했다(Isaac Lab, PPO).
+시뮬레이션에서는 Atlas 동작 전체를 함께 배운 RL 정책 하나를 Boston Dynamics의 전신 MPC와 비교했다. 걷기는 둘이 거의 같았다(관절 오차 MPC 0.047 rad, RL 0.055 rad). 조깅(0.117 대 0.076)과 옆돌기(0.237 대 0.088)는 RL이 나았다.
+MPC는 춤 하나, 물구나무 넘기, 네발 구르기를 해내지 못했다. 손발 밖의 접촉(무릎, 몸통, 팔뚝)이 필요한 동작은 MPC가 다루지 못해 비교에서 뺐다. 저자들은 이 정책이 고유감각만 쓰고 평평하고 미끄럽지 않은 지형을 가정한다고 적는다.
+1저자 Jean-Pierre Sleiman은 지금 Flexion 팀에 있다(B.16.3). 휴머노이드 소절(B.16.6)은 이 카드를 가리킨다.
+
+**travplan에 주는 의미.** 모델 기반 MPC와 학습 정책을 같은 시뮬레이터, 같은 기준 동작에서 맞댄 방식은 travplan이 MPPI와 NMPC를 같은 벤치마크에서 비교하는 방식과 같다. ZEST에서 MPC는 기준 동작에서 휴리스틱으로 뽑은 접촉 일정이 정확한 걷기에서 대등했고, 접촉 일정이 틀리기 쉬운 동작에서 먼저 무너졌다.
+travplan에서도 plant 지연을 모르는 NMPC가 지연을 아는 MPPI보다 치명이 많았다(TP-0152). 모델 가정이 틀린 쪽이 진다는 방향은 같지만, 문제와 원인은 다르다. 구간별 실패율로 어려운 구간을 더 자주 뽑는 적응 표집은 Planner D RL 후학습(TP-0066)의 지형 표집에 옮길 수 있다.
+
+![ZEST Fig. 1](https://arxiv.org/html/2602.00401v1/ResultsFigure_v2.png)
+*그림 — ZEST (Fig. 1): Atlas·G1·Spot이 모션 캡처(포복, 구르기, 조깅, 브레이크댄스, 옆돌기, 탁구), 영상(춤, 상자 오르기, 발레, 축구 차기), 애니메이션(물구나무, 연속 백플립, 배럴 롤)에서 배운 동작을 실물에서 한다. 원문 캡션은 왼쪽 위부터 오른쪽 아래 순서로 동작 19개를 나열한다. 출처: [arXiv:2602.00401](https://arxiv.org/abs/2602.00401)*
+
+**Atlas 대형 행동 모델(Boston Dynamics·TRI) — 원격조종 시연으로 학습한 언어 조건 diffusion transformer가 손·발·몸통 목표를 내고, Atlas의 MPC가 균형을 맡는다**([Boston Dynamics 블로그 2025-08-20](https://bostondynamics.com/blog/large-behavior-models-atlas-find-new-footing/), Boston Dynamics와 Toyota Research Institute(TRI) 연구팀, 논문 없음).
+정책은 머리의 HDR 스테레오 카메라 영상, 고유감각, 언어 지시를 받아 Atlas 전신을 30 Hz로 움직인다. 모델은 4.5억 파라미터 diffusion transformer이고 flow matching 손실로 학습했다.
+행동은 두 그리퍼의 관절, 목 회전, 몸통·두 손·두 발의 자세다. 한 번에 48개(1.6 s)를 내고, 보통 그 가운데 24개(0.8 s)를 실행한 뒤 다시 추론한다.
+데이터는 VR 원격조종으로 모았다. 원격조종은 Boston Dynamics의 MPC 위에서 돌고, 균형과 자기 충돌 회피는 MPC가 맡는다. 정책도 원격조종과 같은 제어 인터페이스로 로봇을 움직인다.
+첫 판은 서 있는 채로만 조종했다. 두 발에 추적기를 더한 뒤로는 조종자가 발을 옮기면 Atlas의 지지 다각형과 디딤도 따라 바뀐다.
+상체만 있는 Atlas MTS(29자유도)와 TRI의 Ramen 데이터, 시뮬레이션 데이터를 함께 학습했다. 한 정책이 언어 지시 셋으로 Spot 부품을 정리하는 긴 과제를 끊지 않고 이어 했다.
+정책이 행동과 그 실행 시각을 함께 내므로, 추론 때 시각만 줄여 1.5–2배 빨리 돌려도 성능이 크게 떨어지지 않았다고 적는다. 성공률 같은 수치는 공개하지 않았다.
+
+**travplan에 주는 의미.** 학습한 위 층이 손·발·몸통 목표를 내고 모델 기반 MPC가 균형과 접촉을 맡는 배치는 travplan의 Planner D와 MPPI·NMPC 분리와 같다. 행동 생성기도 Planner D처럼 flow matching이다.
+Boston Dynamics는 Spot의 RL 보행(이 소절 앞 카드)과 Atlas의 이 모델 모두에서 학습 정책을 모델 기반 제어기 위에 두었다. Boston Dynamics가 함께한 연구 가운데 MPC 없이 RL 정책이 관절을 직접 움직이는 것은 RAI Institute와 쓴 ZEST다.
+행동과 실행 시각을 함께 내는 꼴은 Planner D의 시간 인덱스 궤적(`PlanResult.times`)과 같다. Planner D 궤적의 시각만 늘여 천천히 따르게 하는 시험은 travplan 문서에 기록이 없다.
+
+![Atlas 대형 행동 모델 구조](https://bostondynamics.com/wp-content/uploads/2025/08/Atlas-TRI-Blog-Post-Policy-Architecture-Diagram-v2e.png)
+*그림 — Atlas 대형 행동 모델 (Boston Dynamics 블로그 그림): 입력은 머리 카메라의 RGB 영상, 언어 지시(예: 통의 부품을 비워 상자 트럭으로 옮겨라), 고유감각, diffusion 단계 번호다. 영상과 언어는 각 인코더를 거쳐 diffusion transformer의 조건이 되고, 이 망이 잡음 섞인 행동 열을 깨끗한 행동 열로 바꾼다. 오른쪽 행동 공간은 목 회전 관절, 몸통·두 손·두 발의 자세, 두 그리퍼 관절이다. 출처: [Boston Dynamics 블로그](https://bostondynamics.com/blog/large-behavior-models-atlas-find-new-footing/)*
+
+**바퀴 쪽의 UMV와 Roadrunner — 다리 대신 바퀴로도 같은 학습 정책 실험을 한다.** UMV(Ultra Mobility Vehicle)는 23.5 kg 자전거 로봇이다([arXiv:2602.22118](https://arxiv.org/abs/2602.22118)).
+질량 대부분을 머리에 모으고, 공간 링크로 그 질량을 던지듯 움직여 뒷바퀴 뛰기, 앞공중제비, 1 m 탁자 뛰어오르기를 한다. 1 m는 로봇 기본 높이의 130%다.
+링크 구조는 시뮬레이션 기반 설계 최적화로 고르고, 동작은 제약 RL로 학습해 실물에 바로 올렸다. 최고 속도는 8 m/s다.
+Roadrunner는 바퀴를 나란히 또는 앞뒤로 바꿔 다는 약 15 kg 바퀴 이족 시제품이다. 정책 하나가 두 주행 모드를 맡는다. 논문 없이 [영상 페이지](https://rai-inst.com/resources/videos/meet-roadrunner-a-bipedal-wheeled-robot-for-multi-modal-locomotion/)만 있다(2026-10-07).
+travplan과의 관련은 간접적이다. 스워브 보도 로봇에는 이런 곡예가 필요 없다. 다만 UMV는 몸체의 링크 구조를 시뮬레이션으로 먼저 고르고 같은 시뮬레이터에서 정책을 학습했다. 모듈 오프셋 같은 하드웨어 파라미터를 고를 때 같은 순서를 쓸 수 있다.
+
+![UMV Fig. 1](https://arxiv.org/html/2602.22118v3/collage_compressed.png)
+*그림 — UMV (Fig. 1): (A) 구동 자유도 다섯의 자전거 로봇이다. 조향과 뒷바퀴 구동 외에, 머리(Head)의 점프 구동기 셋이 목(Neck)과 연결 막대를 거쳐 질량을 움직인다. (B) 앞공중제비, (C) 한 다리 호퍼처럼 균형을 잡는 뒷바퀴 뛰기, (D) 가속해 1 m 탁자에 뛰어올라 지나간 뒤 내려오는 자율 동작의 합성 사진이다. 출처: [arXiv:2602.22118](https://arxiv.org/abs/2602.22118)*
+
+**사람.** 이 소절의 연구는 몇 사람으로 이어진다. 소속은 각 논문의 저자란과 공식 페이지에서 확인했다(2026-10-07).
+
+| 사람 | 이 소절에서 남긴 것 | 지금 소속 |
+|---|---|---|
+| Marc Raibert | Boston Dynamics 창업자. 연구소를 세우고 이끈다 | RAI Institute 창립자·소장(RAI Institute 리더십 페이지) |
+| Marco Hutter | 취리히 사무소 책임자(2023-12 발표 때 연구소 이름은 The AI Institute), SMPC 시연 논문·UMV 설계 논문 공저 | RAI Institute 취리히 Senior Director(리더십 페이지), ETH RSL 교수(B.14.5), Flexion 공동 창업(B.16.3) |
+| Farbod Farshidian | DTC 공저(B.14.2), Spot 고속 RL 마지막 저자, ZEST 교신 저자 | ZEST(2026) 소속 RAI Institute. 직함은 확인하지 못했다 |
+| Simon Le Cléac'h | Sumo 마지막 저자, judo·ReLIC·SMPC 시연 논문 공저 | 2026-08 논문 소속 RAI Institute. 직함은 확인하지 못했다 |
+| Preston Culbertson | judo 마지막 저자, Sumo 공저 | Sumo 소속 표기 RAI Institute와 Cornell. 직함은 확인하지 못했다 |
+| Jiuguang Wang | Sumo·judo·ReLIC·EVORA·VLFM 공저 | Sumo(2026) 소속 RAI Institute. 직함은 확인하지 못했다 |
+| John Z. Zhang | Sumo 1저자, 실물 전신 MPPI 공저와 MuJoCo iLQR 1저자(두 편 모두 마지막 저자는 Zachary Manchester) | Sumo 소속 표기 MIT(일부를 RAI Institute 인턴십 중에 수행) |
+| Jean-Pierre Sleiman | ZEST 1저자 | Flexion 팀 페이지가 RAI Institute 연구원(Atlas) 출신으로 소개한다(B.16.3) |
+
+RAI Institute의 CTO Al Rizzi와 연구 부사장 Jessica Hodgins는 둘 다 ZEST 공저자다(RAI Institute 리더십 페이지). Hodgins는 Spot 탁구 MPC, Rizzi는 UMV 설계 논문에도 이름이 있다.
+
+#### B.16.5 다른 연구실의 사족보행: 적응, 안전, 무른 지면, 시각
+
+**ETH·Google·NVIDIA 밖의 사족보행 연구는 시뮬레이션에서만 배운 정책을 그대로 실물에 옮기는 길을 넓혔고, 연구실마다 건 곳이 다르다.**
+UC Berkeley·CMU의 Malik·Pathak 그룹은 환경을 잠재 벡터로 추정하는 적응(RMA)에 걸었고, 그 위에 내비게이션과 깊이 영상 보행을 얹었다.
+MIT의 Agrawal 연구실은 명령 공간 커리큘럼, 사람이 고르는 걸음새 파라미터, 자기지도 노면 물성으로 갔다.
+KAIST RaiLab(Jemin Hwangbo)은 자체 로봇과 자체 시뮬레이터 RaiSim 위에서 모래 같은 무른 지면의 접촉을 학습에 넣었고, 기구·전장·정책을 함께 설계해 에너지 효율을 끌어올렸다.
+CMU LeCAR Lab은 빠른 정책을 학습한 도달-회피 가치로 감시했고, Unitree는 값싼 로봇과 공식 학습·배포 코드를 냈다.
+Boston Dynamics와 RAI Institute의 Spot RL은 B.16.4에 있다.
+==이 소절에서 travplan의 Planner·Controller 분리에 가장 가까운 것은 VP-Nav다.== 비용 지도 위의 Planner가 경로를 내고 학습 보행 정책이 그 명령을 따르며, 고유감각으로 감지한 장애물과 속도 상한이 Planner로 되돌아간다.
+
+<details markdown="1">
+<summary>자세히: 이 소절의 연구 목록(표 21행)</summary>
+
+| 연도 | 연구 | 로봇 | 핵심 | 다룬 곳 |
+|---|---|---|---|---|
+| 2018 | 볼록 MPC(IROS 2018), Mini Cheetah(ICRA 2019), Cheetah-Software | Cheetah 3, Mini Cheetah | 단순화한 몸통 동역학으로 지면 반력을 볼록 최적화. 이 소절 MIT·KAIST 학습 연구의 실물 기준 | 이 소절(MIT 갈래 소개) |
+| 2021 | RMA (RSS 2021) | A1 | 환경 17차원을 잠재 8차원으로 줄이고, 배포 때 0.5 s 이력에서 추정 | 이 소절, E.2, 배경 0.11 |
+| 2021 | 에너지 최소화 걸음새 (CoRL 2021) | A1 | 일률 벌점 하나로 속도에 따라 walk·trot·bounce | 이 소절(RMA 카드) |
+| 2021 | VP-Nav (CVPR 2022) | A1 | 비용 지도 Planner, RMA 보행 정책, 고유감각 안전 조언 | 이 소절 |
+| 2022 | 정책·상태 추정기 동시 학습 (RA-L 2022) | Mini Cheetah | 선속도·발 높이·접촉 확률 추정망을 정책과 함께 학습 | 이 소절(KAIST 갈래 소개), F.6.1 |
+| 2022 | 학습 FDM과 정보 샘플러 (RSS 2022) | ANYmal C(시뮬레이션) | 명령열의 미래 위치·충돌 확률을 예측해 샘플링 MPC에 넣음 | 이 소절(KAIST 갈래 소개), M.1.3, B.14.3 |
+| 2022 | Rapid Locomotion (RSS 2022, IJRR 2024) | Mini Cheetah | (전진, 회전) 명령 격자 커리큘럼, 3.9 m/s | 이 소절 |
+| 2022 | 자기 중심 깊이 보행 (CoRL 2022) | A1 | 높이 지도 없이 깊이 영상과 GRU 기억, scandots 교사의 증류 | 이 소절 |
+| 2022 | Walk These Ways (CoRL 2022) | Go1 | 행동 파라미터 8개를 사람이 현장에서 고름 | 이 소절(Rapid Locomotion 카드), F.6.1, E.15, B.12.2 |
+| 2023 | 변형 지형 보행 (Science Robotics 2023) | Raibo | 부가 질량 입자 접촉 모델과 지면 성질을 읽는 순환망, 모래 3.03 m/s | 이 소절 |
+| 2023 | DribbleBot (ICRA 2023) | Go1 | 공 항력 무작위화, 어안 카메라 YOLO, 넘어짐 회복 전환 | 이 소절 |
+| 2023 | Unitree Go2·Go2-W, unitree_rl_gym·unitree_rl_lab | Go2, Go2-W | 값싼 사족과 공식 학습·배포 코드 | 이 소절, F.6, S.5.3c |
+| 2023 | Lifelike Agility and Play (Tencent Robotics X, Nature Machine Intelligence 2024) | MAX(Tencent 자체 사족, 14 kg) | 개 모션 캡처를 이산 잠재로 익힌 동작 층, 높이 지도를 보는 환경 층, 방향·속도 명령을 내는 전략 층을 차례로 사전학습해 실물 술래잡기까지 | 표만 |
+| 2023 | Crop-LSTM (RA-L 2024) | Raicart(바퀴) | 로봇 둘레 영상 조각으로 미래 위치·방향·흔들림 예측 | 이 소절(KAIST 갈래 소개) |
+| 2023 | Robot Parkour Learning (CoRL 2023) | A1, Go1 | 기술 다섯 개를 깊이 영상 정책 하나로 증류 | B.12.2 |
+| 2023 | Extreme Parkour (ICRA 2024) | A1 | 깊이 영상에서 갈 방향까지 정하는 파쿠르 정책 | F.6.2 |
+| 2023 | ASMP (CoRL 2023) | Go1 | 추정이 정확해지도록 움직이는 능동 감지, 영상에 자기지도 마찰 라벨 | 이 소절 |
+| 2023 | HIMLoco (ICLR 2024) | Aliengo, A1, Go1 | 고유감각 응답의 대조 학습으로 외부 상태를 외란처럼 추정 | 이 소절(RMA 카드) |
+| 2024 | ABS (RSS 2024) | Go1 | 빠른 정책, 정책 조건 도달-회피 가치의 감시, 회복 정책 | 이 소절, B.9, C.4 |
+| 2025 | 라이보2 (Nature 2026) | 라이보2 | 기구·전장·정책을 한 손실 모델로 설계, 한 번 충전으로 마라톤 완주 | 이 소절 |
+| 2025 | Raibo 고속 내비 (Science Robotics 2025) | Raibo | 발 디딤 Planner와 경쟁 학습한 추종기, 불연속 지형 4 m/s | 이 소절(KAIST 갈래 소개), A.7.1, M.1.3 |
+
+</details>
+
+**UC Berkeley·CMU(Malik·Pathak 그룹).** RMA에서 시작한 한 줄이다. RMA가 환경 잠재를 이력에서 추정하는 보행 정책을 만들었다.
+VP-Nav는 그 정책 위에 시각 Planner와 안전 조언을 얹었고, 자기 중심 깊이 보행은 지도 없이 깊이 영상으로 걷는 정책을 같은 구조로 증류했다.
+그 뒤를 Extreme Parkour(Controller 문서 F.6.2)가 잇는다.
+
+**RMA(Rapid Motor Adaptation) — 환경을 잠재 벡터로 압축해 두고, 배포 때는 0.5초 이력에서 그 벡터를 추정한다**([arXiv:2107.04034](https://arxiv.org/abs/2107.04034), Kumar·Fu·Pathak·Malik, RSS 2021, UC Berkeley·CMU, [프로젝트](https://ashish-kmr.github.io/rma-legged-robots/), [학습 코드](https://github.com/antonilo/rl_locomotion)(후속 연구가 RMA 코드 위에 공개, GPL-3.0)).
+두 단계 구조와 식은 Controller 문서 E.2에 있고, 이 카드는 그 위의 학습 설계와 실물 결과를 본다.
+기본 정책은 상태 30차원, 직전 행동 12차원, 잠재 벡터(extrinsics) 8차원을 받아 100 Hz로 관절 목표를 낸다.
+잠재 벡터는 짐 질량과 위치, 모터 세기, 마찰, 발밑 높이로 된 17차원 환경 벡터를 인코더가 줄인 것이다.
+적응 모듈(1D CNN)은 최근 50스텝(0.5 s)의 상태·행동 이력에서 같은 벡터를 10 Hz로 추정한다. 두 모듈은 시계를 맞추지 않고 따로 돈다.
+학습은 시뮬레이터 RaiSim에서만 했다. 기준 궤적이나 발 궤적 생성기 없이, 일과 지면 충격을 줄이는 보상에서 걸음새가 나왔다.
+Unitree A1(약 12 kg)은 미세 조정 없이 모래·진흙·흙에서 한 번도 실패하지 않았다. 학습 범위(0–6 kg)의 두 배인 12 kg 짐을 지고도 약 80% 성공했다(토글의 그림 3).
+
+같은 그룹의 에너지 최소화 걸음새([arXiv:2111.01674](https://arxiv.org/abs/2111.01674), Fu·Kumar·Malik·Pathak, CoRL 2021)는 기계 일률 벌점 하나로 A1에서 속도에 따라 walk(0.375 m/s), trot(0.9 m/s), bounce(1.5 m/s)가 나오는 것을 보였다.
+이 정책도 RMA로 실물에 옮겼고, 시뮬레이션에서 1 m를 가는 에너지가 MIT 볼록 MPC로 만든 같은 걸음보다 작았다(walk 30.7 대 87.0).
+이력에서 외부 상태를 추정하는 이 갈래는 DreamWaQ(Controller 문서 F.4)와 HIMLoco([arXiv:2312.11460](https://arxiv.org/abs/2312.11460), Shanghai AI Laboratory, ICLR 2024, [코드](https://github.com/InternRobotics/HIMLoco) CC BY-NC-SA 4.0)로 이어졌다. 둘 다 RMA를 기준선으로 비교했다.
+HIMLoco는 몸통 속도와 안정성 잠재로 된 로봇의 응답을 고유감각만으로 추정하고, 그 잠재가 다음 상태와 가까워지도록 대조 학습한다. 지형 마찰과 높이 같은 외부 상태는 그 응답에 담긴 외란으로 본다.
+
+**travplan에 주는 의미.** RMA를 travplan에 옮기는 일반론(노면과 화물을 잠재 문맥으로 두고 Controller rollout이나 Planner D 조건에 넣기)은 배경 0.11과 Controller 문서 E.2·E.4에 있다.
+이 카드가 더하는 것은 추정 대상과 창 길이다. 추정 대상의 첫 후보는 plant 지연이다.
+`mppi_plant_lag`는 시뮬 plant와 같은 1차 지연(τ = 0.2 s)을 rollout에 상수로 넣어, 권장 L1과 plant를 켠 레벨 3의 치명을 360 에피소드 중 55에서 4로 줄였다(TP-0150).
+실물에서는 τ를 모르므로, 명령과 실현 twist의 최근 이력에서 τ를 추정하는 것이 RMA의 자리다.
+미끄럼은 뒤로 미룬다. 같은 실험에서 미끄럼까지 rollout에 넣은 `mppi_plant`도 치명은 줄였지만, 도달은 지연만 넣었을 때의 239/360에서 189/360으로 줄었다(MPC 문서 M.3.22).
+창 길이도 옮길 때 다시 정한다. RMA의 창은 100 Hz에서 50스텝(0.5 s)이다. travplan 제어 주기 0.1 s에서는 같은 시간이 5스텝이고, 같은 스텝 수는 5 s다.
+
+![RMA Fig. 1](https://arxiv.org/html/2107.04034v1/outdoors-alt.png)
+*그림 — RMA (Fig. 1): 정책 하나로 A1이 물가 바위, 낙엽 덮인 흙, 풀, 흙과 자갈 더미, 모래 같은 야외 지형을 걷는다. 원문은 모래·진흙·산길·긴 풀·흙더미에서 실패가 없었고, 산길 계단 내려가기는 70%, 시멘트·자갈 더미 건너기는 80% 성공했다고 적는다. 출처: [arXiv:2107.04034](https://arxiv.org/abs/2107.04034)*
+
+![RMA Fig. 4](https://arxiv.org/html/2107.04034v1/friction-analysis-fig.png)
+*그림 — RMA (Fig. 4): 발에 비닐을 씌운 A1이 기름 바른 비닐 위를 지난다. 위는 네 발의 접지 패턴, 가운데는 무릎 토크, 아래는 적응 모듈이 낸 잠재 벡터의 1·5번째 성분이다. 약 2 s에 미끄러지기 시작하자 적응 구간(빨간 띠, 약 2–3.4 s)에서 두 성분이 바뀐다. 원문은 걸음이 돌아온 뒤에도 잠재가 미끄러운 바닥이라는 값을 유지한다고 해석한다. 출처: [arXiv:2107.04034](https://arxiv.org/abs/2107.04034)*
+
+<details markdown="1">
+<summary>자세히: RMA에서 E.2에 없는 것(보상, 학습 규모, 실험, 한계)</summary>
+
+**풀려는 문제.** 저자들은 sim-to-real 격차가 세 곳에서 온다고 본다. 로봇 모델, 지형, 접촉과 변형 같은 물리다.
+격차를 다 줄이는 대신 실물에서 1초 안쪽으로 적응하는 것이 목표다. 앞선 잠재 적응(Peng 외 2020, B.16.2)은 새 환경마다 실물 자료 4–8분(5–10 s 에피소드 50개)이 필요했다.
+아직 잘 걷지 못하는 정책으로 그 자료를 모으면 로봇이 넘어진다.
+
+**입력과 출력.** 상태 $x_t$는 관절 위치 12, 관절 속도 12, 몸통 roll·pitch 2, 발 접촉 4의 30차원이다.
+행동은 관절 목표 12개이고, 고정 이득 PD 제어기($K_p = 55$, $K_d = 0.8$)가 토크로 바꾼다.
+환경 벡터 $e_t$는 짐 질량과 위치 3, 모터 세기 12, 마찰 1, 발밑 높이 1의 17차원이다.
+발밑 높이는 네 발 밑 높이를 소수 첫째 자리로 자른 뒤 그 최댓값을 쓴 스칼라다. 빠르고 정확한 지형 인식에 기대지 않게 하려는 선택이다.
+
+**보상.** 열 항의 합이다. 전진 $\min(v_x, 0.35)$, 옆걸음과 회전, 일 $\lvert \boldsymbol\tau^\top (\mathbf q_t - \mathbf q_{t-1}) \rvert$, 지면 충격 $\lVert \mathbf f_t - \mathbf f_{t-1} \rVert^2$, 토크 변화, 행동 크기, 관절 속도, 자세, 수직 속도, 접지 발 미끄럼이다.
+가중치는 차례로 20, 21, 0.002, 0.02, 0.001, 0.07, 0.002, 1.5, 2.0, 0.8이다. 저자들은 일과 충격을 줄이는 생체 에너지 보상이 자연스러운 걸음새에 결정적이었다고 적는다.
+벌점을 처음부터 다 주면 제자리에 서 있기가 최선이 된다. 그래서 벌점 항에 계수 $k_t$를 곱하고 $k_0 = 0.03$에서 시작해 $k_{t+1} = k_t^{0.997}$로 키웠다(보충 자료).
+actuator net 논문(B.14.1)의 비용 커리큘럼을 따른 것이고, 시작값만 0.3 대신 0.03이다.
+
+**적응 모듈과 학습 자료.** 상태와 행동을 2층 MLP로 32차원에 묻고, 1D CNN 3층으로 시간 축을 합친 뒤 선형 사영으로 $\hat z_t$를 낸다.
+층마다 입력 채널·출력 채널·커널·보폭은 [32, 32, 8, 4], [32, 32, 5, 1], [32, 32, 5, 1]이다.
+학습 자료는 참값 $z_t$가 아니라 무작위로 초기화한 적응 모듈의 $\hat z_t$로 기본 정책을 굴려 모은다. 전문가 궤적만 쓰면 어긋난 상태를 보지 못하기 때문이다(배경 0.12의 DAgger와 같은 생각).
+저자들은 이력을 정책에 바로 넣는 단일 망도 시험했다. 걸음새가 부자연스럽고 성능이 낮았으며, 온보드에서 10 Hz로만 돌았다.
+
+**학습 규모.** 기본 정책과 인코더는 PPO로 15,000회 반복했고, 반복마다 전이 80,000개를 썼다. 데스크톱 GPU 한 장으로 약 24시간, 12억 스텝이다.
+적응 모듈은 1,000회 반복, 8,000만 스텝, 약 3시간이다. 지형은 RaiSim의 프랙털 생성기(z 축척 0.27)이고, 지형 커리큘럼은 없다.
+질량·마찰·모터 세기의 무작위화 폭만 학습이 진행되며 넓혔다. 마찰은 [0.05, 4.5]에서 배우고 [0.04, 6.0]에서 시험했고, 짐은 [0, 6] kg에서 배우고 [0, 7] kg에서 시험했다(표 I).
+
+**결과(시뮬레이션, 표 II).** 시험 중 환경 파라미터를 스텝당 0.01 확률로 다시 뽑았다. 정책 초기화 3개 × 에피소드 1,000개의 평균이다.
+
+| 방법 | 성공률 | 넘어지기까지 시간(정규화) |
+|---|---|---|
+| Expert(참값 잠재) | 76.2% | 0.86 |
+| RMA | 73.5% | 0.85 |
+| Robust(영역 무작위화만) | 62.4% | 0.80 |
+| SysID(파라미터 직접 추정) | 56.5% | 0.74 |
+| RMA, 적응 모듈 없음 | 52.1% | 0.75 |
+| AWR(시험 환경 rollout 40k 표본으로 잠재 최적화) | 41.7% | 0.65 |
+
+저자들은 SysID가 낮은 것을, 파라미터를 정확히 맞히는 일이 필요하지도 쉽지도 않다는 근거로 든다. 잠재는 행동을 바로잡는 데 필요한 만큼만 담으면 된다는 것이다.
+
+**결과(실물).** 실내 시험은 아래 그림 3이다. 방법마다 5회이고, 크게 실패한 방법은 2회만 돌렸다. 기름 바른 비닐 건너기는 90% 성공했다.
+야외에서는 모래·진흙·흙에서 실패가 없었고, 긴 풀과 덤불은 100%, 산길 계단 내려가기는 70%, 옆으로 비탈진 시멘트·자갈 더미는 80%였다. 학습 지형에는 계단도 무른 땅도 없었다.
+
+![RMA Fig. 3](https://arxiv.org/html/2107.04034v1/indoors-1.png)
+*그림 — RMA (Fig. 3): 실내 시험의 성공률·넘어지기까지 시간(TTF)·이동 거리와 짐 무게별 곡선이다. 성공률은 RMA·A1 기본 제어기·적응 모듈을 뺀 RMA 순으로 고르지 않은 폼 80·20·0%, 15 cm 내려서기 100·60·0%, 8 cm 올라서기 60·20·0%다. 짐 곡선에서 A1 제어기는 8 kg에서 약 80%, 12 kg에서 0%이고, RMA는 12 kg에서 약 80%다. 출처: [arXiv:2107.04034](https://arxiv.org/abs/2107.04034)*
+
+**한계.** 저자가 밝힌 것: 눈이 없어서, 계단을 내려가다 갑자기 떨어지거나 여러 다리가 돌에 걸리는 큰 외란에서는 가끔 실패한다. 멀리 내다보는 보행에는 외부 인식이 필요하다고 적는다.
+
+우리가 보기에:
+- 그림 3의 표와 캡션이 어긋난다. 표는 15 cm 내려서기 100%, 고르지 않은 폼 80%인데, 캡션은 둘을 바꿔 80%와 100%로 적었다.
+- 실물 시험은 방법마다 5회 이하이고, 야외 결과는 시도 횟수를 밝히지 않았다.
+- 원문은 제어 주기 100 Hz와 시뮬레이션 간격 0.025 s를 함께 적는다. 0.025 s는 40 Hz라 둘이 맞지 않는다.
+- 프로젝트 페이지가 가리키는 코드는 후속 연구(Cross-Modal Supervision, ICRA 2023)의 학습 코드이고 GPL-3.0이다. travplan에는 설계만 가져온다.
+
+**travplan에 주는 것.**
+1. 느리게 바뀌는 값은 따로 추정한다. GP 잔차(TP-0068)의 입력은 명령 twist, 직전 twist, 경사, 거칠기의 8차원이고, 모듈각도 화물 질량도 없다.
+   화물 질량처럼 한 배달 동안 거의 바뀌지 않는 값은 RMA가 적응 모듈을 낮은 주기로 따로 돌린 것처럼 별도 추정기로 둔다.
+2. 추정기의 학습 자료는 추정기 자신이 틀린 채로 굴린 궤적에서 모은다. Planner D의 DAgger(TP-0075, TP-0143)와 같은 원리이고, 지연 추정기를 학습할 때도 그대로 쓴다.
+3. 잠재에는 목표를 준다. RMA의 $z$는 특권 인코더의 출력을 지도 회귀로 따라간다.
+   Controller 문서 F.6.1은 비공식 DreamWaQ 구현에서 문맥 $z$가 붕괴한 원인을 KL 항과 복원 항의 척도 차이로 설명했다(TP-0155). belief 증류(TP-0055)나 학습 Controller에 잠재를 둔다면 목표가 있는 회귀부터 시작한다.
+
+</details>
+
+**VP-Nav — 비용 지도 위의 Planner가 경로를 내고 RMA 보행 정책이 따르며, 고유감각으로 감지한 것이 지도와 속도 상한으로 되돌아간다**([arXiv:2112.02094](https://arxiv.org/abs/2112.02094), Fu·Kumar(공동 1저자)·Agarwal·Qi·Malik·Pathak, CVPR 2022, CMU·UC Berkeley, [프로젝트](https://navigation-locomotion.github.io/), [Planner 코드](https://github.com/MarkFzp/navigation-locomotion) Apache-2.0).
+VP-Nav(Vision and Proprioception for Navigation)는 세 층이다. 시각 Planner는 깊이 카메라와 추적 카메라로 2D 점유 지도를 쌓는다.
+그 위에서 FMM(fast marching method)으로 구한 목표까지의 측지 거리에, 장애물에 0.3 m보다 가까우면 커지는 벌점을 더해 비용 지도를 만든다.
+속도 명령 생성기는 10 Hz로 비용이 가장 빨리 줄어드는 방향을 PD로 따라 각속도를 정하고, 지금 방향으로 비용이 계속 줄어드는 거리만큼 선속도를 정한다.
+보행 정책은 RMA 구조와 에너지 보상(Fu 2021)으로 RaiSim에서 배운 속도 조건 정책이다.
+안전 조언 모듈은 고유감각 이력(실물에서는 0.2 s)에서 두 확률을 낸다. 충돌 확률이 0.5를 넘으면 로봇 앞 지도에 9 cm × 3 cm 장애물 칸을 더한다.
+1초 안에 넘어질 확률이 0.5를 넘으면 속도 상한을 0.2 m/s 낮추고, 아니면 0.05 m/s씩 올린다.
+
+시뮬레이션은 Matterport3D·Gibson의 방 배치 200개를 RaiSim으로 옮기고 방마다 목표 10개를 두었다.
+보이지 않는 장애물을 2·4·8개 두면, 안전 조언이 성공률을 68.45%에서 74.15%로, 45.85%에서 59.20%로, 24.35%에서 39.25%로 올렸다.
+미끄럽고 거친 조각과 5초마다 싣고 내리는 8 kg 짐을 섞은 조건에서는 80.25%에서 87.40%가 됐고, 대신 도달 시간이 105.7 s에서 117.7 s로 늘었다.
+높이 5 cm 거친 조각을 둔 지형에서 바퀴 로봇 LoCoBot은 15.70%였고, 조각 위치를 알고 돌아가도 69.10%였다. VP-Nav는 95.05%였다.
+실물 A1은 카메라가 못 보는 유리벽에 부딪힌 뒤 지도에 장애물을 더하고 돌아가 8번 모두 지났고, 시각만 쓴 기준선은 한 번도 지나지 못했다.
+저자가 밝힌 한계는 보행 정책이 시각을 보지 않아 장애물을 넘지 못하고 돌아가기만 한다는 것이다.
+
+**travplan에 주는 의미.** 층 배치가 travplan과 같다. FMM Planner가 Guidance의 cost-to-go 경로 자리이고, 속도 명령 생성기가 Controller 자리다.
+보행 정책은 그 아래 plant 자리다(B.14.2 Robust Perceptive Locomotion 토글과 같은 해석).
+travplan에 없는 것은 실행 중의 되먹임이다. VP-Nav에서는 고유감각으로 감지한 것이 지도 칸과 속도 상한으로 Planner에 돌아간다.
+바퀴 로봇에서 같은 자리를 채울 신호는 명령과 실현 twist의 차이(미끄럼, 막힘)이고, 이 신호는 GP 잔차(TP-0068)가 이미 쓴다. 그 차이를 belief 지도 칸이나 속도 상한으로 돌리는 것이 VP-Nav의 안전 조언에 해당한다.
+
+![VP-Nav Fig. 2](https://arxiv.org/html/2112.02094v2/NaviLoco-method-plot2.png)
+*그림 — VP-Nav (Fig. 2): 시각 Planner(점유 지도 5 Hz, FMM 거리와 장애물 SDF로 만든 비용 지도 10 Hz)와 속도 명령 생성기(10 Hz)가 보행 정책(기본 정책 100 Hz, 적응 모듈 75 Hz)에 속도 명령을 준다. 아래의 안전 조언(10 Hz)은 고유감각 이력으로 넘어짐 예측기와 충돌 감지기를 돌려, 속도 제약과 지역 점유 지도 수정을 Planner로 되돌린다. 깊이 카메라는 30 Hz, 추적 카메라는 200 Hz다. 출처: [arXiv:2112.02094](https://arxiv.org/abs/2112.02094)*
+
+**자기 중심 깊이 보행(Agarwal 2022) — 높이 지도 없이 앞쪽 깊이 영상과 순환 기억으로 계단과 징검돌을 걷는다**([arXiv:2211.07638](https://arxiv.org/abs/2211.07638), Agarwal·Kumar(공동 1저자)·Malik·Pathak, CoRL 2022 구두 발표·Best Systems Paper Award, CMU·UC Berkeley, [프로젝트](https://vision-locomotion.github.io/)).
+높이 지도는 여러 깊이 영상을 자세 추정으로 이어 붙여야 하고, 자세가 틀리면 지도도 틀린다. 저자들은 지도를 만들지 않고, 정책이 GRU 기억으로 이미 지나간 몸 아래 지형을 기억하게 했다.
+1단계는 몸 둘레의 높이 점(scandots)을 보는 정책을 RL로 배우고, 2단계는 깊이 영상과 고유감각만 보는 학생에게 DAgger로 증류한다.
+한 갈래는 RMA 구조를 그대로 써서 지형 잠재와 환경 잠재를 따로 추정한다. 학습 환경은 legged_gym이고, 실물은 깊이 카메라(D435)를 단 A1이다.
+실물에서 높이 17 cm 계단 오르기·내려가기 100%, 징검돌 94%, 26 cm 틈 100%였고, 눈 없는 정책은 오르기·징검돌·틈에서 모두 0%였다.
+계단은 머리 안 앞쪽 카메라로, 징검돌과 틈은 따로 단 위쪽 카메라로 증류한 별도 정책이다(정책마다 카메라 한 대).
+시뮬레이션에서 Miki 2022(B.14.2)의 잡음 모델로 잡음을 섞은 높이 지도를 본 기준선은 징검돌에서 1.09 m만 갔다(제안 방법 18.83–20.72 m).
+같은 그룹의 Extreme Parkour([arXiv:2309.14341](https://arxiv.org/abs/2309.14341), ICRA 2024)가 이 두 단계 학습을 파쿠르로 넓혔고, 논문과 공개 코드를 읽은 결과는 Controller 문서 F.6.2에 있다.
+기술 다섯 개를 깊이 영상 정책 하나로 증류한 Robot Parkour Learning([arXiv:2309.05665](https://arxiv.org/abs/2309.05665), CoRL 2023, Zhuang·Fu 외)은 B.12.2에 있다.
+
+**travplan에 주는 의미.** travplan은 반대쪽에 걸었다. TravMap을 Planner와 Controller의 공통 표현으로 둔다.
+Controller 문서 E.12의 결론처럼 지도가 비싼 쪽은 기동력이 낮은 쪽이다. TP-0129의 파이썬 평가에서 지도 없이 학습한 정책은 사족이 12개 중 8개를, 스워브가 3개를 지났다.
+가져올 것은 값싼 특권 입력으로 RL을 하고 실물에서 얻을 입력으로 증류하는 두 단계 절차다. 지금 Planner D의 DAgger(TP-0075)는 교사와 학생이 같은 GT 지도를 보고(B.14.1), 학생을 belief 지도로 바꾸는 일이 TP-0055다.
+
+![자기 중심 깊이 보행 Fig. 1](https://arxiv.org/html/2211.07638v1/teaser.png)
+*그림 — 자기 중심 깊이 보행 (Fig. 1): A1이 깊이 카메라 한 대로 실내 스툴 징검돌(위쪽에 단 카메라가 보인다), 숲속 돌계단, 상자, 바위, 밤의 계단, 물가 바위, 여러 실내외 계단과 연석을 지난다. 출처: [arXiv:2211.07638](https://arxiv.org/abs/2211.07638)*
+
+**MIT(Pulkit Agrawal의 Improbable AI Lab과 Sangbae Kim의 Biomimetic Robotics Lab).** Rapid Locomotion(MIT)과 Ji 2022(KAIST)는 Biomimetic Robotics Lab의 Mini Cheetah([ICRA 2019](https://doi.org/10.1109/ICRA.2019.8793865), 키 약 0.3 m, 9 kg)를 실물로 썼다.
+그 공개 제어 코드는 [Cheetah-Software](https://github.com/mit-biomimetics/Cheetah-Software)(MIT 라이선스, ★3.3k)다.
+같은 연구실의 볼록 MPC([IROS 2018](https://doi.org/10.1109/IROS.2018.8594448), Di Carlo 외)는 몸통 동역학을 단순화해 지면 반력 계획을 볼록 최적화로 세운다. 최대 0.5 s 지평을 20–30 Hz로 1 ms 안에 풀어 Cheetah 3를 최고 3 m/s로 달리게 했다.
+Rapid Locomotion은 같은 로봇의 MPC 기록 3.7 m/s와 비교했고, Ji 2022(KAIST)의 실물 코드는 Cheetah-Software를 포크했다.
+Improbable AI Lab은 Mini Cheetah의 명령 공간 커리큘럼(Rapid Locomotion)에서 시작했다. 그 뒤 Unitree Go1으로 옮겨 사람이 고르는 걸음새 파라미터(Walk These Ways), 공 다루기(DribbleBot), 자기지도 노면 물성(ASMP)으로 이어 갔다.
+
+**Rapid Locomotion — 명령 격자 커리큘럼과 이력 기반 추정으로 Mini Cheetah가 3.9 m/s로 달린다**([arXiv:2205.02824](https://arxiv.org/abs/2205.02824), Margolis·Yang·Paigwar·Chen·Agrawal, RSS 2022, 확장판 [IJRR 43(4) 2024](https://doi.org/10.1177/02783649231224053), MIT Improbable AI Lab, [프로젝트](https://agility.csail.mit.edu/), [코드](https://github.com/Improbable-AI/rapid-locomotion-rl) MIT).
+넓은 명령 범위(전진 ±4 m/s, 회전 ±5 rad/s)를 처음부터 고르게 뽑으면 학습이 실패한다. 무작위 탐색이 빠른 몸 움직임을 거의 만들지 못해 보상이 거의 들어오지 않기 때문이다.
+저자들은 (전진, 회전) 명령 평면을 0.5 단위 격자로 나누고, 두 축의 추종 보상이 모두 문턱을 넘은 칸의 이웃으로 표집 분포를 넓혔다.
+두 축을 따로 넓히는 상자형과 달리, 격자형은 빠르게 달리면서 도는 조합의 어려움을 반영한다(아래 그림).
+학습 코드는 legged_gym에서 시작했고, 15스텝 이력에서 환경을 추정하는 학생을 교사와 함께 학습했다(RMA와 Lee 2020의 절차, B.14.1). 센서는 관절 엔코더와 IMU뿐이고 평지에서만 학습했다.
+실내 모션 캡처에서 세 시드 평균 3.8 m/s, 최고 3.9 m/s를 유지했고, 잔디 10 m는 2.94 s(평균 3.4 m/s)에 달렸다.
+6.0 m/s 명령에서 실물은 시뮬레이션보다 1.65 m/s 느렸고(5.46 대 3.81 m/s), 이력 추정을 빼면 그 차이가 2.58 m/s로 커졌다(5.07 대 2.49 m/s).
+저자들은 자갈 경사와 걸림 턱에서 같은 로봇의 MPC가 회복하지 못한 장면을 보이면서도, MPC로 그런 강건성을 얻을 수 없다고 주장하는 것은 아니라고 적었다.
+Walk These Ways([arXiv:2212.03238](https://arxiv.org/abs/2212.03238), Margolis·Agrawal, CoRL 2022)는 이 격자 커리큘럼 위에서 걸음새·걸음 주파수·발 높이·몸 높이·자세 같은 행동 파라미터 8개를 사람이 현장에서 고르게 한 Go1 정책이다. 구조와 Go2 이식 코드, MuJoCo sim2sim 실측은 Controller 문서 F.6.1과 E.15(TP-0155)에 있다.
+
+**travplan에 주는 의미.** 격자 커리큘럼을 travplan 지형 레벨 표집으로 옮기는 방법(칸은 (시나리오, 레벨), 문턱은 도달률)과 MIT 라이선스 코드는 Controller 문서 F.6.1의 '주는 것 4'에 있다.
+이 카드가 더하는 것은 원 논문의 근거다. 균등 표집은 학습 자체를 실패시켰고, 격자형은 모든 오차 문턱에서 상자형보다 넓은 명령 넓이를 덮었다.
+6.0 m/s 명령의 격차가 이력 추정으로 2.58에서 1.65 m/s로 준 것은, 모델 격차를 예측 쪽(추정기나 rollout)에 넣으면 준다는 TP-0150과 같은 교훈이다.
+
+![Rapid Locomotion Fig. 3b](https://arxiv.org/html/2205.02824v1/curr_heatmaps_v3.png)
+*그림 — Rapid Locomotion (Fig. 3b): 전진 속도 명령(가로, −6–6 m/s)과 회전 속도 명령(세로, −6–6 rad/s)별 추종 오차로, 위는 전진 축, 아래는 회전 축이고 어두울수록 작다. 커리큘럼이 없으면(왼쪽) 제자리에서 떨기만 해 오차가 명령 크기와 같다. 상자형(가운데)은 명령 공간의 끝을 놓치고, 격자형(오른쪽)은 달리며 도는 조합의 어려움을 반영해 더 넓은 영역을 덮는다. 출처: [arXiv:2205.02824](https://arxiv.org/abs/2205.02824)*
+
+**DribbleBot — 어안 카메라로 공을 보며 모래·눈·잔디에서 드리블한다**([arXiv:2304.01159](https://arxiv.org/abs/2304.01159), Ji·Margolis(공동 1저자)·Agrawal, ICRA 2023, MIT Improbable AI Lab, [프로젝트](https://gmargo11.github.io/dribblebot/), [코드](https://github.com/Improbable-AI/dribblebot) MIT).
+Walk These Ways의 걸음 시계와 보상을 이어받아, Go1이 사람이 준 공 속도 명령(세계 좌표)을 따라 드리블한다.
+공과 지면의 상호작용은 강체 시뮬레이터가 주지 못해서, 속도 제곱에 비례하는 항력 $F_D = C_D v^2$의 계수를 무작위화했다.
+공 위치는 시야 210°의 어안 카메라 두 대 영상에서 YOLOv7로 찾는다. 로봇 카메라로 찍어 손으로 라벨한 어안 영상 254장으로 미세 조정했고, 미세 조정을 빼면 시험한 네 지형(타일·잔디·모래·눈)에서 모두 0/4였다.
+넘어져 roll이나 pitch가 1.0 rad를 넘으면 회복 정책으로 바꾸고, 0.5 rad 아래로 돌아오면 드리블 정책으로 되돌린다.
+실물 시험(정해진 궤적, 지형마다 4회)에서 타일·잔디·모래 4/4, 눈 3/4, 연석 내려서기 2/4, 경사로 0/4였다. 학습에 없던 연석과 경사로가 가장 어려웠다.
+
+**travplan에 주는 의미.** 직접 쓸 기법은 작고, 관찰 둘이 남는다. 실물 성공을 가른 것은 제어 쪽 장치보다 인식 미세 조정이었다.
+아직 시작하지 않은 보행자 검출 PoC(TP-0011, Isaac Sim 카메라 대상)에 옮기면, Controller를 손보기 전에 검출기를 로봇 카메라 시점의 영상으로 미세 조정하는 일이 먼저다.
+다른 하나는 두 정책 사이 전환에 히스테리시스(1.0 rad에서 넘기고 0.5 rad에서 되돌림)를 둔 것이다. TP-0078 폴백이 치명 비율 조건의 연속(3번)과 유지(20번)를 둔 것과 같은 목적이다.
+
+![DribbleBot Fig. 2](https://arxiv.org/html/2304.01159v1/sim2real_measuresB.png)
+*그림 — DribbleBot (Fig. 2): sim-to-real 장치 셋. (1) 표준 보정 영상 대신 넓은 어안 영상에서 공을 직접 찾는다. (2) 공 항력 F_d를 무작위화해 시뮬레이션에서 배우고 타일·잔디·모래·눈에 배포한다. (3) 분포 밖에서 넘어지면 회복 정책이 일으키고 드리블로 돌아간다. 출처: [arXiv:2304.01159](https://arxiv.org/abs/2304.01159)*
+
+같은 연구실의 ASMP(Active Sensing Motor Policies, [arXiv:2311.01405](https://arxiv.org/abs/2311.01405), Margolis·Fu·Ji·Agrawal, CoRL 2023)는 자기지도 노면 물성 추정이다.
+시뮬레이션에서 배운 고유감각 마찰 추정기로 실물 주행 영상의 밟은 칸에 라벨을 붙이고, 그 추정이 정확해지도록 발로 땅을 쓸어 보는 걸음을 RL로 배운다. Go1의 15분 주행으로 배운 시각 모듈이 드론 영상에서도 마찰 지도를 냈다.
+TravNet 자기지도 라벨(TP-0010)과 같은 발상이고, 라벨을 모으는 행동까지 학습한다는 점이 다르다.
+
+**KAIST RaiLab(Jemin Hwangbo).** 자체 로봇(Raibo, 라이보2)과 자체 시뮬레이터 RaiSim을 함께 만들어, 시뮬레이션에서 배운 정책이 실물에서 버티는 데 필요한 것을 하나씩 채웠다. 상태 추정, 무른 지면의 접촉, 에너지 손실이다.
+정책·상태 추정기 동시 학습([arXiv:2202.05481](https://arxiv.org/abs/2202.05481), Ji·Mun·Kim·Hwangbo, RA-L 7(2)·ICRA 2022)은 몸통 선속도·발 높이·접촉 확률을 내는 추정망을 정책과 함께 RaiSim에서 학습했다.
+그 정책으로 Mini Cheetah가 평지에서 3.75 m/s, 마찰 계수 0.22 판 위에서 3.54 m/s로 달렸다. 이 추정기 방식이 Walk These Ways·DribbleBot·ASMP의 추정기가 됐고, DreamWaQ는 이것을 기준선 EstimatorNet으로 삼았다(Controller 문서 F.6.1).
+학습 FDM과 정보 샘플러([arXiv:2204.08647](https://arxiv.org/abs/2204.08647), Kim·Kim·Hwangbo, RSS 2022)는 명령열의 미래 위치와 충돌 확률을 예측해 샘플링 MPC에 넣는다.
+방법은 MPC 문서 M.1.3에 있고, ETH의 FDM(RSS 2025, B.14.3)이 이것을 앞선 FDM 기준선으로 비교했다.
+같은 연구실의 Crop-LSTM([arXiv:2309.02745](https://arxiv.org/abs/2309.02745), Lee·Choi·Ryu·Oh·Choi·Hwangbo, [RA-L 9(5) 2024](https://doi.org/10.1109/LRA.2024.3371910))은 1/5 크기 오프로드 RC 차체로 만든 바퀴 로봇 Raicart에서 나왔다.
+로봇 둘레에서 잘라 낸 RGBD 영상 조각을 예측 궤적을 따라 차례로 읽어 3초 앞까지의 위치·방향·흔들림(bumpiness)을 내고, 비포장 실외의 point-goal 내비에 썼다. 학습 FDM 계획(TP-0126)과 같은 모양을 바퀴 로봇에서 보인 예다.
+Raibo의 고속 내비([arXiv:2506.02835](https://arxiv.org/abs/2506.02835), Kim 외, Science Robotics 10(102) 2025)는 발 디딤 Planner와, 지도 생성기와 경쟁하며 학습한 추종기로 벽·계단·징검돌을 최고 4 m/s로 지났다.
+방법은 인식 문서 A.7.1에, 물리 rollout으로 후보를 고르는 구조는 MPC 문서 M.1.3에 있다.
+
+**변형 지형 보행(Choi 2023) — 모래의 접촉을 RL 시뮬레이터에 넣을 만큼 가볍게 모델링해, Raibo가 발이 묻히는 해변 모래를 3.03 m/s로 달렸다**([DOI 10.1126/scirobotics.ade2256](https://doi.org/10.1126/scirobotics.ade2256), Choi·Ji·Park·Kim·Mun·Lee·Hwangbo, Science Robotics 8(74) 2023, KAIST RaiLab, [KAIST 보도자료](https://news.kaist.ac.kr/newsen/html/news/?mode=V&mng_no=26590)).
+시뮬레이션 RL 정책은 겪어 보지 않은 환경에서 잘하지 못한다. 강체 접촉만 아는 시뮬레이터에서 배운 정책에게 발이 묻히는 모래는 분포 밖이다(초록).
+저자들은 선행 연구가 정의한, 입자 매체의 부가 질량(added mass) 효과를 고려한 지면 반력 모델을 바탕으로 발의 운동에서 접촉력을 예측하는 접촉 모델을 세웠다.
+수직력은 부가 질량 효과를, 수평력은 쿨롱 마찰을 따른다. 접촉은 한 점에서 일어난다고 근사하고, 발 옆면이 받는 지면 저항을 따로 넣었다.
+시간 단계마다 접촉 하나 또는 여러 개의 힘만 풀어서 RL 학습에 쓸 만큼 가볍다. 파라미터를 바꾸면 아주 무른 해변 모래부터 단단한 아스팔트까지 나타낸다(초록).
+정책은 센서 시계열을 읽는 순환 신경망으로 지면 성질을 암묵적으로 추정하고, 그 추정으로 걸음을 바꾼다.
+
+Raibo는 연구실이 직접 만든 사족 로봇이다. 학습한 제어기 하나로 해변 모래를 최고 3.03 m/s로 달렸고, 이때 발은 접지 동안 모래에 완전히 묻혔다.
+같은 정책이 비닐 타일·육상 트랙·풀밭을 달렸고, 에어 매트리스 위에서 1.54 rad/s(초당 약 90°)로 돌았다.
+저자들은 지면을 강체로 가정한 제어기와 비교해, 학습 때 알맞은 접촉 경험을 주는 것이 중요하다는 것을 보였다(보도자료).
+본문은 유료이고 arXiv 판과 공개 코드는 없다(2026-10-07 확인). 그래서 이 카드는 초록, 보도자료, 연구실 그림, 같은 제목의 1저자 석사 논문 초록(KAIST, 2022년 8월 학위)에서 확인한 것만 적는다.
+
+**travplan에 주는 의미.** 결론은 배포할 지면의 접촉 경험이 학습 분포에 있어야 한다는 것이다.
+travplan L0 미끄럼(TP-0033)은 경사와 거칠기에서 미끄럼비를 뽑아 실제 이동을 줄이는 가장 값싼 단계다. 그 위의 단계(준경험 토양 모델, 연속체 입자, 이산 요소법)는 시뮬레이션 문서 S.5.4가 비용 순으로 정리했다.
+이 접촉 모델은 그 사이의 실용적인 중간 단계다. 다만 발을 한 점으로 보는 모델이라 구르며 미끄러지는 바퀴에는 그대로 맞지 않는다.
+바퀴 로봇이 가져올 것은 구조다. 센서 이력에서 노면 성질을 잠재로 추정해 Controller에 넣는 것이고, RMA 카드의 교훈과 같다.
+travplan의 운행 영역은 대부분 포장 보도라, 이 계열이 직접 닿는 곳은 잔디 가장자리, 공원 흙길, 눈 덮인 보도다.
+
+![변형 지형 보행 그림 1](https://railab.kaist.ac.kr/_images/VariousTerrains.png)
+*그림 — 변형 지형 보행 (KAIST 보도자료 그림 1): 무작위화한 입자 지면 시뮬레이션에서 배운 제어기 하나로 Raibo가 여러 지면을 달린다. 위 두 장은 해변 모래에서 모래를 튀기며 달리고 선 모습이다. 나머지는 실내 매트와 바닥, 모래 섞인 풀밭, 마른 잔디와 푸른 잔디, 자전거 보관소 앞 포장면, 보도, 육상 트랙, 실내 모래판이다. 출처: [RaiLab 연구 페이지](https://railab.kaist.ac.kr/sections/research.html), [KAIST 보도자료](https://news.kaist.ac.kr/newsen/html/news/?mode=V&mng_no=26590)*
+
+![변형 지형 보행 그림 2](https://railab.kaist.ac.kr/_images/DeformableContactModel.png)
+*그림 — 변형 지형 보행 (KAIST 보도자료 그림 2): 입자 지면 접촉 모델. (A) 발(intruder)이 박히면 발 밑에 자라는 입자 원뿔이 생기고, 원뿔 바닥에 반력 F_GM이 걸린다. (B) 접촉점의 마찰 원뿔(μF_GM)과 충돌 속도, 접촉 충격량 성분(λ_t, λ_z), 접촉 야코비안과 질량 행렬의 역(J_c, M⁻¹). (C) 발이 박히며 생긴 충돌 구덩이(왼쪽)와, 발이 옆으로 움직여 가장자리를 파고들 때 받는 측면 힘 F_HSR(오른쪽). 출처: [RaiLab 연구 페이지](https://railab.kaist.ac.kr/sections/research.html), [KAIST 보도자료](https://news.kaist.ac.kr/newsen/html/news/?mode=V&mng_no=26590)*
+
+<details markdown="1">
+<summary>자세히: 변형 지형 보행의 접촉 모델과 결과, 공개 자료로 확인한 범위</summary>
+
+**자료의 범위.** 본문과 보충 자료는 유료다. 이 토글은 공개된 초록(Science Robotics), KAIST 보도자료(국문·영문, 2023-01-26), RaiLab 연구 페이지의 그림, 같은 제목의 1저자 석사 논문 초록에서 확인한 것만 적는다.
+석사 논문은 KAIST 학위 기록으로 2022년 8월이지만, 저장소 기록은 2023-06-22에 공개됐고 원문 파일은 없다. 식과 표, 시도 횟수는 확인하지 못했다.
+
+**풀려는 문제.** 시뮬레이션 RL은 다리 로봇 제어를 크게 바꿨지만, 무르고 변형되는 지면에서 빠르게 걷는 정책은 없었다.
+저자들은 원인을 자료 분포로 본다. 정책은 겪어 보지 않은 환경에서 잘하지 못하는데, 강체 접촉 시뮬레이터는 모래의 접촉을 주지 못한다.
+
+**접촉 모델(위 그림 2).** 보도자료가 적은 구성은 넷이다.
+- 수직력은 선행 연구가 정의한, 입자 매체의 부가 질량 효과를 고려한 지면 반력 모델을 따른다. 그림 A의 '자라는 입자 원뿔'은 빠르게 박히는 발 밑에 눌려 쌓이는 알갱이이고, 원뿔 바닥(A_flat)에 반력 F_GM이 걸린다.
+- 수평력은 쿨롱 마찰이다. 그림 B는 접촉점의 마찰 원뿔, 충돌 속도, 접촉 충격량 성분, 접촉 야코비안과 질량 행렬의 역을 표시한다.
+- 접촉은 한 점에서 일어난다고 근사하고, 시간 단계마다 접촉 하나 또는 여러 개의 힘을 푼다. 저자들은 이것을 계산 효율의 근거로 든다.
+- 발 옆면의 지면 저항을 따로 둔다. 그림 C는 구덩이의 기하(r_c, γ_c, z_max)와 측면 힘 F_HSR, 그 작용 거리 d_HSR를 표시한다. 기호의 정의는 본문에 있다.
+
+부가 질량 효과의 뜻은 후속 연구가 풀어 적었다. MILD([arXiv:2608.19955](https://arxiv.org/abs/2608.19955), RA-L 11(2) 2026, 이족 보행)는 빠르게 박히는 물체 밑에 알갱이가 눌려 쌓이고, 그 알갱이가 함께 움직이는 질량처럼 반력을 더한다고 설명한다.
+같은 논문은 이런 원뿔 모델의 수직 반력을, 깊이에 따른 준정적 관입 저항과 부가 질량의 운동량 변화 항의 합으로 정리한다. 그리고 이 논문의 모델을 발 중심 한 점의 원뿔 모델('Con-Cone')로 부르며 기준선으로 비교했다.
+부가 질량 효과의 출처로는 Aguilar·Goldman(Nature Physics 2016)을 든다. 이 논문의 정확한 식과 파라미터는 본문이 유료라 확인하지 못했다.
+
+**적응 구조.** 순환 신경망이 로봇 센서의 시계열을 읽어 지면 특성을 암묵적으로 예측하고, 그 예측이 정책의 걸음을 바꾼다(보도자료).
+초록은 이를 로봇이 지면을 느끼면서 지형 성질을 암묵적으로 식별하는 적응 제어 구조라고 부른다. 저자들은 제안한 순환망이 지반 성질에 따라 보행 방식을 바꾼다는 것을 보였다고 적는다.
+
+**결과(공개 자료의 수치).**
+- 해변 모래에서 3.03 m/s. 접지 동안 발이 모래에 완전히 묻혔다(초록).
+- 에어 매트리스 위에서 1.54 rad/s(초당 약 90°) 회전. 지면이 갑자기 물러지는 상황에도 빠르게 적응했다(보도자료).
+- 같은 정책이 비닐 타일 바닥, 육상 트랙, 풀밭, 무른 에어 매트리스에서 달렸다(초록). 석사 논문 초록은 젖은 모래, 흙, 단단한 아스팔트를 든다.
+- 지면을 강체로 가정한 제어기와 비교해, 학습 때 알맞은 접촉 경험을 주는 것이 중요함을 보였다(보도자료). 그 비교의 수치는 확인하지 못했다.
+
+**이어진 연구.** 같은 연구실은 라이보2로 마라톤을 완주했다(이 소절의 라이보2 카드).
+Georgia Tech의 Kamohara 외([arXiv:2609.10286](https://arxiv.org/abs/2609.10286), 2026-09, 휴머노이드)는 이 계열이 수직력만 입자 물리로 두고 접선력은 쿨롱 마찰 같은 휴리스틱으로 채운다고 지적했다.
+그 대안으로 3D RFT(resistive force theory)에서 접선력까지 유도한 모델을 Isaac Lab에 넣고, Newton의 MPM(material point method) 시뮬레이션으로 평가했다(시뮬레이션 문서 S.1.2).
+
+**한계.** 저자가 밝힌 한계는 본문이 유료라 확인하지 못했다.
+
+우리가 보기에:
+- 공개 자료의 수치는 대표 시연(최고 속도, 회전 속도)이고, 시도 횟수와 성공률은 확인하지 못했다.
+- 모델은 발 하나를 한 점으로 본다. 바퀴처럼 접지가 선이나 면이고 구르며 미끄러지는 접촉에는 그대로 맞지 않는다. 바퀴에는 S.5.4의 Bekker–Wong·Janosi 식이 출발점이다.
+
+**travplan에 주는 것.**
+- 미끄럼은 학습 쪽에서 먼저 넣는다. TP-0149의 하락은 rollout이 plant 지연을 모른 탓이었다.
+  TP-0150에서 미끄럼까지 rollout에 넣은 `mppi_plant`는 치명을 줄였지만, 도달이 지연만 넣었을 때의 239/360에서 189/360으로 줄어 선택 항목이 됐다(MPC 문서 M.3.22). 그래서 미끄럼은 rollout보다 학습 환경 쪽(L0 미끄럼을 켠 후학습)에서 먼저 시험한다.
+- 노면 종류는 아직 지도에 없다. TravMap에는 노면(재질) 채널이 없고, L0와 plant의 미끄럼은 경사·거칠기 채널로 정한다(`robot/plant.py`).
+  노면 종류에 따라 미끄럼을 바꾸려면 의미 채널(인식 문서 A.11의 시각 기반 모델 경로)이 먼저 있어야 한다.
+- 침하는 요구 사항이 된 뒤에 본다. TP-0059가 계획한 Isaac 마찰 패치도 기하로는 평평한 미끄럼만 다룬다. 바퀴가 빠지는 잔디·모래가 요구 사항이 되면 S.5.4의 토양 모델과 함께 본다.
+- 노면 잠재. 순환망이 지면 성질을 추정해 정책에 넣는 구조는 RMA와 같다. 바퀴 로봇에서는 바퀴 속도와 몸통 속도의 차이(미끄럼비)가 그 신호다.
+  실물 주행 기록이 생기면(TP-0043) GP 잔차(TP-0068)의 입력에 노면 잠재를 더하는 것부터 시험한다.
+
+</details>
+
+**라이보2(Lee 2026) — 기구·전장·보행 정책을 한 에너지 손실 모델로 설계해, 한 번 충전으로 마라톤 풀코스를 완주했다**([DOI 10.1038/s41586-026-11102-5](https://doi.org/10.1038/s41586-026-11102-5), Lee·Youm·Park(공동 1저자) 등 18명, Nature 2026-09-23, 프리프린트 [Research Square 2025-03-26](https://doi.org/10.21203/rs.3.rs-6040970/v1), KAIST RaiLab, [KAIST 보도자료](https://news.kaist.ac.kr/news/html/news/?mode=V&mng_no=67550)).
+사족 로봇은 몸무게를 받치느라 관절에서 계속 에너지를 쓰고, 발이 땅에 닿을 때마다 운동 에너지를 잃는다(초록).
+저자들은 로봇 전체의 에너지 손실 모델을 세우고, 힘이 잘 전달되는(force-transparent) 가벼운 기구, 저항이 낮은 모터 구동 회로, 에너지를 덜 흩뜨리는 보행 정책을 함께 설계했다.
+보행 정책은 RaiSim에 경사·계단·빙판길을 만들어 RL로 학습했다(KAIST 보도자료 2024-11-17).
+라이보2는 2024-11-17 상주 곶감 마라톤에서 배터리를 바꾸지 않고 42.195 km를 4시간 19분 52초에 완주했다.
+전체 수송 비용(TCOT, total cost of transport)은 0.25로 사람 기준 0.37보다 낮고, 충전당 주행 거리는 기존 사족 로봇의 세 배가 넘는다.
+2024-09의 첫 도전에서는 다른 주자들에 맞춰 속도를 자주 바꾸느라 배터리가 예상보다 10 km 일찍, 37 km 지점에서 바닥났다(KAIST 보도자료 2024-11-15).
+보행 정책의 학습 코드와 보상 항 제거 시험 코드는 [raisimGym_nature](https://github.com/railabatkaist/raisimGym_nature)(MIT, RaiSim 필요)로 공개됐다(논문의 코드 공개 절). 시험 스크립트는 구동기 줄열 손실, 발 충돌 손실, 지면 반력 평활 항을 하나씩 뺀 정책을 함께 싣는다.
+제품화는 연구실에서 출발한 교원창업기업 라이온로보틱스가 맡는다.
+
+**travplan에 주는 의미.** 배달로봇의 운용도 충전당 거리로 정해진다. travplan MPPI 비용(`control/mppi/costs.py`)에는 부드러움(명령 변화율)·옆 이동·후진 벌점은 있지만 에너지 항은 없다.
+KAIST는 첫 도전에서 배터리가 예상보다 10 km 일찍 바닥난 원인으로 잦은 속도 변화를 들었다.
+그래서 아직 열려 있는 실물 주행 프로토콜(TP-0043)의 첫 주행 기록 항목에, 마라톤 때처럼 전압·전류·온도·배터리 상태를 GPS의 위치·속도·고도와 동기화해 남기는 일을 넣는다.
+그 기록으로 부드러움 항이 에너지를 얼마나 대신하는지부터 잰다. 공개 코드의 보상 항 제거 시험(구동기 줄열 손실, 지면 반력 평활)은 에너지 항 후보를 고를 때 참고가 된다.
+
+![라이보2 Fig. 1](https://media.springernature.com/lw1200/springer-static/image/art%3A10.1038%2Fs41586-026-11102-5/MediaObjects/41586_2026_11102_Fig1_HTML.png)
+*그림 — 라이보2 (Fig. 1): (a) 마라톤 참가자들 사이를 달리는 라이보2. (b) 전체 손실 분석에서 기구·전기 회로·보행 정책의 손실 감축으로 이어지는 설계 흐름과 트랙 실측(TCOT 0.25, 주행 거리 65 km). (c) 상주 코스(42.195 km, 그림 표기 'Total elevation' 286 m, 최대 경사 18.4°, 기록 4시간 19분 52초). (d) 질량 대 수송 비용으로, 연료차·전기차·동물·보행 로봇 사이에 라이보2가 있다. (e) 배터리 용량 대 주행 거리로, 라이보2(1,447 Wh와 1,930 Wh)가 Spot·ANYmal·B2 같은 다른 사족 로봇의 추세에서 크게 벗어나 있다. 출처: [Nature](https://doi.org/10.1038/s41586-026-11102-5)*
+
+**ABS(Agile But Safe) — 학습한 도달-회피 가치가 빠른 정책을 감시하고, 그 가치를 제약으로 둔 작은 최적화로 회복 명령을 고른다**([arXiv:2401.17583](https://arxiv.org/abs/2401.17583), He·Zhang(공동 1저자)·Xiao·He·Liu·Shi, RSS 2024 Outstanding Student Paper Award 최종 후보, CMU LeCAR Lab·ETH Zürich, [프로젝트](https://agile-but-safe.github.io/), [코드](https://github.com/LeCAR-Lab/ABS) CC BY-NC 4.0).
+B.9가 이 연구를 위험 인지 로컬 내비의 한 구조로 소개했다(시뮬레이션 성공 79.1%, 충돌 5.7%). 이 카드는 감시와 회복이 어떻게 학습되는지와 그 대가를 본다.
+네 모듈을 모두 시뮬레이션에서 학습한다. 빠른 정책은 목표 위치와 방향을 받아 장애물을 피하며 관절 목표를 낸다. 속도 명령을 따르는 대신, 에피소드 마지막 몇 초 동안 목표에 가까이 있으면 보상을 받는다.
+도달-회피(RA, reach-avoid) 가치망은 빠른 정책을 굴린 20만 에피소드에서, 지금 상태에서 이 정책으로 가면 부딪히지 않고 목표에 닿는지를 배운다.
+가치가 문턱(−0.05) 이상이면 회복 정책이 넘겨받고, 가치를 문턱 아래로 두면서 목표에 가장 다가가는 twist를 따라간다. 외부 인식은 깊이 영상에서 예측한 광선 거리 11개뿐이다.
+Unitree Go1이 실물에서 최고 3.1 m/s로 달렸다. 세 시험장(어두운 좁은 복도, 가구가 있는 홀, 야외)에서 각 10회씩 돌린 비교에서 충돌 합은 ABS 1회, 빠른 정책만 7회, 제약 RL(PPO-Lagrangian) 4회였다.
+
+**travplan에 주는 의미.** 폴백 규칙을 학습된 기준으로 세운다는 제안은 B.9의 ABS 소개에 있다.
+지금의 손으로 짠 규칙(TP-0078)은 새 표본 16개 가운데 치명 비율 0.9 이상인 계획이 3번 이어지면 Guidance 경로를 후보로 넣고(20번 유지), 같은 선택기 점수에서 이기면 그 경로를 넘긴다(B.15.2).
+이 카드가 더하는 것은 셋이다. 첫째, 라벨 정의는 벤치마크 판정(치명 셀 진입, 보행자 충돌, 목표 거리)을 그대로 쓰되 충돌 직전 몇 스텝을 부드럽게 다시 매긴다. ABS에서 이것을 빼면 시뮬레이션 충돌이 5.7%에서 14.7%로 늘었다.
+둘째, 학습 자료는 새로 모아야 한다. 벤치마크는 에피소드마다 지표 한 줄과 xy 궤적만 남기는데(`run_benchmark.py`), 가치망은 스텝마다 몸통 twist·목표 상대 위치·외부 인식을 본다.
+셋째, 가치는 정책에 조건이 걸려 있어서 Planner D를 다시 후학습할 때마다(TP-0066, TP-0138) 새로 배워야 한다.
+
+![ABS Fig. 1](https://arxiv.org/html/2401.17583v3/firstpage-showoff.png)
+*그림 — ABS (Fig. 1): Go1이 휘두르는 다리(a), 움직이는 유모차(c), 눈밭의 사람(d)을 피한다. 가구가 있는 홀(e, 평균 2.1 m/s, 최고 2.9 m/s), 어두운 복도(f, 1.5 m/s, 2.5 m/s), 야외(g, 2.3 m/s, 3.0 m/s)를 지나고, (b)는 최고 3.1 m/s 질주다. 아래 띠의 초록은 빠른 정책이, 빨강은 회복 정책이 몬 구간이다. 출처: [arXiv:2401.17583](https://arxiv.org/abs/2401.17583)*
+
+![ABS Fig. 2](https://arxiv.org/html/2401.17583v3/ABS-crop.png)
+*그림 — ABS (Fig. 2): (a) 학습. 1단계에서 빠른 정책과 회복 정책을 RL로 배우고, 2단계에서 빠른 정책의 rollout으로 RA 가치망과 광선 예측망을 지도 학습한다. (b) 배포. 가치가 문턱보다 낮으면 빠른 정책이, 문턱 이상이면 회복 정책이 50 Hz로 관절 목표를 내고, PD 제어기가 200 Hz로 따른다. 광선 예측은 40 Hz다. 출처: [arXiv:2401.17583](https://arxiv.org/abs/2401.17583)*
+
+<details markdown="1">
+<summary>자세히: ABS의 도달-회피 가치, 회복 탐색, 학습과 결과</summary>
+
+**풀려는 문제.** 다리 로봇의 충돌 회피는 대부분 1 m/s 아래에서만 보였다. 경로 계획과 보행 제어를 나누면 위 층은 아래 층의 추종 오차를 모르므로 보수적으로 명령해야 한다.
+반대로 RL 정책 하나에 회피까지 맡기면 빠르지만 안전을 보장하지 못한다. ABS는 빠른 정책을 그대로 두고, 그 정책이 실패할지 예측하는 감시기와 실패 직전에 넘겨받는 회복 정책을 더한다.
+Controller 문서 C.4가 말하는 감시와 개입의 구조를 모두 학습으로 만든 것이다.
+
+**도달-회피 가치.** 실패 집합은 $\zeta(s) > 0$인 상태(원하지 않는 충돌)이고, 목표 집합은 $l(s) \le 0$인 상태다. 정책 $\pi$로 굴려 실패 없이 목표에 닿는 상태의 가치는 0 이하다.
+수축이 보장되도록 할인한 RA 벨만 식을 쓴다(Hsu 외, RSS 2021).
+
+$$ V^\pi_{\mathrm{RA}}(s) = \gamma_{\mathrm{RA}} \max\{\zeta(s), \min\{l(s), V^\pi_{\mathrm{RA}}(f(s, \pi(s)))\}\} + (1-\gamma_{\mathrm{RA}}) \max\{l(s), \zeta(s)\} $$
+
+$\gamma_{\mathrm{RA}} < 1$이면 이 값은 참 RA 가치를 아래에서 근사하므로, $V \le 0$인 상태는 실제로 도달-회피 집합 안에 있다. 저자들은 $\gamma_{\mathrm{RA}} = 0.999999$를 썼다.
+앞선 연구와 달리 가치를 빠른 정책에 조건으로 걸었다. 그래서 rollout을 먼저 모은 뒤 따로 학습할 수 있다.
+
+**라벨과 입력.** 목표 함수는 $l(s) = \tanh \log(d_{\text{goal}} / \sigma_{\text{tight}})$로 두어 $(-1, 1)$에 묶었다($\sigma_{\text{tight}} = 0.5$ m).
+충돌 지시 $\zeta = 2 \cdot \mathbb 1(\text{충돌}) - 1$은 계단 함수라 Lipschitz 연속이 아니다. 그래서 충돌이 나면 직전 10스텝의 값을 −0.8, −0.6, …, 1.0으로 다시 매겼다.
+가치망 입력은 몸통 twist, 목표의 상대 xy, 광선 거리 11개다. 관절 상태는 차원이 높고 목표 도달과 관계가 적어 뺐다. 자료는 가장 어려운 장애물 배치에서 빠른 정책을 굴린 20만 에피소드다.
+
+**회복 탐색.** 가치가 문턱 $V_{\text{threshold}} = -0.05$ 이상이면, 0.05 s 뒤의 목표 거리를 가장 줄이면서 가치를 문턱 아래에 두는 twist를 찾는다.
+
+$$ tw^c = \arg\min\, d_{\text{goal}}^{\text{future}} \quad \text{s.t.} \quad \hat V([tw^c; G^c_{x,y}; R]) < V_{\text{threshold}} $$
+
+현재 twist에서 시작해 라그랑주 승수를 둔 경사 하강을 하면 5스텝 안에 풀린다. 회복 정책은 외부 인식 없이 이 twist만 따라가도록 학습했고, 최대 감속을 위해 무릎이 땅에 닿는 것도 허용했다.
+
+**빠른 정책의 보상.** 목표 추종 항은 에피소드 끝 $T_r$초 동안에만 준다.
+
+$$ r_{\text{track}} = \frac{1}{1 + \lVert e / \sigma \rVert^2} \cdot \frac{\mathbb 1(t > T - T_r)}{T_r} $$
+
+그 전에는 어떻게 가든 제약이 없어 최대한 빨리 가는 걸음이 나온다. 여기에 몸통 전진 속도를 4.5 m/s로 나눈 민첩 항, 머뭇거림 벌점, 충돌 벌점(−100)이 더해진다.
+표 IV는 이 목표 도달식을 같은 정규화 보상으로 다시 학습한 Rapid Locomotion식 속도 추종 정책과 비교한다. 목표 도달식은 gallop이 나왔고, 실물 최고 속도가 3.1 대 2.5 m/s였다. 시뮬레이션의 최대 관절 토크는 23.5 대 35.5 N·m로 오히려 낮았다.
+
+**학습 환경.** Isaac Gym에서 환경 1280개를 PPO로 학습했다. 공개 코드는 legged_gym·rsl_rl 위에 있다. 지형은 평지, 거친 면, 낮은 걸림돌이고, 레벨 0–9에서 높이 차가 0–7 cm로 커진다.
+장애물은 반지름 40 cm 원기둥 0–8개를 11 m × 5 m에 뿌린다. 무작위화에서 둘이 결정적이었다.
+목표보다 먼 광선 값을 무작위로 줄이는 'illusion'은 벽 앞의 떨림을 없앴고, 토크 교란 ERFI-50은 고속 주행 중 머리를 땅에 박는 일을 없앴다.
+
+**광선 예측.** 사전학습한 ResNet-18을 미세 조정해, 160 × 90 깊이 영상에서 정면 ±45° 광선 11개의 로그 거리를 회귀한다. Jetson Orin NX에서 9 ms다.
+시뮬레이션 자료에는 원기둥 대신 여러 모양의 물체를 놓았고, 좌우 뒤집기·무작위 지우기·가우시안 흐림·잡음으로 실물 깊이 영상의 잡음에 대비했다.
+
+**결과(시뮬레이션, 표 III).** 시험은 학습 범위 안이지만 대부분보다 어렵게, 5.5 m × 4 m에 장애물 8개를 놓았다. 시드 3개 × 1만 에피소드다.
+
+| 설정 | 성공 | 충돌 | 시간 초과 | 성공 때 최고 속도 평균 | 성공 때 평균 속도 |
+|---|---|---|---|---|---|
+| ABS | 79.1% | 5.7% | 15.2% | 3.48 m/s | 2.08 m/s |
+| 빠른 정책만 | 77.3% | 21.7% | 1.0% | 3.55 m/s | 2.39 m/s |
+| PPO-Lagrangian(LAG) | 77.4% | 9.1% | 13.5% | 2.45 m/s | 1.41 m/s |
+
+표에는 기본 가중의 세 설정만 옮겼다. 민첩 보상을 두 배나 반으로 바꾼 변형까지 보면, 빠른 정책만으로는 보상 가중을 바꾸든 제약 RL을 쓰든 민첩성과 안전이 한 경계 위에서 맞바뀌었다.
+ABS는 성공 때 평균 속도를 0.31 m/s 잃고 충돌을 약 4분의 1로 줄였다.
+문턱을 −0.001에서 −0.1까지 바꿔도 큰 차이가 없었다(표 V). 충돌 라벨을 부드럽게 하지 않으면 성공은 81.7%로 조금 높았지만 충돌이 14.7%로 올랐다(표 VI).
+같은 감시를 LAG 정책에 씌우면 충돌이 9.1%에서 2.8%로 줄었고, 성공률은 77.4%에서 70.5%로, 성공 때 평균 속도는 1.41에서 1.22 m/s로 떨어졌다(표 VII).
+
+![ABS Fig. 4](https://arxiv.org/html/2401.17583v3/ABS-ra_pos_rebuttal-crop.png)
+*그림 — ABS (Fig. 4): 고정 장애물 셋(회색 원) 둘레의 RA 가치 지도다. 회전 속도는 0이고 목표는 5 m 앞이다. 왼쪽부터 몸통 속도가 아래쪽 1 m/s, 앞쪽 1·2.5·4 m/s이고, 빠를수록 위험한 띠(빨강)가 장애물 앞쪽으로 길어진다. 위 줄은 충돌 라벨을 부드럽게 한 가치, 아래 줄은 원래 라벨의 가치다. 아래 줄은 장애물 옆의 충돌을 놓치고 장애물 앞에 국소 최솟값이 생긴다. 출처: [arXiv:2401.17583](https://arxiv.org/abs/2401.17583)*
+
+**결과(실물, 그림 9, 설정마다 10회).** 어두운 좁은 복도에서 ABS 9/10(충돌 1), 빠른 정책만 7/10(충돌 3), LAG 8/10(충돌 2)이다.
+가구가 있는 홀에서는 10/10, 7/10, 9/10이고, 야외에서는 10/10, 9/10, 9/10이다. 소요 시간은 LAG보다 ABS가 짧았다(복도 5.91 s 대 6.80 s). 12 kg 짐(자기 무게), 눈 덮인 미끄러운 바닥, 공 맞기, 발차기에도 버텼다.
+
+![ABS Fig. 9](https://arxiv.org/html/2401.17583v3/RealExperiment.png)
+*그림 — ABS (Fig. 9): 실물 비교(설정마다 10회). 어두운 좁은 복도(a)에서 ABS 9/10(충돌 1), 빠른 정책만 7/10(충돌 3), LAG 8/10(충돌 2)이다. 가구가 있는 홀(b)은 10/10, 7/10, 9/10, 야외는 10/10, 9/10, 9/10이다. 최고 속도는 ABS 3.1 m/s, LAG 2.1 m/s다. 출처: [arXiv:2401.17583](https://arxiv.org/abs/2401.17583)*
+
+**한계.** 저자가 밝힌 것:
+- 장애물이 빽빽해 국소 최솟값이 생기면 실패한다. 시간 초과가 많은 이유다. 기억이나 전역 힌트를 더하는 것을 해법으로 든다.
+- RA 가치는 정적 장애물로만 배웠다. 움직이는 물체에는 준정적인 경우까지만 일반화하고, 회복 정책보다 빠른 물체와는 부딪힐 수 있다.
+- 평면 이동만 다루고 공중 단계를 막았다. 계단이나 틈처럼 보행과 회피가 얽힌 3D 지형은 남은 과제다.
+- 이력으로 동역학을 추정하는 기법(RMA 계열)은 RA 모듈과 함께 쓰기 어렵다. 시간 정보를 담은 잠재를 RA 모듈이 다루기 어렵고, 정책 전환이 그 잠재를 분포 밖으로 밀 수 있다.
+- 실물 복도의 유일한 충돌은 어두워서 광선 예측망이 물체를 놓친 경우다. 카메라는 앞쪽뿐이다.
+
+우리가 보기에:
+- 실물 시험은 설정마다 10회라 9/10과 10/10의 차이는 잡음 안이다. 실물의 우위는 충돌 수의 합(30회씩, ABS 1, 빠른 정책만 7, LAG 4)으로 읽는다.
+- 문턱이 강건하다는 표 V는 시뮬레이션 결과다. 본문은 표 V와 표 VI의 번호를 서로 바꿔 가리킨다. 이 토글은 표 제목을 따랐다.
+- 코드는 비상업(CC BY-NC 4.0, README 표기)이라 제품 코드에 넣을 수 없다. 저장소는 legged_gym·rsl_rl의 원 라이선스도 함께 따른다고 적는다.
+
+**travplan에 주는 것.**
+- 감시기의 입력. 광선 11개 대신 TravMap에서 같은 방향으로 치명 셀까지의 거리를 재면 같은 저차원 입력이 된다. 인식 오차의 영향은 L1 belief 지도에서 잰다.
+- 개입. ABS의 회복은 twist 하나를 찾는 작은 최적화다. travplan에는 이미 회복 쪽이 있다. Guidance 경로와 MPPI다.
+  그래서 감시기의 쓰임은 둘이다. Planner D 계획을 버리고 폴백할 시점(TP-0078의 학습판)과, 가치를 MPPI rollout 비용에 더하는 `CostTerm`이다. 뒤쪽은 ABS의 회복 탐색과 같은 모양이다.
+- 움직이는 장애물. ABS의 가치는 정적 장애물로 배워 준정적까지만 일반화했다. travplan 기본 스택은 RiskCost의 시간 가변 층(예측한 보행자 원과 겹치면 큰 벌점)으로 보행자를 피한다.
+  여유를 조일 때는 확률 제약 스택(TP-0076)을 쓴다. 보행자 5명 조건의 충돌은 720 에피소드 중 8건이다(TP-0154). 학습 가치는 정적인 치명 셀 쪽에 둔다.
+- 강화학습 문서 R.16의 다음 후보 3(비대칭·안전 critic)과 가까운 것이다. 그 후보는 학습 중 critic이 치명 셀까지의 최악 여유를 배우는 것이고, ABS는 실행 때 정책을 바꾸는 데 가치를 쓴다.
+
+</details>
+
+**Unitree Go2·Go2-W와 공식 학습 코드 — 값싼 사족과 legged_gym·Isaac Lab 위의 공개 학습·배포 코드**([Go2](https://www.unitree.com/go2), 2023-07-12 출시; [Go2-W](https://www.unitree.com/go2-w); [unitree_rl_gym](https://github.com/unitreerobotics/unitree_rl_gym) BSD-3-Clause; [unitree_rl_lab](https://github.com/unitreerobotics/unitree_rl_lab) Apache-2.0).
+Go2는 무게 약 15 kg, 서 있을 때 70 × 31 × 40 cm이고, 가격은 AIR 판 1,600달러부터다. 공식 페이지는 Unitree의 4D LiDAR L2(360° × 96°)를 표준 장비로 적는다(2026-10-07).
+속도는 AIR 0–2.5, PRO 0–3.5, X·EDU 0–3.7 m/s이고, X·EDU의 최대는 약 5 m/s다. 페이지 머리말은 이 5 m/s를 실험실에서 쟀다고 적는다.
+오를 수 있는 턱은 약 15–16 cm, 경사는 30–40°이고, 발 끝 힘 센서는 EDU 판에만 있다.
+바퀴 달린 Go2-W는 다리 끝에 인휠 모터와 7인치 공기압 타이어를 달았다. 제원표는 약 18 kg, 0–2.5 m/s, 최대 등판각 35°를 적는다.
+공식 학습 코드는 둘이다. unitree_rl_gym(★3.6k)은 legged_gym·rsl_rl 위에 Go2·G1·H1·H1_2 학습 환경을 두지만, MuJoCo sim2sim과 실물 배포 설정은 휴머노이드 셋(G1·H1·H1_2)뿐이다.
+Isaac Lab 판 unitree_rl_lab(★1.4k)은 Go2·H1·G1-29dof 학습 과제를 둔다. 배포 쪽에는 Go2와 Go2-W를 포함한 로봇별 C++ 제어기, 그리고 unitree_mujoco sim2sim과 unitree_sdk2 실물 배포 순서가 있다.
+Go2-W는 로봇 설정과 배포 코드만 있고 학습 과제 목록에는 없다(2026-10-07).
+이 문서들에서 Go2는 Walk These Ways Go2 이식(Controller 문서 F.6.1), Poisson 안전 함수(C.4), CMU 자율 스택(B.12.2)의 실험 플랫폼으로 나온다.
+
+**travplan에 주는 의미.** Playground의 사족 프로필은 'Go2·ANYmal급'을 본뜬 값이고, 턱 한계가 0.20 m다(`robots.js`, TP-0102). Go2 공식 제원(약 15–16 cm)보다 높으므로, Go2와 맞대려면 프로필을 Go2와 ANYmal 둘로 나눈다.
+바퀴 사족 프로필(`wheelLeg`)은 'Go2-W·ANYmal on wheels급'이고 최고 속도가 1.5 m/s로, Go2-W 제원의 2.5 m/s보다 낮다.
+실물 대조군이 필요해지면 Go2는 1,600달러부터라 값이 낮고, 배포 코드가 공식 unitree_rl_lab에 있다. Walk These Ways Go2 이식본(MIT, F.6.1)은 대안이다.
+
+![Unitree Go2 구성](https://www.unitree.com/images/e41651fe455e463bb25f1ef33ece3809_1920x1370.jpg)
+*그림 — Unitree Go2 (공식 제품 페이지 그림): 4D LiDAR L2(360° × 96°), 전면 광각 카메라(1280 × 720, 시야 120°), 앞 조명, 알루미늄 관절 모터 12개, 발 힘 센서, 외부 AI 연산 모듈(Orin NX·Orin Nano 등) 자리, 배터리(표준 8000 mAh, 장시간 15000 mAh), 4G·Wi-Fi 6·Bluetooth 5.2 통신을 표시한다. 발 힘 센서는 제원표상 EDU 판에만 있다. 출처: [Unitree Go2](https://www.unitree.com/go2)*
+
+**사람.** 이 소절의 결과물을 낸 사람들의 지금 자리는 공식·개인 페이지 기준이다(2026-10-07 확인).
+
+| 사람 | 이 소절에서 남긴 것 | 지금 소속 |
+|---|---|---|
+| Jitendra Malik | RMA·VP-Nav·자기 중심 깊이 보행의 지도 저자 | UC Berkeley EECS 교수(Arthur J. Chick Professor). 현재 박사후연구원 명단에 WVN 1저자 Jonas Frey(B.14.3)가 있다 |
+| Deepak Pathak | RMA·VP-Nav·자기 중심 깊이 보행·Extreme Parkour의 지도 저자 | CMU Raj Reddy 부교수, Skild AI 공동 창업자·CEO |
+| Zipeng Fu | RMA 2저자, VP-Nav·에너지 걸음새 1저자, Robot Parkour Learning 공동 1저자 | Reward AI 공동 창업자·CEO(개인 페이지) |
+| Pulkit Agrawal | Rapid Locomotion·Walk These Ways·DribbleBot·ASMP의 지도 저자 | MIT EECS 부교수(CSAIL), Eka Robotics 공동 창업자 |
+| Gabriel Margolis | Rapid Locomotion·Walk These Ways·ASMP 1저자, DribbleBot 공동 1저자 | Google DeepMind Robotics 연구원 |
+| Jemin Hwangbo | 이 소절 KAIST 연구의 교신 저자, actuator net 1저자(B.14.1) | KAIST 기계공학과 교수, RaiLab(직급은 확인하지 못했다) |
+| Guanya Shi | ABS 지도 저자 | CMU Robotics Institute 조교수, LeCAR Lab. Amazon FAR 팀 Amazon Scholar |
+| Tairan He | ABS 공동 1저자, 뒤에 HOVER(B.16.1)·ASAP(B.16.6) 1저자 | OpenAI Member of Technical Staff(개인 페이지) |
+
+#### B.16.6 다른 연구실의 휴머노이드: transformer 정책, 동작 추종, 행동 잔차
+
+**B.14와 B.16.1–B.16.4에서 다룬 연구실 밖의 휴머노이드 연구에서 travplan이 옮길 것은 정책 자체가 아니라 학습 절차, sim-to-real 보정, 층 사이의 인터페이스다.**
+이 연구들은 세 갈래로 자랐다. 첫째는 고유감각만 보는 이족 보행 RL이다.
+UC Berkeley의 Malik·Darrell·Sreenath는 Digit에서 이력을 보는 transformer로 실외 보행을 보였다. Sreenath 연구실은 Cassie에서 입출력 이력을 보는 정책으로 달리기와 뛰기를 보였다.
+둘째는 사람 동작 추종이다. CMU LeCAR Lab(Guanya Shi)은 원격조종(H2O·OmniH2O)에서 시작해, 실물 기록으로 시뮬레이터를 고치는 ASAP으로 갔다.
+Stanford(HumanPlus)와 UC San Diego(ExBody)는 사람 동작 데이터로 Unitree H1을 움직였다.
+셋째는 지형이나 과제 비용을 보는 정책이다. Humanoid Parkour는 깊이 영상을, VideoMimic은 몸통 둘레의 높이 지도를 본다.
+BeyondMimic(Sreenath 연구실과 Stanford의 C. Karen Liu)은 생성 중에 과제 비용의 기울기로 끌려간다.
+==이 소절의 하체·전신 정책은 대부분 속도·위치·자세 목표를 받아 움직이는 층이고, 경로를 고르는 일은 그 위 층에 남아 있다.==
+높이 지도를 보는 휴머노이드 보행 정책(PIM·BeamDojo·HPC)은 인식 문서 A.8에, LiDAR 복셀을 보는 Gallant는 B.12.3에 있다.
+H2O·OmniH2O의 1저자가 NVIDIA GEAR와 함께 만든 HOVER는 B.16.1에, Boston Dynamics·RAI Institute의 Atlas RL(ZEST)은 B.16.4에 있다.
+
+<details markdown="1">
+<summary>자세히: 이 소절의 연구 목록(표 21행)</summary>
+
+| 연도 | 연구 | 로봇 | 핵심 | 다룬 곳 |
+|---|---|---|---|---|
+| 2020–2021 | Siekmann 외: 주기 보상 합성(ICRA 2021), 고유감각 계단(RSS 2021) | Cassie | 힘·속도의 확률적 주기 비용으로 모든 걸음새, 지형 무작위화만 더해 실제 계단 | 이 소절(Agility 카드) |
+| 2023 | Real-World Humanoid Locomotion(HT, Science Robotics 2024) | Digit | 고유감각 이력 causal transformer, 교사 KL을 줄여 가는 RL | 이 소절(토글) |
+| 2024 | Versatile Bipedal Locomotion(IJRR 2025) | Cassie | 짧은·긴 입출력 이력, 과제 무작위화, 400 m 2분 34초 | 이 소절 |
+| 2024 | ExBody(RSS 2024) | H1 | 상체만 동작 모방, 하체는 몸통 속도 목표 | 이 소절 |
+| 2024 | Humanoid Locomotion as Next Token Prediction(NTP, NeurIPS 2024) | Digit | 행동 없는 기록을 mask 토큰으로 섞은 다음 토큰 예측 | 이 소절 |
+| 2024 | H2O(IROS 2024) | H1 | RGB 실시간 원격조종, 실행할 수 없는 동작을 시뮬레이션으로 거름 | 이 소절 |
+| 2024 | OmniH2O(CoRL 2024) | H1 | 머리·두 손 세 점 인터페이스, 25스텝 이력 학생 | 이 소절 |
+| 2024 | HumanPlus(CoRL 2024) | H1 + 손 | 그림자 원격조종 하위 정책 위의 시연 학습 상위 정책 | 이 소절 |
+| 2024 | Humanoid Parkour Learning(CoRL 2024) | H1 | 깊이 영상 전신 파쿠르, 기술을 스스로 고름 | 이 소절 |
+| 2024 | Berkeley Humanoid(ICRA 2025), Lite(RSS 2025) | Berkeley Humanoid | 시뮬레이션하기 쉬운 설계, 잴 수 있는 값만 좁게 무작위화 | 이 소절 |
+| 2024 | HT-2: Learning Humanoid Locomotion over Challenging Terrain(arXiv) | Digit | 평지 시퀀스 사전학습 뒤 험지 RL 미세 조정, 산길 약 4.3마일 | 이 소절 |
+| 2024 | HOVER(ICRA 2025) | H1 | 여러 명령 모드를 마스크로 한 정책에 | B.16.1 |
+| 2024–2026 | Agility Robotics Digit(회사 블로그) | Digit | Isaac Lab 하체 정책, 위치 목표를 받는 전신 제어 기반 모델 | 이 소절 |
+| 2024 | ExBody2(arXiv) | G1 | 기본 정책 오차로 데이터 거르기, 동작군별 미세 조정 | 이 소절 |
+| 2024–2025 | PIM(ICRA 2025), BeamDojo(RSS 2025), HPC(IROS 2025) | G1 등 | 로봇 중심 높이 지도를 보는 보행 정책 | A.8, A.8.2 |
+| 2025 | ASAP(RSS 2025) | G1 | 실물 기록으로 행동 보정 모델, 보정한 시뮬레이터에서 재학습 | 이 소절(토글) |
+| 2025 | Figure 02 RL 보행(Figure AI 블로그) | Figure 02 | 시뮬레이션에서 RL로 배운 끝에서 끝 보행 정책을 도메인 무작위화와 고주파 토크 되먹임으로 실물 전체에 그대로 올렸다고 밝혔다. 벤더 발표이고 수치는 없다 | 표만, A.8.1 |
+| 2025 | AMO(RSS 2025), GMT(arXiv) | G1 | 궤적 최적화를 섞은 전신 작업 공간 제어, 적응 표집과 MoE 범용 추종 | 이 소절(ExBody2 카드) |
+| 2025 | VideoMimic(CoRL 2025) | G1 | 영상에서 사람과 장면 복원, 11 × 11 높이 지도와 목표 방향을 보는 정책 | 이 소절 |
+| 2025 | BeyondMimic(Science Robotics 2026) | G1 | 한 설정의 동작 추종, 잠재 상태–행동 diffusion과 비용 유도 | 이 소절(토글) |
+| 2026 | ZEST(Science Robotics 2026) | Atlas, G1, Spot | 이력 없는 잔차 추종 RL, 전신 MPC와 비교 | B.16.4 |
+| 2023– | Unitree H1·G1 | — | 이 소절 대부분의 실험 로봇 | 이 소절(Unitree H1·G1 문단) |
+
+</details>
+
+**첫째 갈래(고유감각 이족 보행 RL).** 이 갈래의 정책은 카메라와 지도 없이 이력만 보고 지형에 적응한다. Digit에서 시작한 UC Berkeley 계열은 RL에서 시퀀스 모델링으로, 다시 사전학습 뒤 RL 미세 조정으로 학습법을 바꿔 가며 산길과 가파른 도시 거리까지 갔다.
+Cassie와 Digit을 만든 Agility도 같은 시기에 하체 제어를 학습 정책으로 옮겼다.
+
+**Real-World Humanoid Locomotion(HT) — 고유감각 이력을 보는 transformer 하나로 실물 Digit이 일주일 동안 실외를 넘어지지 않고 걸었다**([arXiv:2303.03381](https://arxiv.org/abs/2303.03381), Radosavovic·Xiao·Zhang·Darrell·Malik·Sreenath, Science Robotics 9(89) eadi9579, 2024, [doi:10.1126/scirobotics.adi9579](https://doi.org/10.1126/scirobotics.adi9579), [프로젝트](https://learning-humanoid-locomotion.github.io)).
+UC Berkeley의 이 연구는 Agility Robotics의 휴머노이드 Digit(키 약 1.6 m, 45 kg)을 처음부터 끝까지 학습한 제어기로 걷게 했다. 뒤 논문(HT-2)은 이 모델을 Humanoid Transformer, 줄여 HT라고 부른다.
+정책은 과거 관측과 행동 16쌍을 보고 다음 행동을 내는 causal transformer다(블록 4, 임베딩 192, 파라미터 1.4M).
+카메라와 지도는 쓰지 않는다. 관측은 v1 표 III 기준으로 고유감각과 몸통 선속도다. 최종판의 관측 구성은 보충 자료로 옮겨 확인하지 못했다.
+정책은 50 Hz로 관절 16개의 PD 목표와 다리 관절 8개의 PD 이득을 내고, 관절 PD는 1 kHz로 돈다.
+학습은 교사–학생 두 단계다. 먼저 참값 상태를 보는 MLP 교사를 PPO로 만든다.
+그다음 관측만 보는 transformer 학생을 RL 손실과 교사와의 KL 발산으로 함께 학습한다. KL 가중은 학습이 진행되면서 줄어, 대개 학습 절반쯤에 0이 된다.
+학습은 Isaac Gym에서 하고, Agility의 고정밀 시뮬레이터에서 걸러 낸 뒤 실물에 올렸다.
+실외 광장·보도·트랙·잔디에서 일주일 동안 종일 시험했고, 넘어진 적이 없었다.
+보지 못한 계단 턱에 발이 걸리면 다음 시도에서 다리를 더 높고 빠르게 들었다. 이 행동은 따로 보상하지 않았다.
+
+**travplan에 주는 의미.** travplan의 층으로 옮기면 이 정책은 Controller 아래의 plant 자리다. 속도 명령을 걸음으로 바꾸고, 지형은 보지 않는다.
+가장 먼저 가져올 것은 학습 목적식이다. 원문 그림 8C의 시뮬레이션 비교(명령 1 m/s)에서 RL만 쓴 정책은 25° 경사의 평균 속도가 약 0.15 m/s로 떨어졌다.
+모방만 쓴 정책은 약 0.63 m/s, 둘을 합친 정책은 약 0.75 m/s였다(그림에서 읽은 값).
+TP-0066의 Planner D RL 후학습은 모방 손실 가중치를 λ = 0.5로 고정했고, λ는 바꿔 보지 않았다(B.15.3). 학습 중에 가중을 0으로 내리는 일정이 다음 후보다.
+같은 Science Robotics 9(89) 호의 OP3 축구(B.16.2)도 예측 가치가 문턱을 넘으면 교사 KL 가중을 0으로 내린다.
+둘째는 시뮬레이터 두 개를 관문으로 쓰는 절차다. 근사가 있는 빠른 시뮬레이터에서 학습하고, 정확한 시뮬레이터에서 걸러 낸 뒤 실물로 간다.
+travplan에서는 운동학 시뮬에서 스워브 plant(TP-0149)를 거쳐 Isaac(P1)으로 가는 사다리가 같은 모양이다.
+셋째, 이 학습 하체 정책의 응답에는 수백 ms가 걸린다. 원문 그림 4B를 읽으면 1 m/s 계단 명령에 속도가 약 0.35 s 동안 0 근처에 있다가 올라, 약 1.2 s에 1 m/s에 닿는다.
+로봇과 정책이 달라서 이 응답으로 Playground G1급 하체의 시정수 가정(0.4 s, TP-0135)을 보정하지는 못한다.
+그 위의 MPPI가 하체 지연을 알아야 한다는 Controller 문서 E.13의 결과를 뒷받침하는 정성 근거로만 쓴다.
+
+![Real-World Humanoid Locomotion Fig. 1](https://arxiv.org/html/2303.03381v2/cover_fig_outdoor_v5.png)
+*그림 — Real-World Humanoid Locomotion (Fig. 1): 캠퍼스 광장, 나무다리, 주차된 차 옆 보도, 경기장 잔디와 트랙, 건물 앞 길, 차도의 횡단보도, 교내 문(Sather Gate), 정지 표지판이 선 보도에서 걷는 Digit이다. 원문은 콘크리트·고무·잔디 같은 재질과 맑은 오후·젖은 아침 같은 상태가 학습에 없던 것이라고 적는다. 출처: [arXiv:2303.03381](https://arxiv.org/abs/2303.03381)*
+
+![Real-World Humanoid Locomotion Fig. 7](https://arxiv.org/html/2303.03381v2/method_v5.png)
+*그림 — Real-World Humanoid Locomotion (Fig. 7): (A) 1단계는 로봇·환경 파라미터와 관측을 보는 MLP 교사를 RL로, 2단계는 관측만 보는 transformer 학생을 모방과 RL로 학습한다. (B) Isaac Gym의 병렬 환경에서 학습하고, Agility 시뮬레이터에서 거른 뒤 실물로 옮긴다. (C) 관측과 행동의 이력(그림에서 번갈아 놓인 칸)을 받아 다음 행동을 예측하는 causal transformer다. 본문은 관측–행동 쌍 하나를 토큰 하나로 둔다. 출처: [arXiv:2303.03381](https://arxiv.org/abs/2303.03381)*
+
+<details markdown="1">
+<summary>자세히: Real-World Humanoid Locomotion의 방법과 수식</summary>
+
+**풀려는 문제.** 실물 크기 휴머노이드는 불안정하고 자유도가 높다. Digit의 정강이와 발목 관절은 판 스프링과 4절 링크로 이어진 수동 관절이라 시뮬레이션하기 어렵다.
+2023-03의 첫 판(v1)은 제목이 Learning Humanoid Locomotion with Transformers였다. 이 판은 상태 추정·동역학 모델·궤적 최적화·기준 궤적·걸음 라이브러리를 쓰지 않는다고 적었다.
+가설은 관측–행동 이력에 세계에 대한 정보가 들어 있다는 것이다. 그래서 큰 transformer가 가중치를 바꾸지 않고 문맥 안에서 행동을 고칠 수 있다고 본다. 원문은 이것을 언어 모델의 in-context 학습에 견준다.
+
+**구조.** 정책 $\pi_o$는 길이 $l = 16$의 이력 $(o_t, a_{t-1}, o_{t-1}, \dots, o_{t-l+1}, a_{t-l})$을 받아 $a_t$를 낸다.
+관측–행동 쌍 하나가 토큰 하나다. 토큰은 MLP(512·512)로 임베딩하고 사인 위치 인코딩을 더한 뒤, 앞쪽 토큰만 보는 self-attention에 넣는다(블록 4·임베딩 192·헤드 4).
+행동 머리는 MLP(256·128)이고, 교사는 MLP(512·512·256·128)다. actor와 critic은 가중치를 나누지 않고, critic은 늘 상태를 본다.
+v1 표 III을 보면 교사와 critic이 보는 상태에는 높이 지도 121칸이 있다. 학생 actor는 그것을 보지 않는다.
+
+**목적식.** 학생은 RL 손실과 교사와의 KL 발산을 함께 줄인다.
+
+$$ L(\pi_o) = L_{RL}(\pi_o) + \lambda\, D_{KL}(\pi_o \parallel \pi_s) $$
+
+$\lambda$는 학습이 진행되면서 줄고, 대개 학습 지평의 중간에서 0이 된다. 그래서 학생은 초반에는 교사에게 배우고, 뒤에는 교사를 넘어설 수 있다.
+두 항 모두 on-policy로 최적화하므로 미리 계산한 궤적이나 오프라인 데이터가 필요 없다.
+
+**행동과 시뮬레이션.** 행동은 구동 관절 16개의 PD 목표와 다리 관절 8개의 PD 이득이다. 발가락 모터 넷은 학습하지 않고, 고정 이득으로 기본 자세에 둔다.
+Isaac Gym은 닫힌 사슬과 비구동 관절을 다루지 못한다. 그래서 막대를 강성이 큰 가상 스프링으로 두고, 교대 sub-step으로 스프링 길이를 바로잡았다.
+저자들은 동역학·지형·지연 무작위화의 조합이 sim-to-real의 관건이었다고 적는다.
+
+**학습 설정(arXiv v1의 표).** 최종판은 보상·관측 구성·무작위화 범위를 보충 자료로 옮겼다. 그 보충 자료는 확인하지 못해서 아래에 v1의 표를 옮긴다.
+- PPO로 A100 4장에서 학습했다. 환경은 교사 8192개와 학생 4096개이고, 6000번 반복했다. 에피소드는 20 s다.
+- 명령은 전진 −0.3–1.0 m/s, 옆 ±0.3 m/s, 회전 ±1.0 rad/s이고, 10 s마다 다시 뽑는다. 문턱(0.10 m/s, 0.26 rad/s)보다 작은 명령은 0으로 둔다.
+- 무작위화 범위는 마찰 0.3–2.0배, 모터 세기 0.85–1.15배, P 이득 0.9–1.1배다.
+- 보상은 지수형 속도 추종 둘($\sigma = 0.2$)에 몸통 운동·자세·높이(하한 1.0 m)·발 궤적·토크·행동 변화율 같은 정규화 항을 더한다.
+  발 궤적의 수평은 Raibert 휴리스틱, 높이는 von Mises 분포를 따른다. 팔 흔들기를 시키는 항은 없다.
+
+**결과.**
+- 실외: 광장, 보도, 트랙, 잔디에서 일주일 종일 시험에 넘어짐이 없었다. 안전 지지대 없이 돌렸다.
+- 실내: 요가공 맞기, 막대로 밀기, 걷는 중 뒤에서 당기기를 버텼다. 고무·천·케이블·버블랩을 깐 바닥을 0.15 m/s로 지났다.
+  학습 때 경사는 10%까지였고, 시험한 경사 둘은 8.7%까지였다. 배낭, 손가방, 팔에 건 쓰레기봉투를 들고 걸었다.
+- 회사 제어기 대비(Agility 시뮬레이터, 지형마다 10회, 95% 신뢰구간): 경사에서는 둘 다 잘 걸었다. 계단에서 회사 제어기는 발이 걸린 뒤 회복하지 못했고, 같은 장면을 실물에서도 재현했다.
+  그림 2D 막대를 읽으면 학습 제어기는 세 지형 모두 100%, 회사 제어기는 약 100%, 97%, 71%다.
+- 빠른 걷기: 본문은 정지에서 1 s 안에 1 m/s 명령에 닿았다고 적는다. 그림 4B를 읽으면 약 0.35 s 동안 0 근처에 있다가 약 1.2 s에 1 m/s에 닿고, 그 뒤 ±0.2–0.3 m/s로 흔들린다.
+- 팔 흔들기가 반대쪽 다리와 맞물려 저절로 나왔다. 평지, 내리막, 평지 순서의 코스에서는 내리막에서만 보폭을 줄였다.
+- 판본 차이: v1은 학습에 없던 4–16 cm 계단에서 0.3 m/s로 다섯 번씩 시험했고, 성공률은 이 논문 65%, 회사 제어기 70%였다(v1 표 V). 최종판의 비교와 조건이 다르다.
+
+**절제(시뮬레이션, 원문 그림 8).** 그림을 눈으로 읽은 값이다.
+- 구조: 그림 2D 세 시나리오 30회의 성공률은 transformer가 약 97%로 가장 높다. LSTM은 약 89%, TCN(temporal convolutional network)은 약 87%다.
+  MLP는 약 75%다. TCN은 Lee 2020(B.14.1)이 쓴 구조다.
+- 문맥 길이: 1 m/s 명령으로 25° 경사를 오를 때 평균 속도가 문맥 16에서 약 0.75 m/s, 문맥 1에서 약 0.62 m/s다.
+- 목적식: 같은 조건에서 RL만 쓰면 약 0.15 m/s, 모방만 쓰면 약 0.63 m/s, 둘을 합치면 약 0.75 m/s다. RL만 쓴 정책은 20°까지는 모방만 쓴 정책과 비슷하고, 25°에서 크게 떨어진다.
+- 본문은 경사 '두 곳'에서 쟀다고 적지만, 그림의 가로축은 0–25°의 여섯 값이다.
+
+![Real-World Humanoid Locomotion Fig. 2](https://arxiv.org/html/2303.03381v2/indoor_v15.png)
+*그림 — Real-World Humanoid Locomotion (Fig. 2): (A) 요가공, 막대 밀기, 뒤에서 당기기를 버틴다. (B) 나무판 경사와 바닥 덮개 위를 걷는다. (C) 배낭, 팔에 건 쓰레기봉투, 손가방을 들고 걷는다. (D) 시뮬레이터의 경사·계단·무너지는 판자(S1–S3)에서 회사 제어기와 성공률을 비교했다(지형마다 10회). 출처: [arXiv:2303.03381](https://arxiv.org/abs/2303.03381)*
+
+![Real-World Humanoid Locomotion Fig. 6](https://arxiv.org/html/2303.03381v2/adaptation_2_v22.png)
+*그림 — Real-World Humanoid Locomotion (Fig. 6): (A) 학습에 없던 턱에 발이 걸린 뒤 다음 시도에서 다리를 더 높고 빠르게 들어 넘는다(빨간 선은 발끝 궤적). (B) 같은 구간의 마지막 층 은닉 상태를 시간에 따라 그렸고, 상자 친 구간이 발이 걸린 때다. (C) 은닉 상태의 평균 응답이 그때 크게 벗어난다. 출처: [arXiv:2303.03381](https://arxiv.org/abs/2303.03381)*
+
+**한계.** 저자가 밝힌 것:
+- 좌우 모터가 똑같은 궤적을 내지 않아 정책이 대칭이 아니다. 왼쪽 옆걸음이 오른쪽보다 낫다.
+- 명령 속도를 완벽히 따르지 못한다. 케이블로 매우 세게 당기면 넘어진다.
+- 카메라가 없어 계단 같은 턱에 부딪히고 걸린다.
+
+우리가 보기에:
+- 실외 '넘어짐 0'은 일주일 시험의 정성 보고이고, 걸은 거리와 시간은 밝히지 않았다.
+- 회사 제어기와의 정량 비교는 시뮬레이터 안에서 지형마다 10회다. 실물 비교는 계단 장면 영상뿐이다.
+- 학습·배포 코드는 찾지 못했다. 프로젝트 페이지에는 논문과 영상 링크만 있다(2026-10-07 확인). v1은 코드를 모두 공개하겠다고 적었다.
+
+**travplan에 주는 것.**
+- 모방 가중 일정. 강한 교사가 있으면 모방을 초반에 걸었다가 푸는 편이 낫다는 결과다. Planner D RL 후학습에서 λ를 학습 절반에 0으로 내리는 판을 TP-0066의 고정 λ = 0.5와 짝 비교(TP-0156의 2층 절차)로 잰다.
+  RL 쪽으로 기울면 치명 셀 진입이 늘 수 있으니 치명 수를 함께 본다.
+- 문맥 길이. 이 정책은 이력 16스텝(50 Hz에서 0.32 s)으로 경사를 알아챘다. Planner D는 자기 상태로 현재 속도 하나만 받고 이력은 받지 않는다(B.8.3).
+  경사로를 지나친 뒤 되돌아오지 못한 실패(TP-0143)에서는 경사로가 관측 가장자리나 밖에 있었다(B.15.6). 관측을 넓히는 TP-0145 말고 기억으로도 풀 수 있는 상황이라, SRU(B.14.3)와 함께 볼 후보다.
+- 하체 지연. 학습 하체 정책의 응답에도 수백 ms가 걸린다는 정성 근거다. 시정수 값은 Digit과 이 정책의 것이라 travplan 모델에 옮기지 않는다.
+
+</details>
+
+**Versatile Bipedal Locomotion — 짧은 입출력 이력과 긴 입출력 이력을 함께 보는 한 구조로 Cassie가 걷고 달리고 뛰었다**([arXiv:2401.16889](https://arxiv.org/abs/2401.16889), Li·Peng·Abbeel·Levine·Berseth·Sreenath, IJRR 44(5) 2025, [doi:10.1177/02783649241285161](https://doi.org/10.1177/02783649241285161), [코드(걷기 예제)](https://github.com/HybridRobotics/cassie_rl_walking) CC BY-NC-SA 4.0).
+UC Berkeley Hybrid Robotics(Koushil Sreenath)가 Agility의 토크 제어 이족 로봇 Cassie로 한 연구다. 같은 정책 구조와 학습 절차로 서기, 걷기, 달리기, 뛰기를 기술마다 따로 학습했다.
+정책은 명령과 기준 동작 미리보기(1·4·7스텝 앞)를 받는다. 입출력 이력은 최근 4스텝과 최근 2 s(66스텝)의 두 갈래로 받는다.
+긴 이력은 1D CNN으로 압축해 MLP에 넣고, 짧은 이력은 MLP에 바로 넣는다. 정책은 33 Hz로 모터 10개의 목표 위치를 내고, 2 kHz 관절 PD가 뒤따른다.
+학습은 MuJoCo에서 PPO로 하는 세 단계다. 한 과제를 먼저 익히고, 명령과 목표를 넓게 무작위화한 뒤(과제 무작위화), 마지막에 동역학을 무작위화한다.
+실물에서 400 m를 2분 34초에 달렸고, 100 m 최고 기록은 27.06 s였다. 1.4 m 앞으로 뛰었고, 높이 0.44 m 단에 뛰어올랐다.
+
+**travplan에 주는 의미.** 이 논문은 적응과 강건성이 어디서 오는지 나눠 쟀다. 긴 입출력 이력은 저역 통과 필터·PD·로봇 몸체·상태 추정기를 포함한 동역학을 식별하는 데 쓰였다.
+travplan의 학습 Controller(TP-0128)는 입출력 이력 없이 현재 관측(지도 조각·경로·현재 twist·자세)만 본다. 스워브 plant의 지연은 지금 rollout 모델에 손으로 넣는다(TP-0150).
+과제 무작위화는 원문이 동역학·환경 무작위화와 따로 세운 강건성의 출처다. travplan에서 그에 가까운 것은 시연의 명령·소목표·속도 범위를 넓히는 일이다. 지형 레벨을 섞은 TP-0073은 환경 무작위화 쪽이다.
+기록 지표에도 교훈이 있다. 400 m 주행의 평균 속도는 상태 추정으로 2.15 m/s였지만, 실제 기록(154 s)으로는 2.6 m/s였다. 고속에서 추정 속도를 지표로 쓰면 성적이 틀린다.
+
+![Versatile Bipedal Locomotion Fig. 1](https://arxiv.org/html/2401.16889v2/intro_allthree.png)
+*그림 — Versatile Bipedal Locomotion (Fig. 1): (a) 걷다가 옆에서 밀려도 버티는 Cassie다. (b) 운동장 트랙을 달리고, 빨간 테두리는 두 발이 모두 뜬 비행 구간이다. (c) 1.4 m 앞으로 뛴다. 출처: [arXiv:2401.16889](https://arxiv.org/abs/2401.16889)*
+
+**Humanoid Locomotion as Next Token Prediction(NTP) — 행동이 없는 기록까지 섞어, 다음 토큰을 예측하는 transformer로 걷는다**([arXiv:2402.19469](https://arxiv.org/abs/2402.19469), Radosavovic·Zhang·Shi·Rajasegaran·Kamat·Darrell·Sreenath·Malik, NeurIPS 2024, [프로젝트](https://humanoid-next-token-prediction.github.io)).
+같은 연구진이 같은 Digit에서 RL 대신 관측–행동 열의 다음 토큰 예측으로 걷는 정책을 학습했다. 데이터는 네 갈래다.
+HT 정책의 평지 궤적 1만 개(각 10 s)에는 관측과 행동이 다 있다. Agility 모델 기반 제어기의 궤적 두 묶음(각 1만 개)에는 관측만 있다.
+나머지는 KIT 모션 캡처 약 1천 개와 YouTube 영상에서 복원한 사람 동작이다. 사람 데이터는 역기구학으로 로봇 자세로 옮겼다.
+행동이 없는 궤적은 행동 자리를 학습하는 mask 토큰으로 채우고, 그 자리의 손실은 뺀다.
+이 정책은 샌프란시스코 여러 곳에서 일주일 동안 걸었다. 시뮬레이션 추종 오차는 데이터를 준 HT 정책보다 낮았다(245회).
+상태와 행동을 함께 예측한 모델의 추종 오차가 행동만 예측한 모델보다 낮았다(0.305 대 0.335, 원문 표 1).
+
+**travplan에 주는 의미.** Planner D도 Guidance + MPPI 시연을 따라 배우는 생성 정책이다(B.8.3). 옮길 것이 둘이다.
+하나는 오프라인 지표다. 모델 14개에서 검증 데이터의 예측 오차와 폐루프 추종 오차의 상관이 r = 0.87이었다.
+travplan의 짝 비교(TP-0156)는 비싸다. Planner D의 검증 손실이 폐루프 도달 수를 얼마나 맞히는지 재 두면 학습 후보를 싸게 거를 수 있다.
+다른 하나는 행동 없는 기록이다. Planner D가 상태(포즈) 열도 함께 생성하도록 바꾸면, 제어 입력이 없는 보행 기록도 mask 토큰처럼 학습에 넣을 수 있다. 지금 구조(제어 변화율만 생성)에서는 바로 쓰지 못한다.
+원문의 '뒤로 걷기 일반화'는 조심해서 읽는다. 행동이 붙은 데이터에는 뒤로 걷기가 없었지만, 관측만 있는 모델 기반 데이터의 전진 명령은 −1–1 m/s에서 뽑았다.
+
+![Humanoid Locomotion as Next Token Prediction Fig. 1](https://arxiv.org/html/2402.19469v1/deployment_v1.png)
+*그림 — Humanoid Locomotion as Next Token Prediction (Fig. 1): 샌프란시스코의 궁전 건물 앞, 시청 앞, 금문교가 보이는 해변 길, 주택가 보도, 언덕 공원, 도심 횡단보도, 벽화 골목, 케이블카가 지나는 거리, 페리 빌딩 앞 광장, 지하철역 입구에서 걷는 Digit이다. 원문은 보도·콘크리트·아스팔트·타일 광장·모래 깔린 길을 일주일 동안 걸었다고 적는다. 출처: [arXiv:2402.19469](https://arxiv.org/abs/2402.19469)*
+
+**Berkeley Humanoid — 시뮬레이션하기 쉽게 설계한 16 kg 휴머노이드는 이력 없는 MLP 정책으로도 실외 산길을 걸었다**([arXiv:2407.21781](https://arxiv.org/abs/2407.21781), Liao·Zhang·Huang·Huang·Li·Sreenath, ICRA 2025, [프로젝트](https://berkeley-humanoid.com), [코드](https://github.com/HybridRobotics/isaac_berkeley_humanoid) BSD-3-Clause).
+Hybrid Robotics가 직접 만든 연구용 휴머노이드다. 키 0.85 m, 16 kg이고, 다리 둘이 각각 6자유도다.
+구동기를 관절에 바로 붙이거나 관절과 선형으로 이어, 시뮬레이터가 틀리기 쉬운 링크 구조를 피했다.
+무작위화는 두 종류로 나눴다. CAD와 간단한 시험으로 잴 수 있는 로봇 물성은 좁게 두고, 장소마다 다른 지면 마찰·반발·외력은 넓게 둔다.
+흔히 쓰는 '모터 세기' 비율이나 PD 이득 무작위화는 분석하기 어려운 손쉬운 근사로 보고 쓰지 않았다.
+정책은 이력도 위상 신호도 없는 MLP(512·256·128)이고, Isaac Lab에서 PPO로 학습해 50 Hz로 돈다.
+캠퍼스를 10분 동안 364 m 걸었고, 비포장 산길을 5분 넘게 96 m 올랐다(고도 10.5 m). 원문은 이 산길의 경사를 평균 20°로 적는데, 96 m에 10.5 m는 평균 약 6°다(우리 계산).
+60 s 시험의 속도 추종 오차는 전후 방향이 시뮬레이션 0.051 m/s, 실물 0.058 m/s였다. 좌우 방향은 0.086 m/s와 0.1156 m/s였다.
+후속 Berkeley Humanoid Lite(RSS 2025, [arXiv:2504.17249](https://arxiv.org/abs/2504.17249))는 3D 프린트 감속기와 시중 부품으로 만든 5,000달러 이하 휴머노이드다.
+
+**travplan에 주는 의미.** 무작위화를 '잴 수 있는 것'과 '잴 수 없는 것'으로 나눈 원칙은 스워브 plant와 바로 닿는다.
+배달로봇 모듈 파라미터(TP-0035)는 모듈 위치·비동축 오프셋·바퀴 반지름·조향 속도 한계다. 이 값을 받으면 측정값 근처로 좁히고, 지면 미끄럼(TP-0033)처럼 장소마다 다른 값만 넓게 흔든다.
+같은 정책의 속도 추종 오차를 시뮬레이션과 실물에서 나란히 잰 방식은, 실물이 생겼을 때 plant 보정이 끝났는지 판정하는 간단한 기준이 된다(시뮬레이션 문서 S.6.2).
+
+![Berkeley Humanoid Fig. 1](https://arxiv.org/html/2407.21781v1/cover_fig.png)
+*그림 — Berkeley Humanoid (Fig. 1): (a) 경량 중형 휴머노이드의 CAD 설계, (b) Isaac Lab의 계단 지형에서 하는 병렬 학습, (c) 실내 블록 계단, 캠퍼스 화단과 나무다리, 시계탑 앞 잔디, 흙 비탈에서의 실물 배치다. 출처: [arXiv:2407.21781](https://arxiv.org/abs/2407.21781)*
+
+**HT-2(Learning Humanoid Locomotion over Challenging Terrain) — 평지 궤적으로 사전학습한 transformer를 험지에서 RL로 미세 조정해, Digit이 산길 약 4.3마일과 경사 31% 도로를 걸었다**([arXiv:2410.03654](https://arxiv.org/abs/2410.03654), Radosavovic·Kamat·Darrell·Malik, arXiv 2024-10, [프로젝트](https://humanoid-challenging-terrain.github.io)).
+같은 연구진의 세 번째 Digit 논문이고, HT-2는 Humanoid Transformer 2의 줄임이다. 정식 발표처와 공개 코드는 찾지 못했다(2026-10-07).
+인식 문서 A.8.2의 HPC(Learning Perceptive Humanoid Locomotion over Challenging Terrain)와 제목이 거의 같지만 다른 논문이다.
+구조는 HT와 같은 causal transformer(문맥 16, 파라미터 1.4M)이고, 학습만 두 단계로 바꿨다.
+먼저 NTP 방식으로 평지 궤적을 시퀀스 모델링해 사전학습한다. 데이터는 HT 정책의 궤적, 행동이 없는 모델 기반 제어기 궤적, 사람 모션 캡처와 영상이다.
+그다음 MuJoCo에서 PPO로 미세 조정한다. 지형은 평지·거친 평지·매끈한 경사·거친 경사·낮은 장애물·언덕의 여섯 종이다. 경사는 2–20%, 장애물 높이는 0.5–5 cm다.
+원문의 미세 조정 절은 모방 항 없이 PPO 보상만 적는다. 대신 사전학습 가중치에서 시작하고, 탐색 잡음(초기 표준편차 0.135)과 actor 학습률(1e-5)을 작게 둔다.
+미세 조정은 A10 GPU 한 장에서 했고, 환경 단계 약 1억 번은 CPU 병렬 MuJoCo로 약 하루에 모았다. 정책은 카메라 없이 걷고, critic만 높이 지도 121칸을 포함한 특권 상태를 본다(보충 표 S1).
+실물 시험은 2024-05 중순부터 약 2주 동안 했다. 버클리 산길 다섯 곳(합쳐 약 4.3마일)을 모두 완주했다. 샌프란시스코 Russian Hill에서는 경사 31% 도로를 포함해 시험한 거리를 모두 지났다.
+MuJoCo에서 HT와 256회씩 비교하면 오르막에서 차이가 가장 컸고, HT는 난이도가 오를수록 빨리 무너졌다.
+처음부터 RL로 학습한 정책은 두 배의 환경 단계를 써도 미세 조정한 정책보다 못했고, 걸음이 비대칭이었다.
+
+**travplan에 주는 의미.** 구조가 Planner D와 TP-0066의 조합과 같다. 시연(Guidance + MPPI)으로 사전학습한 생성 Planner를 폐루프 RL로 후학습한다.
+사전학습을 지키는 장치는 다르다. TP-0066은 모방 손실 가중 λ = 0.5를 걸었고, HT-2는 모방 항 없이 작은 탐색 잡음과 낮은 학습률로 지켰다. HT는 교사 KL 가중을 학습 중에 0으로 내렸다.
+travplan에 옮기면 고정 λ, 학습 중 0으로 내리는 λ, 모방 항 없이 낮은 학습률의 세 판이 된다. 이 셋을 같은 짝 비교(TP-0156의 2층 절차)로 재는 것이 TP-0066 후속 실험의 설계다.
+그림의 경사 15–31%를 travplan의 기하 비용(`GeometricTravConfig`의 경사 한계 0.26 rad)으로 옮기면 15%는 cost 약 0.39이고, 26%와 31%는 치명 셀이다(우리 계산).
+저자들은 카메라가 없으면 연석 같은 턱은 운 좋게 넘거나 부딪혀서 알아챌 수밖에 없다고 적는다. 턱 한계가 0.08 m인 스워브에게는 부딪혀서 아는 것이 곧 치명이다(Controller 문서 E.12).
+
+![HT-2 Fig. 3](https://arxiv.org/html/2410.03654v1/figs/fig_sf_v2.001.jpeg)
+*그림 — HT-2 (Fig. 3): 샌프란시스코 Russian Hill의 Green·Leavenworth·Broadway·Jones 거리에서 걷는 Digit이다. 사진마다 경사(15–31%)가 적혀 있고, 가운데 항공 사진의 청록 선이 걸은 길이다. 보도와 차도를 모두 지났고, 31% 두 장은 차가 늘어선 도로다. 출처: [arXiv:2410.03654](https://arxiv.org/abs/2410.03654)*
+
+**Agility Robotics의 Digit — 하체 제어를 Isaac Lab 학습 정책으로 옮기고, 위 층과는 위치 목표로 말한다**([Crossing the Sim2Real Gap With NVIDIA Isaac Lab, 2024-10-31](https://www.agilityrobotics.com/content/crossing-sim2real-gap-with-isaaclab); [Training a Whole-Body Control Foundation Model, 2025-08-28](https://www.agilityrobotics.com/content/training-a-whole-body-control-foundation-model); [Agility and AI, 2026-03-16](https://www.agilityrobotics.com/content/agility-and-ai)).
+Agility는 2015년 Oregon State University(OSU)의 Dynamic Robotics Lab에서 나왔다. 이족 로봇 Cassie는 2016년에 첫걸음을 뗐고, 그다음이 휴머노이드 Digit이다(회사 소개).
+OSU의 Siekmann 외(Fern·Hurst 공저)는 힘과 속도에 거는 확률적 주기 비용을 합성해, Cassie의 서기·걷기·깡충 뛰기·달리기·스킵을 sim-to-real RL로 학습했다([ICRA 2021](https://arxiv.org/abs/2011.01387)).
+이어서 보상은 그대로 두고 계단 모양 지형 무작위화만 더해, 외부 인식 없이 실제 계단을 오르내렸다([RSS 2021](https://arxiv.org/abs/2105.08328)). 이 논문에는 Siekmann과 Hurst의 소속으로 Agility Robotics가 함께 적혀 있다.
+아래 Agility 자료는 모두 회사 블로그이고, 논문이나 독립 검증은 없다.
+2024년 글은 많은 동작을 단순 물리 모델과 역동역학으로 제어해 왔다고 적고, 모델 기반 제어기와 RL 제어기의 발 디딤 회복을 비교한 그림을 실었다.
+초기 Isaac Lab 정책은 시뮬레이션에서 잘 걷고 실물에서 미끄러졌다. 원인을 찾는 데 6개월이 걸렸다.
+원인은 발가락 판의 충돌 형상 단순화, 구동기와 변속기의 에너지 전달 오차, 닫힌 링크 구속 풀이의 불안정이었다. 그 뒤 보상을 덧댐 항 대신 에너지와 대칭 같은 몇 개로 줄였다.
+2025-08 글은 전신 제어 기반 모델을 소개했다. 100만 개 미만 파라미터의 LSTM을 Isaac Sim에서 3–4일 동안 수십 년 분량의 시뮬레이션 시간으로 학습해 실물에 바로 올렸다.
+이 정책은 손과 몸통의 자유 공간 위치·자세 목표를 받고, 필요하면 스스로 걸음을 옮긴다.
+2026-03 글은 스택을 세 층으로 설명한다. 인지 층은 LLM과 VLA 모델을 쓴다. 기술 층은 시연 학습을, 제어 층은 RL과 시뮬레이션을 쓴다.
+
+**travplan에 주는 의미.** Agility가 밝힌 인터페이스 선택은 travplan의 결정과 같은 쪽이다.
+2025-08 글은 ExBody·ExBody2·HumanPlus·GMT를 속도 목표형으로, OmniH2O·HOVER를 위치 목표도 받는 쪽으로 나눈다. 속도 목표를 받는 하체 정책에는 위치 오차를 고칠 상위 Planner나 사람이 계속 붙어 있어야 한다.
+그래서 Agility는 '이 점으로 가라'는 위치 목표를 택했다. travplan의 Planner도 경로나 시간 인덱스 궤적(`PlanResult`)을 넘기고, Controller가 그 위치 오차를 고쳐 body twist를 낸다.
+시뮬레이션의 접촉 모델을 6개월 동안 고친 경험은, 보상 항을 늘리기 전에 시뮬레이터가 틀린 이유를 먼저 찾으라는 교훈이다. travplan에서는 스워브 바퀴의 미끄럼(TP-0033)이 같은 자리다.
+
+![Agility RL step recovery](https://cdn.prod.website-files.com/6980c63561bbbeb67b4b7ab5/698e3705e1e54075f906b6ce_698e0486313a2eb0bcd08c61_6849e0909c34fef34c98a1fe_Charting-RL-Performance.png)
+*그림 — Digit 발 디딤 회복 (블로그 그림): Digit에 앞뒤(세로축)와 좌우(가로축) 충격량(N·s)을 준 시험의 결과다. 시뮬레이션인지 실물인지는 글에 적혀 있지 않다. 초록은 회복, 붉은색은 넘어짐, 파랑은 걸음 없이 버틴 경우다. 왼쪽 모델 기반 제어기보다 오른쪽 RL 제어기의 초록 영역이 넓다(그림 제목은 둘 다 2024-08-15). 출처: [Agility Robotics 2024-10-31](https://www.agilityrobotics.com/content/crossing-sim2real-gap-with-isaaclab)*
+
+**둘째 갈래(사람 동작 추종).** 이 갈래는 사람 동작을 따라 하는 전신 정책이고, 공통 문제는 로봇이 할 수 없는 동작을 거르고 시뮬레이터의 오차를 고치는 일이다. H2O는 시뮬레이션 실행 가능성으로, ExBody2는 기본 정책의 추종 오차로 데이터를 걸렀다.
+ASAP은 실물 기록으로 시뮬레이터 쪽을 고쳤다. 로봇은 대부분 Unitree H1과 G1이다.
+
+**ExBody — 상체만 사람 동작을 따라 하고 하체는 몸통 속도 목표만 지키게 해, H1이 실외에서 춤추고 걸었다**([arXiv:2402.16796](https://arxiv.org/abs/2402.16796), Cheng·Ji·Chen·Yang·Yang·Wang, RSS 2024, [프로젝트](https://expressive-humanoid.github.io), [코드](https://github.com/chengxuxin/expressive-humanoid) Apache-2.0).
+UC San Diego(Xiaolong Wang)의 연구다. 사람 모션 캡처를 H1이 그대로 따라 하게 하면 자유도와 힘이 달라 실물에서 무너진다.
+ExBody는 목표를 둘로 나눈다. 상체의 관절각과 키포인트는 기준 동작을 따른다. 몸 전체는 기준 동작에서 뽑은 몸통 속도·자세·높이 목표만 따르고, 이 목표는 조이스틱으로도 줄 수 있다.
+CMU MoCap에서 780개(약 3.7시간)를 골라 Isaac Gym에서 학습했고, 정규화 보상은 legged_gym(B.14.1)에서 가져왔다.
+에피소드를 데이터의 상태에서 시작하는 기준 상태 초기화(RSI, reference state initialization)가 결정적이었다. 이것이 없으면 평균 에피소드 길이가 16.87에서 0.23으로 떨어졌다(원문 표 IV).
+AMP 보상을 더한 정책은 무릎을 덜 굽히고 발을 덜 들어 비틀거렸다.
+
+**travplan에 주는 의미.** 하체가 몸통 속도 목표만 받는 구조라, 이 정책 위에는 travplan Controller 같은 층이 그대로 앉을 수 있다.
+Agility가 지적하듯 속도 목표형 하체에는 위치 오차를 고칠 위 층이 계속 필요하다. travplan에서는 Planner의 경로를 따라가는 Controller가 그 몫이다.
+
+![ExBody Fig. 1](https://arxiv.org/html/2402.16796v2/teaser3.png)
+*그림 — ExBody (Fig. 1): 위 줄은 사람과 춤추기, 안기, 손바닥 마주치기와 연석 옆 화단을 걷는 H1이다. 가운데 줄은 해변 모래, 나무 조각 화단, 콘크리트 길, 실내에서 운동용 공에 맞는 장면, 잔디 위 관중 앞의 H1이다. 아래 줄은 손을 흔들어 동작 감지 자동문을 여는 장면과 사람과 악수하는 장면이다. 출처: [arXiv:2402.16796](https://arxiv.org/abs/2402.16796)*
+
+**H2O — RGB 카메라 한 대로 실물 크기 휴머노이드를 실시간 전신 원격조종하고, 로봇이 못 하는 사람 동작은 시뮬레이션으로 거른다**([arXiv:2403.04436](https://arxiv.org/abs/2403.04436), He·Luo·Xiao·Zhang·Kitani·Liu·Shi, IROS 2024, [프로젝트](https://human2humanoid.com), [코드](https://github.com/LeCAR-Lab/human2humanoid) CC BY-NC 4.0).
+CMU LeCAR Lab(Guanya Shi)의 연구로, 원문은 학습 기반 실시간 전신 휴머노이드 원격조종을 처음 보였다고 적는다. 로봇은 Unitree H1이다.
+사람 동작 데이터 AMASS를 H1으로 옮기면, 사람은 하지만 로봇은 못 하는 동작이 섞인다.
+그래서 참값 상태를 다 보는 특권 모방 정책으로 전체를 따라 해 보고, 실패한 동작을 버렸다(sim-to-data). 옮긴 1만 개 가운데 약 8,500개가 남았다.
+그다음 실물에서 얻을 수 있는 관측만 보는 정책을 무작위화와 함께 학습했다. 배포 때는 웹캠 영상에서 사람 자세를 30 Hz로 추정해 목표로 넣고, 정책이 50 Hz로 관절 목표를 낸다.
+배포 때 로봇의 몸통 선속도는 모션 캡처로 쟀다. 시뮬레이션 성공률은 걸러 낸 데이터로 학습한 정책이 72.5%, 거르지 않은 데이터의 정책이 67.9%였다. 걸러 낸 쪽은 데이터가 적은데도 높았다.
+
+**travplan에 주는 의미.** 시연을 '실행할 수 있는가'로 먼저 거르는 절차는 Planner D 시연에 옮길 수 있다. 지금 시연은 절차 지형에서 Guidance + MPPI가 낸 4초 제어열이다(B.8.3).
+스워브 plant(TP-0149)에서 MPPI가 따라가지 못하는 시연을 빼면, 실물에 가까운 조건에서 실행할 수 있는 분포만 남는다. 효과는 travplan에서 재 보지 않았다.
+
+![H2O Fig. 4](https://arxiv.org/html/2403.04436v1/H2O-overview-crop.png)
+*그림 — H2O (Fig. 4): (a) SMPL 사람 몸 모델의 모양을 H1에 맞춘 뒤 동작을 옮기고, 특권 모방 정책이 따라 하지 못한 동작을 걸러 낸다. (b) 걸러 낸 동작을 목표로 무작위화와 함께 sim-to-real 모방 정책을 학습한다. (c) RGB 카메라(30 Hz)와 3D 자세 추정기로 받은 사람 동작을 정책(50 Hz)과 PD 제어기(200 Hz)가 H1에서 재현한다. 출처: [arXiv:2403.04436](https://arxiv.org/abs/2403.04436)*
+
+**OmniH2O — 머리와 두 손 세 점을 공통 인터페이스로 두고, VR·RGB·언어·GPT-4o·시연 학습 정책이 같은 전신 정책을 부른다**([arXiv:2406.08858](https://arxiv.org/abs/2406.08858), He·Luo·He·Xiao·Zhang·Zhang·Kitani·Liu·Shi, CoRL 2024(PMLR 270), [프로젝트](https://omni.human2humanoid.com), [코드](https://github.com/LeCAR-Lab/human2humanoid) CC BY-NC 4.0).
+H2O의 후속이고, 실물에서 정책이 받는 목표는 머리와 두 손의 위치다.
+그래서 VR 헤드셋·RGB 카메라·언어 동작 생성 모델·GPT-4o·Diffusion Policy가 모두 같은 정책 위에서 돌았다.
+학습은 교사–학생이다. 특권 정보를 보는 교사를 RL로 만들고, 학생은 세 점 목표와 고유감각의 25스텝 이력만 보고 DAgger로 교사 행동을 배운다.
+학생에는 몸통 선속도 입력이 없어서, H2O가 배포 때 쓰던 모션 캡처가 필요 없다.
+실물 시험에서는 VIO(visual-inertial odometry)나 신경망 추정기로 선속도를 넣은 정책보다, 넣지 않은 정책이 더 잘 따랐다. 원격조종으로 모은 6개 작업 시연(OmniH2O-6)도 공개했다.
+같은 1저자가 NVIDIA GEAR와 함께 만든 HOVER(B.16.1)는 ExBody·HumanPlus·H2O·OmniH2O의 명령 모드를 마스크 하나로 모은다. HOVER의 교사는 OmniH2O의 망 구조와 무작위화를 그대로 쓴다.
+
+**travplan에 주는 의미.** 상위 모듈이 무엇이든 하위 정책은 같은 형식의 목표를 받는다. travplan에서 그 형식은 `PlanResult`(경로 또는 시간 인덱스 궤적)다.
+벤치마크에서는 Guidance와 Planner D가, Playground에서는 MPOT Planner(TP-0136)도 같은 Controller를 부른다. B.12.3의 HEAD도 머리와 두 손 세 점을 따르는 전신 정책 위에 상위 내비게이션 정책을 얹는다.
+OmniH2O는 GPT-4o에 동작 목표를 직접 내게 하지 않고, 미리 정한 동작 몇 개 가운데 고르게 했다. 응답 시간이 길어서다.
+보도 배달에서 VLA나 언어 모델을 Planner 위에 얹을 때(B.6b)도 같은 제약이 생긴다.
+
+![OmniH2O Fig. 5](https://arxiv.org/html/2406.08858v1/OmniH2O-Robustness-crop.png)
+*그림 — OmniH2O (Fig. 5): (a) 사람이 여러 방향에서 주먹과 발로 쳐도 H1이 균형을 지킨다(얼굴은 원문에서 가렸다). (b) 같은 정책으로 잔디, 기울어진 돌 턱, 돌 포장, 격자무늬 포장 위를 한 발씩 들며 걷는다. 출처: [arXiv:2406.08858](https://arxiv.org/abs/2406.08858)*
+
+**HumanPlus — RGB 카메라 한 대로 사람을 그림자처럼 따라 하는 하위 정책을 만들고, 그 위에서 시연 40개 이하로 자율 기술을 배웠다**([arXiv:2406.10454](https://arxiv.org/abs/2406.10454), Fu·Zhao·Wu·Wetzstein·Finn, CoRL 2024(PMLR 270), [프로젝트](https://humanoid-ai.github.io), [코드](https://github.com/MarkFzp/humanplus) 라이선스 표기 없음).
+Stanford의 연구로, 프로젝트 페이지는 CoRL 2024 최우수 논문상 최종 후보(상위 6편)였다고 적는다. Unitree H1에 6자유도 손 둘과 손목을 더해 33자유도 로봇을 만들었다.
+하위 정책(Humanoid Shadowing Transformer)은 decoder-only transformer다. AMASS(40시간, 11,000개 넘는 동작)에서 거른 동작으로 시뮬레이션에서 PPO로 학습했다.
+고유감각과 목표 자세 8스텝을 보고 50 Hz로 몸 관절 19개의 목표를 낸다. 실물에서는 RGB 카메라 한 대로 사람의 몸과 손을 추정해 목표 자세로 넣는다.
+상위 정책(Humanoid Imitation Transformer)은 이렇게 원격조종하며 모은 머리 카메라 두 대의 영상으로 행동 복제를 한다.
+25 Hz로 목표 자세 50개를 한 번에 내고, 50스텝 뒤의 영상 특징도 함께 예측하게 해 고유감각에만 기대는 과적합을 막았다.
+신발 신고 일어나 걷기, 창고 선반 물건 옮기기 같은 작업을 시연 40개 이하로 60–100% 성공했다.
+하위 정책은 제조사 기본 제어기보다 미는 힘에 강했다(앞 32 대 24 N, 오른쪽 100 대 40 N). 회복 시간도 짧았다(1.2 s 대 15 s).
+
+**travplan에 주는 의미.** 상위 정책이 느린 주기로 목표 덩어리(50개)를 내고 하위 정책이 빠른 주기로 따르는 분리는 Planner D(4 s 궤적)와 Controller의 관계와 같다.
+상위 정책에 미래 관측 예측을 보조 과제로 붙인 장치는 같은 해 NTP의 상태–행동 동시 예측과 같은 방향이다.
+저자들은 긴 거리 내비게이션은 시연이 훨씬 많이 필요하고 실물 속도 추종이 정확해야 해서 다루지 않았다고 적는다. 보도 배달처럼 이동이 주인 과제에 이 계열을 그대로 쓰기는 어렵다.
+
+![HumanPlus Fig. 3](https://arxiv.org/html/2406.10454v1/method_compressed.png)
+*그림 — HumanPlus (Fig. 3): 왼쪽은 고유감각과 목표 자세 8스텝을 받아 50 Hz로 관절 목표를 내고, 1000 Hz PD가 토크로 바꾸는 하위 정책이다. 오른쪽은 두 머리 카메라 영상과 고유감각을 받아 25 Hz로 목표 자세 50개를 내고, 50스텝 뒤의 영상 특징을 함께 예측(L2 손실)하는 상위 정책이다. 출처: [arXiv:2406.10454](https://arxiv.org/abs/2406.10454)*
+
+**ExBody2 — 기본 정책의 추종 오차로 학습 데이터를 거르고, 일반 정책을 동작군별로 미세 조정했다**([arXiv:2412.13196](https://arxiv.org/abs/2412.13196), Ji·Peng·Liu·Li·Yang·Cheng·Wang, arXiv 2024-12, [프로젝트](https://exbody2.github.io)).
+ExBody의 후속이고, 로봇은 Unitree G1이다. 정식 발표처는 확인하지 못했다.
+먼저 거르지 않은 데이터로 기본 정책을 학습하고, 동작마다 하체 추종 오차를 매겨 문턱 $\tau$ 아래만 남긴다.
+문턱이 너무 낮으면 쉬운 동작만 남아 일반화가 나빠지고, 너무 높으면 불가능한 동작이 학습을 흔든다. 중간 문턱($\tau = 0.15$)으로 거른 데이터의 정책이 오차가 가장 낮았다.
+그다음 일반 정책을 비슷한 패턴의 동작군에 미세 조정해 전문 정책을 만든다.
+정책은 교사–학생이고, 학생은 고유감각 10스텝 이력을 보며 DAgger로 배운다. 전역 키포인트 대신 로봇 기준 키포인트와 몸통 속도를 따로 따르게 해, 전역 위치가 흘러도 추종이 무너지지 않게 했다.
+실물 관절 추종 오차(MPJPE, mean per-joint position error)는 0.1074 rad였다. OmniH2O 재현은 0.1396, ExBody는 0.2178이다.
+같은 연구실의 후속은 둘이다. AMO(RSS 2025, [arXiv:2505.03738](https://arxiv.org/abs/2505.03738))는 sim-to-real RL과 궤적 최적화를 묶어 29자유도 G1의 전신 작업 공간을 넓혔다.
+GMT([arXiv:2506.14770](https://arxiv.org/abs/2506.14770))는 적응 표집과 동작 MoE(mixture of experts)로 정책 하나가 여러 동작을 따른다.
+
+**travplan에 주는 의미.** 기본 정책으로 데이터의 난이도를 매기고 중간 문턱으로 거르는 절차는 H2O의 실행 가능성 필터보다 한 걸음 더 간 것이다. 다 버리지도, 다 쓰지도 않는다.
+travplan의 교사(Guidance + MPPI)는 curb_ramp 레벨 3에서도 거의 실패하지 않는다(29/30, B.15.3).
+그래서 ExBody2식 거르기를 옮긴다면, 기준은 교사의 실패가 아니라 기본 Planner D가 그 시연을 얼마나 따라 하지 못하는지(예: 치명 표본 비율, TP-0074)다.
+
+![ExBody2 Fig. 1](https://arxiv.org/html/2412.13196v2/exbody2-teaser.png)
+*그림 — ExBody2 (Fig. 1): G1이 (a) 정지에서 큰 보폭으로 걷고, (b) 43초 안무를 추고, (c) 무게를 옮기며 옆걸음하고, (d) 높이를 바꿔 주먹을 뻗고, (e) 실외에서 상체 동작을 하며 균형을 지키고, (f) 몸을 틀어 훅을 친다. 출처: [arXiv:2412.13196](https://arxiv.org/abs/2412.13196)*
+
+**ASAP — 실물 기록으로 '행동에 더할 보정'을 학습해 시뮬레이터를 실물에 맞추고, 그 시뮬레이터에서 정책을 다시 다듬는다**([arXiv:2502.01143](https://arxiv.org/abs/2502.01143), He·Gao·Xiao 외 15명, RSS 2025, [프로젝트](https://agile.human2humanoid.com), [코드](https://github.com/LeCAR-Lab/ASAP) MIT).
+CMU LeCAR Lab과 NVIDIA(GEAR의 Linxi Fan, Yuke Zhu)의 공동 연구이고, 로봇은 Unitree G1이다.
+sim-to-real 격차를 줄이는 기존 길은 셋이다. 파라미터를 재는 시스템 식별(SysID), 넓게 흔드는 도메인 무작위화, 실물 데이터로 상태 잔차를 배우는 방법이다.
+ASAP은 넷째 길로, 실물 궤적을 시뮬레이터에서 재생할 때 생기는 어긋남을 '행동에 더하는 보정'으로 배운다.
+1단계에서 사람 영상에서 옮긴 동작을 따라 하는 추종 정책을 시뮬레이션에서 학습한다. 2단계에서 그 정책을 실물에서 돌려 모션 캡처로 궤적을 기록하고, 기록한 행동에 더할 보정 정책을 RL로 학습한다.
+보정 정책은 시뮬레이터의 다음 상태가 실물의 다음 상태와 같아질수록 보상을 받는다. 3단계에서 보정을 얼린 채 시뮬레이터에 넣고, 원래 정책을 다시 학습한다. 실물에는 보정 없이 다듬은 정책만 올린다.
+Isaac Gym에서 학습하고 Isaac Sim을 '실제'로 둔 시험을 했다. 1.0 s 개루프 재생의 전역 위치 오차는 보정 없이 80.8 mm, 상태 잔차(DeltaDynamics) 68.1 mm, ASAP 37.9 mm였다.
+어려운 동작의 폐루프 성공률은 상태 잔차 방식이 60–67%, ASAP이 100%였다. 실물에서는 차기 동작의 오차가 61.2 mm에서 50.2 mm로, 학습 밖 동작의 오차가 159 mm에서 112 mm로 줄었다.
+
+**travplan에 주는 의미.** ASAP은 보정을 상태에 붙일지 행동에 붙일지를 비교했고, travplan의 두 모델 보정과 같은 질문을 던진다.
+ASAP의 개루프 표에서 1.0 s 전역 위치 오차는 상태 잔차 68.1 mm, 행동 보정 37.9 mm였다. 저자들은 상태 잔차가 과적합해 시간이 갈수록 오차가 커진다고 설명한다.
+rollout에 plant의 지연을 넣은 TP-0150(`mppi_plant_lag`)은 plant 레벨 3 치명을 55에서 4로 줄였다. 미끄럼까지 넣은 판은 치명은 같이 줄였지만 도달이 189/360으로 떨어져 선택 항목으로 남았다(MPC 문서 M.3.22).
+다만 TP-0150은 학습 보정이 아니라, 명령이 실제 움직임이 되는 과정을 rollout에 넣은 물리 모델이다. 닮은 점은 '입력 쪽을 고친다'는 데까지다.
+명목 모델 위 잔차를 GP로 배운 TP-0068도 있다. plant 조건의 NMPC에서 `mpc_gp`는 `mpc`와 비슷했다(도달 215 대 222/360, 치명 32 대 34, TP-0152). 이 차이만으로 잔차의 우열을 말할 수는 없다.
+그래도 Controller 모델 계층(TP-0124)의 학습 층에 '명령에 더하는 잔차'를 후보로 넣을 근거는 된다. 검증은 ASAP처럼 plant 기록을 개루프로 재생한 오차를 먼저 재고, 그다음 폐루프 짝 비교로 간다.
+
+![ASAP Fig. 1](https://arxiv.org/html/2502.01143v3/ASAP-Fig1-crop.png)
+*그림 — ASAP (Fig. 1): 실물 Unitree G1이 (a) 공중에서 180° 도는 축구 세리머니, (b) 한 발로 서는 농구 세리머니, (c) 한 발 페이드어웨이 점프, (d) 1.5 m 앞 뛰기, (e) 다리 뻗기, (f) 1.3 m 옆 뛰기를 한다. 실험은 실내에서 안전줄을 달고 했다. 출처: [arXiv:2502.01143](https://arxiv.org/abs/2502.01143)*
+
+![ASAP Fig. 2](https://arxiv.org/html/2502.01143v3/ASAP_pipeline-crop.png)
+*그림 — ASAP (Fig. 2): (a) 사람 영상에서 옮긴 동작으로 추종 정책을 사전학습하고 실물 궤적을 모은다. (b) 실물 상태와 행동을 재생하며, 시뮬레이터 상태가 실물 다음 상태와 같아지도록 보정 행동 모델을 학습한다. (c) 보정 모델을 얼려 시뮬레이터에 넣고 정책을 다시 학습한다. (d) 실물에는 보정 모델 없이 정책만 올린다. 출처: [arXiv:2502.01143](https://arxiv.org/abs/2502.01143)*
+
+<details markdown="1">
+<summary>자세히: ASAP의 방법과 수식</summary>
+
+**풀려는 문제.** 휴머노이드의 민첩한 전신 동작은 시뮬레이터와 실물의 동역학 차이에 가장 약하다. 기존 세 길에는 각각 약점이 있다.
+SysID는 미리 정한 파라미터 공간 안에서만 맞추고, 많은 로봇에 없는 관절 토크 측정이 필요할 때가 많다. 도메인 무작위화는 정책을 지나치게 보수적으로 만든다.
+실물 데이터로 동역학을 배우는 방법은 드론과 지상 차량에서는 통했지만, 휴머노이드에서는 아직 시험되지 않았다고 저자들은 적는다.
+
+**사전학습.**
+- 데이터: 직접 찍은 사람 영상을 TRAM으로 3D 동작(SMPL)으로 복원한다. MaskedMimic(B.16.1)이 시뮬레이션에서 따라 할 수 있었던 동작만 남기고, H2O의 두 단계 리타기팅으로 G1에 옮긴다.
+- 정책: 위상 $\phi \in [0, 1]$과 5스텝 고유감각 이력(관절 23개의 위치와 속도·몸통 각속도·중력 방향·직전 행동)을 받아 관절 23개 목표를 낸다.
+  critic만 기준 동작의 전역 위치와 몸통 선속도를 본다(비대칭 actor–critic). 그래서 배포 때 오도메트리가 필요 없다.
+- 학습 장치: 종료 허용 오차를 1.5 m에서 0.3 m로 줄여 가는 커리큘럼이 있다. 뛰는 동작에서 착지 벌점을 피하려고 땅에 머무는 국소 최적을 이것이 깬다.
+  RSI는 위상을 무작위로 뽑아 그 자세에서 시작하게 한다. 착지부터 익혀야 하는 동작을 병렬로 배울 수 있다.
+- 무작위화: 마찰 $\mathcal U(0.2, 1.1)$, P 이득 0.925–1.05배, 제어 지연 20–40 ms, 10 s마다 0.5 m/s 밀기뿐이다.
+
+**보정 행동 모델.** 실물 기록 $(s^r_t, a^r_t)$를 시뮬레이터에서 재생한다. 보정 정책 $\pi^\Delta_\theta$의 출력을 기록한 행동에 더해 한 스텝 굴린다.
+
+$$ s_{t+1} = f^{\text{sim}}\big(s_t,\ a^r_t + \pi^{\Delta}_\theta(s_t, a^r_t)\big) $$
+
+매 RL 스텝은 실물 상태 $s^r_t$에서 시작한다. 보상은 $s_{t+1}$과 $s^r_{t+1}$의 차이를 줄이는 추종 항과 보정 크기 정규화 항이고, PPO로 학습한다. 보정을 얼리면 실물에 맞춘 시뮬레이터가 된다.
+
+$$ f^{\text{ASAP}}(s, a) = f^{\text{sim}}\big(s,\ a + \pi^{\Delta}(s, a)\big) $$
+
+원래 정책은 사전학습과 같은 보상으로 이 시뮬레이터에서 다시 학습한다. 원문의 예는 이렇다. 시뮬레이터의 모터가 실물보다 세서 시뮬레이션에서만 뛸 수 있다면, 보정이 하체 행동을 약하게 만들어 실물의 한계를 시뮬레이터로 옮긴다.
+비교 대상인 상태 잔차(DeltaDynamics)는 같은 실물 데이터로 $s_{t+1} = f^{\text{sim}}(s_t, a_t) + f^{\Delta}_\theta(s_t, a_t)$를 배운다.
+
+**보정을 쓰는 다른 방법(원문 V-B, 부록 VIII-D).** 한 스텝 맞춤을 가정하면 $\pi(s) = \hat\pi(s) - \pi^{\Delta}(s, \pi(s))$를 풀면 된다.
+고정점 반복과 기울기 탐색으로 풀어 봤지만, 둘 다 보정하지 않은 정책보다 오차가 컸다. 한 스텝 가정과 학습 분포 밖 입력 때문이다.
+RL 미세 조정은 시뮬레이터를 미분하지 않고 여러 스텝을 맞추는 셈이어서 가장 좋았다.
+
+**결과.** 개루프 재생은 Isaac Sim에서 기록한 궤적을 Isaac Gym에서 재생한 전역 위치 오차(mm, 원문 표 III)다. 0.25 s에서는 방법 간 차이가 작고, 1.0 s에서 갈린다.
+
+| 방법 | 0.25 s | 0.5 s | 1.0 s |
+|---|---|---|---|
+| 재생만 | 19.5 | 33.3 | 80.8 |
+| SysID | 19.4 | 32.1 | 77.6 |
+| 상태 잔차(DeltaDynamics) | 24.4 | 36.5 | 68.1 |
+| ASAP | 19.9 | 26.8 | 37.9 |
+
+상태 잔차는 몸통 기준 관절 오차(MPJPE)가 오히려 낮다(0.25·0.5·1.0 s에서 13.6·16.4·21.5 대 ASAP 15.6·19.2·22.9). 전역 오차만 시간에 따라 쌓였다.
+- 폐루프(동작 43개, 쉬움·보통·어려움, 표 IV): ASAP은 두 시뮬레이터의 모든 난이도에서 성공률 100%였다. 상태 잔차는 어려움에서 66.7%(Isaac Sim), 60.0%(Genesis)였다.
+- 실물(표 V, mm): 차기의 전역 위치 오차는 61.2에서 50.2로, 학습 밖 'Silencer'는 159에서 112로 줄었다. 몸통 기준 관절 오차는 43.5에서 40.1로, 55.3에서 47.5로 줄었다.
+- 데이터 크기와 설정: 시뮬레이션 데이터를 4,300에서 43,000으로 늘려도 폐루프 오차는 0.65%만 줄었다. 학습 지평은 1.0 s가 폐루프에서 가장 좋았고, 보정 크기 정규화 가중은 0.1이 가장 좋았다.
+- 무작위 행동 잡음으로 미세 조정해도 좋아졌지만, ASAP(126)보다 오차가 컸다. 본문은 잡음 쪽을 150, 그림 12 캡션은 173으로 적어 서로 다르다.
+
+![ASAP Fig. 5](https://arxiv.org/html/2502.01143v3/ASAP-OpenLoop-Curves-crop.png)
+*그림 — ASAP (Fig. 5): Isaac Sim에서 기록한 축구 차기 상태·행동을 Isaac Gym에서 개루프로 재생한 결과다. 위는 재생만, SysID, 상태 잔차, ASAP의 장면이고, 아래 곡선은 시간에 따른 관절 위치 오차(MPJPE, mm)다. 재생만과 SysID는 넘어지고, 상태 잔차는 서서히 벌어지며, ASAP은 끝까지 붙어 있다. 출처: [arXiv:2502.01143](https://arxiv.org/abs/2502.01143)*
+
+![ASAP Fig. 13](https://arxiv.org/html/2502.01143v3/vis_magnitude.png)
+*그림 — ASAP (Fig. 13): Isaac Gym에서 Isaac Sim으로 옮길 때 배운 보정 행동의 관절별 평균 크기(4,300 에피소드)다. 발목 pitch(0.054–0.056)와 무릎(0.049)이 가장 크고, 어깨와 팔꿈치(0.011–0.017)가 가장 작다. 좌우도 다르다. 출처: [arXiv:2502.01143](https://arxiv.org/abs/2502.01143)*
+
+**한계.** 저자가 밝힌 것:
+- 격한 동작이 모터를 과열시켰고, 데이터 수집 중 G1 두 대가 부서졌다.
+- 실물 궤적 기록에 모션 캡처가 필요하다.
+- 관절 23개를 모두 보정하려면 실물 동작 400개 이상이 필요하다. 그래서 실물에서는 발목 4자유도만 보정했고, 동작 100개로 충분했다. 발목은 링크 구조라 모델링으로 격차를 메우기 가장 어려운 곳이기도 하다.
+
+우리가 보기에:
+- 실물 평가(표 V)는 동작 두 개의 오차이고, 평가 반복 횟수와 분산은 적혀 있지 않다. 과제마다 정책을 30번 돌렸다는 것은 데이터 수집의 횟수다.
+- 결론은 실물 추종 오차를 '최대 52.7%' 줄였다고 적지만, 표 V의 감소 폭은 7–30%다. 이 수치의 출처는 확인하지 못했다.
+- 시뮬레이터 간 시험은 '실제'를 다른 시뮬레이터로 대신했다. 두 시뮬레이터의 차이는 실물 격차보다 단순할 수 있다.
+- 코드는 MIT로 공개됐고, 보정 행동 학습 파이프라인과 다중 시뮬레이터 코드(HumanoidVerse)가 들어 있다.
+
+**travplan에 주는 것.**
+- 상태 잔차와 입력 잔차가 갈리지 않는 자리. travplan NMPC 모델(`control/acados_mpc/model.py`)의 상태는 포즈와 body twist이고, 입력은 twist 변화율이다.
+  GP 평균은 그 입력에 더하는 가속 보정으로 들어간다. 입력이 선형으로 들어가는 적분기 모델이라, 이 자리에서는 상태 잔차와 입력 잔차가 같은 식이 된다(우리가 보기에).
+  ASAP의 구분은 행동이 PD와 접촉을 거쳐 비선형으로 상태에 닿는 휴머노이드에서 갈린다. travplan에서 그 구분이 의미를 갖는 곳은 명령이 지연·미끄럼·조향 한계를 거쳐 실현 twist가 되는 plant 쪽이다.
+- 명령 쪽 학습 보정. $u' = u + \Delta(x, u)$를 명목 `SwerveModel`에 넣는 꼴이다. TP-0150의 지연 모델은 이 자리를 손으로 채운 판이고, 효과가 있었다. 미끄럼까지 손으로 넣은 판은 진행을 막았다.
+  학습판은 plant 기록에서 다음 상태를 맞추도록 $\Delta$를 배운다. ASAP처럼 보정 크기를 정규화하고, 격차가 몰린 성분(스워브에서는 가속과 조향의 지연)만 보정하면 데이터가 적어도 된다.
+- 개루프 재생 지표. 잔차를 바꿀 때마다 폐루프 벤치마크를 돌리지 않고, plant 기록을 재생한 오차로 먼저 거른다.
+  ASAP의 표 III은 0.25 s에서는 방법 차이가 안 보이고 1.0 s에서 갈린다는 것을 보여 준다. 그래서 MPPI와 Planner D의 지평(4 s)까지 0.5·1·2·4 s 길이로 잰다.
+- 보정한 모델에서 상위 학습. ASAP은 보정을 시뮬레이터에 넣고 정책을 다시 학습했다. Planner D의 RL 후학습(TP-0066)은 이상 모델 위에서 돌았다(강화학습 문서 R.16).
+  그 rollout을 보정한 명목 모델로 돌리면 plant보다 싸고, 실물 기록이 생기면 실물에 맞출 수 있다.
+
+</details>
+
+**셋째 갈래(지형과 과제 비용).** 이 갈래의 정책은 지형을 직접 보거나, 생성 중에 과제 비용으로 끌려간다. 깊이 영상(Humanoid Parkour)과 높이 지도(VideoMimic)는 하위 정책의 입력이 된다. 비용 기울기(BeyondMimic)는 생성 모델의 출력을 바꾼다.
+셋 모두 경로는 여전히 위에서 받는다. 조이스틱 방향, 목표 방향, 경유점이 그것이다.
+
+**Humanoid Parkour Learning — 깊이 카메라 하나를 보는 전신 정책이 기술을 스스로 골라 0.42 m 단에 오르고 0.8 m 틈을 건넜다**([arXiv:2406.10759](https://arxiv.org/abs/2406.10759), Zhuang·Yao·Zhao, CoRL 2024(PMLR 270), [프로젝트](https://humanoid4parkour.github.io)).
+Shanghai Qi Zhi Institute와 칭화대 Hang Zhao 연구실의 연구다. B.12.2 Robot Parkour Learning의 1저자가 사족 로봇에서 하던 파쿠르 학습을 Unitree H1으로 옮겼다. 학습은 세 단계다.
+먼저 평지 보행 정책을 학습하는데, 발 들기를 보상으로 시키지 않고 지형 높이에 프랙탈 잡음을 섞어 발을 들게 했다.
+다음으로 지형 10종 × 난이도 10단계 격자에서 높이 샘플(scandots)을 보는 교사를 학습한다. 구간의 3/4 이상을 가면 어려운 단계로, 1/2도 못 가면 쉬운 단계로 옮긴다.
+마지막으로 RealSense D435i의 잡음을 흉내 낸 깊이 영상(48 × 64)을 보는 학생을 DAgger로 증류한다. 깊이 인코더는 10 Hz, 정책은 50 Hz로 돈다.
+정책은 조이스틱의 방향 명령만 받고, 장애물에 맞는 기술을 스스로 고른다. 실물에서 0.42 m 단 오르기, 0.8 m 틈 건너기, 1.8 m/s 달리기를 보였다.
+
+**travplan에 주는 의미.** 커리큘럼 규칙(3/4 진행이면 올리고 1/2 미만이면 내림)은 Rudin 2021(B.14.1)과 같은 꼴이다. travplan은 지형 레벨을 평가 스윕(TP-0039)과 고른 표집(TP-0073, TP-0066)으로만 쓴다.
+저자들은 계단에서 명시적 발 디딤 안내 없이는 RL 행동이 충분히 정확하지 않다며 DTC(B.14.2)를 인용하고, 로그형 발 디딤 보상을 더했다.
+실물 시험의 경사는 높이 0.2 m, 길이 0.5 m짜리 연석 경사로 제품으로 만들었다. 이 경사(0.38 rad)는 travplan 스워브의 경사 한계 0.26 rad보다 가파르다.
+
+![Humanoid Parkour Learning Fig. 1](https://arxiv.org/html/2406.10759v2/figures/teaser.png)
+*그림 — Humanoid Parkour Learning (Fig. 1): H1이 보도 걷기, 낮은 장애물 넘기, 상자 위 뛰어오르기, 계단과 경사판 오르기, 틈 건너뛰기, 운동장 트랙 달리기를 한다. 아래 줄 둘째 장면은 사람이 팔만 따로 조종하는 시험이다. 출처: [arXiv:2406.10759](https://arxiv.org/abs/2406.10759)*
+
+**VideoMimic — 휴대폰 영상에서 사람과 장면을 함께 복원해, 11 × 11 높이 지도와 목표 방향만 보는 G1 정책 하나가 계단을 오르고 의자에 앉는다**([arXiv:2505.03729](https://arxiv.org/abs/2505.03729), Allshire·Choi·Zhang·McAllister·Zhang·Kim·Darrell·Abbeel·Malik·Kanazawa, CoRL 2025(PMLR 305), [프로젝트](https://www.videomimic.net), [코드](https://github.com/hongsukchoi/VideoMimic) MIT).
+UC Berkeley의 연구로, 프로젝트 페이지는 CoRL 2025 최우수 학생 논문상을 받았다고 적는다. 직접 찍은 휴대폰 영상 123개에서 사람의 4D 동작과 장면 기하를 함께 복원하고, 동작을 G1에 옮긴다.
+RL은 네 단계다. 모션 캡처로 사전학습하고, 복원한 장면 위에서 영상 동작을 따라 하며 높이 지도 입력을 붙인다.
+그다음 목표 관절각을 빼고 세 가지만 보는 정책으로 DAgger 증류한다. 고유감각·몸통 중심 11 × 11 높이 지도(0.1 m 간격)·목표 방향(국소 좌표의 x·y 오프셋과 yaw)이다.
+마지막으로 같은 관측으로 PPO 미세 조정한다.
+실물 G1(23자유도)에서는 정책이 Jetson Orin NX로 50 Hz에 돈다. 높이 지도는 Fast-LIO2 오도메트리와 Fankhauser 외의 확률적 지형 지도(B.14.1의 로봇 중심 elevation mapping)로 만든다.
+목표 방향은 사람이 조이스틱으로 준다.
+정책 하나가 지도를 보고 계단 오르내리기, 의자와 벤치에 앉고 일어서기, 흙 비탈과 연석 넘기를 고른다. 원문은 목표 방향을 조이스틱이나 상위 제어기의 경로에서 받을 수 있다고 적는다.
+배포를 다듬는 과정에서 몸통 위치를 조건으로 주는 편이 몸통 속도보다 낫다는 것도 확인했다(부록 C.1).
+
+**travplan에 주는 의미.** TravMap을 보는 하위 정책에 가장 가까운 휴머노이드 사례다. Playground의 학습 Controller `TinyPolicy`(TP-0128)는 앞쪽 belief cost 7 × 5칸·경로 앞 네 점·현재 twist·자세를 보고 body twist를 낸다.
+VideoMimic은 몸통 둘레 높이 그대로를, `TinyPolicy`는 앞쪽 cost를 본다. 둘 다 경로는 위에서 받는다.
+같은 UC Berkeley의 HT(v1 표 III)와 HT-2(보충 표 S1)는 높이 지도 121칸을 교사나 critic의 특권 정보로만 썼다. VideoMimic에서는 같은 크기의 지도가 배포 정책의 입력이다.
+저자들이 밝힌 한계에는 이 성긴 격자로는 위에 걸린 장애물을 다루지 못한다는 것이 있다. travplan TravMap의 알려진 한계(오버행 미표현)와 같다.
+
+![VideoMimic Fig. 5](https://arxiv.org/html/2505.03729v5/Presentation3_final_final.png)
+*그림 — VideoMimic (Fig. 5): 실물 G1이 정책 하나로 돌 벤치에서 일어서고(첫 줄), 실외 계단을 오르고(둘째 줄), 내려가고(셋째 줄), 연석을 넘어 거친 흙 비탈로 들어간다(넷째 줄). 원문은 정책이 높이 지도와 조이스틱 방향을 보고 할 일을 고른다고 적는다. 출처: [arXiv:2505.03729](https://arxiv.org/abs/2505.03729)*
+
+**BeyondMimic — 한 설정으로 학습한 동작 추종 정책들을 잠재 상태–행동 diffusion 하나로 묶고, 처음 보는 과제는 생성 중 비용 기울기로 푼다**([arXiv:2508.08241](https://arxiv.org/abs/2508.08241), Liao·Truong·Huang·Gao·Tevet·Sreenath·Liu, Science Robotics 11(117) eadx8924, 2026, [doi:10.1126/scirobotics.adx8924](https://doi.org/10.1126/scirobotics.adx8924), [프로젝트](https://beyondmimic.github.io), [코드(동작 추종)](https://github.com/HybridRobotics/whole_body_tracking) MIT).
+UC Berkeley Hybrid Robotics와 Stanford(C. Karen Liu)의 공동 연구이고, 로봇은 Unitree G1이다. 두 단계로 된다.
+첫째, 사람 동작 하나하나를 따라 하는 추종 정책을 RL로 학습한다. 보상은 몸 부위 추종 항 넷과 정규화 항 셋뿐이다.
+무작위화는 마찰·반발 계수, 관절 기본각, 몸통 무게중심과 속도 밀기만 쓴다. 대신 로터 관성과 감속비로 계산한 반사 관성(armature)을 시뮬레이터에 정확히 넣고, 배포 코드의 지연을 줄였다.
+이 한 가지 설정으로 공중 옆돌기·회전 차기·달리기를 동작별 조정 없이 학습했다. 학습 동작은 약 2.5시간이고, 그 가운데 30개(15분)를 실물에 올렸다.
+둘째, 추종 정책들을 VAE(variational autoencoder)에 증류한 뒤, 과거·현재·미래의 상태와 잠재를 함께 생성하는 diffusion 모델을 학습한다.
+처음 보는 과제는 학습하지 않고, 생성 중에 과제 비용의 기울기를 더해 푼다(classifier guidance). 조이스틱 속도 추종·경유점 도달·장애물 회피·키프레임 사이 채우기를 이렇게 했다.
+
+**travplan에 주는 의미.** 구조가 Planner D와 같은 쪽을 향한다. 시연을 생성 모델로 배우고, 실행할 때 비용으로 끌어간다.
+travplan도 비용 기울기 유도판(`planner_dg`)을 만들었다. 계획에 65–151 ms가 들었고, `ReferenceCost`를 고친 뒤에는 유도 없이 12/12가 되어 쓰지 않게 됐다(B.8.3).
+그 뒤 TP-0143(B.15.6)의 진단에서는 RL 1단계 체크포인트에 cost 안내 샘플링(`planner_dg`)을 켜자 curb_ramp 레벨 3 단독이 3/30(시간 초과 27)으로 무너졌다.
+BeyondMimic도 큰 유도 가중이 잡음 제거를 불안정하게 만든다고 적는다. 장애물 회피에 쓴 것은 SDF(signed distance field)에 건 완화 로그 장벽이다.
+이것을 travplan의 치명 셀 ESDF(Euclidean signed distance field, TP-0071)에 옮긴다면 작은 가중에서 시작해 그 curb_ramp 장면을 먼저 짝 비교로 잰다.
+시연 데이터를 만드는 방법도 옮길 만하다. PDP(Truong 외, SIGGRAPH Asia 2024)를 따라 행동에 잡음을 넣어 회복할 '오차 띠'를 만들었다. 스텝마다 독립인(i.i.d.) 잡음 대신 시간 상관이 있는 OU(Ornstein–Uhlenbeck) 잡음을 썼다.
+Planner D의 DAgger(TP-0075)와 리셋 커리큘럼(TP-0143)이 같은 문제를 다른 방법으로 다룬다.
+
+![BeyondMimic Fig. 3](https://arxiv.org/html/2508.08241v4/Fig3.png)
+*그림 — BeyondMimic (Fig. 3): (A) 숲속 낙엽과 무른 흙 위에서 공중 옆돌기, 180° 회전 차기 두 번, 360° 플립 차기를 한 번에 잇는 G1이다. (B) 같은 구간의 몸통 자세, 선가속도, 각속도다. 원문은 공중 구간의 최대 가속도를 31 m/s², 골반 각속도를 최대 20 rad/s로 적는다. 출처: [arXiv:2508.08241](https://arxiv.org/abs/2508.08241)*
+
+![BeyondMimic Fig. 7](https://arxiv.org/html/2508.08241v4/Fig7.png)
+*그림 — BeyondMimic (Fig. 7): (A) 기준 동작을 현재 앵커 몸체에 다시 맞춰 추종 오차를 재고, 한 가지 설정으로 동작마다 추종 정책을 학습한다. (B) 추종 정책들을 DAgger로 VAE에 증류하고, 과거·현재·미래의 상태 s와 잠재 z를 함께 잡음 제거하는 transformer를 학습한다. 배포 때는 과제 비용이 생성을 유도하고, 디코더가 현재 잠재를 행동 a로 바꾼다. (C) 조이스틱, 장애물 회피, 경유점, 동작 채우기를 같은 모델로 한다. 출처: [arXiv:2508.08241](https://arxiv.org/abs/2508.08241)*
+
+<details markdown="1">
+<summary>자세히: BeyondMimic의 동작 추종과 유도 diffusion</summary>
+
+**풀려는 문제.** 사람 동작을 따라 하는 RL은 그동안 동작마다 보상과 이득을 다시 맞춰야 했고, 학습한 동작만 재생했다.
+추종기 위에 과제 Planner를 따로 학습해 얹는 계층형은 Planner와 추종기가 어긋난다. VAE 기반 생성 모델은 장애물 회피처럼 명시하기 어려운 목표에 약하다.
+BeyondMimic은 동작별 조정 없는 추종 레시피와, 실행 중 비용으로 끌어가는 생성 모델로 이 둘을 푼다.
+
+**동작 추종의 목표와 보상.** 앵커 몸체(몸통)는 기준을 그대로 따른다. 나머지 몸체는 앵커 중심 좌표(yaw 정렬, 높이 유지)에서 따른다. 전역 drift를 허용하면서 동작 모양을 지킨다.
+보상은 위치·자세·선속도·각속도 오차의 몸체 평균 $\bar e_s$를 가우시안형으로 바꿔 더한다.
+
+$$ r_{\text{task}} = \sum_{s \in \{p, R, v, \omega\}} \exp\big(-\bar e_s / \sigma_s^2\big) $$
+
+$\sigma$는 위치 0.3, 자세 0.4, 선속도 1.0, 각속도 3.14다. 정규화는 관절 한계(−10)·행동 변화율(−0.1)·자기 충돌(−0.1) 셋뿐이다.
+
+**동작 추종의 나머지 설정.**
+- 관측: 위상(기준 관절각과 속도)·앵커 자세 오차·IMU twist·관절 상태·직전 행동이다. 이력은 쌓지 않는다. 행동은 관절 목표이고, 관절 한계로 자르지 않는다.
+- 이득: 반사 관성 $I_j$로 $k_p = I_j \omega^2$, $k_d = 2 I_j \zeta \omega$를 정한다. $\omega$는 10 Hz, $\zeta = 2$다. 보충 그림 S2는 이 값이 ASAP의 이득보다 전역 추종이 좋다고 비교한다.
+- 적응 표집: 동작을 1 s 구간으로 나누고, 구간별 실패율의 지수 이동 평균으로 시작 위상을 뽑는다. 이것이 없으면 네 동작 가운데 셋이 30k 반복 뒤에도 어려운 구간을 풀지 못했다.
+  쉬운 동작은 필요한 반복이 4k에서 2k로 줄었다. 비슷한 장치로 ZEST(B.16.4)는 구간별 실패율을, GMT는 완주 정도와 추종 오차를, VideoMimic은 동작별 성공률을 쓴다.
+
+**잠재 상태–행동 diffusion.**
+- 왜 잠재인가: 관절 목표 행동에는 토크 스파이크가 섞여 diffusion이 배우기 어렵다. 큰 네트워크의 추론 지연으로 행동이 최신 상태에 뒤처지기도 한다. 그래서 행동 대신 매끈한 잠재 $z$를 생성하고, 가벼운 디코더가 최신 관측으로 $z$를 행동으로 바꾼다.
+- 데이터: VAE 정책에 OU 잡음($\theta = 0.8$, $\sigma = 0.1$)을 넣어 굴린다. 표본 하나가 약 100번 나오게 모으고, 2.5 s 실행 뒤 5 s 안에 넘어진 에피소드는 버린다. 원문은 i.i.d. 잡음은 과감쇠 PD가 걸러 버려 상태가 넓어지지 않는다고 적는다.
+- 생성: 궤적 $\tau = [s_{t-N}, z_{t-N}, \dots, s_t, z_t, \dots, s_{t+H}, z_{t+H}]$의 성분마다 잡음 단계를 따로 둔다. 그래서 과거는 관측으로 채우고 미래만 생성할 수 있다. 예측 지평은 0.64 s다.
+
+**유도.** 과제 비용 $G(\tau)$를 조건부 우도 $p(\tau^* \mid \tau) \propto \exp(-G(\tau))$로 보고 점수에 더한다.
+
+$$ \nabla_\tau \log p(\tau \mid \tau^*) = \nabla_\tau \log p(\tau) - \nabla_\tau G(\tau) $$
+
+조이스틱 비용은 예측 수평 속도와 명령의 제곱 차다. 경유점 비용은 목표까지 거리 $d_i$에 따라 위치 항에서 정지 항으로 넘어간다.
+
+$$ G_{\text{wp}} = \sum_{i=0}^{H} \big(1 - e^{-2 d_i}\big) \lVert P_{xy,i} - g_p \rVert^2 + e^{-2 d_i} \lVert V_{xy,i} \rVert^2 $$
+
+장애물 비용은 몸체 위치의 SDF에서 충돌 반지름을 뺀 값 $x$에 완화 로그 장벽을 건다. $x \ge \delta$면 $B = -\ln x$이고, $x < \delta$면 아래 이차식으로 이어서 0 근처에서도 유한하다.
+
+$$ B(x, \delta) = -\ln\delta + \tfrac12\big[\big(\tfrac{x - 2\delta}{\delta}\big)^2 - 1\big] \quad (x < \delta) $$
+
+**배포.** transformer(약 19.8M 파라미터)를 RTX 4060 Mobile 미니 PC에서 TensorRT로 돌린다. 추론 한 번(잡음 제거 20단계)에 약 20 ms이고, 별도 스레드에서 비동기로 돈다.
+디코더는 CPU에서 동기로 돈다. 비용 기울기는 잡음 제거 반복마다 CppAD로 자동 미분한다. 추종 정책은 diffusion 추론 시간을 벌려고 50 Hz 대신 25 Hz로 다시 학습했다.
+조이스틱과 동작 채우기는 고유감각 상태 추정만 썼다. 경유점과 장애물 과제에서는 모션 캡처로 위치와 환경을 줬다.
+
+**결과.**
+- 사용자 조사(77명, 5초 영상 20쌍)에서 Unitree 기본 제어기보다 사람 같다는 선택이 전체 70.8%였다. 걷기는 57.0%, 달리기는 84.7%다(모두 $p < .001$).
+- 지연 절제: 배포에 2 ms 지연을 넣으면 속도 오차가 커지고, 5 ms면 한 번 실패했으며, 10 ms면 세 번 중 두 번 실패했다.
+- 잠재 절제: MuJoCo에서 옆돌기 성공률이 잠재 없이 5%, 잠재 diffusion 95%였다.
+- 유도 보행: 시뮬레이션 속도 추종 오차가 걷기 12.14%, 달리기 13.65%다. 실물에서 트랙 50 m 이상을 계속 달렸고, 장애물 비용과 경유점 비용을 더해 장애물을 돌아 목표에 갔다.
+
+![BeyondMimic Fig. 5](https://arxiv.org/html/2508.08241v4/Fig5.png)
+*그림 — BeyondMimic (Fig. 5): (A) 오른쪽 회전 명령으로 잡음 제거 8·12·16·20번째 반복의 예측 분포가 좁혀진다. (B) 여러 출발점에서 앞이나 뒤로 걸어 경유점에 간다. (C) 조이스틱 명령을 따르고, 발로 차여도 회복한다. (D) 잠재의 t-SNE에서 걷기와 달리기가 갈리고, 속도 명령을 1 m/s에서 3 m/s로 올리면 걷기에서 달리기로 넘어간다. (E) 야외 코트에서의 같은 전환이다. 출처: [arXiv:2508.08241](https://arxiv.org/abs/2508.08241)*
+
+![BeyondMimic Fig. 6](https://arxiv.org/html/2508.08241v4/Fig6.png)
+*그림 — BeyondMimic (Fig. 6): (A) 걷는 중에 0.2 s 간격 키프레임을 주면 옆돌기를 채워 넣고 다시 걷는다. 속도 조건과 키프레임 조건을 오가며 옆돌기 여러 번과 달리기를 잇는다. (B) 경유점 비용과 SDF 장애물 비용을 더해, 실내에서 주황색 기둥 장애물을 돌아 목표에 간다. 출처: [arXiv:2508.08241](https://arxiv.org/abs/2508.08241)*
+
+**한계.** 저자가 밝힌 것:
+- 상태 추정 오차가 생성 궤적에 그대로 들어간다.
+- 예측 지평 0.64 s는 국소 회피에는 되지만, 먼 목표와 미리 피해야 하는 장애물에는 모자라다.
+- 이력이 있어야 예측이 안정되지만, 그 이력이 같은 동작의 반복에 갇히게 한다. 그래서 유도 가중을 키우는데, 큰 가중은 모드 전환과 분산이 큰 상태에서 잡음 제거를 불안정하게 한다. 동작의 시작과 끝에서 비틀거리는 이유다.
+- 유도는 거친 목표에는 잘 듣지만 세밀한 목표에는 약하고, 가중치를 조금 맞춰야 한다.
+
+우리가 보기에:
+- 공개 코드는 동작 추종 학습(Isaac Lab)과 C++ 추론이다(MIT). 유도 diffusion 코드는 두 저장소에 없다(2026-10-07 확인).
+- 장애물 회피는 실내 모션 캡처 환경의 시연이고, 성공률 통계가 없다.
+
+**travplan에 주는 것.**
+- 유도 비용. 치명 셀 ESDF(TP-0071)에 완화 로그 장벽 $B$를 걸어 Planner D 생성 중 기울기로 쓰는 것이 후보다. 먼저 `planner_dg`가 무너진 curb_ramp 레벨 3 장면(TP-0143)에서 작은 가중부터 짝 비교로 잰다.
+  계획 시간은 `planner_dg`의 65–151 ms(B.8.3)와 BeyondMimic의 20단계 약 20 ms(TensorRT, 모바일 GPU)를 함께 놓고 본다.
+  효과는 유도 없이 12/12인 지금 벤치마크보다, 시연에 없던 장애물(보행자 5명, TP-0154)과 미관측 영역에서 재야 드러난다.
+- 오차 띠 데이터. Guidance + MPPI 교사의 rollout에 OU 잡음을 넣어, 교사가 회복하는 상태를 시연으로 모은다.
+  스워브 plant에도 1차 지연(TP-0150)이 있어서 i.i.d. 잡음은 상태를 넓히지 못할 수 있다. 이것은 재 보지 않은 추정이다.
+- 실패율 적응 표집. 지금 RL 후학습(TP-0066)은 레벨 0–3을 고르게 뽑고, 시연 수집(TP-0073)도 고르게 뽑는다. 지형 구간별 실패율의 지수 이동 평균으로 다음 rollout을 뽑는 판이 후보다. Controller 문서 F.2의 LP-ACRL과 같은 방향이다.
+- 지평. 원문은 0.64 s 지평이 먼 목표에는 모자란다고 적는다. travplan에서 그 몫은 4 s 지평의 Planner D와 Guidance 경로가 맡고, 지평을 늘리는 일은 TP-0145에 있다.
+
+</details>
+
+**Boston Dynamics·RAI Institute의 Atlas RL(ZEST)은 B.16.4에 있다.** 모션 캡처·영상·애니메이션을 RL로 따라 해 Atlas·G1·Spot에 바로 올렸고, 방법은 이 소절의 동작 추종과 같은 갈래다.
+1저자 Jean-Pierre Sleiman의 이력은 B.16.3에 있다.
+
+**Unitree H1·G1.** 이 소절 연구 대부분의 실험 로봇이다([G1 공식 사양](https://www.unitree.com/g1/), [H1 공식 사양](https://www.unitree.com/h1/)).
+H2O·OmniH2O·HumanPlus·Humanoid Parkour·ExBody는 H1을 썼다. ASAP·BeyondMimic·ExBody2·VideoMimic·AMO·GMT와 ZEST의 일부 동작은 G1을 썼다.
+공식 사양은 H1이 키 약 180 cm·약 47 kg, G1이 1.32 m·약 35 kg이다. 논문마다 적은 값이 조금씩 다르다(ExBody는 H1을 약 51.5 kg, ASAP은 G1을 1.35 m로 적는다).
+공개 학습 코드(unitree_rl_gym, unitree_rl_lab)는 B.16.5의 Unitree 카드에, 센서와 인식은 인식 문서 A.8의 비교 표에 있다. Playground의 휴머노이드(TP-0135)도 G1급을 본뜬다.
+
+**위 층이 넘기는 것.** 이 소절의 정책이 위 층에서 받는 것을 나란히 두면 이렇다. 시간 순서로 보면 속도 목표에서 위치 목표와 비용으로 옮겨 간다. travplan 벤치마크의 행은 B.14.2 끝의 표에 있다.
+
+| 연구(로봇) | 위 층이 넘기는 것 | 갱신 | 아래 층의 출력 |
+|---|---|---|---|
+| HT(Digit) | 몸통 속도 명령(전진·옆·회전) | 정책 50 Hz | 관절 16개 PD 목표 + 다리 8개 PD 이득 |
+| OmniH2O(H1) | 머리와 두 손 세 점의 위치(VR·RGB·언어·GPT-4o·Diffusion Policy가 냄) | 정책 50 Hz | 관절 목표 |
+| HumanPlus(H1) | 상위 정책의 목표 자세 50개 묶음 | 상위 25 Hz, 하위 50 Hz | 몸 관절 19개 목표 |
+| Agility 전신 제어 기반 모델(Digit) | 손과 몸통의 자유 공간 위치·자세 | 확인하지 못했다 | 전신 관절 명령 |
+| VideoMimic(G1) | 목표 방향(국소 x·y 오프셋과 yaw), 몸통 둘레 11 × 11 높이 지도 | 정책 50 Hz | 관절 목표 |
+| BeyondMimic(G1) | 과제 비용(조이스틱 속도·경유점·SDF 장애물)의 기울기 | diffusion 약 20 ms(비동기), 추종 25 Hz | 디코더가 잠재를 관절 목표로 |
+| GR00T 분리형 WBC(G1, Controller 문서 F.8) | `navigate_cmd`(vx, vy, ωz) | 50 Hz | 다리 12 + 허리 3 관절 목표 |
+| travplan `TinyPolicy`(TP-0128) | 경로 앞 네 점(0.5·1·2·3 m), 남은 경로 길이, 앞쪽 belief cost 7 × 5칸 | 정책은 매 스텝(0.1 s). 경로는 학습 때 고정(B.14.2), Playground에서는 1 s마다 다시 계획 | body twist |
+
+**사람.** 휴머노이드 계열은 몇몇 연구실의 지도교수와 박사과정이 끌었고, 여럿이 이미 회사로 옮겼다. 소속은 공식 페이지나 회사 글에 적힌 것만 적었다(2026-10-07 확인).
+
+| 사람 | 이 소절에서 남긴 것 | 지금 소속 |
+|---|---|---|
+| Koushil Sreenath | HT·NTP 공저, Cassie RL·Berkeley Humanoid·BeyondMimic 지도 | UC Berkeley 기계공학과 부교수, Hybrid Robotics(연구실 페이지) |
+| Jitendra Malik, Trevor Darrell | HT·NTP·HT-2·VideoMimic 공저 | 논문 소속은 UC Berkeley다. 다른 겸직은 확인하지 못했다 |
+| Ilija Radosavovic | HT 공동 1저자(알파벳 순), NTP·HT-2 1저자 | 확인하지 못했다 |
+| Qiayuan Liao | Berkeley Humanoid·BeyondMimic 1저자 | UC Berkeley 박사과정(Sreenath·Abbeel 지도). Boston Dynamics 인턴 때 전기 Atlas의 RL 제어를 했다고 적는다(개인 페이지) |
+| Guanya Shi | H2O·OmniH2O·ASAP 지도 | CMU Robotics Institute 조교수, LeCAR Lab. Amazon의 Frontier AI & Robotics(FAR) 팀 Amazon Scholar(개인 페이지) |
+| Tairan He | H2O·OmniH2O·ASAP 1저자, HOVER(B.16.1) 1저자 | OpenAI Member of Technical Staff. CMU 박사이고 NVIDIA GEAR에서 2년 인턴을 했다(개인 페이지) |
+| Zipeng Fu | HumanPlus 공동 1저자 | Reward AI 공동 창업자·CEO(개인 페이지) |
+| Hang Zhao, Ziwen Zhuang | Humanoid Parkour 교신 저자와 1저자 | Zhao는 칭화대 교차정보연구원(IIIS) 조교수(MARS Lab)이고 Galaxea 공동 창업자다. Zhuang은 같은 곳 박사과정이다(개인 페이지) |
+| Xiaolong Wang, Xuxin Cheng | ExBody·ExBody2·AMO·GMT 지도, ExBody 1저자 | Wang은 Meta Superintelligence Labs 연구 디렉터이고 UC San Diego 부교수다. Cheng은 Meta 연구원이다. 둘이 공동 창업한 ARI(Assured Robot Intelligence)는 Meta에 인수됐다(개인 페이지) |
+| Jonathan Hurst, Alan Fern | Oregon State Cassie RL(Siekmann 외) 공저 | Hurst는 Agility 공동 창업자·Chief Robot Officer이고, OSU 교수이자 OSU Robotics Institute 공동 설립자다(회사 소개). Fern은 OSU Dynamic Robotics and AI Lab 공동 책임자다(Agility 2025-08 글) |
+
+#### B.16.7 travplan이 가져올 순서
+
+**여섯 소절에서 travplan이 가져올 것을 바로 쓸 수 있는 순서로 놓으면 열이다.** 앞의 여섯은 지금 저장소의 코드와 기록으로 시작할 수 있다.
+뒤의 넷은 배치 plant, 새 학습 루프, 스텝별 기록, 실물 주행 가운데 하나가 먼저 있어야 한다. 모두 travplan에서 아직 시험하지 않았고, 항목마다 적은 기대 효과는 가설이다.
+판정은 seed 10개 × 난수 오프셋 3판의 짝 비교(B.15.2)로 하고, 치명이 하나라도 늘면 채택하지 않는다.
+curb_ramp 레벨 3에서는 학습 쪽 네 시도가 RL 후학습 1단계를 넘지 못했다(B.15.6). 그래서 학습 절차를 바꾸는 2–4번은 그 장면 하나보다 레벨 3 네 지형과 plant 조건에서 잰다.
+
+1. **Planner D를 배포 때의 지도로 배우게 한다(Resilient Legged Local Navigation, B.16.3; 자기 중심 깊이 보행, B.16.5; 시각 축구, B.16.2).** 지금 Planner D의 시연은 참값 높이로 만든 지도를 보고, 그 가운데 절반쯤에만 원판 모양의 미관측 구역을 1–3개 뚫는다. DAgger 라벨도 참값 지도에서 만든다.
+   L1 매퍼가 만드는 지도 오차는 어느 학습 단계에도 없다. Resilient 논문에서 가시도 100%로 학습한 정책은 장애물이 보이지 않는 시험에서 33.3%로 무너졌다.
+   Planner D를 L1 belief로 다시 배우는 TP-0055에서는 자기 중심 깊이 보행의 두 단계처럼 교사(Guidance + MPPI)가 참값 지도를 보고, 학생은 belief만 본다. critic을 넣는다면 참값 지도와 plant 상태는 critic에만 준다(시각 축구의 비대칭 critic).
+   평가에는 belief에서 포트홀 일부를 지워 가시도를 0·50·100%로 나눈 장면을 더한다. 가설은 L1 조건에서 Planner D 단독의 실패가 준다는 것이다.
+2. **RL 후학습의 목적식을 바꾼다(HT·HT-2, B.16.6; OP3 축구, B.16.2; DoorMan, B.16.1; SMPC 시연 + 희소 보상 RL, B.16.4).** TP-0066은 모방 손실 가중 λ를 0.5로 고정했고 바꿔 보지 않았다(B.15.3).
+   HT는 교사 KL 가중을 학습 절반쯤에 0으로 내렸고, OP3 축구는 예측 가치가 문턱을 넘으면 가중을 스스로 내렸다. HT-2는 모방 항 없이 사전학습 가중치에서 낮은 학습률과 작은 탐색 잡음으로 시작했다.
+   그래서 세 판(고정 λ, 절반에 0으로 내리는 λ, 모방 항 없이 낮은 학습률)을 짝 비교한다. SMPC 시연 논문도 시연을 성공률 10%에서 뺐고, 오래 남기면 학습이 느려졌다.
+   이점도 바꿀 수 있다. 지금 이점은 한 계획 시점에서 뽑은 후보(4 s 개루프 rollout)를 그 자리에서 채점한 값이다. DoorMan은 에피소드 성공 여부의 GRPO로 학생을 50–70%에서 80.8–85.8%로 올렸다.
+   같은 지형과 시작 상태에서 Planner D 표본을 끝까지 굴려 치명 없는 도달로 이점을 매기는 판이다. 가설은 RL 단독(26/30, 판정 기준 27/30)이 폴백 없이 판정을 넘는 것이다.
+3. **Controller가 실행해 낸 Planner D 표본을 시연에 더한다(PARC, B.16.1; H2O·ExBody2, B.16.6).** PARC는 생성기 표본 가운데 추종기가 끝까지 따라간 동작만 데이터에 더했다. 반복 1에서 4로 가며 추종 성공 비율이 27%에서 68%로 올랐다.
+   거르지 않은 표본을 넣은 생성기는 관절 저크가 원본 최대를 넘는 프레임이 18.7%로, 거른 쪽(4.4%)보다 많았다.
+   travplan으로 옮기면 RL 후학습 rollout에서 치명 없이 도달한 Planner D 실행 궤적을 시연에 더하는 판이다. B.8.3이 적은 단일 모드 교사(Guidance + MPPI)의 공백을 Planner D 자신의 여러 모드로 채운다.
+   시연을 거르는 기준의 후보는 둘이다. H2O식으로는 plant에서 MPPI가 따라간 것만 남기고(TP-0149), ExBody2식으로는 기본 Planner D의 치명 표본 비율로 거른다(TP-0074). 가설은 시연에 없던 갈래가 들어와 단독 성적이 오르는 것이다.
+4. **지형 표집을 실패율로 정한다(BeyondMimic·Humanoid Parkour, B.16.6; ZEST, B.16.4; Rapid Locomotion, B.16.5; Parkour in the Wild, B.16.3).** RL 후학습(TP-0066)과 시연 수집(TP-0073)은 레벨 0–3을 고르게 뽑는다.
+   BeyondMimic은 1 s 구간별 실패율의 지수 이동 평균으로 시작 위상을 뽑았고, 이것이 없으면 네 동작 가운데 셋이 어려운 구간을 풀지 못했다.
+   Rapid Locomotion의 격자 커리큘럼은 (시나리오, 레벨) 칸을 도달률 문턱으로 넓히는 규칙으로 옮길 수 있다(Controller 문서 F.6.1). 새 지형을 더할 때는 Parkour in the Wild처럼 모든 지형과 함께 다시 미세 조정한다.
+   TP-0138의 두 판(curb_ramp만, 모든 지형)은 둘 다 26/30이라 이 처방을 가르지 못했다(B.15.5). 가설은 같은 rollout 예산에서 드문 실패 장면이 더 자주 학습된다는 것이다.
+5. **무작위화 범위는 재고 나서 고른다(DrEureka, B.16.1; Tan 2018, B.16.2; Berkeley Humanoid, B.16.6).** DrEureka의 RAPP는 정책을 파라미터 하나만 바꾼 시뮬레이션에서 굴려, 아직 성공하는 값의 범위를 잰다.
+   travplan에서는 `planner_df+mppi_plant_lag`를 레벨 0에서 plant 지연이나 미끄럼비 하나만 바꿔 가며 굴린다. 치명 없이 도달하는 값의 최솟값과 최댓값이 그 범위다.
+   RL 후학습(TP-0066)과 L0 지연·자기 위치 잡음(TP-0032)의 무작위화는 그 안에서 고르고, 범위 전체를 쓰지 않는다. RAPP 범위 전체를 쓴 DrEureka 구성은 1.43 m/s로, RAPP 안에서 고른 구성의 평균 1.66 m/s보다 느렸다.
+   Tan 2018과 Berkeley Humanoid도 잴 수 있는 값은 실측 근처로 좁게 흔들었다. 가설은 범위를 잰 무작위화가 레벨 0 성적을 지키면서 plant 조건의 치명을 늘리지 않는 것이다.
+6. **도달 수가 포화된 조건에 시간 점수를 더한다(Barkour, B.16.2; Spot RL 보행, B.16.4).** 레벨 0 벤치마크는 12/12로 포화돼 스택을 가르지 못한다.
+   Barkour처럼 허용 시간을 Guidance 경로 길이를 보도 목표 속도로 나눈 값으로 두고, 도달하지 못하면 0점, 도달하면 초과 1초마다 깎는다. 지표 확장 TP-0038의 후보다.
+   치명 셀 진입은 점수와 섞지 않고 지금처럼 따로 거는 게이트로 둔다. 시간 점수의 잡음 바닥도 난수 오프셋을 바꾼 짝 비교로 잰다.
+   Boston Dynamics가 Spot RL 정책을 출하할 때 쓴 '새 장면은 낫고 기존 수백 장면은 그대로'도 같은 판정이다. 가설은 시간 점수가 레벨 0에서도 스택의 차이를 드러낸다는 것이다.
+7. **예측 모델 계층(TP-0124)을 재는 순서를 정한다(Sumo, B.16.4; ASAP, B.16.6; RWM, B.16.3).** 먼저 Sumo식 상한 한 줄을 더한다. 시뮬의 스워브 plant를 배치로 rollout에 넣고, 참값 지형과 belief 지도에서 따로 잰다.
+   belief 위에서는 plant에 가까운 모델이 진행을 막을 수 있다(`mppi_plant` 189/360, MPC 문서 M.3.22). 학습 층의 첫 후보는 ASAP식 명령 쪽 보정 $u' = u + \Delta(x, u)$다.
+   후보는 폐루프 벤치마크 전에 plant 기록을 0.5·1·2·4 s 동안 개루프로 재생한 오차로 거른다. ASAP 표 III에서는 0.25 s에서 방법 차이가 작았고 1.0 s에서 갈렸다.
+   학습 FDM(TP-0126)은 RWM처럼 예측을 다시 넣는 여러 스텝 손실로 학습한다. 가설은 1차 지연 근사(TP-0150)와 상한 사이의 차이가 학습 층이 메울 몫을 정한다는 것이다.
+8. **학습 Controller는 고정한 Planner D 위에서 키운다(동작 생성 + 동작 추종 휴머노이드·BDX, B.16.3; HOVER, B.16.1; LMPC, B.16.2).** `TinyPolicy`(TP-0128)는 지금 GT 지도의 Dijkstra 경로로 배웠다.
+   저장소 벤치마크에서 `guidance+tiny`는 8/12로, `guidance+mppi`의 12/12에 못 미친다(Controller 문서 E.12). RSL 논문처럼 Planner D를 고정하고 그 출력의 잡음과 끊김을 그대로 보여 주며 학습한다.
+   BDX처럼 Planner D가 낼 수 있는 기준 궤적 전체를 학습 분포로 덮고, 조건이 넓으면 LMPC처럼 오프라인 회귀 대신 DAgger로 덮는다.
+   HOVER식 마스크로 도달 시각 채널을 확률 0.5로 가리면 한 정책이 Guidance 폴백의 경로 모드와 Planner D의 시간 모드를 함께 받는다.
+   기본 Controller는 MPPI로 남긴다. Sumo 그림 4에서 같은 하위 정책 위의 학습 상위 정책은 상자 밖 물체에서 무너졌고, 실행 중 계획은 모델과 비용만 바꿔 넘어갔다. 가설은 이렇게 학습한 TinyPolicy가 8/12를 넘는 것이다.
+9. **폴백을 학습한 감시로 켠다(ABS, B.16.5; Safe RL, B.16.2; FLD, B.16.3).** Guidance 폴백(TP-0078)은 손으로 정한 규칙이다. 새 표본의 치명 비율이 0.9 이상인 계획이 3번 이어지면 Guidance 경로를 20번 동안 후보로 넣는다.
+   ABS처럼 벤치마크 판정(치명 셀 진입·보행자 충돌·목표 거리)을 라벨로 정책 조건 도달-회피 가치를 학습하면 켜는 기준이 학습된다. 충돌 직전 라벨을 부드럽게 다시 매기지 않으면 ABS의 시뮬레이션 충돌은 5.7%에서 14.7%로 늘었다.
+   그러려면 벤치마크가 스텝마다 몸통 twist·목표 상대 위치·지도 특징을 남겨야 하고, Planner D를 다시 후학습할 때마다 가치도 다시 배워야 한다.
+   돌려주는 조건은 Safe RL처럼 Planner D 계획을 앞으로 굴려 본 결과로 정할 수 있다. FLD처럼 입력이 학습 분포 밖이라는 신호를 하나 더 둘 수도 있다.
+   보행자는 지금처럼 RiskCost와 확률 제약(TP-0076)에 남긴다. 가설은 같은 도달 수에서 폴백이 이긴 계획의 비율(RL + 폴백 42%)이 준다는 것이다.
+10. **실물이 생기면 plant를 측정으로 맞추고, 실행의 차이를 Planner로 돌린다(PACE, B.16.3; Spot 고속 RL·EVORA, B.16.4; VP-Nav·라이보2, B.16.5).** TP-0035가 풀리면 들어 올린 스워브의 엔코더 기록으로 명령 지연을 CMA-ES로 맞추고, plant에 항을 하나 더하면 조향 엔코더 영점도 맞춘다(PACE).
+    미끄럼은 지면 접촉이 있어야 맞출 수 있다. 첫 주행의 실현 twist 분포를 plant와 맞대 Wasserstein·MMD 차이를 줄인다(Spot 고속 RL). 맞춘 값은 지연 rollout(TP-0150)과 GP 잔차(TP-0068)의 명목 모델이 함께 쓴다.
+    주행 중에는 VP-Nav처럼 명령과 실현 twist의 차이를 belief 지도 칸이나 속도 상한으로 Planner에 돌린다. 미끄럼을 rollout에 넣는다면 EVORA처럼 분포로 배우고 비관의 정도를 짝 비교로 훑는다.
+    기댓값 미끄럼을 belief 지도에 건 `mppi_plant`는 진행을 막았다(MPC 문서 M.3.22). 이 절차와 라이보2식 전력·위치 동기 기록은 sim-to-real 프로토콜(TP-0043)의 첫 주행 항목에 넣는다.
+
+B.14.6은 RSL 한 연구실에서 가져올 일곱 가지다. 실패 확률 머리(FDM)·진행 방향 step 비용·경로 문맥과 위치 기억·지연과 병렬화·지도 σ·P1 데이터 계획·DTC의 학습 절차다.
+이 목록에는 그 일곱을 다시 넣지 않았다. ==B.14.6이 주로 Planner D와 Controller에 새 부품과 신호를 더한다면, B.16.7은 주로 두 층을 학습시키는 절차와 plant를 실물에 맞추는 절차를 고친다.==
+두 목록이 만나는 곳은 넷이다. 지연은 B.14.6의 4번이 rollout에 넣고 실물 기록을 모으는 데까지이고, 이 목록의 5번과 10번이 그 범위를 재고 실측으로 맞춘다.
+RobotMDM의 critic(B.16.3)과 Trace and Pace의 가치 함수(B.16.1)는 B.14.6 1번의 실패 확률 머리와 같은 선택기 자리라 따로 적지 않았다.
+학습 Controller는 B.14.6 7번(DTC의 사건 단위 갱신과 경로 교란)과 이 목록 8번을 함께 쓴다. AME-2의 융합 규칙(B.16.3)도 B.14.6 5번과 같은 TP-0054의 후보다.
+
 <!-- tab: 작업 기록 -->
 
 ## B.15 작업 기록
 
-연구 절(B.1–B.14)은 "남이 무엇을 했나"이고, 이 탭은 travplan이 고치고 잰 결과다(CLAUDE.md의 분리 규칙).
+연구 절(B.1–B.14, B.16)은 "남이 무엇을 했나"이고, 이 탭은 travplan이 고치고 잰 결과다(CLAUDE.md의 분리 규칙).
 
 ### B.15.1 Planner D를 브라우저에서, 같은 망의 diffusion 샘플러 (TP-0137)
 
@@ -4602,7 +7732,7 @@ MPPI가 시간 참조 대신 경로 참조로 따라가도 seed 0–2의 성공 
 - 2단계는 curb_ramp 레벨 3 지형만으로 학습했다. 학습 rollout의 MPPI 도달이 라운드마다 55에서 47/64로 줄었고, 평균 보상은 −3.30에서 −2.84로 올랐다.
   후보의 치명 비율이 줄어도(0.55 → 0.50) 폐루프 도달은 늘지 않았다. 벤치마크 22/24의 실패 둘은 같은 curb_ramp L3 seed라 다른 지형을 잊은 것은 아니다.
 - 재시도는 지형을 넓히고 레벨을 2–3으로 올렸다. 벤치마크는 24/24로 돌아왔지만 curb_ramp L3는 그대로다.
-- 해석. 이 보상은 belief에서 뽑은 후보를 GT에서 채점하는 한 스텝짜리 보상이다. 경사로를 지나친 뒤 되돌아가는 몇 초짜리 재탐색을 직접 보상하지 못한다.
+- 해석. 이 보상은 한 계획 시점에서 belief로 뽑은 후보(4 s 개루프 rollout)를 GT 지도로 한 번 채점한다. 경사로를 지나친 뒤 되돌아가는 몇 초짜리 재탐색을 직접 보상하지 못한다.
   재탐색 상황 자체를 학습 데이터로 만드는 쪽이 다음 수다. 예를 들어 경사로를 지나친 상태에서 rollout을 시작하는 리셋 커리큘럼이다(TP-0143).
 - 두 체크포인트(`planner_d_L0123_rl2.pt`, `_rl2b.pt`)는 릴리스에 올리지 않는다.
 
