@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>travplan 스터디 슬라이드</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@700&family=IBM+Plex+Sans+KR:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root { --bg:#F7F5F0; --fg:#16213A; --muted:#5A6478; --card:#FFFDF8; --line:#D9D4C7; --accent:#C2410C; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#0E1526; --fg:#F4F1EA; --muted:#C9D1E0; --card:#16213A; --line:#2E3B5A; --accent:#F59E5B; } }
+:root[data-theme="dark"] { --bg:#0E1526; --fg:#F4F1EA; --muted:#C9D1E0; --card:#16213A; --line:#2E3B5A; --accent:#F59E5B; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--fg); font-family:'IBM Plex Sans KR', Arial, sans-serif; line-height:1.6; }
+main { max-width:1040px; margin:0 auto; padding:48px 16px 64px; }
+h1 { font-family:'Noto Serif KR', Georgia, serif; font-size:clamp(28px,5vw,40px); margin:0 0 8px; }
+.lead { color:var(--muted); margin:0 0 32px; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:20px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:24px; }
+.card h2 { font-size:20px; margin:0 0 4px; }
+.n { color:var(--accent); font-size:14px; margin:0 0 12px; }
+ul { margin:0 0 20px; padding-left:18px; color:var(--muted); font-size:14px; }
+.act { display:flex; gap:10px; flex-wrap:wrap; margin:0; }
+.btn { display:inline-block; padding:8px 16px; border-radius:8px; background:var(--accent); color:#fff; text-decoration:none; font-weight:600; font-size:14px; }
+.btn.ghost { background:none; color:var(--fg); border:1px solid var(--line); }
+.foot { margin-top:32px; color:var(--muted); font-size:13px; }
+</style>
+</head>
+<body>
+<main>
+<h1>travplan 스터디 슬라이드</h1>
+<p class="lead">대시보드 리서치 문서로 만든 두 덱입니다. 첫 덱은 개념과 수식을, 둘째 덱은 논문 한 편씩을 다룹니다. 슬라이드에서는 ← → 키로 넘기고, N 키로 발표자 노트를 엽니다.</p>
+<div class="grid">
+<article class="card">
+<h2>travplan 리서치 스터디 — 보도 로봇을 움직이는 수식들</h2>
+<p class="n">25장 · 발표자 노트 포함</p>
+<ul><li>왜 costmap 대신 TravMap인가, 파이프라인 지도</li><li>인식: 점군을 높이·비용·불확실성 지도로</li><li>Planner: diffusion과 flow matching으로 궤적을 생성</li><li>Controller: MPPI와 GP를 품은 NMPC</li><li>안전: CVaR, CBF, conformal prediction</li><li>결과, 공부 순서, 참고문헌</li></ul>
+<p class="act"><a class="btn" href="study-overview/">슬라이드 보기</a><a class="btn ghost" href="study-overview/study-overview.pptx" download>PPTX 내려받기</a></p>
+</article><article class="card">
+<h2>travplan 논문 스터디 — 챕터별</h2>
+<p class="n">60장 · 발표자 노트 포함</p>
+<ul><li>표지와 목차</li><li>1장 인식: 지형 지도, traversability, 시각 기반 모델, 동적 장애물 예측</li><li>2장 플래닝·고전/모델 기반: 그래프 탐색, 로컬 플래너, 궤적 최적화</li><li>3장 플래닝·학습 기반: 명령형 학습, diffusion·flow 정책, VLA</li><li>4장 제어·모델 기반: MPPI 계열과 GP-MPC</li><li>5장 제어·학습 기반: 학습 동역학, 적응, world model, 보행 RL</li><li>6장 안전: CBF, 도달 가능성, 예측 안전 필터, 위험 척도, conformal</li><li>7장 시뮬레이션: 물리 엔진, 보도 시뮬레이터, sim-to-real</li><li>정리와 참고문헌</li></ul>
+<p class="act"><a class="btn" href="study-papers/">슬라이드 보기</a><a class="btn ghost" href="study-papers/study-papers.pptx" download>PPTX 내려받기</a></p>
+</article>
+</div>
+<p class="foot">PPTX는 슬라이드를 그림으로 넣은 판입니다. 글자를 고치려면 HTML 원본을 고친 뒤 다시 만듭니다.</p>
+<p class="foot"><a href="../" style="color:inherit">← 대시보드 첫 화면</a></p>
+</main>
+</body>
+</html>

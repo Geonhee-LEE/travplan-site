@@ -1,0 +1,1737 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>travplan 논문 스터디 — 챕터별</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=IBM+Plex+Sans+KR:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root { --bg:#0E1526; --bar:#16213A; --fg:#F4F1EA; --muted:#C9D1E0; --accent:#F59E5B; }
+* { box-sizing:border-box; }
+html, body { margin:0; height:100%; background:var(--bg); color:var(--fg); font-family:'IBM Plex Sans KR', Arial, sans-serif; }
+#stage { position:fixed; inset:0 0 56px 0; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+#frame { width:1920px; height:1080px; flex:none; transform-origin:center center; box-shadow:0 8px 40px rgba(0,0,0,.5); }
+#frame > section:not(.on) { display:none !important; }
+section { position:relative; width:1920px; height:1080px; overflow:hidden; }
+section * { margin:0; }
+section aside { display:none; }
+section table { border-collapse:collapse; }
+section th, section td { padding:10px 16px; vertical-align:top; }
+section tr + tr td { border-top:1px solid rgba(201,209,224,.18); }
+x-shape { display:block; flex:none; }
+x-shape[kind="arrow-right"] { clip-path:polygon(0 32%,58% 32%,58% 0,100% 50%,58% 100%,58% 68%,0 68%); }
+#bar { position:fixed; left:0; right:0; bottom:0; height:56px; background:var(--bar); display:flex; align-items:center; gap:12px; padding:0 16px; font-size:15px; }
+#bar button, #bar a { background:none; border:1px solid #3A4A6B; color:var(--fg); border-radius:8px; padding:6px 12px; font:inherit; cursor:pointer; text-decoration:none; }
+#bar button:hover, #bar a:hover { border-color:var(--accent); }
+#count { min-width:72px; text-align:center; color:var(--muted); }
+#ttl { flex:1; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; color:var(--muted); }
+#notes { position:fixed; right:16px; bottom:72px; width:min(560px, calc(100% - 32px)); max-height:45vh; overflow:auto; background:#FFFDF8; color:#16213A; border-radius:12px; padding:16px 20px; font-size:16px; line-height:1.6; box-shadow:0 8px 30px rgba(0,0,0,.4); display:none; }
+#notes.show { display:block; }
+#notes b { display:block; margin-bottom:6px; color:#C2410C; font-family:'JetBrains Mono', monospace; font-size:13px; }
+body.shot #bar, body.shot #notes { display:none; }
+body.shot #stage { inset:0; }
+body.shot #frame { box-shadow:none; }
+@media (max-width:640px) { #ttl { display:none; } }
+</style>
+</head>
+<body>
+<div id="stage"><div id="frame">
+<section id="cover" data-transition="fade" style="background:#16213A;color:#F4F1EA;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;justify-content:space-between">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:28px;color:#F59E5B;letter-spacing:2px">TRAVPLAN · PAPER STUDY · 2026-10</p>
+<div style="display:flex;flex-direction:column;gap:40px">
+<h1 style="font-family:'Noto Serif KR', Georgia, serif;font-size:104px;font-weight:700;line-height:1.15;color:#F4F1EA">논문 46장으로 읽는<br>보도 로봇 자율주행</h1>
+<p style="font-size:40px;line-height:1.4;color:#C9D1E0;width:1450px">인식 · 플래닝(모델 기반 / 학습 기반) · 제어(모델 기반 / 학습 기반) · 안전 · 시뮬레이션. 한 편에 한 장 — 문제, 방법(수식), 결과, travplan에 주는 것.</p>
+</div>
+<div style="display:flex;gap:20px;flex-wrap:wrap">
+<p style="font-size:26px;color:#16213A;background:#F59E5B;padding:10px 24px;border-radius:999px">1 인식</p>
+<p style="font-size:26px;color:#16213A;background:#C9D1E0;padding:10px 24px;border-radius:999px">2 플래닝 · 모델</p>
+<p style="font-size:26px;color:#16213A;background:#C9D1E0;padding:10px 24px;border-radius:999px">3 플래닝 · 학습</p>
+<p style="font-size:26px;color:#16213A;background:#C9D1E0;padding:10px 24px;border-radius:999px">4 제어 · 모델</p>
+<p style="font-size:26px;color:#16213A;background:#C9D1E0;padding:10px 24px;border-radius:999px">5 제어 · 학습</p>
+<p style="font-size:26px;color:#16213A;background:#C9D1E0;padding:10px 24px;border-radius:999px">6 안전</p>
+<p style="font-size:26px;color:#16213A;background:#C9D1E0;padding:10px 24px;border-radius:999px">7 시뮬레이션</p>
+</div>
+<aside>이 덱은 첫 덱(개념·수식 개요)의 후속이다. travplan 대시보드 리서치 문서(인식 §A, Planner §B, Controller §E·§C, 시뮬레이션 §S)에서 travplan 설계에 직접 걸리는 논문 50여 편을 골라 46장으로 정리했다(가까운 계열은 한 장에 묶었다). 모든 슬라이드는 같은 틀이다: 한 줄 요약, 핵심 수식, 그리고 문제 · 방법 · 결과 · travplan 네 줄. 각주 번호는 마지막 참고문헌 네 장과 이어진다.</aside>
+</section>
+<section id="toc" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CONTENTS</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">일곱 챕터, 파이프라인 순서</h2>
+</div>
+<div style="display:grid;grid-template-columns:repeat(4, 1fr);gap:20px">
+<div style="background:#FFFDF8;border:2px solid #D9D4C7;border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:8px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C">CH1 · 9장</p>
+<h3 style="font-size:32px;font-weight:600;color:#16213A">인식</h3>
+<p style="font-size:24px;line-height:1.45;color:#3D4A63">LSS · Elevation Mapping · emap_cupy · BADGR · WVN · V-STRONG · RoadRunner · DINOv2 · Trajectron++</p>
+</div>
+<div style="background:#FFFDF8;border:2px solid #D9D4C7;border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:8px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C">CH2 · 4장</p>
+<h3 style="font-size:32px;font-weight:600;color:#16213A">플래닝 · 모델 기반</h3>
+<p style="font-size:24px;line-height:1.45;color:#3D4A63">Dijkstra · A* · Hybrid A* · DWA · TEB · Nav2/Smac · MPOT</p>
+</div>
+<div style="background:#FFFDF8;border:2px solid #D9D4C7;border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:8px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C">CH3 · 9장</p>
+<h3 style="font-size:32px;font-weight:600;color:#16213A">플래닝 · 학습 기반</h3>
+<p style="font-size:24px;line-height:1.45;color:#3D4A63">iPlanner · ViPlanner · ViNT/NoMaD · NavDP · Diffusion Policy · GoalFlow · π0 · NaVILA · CityWalker</p>
+</div>
+<div style="background:#FFFDF8;border:2px solid #D9D4C7;border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:8px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C">CH4 · 6장</p>
+<h3 style="font-size:32px;font-weight:600;color:#16213A">제어 · 모델 기반</h3>
+<p style="font-size:24px;line-height:1.45;color:#3D4A63">MPPI · Robust MPPI · log-MPPI/SMPPI · ProxPI · MPPI-Generic · Cautious GP-MPC</p>
+</div>
+<div style="background:#FFFDF8;border:2px solid #D9D4C7;border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:8px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C">CH5 · 6장</p>
+<h3 style="font-size:32px;font-weight:600;color:#16213A">제어 · 학습 기반</h3>
+<p style="font-size:24px;line-height:1.45;color:#3D4A63">PETS · IKD · RMA · TD-MPC2 · DreamWaQ · LP-ACRL</p>
+</div>
+<div style="background:#FFFDF8;border:2px solid #D9D4C7;border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:8px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C">CH6 · 7장</p>
+<h3 style="font-size:32px;font-weight:600;color:#16213A">안전</h3>
+<p style="font-size:24px;line-height:1.45;color:#3D4A63">CBF-QP · HJ 도달 가능성 · 예측 안전 필터 · Poisson 안전 함수 · RA/DRA-MPPI · CVaR-BF · Conformal</p>
+</div>
+<div style="background:#FFFDF8;border:2px solid #D9D4C7;border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:8px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C">CH7 · 5장</p>
+<h3 style="font-size:32px;font-weight:600;color:#16213A">시뮬레이션</h3>
+<p style="font-size:24px;line-height:1.45;color:#3D4A63">Isaac Lab · MetaUrban · URBAN-SIM · 도메인 랜덤화 · Sim2Real 예측력</p>
+</div>
+<div style="background:#16213A;border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:8px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#F59E5B">읽는 법</p>
+<h3 style="font-size:32px;font-weight:600;color:#F4F1EA">한 장의 틀</h3>
+<p style="font-size:24px;line-height:1.45;color:#C9D1E0">한 줄 요약 → 수식 → 문제 · 방법 · 결과 · travplan</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#5A6478">출처: travplan 리서치 문서 — 인식 §A, Planner §B, Controller §E·§C, 시뮬레이션 §S · 각주 번호 [1]–[48]은 마지막 참고문헌과 이어진다</p>
+<aside>모델 기반과 학습 기반을 나눈 기준: 모델 기반은 사람이 쓴 동역학·비용 위에서 최적화나 탐색으로 답을 구하는 방법, 학습 기반은 데이터로 정책·비용·동역학을 배워 그 출력을 쓰는 방법이다. 경계에 있는 것(예: TD-MPC2는 학습한 모델 위에서 MPPI를 돌린다)은 무엇을 배우는지로 분류했다.</aside>
+</section>
+<section id="ch1" data-transition="fade" style="background:#16213A;color:#F4F1EA;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px;display:flex;flex-direction:column;justify-content:center;gap:28px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:28px;color:#F59E5B;letter-spacing:2px">CHAPTER 1 · 인식 §A</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:80px;font-weight:700;line-height:1.15;color:#F4F1EA">센서에서 TravMap까지</h2>
+<p style="font-size:32px;line-height:1.5;color:#C9D1E0;width:1500px">높이 지도를 어떻게 쌓나 → 그 위에 비용을 어떻게 매기나(기하 → 자기지도 → 기반 모델) → 움직이는 사람을 어떻게 예측하나.</p>
+<table style="width:1664px;font-size:26px;color:#F4F1EA;padding:10px 16px">
+<tr style="background:#24314F"><th style="width:10%;text-align:left;color:#F59E5B">연도</th><th style="width:24%;text-align:left;color:#F59E5B">논문</th><th style="width:66%;text-align:left;color:#F59E5B">한 줄</th></tr>
+<tr><td>2014–18</td><td>Elevation Mapping</td><td>칸마다 높이·분산을 Kalman으로 합친다</td></tr>
+<tr><td>2020</td><td>Lift-Splat-Shoot</td><td>카메라 특징을 깊이 분포로 BEV에 올린다</td></tr>
+<tr><td>2020</td><td>Trajectron++</td><td>제어 입력을 예측해 적분하는 보행자 예측</td></tr>
+<tr><td>2021</td><td>BADGR</td><td>겪은 사건을 라벨로, 행동 조건 예측</td></tr>
+<tr><td>2022</td><td>elevation_mapping_cupy</td><td>GPU 높이 지도 + 상한 층</td></tr>
+<tr><td>2023</td><td>DINOv2</td><td>라벨 없이 배운 범용 특징</td></tr>
+<tr><td>2024</td><td>V-STRONG · RoadRunner · WVN</td><td>주행 경험으로 traversability를 배운다</td></tr>
+</table>
+<aside>인식 문서(§A)는 8천 줄이 넘는다. 이 챕터는 TravMap의 ELEV, COST, SIGMA 채널을 만드는 쪽과, 동적 장애물 예측의 대표작 하나를 골랐다. 자동차 쪽 occupancy(BEVFormer, Occ3D 등)는 LSS 한 장으로 대표했다.</aside>
+</section>
+<section id="p-lss" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH1 인식 · 2020 · ECCV · NVIDIA</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">Lift-Splat-Shoot — 영상을 BEV로 올린다 <span style="color:#C2410C">[1]</span></h2>
+</div>
+<div style="display:flex;gap:40px;align-items:center">
+<div style="display:flex;flex-direction:column;gap:8px">
+<img src="img/a011807bc886e2bc7d16d6d33d7bf8f2.webp" alt="여러 카메라 영상에서 BEV 좌표계의 의미 지도를 바로 추론한다" style="width:880px;height:239px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<p style="font-size:24px;color:#5A6478">Fig. 1 — 여러 카메라(왼쪽) → BEV 의미 지도(오른쪽) [1]</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px">
+<p style="font-size:28px;line-height:1.5;color:#16213A">픽셀마다 <b>깊이 분포</b>를 예측해 특징을 3D 절두체로 들어 올리고(lift), BEV 격자에 뿌린다(splat).</p>
+<div style="background:#FFFDF8;border-left:6px solid #C2410C;border-radius:8px;padding:18px 24px">
+<img src="img/6331745c407d9836f1bec960e5317851.png" alt="c_d = α_d c, α = softmax(깊이 로짓)" style="width:690px;height:49px;object-fit:contain">
+</div>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;gap:16px;border-left:5px solid #C2410C;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#C2410C">문제</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">카메라는 깊이를 모른다. 여러 대의 영상을 한 좌표계(BEV)로 합쳐야 계획이 쓸 수 있다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #1D4ED8;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#1D4ED8">방법</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">특징 c와 깊이 확률 α의 외적으로 깊이 칸마다 특징을 놓고, pillar 합산으로 BEV에 모은다. 템플릿 궤적을 BEV 비용에 쏘아 고르는 계획(shoot)까지 한 망으로 학습.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #16213A;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#16213A">결과</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">이후 BEVFormer·BEVFusion·occupancy 연구 대부분이 이 리프팅 위에 섰다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">채택하지 않는 자동차 계보지만, 카메라만으로 TravMap을 만들 때(전면 스테레오, TP-0065) 거치는 표준 경로다.</p></div>
+</div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[1] Philion &amp; Fidler, “Lift, Splat, Shoot: Encoding Images from Arbitrary Camera Rigs by Implicitly Unprojecting to 3D”, ECCV 2020 — arXiv:2008.05711</p>
+</div>
+<aside>깊이를 하나의 값으로 회귀하지 않고 이산 깊이 칸 D개에 대한 분포로 내는 것이 핵심이다. 그러면 깊이가 애매한 픽셀은 여러 깊이에 특징을 나눠 뿌린다. 인식 문서 §A.2와 배경 §0.1(리프팅)에 수식이 있다.</aside>
+</section>
+<section id="p-em" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH1 인식 · 2014 CLAWAR / 2018 RA-L · ETH RSL</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">Robot-centric Elevation Mapping <span style="color:#C2410C">[2]</span></h2>
+</div>
+<div style="display:flex;gap:40px;align-items:center">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px">
+<p style="font-size:28px;line-height:1.5;color:#16213A">로봇 중심 2.5D 격자에서 <b>칸마다 높이와 분산</b>을 1차원 Kalman 필터로 갱신한다. 로봇 자세의 불확실성은 칸의 수평 불확실성으로 퍼뜨린다.</p>
+<div style="background:#FFFDF8;border-left:6px solid #C2410C;border-radius:8px;padding:18px 24px">
+<img src="img/56a3e4aba14b5122b19caaa3cd91f773.png" alt="h ← (σp² h + σm² pz)/(σm² + σp²), σm² ← σm² σp²/(σm² + σp²), σp² = αd d²" style="width:900px;height:99px;object-fit:contain">
+</div>
+</div>
+<div style="width:520px;background:#16213A;border-radius:14px;padding:28px;display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#F59E5B">핵심 직관</p>
+<p style="font-size:26px;line-height:1.5;color:#F4F1EA">오래전에 본 평지는 계속 믿을 만하고, <b>턱 가장자리만</b> 믿음을 잃는다 — 이웃 높이의 퍼짐이 수평 불확실성을 높이 구간으로 바꾸기 때문이다.</p>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;gap:16px;border-left:5px solid #C2410C;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#C2410C">문제</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">다리 로봇은 발 디딜 곳의 높이가 필요한데, 위치 추정이 흐르면 전역 지도가 깨진다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #1D4ED8;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#1D4ED8">방법</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">지도를 로봇에 붙여 두고, 측정 분산 σₚ² = α·d²(거리 제곱 비례)로 정밀도 가중 평균. 자세 공분산을 칸으로 전파해 최소·최대 높이 구간을 낸다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #16213A;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#16213A">결과</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">ANYmal 계열 보행 연구의 표준 지도가 됐다. ANYbotics/elevation_mapping(BSD-3, ★1.9k).</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">TravMap의 ELEV·SIGMA 채널의 원형. L1 인식 루프는 이 계보의 GPU 판(다음 장)을 쓴다.</p></div>
+</div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[2] Fankhauser et al., “Robot-Centric Elevation Mapping with Uncertainty Estimates”, CLAWAR 2014 · Fankhauser, Bloesch &amp; Hutter, “Probabilistic Terrain Mapping for Mobile Robots with Uncertain Localization”, RA-L 2018</p>
+</div>
+<aside>로봇 중심 지도의 장점: 로봇이 움직일 때 지도를 로봇 좌표로 옮기고, 그동안 쌓인 자세 불확실성만 칸에 더하면 된다. 그래서 전역 위치 추정이 드리프트해도 발 밑 지도는 일관된다. Planner 문서 B.14.1이 RSL 계보에서 이 논문의 위치를 설명한다.</aside>
+</section>
+<section id="p-emcupy" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH1 인식 · 2022 · IROS · ETH RSL</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">elevation_mapping_cupy — GPU 높이 지도 <span style="color:#C2410C">[3]</span></h2>
+</div>
+<div style="display:flex;gap:40px">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px">
+<p style="font-size:28px;line-height:1.5;color:#16213A">점마다 CUDA 커널로 칸을 갱신하고, 드리프트 보정·가시성 정리·학습 traversability·법선을 모두 GPU에서 한다.</p>
+<div style="background:#FFFDF8;border-left:6px solid #C2410C;border-radius:8px;padding:18px 24px;display:flex;flex-direction:column;gap:8px">
+<p style="font-size:24px;line-height:1.45;color:#16213A"><b>상한 층</b>: 광선이 못 본 칸 위를 지나가면 그 칸의 지면 ≤ 광선 높이</p>
+<p style="font-size:24px;line-height:1.45;color:#3D4A63">상한의 기울기 작음 → 가려진 안전한 구멍 · 큼 → 위험한 낙차</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;gap:16px;border-left:5px solid #C2410C;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#C2410C">문제</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">CPU 판은 점이 많으면 느리고, 지나간 사람이 지도에 남고, 못 본 칸을 해석할 수 없었다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #1D4ED8;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#1D4ED8">방법</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">Kalman 갱신 + Mahalanobis 이상치 제거 + 광선 추적 가시성 정리 + 상한 층 + 학습 traversability CNN.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #16213A;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#16213A">결과</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">DARPA SubT와 여러 4족 실험에 배포. MIT, ★1.1k, Jetson Orin 포트 존재.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">L1 인식 루프의 코어(TP-0053). 상한 층이 포트홀 판별 = 그림자 상한(TP-0044)의 근거. 반 칸 어긋남 버그는 TP-0146에서 고쳤다.</p></div>
+</div>
+</div>
+<div style="width:520px;display:flex;flex-direction:column;gap:8px">
+<img src="img/21aa18778fd3e073a1bbdf44e6c8c434.webp" alt="elevation_mapping_cupy 파이프라인: 점군 처리, traversability, 법선 계산을 GPU에서" style="width:520px;height:585px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<p style="font-size:24px;color:#5A6478">Fig. 1 — GPU 파이프라인 [3]</p>
+</div>
+</div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[3] Miki, Wellhausen, Grandia, Jenelten, Homberger &amp; Hutter, “Elevation Mapping for Locomotion and Navigation using GPU”, IROS 2022 — arXiv:2204.12876</p>
+</div>
+<aside>가시성 정리: 센서에서 점까지 광선을 따라가다 광선 높이가 칸 높이보다 낮으면(칸을 뚫고 지나갔으면) 그 칸의 높이를 지운다. 상한 층은 그 반대 방향의 정보다. travplan 권장 L1 설정(--shadow-ceiling --shadow-depth 0.10 --stereo --unknown-near 1.5 --shadow-low-fill --pit-margin 0.05)의 앞 두 플래그가 이 생각을 쓴다.</aside>
+</section>
+<section id="p-badgr" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH1 인식 · 2021 · RA-L · UC Berkeley</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">BADGR — 겪은 사건을 예측해 계획한다 <span style="color:#C2410C">[4]</span></h2>
+</div>
+<div style="display:flex;gap:40px;align-items:center">
+<div style="display:flex;flex-direction:column;gap:8px">
+<img src="img/889a63c6f4da6a50086772357c89237e.webp" alt="현재 영상과 앞으로의 행동 열을 받아 충돌·충격·위치 같은 미래 사건을 예측하는 모델" style="width:880px;height:167px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<p style="font-size:24px;color:#5A6478">Fig. 5 — 행동 조건 사건 예측 모델 [4]</p>
+</div>
+<p style="flex:1;font-size:28px;line-height:1.5;color:#16213A">기하만 보면 키 큰 풀밭이 벽이다. 로봇이 <b>실제로 겪은 사건</b>(충돌·충격·위치)을 라벨로 삼는다.</p>
+</div>
+<div style="background:#FFFDF8;border-left:6px solid #C2410C;border-radius:8px;padding:18px 24px">
+<img src="img/ba22842c953be2298683309f4f858093.png" alt="f_θ(o_t, a_t:t+H) → ê, a* = argmax R(f_θ(o_t, a))" style="width:1100px;height:64px;object-fit:contain">
+</div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;gap:16px;border-left:5px solid #C2410C;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#C2410C">문제</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">기하 기반 내비는 지날 수 있는 풀을 피하고, 사람 라벨·시뮬은 비싸다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #1D4ED8;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#1D4ED8">방법</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">영상 + 미래 행동 열 → 사건 예측. 시간 상관 행동 표본을 보상의 지수 가중으로 평균해 계획(MPPI와 같은 꼴).</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #16213A;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#16213A">결과</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">실제 도시·오프로드 데이터만으로 학습. 데이터를 더 모을수록 스스로 나아졌다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">구조의 원형. travplan은 이것을 둘로 나눴다 — 사건 예측은 TravMap 비용(TravNet 자기지도, TP-0010), 행동 최적화는 Planner D + MPPI.</p></div>
+</div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[4] Kahn, Abbeel &amp; Levine, “BADGR: An Autonomous Self-Supervised Learning-Based Navigation System”, RA-L 2021 — arXiv:2002.05700</p>
+</div>
+<aside>BADGR의 계획: 행동 표본을 ã_h = β(â_(h+1) + ε) + (1−β) ã_(h−1)로 시간 상관 있게 만들고, 보상 R로 exp(γR) 가중 평균한다. MPPI와 사실상 같다. 차이는 보상이 학습한 사건 예측에서 나온다는 것. 인식 문서 §A.10.1.</aside>
+</section>
+<section id="p-wvn" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH1 인식 · 2024 arXiv / 2025 Autonomous Robots · ETH RSL · Oxford</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">Wild Visual Navigation — 현장 5분 학습 <span style="color:#C2410C">[5]</span></h2>
+</div>
+<div style="display:flex;gap:40px;align-items:center">
+<div style="display:flex;flex-direction:column;gap:8px">
+<img src="img/786283242450fce761901ff11ebe74a8.webp" alt="같은 숲 지형에서 기하 휴리스틱, 학습 기하, WVN의 traversability 지도. 기하 방법은 높은 풀을 장애물로 본다" style="width:800px;height:286px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<p style="font-size:24px;color:#5A6478">Fig. 7 — 기하 휴리스틱 · 학습 기하 · WVN의 지도 비교 [5]</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px">
+<p style="font-size:28px;line-height:1.5;color:#16213A">고정한 DINO 특징 위에 작은 헤드를 얹고, 사람이 몰아 주는 동안 <b>속도 추종 오차</b>를 라벨로 삼아 온보드로 배운다.</p>
+<p style="font-size:26px;line-height:1.5;color:#16213A;background:#FBE7D9;padding:16px 20px;border-radius:12px">라벨 = “명령한 속도를 얼마나 따라갔나” (proprioception)</p>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;gap:16px;border-left:5px solid #C2410C;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#C2410C">문제</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">자기지도 방법은 로봇별 데이터로 오프라인 학습한 뒤 적응 없이 배포한다. 새 숲에 가면 다시 모아야 한다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #1D4ED8;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#1D4ED8">방법</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">DINO-ViT(384차원) + STEGO 특징을 SLIC 조각 단위로 평균 → 2층 MLP. 공유 오토인코더의 재구성 오차로 신뢰도를 낸다. 라벨 생성·학습·추론을 동시에.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #16213A;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#16213A">결과</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">새 환경에서 5분 안에 적응. 높은 풀을 기하 방법은 막고 WVN은 통과로 본다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">TP-0010(시뮬 접촉·슬립 로그로 TravNet 자기지도)과 같은 구조라 가장 가까운 참고 구현. 예측을 elevation_mapping_cupy에 raycasting으로 붙인다.</p></div>
+</div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[5] Mattamala, Frey et al., “Wild Visual Navigation: Fast Traversability Learning via Pre-Trained Models and Online Self-Supervision”, Autonomous Robots 2025 — arXiv:2404.07110</p>
+</div>
+<aside>같은 계열: SALON(ATV, DINOv2 특징 + 주행 경험으로 비용·속도 지도), STERLING(Spot에서 배워 Jackal로 전이). 후속 COTRATE(2026, Freiburg)는 WVN의 한계, 즉 사람이 지형마다 원격조작해야 한다는 점을 겨냥한다. 인식 문서 §A.7.</aside>
+</section>
+<section id="p-vstrong" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH1 인식 · 2024 · ICRA · University of Washington</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">V-STRONG — 기반 모델 + 대조 학습 <span style="color:#C2410C">[6]</span></h2>
+</div>
+<div style="display:flex;gap:20px">
+<div style="flex:1;background:#FFFDF8;border:2px solid #D9D4C7;border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:8px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C">1 · 라벨</p>
+<p style="font-size:26px;line-height:1.45;color:#16213A">사람이 운전한 궤적을 영상에 투영</p>
+</div>
+<x-shape kind="arrow-right" style="width:44px;height:26px;background:#C2410C;align-self:center"></x-shape>
+<div style="flex:1;background:#FFFDF8;border:2px solid #D9D4C7;border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:8px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C">2 · 거르기</p>
+<p style="font-size:26px;line-height:1.45;color:#16213A">스테레오 깊이로 가려진 궤적 점 제거</p>
+</div>
+<x-shape kind="arrow-right" style="width:44px;height:26px;background:#C2410C;align-self:center"></x-shape>
+<div style="flex:1;background:#FFFDF8;border:2px solid #D9D4C7;border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:8px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C">3 · 대조</p>
+<p style="font-size:26px;line-height:1.45;color:#16213A">SAM 마스크 단위: 지나간 영역 vs 나머지</p>
+</div>
+<x-shape kind="arrow-right" style="width:44px;height:26px;background:#C2410C;align-self:center"></x-shape>
+<div style="flex:1;background:#16213A;border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:8px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#F59E5B">4 · 사용</p>
+<p style="font-size:26px;line-height:1.45;color:#F4F1EA">비용 지도 → MPC에 바로 연결</p>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;gap:16px;border-left:5px solid #C2410C;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#C2410C">문제</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">오프로드 traversability 라벨은 비싸고, 픽셀 단위 양성 라벨(지나간 곳)만 있고 음성은 없다. 새 지형에 일반화가 약하다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #1D4ED8;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#1D4ED8">방법</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">비전 기반 모델(SAM) 인스턴스 마스크로 “같은 물체 = 같은 traversability” 단위를 만들고, 궤적이 지나간 마스크와 나머지를 대조 학습한다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #16213A;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#16213A">결과</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">공개 벤치마크와 자체 데이터에서 기존 최신 방법을 크게 앞섰고, 새 환경에서 zero-shot·few-shot 일반화가 좋았다. 코드 공개(shjung13/V-Strong).</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">PRD TP-0010의 참고 목록. 양성만 있는 라벨 문제는 배경 §0.9 PU learning과 같은 자리다. 실물 단계에서 TravNet의 의미 채널 후보.</p></div>
+</div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[6] Jung et al., “V-STRONG: Visual Self-Supervised Traversability Learning for Off-road Navigation”, ICRA 2024 — arXiv:2312.16016</p>
+</div>
+<aside>대조 학습의 단위를 픽셀이 아니라 SAM 마스크로 잡은 것이 일반화의 열쇠다. 궤적이 한 마스크의 일부만 지나가도 그 마스크 전체를 양성으로 본다. 인식 문서 §A.10.</aside>
+</section>
+<section id="p-roadrunner" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH1 인식 · 2024 · IEEE T-FR · ETH · NASA JPL</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">RoadRunner — 비용과 높이를 함께 <span style="color:#C2410C">[7]</span></h2>
+</div>
+<div style="display:flex;gap:40px">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px">
+<p style="font-size:28px;line-height:1.5;color:#16213A">자율주행의 BEV 센서 융합 구조로, 카메라·LiDAR에서 <b>traversability와 elevation map</b>을 한 번에 낸다.</p>
+<div style="display:flex;gap:20px">
+<div style="flex:1;background:#16213A;border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:6px">
+<p style="font-size:24px;color:#C9D1E0">지연</p>
+<p style="font-family:'Noto Serif KR', Georgia, serif;font-size:44px;font-weight:700;color:#F4F1EA">500 → 140 ms</p>
+</div>
+<div style="flex:1;background:#16213A;border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:6px">
+<p style="font-size:24px;color:#C9D1E0">라벨</p>
+<p style="font-family:'Noto Serif KR', Georgia, serif;font-size:44px;font-weight:700;color:#F4F1EA">사후 자동</p>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;gap:16px;border-left:5px solid #C2410C;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#C2410C">문제</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">고속 오프로드에서는 영상이 흐리고 LiDAR가 성기다. 기존 스택(X-Racer)은 느리다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #1D4ED8;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#1D4ED8">방법</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">주행 로그를 기존 스택으로 사후 처리해 라벨을 만들고(자기지도), BEV 융합 망이 그 결과를 한 번에 예측하도록 배운다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #16213A;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#16213A">결과</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">지연 약 4배 감소, 비용·높이 정확도 향상. 사막 고속 주행에 배포.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">P2 PRD R-F-001의 모델 설계 참고. “느린 고전 스택 = 교사, 빠른 망 = 학생” 구도.</p></div>
+</div>
+</div>
+<div style="width:400px;display:flex;flex-direction:column;gap:8px">
+<img src="img/5417249d70cf04253b3097636b811a39.webp" alt="실제 주행 데이터를 기존 스택으로 사후 처리해 라벨을 만들고, BEV 융합 네트워크가 traversability와 높이를 예측하도록 학습한다" style="width:400px;height:598px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<p style="font-size:24px;color:#5A6478">Fig. 2 — 사후 라벨 + BEV 융합 [7]</p>
+</div>
+</div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[7] Frey et al., “RoadRunner — Learning Traversability Estimation for Autonomous Off-road Driving”, IEEE T-FR 2024 — arXiv:2402.19341</p>
+</div>
+<aside>교사-학생 구도: 오프라인에서는 시간을 들여 여러 프레임을 모아 정확한 지도를 만들 수 있으니, 그것을 라벨로 실시간 망을 가르친다. travplan의 L1 매퍼(emap) 결과를 라벨로 단일 프레임 망을 학습시키는 길과 같다. 인식 문서 §A.10.1.</aside>
+</section>
+<section id="p-dinov2" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH1 인식 · 2023 · TMLR 2024 · Meta</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">DINOv2 — 라벨 없이 배운 범용 특징 <span style="color:#C2410C">[8]</span></h2>
+</div>
+<div style="display:flex;gap:40px;align-items:center">
+<div style="display:flex;flex-direction:column;gap:8px">
+<img src="img/eab227bafe671a6e90018ccf2317875e.webp" alt="같은 열 영상들의 패치 특징에 PCA를 하고 첫 세 성분을 색으로 칠했다. 자세·화풍·물체가 달라도 같은 부위가 같은 색" style="width:650px;height:270px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<p style="font-size:24px;color:#5A6478">Fig. 1 — 패치 특징 PCA: 같은 부위 = 같은 색 [8]</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px">
+<p style="font-size:28px;line-height:1.5;color:#16213A">데이터를 잘 고르고 규모를 키우면, 자기지도 학습도 <b>과제와 무관하게 쓰이는 특징</b>을 낸다.</p>
+<div style="display:flex;gap:16px">
+<div style="flex:1;background:#16213A;border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:4px">
+<p style="font-size:24px;color:#C9D1E0">학습 영상</p>
+<p style="font-family:'Noto Serif KR', Georgia, serif;font-size:44px;font-weight:700;color:#F4F1EA">1.42억</p>
+</div>
+<div style="flex:1;background:#16213A;border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:4px">
+<p style="font-size:24px;color:#C9D1E0">교사 ViT</p>
+<p style="font-family:'Noto Serif KR', Georgia, serif;font-size:44px;font-weight:700;color:#F4F1EA">1B → 증류</p>
+</div>
+</div>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;gap:16px;border-left:5px solid #C2410C;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#C2410C">문제</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">로봇마다 분할·깊이 라벨을 모을 수 없다. 백본 하나로 여러 과제를 하고 싶다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #1D4ED8;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#1D4ED8">방법</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">웹 영상 풀에서 큐레이션 데이터와 닮은 영상을 자동으로 골라 LVD-142M을 만들고, 1B 파라미터 ViT를 자기지도로 학습한 뒤 작은 모델로 증류.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #16213A;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#16213A">결과</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">영상·픽셀 단위 벤치마크 대부분에서 OpenCLIP을 앞섰다. 백본 고정 + 선형 헤드만으로 분할·깊이가 된다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">WVN·SALON·V-STRONG이 모두 이 계열 특징 위에 작은 헤드를 얹는다. TravMap에 의미 채널을 더할 때의 백본 후보(§A.11).</p></div>
+</div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[8] Oquab et al., “DINOv2: Learning Robust Visual Features without Supervision”, TMLR 2024 — arXiv:2304.07193</p>
+</div>
+<aside>후속 DINOv3(2025)는 오래 학습해도 조밀 특징이 무너지지 않게 했다. 같은 탭(§A.11)에 Depth Anything V2·3, SAM 2·3, Grounding DINO가 있다. 로봇은 이 백본 위에 작은 헤드만 학습하는 것이 2023년 이후의 표준이 됐다.</aside>
+</section>
+<section id="p-trajectron" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH1 인식 · 2020 · ECCV · Stanford ASL</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">Trajectron++ — 동역학을 지키는 예측 <span style="color:#C2410C">[9]</span></h2>
+</div>
+<div style="display:flex;gap:40px">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px">
+<p style="font-size:28px;line-height:1.5;color:#16213A">위치가 아니라 <b>제어 입력의 분포</b>를 예측하고 동역학 모델로 적분한다 → 예측이 물리적으로 가능한 궤적이 된다.</p>
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;gap:16px;border-left:5px solid #C2410C;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#C2410C">문제</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">보행자의 미래는 여럿이고, 로봇의 계획이 그 미래를 바꾼다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #1D4ED8;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#1D4ED8">방법</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">장면 = 시공간 그래프(에이전트 노드, 상호작용 간선). LSTM + attention으로 이웃을 요약하고, 이산 잠재 변수(모드 25개) 조건부 VAE로 여러 미래를 낸다. decoder는 보행자 속도·차량 가속을 내고 적분한다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #16213A;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#16213A">결과</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">여러 실제 데이터셋에서 결정적·생성적 방법을 폭넓게 앞섰다. 로봇의 <b>미래 계획을 입력</b>으로 받아 조건부 예측이 된다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">지금 RiskCost는 등속 원판 + 시간에 커지는 반경이다. 등속 모델이 신경망을 이긴다는 보고(RA-L 2020)도 있어, 바꾸려면 폐루프 충돌률로 판정한다.</p></div>
+</div>
+</div>
+<div style="width:560px;display:flex;flex-direction:column;gap:8px">
+<img src="img/a0895cf7c7a4053af69791b596bd7e8a.webp" alt="장면을 방향 있는 시공간 그래프로 표현하고, 노드 1의 미래를 예측하는 네트워크를 그 그래프 모양대로 만든다" style="width:560px;height:447px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<p style="font-size:24px;color:#5A6478">Fig. 2 — 장면 그래프 → 노드별 네트워크 [9]</p>
+</div>
+</div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[9] Salzmann, Ivanovic, Chakravarty &amp; Pavone, “Trajectron++: Dynamically-Feasible Trajectory Forecasting With Heterogeneous Data”, ECCV 2020 — arXiv:2001.03093</p>
+</div>
+<aside>같은 탭(§A.12)의 비교: Social GAN(여러 미래 샘플), Constant Velocity Model(가장 단순한 기준선이 신경망을 이김, RA-L 2020), AgentFormer와 확산 계열, MoFlow(flow matching으로 K개 미래를 한 스텝에, CVPR 2025). ADE는 내비 성능을 대변하지 못한다는 2026 보고도 있다(Stratton et al.).</aside>
+</section>
+<section id="ch2" data-transition="fade" style="background:#16213A;color:#F4F1EA;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px;display:flex;flex-direction:column;justify-content:center;gap:28px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:28px;color:#F59E5B;letter-spacing:2px">CHAPTER 2 · 플래닝 · 모델 기반 §B.10</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:80px;font-weight:700;line-height:1.15;color:#F4F1EA">학습 Planner가 이겨야 할 기준선</h2>
+<p style="font-size:32px;line-height:1.5;color:#C9D1E0;width:1500px">고전 계획은 세 층이다 — 전역 경로를 찾는 그래프 탐색, 몇 초 앞 속도를 고르는 로컬 플래너, 경로를 매끄럽게 다듬는 궤적 최적화.</p>
+<table style="width:1664px;font-size:26px;color:#F4F1EA;padding:10px 16px">
+<tr style="background:#24314F"><th style="width:12%;text-align:left;color:#F59E5B">연도</th><th style="width:22%;text-align:left;color:#F59E5B">이름</th><th style="width:12%;text-align:left;color:#F59E5B">층</th><th style="width:54%;text-align:left;color:#F59E5B">핵심</th></tr>
+<tr><td>1959 / 1968</td><td>Dijkstra · A*</td><td>전역</td><td>누적 비용(+ 휴리스틱) 순서로 칸을 연다</td></tr>
+<tr><td>1997</td><td>DWA</td><td>로컬</td><td>가속 한계 안의 속도 창에서 고른다</td></tr>
+<tr><td>2008–10</td><td>Hybrid A*</td><td>전역</td><td>칸마다 연속 자세, 차량 기구학을 지킨다</td></tr>
+<tr><td>2012–17</td><td>TEB</td><td>로컬</td><td>시간 붙은 궤적을 희소 그래프 최적화로</td></tr>
+<tr><td>2020 / 2024</td><td>Nav2 · Smac</td><td>스택</td><td>behavior tree + 비용 인식 Hybrid-A*·Lattice</td></tr>
+<tr><td>2023</td><td>MPOT</td><td>최적화</td><td>기울기 없이 궤적 다발을 OT로 민다</td></tr>
+</table>
+<aside>travplan의 비학습 기준선은 GuidancePlanner(TravMap 위 Dijkstra)다. 3 seed 운동학 벤치마크에서 guidance+mppi가 12/12를 기록했다. 학습 Planner는 언제나 이 기준선과 같은 벤치마크에서 비교한다.</aside>
+</section>
+<section id="p-astar" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH2 플래닝·모델 · 1959 / 1968 / 2010 IJRR · 전역 층</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">A* · Hybrid A* — 격자 위 최단 경로 <span style="color:#C2410C">[10][11]</span></h2>
+</div>
+<div style="display:flex;gap:24px">
+<div style="flex:1;background:#FFFDF8;border:2px solid #D9D4C7;border-radius:14px;padding:26px;display:flex;flex-direction:column;gap:12px">
+<h3 style="font-size:30px;font-weight:600;color:#16213A">A* (Dijkstra는 h = 0)</h3>
+<img src="img/31c03f49f369877df12ea0bae233be76.png" alt="f(n) = g(n) + h(n), h(n) ≤ h*(n)" style="width:540px;height:45px;object-fit:contain">
+<p style="font-size:24px;line-height:1.45;color:#3D4A63">누적 비용 g에 남은 비용 추정 h를 더한 순서로 칸을 연다. h가 실제를 넘지 않으면(admissible) 최적이면서 훨씬 적은 칸만 연다.</p>
+</div>
+<div style="flex:1;background:#FFFDF8;border:2px solid #D9D4C7;border-radius:14px;padding:26px;display:flex;flex-direction:column;gap:12px">
+<h3 style="font-size:30px;font-weight:600;color:#16213A">Hybrid A* — DARPA Junior</h3>
+<img src="img/25a84e3a16f8926259891b71fcb24a09.png" alt="h(x, y, θ) = max(h_nonholo(x, y, θ), h_holo(x, y))" style="width:540px;height:38px;object-fit:contain">
+<p style="font-size:24px;line-height:1.45;color:#3D4A63">칸마다 연속 자세 (x, y, θ)를 저장하고 조향 원호로 확장한다. 기구학만 본 거리와 장애물만 본 거리의 큰 값을 휴리스틱으로, 중간에 Reeds-Shepp 곡선으로 목표에 바로 이어 본다.</p>
+</div>
+</div>
+<div style="background:#16213A;border-radius:14px;padding:26px 30px;display:flex;gap:32px;align-items:center">
+<div style="display:flex;flex-direction:column;gap:8px;width:420px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#F59E5B">travplan GuidancePlanner</p>
+<p style="font-size:24px;line-height:1.45;color:#C9D1E0">목표에서 Dijkstra 한 번 → 모든 칸의 cost-to-go</p>
+</div>
+<div style="background:#FFFDF8;border-radius:8px;padding:14px 20px">
+<img src="img/53addaa7c3975d947419b3d50c53393e.png" alt="w_ij = ℓ_ij · ½(c'_i + c'_j), c'_i = 1 + w_c cost_i + w_σ σ_i" style="width:820px;height:55px;object-fit:contain">
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">w_c = 4, w_σ = 0.5, 비용 0.95 이상 치명 셀은 그래프에서 뺀다. 학습 Planner는 이 경로 위 4 m 앞을 subgoal로 받고, Planner D는 후보 끝점의 cost-to-go를 진행도 점수로 쓴다. 스워브는 옆으로도 가므로 자동차용 원호 확장은 너무 좁다 → 다음 후보는 Smac State Lattice.</p></div>
+</div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0;display:flex;flex-direction:column;gap:2px">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[10] Dijkstra, Numerische Mathematik 1959 · Hart, Nilsson &amp; Raphael, “A Formal Basis for the Heuristic Determination of Minimum Cost Paths”, IEEE TSSC 1968</p>
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[11] Dolgov, Thrun, Montemerlo &amp; Diebel, “Path Planning for Autonomous Vehicles in Unknown Semi-structured Environments”, IJRR 2010</p>
+</div>
+<aside>Hybrid A*의 두 휴리스틱은 둘 다 실제 비용을 넘지 않으므로 그 최댓값도 admissible이다. 결과 경로는 차량이 따라갈 수 있지만 매끄럽지는 않아, 원 논문은 뒤에 경사 하강 평활화를 붙였다. Nav2의 Smac Planner(2024)가 비용 인식 판을 기본 계획기로 제공한다. Planner 문서 §B.10.</aside>
+</section>
+<section id="p-dwa-teb" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH2 플래닝·모델 · 1997 IEEE RAM / 2017 RAS · 로컬 층</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">DWA · TEB — 다음 몇 초를 고른다 <span style="color:#C2410C">[12][13]</span></h2>
+</div>
+<div style="display:flex;gap:24px">
+<div style="flex:1;background:#FFFDF8;border:2px solid #D9D4C7;border-radius:14px;padding:26px;display:flex;flex-direction:column;gap:14px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C">DWA · Fox, Burgard, Thrun</p>
+<h3 style="font-size:30px;font-weight:600;color:#16213A">속도 창에서 고르기</h3>
+<img src="img/1a9171334481a2975152be28a8c4415e.png" alt="(v, ω)* = argmax over Vs ∩ Va ∩ Vd of σ(α heading + β dist + γ vel)" style="width:740px;height:42px;object-fit:contain">
+<p style="font-size:24px;line-height:1.45;color:#3D4A63"><b>V_d</b>: 가속 한계로 짧은 시간 안에 낼 수 있는 속도 창. <b>V_a</b>: 장애물 앞에서 멈출 수 있는 속도. 창 안의 각 (v, ω)가 그리는 원호를 목표 방향·장애물 거리·속도로 채점.</p>
+<p style="font-size:24px;line-height:1.45;color:#16213A;background:#FBE7D9;padding:14px 18px;border-radius:10px">매우 가볍다. Nav2 DWB가 이 계열.</p>
+</div>
+<div style="flex:1;background:#FFFDF8;border:2px solid #D9D4C7;border-radius:14px;padding:26px;display:flex;flex-direction:column;gap:14px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#1D4ED8">TEB · Rösmann et al.</p>
+<h3 style="font-size:30px;font-weight:600;color:#16213A">시간 붙은 궤적 최적화</h3>
+<p style="font-size:24px;line-height:1.45;color:#3D4A63">궤적 = 자세 열 + 그 사이 시간 간격 ΔT. 속도·가속 한계, 장애물 거리, 기구학을 벌점으로, <b>전체 시간</b>을 목적함수로 둔 희소 그래프 최적화(g2o).</p>
+<p style="font-size:24px;line-height:1.45;color:#3D4A63">장애물 왼쪽·오른쪽처럼 <b>위상이 다른 후보 여러 개</b>를 병렬로 최적화해 가장 좋은 것을 고른다. 홀로노믹 로봇의 옆 속도도 다룬다.</p>
+<p style="font-size:24px;line-height:1.45;color:#16213A;background:#E3E9F7;padding:14px 18px;border-radius:10px">teb_local_planner ★1.4k</p>
+</div>
+</div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">travplan의 로컬 층은 MPPI가 맡는다. DWA는 “한 스텝 앞 원호”, TEB는 “기울기 최적화 + 위상 후보”, MPPI는 “지평 전체 샘플링”이다. TEB의 위상 후보 아이디어는 Planner D가 후보 16개를 내는 것과 같은 동기다.</p></div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0;display:flex;flex-direction:column;gap:2px">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[12] Fox, Burgard &amp; Thrun, “The Dynamic Window Approach to Collision Avoidance”, IEEE RAM 1997</p>
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[13] Rösmann, Hoffmann &amp; Bertram, “Integrated Online Trajectory Planning and Optimization in Distinctive Topologies”, RAS 2017</p>
+</div>
+<aside>DWA의 V_s ∩ V_a ∩ V_d: 가능한 속도, 안전하게 멈출 수 있는 속도, 지금 속도에서 가속 한계로 닿는 창의 교집합. 목적함수 σ는 평활화. TEB는 2012년 논문에서 시작해 2017년 RAS에서 위상 후보로 확장됐다. Planner 문서 §B.10.</aside>
+</section>
+<section id="p-nav2" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH2 플래닝·모델 · 2020 IROS / 2024 arXiv · 스택</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">Nav2 · Smac Planner — ROS 2 표준 스택 <span style="color:#C2410C">[14]</span></h2>
+</div>
+<div style="display:flex;gap:40px">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px">
+<p style="font-size:28px;line-height:1.5;color:#16213A"><b>behavior tree</b>가 전역 계획, 로컬 제어, 복구 행동을 조율한다. lifecycle 노드 위에서 돈다.</p>
+<table style="width:1064px;font-size:24px;color:#16213A;padding:10px 14px">
+<tr style="background:#16213A"><th style="width:30%;color:#F4F1EA;text-align:left">층</th><th style="width:70%;color:#F4F1EA;text-align:left">Nav2 기본 구성</th></tr>
+<tr><td>전역</td><td>Smac: 비용 인식 A* · Hybrid-A* · State Lattice</td></tr>
+<tr style="background:#EFEBE2"><td>로컬</td><td>MPPI Controller · Regulated Pure Pursuit · DWB</td></tr>
+<tr><td>표현</td><td>costmap_2d 레이어(static · obstacle · voxel · inflation)</td></tr>
+</table>
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;gap:16px;border-left:5px solid #16213A;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#16213A">결과</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">캠퍼스에서 학생들 사이를 마라톤 거리만큼 주행해 검증(“The Marathon 2”).</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">Nav2 전역 계획 + MPPI = travplan GuidancePlanner + MPPIController와 같은 구조다. 바꾼 것은 공통 표현 하나 — costmap 대신 TravMap(Nav2 이슈 #1278의 제안).</p></div>
+</div>
+</div>
+<div style="width:520px;display:flex;flex-direction:column;gap:8px">
+<img src="img/ca2c882f51f5a202e00f4d5091aa97d6.webp" alt="Smac Planner로 Nav2를 쓰는 산업용·수상 로봇들" style="width:520px;height:430px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<p style="font-size:24px;color:#5A6478">Smac Fig. 1 — 큰 몸체·기구학 제약 로봇들 [14]</p>
+</div>
+</div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0;display:flex;flex-direction:column;gap:2px">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[14] Macenski et al., “The Marathon 2: A Navigation System”, IROS 2020 — arXiv:2003.00368 · Macenski et al., Smac Planner, 2024 — arXiv:2401.13078</p>
+</div>
+<aside>유지보수자들이 쓴 개관(arXiv:2307.15236)이 각 알고리즘을 비교한다. travplan의 개요 문서는 costmap의 다섯 한계(점유 이분법, 2D 투영, 불확실성 없음, 고정 inflation, 지면 평면 가정)를 정리하고, 표현만 바꾸고 생태계(behavior tree, 복구, 전역 계획기)는 그대로 쓴다고 적는다.</aside>
+</section>
+<section id="p-mpot" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:26px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH2 플래닝·모델 · 2023 · NeurIPS · TU Darmstadt · 궤적 최적화 층</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">MPOT — 궤적 다발을 OT로 민다 <span style="color:#C2410C">[15]</span></h2>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<img src="img/b8155159dfb891e97c6aaede82b0f93e.webp" alt="travplan Playground의 MPOT Planner 결과: 입자 궤적 다발이 TravMap 위에서 목표로 밀려 가는 모습" style="width:1100px;height:242px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<p style="font-size:24px;color:#5A6478">travplan TP-0136 — Playground에서 Sinkhorn Step을 Planner 자리에 놓은 판</p>
+</div>
+<div style="display:flex;gap:28px">
+<div style="flex:1;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;gap:16px;border-left:5px solid #C2410C;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#C2410C">방법</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63"><b>기울기를 쓰지 않는다.</b> waypoint마다 무작위로 회전한 다포체 꼭짓점 방향으로 비용을 찍어 보고, 그 비용 행렬에 엔트로피 정규화 OT를 풀어 방향 가중치를 얻는다(Sinkhorn Step). 수송은 <b>waypoint ↔ 탐색 방향</b> 사이다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">쓸 자리는 <b>Planner D의 교사</b>다 — 여러 위상의 답을 한 배치로 내는 오프라인 오라클. Controller 자리 제어열 판(TP-0130)은 같은 예산 MPPI를 넘지 못했다.</p></div>
+</div>
+<table style="width:640px;font-size:24px;color:#16213A;padding:10px 14px">
+<tr style="background:#16213A"><th style="width:46%;color:#F4F1EA;text-align:left">논문 환경</th><th style="width:24%;color:#F4F1EA;text-align:left">시간</th><th style="width:30%;color:#F4F1EA;text-align:left">성공률</th></tr>
+<tr><td>point-mass 2D</td><td>0.4 s</td><td>99.2 %</td></tr>
+<tr style="background:#EFEBE2"><td>Panda 7-DoF</td><td>0.8 s</td><td>71.6 %</td></tr>
+<tr><td>TIAGo++</td><td>1.49 s</td><td>55 %</td></tr>
+<tr style="background:#FBE7D9"><td>travplan L2 curb</td><td>16.7–21.9 s 도달</td><td>Guidance보다 빠름</td></tr>
+</table>
+</div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[15] Le, Chalvatzaki, Biess &amp; Peters, “Accelerating Motion Planning via Optimal Transport”, NeurIPS 2023 — arXiv:2309.15970 · 코드 anindex/mpot (MIT)</p>
+</div>
+<aside>TP-0136 Playground 결과: 원형 시야 6 지형 × 2 seed는 Guidance·MPOT 모두 12/12, 기본 인식 4 지형 × 5 seed는 둘 다 20/20. curb_ramp 레벨 2 도달 시간은 MPOT가 짧았지만(21.9·17.2·16.7 s 대 24.1·24.0·22.2 s), 레벨 3 seed 0에서는 시간 초과 — 입자가 못 본 칸을 지나 곧게 가다 연석 앞에서 경사로 쪽 비용 언덕을 넘지 못했다. 계획 시간 처음 83 ms, 재계획 26 ms(Guidance 5 ms). 저장소 Python이 아니라 브라우저 JS 재구성이다. 배경 §0.2b가 OT 이름의 여섯 가지 뜻을 가른다.</aside>
+</section>
+<section id="ch3" data-transition="fade" style="background:#16213A;color:#F4F1EA;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px;display:flex;flex-direction:column;justify-content:center;gap:26px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:28px;color:#F59E5B;letter-spacing:2px">CHAPTER 3 · 플래닝 · 학습 기반 §B.2–B.8</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:80px;font-weight:700;line-height:1.15;color:#F4F1EA">비용으로 배우고, 분포로 낸다</h2>
+<p style="font-size:30px;line-height:1.5;color:#C9D1E0;width:1550px">세 갈래 — 비용 지도로 직접 배우는 명령형 학습, 궤적 분포를 생성하는 diffusion·flow, 언어·영상 기반 모델이 행동까지 내는 VLA.</p>
+<table style="width:1664px;font-size:26px;color:#F4F1EA;padding:9px 16px">
+<tr style="background:#24314F"><th style="width:10%;text-align:left;color:#F59E5B">연도</th><th style="width:22%;text-align:left;color:#F59E5B">논문</th><th style="width:18%;text-align:left;color:#F59E5B">갈래</th><th style="width:50%;text-align:left;color:#F59E5B">출력</th></tr>
+<tr><td>2023</td><td>iPlanner · ViPlanner</td><td>명령형 학습</td><td>key point 경로 + 충돌 확률</td></tr>
+<tr><td>2023</td><td>ViNT · NoMaD</td><td>기반 모델</td><td>waypoint / diffusion, 목표 마스킹</td></tr>
+<tr><td>2023</td><td>Diffusion Policy</td><td>생성형</td><td>행동 열, receding horizon</td></tr>
+<tr><td>2024</td><td>π0 · NaVILA · CityWalker</td><td>VLA · 웹 영상</td><td>flow 행동 / 언어 중간 행동 / waypoint</td></tr>
+<tr><td>2025</td><td>NavDP · GoalFlow</td><td>생성형 + 선택</td><td>후보 생성 → critic·점수기</td></tr>
+<tr style="background:#24314F"><td>2026</td><td>travplan Planner D</td><td>flow + 선택</td><td>후보 16개 → 비용 적분으로 선택</td></tr>
+</table>
+<aside>travplan의 LearnedPlanner(Planner B)는 iPlanner 계열, Planner D는 GoalFlow·NavDP와 같은 “생성 후 선택” 구조다. 학습 Planner는 GuidancePlanner와 같은 벤치마크에서 비교한다(3 seed: guidance+mppi 12/12, planner_d+mppi 12/12, learned+mppi 8/12).</aside>
+</section>
+<section id="p-iplanner" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:26px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH3 플래닝·학습 · 2023 · RSS · ETH RSL</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">iPlanner — 비용의 기울기로 경로를 배운다 <span style="color:#C2410C">[16]</span></h2>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<img src="img/ccea4bf300c72cbcd746defb667fafe2.webp" alt="깊이와 목표로 key point 경로와 충돌 확률을 예측하고, 궤적 비용과 fear loss를 역전파하는 이층 최적화" style="width:1100px;height:242px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<p style="font-size:24px;color:#5A6478">Fig. 2 — 경로 + 충돌 확률 예측, 비용과 fear loss를 역전파 [16]</p>
+</div>
+<div style="display:flex;gap:28px;align-items:center">
+<div style="background:#FFFDF8;border-left:6px solid #C2410C;border-radius:8px;padding:16px 22px;display:flex;flex-direction:column;gap:10px">
+<img src="img/8f746910cca16411ed540c4da91f18af.png" alt="min_θ F(f_θ, τ*) s.t. τ* = argmin_τ C(f_θ, τ)" style="width:700px;height:64px;object-fit:contain">
+<img src="img/6d794bedd2ffe7ad6b894ec729541e72.png" alt="C(τ) = α Σ H(p_i) + β C^G(τ) + γ C^M(τ)" style="width:600px;height:88px;object-fit:contain">
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:10px">
+<p style="font-size:24px;line-height:1.45;color:#3D4A63"><b style="color:#C2410C">문제</b> 시연 라벨 없이 깊이 영상 → 경로를 배우고 싶다.</p>
+<p style="font-size:24px;line-height:1.45;color:#3D4A63"><b style="color:#1D4ED8">방법</b> 경로 점에서 미분 가능하게 비용 지도를 읽어 그 합을 손실로. fear 헤드가 충돌 확률을 예측.</p>
+<p style="font-size:24px;line-height:1.45;color:#3D4A63"><b style="color:#16213A">결과</b> 고전 파이프라인보다 약 4배 빠름, 학습 기준선보다 SPL 26–87% ↑.</p>
+<p style="font-size:24px;line-height:1.45;color:#3D4A63"><b style="color:#0F766E">travplan</b> LearnedPlanner의 plan_loss가 이 꼴(+ σ 항). fear 헤드는 “치명 셀 경로 → MPPI 거부 → 멈춤” 실패를 겨냥한다.</p>
+</div>
+</div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[16] Yang, Wang, Cadena &amp; Hutter, “iPlanner: Imperative Path Planning”, RSS 2023 — arXiv:2302.11434</p>
+</div>
+<aside>명령형 학습(imperative learning): 위 단계는 네트워크를, 아래 단계는 네트워크가 낸 경로를 비용으로 최적화한다. 비용의 기울기가 궤적 최적화를 거쳐 네트워크까지 흐른다. travplan plan_loss = 3·평균 흐린 비용 + 12·치명 영역 벌점 + 0.5·σ + 목표 거리 + 2·2차 차분 + 0.05·길이. 아래 단계 궤적 최적화와 fear 헤드가 없는 대신 σ 항이 있다(Planner 문서 §B.4b).</aside>
+</section>
+<section id="p-viplanner" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:26px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH3 플래닝·학습 · 2024 · ICRA · ETH RSL</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">ViPlanner — 의미까지 비용으로 <span style="color:#C2410C">[17]</span></h2>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<img src="img/9b2b6732a73a87730c17906a1ec2bb6a.webp" alt="깊이 영상, 의미 영상, 목표를 받아 경로와 충돌 확률을 내고, 가중치와 최종 경로를 이층 최적화로 다듬는다" style="width:900px;height:233px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<p style="font-size:24px;color:#5A6478">Fig. 2 — 깊이 + 의미 + 목표 → 경로 · 충돌 확률, 이층 최적화 [17]</p>
+</div>
+<div style="display:flex;gap:28px">
+<div style="flex:1;display:flex;flex-direction:column;gap:10px">
+<p style="font-size:24px;line-height:1.45;color:#3D4A63"><b style="color:#C2410C">문제</b> 기하만 보면 계단은 막혀 보이고, 풀밭과 도로가 구별되지 않는다.</p>
+<p style="font-size:24px;line-height:1.45;color:#3D4A63"><b style="color:#1D4ED8">방법</b> 깊이·의미 분할을 따로 인코딩해 목표와 합치고, 30개 의미 클래스에 비용을 매긴 지도로 iPlanner식 학습. 클래스는 traversability가 비슷할수록 가까운 색으로.</p>
+<p style="font-size:24px;line-height:1.45;color:#3D4A63"><b style="color:#16213A">결과</b> CARLA·Matterport 시뮬만으로 학습해 4족 실물에 zero-shot. 기하만 쓸 때보다 traversability 비용 <b>38.02% 감소</b>.</p>
+<p style="font-size:24px;line-height:1.45;color:#3D4A63"><b style="color:#0F766E">travplan</b> TravMap에 의미 채널을 더할 때(§A.11 분할 모델) 그대로 쓸 수 있는 비용 설계.</p>
+</div>
+<table style="width:600px;font-size:24px;color:#16213A;padding:9px 14px">
+<tr style="background:#16213A"><th style="width:30%;color:#F4F1EA;text-align:left">비용</th><th style="width:70%;color:#F4F1EA;text-align:left">의미 클래스</th></tr>
+<tr><td>가장 쌈</td><td>보도 · 횡단보도 · 바닥 · 계단</td></tr>
+<tr style="background:#EFEBE2"><td>↑</td><td>자갈 · 모래 · 눈</td></tr>
+<tr><td>↑↑</td><td>풀 · 흙</td></tr>
+<tr style="background:#EFEBE2"><td>↑↑↑</td><td>도로</td></tr>
+<tr style="background:#FBE7D9"><td>장애물</td><td>사람 · 차 · 벽 · 기둥</td></tr>
+</table>
+</div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[17] Roth, Nubert, Yang, Mittal &amp; Hutter, “ViPlanner: Visual Semantic Imperative Learning for Local Navigation”, ICRA 2024 — arXiv:2310.00982</p>
+</div>
+<aside>배달로봇 관점에서 이 비용 순서는 흥미롭다: 도로가 풀보다 비싸다. 보도 로봇은 차도를 피해야 하기 때문이다. travplan은 아직 의미 채널이 없고 기하 비용(경사·턱·거칠기)만 쓴다. 코드 leggedrobotics/viplanner ★0.7k.</aside>
+</section>
+<section id="p-nomad" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:26px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH3 플래닝·학습 · 2023 CoRL / 2024 ICRA · UC Berkeley</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">ViNT · NoMaD — 내비 기반 모델 <span style="color:#C2410C">[18]</span></h2>
+</div>
+<div style="display:flex;gap:36px;align-items:center">
+<div style="display:flex;flex-direction:column;gap:8px">
+<img src="img/bebb1a28dee5a539a62e0ea742675511.webp" alt="실내·실외 탐색 주행. 한 시점에서 여러 방향의 미래 행동 샘플" style="width:780px;height:233px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<p style="font-size:24px;color:#5A6478">NoMaD Fig. 4 — 목표 마스킹 diffusion의 여러 방향 샘플 [18]</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:14px">
+<div style="background:#FFFDF8;border-left:6px solid #C2410C;border-radius:8px;padding:16px 20px">
+<img src="img/1f179b490ff3def173eb53ed6bba2285.png" alt="c_t = f(ψ(o_i), φ(o_t, o_g), m), m ~ Bernoulli(0.5)" style="width:780px;height:49px;object-fit:contain">
+</div>
+<p style="font-size:26px;line-height:1.5;color:#16213A">학습 때 반은 <b>목표를 가리고</b> 배운다 → 목표가 없으면 충돌 없는 여러 방향이 샘플로 나와 스스로 탐색한다.</p>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;gap:16px;border-left:5px solid #1D4ED8;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#1D4ED8">방법</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">공유 transformer: 과거 RGB 각각은 EfficientNet-B0 ψ, 현재+목표 영상은 융합 인코더 φ. ViNT는 waypoint 열, NoMaD는 그 문맥으로 diffusion 행동. 장거리는 위상 기억 그래프.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #16213A;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#16213A">결과</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">이 분야에서 가장 성숙. 여러 로봇에 실배포, 코드 visualnav-transformer ★1.3k+.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">알려진 한계 “센서 범위 밖 미관측 영역 탐색”의 답 후보: Planner D 조건에서 subgoal을 가끔 빼고 학습하면 목표 없는 탐색 모드가 한 모델에 들어간다.</p></div>
+</div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0;display:flex;flex-direction:column;gap:2px">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[18] Shah et al., “ViNT: A Foundation Model for Visual Navigation”, CoRL 2023 — arXiv:2306.14846 · Sridhar et al., “NoMaD: Goal Masked Diffusion Policies for Navigation and Exploration”, ICRA 2024 — arXiv:2310.07896</p>
+</div>
+<aside>계보: GNM(2022, 여러 로봇 데이터로 일반 내비 모델) → ViNT(2023, transformer 백본, 미세조정 가능) → NoMaD(2023, diffusion 정책 + 목표 마스킹). CityWalker는 미세조정한 ViNT(57.1%)와 zero-shot NoMaD(42.9%)를 기준선으로 썼다.</aside>
+</section>
+<section id="p-navdp" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:26px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH3 플래닝·학습 · 2025 arXiv / ICRA 2026 · InternRobotics</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">NavDP — 시뮬 특권 정보로 배운 critic <span style="color:#C2410C">[19]</span></h2>
+</div>
+<div style="display:flex;gap:40px">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px">
+<p style="font-size:28px;line-height:1.5;color:#16213A">RGB-D → diffusion 궤적 후보 → <b>ESDF로 학습한 critic</b>이 채점. 시뮬 데이터만으로 여러 로봇에 옮긴다.</p>
+<div style="background:#FFFDF8;border-left:6px solid #C2410C;border-radius:8px;padding:18px 22px">
+<img src="img/d4a9eb9a49055a0edce711aa134dd047.png" alt="critic 라벨 V(τ̂) = γ Σ (d^(m+1) − d^m) + λ (1/M) Σ I(d^m < d_safe)" style="width:880px;height:96px;object-fit:contain">
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;gap:16px;border-left:5px solid #1D4ED8;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#1D4ED8">데이터</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">3,000+ 장면 메시 → ESDF, A* 경로를 ESDF 쪽으로 밀고 spline. 카메라 높이·피치·시야 무작위화, 1,000 km 이상.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #1D4ED8;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#1D4ED8">구조</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">RGB 8프레임(DepthAnything 인코더) + 깊이 ViT. 한 transformer가 행동 헤드(diffusion 10스텝, waypoint 24개)와 critic 헤드를 함께.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #16213A;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#16213A">결과</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">시뮬 PointGoal 67.2%(ViPlanner 60.9%). 실물 Turtlebot 9/10, Go2 7/10, G1 7/10.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63"><b>Planner D의 직접 참고</b>. 비학습 선택기를 이 critic처럼 학습시킬 수 있다 — 시뮬에서 정답 비용·치명 셀을 알기 때문.</p></div>
+</div>
+</div>
+<div style="width:500px;display:flex;flex-direction:column;gap:8px">
+<img src="img/fd575701bc6badf157949ab1512d8de8.webp" alt="시뮬 데이터로만 학습해 여러 로봇에 그대로 옮겨 쓴다. 궤적 후보 생성과 critic 채점" style="width:500px;height:335px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<p style="font-size:24px;color:#5A6478">Fig. 1 — 시뮬 전용 학습 → 여러 로봇 [19]</p>
+<p style="font-size:24px;line-height:1.45;color:#16213A;background:#FBE7D9;padding:14px 18px;border-radius:10px">학습: A100 32장 × 24시간. Jetson 지연은 미보고.</p>
+</div>
+</div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[19] Cai et al., “NavDP: Learning Sim-to-Real Navigation Diffusion Policy with Privileged Information Guidance”, ICRA 2026 — arXiv:2505.08712</p>
+</div>
+<aside>critic 라벨: 시연 궤적을 흔든 대조 샘플마다, waypoint의 ESDF 값으로 장애물에서 멀어지는 정도와 안전 거리 0.5 m 안에 든 비율을 합친다. 실제 로봇에는 ESDF가 없지만 critic은 영상만 보고 그 점수를 맞히도록 배운다. 행동 손실은 목표 있는 경우와 없는 경우를 반씩 섞는다(NoMaD의 마스킹과 같은 발상). Planner 문서 §B.3.</aside>
+</section>
+<section id="p-diffpolicy" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:26px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH3 플래닝·학습 · 2023 · RSS · Columbia · TRI · MIT</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">Diffusion Policy — 행동 열을 확산으로 <span style="color:#C2410C">[20]</span></h2>
+</div>
+<div style="display:flex;gap:36px;align-items:center">
+<div style="display:flex;flex-direction:column;gap:8px">
+<img src="img/8ec8775c26ae60aa7001dbd282ebd6f0.webp" alt="최근 관측 몇 스텝을 받아 행동 열을 낸다. CNN 판은 관측 특징을 FiLM으로 모든 합성곱 층에 넣는다" style="width:880px;height:240px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<p style="font-size:24px;color:#5A6478">Fig. 2 — 관측 T_o 스텝 → 행동 T_p 스텝, FiLM 조건 [20]</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:14px">
+<div style="background:#FFFDF8;border-left:6px solid #C2410C;border-radius:8px;padding:16px 20px">
+<img src="img/a051713c93296d6d5ec0ecef7651f8ad.png" alt="A^(k−1) = α(A^k − γ ε_θ(O_t, A^k, k)) + N(0, σ²I)" style="width:690px;height:56px;object-fit:contain">
+</div>
+<p style="font-size:26px;line-height:1.5;color:#16213A">T_p 스텝을 예측하고 T_a 스텝만 실행한 뒤 다시 계획한다(receding horizon).</p>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;gap:16px;border-left:5px solid #C2410C;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#C2410C">문제</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">회귀로 배운 정책은 여러 모드의 시연을 평균 낸다. 고차원 행동에서 에너지 기반 모델은 학습이 불안정하다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #1D4ED8;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#1D4ED8">방법</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">관측 조건 DDPM으로 행동 열 전체를 denoise. 관측 특징은 FiLM으로 모든 층에 넣는다(CNN 판) 또는 transformer 판.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #16213A;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#16213A">결과</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">조작 벤치마크 4개 여러 과제에서 기존 최고보다 <b>평균 46.9%</b> 좋았다. 다봉 분포를 자연스럽게 다룬다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">Planner D의 “행동 묶음 생성 + 재계획” 구조의 조상. Planner D는 같은 망을 DDPM 조상 샘플링으로도 돌려 12/12(TP-0137).</p></div>
+</div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[20] Chi et al., “Diffusion Policy: Visuomotor Policy Learning via Action Diffusion”, RSS 2023 — arXiv:2303.04137</p>
+</div>
+<aside>receding horizon의 장점: 행동 묶음을 한 번에 내므로 스텝마다 모드가 바뀌는 떨림이 줄고, 다시 계획하므로 반응성도 남는다. Planner 문서 §B.8.0의 계보: Diffuser(2022) → Diffusion Policy(2023) → MPD → DiffusionDrive(truncated) → GoalFlow(flow 한 스텝).</aside>
+</section>
+<section id="p-goalflow" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:26px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH3 플래닝·학습 · 2025 · CVPR · E2E 자율주행</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">GoalFlow — 목표점 먼저, 그다음 flow <span style="color:#C2410C">[21]</span></h2>
+</div>
+<div style="display:flex;gap:36px;align-items:center">
+<div style="display:flex;flex-direction:column;gap:8px">
+<img src="img/f5eb470f2f4f1b93253dafedaeee59bf.webp" alt="인식 모듈이 BEV 특징을 만들고, 목표점 모듈이 어휘에서 최적 목표점을 고르고, 계획 모듈이 궤적 후보를 생성하고 점수기가 고른다" style="width:720px;height:270px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<p style="font-size:24px;color:#5A6478">Fig. 2 — 인식 → 목표점 선택 → flow 후보 → 점수기 [21]</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:14px">
+<div style="background:#FFFDF8;border-left:6px solid #C2410C;border-radius:8px;padding:16px 20px">
+<img src="img/8a5b8b3f0353d6a6c7ba86bdd1461481.png" alt="δ_final = w1 log δ_dis + w2 log δ_dac" style="width:594px;height:84px;object-fit:contain">
+</div>
+<p style="font-size:26px;line-height:1.5;color:#16213A">거리 점수(정답 끝점까지 softmax) × 주행 가능 점수(자차 상자 네 모서리가 도로 안인가)</p>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;gap:16px;border-left:5px solid #C2410C;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#C2410C">문제</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">확산으로 만든 다봉 궤적은 퍼짐이 커 고르기 어렵고, guidance가 장면과 어긋나면 품질이 떨어진다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #1D4ED8;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#1D4ED8">방법</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">조밀한 목표점 어휘에서 하나를 고르고, 그 목표점 + BEV 특징 조건으로 flow matching이 후보를 낸다. 마지막에 점수기가 고른다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #16213A;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#16213A">결과</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">NAVSIM PDMS <b>90.3</b>. 잡음 제거 한 스텝으로도 성능이 좋았다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63"><b>Planner D와 구조가 같다</b>: 목표점 = Guidance 경로 4 m 앞 subgoal, 후보 16개, 점수기 = 비용 적분 + 치명 벌점 + cost-to-go. 차이는 목표점을 규칙으로 고른다는 것.</p></div>
+</div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[21] Xing et al., “GoalFlow: Goal-Driven Flow Matching for Multimodal Trajectories Generation in End-to-End Autonomous Driving”, CVPR 2025 — arXiv:2503.05689</p>
+</div>
+<aside>막다른 곳에서는 subgoal 후보 여러 개를 점수로 고르는 GoalFlow식 확장이 가능하다 — curb_ramp에서 경사로를 지나친 뒤 되돌아와야 하는 경우(TP-0078·0143)와 맞닿는다. 코드 YvanYin/GoalFlow.</aside>
+</section>
+<section id="p-pi0" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:26px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH3 플래닝·학습 · 2024 arXiv / RSS 2025 · Physical Intelligence</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">π0 — VLM에 flow 행동 전문가를 <span style="color:#C2410C">[22]</span></h2>
+</div>
+<div style="display:flex;gap:36px;align-items:center">
+<div style="display:flex;flex-direction:column;gap:8px">
+<img src="img/d7d3240b3a41edbf2d0eff0b058adaab.webp" alt="자체 조작 데이터와 공개 데이터로 사전학습하고, 큰 VLM backbone과 작은 행동 전문가로 된 flow matching VLA" style="width:800px;height:223px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<p style="font-size:24px;color:#5A6478">Fig. 3 — VLM backbone + flow 행동 전문가 [22]</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:14px">
+<div style="background:#FFFDF8;border-left:6px solid #C2410C;border-radius:8px;padding:16px 20px">
+<img src="img/1b34beafd0e09de666197d6726ba2f72.png" alt="flow matching 손실: L = E‖v_θ(A^τ, o) − (A − ε)‖², A^τ = τA + (1−τ)ε" style="width:770px;height:46px;object-fit:contain">
+</div>
+<p style="font-size:26px;line-height:1.5;color:#16213A">로봇 데이터로 사전학습한 <b>VLA</b>: 영상·지시 → 50스텝 연속 행동 묶음.</p>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;gap:16px;border-left:5px solid #1D4ED8;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#1D4ED8">방법</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">PaliGemma 3B가 영상·지시를 처리하고, 새로 붙인 3억 파라미터 행동 전문가가 flow matching으로 50스텝 연속 행동 묶음을 낸다. 추론은 Euler 10스텝.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #16213A;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#16213A">결과</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">로봇 7종 · 과제 68개 · 1만 시간+ 사전학습, 빨래 개기·상자 조립에 미세조정. 최대 50 Hz 제어.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">Planner D와 같은 규칙(flow matching, Euler 10스텝, 행동 묶음). 규모만 다르다. 코드 Apache-2.0, 가중치는 Gemma 약관.</p></div>
+</div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[22] Black et al., “π0: A Vision-Language-Action Flow Model for General Robot Control”, RSS 2025 — arXiv:2410.24164</p>
+</div>
+<aside>슬라이드의 손실은 flow matching의 일반형으로 적었다(잡음 τ = 0 → 데이터 τ = 1). 논문마다 시간·부호 규약이 다르니 원문을 볼 때 확인한다. 행동 전문가는 VLM의 attention을 공유하되 가중치는 따로 둔 mixture-of-experts 꼴이다. Planner 문서 §B.6b.</aside>
+</section>
+<section id="p-navila" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:26px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH3 플래닝·학습 · 2024 arXiv / RSS 2025 · UCSD · USC · NVIDIA</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">NaVILA — 언어로 된 중간 행동 <span style="color:#C2410C">[23]</span></h2>
+</div>
+<div style="display:flex;gap:36px;align-items:center">
+<div style="display:flex;flex-direction:column;gap:8px">
+<img src="img/701322b377a2abd8c0a9598de6ac33be.webp" alt="VLA가 단일 시점 영상에서 자연어로 된 중간 행동을 내고, 저수준 보행 정책이 그것을 관절 움직임으로 바꾸는 두 층 구조" style="width:880px;height:237px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<p style="font-size:24px;color:#5A6478">Fig. 2 — VLA(언어 행동) → 보행 RL 정책(관절) [23]</p>
+</div>
+<div style="flex:1;background:#16213A;border-radius:14px;padding:26px;display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#F59E5B">중간 행동의 예</p>
+<p style="font-family:'Noto Serif KR', Georgia, serif;font-size:40px;font-weight:700;color:#F4F1EA">“앞으로 75 cm”</p>
+<p style="font-size:24px;line-height:1.45;color:#C9D1E0">관절 명령 대신 공간 정보를 담은 문장을 낸다 → 몸체가 바뀌어도 VLA는 그대로.</p>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;gap:16px;border-left:5px solid #C2410C;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#C2410C">문제</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">VLA가 관절 명령까지 곧장 내면 로봇마다 다시 학습해야 한다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #1D4ED8;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#1D4ED8">방법</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">두 층: VLA가 언어 중간 행동, 영상 기반 보행 RL 정책이 실행. 사람이 찍은 투어 영상을 연속 환경 내비 데이터로 바꿔 학습에 섞었다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #16213A;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#16213A">결과</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">VLN 벤치마크 성공률 17%+ 향상, VLN-CE-Isaac 공개. Go2·H1·Booster T1 배포, 실제 지시 25개에서 88%.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">“위 층은 의미, 아래 층은 몸” — travplan의 Planner(경로) / Controller(twist) 분리와 같은 경계 설계.</p></div>
+</div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[23] Cheng et al., “NaVILA: Legged Robot Vision-Language-Action Model for Navigation”, RSS 2025 — arXiv:2412.04453</p>
+</div>
+<aside>같은 탭(§B.6b)의 비교: Uni-NaVid(내비 과제 넷을 영상 VLA 하나로, 5 Hz), MolmoAct(깊이 → 궤적 그림 → 행동 순서의 행동 추론 모델). 코드 AnjieCheng/NaVILA.</aside>
+</section>
+<section id="p-citywalker" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:26px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH3 플래닝·학습 · 2025 · CVPR · NYU</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">CityWalker — 웹 도시 보행 영상으로 <span style="color:#C2410C">[24]</span></h2>
+</div>
+<div style="display:flex;gap:40px">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px">
+<p style="font-size:28px;line-height:1.5;color:#16213A">지도 없이 보도를 다니는 <b>라스트마일 배달로봇</b>을 겨냥한다. 2,000시간+ 보행 영상에서 시각 오도메트리로 행동 라벨을 뽑는다.</p>
+<div style="display:flex;gap:16px">
+<div style="flex:1;background:#16213A;border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:4px">
+<p style="font-size:24px;color:#C9D1E0">CityWalker</p>
+<p style="font-family:'Noto Serif KR', Georgia, serif;font-size:44px;font-weight:700;color:#F59E5B">77.3%</p>
+</div>
+<div style="flex:1;background:#24314F;border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:4px">
+<p style="font-size:24px;color:#C9D1E0">ViNT 미세조정</p>
+<p style="font-family:'Noto Serif KR', Georgia, serif;font-size:44px;font-weight:700;color:#F4F1EA">57.1%</p>
+</div>
+<div style="flex:1;background:#24314F;border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:4px">
+<p style="font-size:24px;color:#C9D1E0">NoMaD zero-shot</p>
+<p style="font-family:'Noto Serif KR', Georgia, serif;font-size:44px;font-weight:700;color:#F4F1EA">42.9%</p>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;gap:16px;border-left:5px solid #1D4ED8;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#1D4ED8">방법</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">DPVO로 프레임 사이 이동 추정, 영상마다 다른 축척은 평균 보폭으로 정규화. 고정 영상 인코더 + 좌표 인코더 → transformer가 waypoint와 도착 여부.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">보도 로봇 데이터가 없는 문제의 한 답. 다만 출력이 waypoint라 턱·포트홀 같은 높이 위험은 TravMap 쪽이 맡아야 한다.</p></div>
+</div>
+</div>
+<div style="width:560px;display:flex;flex-direction:column;gap:8px">
+<img src="img/2cbb8cec8f6b9b0befd4f518cdcf89dc.webp" alt="인터넷 영상에서 시각 오도메트리로 자세를 얻고, 과거 관측·궤적·목표로 행동과 도착 여부를 예측" style="width:560px;height:289px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<p style="font-size:24px;color:#5A6478">Fig. 2 — 웹 영상 → VO 라벨 → 행동·도착 예측 [24]</p>
+<p style="font-size:24px;line-height:1.45;color:#16213A;background:#FBE7D9;padding:14px 18px;border-radius:10px">실물: Unitree Go1, 소량 원격조종 데이터로 미세조정 후 평가</p>
+</div>
+</div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[24] Liu et al., “CityWalker: Learning Embodied Urban Navigation from Web-Scale Videos”, CVPR 2025 — arXiv:2411.17820</p>
+</div>
+<aside>학습 때는 미래 프레임 토큰이 transformer를 보조 지도한다. 원격조종 데이터가 적고 다양하지 않다는 보도 로봇의 고질 문제를 웹 영상 규모로 푸는 시도다. 같은 탭에 보도 시연 로그로 배우는 MIMIC(§B.6d)이 있다. 코드 ai4ce/CityWalker.</aside>
+</section>
+<section id="ch4" data-transition="fade" style="background:#16213A;color:#F4F1EA;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px;display:flex;flex-direction:column;justify-content:center;gap:26px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:28px;color:#F59E5B;letter-spacing:2px">CHAPTER 4 · 제어 · 모델 기반 §E.1 · §B.5 · §M</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:80px;font-weight:700;line-height:1.15;color:#F4F1EA">굴려 보고 가중하는 MPPI 계열</h2>
+<p style="font-size:30px;line-height:1.5;color:#C9D1E0;width:1550px">경로 적분 제어(2015) → 정보이론적 유도(2017) → 외란에 버티는 판 → 샘플링 분포를 바꾼 판 → 학습 prior를 넣는 법 → GPU 라이브러리. 그리고 같은 벤치마크의 경쟁자, GP를 품은 NMPC.</p>
+<table style="width:1664px;font-size:26px;color:#F4F1EA;padding:9px 16px">
+<tr style="background:#24314F"><th style="width:12%;text-align:left;color:#F59E5B">연도</th><th style="width:26%;text-align:left;color:#F59E5B">이름</th><th style="width:62%;text-align:left;color:#F59E5B">바꾼 것</th></tr>
+<tr><td>2015–18</td><td>MPPI · IT-MPC</td><td>GPU 샘플링 + KL 유도</td></tr>
+<tr><td>2018–21</td><td>Tube · Robust MPPI</td><td>명목·실제 상태 분리 + 추종 제어기</td></tr>
+<tr><td>2022</td><td>log-MPPI · SMPPI</td><td>샘플링 분포(NLN, 변화율 적분)</td></tr>
+<tr><td>2017–20</td><td>Cautious GP-MPC</td><td>GP 분산 → 확률 제약 조이기</td></tr>
+<tr><td>2024</td><td>MPPI-Generic</td><td>C++/CUDA 템플릿 라이브러리</td></tr>
+<tr><td>2026</td><td>ProxPI</td><td>학습 prior는 근접 비용으로만</td></tr>
+</table>
+<aside>travplan MPPIController는 2017년 정보이론적 MPPI에 AR(1) 시간 상관 노이즈와 경로 추종 후보 30%를 더한 형태다(K = 768, T = 40, dt = 0.1 s, λ = 0.5). NMPC 갈래(acados)는 2026-09-30 결정으로 함께 개발한다. MPPI 비용은 CostTerm으로만 추가하고 최적화기는 건드리지 않는 것이 저장소 규칙이다.</aside>
+</section>
+<section id="p-mppi" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:26px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH4 제어·모델 · 2015 arXiv / 2017 ICRA / 2018 T-RO · Georgia Tech</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">MPPI · 정보이론적 MPC <span style="color:#C2410C">[25]</span></h2>
+</div>
+<div style="display:flex;gap:40px">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px">
+<p style="font-size:28px;line-height:1.5;color:#16213A">제어열에 잡음을 섞은 후보 수천 개를 GPU로 굴리고, <b>비용의 지수 가중</b>으로 평균한다. 미분이 필요 없다.</p>
+<div style="background:#FFFDF8;border-left:6px solid #C2410C;border-radius:8px;padding:18px 24px">
+<img src="img/e680457a4033dab37b30bcb49632570f.png" alt="w_k = exp(−(S_k − ρ)/λ) / Σ exp(−(S_j − ρ)/λ), U ← Σ w_k V^(k)" style="width:822px;height:127px;object-fit:contain">
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;gap:16px;border-left:5px solid #C2410C;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#C2410C">문제</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">공격적 주행의 비선형 동역학·불연속 비용에서 기울기 기반 MPC는 갈 방향을 못 얻는다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #1D4ED8;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#1D4ED8">방법</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">2015: 경로 적분 제어의 중요도 샘플링. 2017: 비용의 볼츠만 분포에 KL로 가장 가까운 제어 분포 → 일반 비선형 동역학.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #16213A;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#16213A">결과</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">1/5 AutoRally로 흙길 트랙 공격적 주행. CEM 기반 MPC와 비교.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">MPPIController의 직접 출처. 치명 셀 벌점(1000) 같은 계단 비용을 그대로 쓴다. 제어 비용 항은 뺐다(KL 해석은 근사).</p></div>
+</div>
+</div>
+<div style="width:500px;display:flex;flex-direction:column;gap:8px">
+<img src="img/adccf5dc64ea7c560c638248bfce31d7.webp" alt="제어 분포를 비용이 정한 최적 분포 쪽으로 KL을 줄이며 밀어 올린다" style="width:500px;height:328px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<p style="font-size:24px;color:#5A6478">IT-MPC Fig. 2 — 제어 분포를 최적 분포로 민다 [25]</p>
+<table style="width:500px;font-size:24px;color:#16213A;padding:8px 12px">
+<tr style="background:#16213A"><th style="width:55%;color:#F4F1EA;text-align:left">travplan</th><th style="width:45%;color:#F4F1EA;text-align:left">값</th></tr>
+<tr><td>후보 K · 지평</td><td>768 · 4 s</td></tr>
+<tr style="background:#EFEBE2"><td>온도 λ</td><td>0.5</td></tr>
+<tr><td>노이즈</td><td>AR(1), a = 0.7</td></tr>
+</table>
+</div>
+</div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0;display:flex;flex-direction:column;gap:2px">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[25] Williams et al., “Model Predictive Path Integral Control using Covariance Variable Importance Sampling”, arXiv:1509.01149 (2015) · Williams et al., “Information Theoretic Model Predictive Control: Theory and Applications to Autonomous Driving”, IEEE T-RO 2018 — arXiv:1707.02342</p>
+</div>
+<aside>자세한 유도는 첫 덱(개념 개요)의 MPPI 두 장과 배경 §0.2. 함정: λ는 비용의 절대 크기에 묶여 있고, 모든 후보가 나쁜 곳에 있으면 평균도 나쁘고, 두 무리 사이로 평균이 떨어질 수 있다. 원 논문은 1% 미만의 후보를 0 주변에서 뽑아 외란에 대비했고, travplan은 노이즈 없는 평균 후보와 정지 후보를 늘 넣는다.</aside>
+</section>
+<section id="p-rmppi" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:26px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH4 제어·모델 · 2018 RSS (Tube) / 2021 RA-L (Robust) · Georgia Tech</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">Tube · Robust MPPI — 외란에 버틴다 <span style="color:#C2410C">[26]</span></h2>
+</div>
+<div style="display:flex;gap:24px">
+<div style="flex:1;background:#FFFDF8;border:2px solid #D9D4C7;border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C">MPPI</p>
+<p style="font-size:24px;line-height:1.45;color:#3D4A63">매 스텝 <b>실제 상태</b>에서 다시 시작. 외란이 크면 샘플 전체가 나쁜 영역으로 밀려 중요도 샘플링이 무너진다.</p>
+</div>
+<div style="flex:1;background:#FFFDF8;border:2px solid #D9D4C7;border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#1D4ED8">Tube-MPPI</p>
+<p style="font-size:24px;line-height:1.45;color:#3D4A63">외란 없는 <b>명목 상태</b>에서 풀고, 추종 제어기로 실제를 끌어온다. 명목이 실제에서 멀어질 수 있고 보장이 없다.</p>
+</div>
+<div style="flex:1;background:#16213A;border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#F59E5B">Robust MPPI</p>
+<p style="font-size:24px;line-height:1.45;color:#F4F1EA">실제가 괜찮으면 거기서, 위험하면 명목에서 다시 시작. 자유 에너지 증가의 <b>상한</b>을 유도.</p>
+</div>
+</div>
+<div style="background:#FFFDF8;border-left:6px solid #C2410C;border-radius:8px;padding:18px 24px;display:flex;gap:48px;align-items:center">
+<img src="img/a47a3b17505ffb5ba9b21de0733bf989.png" alt="추종 제어기 u_t = ū_t + K_t(x_t − x̄_t)" style="width:435px;height:63px;object-fit:contain">
+<img src="img/56db65ca8240b6b4d564433e4bbd7581.png" alt="명목 상태 선택 x* = argmin ‖p_i − x‖ s.t. F_MC(S, P, p_i, λ) ≤ α" style="width:1000px;height:61px;object-fit:contain">
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;gap:16px;border-left:5px solid #1D4ED8;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#1D4ED8">방법</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">명목·실제를 합친 증강 상태, 명목 재시작 규칙(자유 에너지 F_MC가 충돌 비용 α 이하인 후보 중 실제에 가장 가까운 것), 추종 제어기 능력을 반영한 중요도 샘플링. K는 iLQG나 contraction metric 제어기.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #16213A;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#16213A">결과</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">AutoRally 실차에서 MPPI의 강건성 부족과 Tube-MPPI의 과한 보수성을 함께 줄였다. MPPI-Generic에 구현돼 있다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">Isaac·실물에서 슬립이 커지면 “매번 실제 상태에서 재시작”을 RMPPI식 명목 선택으로 바꾸는 것이 첫 후보. 스워브 plant 지연은 지금 rollout에 지연을 넣어 푼다(mppi_plant_lag, TP-0150).</p></div>
+</div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[26] Gandhi et al., “Robust Model Predictive Path Integral Control: Analysis and Performance Guarantees”, RA-L 2021 — arXiv:2102.09027 · Williams et al., Tube-MPPI, RSS 2018</p>
+</div>
+<aside>RMPPI의 핵심 규칙은 한 줄이다: 실제 상태가 괜찮으면 MPPI처럼 거기서 다시 시작하고, 위험하면 Tube-MPPI처럼 명목 상태를 유지한다. 그 판단을 몬테카를로 자유 에너지로 한다. Controller 문서 §E.1.</aside>
+</section>
+<section id="p-logmppi" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:26px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH4 제어·모델 · 2022 · RA-L × 2</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">log-MPPI · SMPPI — 샘플링 분포를 바꾼다 <span style="color:#C2410C">[27]</span></h2>
+</div>
+<div style="display:flex;gap:24px">
+<div style="flex:1;background:#FFFDF8;border:2px solid #D9D4C7;border-radius:14px;padding:26px;display:flex;flex-direction:column;gap:14px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C">log-MPPI · Mohamed et al.</p>
+<h3 style="font-size:30px;font-weight:600;color:#16213A">정규 × 로그정규 곱(NLN)</h3>
+<img src="img/d6aec7d90ee1afceed8a0914a3ffb67b.png" alt="δu = X · Y, X ~ N(0, σn²), ln Y ~ N(μln, σln²)" style="width:740px;height:54px;object-fit:contain">
+<p style="font-size:24px;line-height:1.45;color:#3D4A63"><b>문제</b> 샘플이 모두 비싸거나 불가능한 영역에 몰리면 실행할 수 없는 궤적이 나온다.</p>
+<p style="font-size:24px;line-height:1.45;color:#3D4A63"><b>결과</b> 작은 분산으로 제약 위반을 피하면서도 궤적이 넓게 퍼진다. 2D occupancy 격자를 비용으로 바로 넣어 미지 환경을 충돌 없이 주행.</p>
+</div>
+<div style="flex:1;background:#FFFDF8;border:2px solid #D9D4C7;border-radius:14px;padding:26px;display:flex;flex-direction:column;gap:14px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#1D4ED8">SMPPI · Kim et al.</p>
+<h3 style="font-size:30px;font-weight:600;color:#16213A">변화율에 넣고 적분</h3>
+<img src="img/87ca8023db6299ddd67871d552889ee1.png" alt="ε_t = Σ_(s≤t) η_s, η_s ~ N(0, Σ/(T/2))" style="width:500px;height:96px;object-fit:contain">
+<p style="font-size:24px;line-height:1.45;color:#3D4A63"><b>문제</b> 스텝마다 독립 노이즈면 가중평균도 들쭉날쭉하다 — 떨림은 샘플링의 확률성 탓.</p>
+<p style="font-size:24px;line-height:1.45;color:#3D4A63"><b>결과</b> 사후 평활 없이 후보 자체가 매끄럽다(input lifting). 지평 중간에서 분산이 Σ가 되게 맞춘다.</p>
+</div>
+</div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">기본은 AR(1) 시간 상관 노이즈(a = 0.7), SMPPI는 <b>SmoothMPPIController</b>로 반영(벤치마크 이름 mppi_smooth). _noise 하나만 바꾼 판이다. log-MPPI는 좁은 틈에서 ESS가 1로 떨어질 때의 후보.</p></div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0;display:flex;flex-direction:column;gap:2px">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[27] Mohamed, Allibert &amp; Martinet, “Autonomous Navigation of AGVs in Unknown Cluttered Environments: log-MPPI Control Strategy”, RA-L 2022 — arXiv:2203.16599 · Kim et al., “Smooth Model Predictive Path Integral Control without Smoothing”, RA-L 2022 — arXiv:2112.09988</p>
+</div>
+<aside>두 방법 모두 최적화기(가중평균)는 그대로 두고 제안 분포만 바꾼다. travplan 저장소 규칙(최적화기 mppi.py는 건드리지 않고 CostTerm으로만 비용 추가)과도 맞는다. 첫 덱 MPPI 슬라이드의 그림 (b)가 AR(1)과 적분 노이즈 표본을 비교한다.</aside>
+</section>
+<section id="p-proxpi" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:26px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH4 제어·모델 · 2026-09 · arXiv</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">ProxPI — 학습 prior는 비용으로만 <span style="color:#C2410C">[28]</span></h2>
+</div>
+<div style="display:flex;gap:36px;align-items:center">
+<div style="display:flex;flex-direction:column;gap:8px">
+<img src="img/d2316d5264a57bfdb18c3dad8b6bcd79.webp" alt="prior가 틀릴 때 기본 MPPI, 워밍스타트, ProxPI의 행동 비교(5개 로봇)" style="width:680px;height:270px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<p style="font-size:24px;color:#5A6478">Fig. 2 — prior가 틀릴 때: MPPI / 워밍스타트 / ProxPI [28]</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:14px">
+<p style="font-size:28px;line-height:1.5;color:#16213A">샘플링 분포의 <b>평균을 prior로 옮기면</b>, prior가 틀릴 때 최적화기의 보정이 매번 버려진다.</p>
+<p style="font-size:28px;line-height:1.5;color:#16213A">대신 prior를 <b>부드러운 근접 비용 항</b>으로만 넣으면 다른 비용(traversability)이 바로잡을 수 있다.</p>
+</div>
+</div>
+<div style="background:#FFFDF8;border-left:6px solid #C2410C;border-radius:8px;padding:16px 22px">
+<img src="img/9b48ec17f3a87eb027c975311e7bd663.png" alt="워밍스타트 q_w(V) = N(U_p, Σ), ProxPI S'(V) = S(V) + α‖V − U_p‖²" style="width:1300px;height:62px;object-fit:contain">
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;gap:16px;border-left:5px solid #1D4ED8;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#1D4ED8">해석</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">ProxPI의 목표 분포 = MPPI 우도 × 가우시안 prior(평균 U_p, 공분산 λ/2α·I). 워밍스타트와 중심은 같지만 폭이 다르다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">Planner 경로를 MPPI에 넣는 방식의 정당화. travplan ReferenceCost가 이미 근접 비용 형태다 — 다만 경로 추종 후보 30%는 평균을 옮기는 쪽이라 둘이 섞여 있다.</p></div>
+</div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[28] ProxPI, 2026 — arXiv:2609.00941 (실제 로봇·시뮬레이션 5종 검증)</p>
+</div>
+<aside>ProxPI의 메시지는 Planner/Controller 경계 설계에 바로 닿는다: 학습 Planner가 틀릴 수 있으니 Controller는 Planner를 “따르라”가 아니라 “가까이 있으면 좋다” 정도로만 받아야 한다. 그래야 Planner D가 경사로를 지나친 경우(TP-0078) Controller가 혼자 잘못된 궤적을 끝까지 따르지 않는다. Controller 문서 §B.5.</aside>
+</section>
+<section id="p-mppigeneric" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH4 제어·모델 · 2024 · arXiv · Georgia Tech</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">MPPI-Generic — GPU MPPI 라이브러리 <span style="color:#C2410C">[29]</span></h2>
+</div>
+<div style="display:flex;gap:40px;align-items:center">
+<div style="flex:1;display:flex;flex-direction:column;gap:18px">
+<p style="font-size:28px;line-height:1.5;color:#16213A">MPPI · Tube-MPPI · Robust MPPI를 <b>C++/CUDA 템플릿</b>으로. 동역학과 비용을 API에 맞춰 쓰면 MPPI 코드를 고치지 않고 바꿀 수 있다.</p>
+<p style="font-size:28px;line-height:1.5;color:#3D4A63">비교 공정성: 차동 구동 모델과 <b>Nav2의 비용 항을 똑같이 재현</b>해 같은 문제를 풀게 했다.</p>
+</div>
+<table style="width:760px;font-size:26px;color:#16213A;padding:12px 16px">
+<tr style="background:#16213A"><th style="width:58%;color:#F4F1EA;text-align:left">구현 (샘플 128개)</th><th style="width:42%;color:#F4F1EA;text-align:left">최적화 1회</th></tr>
+<tr style="background:#FBE7D9"><td>MPPI-Generic · RTX 3080</td><td>≈ 0.15 ms</td></tr>
+<tr><td>MPPI-Generic · Orin Nano</td><td>≈ 0.6 ms</td></tr>
+<tr style="background:#EFEBE2"><td>Nav2 MPPI (CPU)</td><td>0.39–0.62 ms</td></tr>
+<tr><td>TorchRL (PyTorch)</td><td>25–48 ms</td></tr>
+</table>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;gap:16px;border-left:5px solid #16213A;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#16213A">결과</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">PyTorch 구현보다 두 자릿수 이상 빠르고, Jetson에서도 1 ms 안쪽. 코드 ACDSLab/MPPI-Generic ★0.3k.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">travplan MPPIController(PyTorch, 768 × 40스텝)는 운동학 벤치마크에서 스텝당 약 10 ms. Orin 이식에서 지연이 문제가 되면 첫 후보. 비용 항(CostTerm)을 CUDA로 옮기는 것이 실제 일이다.</p></div>
+</div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[29] Vlahov et al., “MPPI-Generic: A CUDA Library for Stochastic Trajectory Optimization”, 2024 — arXiv:2409.07563</p>
+</div>
+<aside>같은 표(Controller 문서 §E.1)에 pytorch_mppi(UM-ARM-Lab, ★0.8k)와 Nav2 MPPI Controller가 있다. 숫자는 샘플 수가 128개일 때다. travplan은 768개를 쓰므로 직접 비교는 아니다.</aside>
+</section>
+<section id="p-cautious" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:26px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH4 제어·모델 · 2017 arXiv / 2020 IEEE TCST · ETH Zeilinger 그룹</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">Cautious MPC — GP 분산으로 제약을 조인다 <span style="color:#C2410C">[30]</span></h2>
+</div>
+<div style="display:flex;gap:36px;align-items:center">
+<div style="display:flex;flex-direction:column;gap:8px">
+<img src="img/f1c526a2a4ea93f17673097e89449438.webp" alt="plant curb_ramp에서 노드별 튜브 폭과 예측 시간별 중앙값·90% 분위" style="width:780px;height:194px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<p style="font-size:24px;color:#5A6478">travplan TP-0069 — 노드별 튜브 폭: 4 s 끝 중앙값 4 cm, 90% 8 cm</p>
+</div>
+<div style="flex:1;background:#FFFDF8;border-left:6px solid #C2410C;border-radius:8px;padding:16px 20px;display:flex;flex-direction:column;gap:12px">
+<img src="img/9441926e203c80ce5980b3a82db2aa63.png" alt="x_(k+1) = f_swerve(x_k, u_k) + d(x_k, u_k), d ~ GP" style="width:780px;height:54px;object-fit:contain">
+<img src="img/3125cbe312d78d7e64b0450f7bc27ea2.png" alt="Pr[d(p_k) < 0] ≤ ε ⇔ d(p̄_k) ≥ Φ⁻¹(1−ε) σ_(p,k)" style="width:780px;height:53px;object-fit:contain">
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;gap:16px;border-left:5px solid #C2410C;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#C2410C">문제</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">이름 있는 모델에 잔차를 학습해 더하면 성능은 오르지만, 모델이 자신 없는 영역에서도 똑같이 공격적이다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #1D4ED8;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#1D4ED8">방법</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">GP가 잔차의 평균과 <b>분산</b>을 함께 내고, 분산을 예측 지평 위로 근사 전파해 확률 제약으로 바꾼다 → 자신 없는 곳에서 제약이 저절로 조여진다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #16213A;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#16213A">결과</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">원격조종 경주용 차 실물에서 성능과 안전이 <b>함께</b> 올랐다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">NMPC 갈래(acados)의 설계 원형(TP-0069~0071). GP 평균은 노드 파라미터로 → 0차 근사가 공짜. plant 레벨 3: mpc 222/360(치명 34), mpc_gp 215/360(치명 32) — 아직 mppi_plant_lag(239, 치명 4)에 뒤진다.</p></div>
+</div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[30] Hewing, Kabzan &amp; Zeilinger, “Cautious Model Predictive Control Using Gaussian Process Regression”, IEEE TCST 2020 — arXiv:1705.10702</p>
+</div>
+<aside>같은 그룹의 후속: PCBF(예측 제어 barrier 함수, 항상 실행 가능한 소프트 제약), Toward Safe Learning in Control(Annual Review 2020). travplan은 잔차 GP(control/acados_mpc/gp.py)를 MPPI와 NMPC가 공유한다. MPPI 쪽은 같은 GP 분산으로 확률 제약을 세운다(Controller 문서 §E.10). 혼돈 조건의 수치는 짝 비교와 잡음 바닥으로 판정한다.</aside>
+</section>
+<section id="ch5" data-transition="fade" style="background:#16213A;color:#F4F1EA;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px;display:flex;flex-direction:column;justify-content:center;gap:26px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:28px;color:#F59E5B;letter-spacing:2px">CHAPTER 5 · 제어 · 학습 기반 §E.2 · §F</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:80px;font-weight:700;line-height:1.15;color:#F4F1EA">동역학을 배우고, 적응한다</h2>
+<p style="font-size:30px;line-height:1.5;color:#C9D1E0;width:1550px">무엇을 배우나로 갈린다 — 동역학(PETS), 역동역학(IKD), 환경 잠재(RMA·DreamWaQ), 잠재 world model(TD-MPC2), 그리고 학습 순서 자체(LP-ACRL).</p>
+<table style="width:1664px;font-size:26px;color:#F4F1EA;padding:9px 16px">
+<tr style="background:#24314F"><th style="width:10%;text-align:left;color:#F59E5B">연도</th><th style="width:20%;text-align:left;color:#F59E5B">이름</th><th style="width:28%;text-align:left;color:#F59E5B">배우는 것</th><th style="width:42%;text-align:left;color:#F59E5B">계획·제어</th></tr>
+<tr><td>2018</td><td>PETS</td><td>확률 앙상블 동역학</td><td>궤적 샘플링 + CEM</td></tr>
+<tr><td>2021</td><td>IKD</td><td>IMU 조건 역운동 모델</td><td>원하는 상태 변화 → 제어</td></tr>
+<tr><td>2021</td><td>RMA</td><td>환경 잠재 + 이력 추정기</td><td>RL 정책 100 Hz</td></tr>
+<tr><td>2023</td><td>DreamWaQ</td><td>지형 잠재(고유수용만)</td><td>blind 보행 RL</td></tr>
+<tr><td>2023</td><td>TD-MPC2</td><td>디코더 없는 잠재 world model</td><td>잠재 공간 MPPI + Q</td></tr>
+<tr><td>2026</td><td>LP-ACRL</td><td>과제 표집 분포</td><td>자동 커리큘럼 RL</td></tr>
+</table>
+<aside>travplan Controller는 지금 SwerveModel(운동학)을 굴린다. 슬립이 커지면 바꿀 순서: IKD식 작은 역모델 → PETS식 앙상블 불확실성을 MPPI 비용에 → RMA식 잠재 적응. 모두 최적화기를 바꾸지 않고 rollout 모델과 CostTerm만 바꾼다(Controller 문서 §E.2).</aside>
+</section>
+<section id="p-pets" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:26px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH5 제어·학습 · 2018 · NeurIPS · UC Berkeley</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">PETS — 불확실성을 아는 동역학 <span style="color:#C2410C">[31]</span></h2>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<img src="img/415eaf3abd2489a7491c3c6db635ebac.webp" alt="부트스트랩 앙상블 확률 동역학 모델과, 그 모델로 입자를 전파해 행동 열을 평가하는 궤적 샘플링 계획" style="width:1300px;height:183px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<p style="font-size:24px;color:#5A6478">Fig. 1 — 확률 앙상블 동역학 → 입자 전파 → 행동 열 평가 [31]</p>
+</div>
+<div style="display:flex;gap:28px;align-items:center">
+<div style="background:#FFFDF8;border-left:6px solid #C2410C;border-radius:8px;padding:16px 22px">
+<img src="img/9e43d42ba7c856a4d2eef83e67e9ccac.png" alt="f̃_θb(s, a) = N(μ_θb(s, a), Σ_θb(s, a)), b = 1..B" style="width:860px;height:62px;object-fit:contain">
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:8px">
+<p style="font-size:24px;line-height:1.45;color:#16213A"><b>분산</b> = 데이터 자체의 잡음(aleatoric)</p>
+<p style="font-size:24px;line-height:1.45;color:#16213A"><b>멤버 간 불일치</b> = 데이터가 부족한 곳(epistemic)</p>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;gap:16px;border-left:5px solid #C2410C;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#C2410C">문제</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">모델 기반 RL은 샘플 효율이 좋지만, 큰 신경망 동역학의 오차 때문에 최종 성능이 모델 없는 RL에 못 미쳤다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #1D4ED8;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#1D4ED8">방법</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">가우시안 NLL로 멤버마다 학습(배경 §0.8의 이분산 회귀와 같은 꼴). 입자마다 멤버 하나를 골라 전파하고 CEM으로 행동을 고른다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #16213A;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#16213A">결과</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">half-cheetah에서 SAC보다 8배, PPO보다 125배 적은 샘플로 비슷한 최종 성능.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">슬립 큰 실물에서 SwerveModel 대신 앙상블을 굴려 불확실성을 MPPI 비용에 넣는 두 번째 단계 후보.</p></div>
+</div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[31] Chua, Calandra, McAllister &amp; Levine, “Deep Reinforcement Learning in a Handful of Trials using Probabilistic Dynamics Models”, NeurIPS 2018 — arXiv:1805.12114</p>
+</div>
+<aside>PETS = Probabilistic Ensembles with Trajectory Sampling. 손실은 Σ(μ − s')ᵀΣ⁻¹(μ − s') + log det Σ, 즉 가우시안 음의 로그 우도다. 후속: 확률 앙상블과 능동 탐색(RSS 2023), 지형 인지 운동 모델 + MPPI(RA-L 2023).</aside>
+</section>
+<section id="p-ikd" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH5 제어·학습 · 2021 · RA-L · UT Austin</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">IKD — IMU로 지형 효과를 배운 역운동 <span style="color:#C2410C">[32]</span></h2>
+</div>
+<div style="display:flex;gap:40px;align-items:center">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px">
+<p style="font-size:28px;line-height:1.5;color:#16213A">순운동 ẋ = f(x, u, w)의 지형 상태 w는 보이지 않는다. 대신 <b>원하는 변화 Δx와 관성 관측 y</b>에서 제어를 바로 내는 역모델을 배운다.</p>
+<div style="background:#FFFDF8;border-left:6px solid #C2410C;border-radius:8px;padding:18px 24px">
+<img src="img/6e63d781b1e1fe1f8cddb70cd1fd7359.png" alt="u = f⁺_θ(Δx, y), J = T + γ ∫ ‖x(t) − x_Π(t)‖² dt" style="width:900px;height:124px;object-fit:contain">
+</div>
+</div>
+<div style="width:500px;display:flex;flex-direction:column;gap:16px">
+<div style="background:#16213A;border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:6px">
+<p style="font-size:24px;color:#C9D1E0">계획 실행 성공률</p>
+<p style="font-family:'Noto Serif KR', Georgia, serif;font-size:46px;font-weight:700;color:#F59E5B">52.4 → 86.9%</p>
+</div>
+<p style="font-size:24px;line-height:1.45;color:#3D4A63">1/10 차량 실외 트랙. 보지 못한 실내 바닥에서도 효과 유지.</p>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;gap:16px;border-left:5px solid #C2410C;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#C2410C">문제</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">비정형 지형을 빠르게 달리면 작은 지형 차이가 크게 증폭돼, 계획한 궤적대로 움직이지 않는다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #1D4ED8;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#1D4ED8">방법</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">자갈이 고속에서 만드는 언더스티어를 IMU가 보여 준다 → (속도·곡률 목표, IMU 이력) → 실제 그 변화를 만드는 명령. 목표는 주행 시간 + 추종 오차.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">슬립 대응의 <b>첫 단계</b>: 명령과 실제 움직임의 차이를 IMU·odometry로 보정하는 작은 역모델을 추종 층에 넣는다. 스워브 plant의 조향 지연(TP-0149)도 같은 자리.</p></div>
+</div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[32] Xiao et al., “Learning Inverse Kinodynamics for Accurate High-Speed Off-Road Navigation on Unstructured Terrain”, RA-L 2021 — arXiv:2102.12667</p>
+</div>
+<aside>후속: 지형 인지 운동 모델 + MPPI(RA-L 2023)는 같은 아이디어를 순모델로 바꿔 MPPI rollout에 넣었다. 역모델은 계획을 그대로 두고 아래 층만 바꾸므로 기존 스택에 붙이기 쉽다. Controller 문서 §E.2.</aside>
+</section>
+<section id="p-rma" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:26px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH5 제어·학습 · 2021 · RSS · UC Berkeley · CMU</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">RMA — 환경을 잠재로, 배포 때는 이력에서 <span style="color:#C2410C">[33]</span></h2>
+</div>
+<div style="display:flex;gap:40px">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px">
+<div style="background:#FFFDF8;border-left:6px solid #C2410C;border-radius:8px;padding:18px 24px">
+<img src="img/d413c90a50a087b2b4fe30dfc3a36b6c.png" alt="z_t = μ(e_t), a_t = π(x_t, a_(t−1), z_t), ẑ_t = φ(x_(t−k:t−1), a_(t−k:t−1))" style="width:1020px;height:50px;object-fit:contain">
+</div>
+<div style="display:flex;gap:16px">
+<div style="flex:1;background:#FFFDF8;border:2px solid #D9D4C7;border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:8px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C">1단계 · RL</p>
+<p style="font-size:24px;line-height:1.45;color:#3D4A63">시뮬의 특권 환경 요인 e(마찰·하중·모터 세기)를 인코더 μ로 줄인 z를 정책에 넣는다.</p>
+</div>
+<div style="flex:1;background:#FFFDF8;border:2px solid #D9D4C7;border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:8px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#1D4ED8">2단계 · 지도 학습</p>
+<p style="font-size:24px;line-height:1.45;color:#3D4A63">적응 모듈 φ가 최근 상태·행동 이력만으로 ẑ를 추정 — min ‖ẑ − z‖².</p>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;gap:16px;border-left:5px solid #16213A;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#16213A">결과</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">적응 10 Hz · 정책 100 Hz. 저가형 A1이 1초 안쪽으로 새 지형·하중에 적응. 시뮬만 학습, 미세조정 없이 바위·모래·계단.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">지형·하중이 자주 바뀔 때의 마지막 단계. 배달로봇의 적재 무게 변화가 바로 그 경우다.</p></div>
+</div>
+</div>
+<div style="width:480px;display:flex;flex-direction:column;gap:8px">
+<img src="img/90886159e127ec38270d054fb5a3f3a0.webp" alt="1단계에서 특권 환경 요인을 잠재 벡터로 압축해 기본 정책을 학습하고, 2단계에서 적응 모듈이 이력으로 그 벡터를 추정한다" style="width:480px;height:318px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<p style="font-size:24px;color:#5A6478">Fig. 2 — 두 단계 학습, 배포 시 비동기 [33]</p>
+</div>
+</div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[33] Kumar, Fu, Pathak &amp; Malik, “RMA: Rapid Motor Adaptation for Legged Robots”, RSS 2021 — arXiv:2107.04034</p>
+</div>
+<aside>이 뼈대(특권 정보 → 잠재 → 이력에서 추정)는 이후 4족 RL의 표준이 됐다. 다음 장의 DreamWaQ는 대상이 환경 파라미터가 아니라 지형이다. 배경 §0.11(메타러닝과 온라인 적응), §0.12(특권 교사)와 이어진다.</aside>
+</section>
+<section id="p-tdmpc" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:26px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH5 제어·학습 · 2023 arXiv / ICLR 2024 · UC San Diego</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">TD-MPC2 — 잠재 world model 속 MPPI <span style="color:#C2410C">[34]</span></h2>
+</div>
+<div style="display:flex;gap:40px">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px">
+<p style="font-size:28px;line-height:1.5;color:#16213A">관측을 복원하는 디코더 없이, <b>보상과 가치 예측에 필요한 것만</b> 담는 잠재 상태를 배운다.</p>
+<div style="background:#FFFDF8;border-left:6px solid #C2410C;border-radius:8px;padding:18px 24px">
+<img src="img/8d85e63abf6a90ff5d12bcd3c9065e43.png" alt="max E[γ^H Q(z_H, a_H) + Σ γ^t R(z_t, a_t)], z_(t+1) = d(z_t, a_t)" style="width:960px;height:117px;object-fit:contain">
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;gap:16px;border-left:5px solid #1D4ED8;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#1D4ED8">방법</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">잠재 동역학 d, 보상 R, Q 함수, 정책 prior를 함께 학습. 짧게 MPPI로 계획하고 지평 너머는 학습한 Q로 잇는다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #16213A;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#16213A">결과</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">4 도메인 104 과제를 하이퍼파라미터 한 벌로. 3.17억 파라미터 에이전트 하나가 80 과제. 키울수록 능력이 는다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">“모델 기반 MPPI”와 “학습”의 경계. 지평 끝 가치 = travplan의 cost-to-go 종단 비용과 같은 역할.</p></div>
+</div>
+</div>
+<div style="width:480px;display:flex;flex-direction:column;gap:8px">
+<img src="img/17a75e969dbd7cb743fa2191aaeaf151.webp" alt="관측을 정규화된 잠재 상태로 인코딩하고, 잠재 동역학으로 반복 예측하면서 스텝마다 보상·Q·행동을 예측" style="width:480px;height:388px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<p style="font-size:24px;color:#5A6478">Fig. 3 — 잠재 rollout과 헤드들 [34]</p>
+</div>
+</div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[34] Hansen, Su &amp; Wang, “TD-MPC2: Scalable, Robust World Models for Continuous Control”, ICLR 2024 — arXiv:2310.16828 · 코드 nicklashansen/tdmpc2 ★1.0k</p>
+</div>
+<aside>강화학습 문서 §R.9(모델 기반 RL)와 §R.8(MPPI를 추론으로 보는 관점)이 이 논문을 읽는 배경이다. 디코더를 빼는 이유: 영상 복원은 계획에 필요 없는 세부(나뭇잎 질감)에 용량을 쓴다.</aside>
+</section>
+<section id="p-dreamwaq" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:26px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH5 제어·학습 · 2023 · ICRA · KAIST Urban Robotics Lab</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">DreamWaQ — 지형을 “상상”하는 blind 보행 <span style="color:#C2410C">[35]</span></h2>
+</div>
+<div style="display:flex;gap:40px">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px">
+<p style="font-size:28px;line-height:1.5;color:#16213A">외수용 센서 없이 <b>고유수용(관절·IMU)만으로</b> 주변 지형을 암묵적으로 추정한다. RMA와 같은 뼈대, 대상이 지형.</p>
+<div style="background:#FFFDF8;border-left:6px solid #C2410C;border-radius:8px;padding:18px 24px">
+<img src="img/9f9e9f9a45e85fb723414156df52e0b9.png" alt="[v̂_t, z_t] = CENet(o_(t−H:t)), a_t = π(o_t, v̂_t, z_t)" style="width:953px;height:63px;object-fit:contain">
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;gap:16px;border-left:5px solid #1D4ED8;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#1D4ED8">방법</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">문맥 보조 추정기 CENet이 관절 이력에서 몸체 속도와 지형·동역학 잠재를 뽑고, 정책은 그것을 조건으로 받는다. 비대칭 actor-critic.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #16213A;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#16213A">결과</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">ICRA 2023 자율 사족보행 대회 1위. 캠퍼스 언덕 고도차 22 m 장거리 주행(논문 §III-G). 논문 속 실험은 A1 한 대.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">비공식 구현 넷을 직접 돌렸다(TP-0155): <b>작동하는 문맥 z는 없었고</b>, 바퀴-다리 M20 정책은 z 없이도 계단을 올랐다.</p></div>
+</div>
+</div>
+<div style="width:480px;display:flex;flex-direction:column;gap:8px">
+<img src="img/68d7fd0caa2257bef76c1edaf0a9283b.webp" alt="DreamWaQ 개요: 문맥 보조 추정기가 고유수용 이력에서 속도와 잠재를 추정하고 정책이 이를 조건으로 받는다" style="width:480px;height:281px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<p style="font-size:24px;color:#5A6478">Fig. 1 — CENet + 정책 [35]</p>
+<img src="img/fff574865302d7700b610ba98954200c.webp" alt="travplan TP-0155 DreamWaQ 비공식 구현 점검 요약" style="width:480px;height:145px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<p style="font-size:24px;color:#5A6478">travplan TP-0155 점검 요약</p>
+</div>
+</div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[35] Nahrendra, Yu &amp; Myung, “DreamWaQ: Learning Robust Quadrupedal Locomotion With Implicit Terrain Imagination via Deep Reinforcement Learning”, ICRA 2023 — arXiv:2301.10602</p>
+</div>
+<aside>정정 기록(Controller 문서 §F.4): “보상 함수를 다시 맞추지 않고 다른 4족으로 옮겨진다”는 논문 본문에 없는 주장이고, 경사 36°도 본문 밖(프로젝트 페이지)이다. 고도차 22 m는 본문에 있다. Dream* 계열 다섯 편의 줄기이며, 후속 DreamWaQ++는 외수용으로 건너오며 “믿을지 말지”를 배운다. 보행 세 갈래: (a) 외수용 격자, (b) 고유수용만(이 논문), (c) 둘을 게이트로 섞기.</aside>
+</section>
+<section id="p-lpacrl" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:26px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH5 제어·학습 · 2026-01 · arXiv · ETH RSL</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">LP-ACRL — 난이도 순서를 사람이 정하지 않는다 <span style="color:#C2410C">[36]</span></h2>
+</div>
+<div style="display:flex;gap:40px">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px">
+<p style="font-size:28px;line-height:1.5;color:#16213A">자갈이 계단보다 쉬운가? 2 m/s 평지가 1 m/s 계단보다 쉬운가? — 지형 × 속도를 함께 다루면 <b>순서를 매길 수 없다</b>.</p>
+<div style="background:#FFFDF8;border-left:6px solid #C2410C;border-radius:8px;padding:18px 24px">
+<img src="img/0ea8ee8539df5e10474ea8bffc4a7ea1.png" alt="LP(ζ) = R_cj(ζ) − R_c(j−1)(ζ), p(ζ) ∝ exp(LP(ζ)/τ)" style="width:960px;height:64px;object-fit:contain">
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;gap:16px;border-left:5px solid #1D4ED8;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#1D4ED8">방법</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">과제의 학습 진척 = 연속한 두 단계의 에피소드 보상 차이. softmax로 표집 확률을 만든다. 난이도 사전 지식이 필요 없다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #16213A;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#16213A">결과</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">600 과제(선속도 5 × 각속도 6 × 지형 5 × 난이도 4)에서 1,500 iter에 80%. ANYmal D 평지 3.0 m/s · 험지 2.5 m/s.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">지형 레벨 0–3 × 시나리오 조합으로 Planner D를 학습할 때 손으로 짠 커리큘럼 대신 쓸 수 있다(Controller 문서 §F.3).</p></div>
+</div>
+</div>
+<div style="width:480px;display:flex;flex-direction:column;gap:8px">
+<img src="img/69e1fd992b2b8a67f2f451e442ea5454.webp" alt="LP-ACRL의 흐름: 학습 진척을 온라인으로 재서 과제 표집 분포를 갱신한다" style="width:480px;height:299px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<p style="font-size:24px;color:#5A6478">LP-ACRL 흐름 — 진척 측정 → 표집 갱신 [36]</p>
+</div>
+</div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[36] Li, Li &amp; Hutter, “Scaling Rough Terrain Locomotion with Automatic Curriculum RL”, 2026 — arXiv:2601.17428</p>
+</div>
+<aside>비교 대상: ALP, Prioritized Level Replay, 저보상 우선, 손으로 짠 커리큘럼. 실험은 평지 속도 추종 8과제 → 지형 6종 → 확장 600과제로 키워 간다. 실물 배포에는 교사-학생 증류의 학생 정책을 쓴다. 시뮬은 Isaac Lab.</aside>
+</section>
+<section id="ch6" data-transition="fade" style="background:#16213A;color:#F4F1EA;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px;display:flex;flex-direction:column;justify-content:center;gap:26px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:28px;color:#F59E5B;letter-spacing:2px">CHAPTER 6 · 안전 §C</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:80px;font-weight:700;line-height:1.15;color:#F4F1EA">벌점은 피하게 할 뿐, 보장하지 않는다</h2>
+<p style="font-size:30px;line-height:1.5;color:#C9D1E0;width:1550px">안전 필터의 세 갈래 — 명령에 barrier 부등식을 거는 CBF, 미리 계산한 도달 가능 집합(HJ), 짧은 MPC로 대안이 남는지 보는 예측 필터. 그리고 불확실성을 꼬리로 재는 CVaR와 conformal.</p>
+<table style="width:1664px;font-size:26px;color:#F4F1EA;padding:9px 16px">
+<tr style="background:#24314F"><th style="width:12%;text-align:left;color:#F59E5B">연도</th><th style="width:26%;text-align:left;color:#F59E5B">이름</th><th style="width:62%;text-align:left;color:#F59E5B">핵심</th></tr>
+<tr><td>2016–19</td><td>CBF-QP</td><td>안전 집합의 전방 불변성을 QP 제약으로</td></tr>
+<tr><td>2017</td><td>HJ 도달 가능성</td><td>최악 외란에도 피할 수 있는 상태 집합</td></tr>
+<tr><td>2018–23</td><td>예측 안전 필터</td><td>학습 제어기 뒤의 MPC 검사기, 통합 관점</td></tr>
+<tr><td>2022–25</td><td>RA · DRA-MPPI</td><td>MPPI 후보에 충돌 위험(CVaR·결합 확률)</td></tr>
+<tr><td>2022–25</td><td>CVaR-BF</td><td>다음 여유 분포의 꼬리에 barrier 조건</td></tr>
+<tr><td>2023</td><td>Conformal 계획</td><td>예측 오차로 보정한 반경을 MPC 제약에</td></tr>
+<tr><td>2025</td><td>Poisson 안전 함수</td><td>점유 지도에서 PDE로 h를 바로</td></tr>
+</table>
+<aside>travplan의 지금 안전은 MPPI 비용의 벌점(치명 셀 1000, 보행자 겹침)이다. 보행자 충돌 8건 진단(TP-0160)에서 MPPI의 보행자 hard 벌점이 포화한다는 것을 찾았다. 안전 필터 후보 1순위는 CVaR-BF(TP-0014)다. 치명 실패는 기준 대비 하나라도 늘면 채택하지 않는다(2026-10-03 결정).</aside>
+</section>
+<section id="p-cbf" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:26px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH6 안전 · 2016 arXiv / 2017 IEEE TAC · 2019 ECC 튜토리얼 · Caltech</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">CBF-QP — 안전과 목표를 한 QP로 <span style="color:#C2410C">[37]</span></h2>
+</div>
+<div style="display:flex;gap:36px;align-items:center">
+<div style="display:flex;flex-direction:column;gap:8px">
+<img src="img/79a40fe96b4f375036952412f8ab83f5.webp" alt="(a) 멈춘 보행자 앞의 원래 명령과 필터 후 명령 (b) 속도 공간에서 허용 반공간으로의 수직 투영" style="width:720px;height:300px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<p style="font-size:24px;color:#5A6478">travplan 작도 — 보행자 앞 명령의 반공간 투영</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:14px">
+<div style="background:#FFFDF8;border-left:6px solid #C2410C;border-radius:8px;padding:16px 20px">
+<img src="img/3bb0cee4fa985f94b95429c82f8fb9d3.png" alt="u* = argmin ‖u − u_nom‖² s.t. ∇hᵀ(f + g u) ≥ −α(h)" style="width:830px;height:47px;object-fit:contain">
+</div>
+<p style="font-size:26px;line-height:1.5;color:#16213A">안전 집합 {h ≥ 0}의 <b>전방 불변성</b>을 입력에 대한 선형 부등식으로. 목표는 CLF 제약 + 완화 변수 — 부딪히면 안전 우선.</p>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;gap:16px;border-left:5px solid #C2410C;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#C2410C">문제</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">적응형 순항 제어처럼 목표(속도 유지)와 안전(차간 거리)이 부딪힌다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #16213A;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#16213A">결과</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">매 스텝 작은 QP — 0.6–0.8 ms. 2019 튜토리얼이 이론과 로봇 응용을 정리해 표준 참고가 됐다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">MPPI 뒤에 붙일 필터의 바탕. h = TravMap 치명 셀·보행자 원판까지 거리. 예: u_nom = (1.2, 0) → u* = (0.68, −0.13) m/s.</p></div>
+</div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[37] Ames, Xu, Grizzle &amp; Tabuada, “Control Barrier Function Based Quadratic Programs for Safety Critical Systems”, IEEE TAC 2017 — arXiv:1609.06408 · Ames et al., ECC 2019 — arXiv:1903.11199</p>
+</div>
+<aside>제약이 하나면 QP의 해는 반공간으로의 수직 투영 닫힌 식이다: u* = u_nom + max(0, b − aᵀu_nom)/‖a‖² · a. 이산 시간에서는 h(x_(k+1)) ≥ (1−γ) h(x_k). 함정: h의 상대 차수가 1이어야 하고, 여러 제약이 충돌하면 QP가 불능이 된다. 배경 §0.4.</aside>
+</section>
+<section id="p-hj" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH6 안전 · 2017 · CDC · UC Berkeley</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">HJ 도달 가능성 — 어디서부터 이미 늦었나 <span style="color:#C2410C">[38]</span></h2>
+</div>
+<div style="background:#FFFDF8;border-left:6px solid #C2410C;border-radius:8px;padding:20px 26px;display:flex;flex-direction:column;gap:10px">
+<img src="img/1fa8c2a158ad32da79a7c59ff458367e.png" alt="∂V/∂t + min{0, max_u min_d ∇V(x,t)ᵀ f(x, u, d)} = 0, V(x, 0) = ℓ(x)" style="width:1332px;height:87px;object-fit:contain">
+<p style="font-size:24px;line-height:1.45;color:#3D4A63">ℓ(x) &lt; 0 이 위험 집합. 제어 u는 피하려 하고 외란 d는 최악으로 작용한다. 해 V의 0 준위 집합이 “이미 늦은” 경계다.</p>
+</div>
+<div style="display:flex;gap:24px">
+<div style="flex:1;background:#FFFDF8;border:2px solid #D9D4C7;border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:8px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#1D4ED8">장점</p>
+<p style="font-size:24px;line-height:1.45;color:#3D4A63">일반 비선형 동역학과 유계 외란을 형식적으로 다룬다. 최적 안전 제어도 ∇V에서 나온다.</p>
+</div>
+<div style="flex:1;background:#FFFDF8;border:2px solid #D9D4C7;border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:8px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C">한계</p>
+<p style="font-size:24px;line-height:1.45;color:#3D4A63">격자 위 PDE라 상태 차원에 대해 계산량이 <b>지수적</b>. 분해·학습 근사가 최근 연구.</p>
+</div>
+<div style="flex:1;background:#16213A;border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:8px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#F59E5B">학습 쪽 후손</p>
+<p style="font-size:24px;line-height:1.45;color:#F4F1EA">ABS(2024, 정책 조건 도달-회피 가치), Safe Score Matching(2026, 확산 정책 denoiser를 안전 쪽으로)</p>
+</div>
+</div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">스워브의 평면 상태(x, y, θ)는 3차원이라 격자 계산이 가능한 크기다. 보행자 하나와의 상대 좌표 도달-회피 집합을 미리 계산해 표로 두는 방식이 후보. 도구 StanfordASL/hj_reachability(JAX, GPU).</p></div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[38] Bansal, Chen, Herbert &amp; Tomlin, “Hamilton-Jacobi Reachability: A Brief Overview and Recent Advances”, CDC 2017 — arXiv:1709.07523</p>
+</div>
+<aside>식은 역방향 도달 가능 튜브(BRT)의 HJI 변분 부등식의 표준형이다. min{0, ·}이 “한 번 위험 집합에 닿으면 실패”를 표현한다. 이 개관은 기본 이론, GPU 병렬 level set 도구, 고차원 분해를 정리했다. 강화학습 문서 §R.13에 Safe Score Matching이 있다.</aside>
+</section>
+<section id="p-psf" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH6 안전 · 2018 arXiv / 2021 Automatica · ETH · 통합 관점 2023 Princeton</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">예측 안전 필터 — 학습 제어기 뒤의 검사기 <span style="color:#C2410C">[39]</span></h2>
+</div>
+<div style="background:#FFFDF8;border-left:6px solid #C2410C;border-radius:8px;padding:20px 26px;display:flex;flex-direction:column;gap:10px">
+<img src="img/0d547e8f99589675639dd0b694098f5f.png" alt="min ‖u_0 − u_L‖² s.t. x_(k+1) = f(x_k, u_k), x_k ∈ X, u_k ∈ U, x_N ∈ S_t" style="width:1325px;height:80px;object-fit:contain">
+<p style="font-size:24px;line-height:1.45;color:#3D4A63">u_L = 학습 제어기의 명령. 그 명령으로 시작해도 이후 <b>안전한 입력열이 존재하면</b> 그대로 쓰고, 없으면 첫 입력이 u_L에 가장 가까운 안전 입력열로 바꾼다. S_t는 안전한 종단 집합.</p>
+</div>
+<div style="display:flex;gap:20px">
+<div style="flex:1;background:#FFFDF8;border:2px solid #D9D4C7;border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:8px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#1D4ED8">감시</p>
+<p style="font-size:24px;line-height:1.45;color:#3D4A63">지금 상태가 아직 회복 가능한가</p>
+</div>
+<div style="flex:1;background:#FFFDF8;border:2px solid #D9D4C7;border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:8px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#1D4ED8">대체 정책</p>
+<p style="font-size:24px;line-height:1.45;color:#3D4A63">안전하게 되돌아오는 백업</p>
+</div>
+<div style="flex:1;background:#FFFDF8;border:2px solid #D9D4C7;border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:8px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#1D4ED8">개입</p>
+<p style="font-size:24px;line-height:1.45;color:#3D4A63">필요할 때만 명령을 최소로 고친다</p>
+</div>
+<div style="flex:1;background:#16213A;border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:8px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#F59E5B">통합 관점</p>
+<p style="font-size:24px;line-height:1.45;color:#F4F1EA">HJ · CBF · 예측 필터가 모두 이 세 모듈의 다른 구현</p>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;gap:16px;border-left:5px solid #16213A;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#16213A">이어서</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">안전 입력열이 없으면 최적화가 풀리지 않는다 → PCBF(2021)가 항상 풀리는 소프트 제약 보조 문제로 바꾸고 원래 집합으로 돌아오게 한다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">Planner D(학습) + MPPI 위에 어떤 RL 정책이든 붙일 수 있는 구조. acados NMPC가 이미 있으니 짧은 지평 판을 검사기로 쓰는 길이 열려 있다.</p></div>
+</div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0;display:flex;flex-direction:column;gap:2px">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[39] Wabersich &amp; Zeilinger, “A Predictive Safety Filter for Learning-Based Control of Constrained Nonlinear Dynamical Systems”, Automatica 2021 — arXiv:1812.05506 · Hsu, Hu &amp; Fisac, “The Safety Filter: A Unified View of Safety-Critical Control in Autonomous Systems”, Annual Review 2024 — arXiv:2309.05837</p>
+</div>
+<aside>데이터로 학습한 모델과 상태·입력에 따른 불확실성을 고려한다. 어떤 RL 알고리즘이든 그대로 붙일 수 있다는 점이 핵심이다. 통합 리뷰는 확장 가능한 합성, 강건한 감시, 효율적 개입을 다음 과제로 제시했다. Controller 문서 §C.4, §E.5.</aside>
+</section>
+<section id="p-poisson" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH6 안전 · 2025 · arXiv · Caltech (Ames 그룹)</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">Poisson 안전 함수 — 지도에서 h를 바로 <span style="color:#C2410C">[40]</span></h2>
+</div>
+<div style="display:flex;gap:40px;align-items:center">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px">
+<p style="font-size:28px;line-height:1.5;color:#16213A">CBF를 쓰려면 안전 함수 h가 필요한데, 복잡하고 변하는 환경에서는 손으로 만들기 어렵다. <b>인식한 점유 지도에서 PDE로 계산</b>한다.</p>
+<div style="background:#FFFDF8;border-left:6px solid #C2410C;border-radius:8px;padding:18px 24px">
+<img src="img/dc14d4d38640cadfee478dae96a39bcc.png" alt="Δh = f in Ω, h = 0 on ∂Ω, f < 0" style="width:846px;height:61px;object-fit:contain">
+</div>
+</div>
+<div style="width:520px;background:#16213A;border-radius:14px;padding:26px;display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#F59E5B">왜 거리장보다 나은가</p>
+<p style="font-size:24px;line-height:1.5;color:#F4F1EA">음의 forcing f 덕분에 h는 자유 공간에서 양수, 경계에서 멀수록 크고, <b>기울기가 경계 근처에서도 0이 되지 않는다</b> → CBF 제약이 늘 활성.</p>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;gap:16px;border-left:5px solid #1D4ED8;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#1D4ED8">방법</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">자유 공간 = 영역 Ω, 장애물 경계 = Dirichlet 경계 h = 0. GPU SOR로 120 × 120 격자를 0.2–0.3 ms, 이전 해로 시작해 10 Hz 갱신. 단일 적분기 축소 모델에 CBF-QP.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #16213A;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#16213A">결과</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">Go2에서 h가 늘 양수. G1에서는 보행 제어기의 속도 추종 지연 때문에 잠깐 음수. 후속: Minkowski 차로 몸체 모양, 광류로 움직이는 장애물(Humanoids 2025), 위험도별 유출량.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63"><b>TravMap 치명 셀을 Dirichlet 경계로 두면 격자 하나로 MPPI 뒤 CBF 필터가 생긴다.</b> 격자·GPU를 이미 쓰므로 부담이 작다. G1의 지연 문제는 스워브 조향 지연에도 같게 생긴다.</p></div>
+</div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[40] Bahati, Bena &amp; Ames, Poisson Safety Functions, 2025 — arXiv:2505.06794 · 후속 arXiv:2508.11129 (Humanoids 2025), arXiv:2510.25913</p>
+</div>
+<aside>위험도별 유출량(2510.25913): Laplace 방정식으로 안내 벡터장을 만들고, 위험한 장애물 경계에 더 큰 유출량을 줘서 그 주변의 h가 더 천천히 커지게 한다 → 같은 안전 보장 아래 위험한 장애물을 더 멀리 돈다. TravMap cost를 경계 조건으로 넣는 길이다. Controller 문서 §C.4.</aside>
+</section>
+<section id="p-ramppi" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:26px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH6 안전 · 2023 ICRA (RA) / 2025 IROS (DRA)</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">RA-MPPI · DRA-MPPI — 후보에 위험을 <span style="color:#C2410C">[41]</span></h2>
+</div>
+<div style="display:flex;gap:40px">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;gap:20px">
+<div style="flex:1;background:#FFFDF8;border:2px solid #D9D4C7;border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C">RA-MPPI · CVaR 제약</p>
+<img src="img/5b12e24e3c4c45c4580bac0d2fce8707.png" alt="min J(v) s.t. CVaR_α(L(x̃)) ≤ C_u" style="width:520px;height:51px;object-fit:contain">
+<p style="font-size:24px;line-height:1.45;color:#3D4A63">장애물·동역학 불확실성 표본으로 손실 L의 CVaR를 재고 상한을 건다.</p>
+</div>
+<div style="flex:1;background:#FFFDF8;border:2px solid #D9D4C7;border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#1D4ED8">DRA-MPPI · 결합 확률</p>
+<img src="img/27540ee168cd7304cdbe862568e81a11.png" alt="P[‖q_t − δ_t^o‖ > r, ∀o] ≥ 1 − σ, ∀t" style="width:520px;height:47px;object-fit:contain">
+<p style="font-size:24px;line-height:1.45;color:#3D4A63">보행자 위치를 가우시안 혼합으로 예측하고, <b>여러 장애물과의 결합 충돌 확률</b>을 몬테카를로로.</p>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;gap:16px;border-left:5px solid #16213A;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#16213A">결과</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">DRA-MPPI: soft(연속 조절) + hard(위험 상한 지시함수)를 한 critic에. Jackal + 보행자 5명 실물. RTX 2080에서 97–115 ms.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">RiskCost는 보행자를 등속 원판 + 커지는 반경으로 보고 겹침에 강한 벌점 — 결합 확률은 재지 않는다. 보행자 5명 실험(TP-0154): 720 중 충돌 8건(1.1%). 100 ms는 0.1 s 주기에 빠듯하다.</p></div>
+</div>
+</div>
+<div style="width:480px;display:flex;flex-direction:column;gap:8px">
+<img src="img/18c03ea67e2d18f631396b2aeec8bfe4.webp" alt="RA-MPPI 구조: MPPI 샘플과 불확실성 표본으로 CVaR 위험을 재서 비용에 반영" style="width:480px;height:257px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<p style="font-size:24px;color:#5A6478">RA-MPPI 구조도 [41]</p>
+</div>
+</div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[41] Yin et al., “Risk-Aware Model Predictive Path Integral Control Using Conditional Value-at-Risk”, ICRA 2023 — arXiv:2209.12842 · DRA-MPPI, IROS 2025 — arXiv:2506.21205</p>
+</div>
+<aside>원래 MPPI는 기대 비용만 줄인다. RA-MPPI는 제약을 CVaR로 바꿔 꼬리를 본다. 첫 덱의 CVaR 슬라이드가 RiskCost(상위 ⌈αT⌉ 스텝 평균)를 설명한다. 보행자 충돌 진단(TP-0160): MPPI의 보행자 hard 벌점이 포화해서 후보들이 구별되지 않았다. 결합 확률식 위험은 그 포화를 연속값으로 푸는 한 방법이다.</aside>
+</section>
+<section id="p-cvarbf" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:26px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH6 안전 · 2022 L-CSS (원전) / 2025 IROS (적응 β)</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">CVaR Barrier Function — 여유의 꼬리 <span style="color:#C2410C">[42]</span></h2>
+</div>
+<div style="display:flex;gap:40px">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px">
+<p style="font-size:28px;line-height:1.5;color:#16213A">장애물의 다음 상태가 확률변수면 hₖ₊₁도 확률변수다. P(h ≥ 0) ≥ 1−β(=VaR 조건)를 <b>CVaR로 강화</b>한다.</p>
+<div style="background:#FFFDF8;border-left:6px solid #C2410C;border-radius:8px;padding:18px 24px;display:flex;gap:40px;align-items:center">
+<img src="img/23a6a5506b8970c24bf5402e448cf835.png" alt="CVaR_β(h_(k+1)) ≥ (1−γ) h_k" style="width:470px;height:66px;object-fit:contain">
+<img src="img/e475104739fbda23a13b5dc3afa3f1ec.png" alt="β_k = min{β ∈ (0, β_u] : U_β^k ≠ ∅}" style="width:520px;height:66px;object-fit:contain">
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;gap:16px;border-left:5px solid #C2410C;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#C2410C">딜레마</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">고정 β가 크면 장애물 가까이 가고(위험), 작으면 QP가 풀리지 않거나 지나치게 보수적이다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #1D4ED8;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#1D4ED8">적응 β</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">매 스텝 제약을 만족하는 제어 집합이 비지 않는 <b>가장 작은 β</b>를 쓴다 — 풀 수 있는 한 가장 보수적으로. 동적 영역 기반 barrier.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63"><b>MPPI 뒤 안전 필터 1순위 후보(TP-0014)</b>. h는 치명 셀과 DynamicObstacles 원판까지 거리. CasADi 구현 공개 → acados 트랙과 맞는다.</p></div>
+</div>
+</div>
+<div style="width:480px;display:flex;flex-direction:column;gap:8px">
+<img src="img/cd6b931aa09eaf5d0583757143894c1d.webp" alt="이족 로봇 장애물 회피: barrier 없음과 위험 중립 barrier는 h가 0 아래로, CVaR barrier만 h를 양수로 지킨다" style="width:480px;height:417px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<p style="font-size:24px;color:#5A6478">Ahmadi Fig. 1 — (c) CVaR barrier만 h &gt; 0 유지 [42]</p>
+</div>
+</div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0;display:flex;flex-direction:column;gap:2px">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[42] Ahmadi et al., “Risk-Averse Control via CVaR Barrier Functions: Application to Bipedal Robot Locomotion”, IEEE L-CSS 2022 — arXiv:2011.01578 · Wang et al., “Safe Navigation in Uncertain Crowded Environments Using Risk Adaptive CVaR Barrier Functions”, IROS 2025 — arXiv:2504.06513</p>
+</div>
+<aside>같은 탭(§C.2)의 다른 후보: OcclusionCBF(가려진 영역을 시간 인덱스 도달 가능 점유로 넉넉하게 추정하고, 백업 rollout이 그 점유 전체와 인증된 종단 집합에 대해 안전한지 본다). OA-MPC·OACP·Control-Tree MPC는 48–200 ms로 Orin 예산 밖이다. 코드 Lawliet9666/Adaptive-CVaR-Barrier-Function.</aside>
+</section>
+<section id="p-conformal" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:26px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH6 안전 · 2023 · IEEE RA-L · UPenn</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">Conformal 계획 — 보정한 반경을 제약으로 <span style="color:#C2410C">[43]</span></h2>
+</div>
+<div style="display:flex;gap:40px">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px">
+<p style="font-size:28px;line-height:1.5;color:#16213A">보행자 궤적 예측기 위에 덧씌워, <b>분포 가정 없이</b> “이 반경 안에 정답이 들 확률 ≥ 1−α”를 만든다.</p>
+<div style="background:#FFFDF8;border-left:6px solid #C2410C;border-radius:8px;padding:18px 24px;display:flex;flex-direction:column;gap:12px">
+<img src="img/8c2399da85e3a3d6e80176293f888d10.png" alt="q̂ = Quantile({r_i}; ⌈(n+1)(1−α)⌉/n), C(x) = {y : ‖ŷ(x) − y‖ ≤ q̂}" style="width:1000px;height:57px;object-fit:contain">
+<img src="img/9b4976321b1788a1e730c901b0b67be4.png" alt="P(r_(n+1) ≤ r_(k)) ≥ k/(n+1) ≥ 1−α" style="width:960px;height:60px;object-fit:contain">
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;gap:16px;border-left:5px solid #1D4ED8;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#1D4ED8">방법</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">예측 시점마다 보정 오차의 분위로 반경 C를 정하고, T개 시점을 동시에 보장하도록 δ/T로 나눈다. MPC 거리 제약 = 예측 위치 + C.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #16213A;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#16213A">결과</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">먼 미래일수록, 동시 보장 시점이 많을수록 반경이 커진다. 후속 ACI(적응형)는 분포가 바뀌면 α를 온라인으로 고친다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">RiskCost의 “시간에 커지는 반경”을 손 규칙(sigma_growth) 대신 데이터로 정하는 길. 보행자 9명, α = 0.2 → 반경 0.52 m.</p></div>
+</div>
+</div>
+<div style="width:460px;display:flex;flex-direction:column;gap:8px">
+<img src="img/458ec199e3550868da117bbb2514b1b4.webp" alt="보정 데이터의 보행자 위치 오차 히스토그램과 conformal 반경 C" style="width:460px;height:431px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<p style="font-size:24px;color:#5A6478">Fig. 2 — 오차 히스토그램과 반경 C [43]</p>
+</div>
+</div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0;display:flex;flex-direction:column;gap:2px">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[43] Lindemann et al., “Safe Planning in Dynamic Environments using Conformal Prediction”, IEEE RA-L 2023 — arXiv:2210.10254 · 입문: Angelopoulos &amp; Bates, arXiv:2107.07511</p>
+</div>
+<aside>보장의 근거는 교환 가능성 하나다. 함정: 한 번 뽑은 보정 집합으로 정한 반경의 실제 포함률은 Beta 분포를 따르고, n = 9면 표준편차가 0.12다. 배포 환경에서 보행자가 다르게 움직이면 교환 가능성이 깨진다. 배경 §0.13. Conformal 군중 내비(CoRL 2025)는 ACI 원으로 갑자기 방향을 바꾼 보행자를 피했다.</aside>
+</section>
+<section id="ch7" data-transition="fade" style="background:#16213A;color:#F4F1EA;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px;display:flex;flex-direction:column;justify-content:center;gap:26px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:28px;color:#F59E5B;letter-spacing:2px">CHAPTER 7 · 시뮬레이션 §S</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:80px;font-weight:700;line-height:1.15;color:#F4F1EA">시뮬의 순위가 실물의 순위인가</h2>
+<p style="font-size:30px;line-height:1.5;color:#C9D1E0;width:1550px">GPU 병렬 물리, 보도를 만드는 생성기, 현실을 “또 하나의 무작위 표본”으로 만드는 랜덤화 — 그리고 시뮬이 맞는지 재는 지표.</p>
+<table style="width:1664px;font-size:26px;color:#F4F1EA;padding:9px 16px">
+<tr style="background:#24314F"><th style="width:12%;text-align:left;color:#F59E5B">연도</th><th style="width:28%;text-align:left;color:#F59E5B">이름</th><th style="width:60%;text-align:left;color:#F59E5B">핵심</th></tr>
+<tr><td>2017–19</td><td>도메인 랜덤화 · ADR</td><td>텍스처·동역학 무작위화, 범위를 스스로 넓힌다</td></tr>
+<tr><td>2020</td><td>Sim2Real 예측력(SRCC)</td><td>시뮬 성능과 실물 성능의 상관</td></tr>
+<tr><td>2024–25</td><td>MetaUrban</td><td>보도 네 기능 구역 절차 생성</td></tr>
+<tr><td>2025</td><td>URBAN-SIM</td><td>Isaac 기반, 반응하는 보행자, 수천 fps</td></tr>
+<tr><td>2025–26</td><td>Isaac Lab 3.0</td><td>백엔드를 설정 한 줄로(PhysX · Newton)</td></tr>
+</table>
+<aside>travplan의 검증 환경은 네 층(L0 운동학 시뮬 · L1 합성 LiDAR + elevation_mapping_cupy · Isaac Sim · 실물)이다. 지형 시나리오는 sim/terrain.py 한 곳에서 정의해 운동학 시뮬과 Isaac 내보내기가 공유한다.</aside>
+</section>
+<section id="p-isaaclab" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:26px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH7 시뮬레이션 · 2025 arXiv · NVIDIA · Isaac Sim 6.x / Isaac Lab 3.0</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">Isaac Lab — USD 장면 위의 GPU 학습 <span style="color:#C2410C">[44]</span></h2>
+</div>
+<div style="display:flex;gap:36px;align-items:center">
+<div style="display:flex;flex-direction:column;gap:8px">
+<img src="img/f7c0e1cfbc89c543208ea0f3855e72e7.webp" alt="USD 스테이지의 장면 그래프가 PhysX로 넘어가고, 시뮬 상태가 GPU 텐서로 학습 코드에 바로 전달되는 구조" style="width:900px;height:248px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<p style="font-size:24px;color:#5A6478">Fig. 3 — USD → PhysX → GPU 텐서 [44]</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:10px">
+<p style="font-size:26px;line-height:1.5;color:#16213A">Isaac Sim = OpenUSD 장면을 PhysX로 굴리고 RTX로 그린다. Isaac Lab = 그 위에서 <b>수천 환경을 병렬</b>로 돌리는 RL·모방학습 틀(Isaac Gym의 후속).</p>
+</div>
+</div>
+<table style="width:1664px;font-size:24px;color:#16213A;padding:10px 16px">
+<tr style="background:#16213A"><th style="width:34%;color:#F4F1EA;text-align:left">Isaac Lab 3.0 백엔드 (설정 한 줄)</th><th style="width:33%;color:#F4F1EA;text-align:left">Isaac Sim 실행</th><th style="width:33%;color:#F4F1EA;text-align:left">쓰는 곳</th></tr>
+<tr><td>physics=newton_mjwarp</td><td>없음 (kit-less)</td><td>대규모 RL</td></tr>
+<tr style="background:#EFEBE2"><td>physics=ovphysx</td><td>없음 (PhysX 단독)</td><td>대규모 RL</td></tr>
+<tr><td>physics=isaacsim_physx</td><td>전체</td><td>ROS 2 브릿지 · RTX 센서</td></tr>
+</table>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">P1(TP-0005)은 ROS 2 브릿지가 필요해 Isaac Sim 6.0을 쓴다. 학습 루프(Planner D DAgger 등)를 옮길 때는 3.0 정식판의 kit-less 경로. Warp RayCaster는 L0의 “가림 없는 시야”를 고칠 때의 참고 구현.</p></div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[44] NVIDIA, “Isaac Lab: A GPU-Accelerated Simulation Framework for Multi-Modal Robot Learning”, 2025 — arXiv:2511.04831 · Isaac Sim (Apache-2.0) · Isaac Lab (BSD-3)</p>
+</div>
+<aside>버전: Isaac Sim 6.0(2026-06-04), 6.1(2026-09-10), 7.0 alpha(2026-09-18). Isaac Lab 3.0 Early Access(2026-09-16)는 6.1 기준, 정식판은 2026-10 말 목표. 빌드·실행에 필요한 Omniverse Kit SDK와 에셋은 NVIDIA 별도 라이선스다. 로컬 Isaac Lab 2.3.2는 Isaac Sim 4.5에 묶여 있다. 시뮬레이션 문서 §S.1.1.</aside>
+</section>
+<section id="p-metaurban" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:26px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH7 시뮬레이션 · 2024 arXiv / ICLR 2025 · UCLA</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">MetaUrban — 보도를 기능 구역으로 <span style="color:#C2410C">[45]</span></h2>
+</div>
+<div style="display:flex;gap:36px;align-items:center">
+<div style="display:flex;flex-direction:column;gap:8px">
+<img src="img/589bdfece68320534fcaf733b049b380.webp" alt="보도를 건물·전면·통행·시설 네 구역으로 나누고, 전형적인 보도 형태 7가지를 템플릿으로 쓴다" style="width:820px;height:298px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<p style="font-size:24px;color:#5A6478">Fig. 4 — 보도의 네 구역과 7가지 템플릿 [45]</p>
+</div>
+<div style="flex:1;display:grid;grid-template-columns:repeat(2, 1fr);gap:14px">
+<div style="background:#FFFDF8;border:2px solid #D9D4C7;border-radius:12px;padding:18px"><p style="font-size:24px;line-height:1.4;color:#16213A"><b>건물</b><br>벽면</p></div>
+<div style="background:#FFFDF8;border:2px solid #D9D4C7;border-radius:12px;padding:18px"><p style="font-size:24px;line-height:1.4;color:#16213A"><b>전면</b><br>상점 앞</p></div>
+<div style="background:#FBE7D9;border-radius:12px;padding:18px"><p style="font-size:24px;line-height:1.4;color:#16213A"><b>통행</b><br>로봇이 다닐 곳</p></div>
+<div style="background:#FFFDF8;border:2px solid #D9D4C7;border-radius:12px;padding:18px"><p style="font-size:24px;line-height:1.4;color:#16213A"><b>시설</b><br>화분·볼라드</p></div>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;gap:16px;border-left:5px solid #1D4ED8;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#1D4ED8">방법</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">MetaDrive(Panda3D) + PyBullet. 도로 블록 5종 → 보도를 Global Street Design Guide의 네 구역으로 → 구역 조건에 맞춰 물체 배치(CityScapes·Mapillary 빈도 90종) → 지형으로 바닥 상태.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #16213A;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#16213A">규모</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">사람 SMPL-X 1,100명 · BEDLAM 동작 2,311 · 배달로봇(COCO, Starship, Yandex) · 휠체어 · 로봇 개 · 휴머노이드.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">sim/terrain.py 시나리오를 늘릴 때의 틀: 연석·램프는 전면/통행 경계에, 화분·볼라드는 시설 구역에.</p></div>
+</div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[45] Wu et al., “MetaUrban: An Embodied AI Simulation Platform for Urban Micromobility”, ICLR 2025 — arXiv:2407.08725 · 코드 metadriverse/metaurban (Apache-2.0)</p>
+</div>
+<aside>계층적 배치 생성: ① 도로 블록(직선·교차로·로터리·원형·T자)과 차로 수·폭 샘플링, ② 블록마다 보도·횡단보도와 네 구역, ③ 구역 조건에 맞춘 물체 배치, ④ 지형 생성. 시뮬레이션 문서 §S.2.1.</aside>
+</section>
+<section id="p-urbansim" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:26px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH7 시뮬레이션 · 2025 · CVPR Highlight · UCLA</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">URBAN-SIM — 보도를 수천 fps로 <span style="color:#C2410C">[46]</span></h2>
+</div>
+<div style="display:flex;gap:40px">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px">
+<p style="font-size:28px;line-height:1.5;color:#16213A">문제를 <b>마이크로모빌리티</b>(배달로봇·모빌리티 스쿠터처럼 공공 보행 공간을 다니는 가벼운 기계)의 자율화로 규정한다 — travplan과 같은 범주.</p>
+<div style="display:flex;gap:16px">
+<div style="flex:1;background:#FFFDF8;border:2px solid #D9D4C7;border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:6px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C">① 지형</p>
+<p style="font-size:24px;line-height:1.4;color:#3D4A63">Wave Function Collapse로 평지·계단·경사·요철</p>
+</div>
+<div style="flex:1;background:#FFFDF8;border:2px solid #D9D4C7;border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:6px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C">② 보행자</p>
+<p style="font-size:24px;line-height:1.4;color:#3D4A63">ORCA를 JAX로 → 학습 중 로봇에 실시간 반응</p>
+</div>
+<div style="flex:1;background:#FFFDF8;border:2px solid #D9D4C7;border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:6px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C">③ 속도</p>
+<p style="font-size:24px;line-height:1.4;color:#3D4A63">비동기 장면 샘플링, GPU 1장 256환경 1,800–2,600 fps</p>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;gap:16px;border-left:5px solid #16213A;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#16213A">벤치</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">URBAN-BENCH: 보행 4과제 + 내비 3과제 + km 단위 장거리. COCO 배달로봇 · Go2 · B2-W · G1. 에셋 15,000+.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">반응형 보행자(TP-0036)와 지형 난이도(TP-0039)를 한 플랫폼에. Isaac 단계에서 L0 벤치마크를 옮길 후보.</p></div>
+</div>
+</div>
+<div style="width:440px;display:flex;flex-direction:column;gap:8px">
+<img src="img/6b675aed845f8fdedcc2cac43e5d8d0a.webp" alt="URBAN-SIM 개요: 절차적 장면 생성, 반응형 보행자, 여러 로봇 몸체" style="width:440px;height:328px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<p style="font-size:24px;color:#5A6478">Fig. 2 — 플랫폼 개요 [46]</p>
+</div>
+</div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[46] Wu et al., “Towards Autonomous Micromobility through Scalable Urban Simulation” (URBAN-SIM), CVPR 2025 — arXiv:2505.00690 · 코드 metadriverse/urban-sim</p>
+</div>
+<aside>MetaUrban의 생성 파이프라인을 Isaac Sim 5.x로 옮긴 판이다(v0.1.0, 2025-07). 같은 탭(§S.2)에 UrbanVerse, Vid2Sim(실제 영상을 시뮬로), SidewalkBench, CostNav가 있다.</aside>
+</section>
+<section id="p-dr" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH7 시뮬레이션 · 2017 IROS / 2018 ICRA / 2019 arXiv · OpenAI · Berkeley</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">도메인 랜덤화 · ADR — 현실을 표본 하나로 <span style="color:#C2410C">[47]</span></h2>
+</div>
+<div style="display:flex;gap:24px">
+<div style="flex:1;background:#FFFDF8;border:2px solid #D9D4C7;border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C">Tobin et al. 2017</p>
+<h3 style="font-size:28px;font-weight:600;color:#16213A">시각 랜덤화</h3>
+<p style="font-size:24px;line-height:1.45;color:#3D4A63">텍스처·조명·카메라를 넓게 섞어, 사진 같은 렌더링 없이 실물 검출로 옮긴다.</p>
+</div>
+<div style="flex:1;background:#FFFDF8;border:2px solid #D9D4C7;border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C">Peng et al. 2018</p>
+<h3 style="font-size:28px;font-weight:600;color:#16213A">동역학 랜덤화</h3>
+<p style="font-size:24px;line-height:1.45;color:#3D4A63">질량·마찰·지연을 섞어, 기억이 있는 정책이 실물 팔에서 버틴다.</p>
+</div>
+<div style="flex:1;background:#16213A;border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#F59E5B">OpenAI 2019 · ADR</p>
+<h3 style="font-size:28px;font-weight:600;color:#F4F1EA">자동 범위 확장</h3>
+<p style="font-size:24px;line-height:1.45;color:#C9D1E0">정책이 잘할수록 무작위화 범위를 스스로 넓힌다 — 감당할 만큼만 어렵게.</p>
+</div>
+</div>
+<div style="background:#FFFDF8;border-left:6px solid #C2410C;border-radius:8px;padding:18px 24px;display:flex;gap:56px;align-items:center">
+<img src="img/19c657d312f897beabb49bc73ffce8c5.png" alt="max_θ E_(ξ~P_φ)[J(π_θ; ξ)]" style="width:430px;height:83px;object-fit:contain">
+<img src="img/6bd068081a98a2e9a92b5031daac02a0.png" alt="ADR: J̄(φ_H) > t_H ⇒ φ_H ← φ_H + Δ, J̄(φ_H) < t_L ⇒ φ_H ← φ_H − Δ" style="width:1060px;height:57px;object-fit:contain">
+</div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">L0에서 섞을 대상: 제어 지연 · 센서 지연 · 자기 위치 잡음과 드리프트 · 슬립 · 조향 속도 한계 · 높이 잡음. 너무 넓으면 보수적이 된다 → ADR처럼 <b>“어디까지 버티는가”</b>를 벤치마크 지표로.</p></div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0;display:flex;flex-direction:column;gap:2px">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[47] Tobin et al., “Domain Randomization for Transferring Deep Neural Networks from Simulation to the Real World”, IROS 2017 — arXiv:1703.06907 · Peng et al., “Sim-to-Real Transfer of Robotic Control with Dynamics Randomization”, ICRA 2018 — arXiv:1710.06537 · OpenAI et al., “Solving Rubik’s Cube with a Robot Hand”, 2019 — arXiv:1910.07113</p>
+</div>
+<aside>현실의 파라미터가 무작위화 분포의 지지 집합 안에 있으면, 정책은 현실도 학습한 경우 중 하나로 본다. ADR은 파라미터마다 범위를 두고, 가끔 한 파라미터를 경계값에 고정해 성능을 잰 뒤 넓히거나 좁힌다. Planner D는 이미 12/12이므로 지연·슬립 범위를 넓혀 한계를 재는 것이 다음 지표가 된다. 시뮬레이션 문서 §S.6.1.</aside>
+</section>
+<section id="p-srcc" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 180px;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">CH7 시뮬레이션 · 2020 · RA-L · Georgia Tech · FAIR</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">Sim2Real 예측력 — 시뮬 순위가 맞나 <span style="color:#C2410C">[48]</span></h2>
+</div>
+<div style="display:flex;gap:40px;align-items:center">
+<div style="background:#FFFDF8;border-left:6px solid #C2410C;border-radius:8px;padding:20px 26px">
+<img src="img/00427d01d059137b2dd581202e8a4386.png" alt="SRCC = Σ(s_i − s̄)(r_i − r̄) / (√Σ(s_i − s̄)² √Σ(r_i − r̄)²)" style="width:604px;height:168px;object-fit:contain">
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:12px">
+<p style="font-size:28px;line-height:1.5;color:#16213A">방법 i의 시뮬 성능 sᵢ와 실물 성능 rᵢ의 <b>Pearson 상관</b>. 1에 가까우면 시뮬에서의 비교가 실물에서도 성립한다.</p>
+<p style="font-size:24px;line-height:1.45;color:#3D4A63">실험실을 3D 스캔해 Habitat에 넣고, 같은 9개 모델을 시뮬과 LoCoBot 실물에서 돌렸다.</p>
+</div>
+</div>
+<div style="display:flex;gap:24px;align-items:center">
+<div style="flex:1;background:#24314F;border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:6px">
+<p style="font-size:24px;color:#C9D1E0">CVPR 2019 챌린지 설정 · 성공률 SRCC</p>
+<p style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;color:#F4F1EA">0.18</p>
+</div>
+<x-shape kind="arrow-right" style="width:64px;height:34px;background:#C2410C"></x-shape>
+<div style="flex:1;background:#16213A;border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:6px">
+<p style="font-size:24px;color:#C9D1E0">미끄러짐 끄는 등 수정 후 · 성공률 / SPL</p>
+<p style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;color:#F59E5B">0.844 / 0.875</p>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;gap:16px;border-left:5px solid #C2410C;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#C2410C">원인</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">충돌하면 벽을 따라 <b>미끄러지는 시뮬 동작</b>. 에이전트가 이 허점으로 지름길을 배웠다.</p></div>
+<div style="display:flex;gap:16px;border-left:5px solid #0F766E;padding:2px 0 2px 18px"><p style="width:130px;font-size:24px;font-weight:600;color:#0F766E">travplan</p><p style="flex:1;font-size:24px;line-height:1.45;color:#3D4A63">실물이 생기면 스택 여러 개(guidance+mppi, planner_d+mppi, learned+mppi …)를 같은 코스에서 시뮬·실물로 돌려 SRCC를 잰다. L0의 낙관적 가정(§S.6.5)이 허점 후보.</p></div>
+</div>
+<div style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:12px 0 0 0">
+<p style="font-size:24px;line-height:1.35;color:#5A6478">[48] Kadian et al., “Sim2Real Predictivity: Does Evaluation in Simulation Predict Real-World Performance?”, RA-L 2020 — arXiv:1912.06321</p>
+</div>
+<aside>같은 절의 다른 방법: 센서 모델 격차를 “판정자”로 잰다(Mahajan et al.) — 날것의 센서 데이터는 비교가 안 되니 상태 추정기의 오차 분포를 시뮬·실물 사이 Wasserstein 거리로 비교한다. travplan TravMap도 같은 방식으로 잴 수 있다: 같은 장소의 시뮬·실물 LiDAR로 만든 TravMap 비용을 참값과 비교해 두 오차 분포의 거리를 본다.</aside>
+</section>
+<section id="summary" data-transition="fade" style="background:#EEF1F5;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 160px;display:flex;flex-direction:column;gap:30px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">SUMMARY</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">travplan의 각 자리에 놓이는 논문</h2>
+</div>
+<table style="width:1664px;font-size:24px;color:#16213A;padding:11px 16px">
+<tr style="background:#16213A"><th style="width:17%;color:#F4F1EA;text-align:left">자리</th><th style="width:23%;color:#F4F1EA;text-align:left">지금 travplan</th><th style="width:30%;color:#F4F1EA;text-align:left">원형이 된 논문</th><th style="width:30%;color:#F4F1EA;text-align:left">다음 후보</th></tr>
+<tr><td>지도 (ELEV·SIGMA)</td><td>L1: emap 코어</td><td>Elevation Mapping, emap_cupy</td><td>RoadRunner식 단일 프레임 망</td></tr>
+<tr style="background:#E3E8F0"><td>비용 (COST)</td><td>기하 최댓값 규칙</td><td>BADGR · WVN (자기지도)</td><td>V-STRONG · DINOv2 의미 채널</td></tr>
+<tr><td>보행자 예측</td><td>등속 원판 + 반경</td><td>Trajectron++</td><td>Conformal 반경</td></tr>
+<tr style="background:#E3E8F0"><td>전역 경로</td><td>GuidancePlanner (Dijkstra)</td><td>A* · Hybrid A* · Nav2</td><td>Smac State Lattice</td></tr>
+<tr><td>학습 Planner</td><td>Planner D (flow, 후보 16)</td><td>GoalFlow · Diffusion Policy · π0</td><td>NavDP critic · NoMaD 마스킹</td></tr>
+<tr style="background:#E3E8F0"><td>Controller</td><td>MPPI (+ plant_lag) · NMPC+GP</td><td>IT-MPC · SMPPI · Cautious MPC</td><td>RMPPI · MPPI-Generic · ProxPI</td></tr>
+<tr><td>동역학 적응</td><td>운동학 SwerveModel</td><td>—</td><td>IKD → PETS → RMA</td></tr>
+<tr style="background:#E3E8F0"><td>안전</td><td>MPPI 벌점 · RiskCost(CVaR)</td><td>RA-MPPI</td><td>CVaR-BF · Poisson 안전 함수</td></tr>
+<tr><td>검증</td><td>L0·L1 운동학, 짝 비교</td><td>도메인 랜덤화</td><td>URBAN-SIM · SRCC</td></tr>
+</table>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#5A6478">출처: travplan 리서치 문서 각 절의 “travplan에 주는 것” · CLAUDE.md 현재 상태 (2026-10)</p>
+<aside>이 표는 각 논문 슬라이드의 travplan 줄을 모은 것이다. “다음 후보”는 리서치 문서가 제안한 것이지 결정된 계획이 아니다. 채택은 벤치마크 게이트(1층 스모크, 2층 짝 비교)와 치명 실패 규칙으로 판정한다.</aside>
+</section>
+<section id="refs1" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 120px;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">REFERENCES 1 / 4 · CH1 인식 · CH2 플래닝·모델</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">참고문헌 [1]–[15]</h2>
+</div>
+<div style="display:flex;flex-direction:column;gap:4px">
+<p style="font-size:24px;line-height:1.3;color:#3D4A63">[1] J. Philion, S. Fidler, “Lift, Splat, Shoot: Encoding Images from Arbitrary Camera Rigs by Implicitly Unprojecting to 3D”, ECCV 2020. arXiv:2008.05711</p>
+<p style="font-size:24px;line-height:1.3;color:#3D4A63">[2] P. Fankhauser et al., “Robot-Centric Elevation Mapping with Uncertainty Estimates”, CLAWAR 2014 · P. Fankhauser, M. Bloesch, M. Hutter, “Probabilistic Terrain Mapping for Mobile Robots with Uncertain Localization”, RA-L 2018</p>
+<p style="font-size:24px;line-height:1.3;color:#3D4A63">[3] T. Miki et al., “Elevation Mapping for Locomotion and Navigation using GPU”, IROS 2022. arXiv:2204.12876</p>
+<p style="font-size:24px;line-height:1.3;color:#3D4A63">[4] G. Kahn, P. Abbeel, S. Levine, “BADGR: An Autonomous Self-Supervised Learning-Based Navigation System”, RA-L 2021. arXiv:2002.05700</p>
+<p style="font-size:24px;line-height:1.3;color:#3D4A63">[5] M. Mattamala, J. Frey et al., “Wild Visual Navigation: Fast Traversability Learning via Pre-Trained Models and Online Self-Supervision”, Autonomous Robots 2025. arXiv:2404.07110</p>
+<p style="font-size:24px;line-height:1.3;color:#3D4A63">[6] S. Jung et al., “V-STRONG: Visual Self-Supervised Traversability Learning for Off-road Navigation”, ICRA 2024. arXiv:2312.16016</p>
+<p style="font-size:24px;line-height:1.3;color:#3D4A63">[7] J. Frey et al., “RoadRunner — Learning Traversability Estimation for Autonomous Off-road Driving”, IEEE T-FR 2024. arXiv:2402.19341</p>
+<p style="font-size:24px;line-height:1.3;color:#3D4A63">[8] M. Oquab et al., “DINOv2: Learning Robust Visual Features without Supervision”, TMLR 2024. arXiv:2304.07193</p>
+<p style="font-size:24px;line-height:1.3;color:#3D4A63">[9] T. Salzmann, B. Ivanovic, P. Chakravarty, M. Pavone, “Trajectron++: Dynamically-Feasible Trajectory Forecasting With Heterogeneous Data”, ECCV 2020. arXiv:2001.03093</p>
+<p style="font-size:24px;line-height:1.3;color:#3D4A63">[10] E. W. Dijkstra, Numerische Mathematik 1959 · P. Hart, N. Nilsson, B. Raphael, “A Formal Basis for the Heuristic Determination of Minimum Cost Paths”, IEEE TSSC 1968</p>
+<p style="font-size:24px;line-height:1.3;color:#3D4A63">[11] D. Dolgov, S. Thrun, M. Montemerlo, J. Diebel, “Path Planning for Autonomous Vehicles in Unknown Semi-structured Environments”, IJRR 2010</p>
+<p style="font-size:24px;line-height:1.3;color:#3D4A63">[12] D. Fox, W. Burgard, S. Thrun, “The Dynamic Window Approach to Collision Avoidance”, IEEE RAM 1997</p>
+<p style="font-size:24px;line-height:1.3;color:#3D4A63">[13] C. Rösmann, F. Hoffmann, T. Bertram, “Integrated Online Trajectory Planning and Optimization in Distinctive Topologies”, RAS 2017</p>
+<p style="font-size:24px;line-height:1.3;color:#3D4A63">[14] S. Macenski et al., “The Marathon 2: A Navigation System”, IROS 2020. arXiv:2003.00368 · Smac Planner, arXiv:2401.13078</p>
+<p style="font-size:24px;line-height:1.3;color:#3D4A63">[15] A. T. Le, G. Chalvatzaki, A. Biess, J. Peters, “Accelerating Motion Planning via Optimal Transport”, NeurIPS 2023. arXiv:2309.15970</p>
+</div>
+<aside>번호는 각 슬라이드의 각주와 같다. 저자 목록은 리서치 문서가 적은 범위에서 옮겼고, 저자가 많은 논문은 “et al.”로 줄였다.</aside>
+</section>
+<section id="refs2" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 120px;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">REFERENCES 2 / 4 · CH3 플래닝·학습</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">참고문헌 [16]–[24]</h2>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<p style="font-size:24px;line-height:1.4;color:#3D4A63">[16] F. Yang, C. Wang, C. Cadena, M. Hutter, “iPlanner: Imperative Path Planning”, RSS 2023. arXiv:2302.11434</p>
+<p style="font-size:24px;line-height:1.4;color:#3D4A63">[17] P. Roth, J. Nubert, F. Yang, M. Mittal, M. Hutter, “ViPlanner: Visual Semantic Imperative Learning for Local Navigation”, ICRA 2024. arXiv:2310.00982</p>
+<p style="font-size:24px;line-height:1.4;color:#3D4A63">[18] D. Shah et al., “ViNT: A Foundation Model for Visual Navigation”, CoRL 2023. arXiv:2306.14846 · A. Sridhar et al., “NoMaD: Goal Masked Diffusion Policies for Navigation and Exploration”, ICRA 2024. arXiv:2310.07896</p>
+<p style="font-size:24px;line-height:1.4;color:#3D4A63">[19] W. Cai et al., “NavDP: Learning Sim-to-Real Navigation Diffusion Policy with Privileged Information Guidance”, ICRA 2026. arXiv:2505.08712</p>
+<p style="font-size:24px;line-height:1.4;color:#3D4A63">[20] C. Chi et al., “Diffusion Policy: Visuomotor Policy Learning via Action Diffusion”, RSS 2023. arXiv:2303.04137</p>
+<p style="font-size:24px;line-height:1.4;color:#3D4A63">[21] Z. Xing et al., “GoalFlow: Goal-Driven Flow Matching for Multimodal Trajectories Generation in End-to-End Autonomous Driving”, CVPR 2025. arXiv:2503.05689</p>
+<p style="font-size:24px;line-height:1.4;color:#3D4A63">[22] K. Black et al., “π0: A Vision-Language-Action Flow Model for General Robot Control”, RSS 2025. arXiv:2410.24164</p>
+<p style="font-size:24px;line-height:1.4;color:#3D4A63">[23] A.-C. Cheng et al., “NaVILA: Legged Robot Vision-Language-Action Model for Navigation”, RSS 2025. arXiv:2412.04453</p>
+<p style="font-size:24px;line-height:1.4;color:#3D4A63">[24] X. Liu et al., “CityWalker: Learning Embodied Urban Navigation from Web-Scale Videos”, CVPR 2025. arXiv:2411.17820</p>
+</div>
+<p style="font-size:24px;line-height:1.4;color:#5A6478">관련(본문에서 언급): Diffuser, Janner et al., ICML 2022, arXiv:2205.09991 · MILER, arXiv:2609.20747 · Uni-NaVid, arXiv:2412.06224 · MolmoAct, arXiv:2508.07917</p>
+<aside>CityWalker 첫 저자는 NYU ai4ce 그룹의 Xinhao Liu다. 각 논문의 코드 저장소는 해당 슬라이드의 노트와 Planner 문서 §B 표에 있다.</aside>
+</section>
+<section id="refs3" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 120px;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">REFERENCES 3 / 4 · CH4 제어·모델 · CH5 제어·학습</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">참고문헌 [25]–[36]</h2>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<p style="font-size:24px;line-height:1.35;color:#3D4A63">[25] G. Williams et al., “Model Predictive Path Integral Control using Covariance Variable Importance Sampling”, arXiv:1509.01149 · G. Williams et al., “Information Theoretic Model Predictive Control: Theory and Applications to Autonomous Driving”, IEEE T-RO 2018. arXiv:1707.02342</p>
+<p style="font-size:24px;line-height:1.35;color:#3D4A63">[26] M. Gandhi et al., “Robust Model Predictive Path Integral Control: Analysis and Performance Guarantees”, RA-L 2021. arXiv:2102.09027</p>
+<p style="font-size:24px;line-height:1.35;color:#3D4A63">[27] I. S. Mohamed, G. Allibert, P. Martinet, “Autonomous Navigation of AGVs in Unknown Cluttered Environments: log-MPPI Control Strategy”, RA-L 2022. arXiv:2203.16599 · T. Kim et al., “Smooth Model Predictive Path Integral Control without Smoothing”, RA-L 2022. arXiv:2112.09988</p>
+<p style="font-size:24px;line-height:1.35;color:#3D4A63">[28] ProxPI, 2026. arXiv:2609.00941</p>
+<p style="font-size:24px;line-height:1.35;color:#3D4A63">[29] B. Vlahov et al., “MPPI-Generic: A CUDA Library for Stochastic Trajectory Optimization”, 2024. arXiv:2409.07563</p>
+<p style="font-size:24px;line-height:1.35;color:#3D4A63">[30] L. Hewing, J. Kabzan, M. Zeilinger, “Cautious Model Predictive Control Using Gaussian Process Regression”, IEEE TCST 2020. arXiv:1705.10702</p>
+<p style="font-size:24px;line-height:1.35;color:#3D4A63">[31] K. Chua, R. Calandra, R. McAllister, S. Levine, “Deep Reinforcement Learning in a Handful of Trials using Probabilistic Dynamics Models”, NeurIPS 2018. arXiv:1805.12114</p>
+<p style="font-size:24px;line-height:1.35;color:#3D4A63">[32] X. Xiao et al., “Learning Inverse Kinodynamics for Accurate High-Speed Off-Road Navigation on Unstructured Terrain”, RA-L 2021. arXiv:2102.12667</p>
+<p style="font-size:24px;line-height:1.35;color:#3D4A63">[33] A. Kumar, Z. Fu, D. Pathak, J. Malik, “RMA: Rapid Motor Adaptation for Legged Robots”, RSS 2021. arXiv:2107.04034</p>
+<p style="font-size:24px;line-height:1.35;color:#3D4A63">[34] N. Hansen, H. Su, X. Wang, “TD-MPC2: Scalable, Robust World Models for Continuous Control”, ICLR 2024. arXiv:2310.16828</p>
+<p style="font-size:24px;line-height:1.35;color:#3D4A63">[35] I. M. A. Nahrendra, B. Yu, H. Myung, “DreamWaQ: Learning Robust Quadrupedal Locomotion With Implicit Terrain Imagination via Deep Reinforcement Learning”, ICRA 2023. arXiv:2301.10602</p>
+<p style="font-size:24px;line-height:1.35;color:#3D4A63">[36] Li, Li, M. Hutter, “Scaling Rough Terrain Locomotion with Automatic Curriculum RL”, 2026. arXiv:2601.17428</p>
+</div>
+<aside>[28] ProxPI는 리서치 문서에 저자·정식 제목이 적혀 있지 않아 이름과 arXiv 번호로만 적었다.</aside>
+</section>
+<section id="refs4" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 120px;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">REFERENCES 4 / 4 · CH6 안전 · CH7 시뮬레이션</p>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:56px;font-weight:700;line-height:1.2;color:#16213A">참고문헌 [37]–[48]</h2>
+</div>
+<div style="display:flex;flex-direction:column;gap:4px">
+<p style="font-size:24px;line-height:1.3;color:#3D4A63">[37] A. D. Ames, X. Xu, J. W. Grizzle, P. Tabuada, “Control Barrier Function Based Quadratic Programs for Safety Critical Systems”, IEEE TAC 2017. arXiv:1609.06408 · A. D. Ames et al., “Control Barrier Functions: Theory and Applications”, ECC 2019. arXiv:1903.11199</p>
+<p style="font-size:24px;line-height:1.3;color:#3D4A63">[38] S. Bansal, M. Chen, S. Herbert, C. Tomlin, “Hamilton-Jacobi Reachability: A Brief Overview and Recent Advances”, CDC 2017. arXiv:1709.07523</p>
+<p style="font-size:24px;line-height:1.3;color:#3D4A63">[39] K. P. Wabersich, M. N. Zeilinger, “A Predictive Safety Filter for Learning-Based Control of Constrained Nonlinear Dynamical Systems”, Automatica 2021. arXiv:1812.05506 · K.-C. Hsu, H. Hu, J. F. Fisac, “The Safety Filter: A Unified View of Safety-Critical Control in Autonomous Systems”, Annual Review 2024. arXiv:2309.05837</p>
+<p style="font-size:24px;line-height:1.3;color:#3D4A63">[40] G. Bahati, R. M. Bena, A. D. Ames, Poisson Safety Functions, 2025. arXiv:2505.06794 (후속 arXiv:2508.11129, arXiv:2510.25913)</p>
+<p style="font-size:24px;line-height:1.3;color:#3D4A63">[41] J. Yin et al., “Risk-Aware Model Predictive Path Integral Control Using Conditional Value-at-Risk”, ICRA 2023. arXiv:2209.12842 · DRA-MPPI, IROS 2025. arXiv:2506.21205</p>
+<p style="font-size:24px;line-height:1.3;color:#3D4A63">[42] M. Ahmadi et al., “Risk-Averse Control via CVaR Barrier Functions: Application to Bipedal Robot Locomotion”, IEEE L-CSS 2022. arXiv:2011.01578 · X. Wang et al., “Safe Navigation in Uncertain Crowded Environments Using Risk Adaptive CVaR Barrier Functions”, IROS 2025. arXiv:2504.06513</p>
+<p style="font-size:24px;line-height:1.3;color:#3D4A63">[43] L. Lindemann et al., “Safe Planning in Dynamic Environments using Conformal Prediction”, IEEE RA-L 2023. arXiv:2210.10254 · A. N. Angelopoulos, S. Bates, arXiv:2107.07511</p>
+<p style="font-size:24px;line-height:1.3;color:#3D4A63">[44] NVIDIA, “Isaac Lab: A GPU-Accelerated Simulation Framework for Multi-Modal Robot Learning”, 2025. arXiv:2511.04831</p>
+<p style="font-size:24px;line-height:1.3;color:#3D4A63">[45] W. Wu et al., “MetaUrban: An Embodied AI Simulation Platform for Urban Micromobility”, ICLR 2025. arXiv:2407.08725</p>
+<p style="font-size:24px;line-height:1.3;color:#3D4A63">[46] W. Wu et al., “Towards Autonomous Micromobility through Scalable Urban Simulation”, CVPR 2025. arXiv:2505.00690</p>
+<p style="font-size:24px;line-height:1.3;color:#3D4A63">[47] J. Tobin et al., IROS 2017. arXiv:1703.06907 · X. B. Peng et al., ICRA 2018. arXiv:1710.06537 · OpenAI et al., “Solving Rubik’s Cube with a Robot Hand”, 2019. arXiv:1910.07113</p>
+<p style="font-size:24px;line-height:1.3;color:#3D4A63">[48] A. Kadian et al., “Sim2Real Predictivity: Does Evaluation in Simulation Predict Real-World Performance?”, RA-L 2020. arXiv:1912.06321</p>
+</div>
+<aside>[40] Poisson 안전 함수와 [41] DRA-MPPI는 리서치 문서에 정식 제목이 적혀 있지 않아 이름과 arXiv 번호로 적었다. 전체 목록은 travplan 참고문헌 문서(§D)에 있다.</aside>
+</section>
+</div></div>
+<div id="notes"><b>발표자 노트</b><div id="notes-body"></div></div>
+<div id="bar">
+<button id="prev" aria-label="이전">◀</button><span id="count"></span><button id="next" aria-label="다음">▶</button>
+<span id="ttl">travplan 논문 스터디 — 챕터별</span>
+<button id="nb" title="N 키">노트</button><button id="fs" title="F 키">전체 화면</button>
+<a href="study-papers.pptx" download>PPTX</a><a href="./../">목록</a>
+</div>
+<script>
+(function () {
+  var slides = Array.prototype.slice.call(document.querySelectorAll('#frame > section'));
+  var frame = document.getElementById('frame'), notes = document.getElementById('notes');
+  var q = new URLSearchParams(location.search), shot = q.has('shot');
+  if (shot) document.body.classList.add('shot');
+  var i = 0;
+  function fit() {
+    var st = document.getElementById('stage');
+    var s = Math.min(st.clientWidth / 1920, st.clientHeight / 1080);
+    frame.style.transform = 'scale(' + s + ')';
+  }
+  function show(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach(function (el, k) { el.classList.toggle('on', k === i); });
+    document.getElementById('count').textContent = (i + 1) + ' / ' + slides.length;
+    var a = slides[i].querySelector('aside');
+    document.getElementById('notes-body').textContent = a ? a.textContent : '';
+    if (!shot) history.replaceState(null, '', '#' + (i + 1));
+  }
+  var start = shot ? parseInt(q.get('shot'), 10) - 1 : parseInt(location.hash.slice(1), 10) - 1;
+  show(isNaN(start) ? 0 : start);
+  fit(); window.addEventListener('resize', fit);
+  document.getElementById('prev').onclick = function () { show(i - 1); };
+  document.getElementById('next').onclick = function () { show(i + 1); };
+  document.getElementById('nb').onclick = function () { notes.classList.toggle('show'); };
+  document.getElementById('fs').onclick = function () {
+    if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen();
+  };
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { show(i + 1); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { show(i - 1); e.preventDefault(); }
+    else if (e.key === 'Home') show(0);
+    else if (e.key === 'End') show(slides.length - 1);
+    else if (e.key === 'n' || e.key === 'N') notes.classList.toggle('show');
+    else if (e.key === 'f' || e.key === 'F') document.getElementById('fs').click();
+  });
+  var x0 = null;
+  document.getElementById('stage').addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+  document.getElementById('stage').addEventListener('touchend', function (e) {
+    if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0; x0 = null;
+    if (Math.abs(dx) > 40) show(i + (dx < 0 ? 1 : -1));
+  });
+})();
+</script>
+</body>
+</html>
