@@ -1,9 +1,8 @@
 <!-- doc: 인식 | 1 -->
 # 인식 — 지형·장애물을 TravMap으로 (§A)
 
-**인식은 센서 관측을 TravMap[8,H,W]과 동적 장애물 목록으로 바꾸는 일이다.** 이 문서는 여섯 탭으로 나뉜다. 앞의 네 탭(지형 지도,
-traversability, 시각 기반 모델, 동적 장애물)이 travplan 파이프라인에 직접 들어가는 부분이고, 뒤의 두 탭(예측·world model, 보행 로봇)은
-다른 로봇 분야에서 가져올 설계 참고다.
+**인식은 센서 관측을 TravMap[8,H,W]과 동적 장애물 목록으로 바꾸는 일이다.** 이 문서는 여덟 탭으로 나뉜다. 네 탭(지형 지도, traversability, 시각 기반 모델, 동적 장애물)은 travplan 파이프라인에 직접 들어가고,
+두 탭(예측·world model, 보행 로봇)은 다른 로봇 분야에서 가져올 설계 참고다. 나머지 둘은 '최근 연구 비교'(A.14)와 '작업 기록'(A.13)이다.
 
 | 탭 | 다루는 것 | 절 | travplan과의 관계 |
 |---|---|---|---|
@@ -13,6 +12,7 @@ traversability, 시각 기반 모델, 동적 장애물)이 travplan 파이프라
 | 동적 장애물 | 검출, 추적, 궤적 예측, 로봇 기준 3D·BEV | A.12 | PoC(TP-0011), `DynamicObstacles`, TP-0028 |
 | 예측·World model | occupancy flow, 자율주행 world model | A.6 | 미래 TravMap 예측(장기 과제) |
 | 보행 로봇 | 4족·휴머노이드의 인식, 산업 스택(Figure·Sunday·Flexion·LimX), LiDAR 높이 지도 휴머노이드, 폼팩터 비교, CMU 지형 분석 | A.7–A.9 | WVN 등 참고 구현, 3DGS 현장 복제, 바퀴형 비교 기준 |
+| 최근 연구 비교 | 2025–2026 자기지도 traversability(PU), 지형 불확실성, 보행자 예측 보정의 비교표와 공통점·차이점 | A.14 | 시도 순서와 TP 후보 |
 
 **계보 한눈에 보기.** 네 줄기가 거의 같은 시기에 "사람 라벨 없이, 큰 모델로"라는 방향으로 움직였다. 각 이름의 설명은 해당 탭에 있다.
 
@@ -750,6 +750,98 @@ ArtPlanner는 반대를 말한다 — *"when we approach a negative obstacle, li
 개발 기록 **A.13.1**에 있다. 요약만 적으면: 판별기만 바꾸면 같은 재현율에서 전방 오탐이 4.3배가 되고(기본값 대비 17배 중 3.9배는 근거 floor 몫),
 오탐을 없애는 문턱에서는 아무것도 잡지 못한다. 기제는 **포트홀의 상한이 거의 평면이라 내부
 기울기가 0**이라는 것이다.
+
+**2025–2026에 미관측 칸의 불확실성을 높이 모델 안에서 계산하는 연구가 둘 나왔다.** 위의 계보는 못 본 칸에 상한이나 깊이 prior를 채운다.
+아래 두 연구(Occlusion-Aware Planning, ProTerrain)는 높이를 확률 모델로 맞추고, 관측이 덜 받친 방향의 분산을 계획까지 전파한다. travplan의 TP-0054(매퍼 분산은 σ가 되지 못한다)와 TP-0100(위험은 못 본 칸에 있다)에 바로 걸린다.
+세 번째 연구(SceneSense)는 반대 방향이다. 못 본 칸을 생성 모델로 채우는데, 이 방식은 그림자 상한의 원칙과 부딪힌다.
+
+#### Occlusion-Aware Planning — 가림을 지형 계수의 분산으로 보고 차체 자세까지 전파한다
+
+**지형 가림이 만든 사각지대를 지형 모델 계수의 epistemic 분산으로 계산한다. 그 분산을 차체 pitch·roll과 바퀴 접지 법선의 분산으로 옮겨 궤적 비용에 넣는다.**
+논문 제목은 *Occlusion-Aware, Quasi-Static, Stability-Oriented Trajectory Planning on Uneven Terrain*이다
+(Manoharan 등 [arXiv:2609.39105](https://arxiv.org/abs/2609.39105), 2026-09, Tartu·IIIT Hyderabad·CTU Prague). 학회는 확인하지 못했다.
+여섯 합성 지형에서 지형마다 시작·목표 30쌍을 돌렸고, 실패율이 18.9%였다. 두 기준선은 46.1%와 41.7%였고, 불확실성 항을 뺀 절제는 34.4%였다.
+
+동작 방식은 세 단계다. 먼저 지형을 고정된 무작위 Fourier 특징 100개(계수 200개)의 선형 결합으로 맞춘다. 맞춘 뒤 정규화한 역 Hessian을 계수의 공분산으로 쓴다.
+점이 많이 받친 방향은 분산이 작고, 가림 때문에 점이 없는 방향은 분산이 크다. 다음으로 바퀴 네 개가 지형에 닿는 비선형 최소제곱 자세 모델을 암묵 미분해,
+계수 분산을 차체 높이·pitch·roll·접지점의 분산으로 1차 전파한다. 마지막으로 CEM 궤적 최적화(표본 100, elite 25, 반복 5)가 이 분산에 벌점을 준다.
+지형 맞춤은 flow matching 모델이 초기값을 주면 수렴 해법보다 14.3배 빠르고, 맞춤 RMSE는 0.06 mm(3.1%) 늘었다.
+실물은 Husky·Jackal과 깊이 카메라로 여섯 야외 환경을 달렸다(논문에 둘, 보충 영상에 넷). 실물 결과는 정성뿐이다.
+
+**travplan에 주는 의미.** ==가림의 위험은 "그 칸이 얼마나 높은가"가 아니라 "그 칸이 자세 추정을 얼마나 흔드는가"로 재야 한다는 근거다.== travplan의 `TravMap.SIGMA`는 칸마다 독립이고,
+TP-0054는 매퍼 분산이 오차의 순위도 맞히지 못한다고 쟀다. 이 논문의 분산은 "관측이 받치지 않는 방향"이라는 기하적 정의라 매퍼 분산과 성격이 다르다.
+그대로 가져오기에는 계산이 무겁다(계획마다 Levenberg–Marquardt 맞춤, voxel 필터 뒤 점 최대 35,000개). 대신 "가시 광선 수가 적은 칸 주변에서 차체 접지점의 높이 차를 더 크게 보는" 근사를 TP-0100의 차체 기준 채점에 붙여 볼 수 있다.
+
+![Occlusion-Aware Fig. 3c](https://arxiv.org/html/2609.39105v1/figs/unc_pic1.png)
+*그림 — Occlusion-Aware Planning (Fig. 3c): 부분 관측에서 맞춘 지형 계수의 역 Hessian으로 그린 높이 분산 지도. 가려진 언덕 뒤가 밝다. 출처: [arXiv:2609.39105](https://arxiv.org/abs/2609.39105)*
+
+![Occlusion-Aware Fig. 7](https://arxiv.org/html/2609.39105v1/traj1_1_3_cem_vs_base_unc_comp.png)
+*그림 — Occlusion-Aware Planning (Fig. 7): 불확실성 항을 뺀 계획은 분화구 옆 고분산 영역을 가로지르다 빠지고, 불확실성을 쓰는 계획은 돌아서 목표에 닿는다. 출처: [arXiv:2609.39105](https://arxiv.org/abs/2609.39105)*
+
+<details markdown="1">
+<summary>자세히: Occlusion-Aware Planning의 분산 계산과 전파</summary>
+
+**지형 모델.** 높이를 고정 무작위 Fourier 특징 $\phi(x,y)$의 선형 결합 $z(x,y) = \phi(x,y)^\top \lambda$로 둔다. 점 집합의 설계 행렬을 $\Phi$라 하면 정규화한 역 Hessian이 계수의 국소 가우시안 근사가 된다.
+
+$$ \Sigma_\lambda = \sigma_z^2 \left(\Phi^\top \Phi + \eta I\right)^{-1}, \qquad \eta = 10^{-3} $$
+
+**자세 전파.** 평면 자세 $(x, y, \psi)$마다 차체 높이·pitch·roll과 바퀴 네 접지점(미지수 15개, 잔차 16개)을 최소제곱으로 푼다. 최적 조건을 암묵 미분해 민감도 $J = d\xi^*/d\lambda$를 얻고 1차로 전파한다.
+
+$$ \Sigma_\xi \approx J\, \Sigma_\lambda\, J^\top $$
+
+**비용.** pitch·roll 분산의 합 $u_p$와 접지 법선 공분산의 trace 합 $u_n$에 가중치를 준 $c_{unc} = w_n \rho_n u_n + w_p \rho_p u_p$를 명목 비용(곡률, 가속, 법선 편차, 자세)에 더한다.
+
+**travplan에 주는 것.** 칸 독립 σ 대신 "자세에 대한 분산"을 쓰는 설계다. MPPI의 `CostTerm`으로 옮기려면 rollout 자세마다 접지점 높이를 읽어 분산을 근사하는 항이 되어야 한다. 계수 공분산 자체는 매 주기 계산하기 어렵다.
+
+</details>
+
+#### ProTerrain — 높이 불확실성을 칸 독립이 아니라 공간 상관으로 둔다
+
+**지형 매개변수 지도의 aleatoric 불확실성을 칸끼리 상관된 가우시안으로 모델링하고, 미분 가능한 물리 엔진에 표본을 넣어 궤적 분포를 예측한다**
+(Raja 등 [arXiv:2510.19364](https://arxiv.org/abs/2510.19364), 2025-10, ICRA 2026 투고, Tampere·CTU·Tartu·Aalto). 공개 데이터 ROUGH11(궤도형 로봇 두 대, Ouster OS0-128)에서,
+칸 독립 분산 기준선보다 모든 지표가 나았다. 기하 높이만 쓰는 설정에서 ATE가 2.4277에서 0.6588로 줄었다. 결정론 모델과는 ATE가 비슷했다(0.6550 대 0.6588). 코드 공개는 확인하지 못했다.
+
+동작 방식은 공분산을 직접 만들지 않는 데 있다. 공분산을 $\Sigma = L D L^\top$로 둔다. $D$는 칸마다 예측한 분산이고, $L$은 고정 2D 가우시안 커널의 합성곱이다.
+그래서 공분산 곱은 합성곱 두 번으로 끝나고, 음의 로그우도는 켤레 기울기법(약 50회)으로 푼다. 128×128 지도(0.1 m 칸)에서 높이와 지지면 높이 두 지도만 확률로 두었고,
+강성·감쇠·마찰은 궤적 손실로 자기지도 학습했다. LiDAR 시야 밖 칸은 분산을 사전값으로 끌어당기는 정규화만 받는다.
+
+**travplan에 주는 의미.** TP-0054는 매퍼 분산이 보정되지 않고, cost의 높이 민감도가 오히려 오차를 맞힌다고 쟀다. ProTerrain은 그 다음 단계의 근거다.
+==칸 독립 분산은 공간 상관이 큰 실제 지형에서 표본 궤적을 비현실적으로 흩뜨린다.== MPPI에 σ를 쓰는 확률 제약(Controller 문서 E.10)을 세울 때, 칸마다 따로 뽑지 말고 커널로 상관을 준 높이 표본을 쓰는 편이 맞다.
+가져오기 전에 확인할 것은 하나다. travplan의 L1 오차가 실제로 공간 상관을 갖는지 `scripts/eval_map_quality.py` 출력으로 먼저 잰다.
+
+![ProTerrain Fig. 2](https://arxiv.org/html/2510.19364v1/Frame_20.png)
+*그림 — ProTerrain (Fig. 2): LiDAR 정답 높이와 영상 입력, 예측 평균 높이와 표본, 50표본의 잔차 표준편차, 그리고 공간 상관 모델과 칸 독립 모델이 낸 궤적 표본을 정답과 비교한다. 출처: [arXiv:2510.19364](https://arxiv.org/abs/2510.19364)*
+
+<details markdown="1">
+<summary>자세히: ProTerrain의 공간 상관 공분산</summary>
+
+**공분산.** 칸별 분산 $\sigma^2$와 고정 커널 $g$로 $\Sigma = L D L^\top$, $D = \mathrm{diag}(\sigma^2)$를 둔다. $L$은 블록 Toeplitz 행렬이라 곱이 합성곱이 된다.
+
+$$ \Sigma x = \mathrm{vec}\left(g * \left(\sigma^2 \odot (g^\top * X)\right)\right) $$
+
+**표본.** 재매개변수화로 $\mathrm{vec}(\phi^{(m)}) = \mathrm{vec}(\mu) + L \sqrt{D}\, \epsilon$을 뽑고, 각 표본 지형을 MonoForce 물리 엔진에 넣어 궤적을 적분한다. 시각·좌표마다 표본에 단변량 가우시안을 맞춰 궤적 손실의 분산으로 쓴다.
+
+**travplan에 주는 것.** MPPI rollout에 지형 표본을 넣을 때 `g`의 폭을 하나 더 정하면 상관 표본이 된다. 합성곱이라 GPU에서 싸다.
+
+</details>
+
+#### SceneSense — 못 본 칸을 확산 모델로 채워 지도에 확률로 합친다
+
+**부분 관측에서 확산 모델이 3D occupancy를 생성하고, 그 예측을 관측되지 않은 voxel에만 OctoMap식 확률 갱신으로 합친다.**
+논문 제목은 *Robust Robotic Exploration and Mapping Using Generative Occupancy Map Synthesis*다(Achey 등 [arXiv:2506.20049](https://arxiv.org/abs/2506.20049), 2025-06, CU Boulder).
+학회는 확인하지 못했고, 코드는 게재 뒤 공개한다고만 적혀 있다. Spot 실물에서 지도 품질(FID)이 로봇 주변 24.44%, 먼 곳 75.59% 나아졌다.
+
+동작 방식은 이렇다. Spot에 Ouster OS1-64와 IMU를 달고 LIO-SAM으로 위치를 잡는다. 로봇 중심이나 탐사 경계(반경 3.3 m)에서 확산 모델이 occupancy를 30단계로 생성하고, 자세마다 3–5개 예측을 낸다.
+관측된 voxel은 센서만 갱신한다. 관측되지 않은 voxel은 생성 예측으로 갱신하되, 생성 모델의 확률을 센서 확률보다 낮게 둔다. 전체 추론은 RTX 4070 Ti Super에서 0.44 s였다.
+탐사 계획기(GBPlanner)에 그대로 끼우면 한 환경에서 탐사 시간이 106.46 s에서 81.68 s로 줄었다. 다른 환경에서는 152.27 s와 151.83 s로 거의 같았다.
+
+**travplan에 주는 의미.** ==생성한 채움은 못 본 포트홀을 "평평하게" 덮을 수 있다. travplan의 그림자 상한이 지키는 원칙과 정면으로 부딪힌다.==
+그림자 상한은 못 본 칸에 "높아도 광선 높이까지이고, 더 낮을 수 있다"는 상한과 깊이 prior를 두어 보수적으로 만든다. 생성 채움은 그 칸을 "아마 이렇다"로 채워 낙관적으로 만든다.
+논문도 확신이 큰 틀린 예측 하나가 지도와 계획을 망칠 수 있다고 적었다. 유리 난간 장면에서는 낭떠러지 너머를 땅으로 채우지 않았다고 보였지만, 음의 장애물을 따로 평가하지는 않았다.
+travplan에서 쓸 자리는 비용이 아니라 탐색이다. 생성 채움은 "어디를 더 봐야 하는가"를 고르는 데 쓰고, TravMap cost는 관측과 상한으로만 만든다.
+
+![SceneSense Fig. 5b](https://arxiv.org/html/2506.20049v2/figures/spotHoleFilled.png)
+*그림 — SceneSense (Fig. 5b): 시작할 때 로봇 아래에 생긴 빈 구멍을 생성 예측이 채운 지도. 출처: [arXiv:2506.20049](https://arxiv.org/abs/2506.20049)*
 
 #### A.2b.8 KAIST Urban Robotics Lab의 지면 분할 계보 — 허용 라이선스가 둘이다
 
@@ -2485,6 +2577,7 @@ A.10.3은 사용자 Notion의
 | 2024 | RoadRunner | 기존 스택의 사후 추정 | 카메라·LiDAR BEV에서 비용과 높이를 함께 예측 | — |
 | 2023–2025 | WVN, SALON, STERLING | 현장 경험 | 수 분 안의 온라인 적응(A.7) | [WVN](https://github.com/leggedrobotics/wild_visual_navigation) 0.3k |
 | 2026 | ViTA, CATNAV, PIVOT | 비전 기반 모델·VLM | SAM2 적응, VLM 비용 지도, 물리적 근거 | — |
+| 2026 | SyNeT, GSAT, Long-Horizon Traversability | 접지 궤적 양성 + 합성 음성·이상 탐지·nnPU | 음성 없는 PU 문제를 정면으로 | GSAT [프로젝트](https://sparolab.github.io/research/gsat/) |
 
 **RELLIS-3D — 오프로드 인식의 공용 벤치마크**([arXiv:2011.12954](https://arxiv.org/abs/2011.12954), ICRA 2021, Texas A&M·ARL). 오프로드 캠퍼스에서
 LiDAR 스캔 13,556개와 영상 6,235장에 사람이 의미 라벨을 달았다. 도시용 분할 모델이 클래스 불균형과 지형 굴곡 때문에 크게 무너진다는 것을
@@ -2546,6 +2639,94 @@ map을 한 번에 낸다. 라벨은 기존 traversability 스택(X-Racer)이 주
 
 ![RoadRunner Fig. 2](https://arxiv.org/html/2402.19341v3/frey2.png)
 *그림 — RoadRunner (Fig. 2): 실제 주행 데이터를 기존 스택으로 사후 처리해 라벨을 만들고, 카메라·LiDAR BEV 융합 네트워크가 traversability와 높이를 함께 예측하도록 학습한다. 출처: [arXiv:2402.19341](https://arxiv.org/abs/2402.19341)*
+
+**2026년의 자기지도 traversability는 "음성 라벨이 없다"는 PU 문제를 세 방식으로 푼다.** 음성을 합성하거나(SyNeT), 양성 둘레의 초구 밖을 이상으로 보거나(GSAT),
+nnPU 손실로 라벨 없는 칸의 양성 비율을 보정한다(Long-Horizon Traversability). 셋 다 지나간 자리만 양성으로 쓴다는 점에서 travplan `FootprintLabeler`와 출발점이 같다.
+==다만 travplan의 TravNet은 이 문제를 다른 방식으로 이미 피한다.== 라벨은 [0, 1] 연속 회귀 목표(실패는 1.0)이고, 손실은 BCE가 아니라 가우시안 NLL이며,
+라벨 없는 칸은 `masked_heteroscedastic_loss`가 손실에서 뺀다. 학습된 잔차는 `ResidualTraversability`의 기본값(`raise_only`)에서 기하 cost를 올리기만 한다.
+그래서 아래 세 연구는 시뮬 단계가 아니라, 가림과 영상이 들어오는 실물·Isaac 단계(TP-0059)에서 다시 볼 대상이다.
+
+#### SyNeT — 지나가지 못할 물체를 영상에 합성해 음성으로 쓴다
+
+**확산 inpainting으로 실제 장면에 "그럴듯하지만 지나갈 수 없는" 물체를 넣어 음성 라벨을 만들고, PU와 PN 학습 모두에 추론 구조를 바꾸지 않고 붙인다**
+(Kim 등 [arXiv:2602.00814](https://arxiv.org/abs/2602.00814), 2026-01). 학회는 확인하지 못했다. RELLIS-3D에서 PU 기준선 LORT의 AUROC가 0.935에서 0.979로,
+거짓 음성률(FNR)이 0.110에서 0.030으로 바뀌었다. 코드는 공개 예정이라고만 적혀 있다.
+
+동작 방식은 이렇다. SLAM 궤적의 접지점(바퀴 자국, 발자국)을 영상에 투영해 양성으로 둔다. 학습 표본의 20%에 Stable Diffusion 3.5 inpainting이나 FLUX.1 Fill로 물체를 넣는다.
+도시 데이터에는 쓰레기·상자·자전거·사람을, 오프로드에는 바위·통나무·그루터기를 넣었다. LangSAM이 넣은 물체를 분할해 화소 단위 음성 마스크가 된다.
+PU 쪽(LORT)에는 음성 중심 배정 손실과 밀어내기 손실을, PN 쪽(V-STRONG)에는 합성 음성 특징을 쓰는 대조 손실을 더한다.
+넣은 위치를 알기 때문에, 사람 라벨 없이 "물체 영역의 거짓 양성률"을 따로 잴 수 있다. 합성 비율은 10–20%에서 이득이 대부분 나왔다. AGX Orin INT8에서 SyNeT+LORT가 11.6 FPS였다.
+
+**travplan에 주는 의미.** ==SyNeT의 값은 겉모습과 기하가 어긋나는 영상 영역에 있다.== 높이 지도에 포트홀·턱을 합성해 넣으면 기하 cost가 이미 잡는 것을 다시 배우게 된다.
+travplan에 남은 위험은 기하가 틀린 칸보다 못 본 칸에 있다(TP-0100). 그래서 지금 가져오지 않는다. 영상 TravNet을 들일 때(TP-0059 마찰 패치처럼 기하로는 평평한 위험) 합성 음성과 합성 위치 기반 평가를 함께 가져온다.
+
+![SyNeT Fig. 2](https://arxiv.org/html/2602.00814v2/dif_pipeline.png)
+*그림 — SyNeT (Fig. 2): 땅 영역에서 위치와 크기를 고르고, 확산 inpainting으로 물체를 만들고, LangSAM으로 분할해 거른 뒤 원본에 합성해 음성 마스크를 얻는다. 출처: [arXiv:2602.00814](https://arxiv.org/abs/2602.00814)*
+
+#### GSAT — 양성 둘레의 초구 밖을 이상으로 보아 LiDAR 기하만으로 배운다
+
+**LiDAR 점군을 BEV pillar 특징으로 바꾸고, 지나간 칸의 잠재 벡터가 모이는 초구를 세운다.** 라벨 없는 칸은 초구 안이면 정상, 밖이면 이상으로 자동으로 나누고,
+이상 분류와 traversability 회귀를 함께 학습한다
+(Cho 등 [arXiv:2603.07480](https://arxiv.org/abs/2603.07480), ICRA 2026, 인하대 SPARO Lab, [프로젝트](https://sparolab.github.io/research/gsat/)).
+Gazebo 언덕 세계 10회 주행에서 성공 10/10, 평균 충돌 0.2회였다. 기하 규칙 기준선(DEM-Trav)은 4/10에 6.6회, 자기지도 기준선 LeSTA는 6/10에 4.6회였다.
+
+동작 방식은 이렇다. 칸마다 높이·국소 오프셋·높이 표준편차 같은 7차원 점 특징을 PointPillars 구조로 32차원 칸 특징으로 만들고, 8차원 잠재 공간으로 보낸다.
+SLAM 궤적이 지나간 칸은 양성이고, 원래 설계에서는 명령 속도와 실제 속도의 추종 오차를 sigmoid로 바꿔 점수로 쓴다. 양성 잠재의 평균이 초구 중심이고,
+반지름은 양성까지 평균 거리의 지수 이동 평균이다. 라벨 없는 칸 가운데 초구 안은 정상으로 당기고, 밖은 거리의 역수 항으로 밀어낸다(Deep SAD 계열).
+여기에 재구성 손실과 회귀 손실을 더한다. RELLIS-3D에서 F1이 이상 손실 없이 69.87, 제안 방식으로 77.61이었다. 증강(뒤집기, yaw·pitch 회전)을 모두 빼면 43.13으로 떨어졌다.
+실물은 SCOUT MINI(바퀴)와 Go2(다리)이고, 같은 낮은 덤불이 다리 로봇에는 지나갈 수 있고 바퀴 로봇에는 아니라고 나왔다.
+
+**travplan에 주는 의미.** 입력이 영상이 아니라 기하라는 점에서 travplan의 TravNet 설계에 가장 가깝다. ==GSAT의 초구 반지름은 "본 적 없는 기하"를 가르는 OOD 경계 역할을 한다.==
+travplan은 라벨 없는 칸을 손실에서 빼므로 GSAT가 고친 실패(라벨 없는 칸을 전부 음성으로 두기)는 생기지 않는다. 가져올 수 있는 것은 OOD 경계와 기하 증강이다.
+TravMap 기하 채널(slope, step, rough)에 같은 증강을 쓰면 시나리오가 적은 학습 데이터를 넓힐 수 있다. 런타임은 논문에서 확인하지 못했다.
+
+![GSAT Fig. 1](https://arxiv.org/html/2603.07480v1/thumnail_f_1.png)
+*그림 — GSAT (Fig. 1): 궤적으로 양성 칸을 자동으로 만들고, 잠재 공간의 초구로 라벨 없는 칸을 정상과 이상으로 나눠 traversability 지도를 낸다. 출처: [arXiv:2603.07480](https://arxiv.org/abs/2603.07480)*
+
+<details markdown="1">
+<summary>자세히: GSAT의 이상 손실</summary>
+
+**무엇을 하나.** 양성 잠재 $z_p$, 초구 안의 정상 잠재 $z_n$, 밖의 이상 잠재 $z_a$를 중심 $o$에 대해 다르게 다룬다. 중심은 5 epoch마다 양성 평균으로 다시 구하고, 반지름은 양성 거리 평균의 지수 이동 평균(계수 0.5)이다.
+
+$$ \mathcal{L}_{Anom} = \frac{1}{N_p}\sum \lVert z_p - o \rVert^2 + \frac{1}{N_n}\sum \lVert z_n - o \rVert^2 + \frac{1}{N_a}\sum \left(\lVert z_a - o \rVert^2 + \zeta\right)^{-1} $$
+
+**전체 손실.** $\mathcal{L} = \lambda_1 \mathcal{L}_{Anom} + \lambda_2 \mathcal{L}_{Recon} + \lambda_3 \mathcal{L}_{Reg}$, $\lambda = (1, 1, 20)$이다. 회귀 손실은 양성을 점수 $\tau$로, 이상을 0으로 당긴다.
+
+**travplan에 주는 것.** 라벨 없는 칸을 전부 음성으로 두면 F1이 68.27로 오히려 떨어졌다. travplan은 그 칸을 손실에서 빼므로 이 실패를 이미 피한다. 초구 거리는 TravNet의 OOD 점수 후보로만 남긴다.
+
+</details>
+
+#### Long-Horizon Traversability — 위성·항공 LiDAR에서 nnPU로 장거리 비용 지도를 배운다
+
+**위성 영상·항공 LiDAR·OpenStreetMap을 입력으로, 사람이 운전한 GPS 궤적을 양성으로 두는 nnPU 손실과 LiDAR 기하 prior로 연속 traversability 지도를 학습한다.**
+논문 제목은 *Learning Traversability for Long Horizon Off-Road Navigation*이다
+(Viswanath 등 [arXiv:2607.23743](https://arxiv.org/abs/2607.23743), 2026-07, Texas A&M·DEVCOM ARL, [프로젝트](https://unmannedlab.org/research/long-horizon-traversability)). 학회는 확인하지 못했다.
+Warthog로 학습에 없던 두 장소의 일곱 경로를 달렸다. 두 방식을 모두 돌린 네 경로에서 사람 경로 대비 거리 초과가 5.5%(국소 계획만 쓰면 13.9%), 개입이 2회(국소 계획만 쓰면 14회)였다.
+
+동작 방식은 이렇다. 위성 영상(30 cm/px)은 고정한 DINOv3-SAT ViT-L/16과 FPN으로, LiDAR 래스터(높이, 경사, 반사 강도)와 OSM 채널은 CNN으로 인코딩하고 공간별 FiLM으로 합친다.
+GPS 궤적에서 5 px 안의 칸이 양성이고, 나머지는 음성이 아니라 라벨 없음이다. nnPU 손실이 라벨 없는 칸 속 양성의 몫을 사전 비율로 빼서 보정한다.
+여기에 경사(30° 근처에서 넘어감)와 높이 기울기(도랑·낙차) prior를 작은 가중치로 더한다. 장거리 계획은 비용 지도 위의 A*이고, 국소 추종은 ARL 스택의 MPPI다.
+데이터는 299장면, 약 1,244 km², 운전 궤적 1,130 km이며 공개 출처로 모았다고 적혀 있다.
+
+**travplan에 주는 의미.** ==travplan의 TravNet은 라벨 없는 칸을 이미 손실에서 뺀다.== 그래서 nnPU는 지금 고칠 문제가 아니다. 시뮬에서는 모든 칸에 라벨을 붙일 수도 있다.
+nnPU는 실물 데이터에서 "가림"이 표본 편향을 만드는지 잴 때 다시 본다. 로봇이 본 칸과 지나간 칸이 한쪽으로 치우치면, 단순히 빼는 것과 nnPU로 보정하는 것의 결과가 갈린다(TP-0059 단계).
+배달로봇 쪽에서는 OSM 보도 선형을 Planner D의 전역 prior로 쓰는 근거도 된다. 이것은 인식이 아니라 Planner 쪽 과제다.
+
+![Long-Horizon Traversability Fig. 2](https://arxiv.org/html/2607.23743v3/images/ablation.png)
+*그림 — Long-Horizon Traversability (Fig. 2): 시험 사막 장면의 절제. 궤적 지도만 쓰면 지형이 거의 균일하게 나오고, 기하 prior를 더한 전체 손실이 지형 구조를 되살린다. 출처: [arXiv:2607.23743](https://arxiv.org/abs/2607.23743)*
+
+<details markdown="1">
+<summary>자세히: nnPU 손실</summary>
+
+**무엇을 하나.** 양성 집합 $P$와 라벨 없는 집합 $U$, 양성 사전 비율 $\pi$로 음성 위험을 $U$에서 추정하되, 그 안에 섞인 양성의 몫을 뺀다. 음수가 되면 0에서 자른다(non-negative PU).
+
+$$ \hat R = \pi \hat R_P^{+} + \max\left(0,\ \hat R_U^{-} - \pi \hat R_P^{-}\right) $$
+
+$\hat R_P^{+}$는 양성을 양성으로 분류하는 손실, $\hat R_U^{-}$와 $\hat R_P^{-}$는 각각 라벨 없음과 양성을 음성으로 분류하는 손실이다. 논문은 여기에 공간 평활(total variation)과 통로가 너무 넓어지지 않게 하는 질량 벌점을 더했다.
+
+**travplan에 주는 것.** travplan 라벨은 이진 분류가 아니라 연속 회귀라 nnPU를 그대로 쓸 수 없다. 실물 단계에서 "실패 칸(1.0)"과 "통과 칸"을 이진으로 나눠 비교할 때 쓴다.
+
+</details>
 
 #### A.10.2 최신(2026): 비전 기반 모델과 VLM
 
@@ -2768,6 +2949,67 @@ $$ u = w\Big[1 - \frac{\arctan(y/x) + f_r}{f_l + f_r}\Big], \qquad v = h\Big[1 -
 | METAVerse | LiDAR 1 스윕 | 상호작용 피드백 + 메타러닝 | 온라인 적응 | Isaac·실물 단계 온라인 적응 |
 | Evidential BKI / E2-BKI | 카메라 + LiDAR | 시맨틱 분할(EDL) | 증거 기반 불확실성으로 융합 가중 | `TravMap.SIGMA` 생성 개선 |
 | TRIP | LiDAR·깊이 | 기하 steppability + T-BGK 보간 | Mahalanobis 거리로 이상치 제거 | `fill_unknown` 보간 개선 |
+
+**2026년에는 불확실성을 "모델이 본 적 없는 입력" 탐지로 쓰는 두 연구가 나왔다.** 위 표의 연구들이 분산을 융합 가중에 쓴다면, 아래 둘은 epistemic 분산을 비용 지도에 직접 올려 계획이 피하게 한다.
+travplan의 TravNet은 이미 aleatoric 분산(`log_var`)을 내고, `LearnedTraversability`가 그것을 `TravMap.SIGMA`로 바꾼다. 아래 연구를 들이기 전에 그 σ가 오차 순위를 맞히는지부터 잰다(A.14).
+
+#### Experience-Driven CL — DINOv3 특징에서 접지 성질 다섯 개와 epistemic 분산을 예측한다
+
+**고정한 DINOv3 특징에서, 다리가 땅에 닿은 뒤 측정한 성질 다섯 개를 evidential 회귀로 예측한다.** 다섯 성질은 미끄럼, 수직 반력, 견인 지수, 이동 비용, 착지 하중 속도다.
+새 접지 경험으로 모델을 계속 갱신하되, 과거 데이터 성능을 지키는 검증 관문을 통과한 후보만 배포한다.
+논문 제목은 *Experience-Driven Continual Learning of Terrain Traversability for Quadruped Robots*다
+(Bricarello 등 [arXiv:2609.39755](https://arxiv.org/abs/2609.39755), 2026-09, IIT Dynamic Legged Systems·Genova). 학회와 코드는 확인하지 못했다.
+Go2 실물의 세 지형 연속 스트림(인조 잔디, 질감 폼, 폼, 접지 951개)에서 관문은 과거 기준 NLL 악화를 0.790%에서 0.608%로 23.1% 줄였다. 최종 MAE는 관문 없는 replay가 아주 조금 더 낮았다.
+
+동작 방식은 이렇다. 접지 하나가 끝나면 다섯 성질과 각 신뢰도를 계산하고, 그 칸을 덮던 착지 전 영상 특징(5 s 이내)과 짝짓는다. 그래서 라벨이 인과적이다.
+DINOv3 ViT-S/16 특징(384차원)을 받은 작은 회귀기가 성질마다 Normal-Inverse-Gamma 매개변수를 낸다. 예측 평균과 epistemic 분산을 0.1 m 칸의 15×15 m 로봇 중심 지도에 투영한다.
+보수 점수는 성질마다 평균에서 표준편차의 0.15배를 빼고 가중 평균한 값이다. 가중치는 재학습 없이 바꾼다. 못 본 칸은 안전이 아니라 모름으로 남긴다.
+새 후보 모델은 최근 검증 손실이 낮아지고, 학습에 쓰지 않은 과거 anchor 집합의 악화가 0.15% 이내일 때만 배포 모델을 바꾼다.
+
+**travplan에 주는 의미.** ==접지 성질을 하나의 cost로 뭉치지 않고 따로 예측한 뒤, 가중치로 섞는 구조는 TravMap 채널 설계와 같다.== TravNet(TP-0010)은 지금 cost 하나와 그 분산만 낸다.
+"미끄럼" 채널을 따로 낼 수는 있지만, 채널이 생겨도 Controller가 그 값을 어떻게 쓸지가 먼저다. TP-0150에서 미끄럼을 rollout에 넣었더니 포트홀에 붙은 경로 앞에서 멈춰 버렸다.
+관문 규칙은 실물 온라인 학습 단계에서 가져온다. 시뮬 단계에서는 데이터를 다시 모을 수 있으므로 관문이 필요 없다.
+
+![Experience-Driven CL Fig. 1](https://arxiv.org/html/2609.39755v1/cover_image.png)
+*그림 — Experience-Driven CL (Fig. 1): 고정한 DINOv3가 영상 특징을 뽑고, evidential 회귀기가 다섯 접지 성질의 점수 영상을 내고, 이를 traversability 격자 지도로 투영한다. 폼 표면의 점수가 낮다. 출처: [arXiv:2609.39755](https://arxiv.org/abs/2609.39755)*
+
+<details markdown="1">
+<summary>자세히: evidential 회귀와 검증 관문</summary>
+
+**evidential 회귀.** 성질마다 $(\gamma, \nu, \alpha, \beta)$를 내고, 평균은 $\gamma$, 분산은 다음과 같다. 지도에는 epistemic 분산만 올린다.
+
+$$ \sigma^2_{ale} = \frac{\beta}{\alpha - 1}, \qquad \sigma^2_{epi} = \frac{\beta}{\nu(\alpha - 1)} $$
+
+**보수 점수.** 성질 $p$마다 $q_p = \mu_p - \lambda \sqrt{v_p}$($\lambda = 0.15$)를 구하고 $\tau = \mathrm{clip}\left(\sum_p w_p q_p / \sum_p w_p,\ 0,\ 1\right)$로 섞는다.
+
+**관문.** 후보 $c$와 배포 모델 $d$에 대해 최근 검증 손실 $J_{rec}(c) < J_{rec}(d)$이고, anchor 손실 $J_{anc}(c) \le J_{anc}(d) + \rho \max(|J_{anc}(d)|, 10^{-6})$($\rho = 0.0015$)일 때만 바꾼다.
+
+**travplan에 주는 것.** travplan TravNet의 `log_var`는 aleatoric이다. epistemic을 원하면 evidential 헤드가 후보이고, MC dropout이나 앙상블과 달리 추론이 한 번이라 싸다. 바꾸기 전에 지금 σ의 순위 검증이 먼저다.
+
+</details>
+
+#### Task-Conditioned Costmaps — 명령 속도까지 넣은 epistemic 분산으로 OOD 지형을 비용으로 만든다
+
+**높이 스캔과 명령 속도를 입력으로 발 디딤을 예측하는 모델의 epistemic 분산을 OOD 탐지로 쓴다. 그 분산을 다리 위치 둘레에 가우시안으로 퍼뜨려 비용 지도를 만든다.**
+논문 제목은 *Task-Conditioned Uncertainty Costmaps for Legged Locomotion*이다
+(Singh 등 [arXiv:2605.00261](https://arxiv.org/abs/2605.00261), 2026-04, Univ. at Buffalo DRONES Lab·Ocado Technology). 학회와 코드는 확인하지 못했다.
+시뮬의 섞인 지형에서 MPPI 10회를 돌렸고, 실현 가능성 오차 평균이 약 16.6이었다. 높이 문턱 비용(약 26.4)보다 37%, 거칠기 비용(약 25.0)보다 34% 낮다.
+10회 가운데 8회에서 가장 낮았다. 두 기준선의 평균은 9번 실험의 큰 값(81.2, 75.3)이 끌어올린 몫이 크다.
+
+동작 방식은 이렇다. 앞쪽 LiDAR의 0.6 m × 1.6 m 높이 스캔(0.1 m 칸)을 12차원으로 줄이고 명령 속도 3차원을 붙인다. 학습 데이터는 IsaacSim의 평지·등속 주행뿐이다.
+앙상블 3개와 MC dropout 20회로 발 위치 평균과 epistemic 분산을 얻고, 분산이 오차와 같은 순위를 갖도록 보정 손실을 더했다. 다리마다 분산을 비용으로 바꿔 상한 100에서 자르고,
+다리 위치 둘레에 가우시안으로 퍼뜨린 최댓값을 비용 지도로 쓴다. 실물(Go1, Nav2)은 정성 결과만 있다. 2 cm 경사판 앞에서 비용이 오른다.
+
+**travplan에 주는 의미.** ==분산을 지형만이 아니라 명령 속도에 조건화하면, 같은 칸도 빠르게 지나갈 때만 OOD가 된다.== travplan의 TravMap은 속도와 무관한 칸 비용이다.
+MPPI rollout은 표본마다 속도가 다르므로, 속도 조건 분산은 `CostTerm`으로 넣기 쉽다. 다만 실물 근거가 정성뿐이라 우선순위는 낮다. 먼저 지금의 `log_var` σ가 오차 순위를 맞히는지 잰다.
+
+![Task-Conditioned Costmaps Fig. 5](https://arxiv.org/html/2605.00261v2/planner_new.png)
+*그림 — Task-Conditioned Costmaps (Fig. 5): 불확실성 가중치를 (1)에서 (4)로 키우면 MPPI 계획이 위험을 감수하는 경로에서 보수적인 경로로 바뀐다. 출처: [arXiv:2605.00261](https://arxiv.org/abs/2605.00261)*
+
+| 연구(2026 추가) | 입력 | 라벨·학습 | 불확실성 처리 | travplan 적용 |
+|---|---|---|---|---|
+| Experience-Driven CL | RGB(DINOv3 고정) | 접지 후 측정 성질 5개, 연속 학습 + 관문 | evidential epistemic 분산, 평균에서 빼는 보수 점수 | 실물 단계 온라인 학습, epistemic `TravMap.SIGMA` 후보 |
+| Task-Conditioned Costmaps | 높이 스캔 + 명령 속도 | 시뮬 평지 발 디딤 회귀 | 앙상블 + MC dropout, 보정 손실 | 속도 조건 MPPI 비용 항(낮은 우선순위) |
 
 ---
 
@@ -3382,6 +3624,64 @@ $d_{ij}^2$가 카이제곱 문턱(자유도 2, 99%에서 9.21)을 넘는 짝은 
 
 평가는 ADE보다 폐루프 지표로 한다. Stratton 등이 보였듯 ADE는 내비게이션 성능을 대변하지 못한다. travplan에서는 Planner 혼자 피해야
 하는 +tracker 조합(TP-0049)의 충돌 수와 최소 여유 거리가 그 지표다.
+
+**예측의 불확실성을 믿을 수 있게 만드는 2026년 연구 둘.** 하나는 학습 때 가우시안 예측을 보정하고, 다른 하나는 배포 중에 오차 폭을 conformal로 맞춘다.
+둘 다 예측 오차가 있어야 의미가 있다. travplan의 기본 시뮬은 보행자가 등속으로 걷고 `DynamicObstacles`도 등속으로 예측하므로 예측 오차가 0이다.
+오차는 반응형 보행자(TP-0036 ORCA, 짝 비교 TP-0167)나 L1 검출 잡음에서만 생긴다.
+
+#### Calibrated Gaussian Predictors — 신뢰 수준이 실제 빈도와 맞도록 학습한다
+
+**가우시안 궤적 예측기의 정답 Mahalanobis 거리 분포가 자유도 2의 카이제곱 분포와 맞도록 하는 손실로, 예측 공분산의 신뢰 수준을 보정한다.**
+논문 제목은 *Rethinking Gaussian Trajectory Predictors: Calibrated Uncertainty for Safe Planning*이다
+(Cheraghi Pouria 등 [arXiv:2603.10407](https://arxiv.org/abs/2603.10407), 2026-03, UIUC·Toronto, [코드](https://github.com/fate-79/Rethinking-Gaussian-Trajectory-Predictors)). 학회는 확인하지 못했다.
+예측기 네 개(VLSTM, SLSTM, Social-STGCNN, DSTIGCN)를 ETH/UCY 네 장면에서 다시 학습했다. 보정 오차는 16개 조합 가운데 15개에서 줄었다. 예를 들어 DSTIGCN의 UNIV는 0.111에서 0.026이 됐다.
+충돌률은 16조합 가운데 10개에서 줄고 5개에서 늘었다(1개는 같음). 대가로 경로와 시간이 길어졌다.
+
+동작 방식은 이렇다. NLL 손실은 공분산을 과하게 넓히거나 좁혀도 평균을 맞추면 작아질 수 있다. 그래서 배치 안 정답의 제곱 Mahalanobis 거리 분포를 커널 밀도로 추정하고, 그 누적분포를 카이제곱 누적분포와 맞춘다.
+평균은 MSE 항으로 따로 맞춘다. 계획 쪽은 불확실성 MPC로, 보행자마다 Mahalanobis 거리가 충돌 확률 0.2에 해당하는 문턱보다 크도록 확률 제약을 둔다.
+
+**travplan에 주는 의미.** travplan의 MPPI `RiskCost`는 보행자 예측 점유를 시간별 층으로 받는다(TP-0012). 예측 반경을 공분산으로 바꾸는 순간 그 공분산이 보정됐는지가 안전을 정한다.
+==보정된 공분산이 충돌률을 늘 낮추지는 않는다는 결과가 이 논문의 실제 교훈이다.== travplan 보행자 실패(TP-0160–0165)의 원인은 예측이 아니라 plant 조향 한계와 벌점 포화였으므로, 이 방식은 지금 병목이 아니다.
+학습 예측기를 넣을 때 평가 항목에 보정 오차를 같이 재는 근거로만 둔다.
+
+![Calibrated Gaussian Fig. 1](https://arxiv.org/html/2603.10407v2/fig/CDF.jpg)
+*그림 — Calibrated Gaussian Predictors (Fig. 1): UNIV에서 SLSTM 세 변형의 제곱 Mahalanobis 거리 누적분포와 이론 카이제곱 곡선. 제안 손실로 학습한 쪽이 가장 가깝다. 출처: [arXiv:2603.10407](https://arxiv.org/abs/2603.10407)*
+
+#### CoCoNav — 수평선별 conformal 제어기로 오차 폭을 맞추고, 완화한 MPC 해를 따로 인증한다
+
+**보행자 예측 오차의 범위를 수평선마다 conformal PI 제어기로 온라인 조정한다.** 그다음 소프트 제약 MPC가 낸 궤적과 비상 정지 후보를 그 범위에 대해 검사하고, 통과한 것만 실행한다
+(Guo 등 [arXiv:2608.07751](https://arxiv.org/abs/2608.07751), 2026-08, Manchester 등). 학회는 확인하지 못했고, 코드는 채택 뒤 공개 예정이다.
+시뮬은 MATRiX(MuJoCo·UE5·CARLA)이고, 10 m × 10 m에 보행자 4·8·12명, 흐름 셋, 조건마다 10회다. 보행자 12명에서 정면 흐름은 성공 100%·충돌 0%, 교차 흐름은 성공 80%·충돌 10%였다.
+같은 정면 흐름에서 ACP-MPC는 성공 0%·충돌 0%였다. 얼어붙어 시간이 초과됐기 때문이다(97.86 s).
+
+동작 방식은 이렇다. 예측기는 ETH/UCY로 학습한 CVAE(SocialVAE 계열)이고, 8스텝 과거로 12스텝을 예측한다. 수평선 τ마다 "오차가 범위를 넘었는가"를 신호로,
+범위 문턱을 비례항과 포화한 적분항으로 갱신한다. 그래서 장기 경험 위반율이 목표에 수렴하고, 예측 오차가 커지면 범위도 커진다. 계획은 두 단계다.
+먼저 범위를 벌점으로만 쓰는 소프트 제약 MPC로 명목 궤적을 만든다(hard 제약이면 해가 없어지기 때문이다). 다음으로 그 궤적의 모든 수평선에서 간격이 안전거리와 범위의 합보다 큰지 검사한다.
+통과하지 못하면 정지·감속·회전 정지 후보 목록에서 검사를 통과한 것을 고른다. 실물은 12자유도 4족이고, 카메라 YOLOv11과 ByteTrackV2로 보행자를 잡아 Mid-360 깊이로 3D로 올렸다.
+인식은 RK3588에서 10 Hz, 계획은 Xavier NX에서 50 Hz였다.
+
+**travplan에 주는 의미.** ==MPPI hard 벌점 포화(TP-0160)와 MPC hard 제약 불가능은 닮은 문제다. 둘 다 안전한 선택지가 표본이나 해 집합에서 사라진다.==
+CoCoNav의 답은 "최적화는 소프트로, 안전은 별도 검사로"다. 그러나 travplan에서 기대할 이득은 작다. 등급화 벌점(`mppi_plant_lag_pg`, TP-0161·0165)이 이미 충돌을 8건에서 4건으로 줄였다.
+남은 4건(TP-0162)은 거의 멈춘 로봇(0.1–0.2 m/s)에 정면 보행자가 부딪히는 경우이고, 원인은 plant 조향 한계 56.2°다. 정지 후보를 더해도 이 4건은 없어지지 않는다.
+conformal 범위 조정은 반응형 보행자(TP-0167)나 L1 검출에서 예측 오차가 생길 때만 의미가 있다. 그때 MPPI가 고른 해를 보정 범위로 검사하는 필터를 Controller 뒤에 붙인다. MPPI 최적화기는 건드리지 않는다.
+
+![CoCoNav Fig. 2](https://arxiv.org/html/2608.07751v1/figs/coconav_framework_overview_v2.png)
+*그림 — CoCoNav (Fig. 2): 예측기, 수평선별 conformal PI 보정, 소프트 제약 MPC, 그리고 명목 궤적과 비상 후보를 보정 범위로 검사하는 단계로 이루어진 전체 구조. 출처: [arXiv:2608.07751](https://arxiv.org/abs/2608.07751)*
+
+<details markdown="1">
+<summary>자세히: CoCoNav의 conformal PI 갱신</summary>
+
+**무엇을 하나.** 수평선 $\tau$의 점수 $s_k^\tau$(매칭된 보행자의 τ스텝 잔차 노름)가 문턱을 넘었는지로 위반 신호를 만든다. 목표 위반율은 $\delta$다.
+
+$$ g_k^\tau = \mathbb{1}\left[s_k^\tau > q_{k-\tau+1}^\tau\right] - \delta, \qquad P_{k+1}^\tau = P_k^\tau + \eta_k^\tau g_k^\tau, \qquad q_{k+1}^\tau = P_{k+1}^\tau + r_k\left(G_{k-1}^\tau\right) $$
+
+$G$는 $g$의 누적합이고, $r_k$는 포화한 tan 형태의 적분항이다. 실제 쓰는 범위는 $\max(0, q)$다. 논문은 한 스텝 경험 위반율이 $\delta$에 사라지는 항을 더한 값으로 묶인다고 보였다.
+
+**검사.** 후보 궤적 $Z$의 모든 $\tau$와 보행자 $j$에서 간격 $c_j \ge d_{safe} + q^{eff} + \epsilon$이면 통과다.
+
+**travplan에 주는 것.** 수평선별 문턱 하나씩이라 보행자 수와 무관하게 싸다. `DynamicObstacles.sigma_growth`(예측 시간에 비례해 커지는 반경)를 데이터로 맞춘 이 문턱으로 바꿀 수 있다. 등속 예측과 등속 보행자에서는 문턱이 0으로 수렴한다.
+
+</details>
 
 #### A.12.5 예측을 주행으로 잇는 법 — 양보와 가감속은 어디서 나오나
 
@@ -8441,3 +8741,62 @@ A.12.4의 가림 원리(M-detector, Dynablox)를 평면 칸 단위로 단순하�
 
 ![CMU 메카넘 스택 RViz](https://raw.githubusercontent.com/jizhang-cmu/autonomy_stack_mecanum_wheel_platform/jazzy/img/rviz_full.jpg)
 *그림 — CMU 메카넘 바퀴 스택: 기본 자율(smart joystick, waypoint, 수동 모드)을 RViz에서 본 화면. 출처: [autonomy_stack_mecanum_wheel_platform](https://github.com/jizhang-cmu/autonomy_stack_mecanum_wheel_platform)*
+
+---
+
+<!-- tab: 최근 연구 비교 -->
+
+## A.14 최근 연구 비교 (2025–2026)
+
+==2025–2026 인식 연구는 "지나간 자리와 본 자리만 안다"는 사실을 정면으로 다루는 쪽으로 모였다.== 자기지도 traversability는 음성 라벨이 없는 PU 문제를 합성 음성, 초구 이상 탐지, nnPU 손실로 푼다.
+지형 지도는 칸 독립 분산 대신 공간 상관이나 가림 기하에서 나온 분산을 계획까지 전파하고, 한편에서는 못 본 칸을 생성 모델로 채운다. 보행자 예측은 정확도보다 오차 폭의 보정을 다룬다.
+travplan은 이 가운데 상당 부분을 이미 다른 방식으로 피하고 있다. TravNet은 라벨 없는 칸을 손실에서 빼고, 못 본 칸은 그림자 상한으로 보수적으로 둔다.
+그래서 지금 먼저 할 일은 새 방법을 들이는 것이 아니라 TravNet이 이미 내는 `log_var` σ가 오차 순위를 맞히는지 재는 것이다. 표현(2.5D TravMap)은 바꾸지 않는다.
+
+| 이름(연·발표) | 입력·표현 | 방법의 핵심 | 학습 신호·최적화 | 불확실성 | 로봇·실험 | 코드 | 절 |
+|---|---|---|---|---|---|---|---|
+| SyNeT (2026, arXiv) | RGB | 확산 inpainting으로 합성 음성, PU·PN 양쪽에 손실 추가 | 접지 궤적 양성 + 합성 음성 | 없음(점수만) | RELLIS-3D, 자체 도시 데이터, Orin INT8 11.6 FPS | 공개 예정 | A.10.1 |
+| GSAT (2026, ICRA) | LiDAR BEV pillar | 양성 둘레 초구로 라벨 없는 칸을 정상·이상으로 분할 | 궤적 양성 + 속도 추종 오차 점수 | 초구 거리(OOD 경계) | SCOUT MINI, Go2, Gazebo 10/10 | 프로젝트 페이지 | A.10.1 |
+| Long-Horizon Traversability (2026, arXiv) | 위성 + 항공 LiDAR + OSM | DINOv3-SAT와 LiDAR 래스터를 FiLM 융합 | nnPU(GPS 궤적 양성) + 기하 prior | 없음 | Warthog 7경로, 개입 14회에서 2회 | 프로젝트 페이지(코드 미확인) | A.10.1 |
+| COTRATE (2026, arXiv) | RGB | 로봇 무관 지형 평가기가 시각망을 지도, 연속 학습 | 고유수용·IMU 점수 | 미확인 | Spot, Husky, 11지형 약 5만 장 | 미확인 | A.3b |
+| ViTA (2026, arXiv) | RGB | SAM2에 traversability prompt, 기하 증류 | 분할 라벨 + 기하 지식 | 다관점 학습으로 경계 확신 낮춤 | 오프로드 데이터셋 | 미확인 | A.10.2 |
+| PIVOT (2026, arXiv) | RGB + 기하 | VLM 비용을 실측 상관으로 가중, 기하 실패 때만 호출 | 실측 에너지·진동·슬립 | 없음 | 6.4 km 5회, 개입 11회에서 3회 | 미확인 | A.10.2 |
+| Experience-Driven CL (2026, arXiv) | RGB(DINOv3 고정) | 접지 성질 5개를 따로 예측, 관문 연속 학습 | 접지 후 측정 성질 | evidential epistemic | Go2 실물 접지 951개 | 미확인 | A.10.3 |
+| Task-Conditioned Costmaps (2026, arXiv) | 높이 스캔 + 명령 속도 | 발 디딤 예측의 분산을 비용 지도로 | 시뮬 발 디딤 회귀 | 앙상블 + MC dropout, 보정 손실 | Go1(실물 정성), 시뮬 MPPI 10회 중 8회 최저 | 미확인 | A.10.3 |
+| ProTerrain (2025, ICRA 2026 투고) | 높이 지도 + 영상 | 공간 상관 공분산을 합성곱으로, 미분 물리로 전파 | 궤적 손실 + LiDAR 높이 | 공간 상관 aleatoric | ROUGH11(궤도형) | 미확인 | A.2b.7 |
+| Occlusion-Aware Planning (2026, arXiv) | 깊이 점군 | Fourier 지형 계수의 역 Hessian 분산을 자세로 전파 | 모델 기반 CEM, flow matching 초기값 | 가림 epistemic | 합성 지형 실패 18.9%, Husky·Jackal 정성 | 미확인 | A.2b.7 |
+| SceneSense (2025, arXiv) | LiDAR occupancy | 확산 모델로 못 본 voxel 생성, 확률 갱신으로 합침 | 실측 occupancy로 학습 | 생성 확률을 센서보다 낮게 | Spot, FID 24.44%·75.59% 개선 | 공개 예정 | A.2b.7 |
+| WalkOCC (2026, arXiv) | 단안 RGB | ray-marching 3D occupancy | 적은 LiDAR 쌍 + 많은 단안 영상 | 미확인 | Sidewalk3D(보도) | 미확인 | A.3 |
+| Conformal 예측 + 제약 RL (2025, CoRL) | 보행자 궤적 | 적응형 conformal 범위를 관측에 추가 | 제약 강화학습 | conformal 범위 | 학습 분포 안 성공 96.93% | 미확인 | A.12.4 |
+| Calibrated Gaussian Predictors (2026, arXiv) | 보행자 궤적 | Mahalanobis 거리를 카이제곱에 맞추는 손실 | KDE 누적분포 정합 + MSE | 보정한 가우시안 | ETH/UCY, 충돌률 10조합 감소·5조합 증가 | 공개 | A.12.4 |
+| CoCoNav (2026, arXiv) | 카메라 + LiDAR 보행자 | 수평선별 conformal PI, 소프트 MPC 뒤 검사 | 온라인 conformal 보정 | 보정 오차 범위 | MATRiX 시뮬 12명: 정면 100%, 교차 80%(충돌 10%), 4족 실물 | 공개 예정 | A.12.4 |
+
+### 공통점
+
+- **지나간 자리만 양성으로 쓴다.** 사람 라벨 대신 접지 궤적, 발자국, GPS 궤적이 양성이다. SyNeT, GSAT, Long-Horizon Traversability, COTRATE, Experience-Driven CL이 그렇다. travplan `FootprintLabeler`와 같은 출발점이다.
+- **라벨 없는 칸을 음성으로 두지 않는다.** GSAT는 라벨 없는 칸을 전부 음성으로 두면 F1이 떨어진다고 보였고, Long-Horizon Traversability는 nnPU로 라벨 없는 칸을 "모름"으로 둔다. Experience-Driven CL은 못 본 칸을 지도에서 모름으로 남긴다. travplan은 그 칸을 손실에서 빼는 가장 단순한 방식을 이미 쓴다.
+- **큰 시각 모델은 고정하고 작은 헤드만 학습한다.** Experience-Driven CL(DINOv3 ViT-S), Long-Horizon Traversability(DINOv3-SAT), SyNeT(고정 ResNet·SAM), ViTA(SAM2)가 그렇다. 학습 데이터가 작은 로봇 경험이기 때문이다.
+- **이번에 고른 연구 가운데 셋은 불확실성을 계획이 바로 쓰는 형태로 낸다.** Occlusion-Aware Planning은 자세 분산을, Task-Conditioned Costmaps는 비용 지도를, CoCoNav는 간격 문턱을 낸다. Experience-Driven CL은 분산 지도를, ProTerrain은 궤적 분포를 낸다.
+
+### 차이점
+
+- **음성을 어디서 얻나.** 합성(SyNeT)은 사람 라벨 없이 위험 물체를 넣지만 영상 영역에 묶인다. 초구 이상 탐지(GSAT)는 음성 없이 경계를 세우지만 반지름이 데이터 분포에 따라 흔들린다. nnPU(Long-Horizon Traversability)는 손실 하나만 바꾸지만 양성 사전 비율을 알아야 하고, 이진 분류를 전제한다. travplan은 연속 회귀 목표에 마스킹을 쓰므로 세 방식 모두 지금은 필요 없다.
+- **입력이 영상인가 기하인가.** 영상 쪽(SyNeT, ViTA, Experience-Driven CL, COTRATE)은 마찰·재질처럼 기하에 없는 성질을 잡는다. 기하 쪽(GSAT, Occlusion-Aware Planning, ProTerrain)은 조명에 강하고 travplan TravMap과 바로 맞는다. 포트홀과 턱이 주된 위험인 보도에서는 기하 쪽이 먼저다.
+- **불확실성이 무엇을 재나.** 세 갈래로 나뉜다.
+  (가) 지형 관측 부족이다. 칸 독립 분산(emap 분산), 공간 상관 분산(ProTerrain), 가림 기하 분산(Occlusion-Aware Planning)이 여기에 든다. travplan `TravMap.SIGMA`는 `builder.py`에서 못 본 칸을 1로 두는 이진 규약이거나, cost의 높이 민감도 규약(`sigma_mode="sensitivity"`, TP-0054)이다.
+  (나) 모델 epistemic, 곧 학습 분포 밖 입력이다. Experience-Driven CL, Task-Conditioned Costmaps, GSAT의 초구 거리가 여기에 든다.
+  (다) 예측 오차의 포함률이다. CoCoNav와 Conformal 예측 + 제약 RL이 여기에 든다. conformal은 OOD를 찾지 않고, 오차가 범위 안에 드는 비율을 맞춘다.
+- **못 본 칸을 어떻게 두나.** 보수적으로 두는 쪽(travplan 그림자 상한, Experience-Driven CL의 "모름")과 생성으로 채우는 쪽(SceneSense)이 갈린다. 생성 채움은 탐사 시간을 줄일 수 있지만, 못 본 포트홀을 평평하게 덮을 위험이 있다.
+- **보정을 언제 하나.** 학습 때 보정(Calibrated Gaussian Predictors, Task-Conditioned Costmaps의 보정 손실)은 배포가 싸지만 분포가 바뀌면 다시 어긋난다. 배포 중 보정(CoCoNav)은 분포 이동을 따라가지만 오차를 관측할 수 있어야 한다. 보행자는 몇 스텝 뒤 위치가 보이므로 배포 중 보정이 가능하다.
+- **실시간성.** Orin에서 잰 것은 SyNeT(INT8 11.6 FPS)뿐이고, CoCoNav는 Xavier NX 50 Hz 계획을 적었다. Occlusion-Aware Planning은 계획마다 Levenberg–Marquardt 지형 맞춤이 있어 그대로는 travplan의 계획 시간 기준에 맞지 않는다. SceneSense는 추론에 0.44 s가 걸린다. ProTerrain은 실행 시간을 적지 않았다.
+
+### travplan에 주는 의미
+
+==가져올 것은 측정 절차와 조건부 안전 필터이고, 지도 표현과 무거운 확률 지형 모델은 가져오지 않는다.== travplan의 L1 인식 루프(elevation_mapping_cupy, 그림자 상한, stereo)는 그대로 둔다.
+가져오지 않는 것은 넷이다. 위성·OSM 장거리 지도는 Planner 과제다. Fourier 지형 맞춤과 공간 상관 공분산은 계산이 무겁다. VLM 비용 지도는 계획 시간 기준에 걸린다. 생성 채움(SceneSense)은 cost에 넣지 않는다.
+
+시도 순서는 다음과 같다.
+
+1. **TravNet `log_var` σ의 순위 검증(TP 후보, 먼저).** TravNet은 이미 aleatoric `log_var`를 내고 `LearnedTraversability`가 그것을 `TravMap.SIGMA`로 바꾼다. TP-0054와 같은 방식으로 이 σ가 cost 오차의 순위를 맞히는지 잰다. 맞히지 못하면 cost 민감도 σ를 그대로 쓰고, evidential 헤드(Experience-Driven CL)는 그 뒤에 검토한다.
+2. **CoCoNav식 보정 범위 검사(TP-0167 뒤).** 반응형 보행자 짝 비교(TP-0167)에서 예측 오차와 충돌이 실제로 생길 때만 시작한다. 그때 `DynamicObstacles.sigma_growth`를 conformal 문턱으로 맞추고, MPPI가 고른 해를 그 범위로 검사하는 필터를 Controller 뒤에 붙인다. 판정은 720 에피소드 짝 비교(2층)다. 남은 정면 충돌 4건(TP-0162, 조향 한계)은 이 필터로 줄지 않는다.
+3. **PU와 합성 음성은 실물·영상 단계로(TP-0059 때).** 영상 TravNet을 들일 때 SyNeT식 합성 음성과 합성 위치 기반 평가를 가져온다. 실물 데이터에서 가림이 표본 편향을 만드는지 잴 때, 마스킹과 nnPU를 비교한다.

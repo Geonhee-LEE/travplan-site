@@ -27,6 +27,7 @@ LiDAR에서 TravMap까지 이어지는 인식 경로를 검증한다. 보도 전
 | **S.5 지형·바퀴** | 지형 생성, 바퀴 물리의 한계, 스워브 모듈 모델, 변형 지면 | L0 보강, 스워브 모델 |
 | **S.6 sim-to-real** | 도메인 랜덤화, 보정, 예측력(SRCC), 시뮬레이터 허점 | 벤치마크를 믿을 수 있는가 |
 | **S.9 로봇 리그** | antbot_gazebo, CMU 탐사 개발 환경, dddmr, Clearpath, TurtleBot4 | 오늘 띄워 토픽을 받을 수 있는 것. 인식 모듈 개발 대상 선택 |
+| **S.10 최근 연구 비교** | 2025–2026 연구 16편의 비교표, 공통점, 차이점 | 다음 시도 순서와 TP 후보 |
 | **S.7 travplan 권고** | 우선순위와 TODO 후보 | 다음 작업 |
 | **S.8 참고문헌** | 전체 목록(참고문헌 문서의 "시뮬레이션" 탭) | |
 
@@ -140,6 +141,28 @@ issue #181). Genesis 팀은 이후 자기 충돌을 켜고 4,300만, 무작위 �
 
 **travplan에 주는 의미.** ==시뮬레이터 속도는 자기 작업으로 재야 한다.== 공개 벤치마크는 장면 구성에 따라 두 자릿수 배까지 달라진다.
 travplan은 Genesis를 고르지 않는다.
+
+#### GPUSimBench — GPU 시뮬레이터 일곱 개를 같은 장비에서 쟀다
+
+**GPUSimBench는 GPU 시뮬레이터 일곱 개의 처리량, 실물과의 일치, 결정론을 한 장비에서 비교한 벤치마크다**([arXiv:2607.13059](https://arxiv.org/abs/2607.13059),
+IROS 2026, Shanghai AI Lab·MIRAI·NTU·Nanjing Univ.). 대상은 Isaac Lab, ManiSkill, Madrona, Genesis, MuJoCo Warp, MJX, MuJoCo Playground다.
+처리량 1위이고 결정론적인 Genesis가 실물 일치에서는 다섯째로, Isaac Lab 바로 앞이었다. 빠르고 재현되는 엔진이 실물에 가깝다는 보장은 없다.
+
+**동작 방식.** 장면은 셋이다. 정육면체 27개를 떨어뜨리는 장면과 Franka 팔에 무작위 관절 목표를 주는 장면으로 처리량과 메모리를 잰다.
+20° 경사로 굴린 쇠공이 정육면체 더미를 치는 장면은 실물 장치에서 16번 재현하고, 정육면체의 최종 평면 위치 분포를 EMD(earth mover's distance)로 실물과 비교한다.
+같은 실행 안 병렬 환경끼리의 차이(병렬 변동)와 실행 사이의 차이(재실행 변동)도 따로 잰다. 장비는 RTX 5070(12 GB) 한 장이다.
+Franka 장면의 최대 처리량은 Genesis가 1.11×10⁷ FPS로 가장 높았고 Isaac Lab은 1.85×10⁶, MuJoCo Warp는 3.54×10⁶이었다.
+실물과의 EMD는 ManiSkill이 2.52 cm로 가장 작았다. Genesis는 4.78 cm, Isaac Lab은 5.40 cm였다.
+병렬 변동과 재실행 변동이 둘 다 0인 엔진은 Genesis와 MJX다. Isaac Lab과 ManiSkill은 재실행 변동이 0이고 병렬 변동만 있다. 둘 다 0이 아닌 엔진은 MuJoCo Warp와 Madrona다.
+저자들은 병렬 변동을 GPU 부동소수 합산 순서로, 재실행 변동을 접촉 솔버의 경로 차이로 설명한다.
+
+**travplan에 주는 의미.** travplan의 1층 스모크 게이트는 "같은 설정이면 12 에피소드가 전부 같다"는 재현성 위에 서 있다(CLAUDE.md, TP-0156).
+Isaac Lab은 재실행 변동이 0이었지만 병렬 환경끼리는 달랐다. 그래서 병렬 환경 여러 개를 "같은 에피소드의 반복"으로 세면 잡음이 섞인다.
+Isaac Sim과 ROS 2를 잇는 폐루프(TP-0005)의 비결정성은 주로 비동기 토픽 타이밍에서 오는데, 이것은 이 논문이 재지 않았다. 그래서 TP-0005에서는 게이트를 쓰기 전에 같은 설정 재실행으로 잡음 바닥부터 재야 한다.
+또 이 비교는 조작 장면만 쓰고 바퀴 접촉을 재지 않았고, Isaac Lab 2.2.1 기준이다. 엔진 선택의 근거로는 약하다(S.1.4의 교훈과 같다).
+
+![GPUSimBench Fig. 3](https://arxiv.org/html/2607.13059v1/heatmap_0301.png)
+*그림 — GPUSimBench (Fig. 3): 경사 충돌 실험에서 정육면체 최종 위치의 밀도 지도. 시뮬레이터마다 다르고 실물 기준과도 다르다. 출처: [arXiv:2607.13059](https://arxiv.org/abs/2607.13059)*
 
 ### S.1.5 Gazebo
 
@@ -441,6 +464,52 @@ $$ M_{\text{run}} = R_{\text{run}} - C_{\text{OPEX,run}}, \qquad N_{\text{BEP}} 
 - **NavVerse**([arXiv:2607.19695](https://arxiv.org/abs/2607.19695)) — 건물 안에서 거리로 나가는 연속 내비 벤치마크다. 실내 100, 실외 50,
   실내에서 실외로 50 장면과 에피소드 1만 개를 담는다. 문 찾기와 경계 통과가 약점으로 드러났다.
 
+#### 사전식 선호로 생성 정책 조종하기 — 연석을 hard 제약으로 둔 Isaac Sim 배달 벤치마크
+
+**Jia와 How는 0.10 m 턱을 넘지 않는 제약을 잔디 회피 선호보다 먼저 지키도록, 고정된 생성 정책을 추론 시점에 조종했다**([arXiv:2609.15014](https://arxiv.org/abs/2609.15014),
+2026-09, MIT, 코드 공개는 확인하지 못했다). 시험장은 ViPlanner가 쓴 주거지 장면(CARLA Town01에서 온 것)을 Isaac Sim에 둔 라스트마일 배달 벤치마크다.
+높이 0.10 m 이상의 턱은 넘을 수 없는 칸으로 두고, 잔디 위 주행은 벌점으로만 둔다.
+
+**동작 방식.** 기반 정책은 RGB-D diffusion 내비 정책 NavDP다(후보 16개, DDPM 10단계). 조종은 두 단계다. 먼저 동적 장벽 안내(dynamic-barrier guidance)가
+표본마다 낮은 순위 비용의 기울기를 따르되, 높은 순위 비용이 1차 근사로 늘지 않도록 갱신을 제한한다. 다음으로 후보를 순위대로 거른다.
+순서는 실현 가능성, 선호, 진행, 가치 머리다. 로봇은 AgileX Scout 2.0이고, 집 앞에서 집 앞까지 60쌍(9.2–66 m, 중앙값 23.4 m)을 방법마다 세 번 돌렸다.
+성공은 조종 없음 44.3/60에서 56.0/60으로 올랐다. 가중합을 가장 잘 맞춘 경우는 51.0/60이었다. 사전식 선택만 쓰면 48.0/60으로 가중합보다 낮았다. 56.0을 만든 것은 동적 장벽 안내다.
+0.10 m 턱 위에서 멈춘 실패(traversability failures)는 실행당 12.0개에서 2.0개로 줄었다. 잔디 주행 거리는 9.24 m에서 2.60 m로 줄었다.
+도로 칸에 몸 반폭 이내로 다가간 에피소드(curb episodes)는 3.3개에서 0개가 됐지만, 가중합도 0.0이었다.
+대가는 긴 주행이다. 에피소드당 주행 거리가 27.2 m에서 36.9 m로 약 36 % 늘었다. 실물 실험은 없다.
+
+**travplan에 주는 의미.** 두 가지를 가져온다. 하나는 평가 틀이다. "넘을 수 없는 턱"과 "넘을 수 있지만 피하고 싶은 면"을 따로 세는 지표가 TravMap의 치명 셀과 cost의 구분과 같다.
+다른 하나는 표본 안내 방식이다. Planner D 선택기(`planners/learned/flow_planner.py`의 `SelectorConfig`)는 이미 치명 셀 벌점을 1,000으로 두어 비용 가중치 6, 진행 가중치 4를 압도한다.
+그래서 치명 후보를 먼저 버리는 사전식 선택은 사실상 이미 들어 있다. 논문에서도 선택만으로는 이득이 작았다.
+남은 차이는 표본을 만드는 단계다. FlowPolicy의 비용 안내 표본(`guide_scale`, 고정 가중치 `guide_w_soft`)은 치명 근사와 비용을 고정 가중치로 섞는다. 동적 장벽은 치명 근사가 늘지 않는 방향으로만 비용 기울기를 따른다.
+
+![Lexicographic steering Fig. 2](https://arxiv.org/html/2609.15014v1/paper/figures/fig_overhead_steps.png)
+*그림 — 사전식 조종 (Fig. 2): ViPlanner의 주거지 장면(CARLA Town01에서 온 것)과 집 앞에서 집 앞까지의 배달 에피소드 60개. 출처: [arXiv:2609.15014](https://arxiv.org/abs/2609.15014)*
+
+<details markdown="1">
+<summary>자세히: 동적 장벽 안내와 사전식 후보 선택</summary>
+
+**무엇을 하나.** 실현 가능성 비용을 $g$, 선호 비용을 $f$라 하자. 생성기의 한 단계에서 표본 $u$를 $f$의 기울기 쪽으로 옮기되, $g$가 1차 근사로 일정량 이상 줄도록 방향 $d$를 고른다.
+장벽은 $g$가 클수록 더 큰 감소를 요구하고, 기울기가 작으면 요구를 낮춘다.
+
+$$ \phi(u) = \min\big(\alpha_b\, g(u),\ \beta_b \lVert \nabla g(u) \rVert_2^2\big), \qquad d^\star(u) = \arg\min_d\ \tfrac12 \lVert d - \nabla f(u) \rVert_2^2 \ \ \text{s.t.}\ \ \langle \nabla g(u), d \rangle \ge \phi(u) $$
+
+제약이 하나라 닫힌 해가 있다. 갱신은 $u \leftarrow u - \eta\, d^\star(u)$다. 내비 실험은 $\alpha_b = \beta_b = 1$을 썼다.
+
+$$ d^\star(u) = \nabla f(u) + \lambda(u)\, \nabla g(u), \qquad \lambda(u) = \max\Big(\frac{\phi(u) - \langle \nabla f(u), \nabla g(u) \rangle}{\lVert \nabla g(u) \rVert_2^2},\ 0\Big) $$
+
+**사전식 선택.** 단계 $j$마다 살아남은 후보 가운데 최솟값에서 허용치 $\varepsilon_j$ 안에 드는 것만 남긴다. 기준이 현재 최솟값이므로 후보가 늘 하나 이상 남는다.
+
+$$ \mathcal I_{j+1} = \{\, i \in \mathcal I_j :\ c_j(y_i) \le c_j^{\min} + \varepsilon_j \,\} $$
+
+내비에서는 실현 가능성($\varepsilon_g = 0.1$, 지평 할인 0.85), 선호($\varepsilon_f = 0.05$), 진행(최대 진행에서 1.5 m 이내), 가치 머리 순이다.
+실현 가능성 비용은 LiDAR로 만든 위험 지도에서 온다. 0.10 m 이상의 턱은 고위험이고, 가려진 칸은 음의 장애물이 숨었을 수 있어 "모름" 위험을 준다.
+위험은 반지름 0.4 m 발자국 원 안 값 중 나쁜 20 %의 평균(CVaR)으로 모은다.
+
+**travplan에 주는 것.** Planner D의 후보 선택은 치명 벌점이 커서 사실상 이미 사전식이다. 가져올 것은 위의 장벽 갱신이다. FlowPolicy 안내 표본의 고정 가중 합(`guide_scale`, `guide_w_soft`)을 이 닫힌 해로 바꾸면 학습을 다시 하지 않고 시험할 수 있다. 가려진 칸에 "모름" 위험을 주는 처리는 travplan의 그림자 상한과 깊이 prior(TP-0044·0047)와 같은 생각이다. 비교는 2층 짝 비교로 한다.
+
+</details>
+
 #### 비교
 
 | 이름 | 엔진 | 장면 | 보행자 | 실물 검증 | 코드·라이선스 | travplan 용도 |
@@ -452,6 +521,7 @@ $$ M_{\text{run}} = R_{\text{run}} - C_{\text{OPEX,run}}, \qquad N_{\text{BEP}} 
 | SidewalkBench | Isaac Sim + Isaac Lab | 절차 100 + 스캔 11 | 사건 기반 8종 | 스캔 장면 상관 | 공개 예정 | **TP-0027 평가 틀** |
 | CostNav | Isaac Sim | 200 m × 200 m 보도망 | 밀도 조절 | ✅ Segway E1 SLA | 공개 | 경제성 지표 |
 | SimWorld-Robotics | UE5 | 절차 생성 도시 | 있음 + 교통 | — | 공개 | 쓰지 않음 |
+| 사전식 조종 벤치마크 | Isaac Sim | ViPlanner 주거지(CARLA Town01), 0.10 m 턱 제약 | 없음 | — (시뮬 60쌍) | 확인 못함 | 치명과 비용을 나눈 지표, 안내 표본 |
 
 ---
 
@@ -467,7 +537,8 @@ $$ M_{\text{run}} = R_{\text{run}} - C_{\text{OPEX,run}}, \qquad N_{\text{BEP}} 
 |---|---|---|---|---|
 | 규칙: 힘 모델 | Social Force(HuNavSim) | 로봇·서로·벽에 반응 | CPU, 매우 쌈 | HuNavSim, Arena |
 | 규칙: 속도 최적화 | ORCA | 충돌 없는 속도 보장 | CPU·GPU(JAX), 쌈 | MetaUrban, URBAN-SIM |
-| 사건 스크립트 | 상태 기계 | 조건이 맞으면 정해진 행동 | 쌈, 재현성 최고 | SidewalkBench |
+| 사건 스크립트 | 상태 기계 | 조건이 맞으면 정해진 행동 | 쌈, 재현성 최고 | SidewalkBench, DynBench |
+| 언어로 만든 행동 트리 | LLM + HuNavSim + SFM | 행동 트리대로, 국소는 SFM | 생성 때 LLM 호출 | GROVE |
 | 데이터 기반 생성 | 궤적 diffusion + 동작 모방 | 학습된 분포대로 | GPU, 비쌈 | NavIsaacLab, SONG |
 
 ### S.3.1 Social Force Model과 HuNavSim
@@ -529,11 +600,41 @@ $$ \mathbf v_A^{\text{new}} = \arg\min_{\mathbf v \in D(\mathbf 0, v_A^{\max})\ 
 
 </details>
 
+#### DynBench — ORCA 대신 상태 기계와 NavMesh로 움직인 보행자
+
+**FLUX 논문의 DynBench는 보행자를 ORCA로 움직이지 않는다**([arXiv:2603.12806](https://arxiv.org/abs/2603.12806), 2026-03, HKUST·HKUST(GZ)·NUS,
+[프로젝트](https://zeying-gong.github.io/projects/flux/), 코드 저장소는 확인하지 못했다). 저자들은 ORCA가 서로 협조한다고 가정하므로 군중이 부자연스럽게 맞춰 움직인다고 본다.
+그래서 Isaac Sim에서 상태 기계와 NavMesh 경로 계획과 기하 기반 국소 회피로 보행자를 움직인다.
+
+**동작 방식.** 보행자마다 세 상태(GoTo, Idle, LookAround)를 오가는 Markov 상태 기계가 있다. 보행자는 세 경유점을 잇는 삼각 경로를 돈다.
+경유점 사이의 전역 경로는 NavMesh 위 A\*로 만든다. 보행자는 1.1 m/s로 걷고, 로봇 속도는 0.5 m/s로 묶었다.
+학습은 비정형 장면 20개(에피소드 2만 개), 평가는 정형 장면 6개(600개)에서 한다.
+과제는 정적 셋(PointNav, ImageNav, 탐사)과 동적 셋(동적 PointNav, SocialNav, 동적 탐사)이다. 사회 지표는 Hall의 근접 구역으로 잰다.
+FLUX(rectified flow 정책, 정적 모방학습 뒤 GRPO 강화학습)는 SocialNav 성공을 NavDP의 59.3에서 64.0으로, 충돌 수를 21에서 16으로 바꿨다.
+실물은 Go2-W(바퀴), Go2, G1에 zero-shot으로 올렸다.
+
+**travplan에 주는 의미.** S.3.2의 ORCA 한계와 같은 지적이다. travplan은 ORCA 반응형 보행자를 선택 항목(`--ped-react`, TP-0036, PR #232)으로 막 넣었고, 등속 보행자(TP-0154)와의 짝 비교(TP-0167)를 기다린다.
+ORCA 보행자는 로봇을 과하게 피해 줄 수 있어, 그 짝 비교에서 충돌이 줄어도 실제보다 낮게 보일 수 있다. 결과를 읽을 때 이 점을 함께 적어야 한다.
+DynBench는 반응 대신 "멈춰 서기, 둘러보기"처럼 로봇과 무관한 상태 전환을 넣는다. 서 있다가 갑자기 걷기 시작하는 보행자는 등속 보행자로도 ORCA로도 만들 수 없다.
+
 ### S.3.3 사건 기반 시나리오
 
 SidewalkBench(S.2.5)는 보행자와 로봇의 상대 위치로 여덟 가지 사건을 발동한다. 사건 기반 시나리오의 장점은 **재현성**이다. 같은 사건이 같은
 조건에서 일어나므로 스택끼리 공정하게 비교할 수 있다. 단점은 사건 목록 밖의 상호작용을 만들지 못한다는 점이다. travplan의 정면 접근·수직
 횡단 보행자도 이 방식의 가장 단순한 형태다.
+
+#### GROVE — 글로 쓴 시나리오를 행동 트리로 바꾸는 보행자 생성기
+
+**GROVE는 "응급 상황", "줄서기" 같은 글 설명을 받아 보행자 행동 트리와 경로를 만든다**([arXiv:2606.25504](https://arxiv.org/abs/2606.25504), IROS 2026,
+SMU·NUS 등, 코드 공개는 확인하지 못했다). Arena(S.3.5)를 만든 Linh Kästner가 저자에 있고, HuNavSim 2.0(S.3.1) 위에 지었다.
+
+**동작 방식.** 계층은 셋이다. 장기 계층은 대형 언어 모델(LLM)이 글에서 관심 구역을 골라 YAML 세계 표현과 맞춘다.
+중기 계층은 검색 증강(RAG)으로 행동 노드 명세를 가져와 LLM이 행동 트리를 만들고, Theta\*가 2D 점유 격자에서 경유점을 잇는다.
+단기 계층은 Social Force로 국소 회피를 하고, 새 노드 FollowVelocityField로 무리 흐름을 만든다. 출력은 Isaac Sim과 Gazebo로 보낸다.
+평가는 정성 비교와 GPT-5가 화면을 0–10점으로 매긴 점수뿐이다. 예를 들어 줄서기 6.62점, 기준선 4.39와 4.61점이다. 내비 성능에 주는 영향은 재지 않았다.
+
+**travplan에 주는 의미.** 지금은 가져오지 않는다. 점수가 VLM 판정이라 시나리오가 "현실에 가까운가"를 수치로 보증하지 못한다.
+쓸모는 시나리오 목록을 늘리는 일에 있다. SidewalkBench의 사건 여덟 가지(S.3.3) 밖의 상황을 글로 만들고, 만든 것을 사건 기반 시나리오로 고정해 재현성을 지키는 순서가 맞다.
 
 ### S.3.4 데이터 기반 보행자
 
@@ -558,6 +659,19 @@ Arena 5.0(RSS 2025 데모)은 Isaac Sim을 붙여 사진 같은 장면에서 비
 
 **travplan에 주는 의미.** Nav2 기준선(규칙 기반 로컬 플래너)과 같은 장면에서 비교하고 싶을 때 쓴다. 지표 정의(최소 거리, 사회적 공간 침범,
 경로 방해)를 참고한다.
+
+#### SocNav Bench — 공원·거리 3DGS 장면 아홉 곳에서 보행자와 함께 잰다
+
+**SocialNav 논문의 SocNav Bench는 Isaac Sim 물리와 3DGS 렌더링을 묶은 사회적 내비 폐루프 벤치마크다**([arXiv:2511.21135](https://arxiv.org/abs/2511.21135),
+2025-11, Alibaba Amap·Zhejiang Univ., [프로젝트](https://amap-eai.github.io/SocialNav/), 발표 학회와 코드 저장소는 확인하지 못했다).
+새로 찍은 장면 9곳(공원 3, 거리 3, 사무실 2, 캠퍼스 1, 약 7.3만 m²)을 쓰고, 3DGS를 메시로 바꿔 충돌을 준다.
+
+**동작 방식.** 로봇은 Go2 하나로 통일했다. 장면마다 20 m와 100 m 시작-목표 쌍을 10개씩 두어, 평가는 9곳 × 20 = 180건이다. 보행자는 걷기 가능 영역 안쪽에 100 m당 6명 이하로 놓인다.
+보행자는 길망 위 임의 목표로 평균 1.0 m/s(표준편차 0.2 m/s)로 가고, 로봇과 협조하지 않는다. 지표는 성공률, 경로 완주율, SPL과 거리·시간 기준 사회 준수율이다.
+SocialNav(Qwen2.5-VL-3B 두뇌 + flow matching 행동 전문가)는 성공률 86.1, CityWalker는 47.8이었다. 실물 Go2에서는 평균 85.0 %(CityWalker 62.5 %)였다.
+
+**travplan에 주는 의미.** 보도 배달로봇의 평가 장면으로는 SidewalkBench(S.2.5)와 겹친다. 다른 점은 공원과 거리의 실측 3DGS 장면이 이미 있다는 것이다.
+보행자가 로봇을 무시한다는 설정은 travplan의 등속 보행자(TP-0154)와 같은 쪽이다. 그래서 이 벤치마크의 사회 지표는 "로봇이 피하는 능력"만 잰다.
 
 ---
 
@@ -621,6 +735,31 @@ $\arctan\frac{h_c - h_s}{d_c} \ge \phi_{\min}$으로 더한다.
 
 ![Isaac Lab Fig. 6](https://arxiv.org/html/2511.04831v1/assets/core-sim-tech/Isaac_Lab_3GDRT_rendering.png)
 *그림 — Isaac Lab (Fig. 6): 3D Gaussian 렌더링과 메시 렌더링을 섞은 장면. 메시의 그림자가 Gaussian 장면에 드리운다. 출처: [arXiv:2511.04831](https://arxiv.org/abs/2511.04831)*
+
+#### Wanderland — 기하가 부정확한 장면은 평가와 미세조정을 흔든다
+
+**Wanderland는 LiDAR·IMU·RTK-GNSS·어안 카메라를 묶은 손 스캐너로 도시 장면 530곳을 찍고, 기하가 정확한 3DGS 장면을 Isaac Sim USD로 냈다**([arXiv:2511.20620](https://arxiv.org/abs/2511.20620),
+CVPR 2026, NYU·Cornell, [프로젝트](https://ai4ce.github.io/wanderland/)). 같은 정책도 기하가 부정확한 장면에서 평가하면 결과가 달라진다는 것을 보였다.
+장면은 뉴욕과 저지시티의 실내외(주거, 상업, 거리, 광장, 캠퍼스)로 380만 m²를 넘는다.
+
+**동작 방식.** 스캐너(MetaCam Air)는 Livox Mid-360 LiDAR, IMU, RTK-GNSS, 4K 어안 카메라 두 대를 가진다. LiDAR-관성-영상-GNSS 융합 SLAM이 미터 단위 점군과 카메라 자세를 낸다.
+이 SLAM은 상용 소프트웨어(MetaCam Studio)라 공개되어 있지 않다.
+3DGS는 LiDAR 점군에서 시작해 사진과 깊이 손실로 학습한다. 충돌은 점군을 복셀로 만든 뒤 marching cubes로 메시를 뽑아 준다.
+영상만으로 궤적 자세를 추정하면 축척을 맞춘 뒤에도 이동 오차가 약 0.30 m, 회전 오차가 5.0°였다. 새 시점 합성 PSNR은 외삽 시점에서 17.92였다. Vid2Sim(S.2.4)은 16.49, GaussGym(S.4.2)은 12.63이었다.
+Vid2Sim 장면에서 RL로 미세조정한 정책은 CityWalker의 성공률이 21 % 떨어졌다. NoMaD와 MBRA는 변화가 없었다. Wanderland 장면에서는 NoMaD가 0.24에서 0.26, CityWalker가 0.21에서 0.24로 올랐다.
+NoMaD, CityWalker, MBRA, NaVid, NaVILA 다섯 모델 가운데 실외 성공률이 0.31을 넘는 것은 없었다. 장면은 정적이라 보행자와 차량이 없다.
+
+**travplan에 주는 의미.** 서비스 지역을 스캔해 Isaac Sim에 넣는다면(S.7 6번) 스마트폰 영상이 아니라 LiDAR를 같이 써야 한다.
+travplan은 카메라보다 기하가 먼저다. TravMap은 높이에서 나온다. 궤적 자세 오차가 쌓이면 여러 번 지나간 곳의 지도가 겹쳐 턱 높이가 번지고, 0.07 m 턱과 0.24 m 턱을 가르기 어려워진다.
+Wanderland의 처리 순서(LiDAR SLAM, 점군에서 메시, 메시와 3DGS를 USD로 합침)는 `sim/isaac/terrain_export.py`가 내는 USD 지형과 같은 자리에 들어간다.
+실측 장면의 메시를 `sim/terrain.py` 형식의 높이장으로 바꾸면 운동학 시뮬(L0)과 Isaac(L1)이 같은 실측 지형을 공유할 수 있다.
+비용과 위험도 있다. SLAM이 상용이라 같은 처리를 재현하려면 공개 LiDAR SLAM으로 바꿔야 하고, 보행자는 따로 얹어야 한다.
+
+![Wanderland Fig. 4](https://arxiv.org/html/2511.20620v1/04dataset.png)
+*그림 — Wanderland (Fig. 4): 다중 센서 촬영에서 LIV-SLAM, 3DGS 학습, 충돌 메시 추출을 거쳐 Isaac Sim USD로 합치는 처리 순서. 출처: [arXiv:2511.20620](https://arxiv.org/abs/2511.20620)*
+
+![Wanderland Fig. 7](https://arxiv.org/html/2511.20620v1/figs/08evaluation.png)
+*그림 — Wanderland (Fig. 7): 같은 모델을 다른 장면 재현으로 평가하면 결과가 달라진다. 기하 충실도가 평가 신뢰도를 정한다. 출처: [arXiv:2511.20620](https://arxiv.org/abs/2511.20620)*
 
 ### S.4.3 World model을 시뮬레이터로 쓰기
 
@@ -815,6 +954,7 @@ $$ \text{(ii)}\quad (\mathbf v + \boldsymbol\omega \times \mathbf c_i)\cdot e(\t
 | [Newton](https://github.com/newton-physics/newton) | MuJoCo Warp 백엔드 + 자체 솔버 | 자체 솔버만 ○ | USD·URDF·SDF, omni-wheel 예제 | 기울기로 파라미터를 맞출 때만 |
 | Isaac Sim(PhysX) | 바퀴 접촉이 불안정(S.5.2) | ✗ | USD | P1 폐루프 재현(이미 계획) |
 | [unitree_rl_lab](https://github.com/unitreerobotics/unitree_rl_lab) | Go2-W 바퀴 조인트 설정 있음 | — | USD·URDF | **작업 흐름** 템플릿 + 바퀴 조인트·액추에이터 모델 관용구 |
+| 지도 조건 학습 시뮬(Verti-WM, 아래) | 주행 기록에서 배움, 변형 지면은 지형역학 | ○ | 높이·의미 지도 패치 | P1 이후 실물 plant 식별 참고 |
 
 **unitree_rl_lab에서 가져올 것은 세 가지다.** 첫째는 순서다. Isaac Lab(Isaac Sim 5.1)에서 정책을 학습하고, **MuJoCo에서 sim2sim으로
 검증한 뒤**, 실물에 올린다. "학습한 것이 엔진에 기대고 있는지"를 **다른 엔진으로 교차 검증한다**는 절차다. 동역학 잔차를 배울 때
@@ -834,6 +974,43 @@ $$ \text{(ii)}\quad (\mathbf v + \boldsymbol\omega \times \mathbf c_i)\cdot e(\t
 **남은 일은 MJCF다.** AntBot 저장소에는 MJCF가 없고 URDF만 있다. MuJoCo 컴파일러가 URDF를 읽지만, URDF에 없는 것(접촉 파라미터,
 Dynamixel 액추에이터 모델, 실제 관성·무게중심)은 손으로 써야 한다. 저장소의 관성값은 자리표시자에 가깝다 — 차체가
 $I_{xx} = I_{yy} = 5.0$으로 같고 조향 링크는 0.001 등방이다. ==동역학을 배우기 전에 관성부터 실물 값이어야 한다(TP-0035).==
+
+#### Verti-WM — 지형 지도를 조건으로 받는 학습 시뮬레이터
+
+**Verti-WM은 높이·의미 지도 패치를 조건으로 받아 6자유도 자세를 자기회귀로 예측하는 학습 시뮬레이터다**([arXiv:2609.23118](https://arxiv.org/abs/2609.23118),
+2026-09, George Mason Univ. Xuesu Xiao 연구실, 발표 학회와 코드는 확인하지 못했다). 강화학습 정책을 이 모델 안에서만 학습해 실물에 올렸다.
+CPU 다물체 시뮬(Chrono 기반 Verti-Bench, RSS 2025) 대신 GPU에서 도는 학습 모델로 바꾼 것이 핵심이다.
+
+**동작 방식.** 입력은 12차원 차량 상태, 명령(속도, 조향각), 그리고 예측한 자세에서 떼어 낸 128×128 높이·RGB 의미 패치(약 12.8 m × 12.8 m)다.
+지형은 예측하지 않고 지도에서 읽는다. 동역학 전문가 둘을 얼려 두고 섞는다. 단단한 지면은 Transformer가 맡는다. 변형 지면은 NeSAM이 맡는데, 미분 가능한 지형역학과 Newton–Euler 동역학에 학습된 보정을 더한 모델이다.
+GRU 게이트(학습 파라미터 33,764개)가 둘의 자세 증분을 성분별로 섞는다. 시뮬 데이터는 1,500 궤적(약 10.4시간), 실물 데이터는 Verti-4-Wheeler 120 궤적(약 70분)이다.
+Verti-WM 안의 PPO는 Verti-Bench 20개 세계에서 19/20을 냈다. Chrono에서 직접 학습한 것은 18/20이었다. 학습 시간은 1.36시간 대 33.48시간이다.
+실물로 학습한 Verti-WM에서 키운 정책은 실물 5번 중 4번 성공했다. 시뮬에서 바로 옮긴 정책은 2번이었다.
+예측 오차는 단단한 지면에서 오히려 데이터 기반 Transformer보다 7.1 % 컸다(0.3655 m 대 0.3413 m).
+
+**travplan에 주는 의미.** 지금 travplan에 새로 줄 것은 작다. 지형 조건은 이미 들어 있다. `mppi_plant_lag`의 rollout 모델(`control/mppi/plant_aware.py`의 `LagSlipSwerveModel`)은 rollout 자세마다 belief 지도에서 slope와 rough를 읽어 미끄럼을 넣는다.
+NMPC의 잔차 GP도 입력이 명령, 속도, slope, rough의 8차원이다(`control/acados_mpc/controller.py`의 `_features`). 레벨 3 경사로(TP-0151)는 사용자 결정으로 plant 로봇의 설계 한계로 정리됐다(MPC 문서 M.3.23).
+가져올 것은 두 가지 본보기다. 하나는 해석 모델과 학습 모델을 게이트로 섞어 둘 중 하나로 되돌아갈 수 있게 하는 구조다. 다른 하나는 게이트만 배워서 실물 약 70분으로 맞춘 절차다. P1 이후 실물 plant를 식별할 때 참고한다.
+
+![Verti-WM Fig. 2](https://arxiv.org/html/2609.23118v1/figs/Verti_WM_overview.png)
+*그림 — Verti-WM (Fig. 2): 예측한 자세에서 읽은 지형 패치가 두 전문가(단단한 지면, 변형 지면)를 조건 짓고, 순환 게이트가 두 제안을 섞는다. 출처: [arXiv:2609.23118](https://arxiv.org/abs/2609.23118)*
+
+<details markdown="1">
+<summary>자세히: Verti-WM 게이트의 섞기 식</summary>
+
+**무엇을 하나.** 현재 자세 추정 $\hat T_t$에서 두 전문가가 낸 다음 자세 $T^{N}_{t+1}$(NeSAM)과 $T^{T}_{t+1}$(Transformer)을 리 대수의 증분으로 바꾼다.
+
+$$ \xi^j_t = \operatorname{Log}\big(\hat T_t^{-1} T^j_{t+1}\big)^\vee, \qquad d_t = \xi^N_t - \xi^T_t $$
+
+GRU 게이트의 출력 $o_t$를 $\alpha_{t,\ell} = 0.5 + 1.5 \tanh(o_{t,\ell})$로 바꾼다. 네 계수(수평 위치, 높이, roll·pitch, yaw)를 여섯 성분 $\beta_t$로 펼친다.
+
+$$ \xi_t = \xi^T_t + \beta_t \odot d_t, \qquad \hat T_{t+1} = \hat T_t \operatorname{Exp}(\xi_t^\wedge) $$
+
+$\beta = 0$이면 Transformer, $\beta = 1$이면 NeSAM이다. 계수가 $(-1, 2)$에 있어 둘 밖으로 외삽도 한다. 평가는 16스텝(약 1.6 s) 자기회귀 rollout의 마지막 위치 오차다.
+
+**travplan에 주는 것.** 게이트는 얼린 두 모델 위에서 작은 파라미터만 배우므로, 실물 주행 약 70분 규모의 데이터로도 맞출 수 있었다. travplan에서는 P1 이후 실물 plant를 식별할 때, 해석 모델(`LagSlipSwerveModel`)과 실물 기록으로 배운 모델을 두 전문가로 두는 형태가 된다. $\beta = 0$으로 해석 모델에 되돌아갈 수 있다는 점이 안전하다.
+
+</details>
 
 ### S.5.4 변형 지면과 슬립
 
@@ -865,6 +1042,39 @@ $$ s = 1 - \frac{v}{r\,\omega} $$
 $v^{\text{real}} = (1 - s)\, v^{\text{cmd}}$로 줄이는 것만으로 Controller의 강건성을 시험할 수 있다.
 
 </details>
+
+#### Sim2Dust — 입자 대신 단단한 지면과 무작위화로 알갱이 지면을 넘었다
+
+**Sim2Dust는 Isaac Lab 기반 Space Robotics Bench에서 절차 생성 지형과 동역학 무작위화로 경유점 추종 정책을 배워, 현무암 자갈 위 실물 rover로 zero-shot 옮겼다**([arXiv:2508.11503](https://arxiv.org/abs/2508.11503),
+2025-08, Univ. of Luxembourg SpaceR, [GitHub](https://github.com/AndrejOrsula/space_robotics_bench), 발표 학회는 확인하지 못했다).
+수백만 입자로 바퀴-자갈 접촉을 푸는 미세조정은 거의 이득이 없었다.
+
+**동작 방식.** 학습은 단단한 달 표면에서 한다. 지형은 Perlin 잡음으로 큰 기복을, Voronoi 잡음으로 분화구 테두리를 만들고 돌을 Poisson disk로 뿌린다.
+병렬 환경마다 다른 지형을 준다. 무작위화는 중력, 차체 기준 오프셋, 관측 지연(최대 40 ms), 행동 지연(최대 120 ms), 자세 잡음이다. 알고리즘은 DreamerV3이고 환경 512개로 2,000만 스텝을 돌렸다.
+로봇은 스키드 스티어 Leo Rover이고, 약 20톤의 현무암 자갈을 깐 LunaLab에서 OptiTrack으로 위치를 쟀다. 속도는 5–25 cm/s다.
+25 cm/s에서 DreamerV3의 추종 오차는 3.6 cm, 2.3°였다. PPO는 14.8 cm, 8.7°였다.
+지형 하나에서 무작위화 없이 학습하면 25 cm/s에서 4.4 cm, 7.1°였다. 무작위화만 더하면 방향 오차가 모든 속도에서 3분의 1 남짓으로 줄었다(5 cm/s 4.2°에서 1.6°, 15 cm/s 6.8°에서 2.3°, 25 cm/s 7.1°에서 2.9°).
+입자 미세조정은 약 82시간이 더 들었다. 5 cm/s에서 2.3 cm가 2.2 cm로 조금 나아졌지만 25 cm/s에서는 3.6 cm가 4.3 cm로 나빠졌다.
+
+**travplan에 주는 의미.** S.5.4의 "변형 지면 전에 슬립·지연 무작위화로 충분하다"는 판단을 실물로 뒷받침한다. 다만 자갈 위를 5–25 cm/s로 가는 스키드 스티어 rover의 결과라, 보도를 가는 스워브 로봇에 옮길 수 있는 범위는 좁다.
+여기서의 지연 무작위화는 정책을 지연에 강하게 만드는 일이다. travplan의 `mppi_plant_lag`(TP-0150)는 지연을 rollout 모델 안에 넣어 예측하는 일이라 성격이 다르다. 둘을 함께 쓸 수는 있다. 예측 모델의 지연 값을 무작위화해 Controller가 지연 추정 오차에 버티는지 볼 수 있다.
+
+![Sim2Dust Fig. 3b](https://arxiv.org/html/2508.11503v2/graphics/sim_diverse.png)
+*그림 — Sim2Dust (Fig. 3b): 병렬 환경마다 다른 절차 생성 지형을 주는 학습 방식. 출처: [arXiv:2508.11503](https://arxiv.org/abs/2508.11503)*
+
+![Sim2Dust Fig. 9b](https://arxiv.org/html/2508.11503v2/graphics/depth_real.png)
+*그림 — Sim2Dust (Fig. 9b): 현무암 자갈 위 실물 깊이 영상. 시뮬 깊이와 달리 잡음과 빈 칸이 많아 깊이 입력 정책의 오차가 커졌다. 출처: [arXiv:2508.11503](https://arxiv.org/abs/2508.11503)*
+
+#### Chrono::CRM — GPU SPH로 푸는 연속체 지형역학
+
+**Chrono::CRM은 Chrono의 SPH(smoothed particle hydrodynamics) 틀 위에 지은 연속체 지형역학 모델이다**([arXiv:2507.05643](https://arxiv.org/abs/2507.05643),
+2025-07, UW-Madison Negrut 연구실, Journal of Terramechanics 투고, Chrono 패키지 안 BSD-3). 위에서 말한 "연속체 입자(중간 비용)" 갈래의 대표이고, Bekker-Wong 같은 준경험식을 물리 모델로 대신하려 한다.
+
+**동작 방식.** 흙을 SPH 입자로 풀고, 단단하거나 휘는 바퀴와 도구를 Chrono 다물체 엔진과 짝지어 계산한다. 파기, 고르기, 변형 바퀴, 그라우저(바퀴 돌기)를 다룬다.
+GPU로 돌고, 로봇 주변만 계산하는 활성 영역 방식으로 길이 10 km, 입자 1억 개 규모의 지형을 대화형에 가까운 속도로 다룬다고 한다. 효율은 준경험식과 견줄 만하다고 적었지만 실시간 계수는 초록에서 확인하지 못했다.
+검증은 실물 실험 셋(NASA MGRU3 rover 포함)과 DEM 파기 시뮬과의 비교다.
+
+**travplan에 주는 의미.** 물리 쪽에서 변형 지면을 풀어야 할 때의 첫 후보다. 보도는 대부분 단단하므로 지금은 쓰지 않는다. 잔디나 자갈이 요구 사항이 되면 Sim2Dust의 결과(입자 미세조정의 이득이 작았다)와 함께 비용을 따져 본다.
 
 ---
 
@@ -955,6 +1165,21 @@ $$ E_\alpha^{(k)} = \sqrt{\frac{1}{T} \sum_{t=1}^{T} \big(\mathbf v_{\alpha e}[t
 충분히 현실적인지를 실물 스캔 몇 번으로 판정할 수 있다.
 
 </details>
+
+#### EmbodiedSplat — 휴대폰 스캔 장면의 SRCC를 쟀다
+
+**EmbodiedSplat은 iPhone으로 찍은 실내 장소를 3DGS 메시로 Habitat-Sim에 넣고, 그 장면의 시뮬 성공률이 실물을 얼마나 따라가는지 sim-real 상관을 쟀다**([arXiv:2509.17430](https://arxiv.org/abs/2509.17430),
+ICCV 2025, Georgia Tech·TRI, [프로젝트](https://gchhablani.github.io/embodied-splat/)). 재현한 메시의 상관은 0.87–0.97이었다. 상관의 종류(Pearson인지 Spearman인지)와 계산한 장면·정책 수는 확인하지 못했다.
+
+**동작 방식.** 장면 하나를 iPhone 13 Pro Max의 RGB-D로 20–30분 찍는다. DN-Splatter로 깊이와 법선을 정규화한 3DGS를 학습하고 Poisson 재구성으로 메시를 뽑는다.
+그 메시에서 ImageNav 에피소드를 만들어 정책을 미세조정한 뒤 Stretch 로봇에 올렸다. 실물 라운지 한 곳에서 10회씩 잰 결과, HM3D 사전학습 정책이 50 %에서 70 %로 올랐다.
+HSSD 사전학습 정책은 Polycam 메시로 10 %에서 50 %, DN-Splatter 메시로 40 %가 됐다. 실험은 모두 실내다.
+
+**travplan에 주는 의미.** 실물이 생기면 할 SRCC 측정(S.6.4, TP-0043)의 짝이 되는 사례다. 차이는 둘이다. EmbodiedSplat은 실내 영상 내비이고, 하나의 장소에서 스택이 아니라 정책 몇 개를 비교했다.
+travplan은 같은 장소의 실측 장면에서 스택 여러 개의 순위를 맞히는지 재야 한다. Wanderland(S.4.2)가 보였듯 실외 보도에서는 휴대폰 영상만으로 기하가 모자랄 수 있다.
+
+![EmbodiedSplat Fig. 2](https://arxiv.org/html/2509.17430v2/figs_2/EmbodiedSplat_Architecture.png)
+*그림 — EmbodiedSplat (Fig. 2): 휴대폰 촬영, 3DGS 재구성과 메시 추출, Habitat-Sim 학습, 실물 배치의 네 단계. 출처: [arXiv:2509.17430](https://arxiv.org/abs/2509.17430)*
 
 ### S.6.5 시뮬레이터의 허점: travplan L0의 낙관적 가정
 
@@ -1058,6 +1283,76 @@ ROS 2 토픽 위에서 붙여 보는 데는 충분하다. 다른 하나는 **지
 **PRD는 Gazebo를 주력 엔진으로 쓰지 않기로 했다**(`docs/prd-p2.md` 하지 않는 것, 근거는 보도 시뮬 생태계가 Isaac Sim 위에 있다는 것).
 이 절의 리그 가운데 Gazebo 계열을 쓴다면 그 결정의 예외로 둘지 먼저 정해야 한다. 엔진을 바꾸는 것과, Isaac Sim이 없는 장비에서
 배관과 비교를 확인하는 것은 다른 일이다.
+
+---
+
+<!-- tab: 최근 연구 비교 -->
+
+## S.10 최근 연구 비교 (2025–2026)
+
+**2025–2026의 시뮬레이션 연구는 "더 빠른 엔진"에서 "평가를 믿을 수 있는 장면과 모델"로 무게가 옮겨 갔다.** GPU 엔진 비교(GPUSimBench)에서는 처리량 1위이고 결정론적인 Genesis가 실물 일치에서는 다섯째였다.
+빠르고 재현되는 엔진이 실물에 가깝다는 보장은 없다. 실측 장면 연구(Wanderland, EmbodiedSplat)는 기하가 부정확하면 평가와 미세조정이 흔들린다고 보였다.
+바퀴 쪽(Verti-WM, Sim2Dust)은 비싼 접촉 물리 대신 지형 조건 학습 모델과 무작위화로 실물에 옮겼다.
+==travplan이 지금 가져올 것은 엔진 교체가 아니라 Isaac 폐루프로 옮길 때의 재현성 측정이다.== 지형 조건 plant와 치명 우선 선택은 travplan에 이미 들어 있다.
+
+| 이름(연·발표) | 주제 | 입력·장면 표현 | 방법의 핵심 | 학습 신호·평가 방식 | 로봇·실험 | 코드 | 절 |
+|---|---|---|---|---|---|---|---|
+| Isaac Lab (2025-11, arXiv) | 엔진 | USD 장면, GPU 텐서 | PhysX·Newton 백엔드, Warp RayCaster, 타일 렌더링 | 강화·모방학습 프레임워크 | 4족·휴머노이드·팔 | ✅ BSD-3 | S.1.1 |
+| GPUSimBench (2026, IROS) | 엔진 비교 | 정육면체 낙하, Franka, 경사 충돌 | 같은 장비에서 처리량·EMD·변동 측정 | 실물 장치 16회와 EMD 비교 | 조작 장면만, 바퀴 없음 | 공개 주장, 주소 확인 못함 | S.1.4 |
+| UrbanVerse (2026, ICLR) | 보도 장면 | 도시 영상에서 만든 160장면 | 영상에서 에셋 배치로 real-to-sim | 장면 분포 위 강화학습 | Coco·Go2 실물 | ✅ | S.2.3 |
+| SidewalkBench (2026, CoRL) | 보도 평가 | 절차 100 + 스캔 11(3DGS + 메시) | 단위 시험, 보행자 사건, 장거리 세 층 | 100 m당 실패, 스캔 장면 상관 | 배달로봇 | 공개 예정 | S.2.5 |
+| 사전식 조종 (2026-09, arXiv) | 배달 벤치마크 | Isaac Sim 주거지(ViPlanner, CARLA Town01), LiDAR 위험 지도 | 동적 장벽 안내 + 사전식 후보 선택 | 학습 없음, 추론 시 조종 | Scout 2.0 시뮬 60쌍 × 3, 실물 없음 | 확인 못함 | S.2.7 |
+| DynBench (2026-03, arXiv) | 보행자 | Isaac Sim 장면 26개 | 상태 기계 + NavMesh A\* + 기하 회피 | FLUX 정적 모방 + GRPO | Go2-W·Go2·G1 zero-shot | 프로젝트만 | S.3.2 |
+| GROVE (2026, IROS) | 보행자 | 글 설명 + YAML 세계 | LLM 행동 트리 + Theta\* + SFM | VLM 점수(정성) | 시뮬만 | 확인 못함 | S.3.3 |
+| NavIsaacLab (2026-06, arXiv) | 보행자 | Isaac Lab 군중 | 궤적 diffusion + 동작 모방 | 시뮬 학습 내비 정책 | Scout Mini zero-shot | 확인 못함 | S.3.4 |
+| SocNav Bench (2025-11, arXiv) | 보행자·장면 | 실측 3DGS 9곳 + 메시, 180건 | 협조 않는 보행자, 사회 준수율 | VLM + flow 정책 평가 | Go2 실물 85.0 % | 프로젝트만 | S.3.5 |
+| GaussGym (2025-10, arXiv) | 렌더링 | 3DGS + 충돌 메시, 2,500장면 | Isaac Gym에 3DGS 렌더러 | RGB 정책 + 기하 보조 손실 | A1 계단 zero-shot | ✅ | S.4.2 |
+| Wanderland (2026, CVPR) | 실측 장면 | LiDAR·RTK·어안 스캔 530곳 | LIV-SLAM 기하 위 3DGS, 점군 메시 | 미세조정과 평가 신뢰도 비교 | 다섯 모델 평가, 실외 최고 0.31 | 프로젝트 | S.4.2 |
+| Wheeled Lab (2025, CoRL) | 바퀴 물리 | Isaac Lab RC카 | 서스펜션·접촉 다자유도 차량 병렬 | 강화학습 + 무작위화 | RC카 zero-shot | ✅ | S.5.2 |
+| Verti-WM (2026-09, arXiv) | 지형·바퀴 | 높이·의미 지도 128×128 패치 | 얼린 두 전문가 + GRU 게이트 | 지도 조건 자기회귀 예측, 그 안에서 PPO | Verti-4-Wheeler 실물 4/5 | 확인 못함 | S.5.3c |
+| Sim2Dust (2025-08, arXiv) | 변형 지면 | Isaac Lab 절차 지형(단단한 면) | 지형 다양성 + 지연·잡음 무작위화 | DreamerV3, 입자 미세조정 비교 | Leo Rover 자갈 3.6 cm | ✅ | S.5.4 |
+| Chrono::CRM (2025-07, arXiv) | 변형 지면 | SPH 연속체 흙 | GPU SPH + 다물체 바퀴·도구 결합 | 물리 모델, 실물 실험 셋과 DEM 비교 | NASA MGRU3 rover 등 | ✅ BSD-3 | S.5.4 |
+| EmbodiedSplat (2025, ICCV) | sim-to-real | iPhone RGB-D, 3DGS 메시 | Habitat-Sim 장면에서 미세조정 | sim-real 상관 0.87–0.97 | Stretch 실물, 실내 | 프로젝트 | S.6.4 |
+
+### 공통점
+
+1. **외형과 충돌을 나눈다.** 3DGS는 그림만 맡고 충돌은 메시가 맡는다(Wanderland, SocNav Bench, GaussGym, EmbodiedSplat, SidewalkBench). 3DGS의 기하는 흐리기 때문이다(S.4.2).
+2. **Isaac 계열이 장면과 벤치마크의 공통 바닥이다.** 보도·배달 평가가 모두 Isaac Sim이나 Isaac Lab 위에 있다(UrbanVerse, SidewalkBench, 사전식 조종, DynBench, NavIsaacLab, SocNav Bench, Wanderland, Sim2Dust).
+3. **바퀴 접촉을 정밀하게 풀지 않고 옮긴다.** 지형 조건 학습 모델이나 단단한 면과 무작위화로 실물에 갔다(Verti-WM, Sim2Dust, Wheeled Lab). Sim2Dust에서는 입자 미세조정의 이득이 거의 없었다. 물리로 풀려면 Chrono::CRM 같은 연속체 모델이 있다.
+4. **평가 신뢰도를 따로 잰다.** 엔진의 실물 일치와 결정론(GPUSimBench), 장면 기하에 따른 결과 변화(Wanderland), 시뮬과 실물의 상관(EmbodiedSplat), 스캔 장면 상관(SidewalkBench)이다.
+5. **ORCA의 상호 협조 가정에서 벗어나려는 시도가 있다**(DynBench, SocNav Bench). 반응 모델은 SFM(GROVE)부터 학습 궤적(NavIsaacLab)까지 갈린다.
+
+### 차이점
+
+| 축 | 한쪽 | 다른 쪽 | 얻는 것과 잃는 것 |
+|---|---|---|---|
+| 동역학 출처 | 물리 엔진(Wheeled Lab, Sim2Dust, Chrono::CRM) | 학습 시뮬(Verti-WM) | 엔진은 처음 보는 지형에도 식이 있다. 학습 시뮬은 Chrono 직접 학습 대비 학습 시간을 약 24배 줄였고(1.36 h 대 33.48 h) 실물 데이터로 맞출 수 있다. 대신 데이터 밖 지형에서 보장이 없다 |
+| 장면 출처 | 절차 생성(SidewalkBench 절차 장면, Sim2Dust, DynBench) | 실측 스캔(Wanderland, SocNav Bench, EmbodiedSplat) | 절차 생성은 난이도 손잡이와 무한한 양을 준다. 실측은 현실 분포와 평가 신뢰도를 준다. 실측은 장면 수가 수백 곳에 그친다 |
+| 실측 장면의 센서 | 영상만(EmbodiedSplat, Vid2Sim) | LiDAR 융합(Wanderland, SidewalkBench 스캔) | 영상만은 싸고 빠르다. LiDAR 융합은 미터 단위 기하를 준다. Wanderland에서 영상만의 궤적 자세 오차는 축척을 맞춘 뒤에도 0.30 m였다 |
+| 보행자 | 사건·상태 기계(SidewalkBench 사건 보행자, DynBench) | 반응·생성(GROVE의 SFM, NavIsaacLab) | 사건은 재현성이 높아 스택 비교에 공정하다. 반응·생성은 다양하지만 같은 조건을 다시 만들기 어렵다. SidewalkBench의 사건 밖 일반 보행자가 ORCA라는 요약이 있으나 본문에서 확인하지 못했다 |
+| 제약 처리 | 가중합 벌점(대부분의 강화학습 보상) | 우선순위 분리(사전식 조종) | 가중합은 단순하지만 사례마다 가중치가 맞지 않는다. 사전식 조종은 턱 실패를 줄였지만 주행 거리가 약 36 % 늘었다(27.2 m에서 36.9 m) |
+
+### travplan에 주는 의미
+
+**가져올 것.**
+
+- **Isaac으로 옮기기 전에 재현성부터 잰다(GPUSimBench).** 1층 스모크 게이트는 비트 단위 재현을 전제로 한다. Isaac Lab은 재실행 변동이 0이어도 병렬 환경끼리는 달랐다. ROS 2 폐루프(TP-0005)는 토픽 타이밍까지 더해진다. 같은 설정을 두 번 돌려 뒤집히는 에피소드 수를 먼저 재고, 0이 아니면 Isaac 결과에는 2층 짝 비교만 쓴다.
+- **표본 안내를 동적 장벽으로 바꿔 본다(사전식 조종).** 치명 우선 선택은 `SelectorConfig.lethal_penalty`(1,000)로 이미 들어 있다. 논문에서도 이득은 선택이 아니라 동적 장벽 안내에서 왔다.
+- **실측 장면은 LiDAR 기하로 만든다(Wanderland).** 서비스 지역 스캔(S.7 6번)은 영상만이 아니라 LiDAR 융합으로 하고, 메시를 `sim/terrain.py` 높이장으로 바꿔 L0와 L1이 같은 실측 지형을 쓰게 한다.
+- **반응형 보행자 결과를 읽을 때 ORCA의 과협조를 함께 적는다(DynBench).** TP-0167의 짝 비교에서 충돌이 줄면 그것이 Controller 덕인지 ORCA 보행자가 피해 준 덕인지 가려야 한다.
+
+**가져오지 않을 것.**
+
+- **엔진 교체.** GPUSimBench는 조작 장면만 쟀다.
+- **입자 기반 변형 지면.** Sim2Dust에서 이득이 작았다. Chrono::CRM은 요구 사항이 생길 때 본다.
+- **지형 조건 plant의 재구현.** `LagSlipSwerveModel`이 이미 rollout 자세마다 slope와 rough로 미끄럼을 넣고, 잔차 GP도 slope와 rough를 입력으로 받는다. Verti-WM은 P1 이후 실물 plant 식별의 참고로만 둔다.
+- **LLM 보행자 생성의 직접 평가 사용.** GROVE의 점수는 VLM 판정이다.
+
+**시도 순서와 TP 후보.**
+
+1. TP 후보: Isaac 폐루프(TP-0005)의 첫 측정으로 같은 설정 재실행 두 번의 뒤집힘 수와, 병렬 환경끼리의 차이를 기록하고 Isaac 결과에 쓸 게이트 층을 정한다.
+2. TP 후보: FlowPolicy 안내 표본(`guide_scale`, 고정 `guide_w_soft`)의 고정 가중치를 동적 장벽으로 바꿔, 치명 근사가 늘지 않는 방향으로만 비용 기울기를 따르게 한다. `planner_d+mppi`를 1층과 2층에서 기존 안내와 비교한다.
+3. TP 후보: DynBench식 "멈춰 서기, 둘러보기" 상태 전환을 L0 보행자에 더한다. TP-0167(ORCA 반응형 짝 비교)이 끝난 뒤, 같은 조건에서 충돌과 도달을 짝 비교한다.
 
 ---
 

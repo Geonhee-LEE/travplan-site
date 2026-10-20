@@ -107,6 +107,15 @@ D.12 IROS 2026 수확 · D.11 기타
 | DreamFlow `E2E▸인식` | 2026.03 · ICRA 2026 | flow matching으로 관측 밖 지형 잠재 예측 | B.9 | [논문](https://arxiv.org/abs/2603.02976) · [프로젝트](https://dreamflow-icra.github.io) |
 | Miki et al. (perceptive locomotion) `E2E▸인식` | 2022.01 · Science Robotics 2022 | 높이 샘플 + proprioception belief encoder | A.7.1 | [논문](https://arxiv.org/abs/2201.08117) |
 | NavDP `E2E▸인식` | 2025.05 · ICRA 2026 | 시뮬 특권 정보로만 학습한 RGB-D 공간 이해 | B.3 | [논문](https://arxiv.org/abs/2505.08712) · [코드](https://github.com/InternRobotics/NavDP) |
+| SyNeT | 2026.01 | 확산 inpainting 합성 음성으로 PU·PN 자기지도 traversability 보강, RELLIS-3D LORT AUROC 0.935→0.979 | A.10.1 | [논문](https://arxiv.org/abs/2602.00814) |
+| GSAT | 2026.03 · ICRA 2026 | LiDAR BEV 잠재 초구로 라벨 없는 칸을 정상·이상으로 분할하는 PU 학습(인하대) | A.10.1 | [논문](https://arxiv.org/abs/2603.07480) · [프로젝트](https://sparolab.github.io/research/gsat/) |
+| Long-Horizon Traversability | 2026.07 | 위성·항공 LiDAR·OSM에서 GPS 궤적 양성 nnPU, Warthog 개입 14→2회 | A.10.1 | [논문](https://arxiv.org/abs/2607.23743) · [프로젝트](https://unmannedlab.org/research/long-horizon-traversability) |
+| Experience-Driven CL (Go2) | 2026.09 | DINOv3 고정 특징에서 접지 성질 5개 + evidential epistemic 분산, 검증 관문 연속 학습 | A.10.3 | [논문](https://arxiv.org/abs/2609.39755) |
+| Task-Conditioned Costmaps | 2026.04 | 높이 스캔 + 명령 속도 조건 발 디딤 epistemic 분산을 MPPI 비용 지도로, 10회 중 8회 최저 | A.10.3 | [논문](https://arxiv.org/abs/2605.00261) |
+| ProTerrain | 2025.10 · ICRA 2026 투고 | 공간 상관 높이 공분산을 합성곱으로, 미분 물리로 궤적 분포 전파 | A.2b.7 | [논문](https://arxiv.org/abs/2510.19364) |
+| Occlusion-Aware Planning | 2026.09 | 가림을 Fourier 지형 계수의 역 Hessian 분산으로, 자세 분산까지 전파해 CEM, 합성 지형 실패 18.9%, 실외 6곳 정성 | A.2b.7, B.9 | [논문](https://arxiv.org/abs/2609.39105) |
+| SceneSense | 2025.06 | 못 본 voxel을 확산 모델로 생성해 확률로 합침, Spot FID 24.44%·75.59% 개선. 포트홀을 평평하게 덮을 위험 | A.2b.7 | [논문](https://arxiv.org/abs/2506.20049) |
+| CODEI | 2025.03 · T-RO 2025 | 센서·장착 위치·검출기·연산 장치를 ILP로 공동 선택, 카메라는 가격·질량, LiDAR는 전력·연산 | H.2 | [논문](https://arxiv.org/abs/2503.10296) |
 
 ### D.2 인식 — Occupancy
 
@@ -206,6 +215,8 @@ A.2·A.2b(지형 지도 계보), A.10.1–A.10.2(traversability 계보와 2026 S
 | Conformal 군중 내비게이션 | 2025.08 · CoRL 2025 | 적응형 conformal 오차 범위 + 제약 강화학습 | A.12.4 | [논문](https://arxiv.org/abs/2508.05634) |
 | 예측 품질과 내비게이션 성능 | 2026.01 | 사용자 80명 실험, ADE가 내비게이션 성능을 대변하지 못함 | A.12.4 | [논문](https://arxiv.org/abs/2601.09856) |
 | EgoNeMo | 2026.09 | 1인칭 LiDAR로 옮겨 쓸 수 있는 보행 패턴 지도 | A.12.4 | [논문](https://arxiv.org/abs/2609.06195) |
+| Calibrated Gaussian Predictors | 2026.03 | Mahalanobis 거리를 카이제곱에 맞추는 보정 손실, 충돌률 16조합 중 10 감소·5 증가 | A.12.4 | [논문](https://arxiv.org/abs/2603.10407) · [코드](https://github.com/fate-79/Rethinking-Gaussian-Trajectory-Predictors) |
+| CoCoNav | 2026.08 | 수평선별 conformal PI 오차 범위 + 소프트 MPC 해를 별도 검사(relax-then-verify), MATRiX 시뮬·4족 실물 | A.12.4 | [논문](https://arxiv.org/abs/2608.07751) |
 
 ---
 
@@ -257,6 +268,14 @@ A.2·A.2b(지형 지도 계보), A.10.1–A.10.2(traversability 계보와 2026 S
 | CLUE | 2026.05 | LLM 상식으로 방·물체 단서를 가중한 통합 시맨틱 가치 지도, zero-shot object-goal | B.6 | [논문](https://arxiv.org/abs/2605.19206) |
 | DreamFlow `E2E▸플래너` | 2026.03 · ICRA 2026 | 관측 + 상상 잠재 DRL 로컬 내비, Go2 실험 | B.9 | [논문](https://arxiv.org/abs/2603.02976) · [프로젝트](https://dreamflow-icra.github.io) |
 | Robostral Navigate `E2E▸플래너` | 2026.07 | 8B VLM, 이미지 공간 waypoint, R2R-CE 77.4% | B.6 | [논문](https://huggingface.co/papers/2607.20785) |
+| X-NavDP `E2E▸플래너` | 2026.07 | NavDP를 같은 상태 그룹 Q 정규화 재가중 score matching으로 폐루프 RL 후학습, Dingo·Go2·G1 | B.3 | [논문](https://arxiv.org/abs/2607.28560) · [코드](https://github.com/InternRobotics/NavDP/tree/main/baselines/x-navdp) (NavDP와 같은 코드베이스) · [프로젝트](https://yty-sky.github.io/x-navdp-project-page/) |
+| Beyond Imitation (확산 내비 정책 RL 미세 조정) `E2E▸플래너` | 2026.03 | NavDP 뒤쪽 DiT 층만 에피소드 보상 GRPO로 미세 조정, Go2 실물 | B.3 | [논문](https://arxiv.org/abs/2603.12868) |
+| LoGoPlanner `E2E▸플래너` | 2025.12 | 미터 스케일 영상 기하 백본 + 확산 행동 머리, 위치 추정 모듈 없음 | B.3 | [논문](https://arxiv.org/abs/2512.19629) · [코드](https://github.com/InternRobotics/NavDP/tree/main/baselines/logoplanner) (NavDP와 같은 코드베이스) · [프로젝트](https://steinate.github.io/logoplanner.github.io/) |
+| UrbanVLA `E2E▸플래너` | 2025.10 · ICRA 2026(저자 저장소 표기) | 길 안내 경로점을 영상과 정렬하는 도시 VLA, SFT 뒤 IQL | B.6b | [논문](https://arxiv.org/abs/2510.23576) · [코드](https://github.com/GalaxyGeneralRobotics/UrbanVLA) · [프로젝트](https://pku-epic.github.io/UrbanVLA-Web/) |
+| S2E `E2E▸플래너` | 2025.07 · ICLR 2026(저자 저장소 표기) | 영상 약 100시간 사전학습 K-means 앵커 GMM + 0 초기화 잔차 attention을 PPO로(v2 기준), NavBench-GS | B.6d | [논문](https://arxiv.org/abs/2507.22028) · [코드](https://github.com/VAIL-UCLA/S2E) · [프로젝트](https://vail-ucla.github.io/S2E) |
+| Slow Brain, Fast Planner | 2026.06 | 앵커 Planner 후보에 지연된 클라우드 VLM 선택을 점수 융합, 배달로봇 100 m당 개입 0.87 | B.6d | [논문](https://arxiv.org/abs/2606.20458) |
+| LogoNav (MBRA) `E2E▸플래너` | 2025.05 · RA-L 2025 | 수동 수집 자료의 행동을 모델 전문가로 재라벨, 영상 목표·GPS 장거리 내비 300 m 이상 | B.6d | [논문](https://arxiv.org/abs/2505.05592) |
+| CARE | 2025.06 · CoRL 2025 | 사전학습 RGB 내비 정책 궤적을 추정 깊이 척력장으로 밀어내는 부착형 안전 층 | B.9 | [논문](https://arxiv.org/abs/2506.03834) · [프로젝트](https://airlab-sogang.github.io/CARE/) |
 
 ### D.4b Planner — 비학습 위험 인지 경로 계획 (비교 기준)
 
@@ -264,6 +283,7 @@ A.2·A.2b(지형 지도 계보), A.10.1–A.10.2(traversability 계보와 2026 S
 |---|---|---|---|---|
 | TRG-planner | 2025.01 · RA-L 2025, IROS 2025 oral | Traversal Risk Graph 위 안전·최단 경로, ICRA 2023 QRC 우승 팀 전역 플래너 | B.9 | [논문](https://arxiv.org/abs/2501.01806) · [프로젝트](https://trg-planner.github.io/) |
 | Risk-Aware Kinodynamic Planning (Planetary) | 2026.08 | AO-RRT + SCP, CVaR 위험으로 불확실한 지형 회피 | B.9 | [논문](https://arxiv.org/abs/2608.11175) |
+| Feasibility-Guided Planning | 2026.02 · ICRA 2026(arXiv 주석) | 보행 정책별 높이 지도 실행 가능성 8방향 텐서 → Dijkstra 비용, A1 실물 혼합 지형 70% | B.9 | [논문](https://arxiv.org/abs/2602.07932) |
 
 ### D.5 Planner — 생성형 궤적 (diffusion·flow) — Planner D 직접 참고
 
@@ -477,6 +497,22 @@ TEB, Smac, iPlanner, ViPlanner, X-Mobility, COMPASS, legged_gym, autonomy_stack_
 | Neural Process 고도 모델링 | 2025.08 | 위 계보의 최신판, off-road 고도장과 불확실성 | E.10 | [논문](https://arxiv.org/abs/2508.03890) |
 | 통과성 추정 서베이 | 2022.04 | 모바일 로봇 통과성 추정 전반 | E.10, A.7 | [논문](https://arxiv.org/abs/2204.10883) |
 | 보도 배달로봇 강건 경로계획 | 2025.07 | 주행 시간 불확실성 집합으로 경로 선택(동역학 아님) | E.10 | [논문](https://arxiv.org/abs/2507.12067) |
+| CLIS-MPPI | 2026.10 · CDC 2026 | 실행 지연을 초기 상태 분포로 두고 rollout 회귀로 되먹임 이득, UR5e 실물 5회. 실측 지연 통계는 미보고 | E.1, E.16 | [논문](https://arxiv.org/abs/2610.21239) |
+| Feedback-MPPI | 2025.06 · RA-L 2026 | rollout 미분으로 국소 되먹임 이득, 쿼드로터 실물 RMSE 64.6% 감소(4족은 시뮬). 논문 Eq. 13 부호 주의 | E.1, E.16 | [논문](https://arxiv.org/abs/2506.14855) · [프로젝트](https://feedback-mppi.github.io) |
+| OptCar | 2026.07 · CoRL 2026 | 범용 FKD 모델(AnyCar)을 한 차량에 특화, 이력 문맥 토큰 + 실제·합성 미세조정, 1/5 차량 6 m/s MPPI | E.4, E.16 | [논문](https://arxiv.org/abs/2607.13319) · [프로젝트](https://amrl.cs.utexas.edu/optcar/) |
+| FE-RLS (Zero to Autonomy in Real-Time) | 2025.09 · RA-L 투고 | 신경 ODE 기저의 계수를 RLS로 온라인 갱신해 MPPI rollout 적응, Jackal 잔디·얼음 실물 | E.4, E.16 | [논문](https://arxiv.org/abs/2509.12516) |
+| 접촉 최댓값 불확실성 전파 | 2026.10 · ICRA 2027 투고 | 바퀴 접촉 최댓값을 Clark 근사로 닫힌 형태 전파, 가우시안 CVaR 경로 순위, 지도 σ 과소 보정 지적(오프라인 평가) | E.10, E.16 | [논문](https://arxiv.org/abs/2610.06103) |
+| 조향 제약 4WIS 계획 (Liu 외) | 2025.10 · ICAR 2025 | 조향 한계(±130°)가 차체 속도 공간을 불연속 평면 8개, 12구역으로 자른다. 구역 넘기를 DWA 비평가로 막아 실물 미로의 바퀴 뒤집기 8.8 → 2.2회(baseline-2 대 aug-DWA-2). MPC 아님(Planner 층 배경) | MPC M.1, M.4 | [논문](https://arxiv.org/abs/2510.19054) · [영상](https://youtu.be/8l9s2Wb_vec) |
+| AWOISV 필터 튜브 MPC (Yang 외) | 2025.08 · 프리프린트 | 바퀴마다 ±90° 조향하는 차량의 운동 모드 + 칼만 필터 오차 튜브 LTV-MPC. TruckSim·HIL만, 수치 미확인 | MPC M.1, M.4 | [논문](https://arxiv.org/abs/2508.13457) |
+| 확산 초기해 충돌 회피 MPC (Haffemayer 외) | 2026.01 · RA-L 2026(프로젝트 페이지 기준) | 물체 슬롯 조건 확산 궤적을 SDF hard 제약 OCP의 초기해로. 성공 79–83 % 대 초기해 없는 OCP 10 % 미만, Franka 실물 (LAAS-CNRS·LIRIS·CTU CIIRC) | MPC M.1.1, M.4 | [논문](https://arxiv.org/abs/2601.02873) · [코드](https://github.com/ahaffemayer/diffusion_warmstart_slot) · [프로젝트](https://ahaffemayer.github.io/diffusion_warmstart_slot/) |
+| RL 유도 PAC-NMPC (Polevoy 외) | 2026.09 · 프리프린트 | 샘플링 확률 NMPC. RL actor를 초기해로, critic을 종단 비용·가치 감소 제약으로. 랠리카 실물 95 %(위반 0) 대 actor 85 %, 축거 오류 시 80 %(위반 0, 멈춤 20 %) 대 70 %(위반 30 %) | MPC M.1.1, M.4 | [논문](https://arxiv.org/abs/2609.39854) |
+| 강건·적응 GP-MPC (Dubied·Lahr·Zeilinger·Köhler) | 2025.07 · Automatica 2026 | 수축 계량 위 스칼라 튜브 ODE로 GP 오차를 전파하고 GP를 온라인 갱신. L4acados, 지평 7.5 s, SQP 반복 51–89 ms로 실시간과 거리가 멀다. 쿼드로터 시뮬 | MPC M.1.2, M.4 | [논문](https://arxiv.org/abs/2507.02098) · [코드](https://doi.org/10.3929/ethz-c-000803178) |
+| 데이터에서 강건 MPC까지 (Benders 외) | 2025.08 · 프리프린트 | 입출력 기록에서 외란 상자를 추정하고 SDP로 튜브(ρ = 12.5)·종단 성분을 설계(TU Delft·ETH·CTU). 쿼드로터 시뮬만 | MPC M.1.2, M.4 | [논문](https://arxiv.org/abs/2508.07045) · [코드](https://github.com/dbenders1/rohmpc) |
+| 고속 전지형 자율주행 (Baxter 외) | 2026.03 · T-RO 투고 | 3차원 강체 + 바퀴 스프링 모델과 에너지 안정 여유 전복 제약을 GPU 샘플링 MPC로. 실차(4–5.5 m/s) 24/24 대 23/24, 시뮬 5–10 m/s | MPC M.1.2, M.4 | [논문](https://arxiv.org/abs/2603.20525) · [코드](https://github.com/JamesRBaxter/AllTerrainAutonomyToolbox.jl) |
+| 비평면 재귀 희소 GP MPC (Amine 외) | 2026.02 · IEEE IV 2026 | 부호 있는 roll·pitch 입력 희소 GP 잔차를 망각 계수로 온라인 갱신, MPPI 50 Hz. Isaac Sim만 | MPC M.1.3, M.4 | [논문](https://arxiv.org/abs/2602.16206) · [코드](https://github.com/mlab-upenn/NonPlanarIsaacSim) |
+| 에너지 정규화 신경망 잔차 MPC (Kübel 외) | 2026.04 · 프리프린트 | MLP 잔차에 에너지 증가 벌점을 걸어 acados RTI NMPC에. 정규화 없는 쪽보다 MAE 최대 15 % 낮음(원 궤적 0.107 대 0.127 m), 틸트 쿼드로터 실물 | MPC M.1.3, M.4 | [논문](https://arxiv.org/abs/2604.14678) · [코드](https://github.com/johanneskbl/jsk_aerial_robot/tree/develop/neural_MPC) |
+| Delay-aware Robust Control (Kalaria·Lin·Dolan) | 2022.08 · IEEE TIV 투고 | 지연을 상태 확장으로 다루는 강건 MPC(자율주행·레이싱). 지연 보상의 고전 기준점 | MPC M.4 | [논문](https://arxiv.org/abs/2208.13856) |
+| 신경 연산자 예측기 지연 적응 제어 (Bhan·Krstic·Shi) | 2025.08 · 프리프린트 | 근사 신경 연산자 예측기로 비선형 지연 시스템을 제어하는 이론 | MPC M.4 | [논문](https://arxiv.org/abs/2508.20367) |
 
 ### D.7 동적 장애물 안전 필터
 
@@ -486,6 +522,10 @@ TEB, Smac, iPlanner, ViPlanner, X-Mobility, COMPASS, legged_gym, autonomy_stack_
 | CVaR-BF + RL | 2026.05 | 미분 가능 CVaR-BF로 위험 수준 학습 | C | [논문](https://arxiv.org/abs/2605.21257) |
 | OcclusionCBF | — | 가려진 영역 reachable occupancy 인증, Gurobi 필요(보류) | C.2 | [프로젝트](https://www.taekyung.me/occlusion-cbf) · [코드](https://github.com/tkkim-robot/occlusion-cbf) |
 | Predictive Semantic Safety | 2026 | VLM 물리 사건 예측 → conformal 미래 점유 → 백업 보존 QP 안전 필터 | E | [프로젝트](https://www.taekyung.me/3e218d5c-31e3-8088-ac70-fee275314177) |
+| DUCCT-MPPI | 2026.05 · IROS 2026 투고 | UT 위치 튜브 + 몬테카를로 보행자 위험의 확률 제약 MPPI, Brier·로그 손실로 위험 보정 평가, TurtleBot3 시뮬 | C.2, E.16 | [논문](https://arxiv.org/abs/2605.28330) |
+| GS-MPPI | 2024.10 · ACC 2025 투고 | 여러 제약을 합성 CBF 하나로 묶고 닫힌 형태 안전 제어를 rollout 동역학에 넣는다, soft-min 합성 | C.4 | [논문](https://arxiv.org/abs/2410.02154) |
+| Exact-Safe MPPI | 2026.10 · ACC 2027 투고 | GS-MPPI의 soft-min barrier 합성을 정확한 최솟값 + δ-활성 집합 QP로, 좁은 틈 보존 | C.4, E.16 | [논문](https://arxiv.org/abs/2610.07369) · [코드](https://github.com/lc-lab25/Exact-Safe-MPPI) |
+| 표본 안전 필터 (SV-MPC) | 2026.04 | 안전 표본이 없을 때만 백업 개입, 시나리오 기법으로 괜한 개입에 확률 상한 (KAIST) | C.4, E.16 | [논문](https://arxiv.org/abs/2604.22149) |
 
 ### D.7b Controller·안전 — 마일스톤과 공개 코드
 
@@ -522,7 +562,7 @@ E.1(MPPI 계보), E.2(학습 동역학·적응 마일스톤), C.4(안전 필터 
 
 ### D.14 강화학습 (§R)
 
-강화학습 문서(R.0–R.18)에서 다룬 연구다. 강의 자료가 먼저 오고, 논문은 arXiv 첫 게재 순이다.
+강화학습 문서(R.0–R.19)에서 다룬 연구다. 강의 자료가 먼저 오고, 논문은 arXiv 첫 게재 순이다.
 기울기 없는 학습기 PolyStep은 MPOT와 함께 D.5b에 있다. MPPI(D.7b), BADGR(D.3b), GNM(D.4), Diffusion Policy(D.5b)는 각 절에 있다.
 
 | 이름 | 연·발표 | 요약 | 본문 | 링크 |
@@ -628,11 +668,23 @@ E.1(MPPI 계보), E.2(학습 동역학·적응 마일스톤), C.4(안전 필터 
 | ArCHer | 2024.02 · ICML 2024 | 발화 단위 가치와 토큰 단위 정책 기울기의 계층 RL | R.10, R.15 | [논문](https://arxiv.org/abs/2402.19446) |
 | DPPO | 2024.09 · ICLR 2025 | denoising MDP를 환경 MDP에 넣어 확산 정책을 PPO로 미세조정 | R.13 | [논문](https://arxiv.org/abs/2409.00588) |
 | FQL | 2025.02 | flow 행동 복제 곁에 Q를 키우는 한 스텝 정책을 둔다 | R.10 | [논문](https://arxiv.org/abs/2502.02538) |
-| ReinFlow | 2025.05 · NeurIPS 2025 | 학습 잡음으로 flow 정책의 가능도를 정확히 계산해 미세조정 | R.13 | [논문](https://arxiv.org/abs/2505.22094) |
+| ReinFlow | 2025.05 · NeurIPS 2025 | 학습 잡음으로 flow 정책의 가능도를 정확히 계산해 미세조정 | R.13, B.3 | [논문](https://arxiv.org/abs/2505.22094) · [코드](https://github.com/ReinFlow/ReinFlow) |
 | VideoMimic | 2025.05 · CoRL 2025 | 사람 영상을 따라 배운 휴머노이드 제어. 11 × 11 높이 지도와 목표 방향만 보는 G1 정책 하나가 계단·의자·연석을 고른다 | R.0, B.16.6 | [논문](https://arxiv.org/abs/2505.03729) · [코드](https://github.com/hongsukchoi/VideoMimic) |
-| DSRL | 2025.06 | 확산·flow 정책의 잠재 잡음 공간에서 온라인 RL | R.10 | [논문](https://arxiv.org/abs/2506.15799) |
+| DSRL | 2025.06 · CoRL 2025 | 확산·flow 정책의 잠재 잡음 공간에서 온라인 RL | R.10, R.19 | [논문](https://arxiv.org/abs/2506.15799) · [코드](https://github.com/ajwagen/dsrl) |
 | FPO | 2025.07 | flow matching 손실의 차이를 PPO 비율로 쓴다 | R.13 | [논문](https://arxiv.org/abs/2507.21053) · [코드](https://github.com/akanazawa/fpo) |
+| Q-chunking | 2025.07 · NeurIPS 2025 | 행동 묶음 critic과 flow 행동 복제에 묶은 best-of-N으로 오프라인에서 온라인으로 | R.10, R.19 | [논문](https://arxiv.org/abs/2507.07969) · [코드](https://github.com/ColinQiyangLi/qc) |
+| SPiDR | 2025.09 · NeurIPS 2025 | 무작위화 시뮬 앙상블의 분산을 안전 비용에 더해 sim-to-real 안전을 지킨다 | R.13, R.19 | [논문](https://arxiv.org/abs/2509.18648) · [영상](https://github.com/yardenas/safe-learning) |
+| Dreamer 4 | 2025.09 | 오프라인 영상으로 배운 world model 안에서만 강화학습 | R.9, R.19 | [논문](https://arxiv.org/abs/2509.24527) · [프로젝트](https://danijar.com/project/dreamer4/) |
+| RL-100 | 2025.10 | 모방, 오프라인 RL, 실물 온라인 RL을 확산 정책의 자른 PPO 목표 하나로 잇고 한 스텝으로 증류 | R.10, R.19 | [논문](https://arxiv.org/abs/2510.14830) · [프로젝트](https://lei-kun.github.io/RL-100/) |
+| π*0.6(RECAP) | 2025.11 | 이점을 조건으로 받는 정책으로 오프라인 RL에서 실물 경험과 교정까지 잇는다 | R.10, R.19 | [논문](https://arxiv.org/abs/2511.14759) · [소개](https://www.pi.website/blog/pistar06) |
+| FastSAC·FastTD3 휴머노이드 | 2025.12 | 대규모 병렬 off-policy로 G1·T1 보행을 RTX 4090 한 장에서 15분에 | R.15, R.19 | [논문](https://arxiv.org/abs/2512.01996) · [코드](https://github.com/amazon-far/holosoma) |
+| FPO++ | 2026.02 | 표본별 비율 자르기와 비대칭 신뢰 영역으로 flow 정책 기울기를 실물 휴머노이드까지 | R.13, R.19 | [논문](https://arxiv.org/abs/2602.02481) · [프로젝트](https://hongsukchoi.github.io/fpo-control) |
+| FINO | 2026.02 · ICLR 2026 | flow 입력 잡음과 엔트로피 유도 선택으로 오프라인에서 온라인으로 | R.10, R.19 | [논문](https://arxiv.org/abs/2602.18117) · [코드](https://github.com/CTID282/FINO) |
+| SimDist | 2026.03 · RSS 2026 | 시뮬에서 world model을 미리 배우고 실물에서는 동역학만 고쳐 MPPI로 계획 | R.9, R.19 | [논문](https://arxiv.org/abs/2603.15759) · [프로젝트·코드](https://sim-dist.github.io) |
+| VIA | 2026.05 · IROS 2026 | CVaR 제약 TD3와 학습 뒤 행동 도달 집합 검증 | R.13, R.19 | [논문](https://arxiv.org/abs/2605.14174) |
+| NavRL++ | 2026.05 | 깨끗한 사전학습 뒤 다섯 섭동으로 미세조정해 내비게이션 RL의 sim-to-real 틈을 줄인다 | R.15, R.19 | [논문](https://arxiv.org/abs/2605.15559) |
 | Safe Score Matching | 2026.09 · NeurIPS 2026 | HJ 도달 가능성 critic으로 확산 정책의 점수 목표를 보상과 회복 두 갈래로 나눈다 | R.13, C | [논문](https://arxiv.org/abs/2609.33337) · [코드](https://github.com/byli888/safe-score-matching) |
+| QF3 | 2026.10 | replay 행동 가까운 차원에만 Q 기울기를 흘리는 off-policy flow RL | R.13, R.19 | [논문](https://arxiv.org/abs/2610.08789) · [프로젝트](https://qf3-rl.github.io/) |
 
 <!-- tab: 연구 그룹 -->
 
@@ -756,6 +808,7 @@ TP-0036에 바로 들어간다)다.
 | Gazebo Harmonic·Jetty | 2023.09·2025.09 | ROS 2 표준 CPU 시뮬레이터 | S.1.5 | [gazebosim.org](https://gazebosim.org/docs/latest/releases/) |
 | Project Chrono | 2026.04(10.0) | 다물체·차량·변형 지면(SCM, DEM, SPH) | S.1.6, S.5.4 | [GitHub](https://github.com/projectchrono/chrono), [지형 모델](https://api.projectchrono.org/vehicle_terrain.html) |
 | CARLA | 2024.12(0.10) | UE5 자동차 시뮬레이터, 보행자·NuRec | S.1.7 | [GitHub](https://github.com/carla-simulator/carla) |
+| GPUSimBench | 2026.07 · IROS 2026 | GPU 시뮬레이터 7개의 처리량·실물 EMD·결정론 비교. 처리량 1위이자 결정론적인 Genesis가 실물 일치는 5위 | S.1.4, S.10 | [arXiv:2607.13059](https://arxiv.org/abs/2607.13059) |
 
 ### 보도·도시·보행자
 
@@ -775,6 +828,10 @@ TP-0036에 바로 들어간다)다.
 | Arena 4.0 | 2024.09 | ROS 2 사회적 내비 플랫폼, 생성형 세계 | S.3.5 | [arXiv:2409.12471](https://arxiv.org/abs/2409.12471) |
 | NavIsaacLab | 2026.06 | 궤적 diffusion + 동작 모방 보행자, Isaac Lab | S.3.4 | [arXiv:2606.26265](https://arxiv.org/abs/2606.26265) |
 | SONG | 2026.07 | 3DGS 사회적 내비 플랫폼, 언어 모델 보행자 | S.3.4 | [arXiv:2607.25219](https://arxiv.org/abs/2607.25219) |
+| 사전식 조종 (Jia·How) | 2026.09 | 생성 정책의 동적 장벽 안내 + 사전식 선택, ViPlanner 주거지(CARLA Town01) Isaac Sim 배달 벤치마크(0.10 m 턱 hard 제약) | S.2.7, S.10 | [arXiv:2609.15014](https://arxiv.org/abs/2609.15014) |
+| DynBench (FLUX) | 2026.03 | 상태 기계 + NavMesh 보행자(1.1 m/s)의 Isaac Sim 동적 내비 벤치마크, ORCA 과협조 비판 | S.3.2, S.10 | [arXiv:2603.12806](https://arxiv.org/abs/2603.12806) · [프로젝트](https://zeying-gong.github.io/projects/flux/) |
+| GROVE | 2026.06 · IROS 2026 | 글 설명을 LLM 행동 트리로 바꾸는 보행자 시나리오 생성(HuNavSim 2.0 + SFM) | S.3.3, S.10 | [arXiv:2606.25504](https://arxiv.org/abs/2606.25504) |
+| SocNav Bench (SocialNav) | 2025.11 | 실측 3DGS 9곳(180건) + Isaac Sim 사회적 내비 폐루프 벤치마크 | S.3.5, S.10 | [arXiv:2511.21135](https://arxiv.org/abs/2511.21135) · [프로젝트](https://amap-eai.github.io/SocialNav/) |
 
 ### 센서·렌더링·world model
 
@@ -790,6 +847,7 @@ TP-0036에 바로 들어간다)다.
 | Cosmos-Transfer1 | 2025.03 | 다중 공간 조건 생성, sim-to-real 증강 | S.4.3 | [arXiv:2503.14492](https://arxiv.org/abs/2503.14492) |
 | X-Mobility | 2024.10 | Isaac Sim 합성 데이터 world model 내비 | S.4.3, B.12.4, B.16.1 | [arXiv:2410.17491](https://arxiv.org/abs/2410.17491) · [코드](https://github.com/NVlabs/X-MOBILITY) |
 | COMPASS | 2025.02 | 잔차 강화학습 교차 몸체 이동 정책. GR00T N1.6 점 목표 내비의 합성 데이터 | S.4.3, S.5.2, B.12.4, B.16.1 | [arXiv:2502.16372](https://arxiv.org/abs/2502.16372) · [코드](https://github.com/NVlabs/COMPASS) |
+| Wanderland | 2025.11 · CVPR 2026 | LiDAR·RTK·어안 스캔 530곳의 기하 정확 3DGS 장면, Isaac Sim USD. 기하 부정확 장면은 평가·미세조정을 흔든다 | S.4.2, S.10 | [arXiv:2511.20620](https://arxiv.org/abs/2511.20620) · [프로젝트](https://ai4ce.github.io/wanderland/) |
 
 ### 로봇 리그 (S.9)
 
@@ -817,6 +875,10 @@ TP-0036에 바로 들어간다)다.
 | Sim2Real Predictivity | 2019.12 | SRCC, Habitat 미끄러짐 허점 | S.6.4 | [arXiv:1912.06321](https://arxiv.org/abs/1912.06321) |
 | GPS·IMU sim2real 격차 | 2024.03 | 판정자 기반 센서 격차, Wasserstein | S.6.4 | [arXiv:2403.11000](https://arxiv.org/abs/2403.11000) |
 | ART/ATK | 2022.11 | Chrono 디지털 트윈 차량 sim-to-real 연구 플랫폼 | S.1.6 | [arXiv:2211.04886](https://arxiv.org/abs/2211.04886) |
+| Verti-WM | 2026.09 | 지도 패치 조건 학습 시뮬, 해석·학습 두 전문가 + GRU 게이트, 실물 약 70분으로 게이트 학습, 실물 4/5 | S.5.3c, S.10 | [arXiv:2609.23118](https://arxiv.org/abs/2609.23118) |
+| Sim2Dust | 2025.08 | 절차 지형 + 지연 무작위화로 자갈 위 스키드 스티어 rover에 zero-shot, 입자 미세조정 이득 작음 | S.5.4, S.10 | [arXiv:2508.11503](https://arxiv.org/abs/2508.11503) · [코드](https://github.com/AndrejOrsula/space_robotics_bench) |
+| Chrono::CRM | 2025.07 · J. Terramechanics 투고 | GPU SPH 연속체 지형역학, 바퀴·도구 결합, BSD-3 | S.5.4, S.10 | [arXiv:2507.05643](https://arxiv.org/abs/2507.05643) · [코드](https://github.com/projectchrono/chrono) |
+| EmbodiedSplat | 2025.09 · ICCV 2025 | 휴대폰 3DGS 메시 Habitat 장면, sim-real 상관 0.87–0.97(실내) | S.6.4, S.10 | [arXiv:2509.17430](https://arxiv.org/abs/2509.17430) · [프로젝트](https://gchhablani.github.io/embodied-splat/) |
 
 ---
 
@@ -965,7 +1027,7 @@ TP-0036에 바로 들어간다)다.
 | VLFM | 2023.12 · ICRA 2024 | 깊이 점유 지도의 프런티어 가운데 VLM 가치 지도가 높은 곳으로 가서 처음 보는 물체를 찾는다. 과제별 학습 없이 Spot 실물 사무실 시연. Georgia Tech와 Boston Dynamics AI Institute | B.16.4 | [논문](https://arxiv.org/abs/2312.03275) · [코드](https://github.com/rai-opensource/vlfm) MIT |
 | Spot RL 보행 (Boston Dynamics) | 2024.02 · Spot 4.0, 블로그 2024-03 | 경로 계획기와 모델 기반 보행 제어기 사이의 RL 정책이 궤적과 걸음새를 낸다. 이전의 MPC 다중 해 + 점수 선택을 대체. 시뮬 수백 장면 + 사내 무리 주당 2,000시간으로 검증. RL Researcher Kit(관절 API, Jetson AGX Orin, Isaac Lab) | B.16.4 | [블로그](https://bostondynamics.com/blog/starting-on-the-right-foot-with-reinforcement-learning/) · [Kit](https://bostondynamics.com/reinforcement-learning-researcher-kit/) · [배포 예제](https://github.com/boston-dynamics/spot-rl-example) MIT |
 | 실물 전신 MPPI (Alvarez-Padilla 외) | 2024.09 · ICRA 2025 | MuJoCo 병렬 rollout 30개로 관절 목표 스플라인 매듭을 찾는 MPPI, 100 Hz·0.4 s 지평. Go1 실물에서 0.24 m 상자 오르기, 3.5 kg 상자 밀기 9/10·6/10. Sumo 1저자 공저 | B.16.4 | [논문](https://arxiv.org/abs/2409.10469) · [코드](https://github.com/jrapudg/RTWholeBodyMPPI) MIT |
-| DIAL-MPC | 2024.09 · ICRA 2025 | 반복마다 잡음을 줄이고 지평 위치마다 잡음을 달리하는 확산식 두 겹 담금질로 Go2 관절 토크를 직접 찾는 샘플링 MPC(Brax, 표본 2,048개, 0.4 s). 표준 MPPI 대비 추종 오차 13.4배 감소. judo의 잡음 ramp가 닮았다고 적은 대상 | B.16.4 | [논문](https://arxiv.org/abs/2409.15610) · [코드](https://github.com/LeCAR-Lab/dial-mpc) Apache-2.0 |
+| DIAL-MPC | 2024.09 · ICRA 2025 | 반복마다 잡음을 줄이고 지평 위치마다 잡음을 달리하는 확산식 두 겹 담금질로 Go2 관절 토크를 직접 찾는 샘플링 MPC(Brax, 표본 2,048개, 0.4 s). 표준 MPPI 대비 추종 오차 13.4배 감소. judo의 잡음 ramp가 닮았다고 적은 대상 | B.16.4, E.1 | [논문](https://arxiv.org/abs/2409.15610) · [코드](https://github.com/LeCAR-Lab/dial-mpc) Apache-2.0 |
 | MuJoCo iLQR 전신 MPC (Zhang 외) | 2025.03 · ICRA 2026 | MuJoCo 동역학과 유한차분 미분의 iLQR + TV-LQR 되먹임으로 Go1·Go2·H1 실물 전신 MPC. 샘플링 MPC와 달리 두 다리 보행 같은 불안정 과제를 푼다고 적는다. Sumo 1저자의 앞선 논문 | B.16.4 | [논문](https://arxiv.org/abs/2503.04613) · [코드](https://github.com/johnzhang3/mujoco_mpc_deploy) MIT |
 | Spot 고속 RL (RAI Institute) | 2025.04 · ICRA 2025 | RL Researcher Kit의 관절 API로 MPC 없는 정책. 실물·시뮬 상태 분포의 Wasserstein·MMD 거리를 CMA-ES로 줄여 마찰 2개와 토크-속도 곡선 6개를 보정, 실물 최고 3.8에서 5.2 m/s(기본 제어기 1.6 m/s) | B.16.4 | [논문](https://arxiv.org/abs/2504.17857) · [학습 환경](https://github.com/isaac-sim/IsaacLab/tree/main/source/isaaclab_tasks/isaaclab_tasks/manager_based/locomotion/velocity/config/spot) BSD-3-Clause |
 | judo | 2025.06 · RSS 2025 워크숍(확장판은 RAI 페이지가 ICRA 2026으로 표기) | MuJoCo 기반 파이썬 샘플링 MPC 도구. PS·CEM·MPPI(확장판이 비교한 CMA-ES는 공개 코드에 없음), 스플라인 매듭, 잡음 ramp, viser GUI, 비동기 노드. LEAP 정육면체 갱신 28.7 ms(MJPC 32.4 ms). v0.0.7 C++ 정책 rollout, v0.1.0 MuJoCo Warp. Sumo의 틀 | B.16.4 | [논문](https://arxiv.org/abs/2506.17184) · [코드](https://github.com/rai-opensource/judo) MIT · [문서](https://pages.rai-inst.com/judo/) |

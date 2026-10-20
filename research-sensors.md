@@ -68,6 +68,25 @@ L2급 한 대(약 400달러)면 옆·뒤 지형이 "기억"에서 "관측"으로
 | 초음파 | 아주 싸다, 유리·투명체 감지 | 해상도가 없다, 거리 짧다 | 근접 안전 |
 | 레이더(4D 포함) | 비·안개·먼지에 강함, 속도 직접 측정 | 해상도가 낮다 | 악천후 보조, 움직이는 물체 속도 |
 
+### CODEI — 센서·장착 위치·알고리즘·연산 장치를 비용 가중치로 함께 고른다
+
+**과제가 요구하는 인식 성능과 각 센서·검출기의 측정된 오탐·미탐률을 정수 선형 계획(ILP)으로 맞춰, 가격·질량·전력·연산 가운데 무엇을 아끼느냐에 따라 센서 구성을 고른다.**
+논문 제목은 *CODEI: Resource-Efficient Task-Driven Co-Design of Perception and Decision Making for Mobile Robots Applied to Autonomous Vehicles*다
+(Milojevic·Zardini·Elser·Censi·Frazzoli [arXiv:2503.10296](https://arxiv.org/abs/2503.10296), IEEE T-RO 2025, ETH Zürich·Empa·MIT). 코드는 확인하지 못했다.
+==결론은 "카메라는 싸고 가벼운 설계에, LiDAR는 전력과 연산을 아끼는 설계에"다.== 복잡한 과제에서는 모든 설계가 LiDAR를 하나 이상 골랐다.
+
+동작 방식은 이렇다. 표본 기반 계획기가 던지는 "이 시각에 이 자세가 부딪히는가"라는 질의(occupancy query)를, 인식이 반드시 잡아야 할 물체 배치로 바꾼다.
+센서와 검출기의 짝(LiDAR + PointPillars, 카메라 + FCOS3D)은 nuScenes에서 거리·방향·크기·조명별 미탐률과 오탐률을 재 Gaussian process 분류기로 모델링한다.
+장착 위치(yaw 8방향, pitch 0°)마다 광선 투사로 시야와 차체 자기 가림을 계산하고, 모든 요구를 덮는 가장 싼 조합을 ILP(결정 변수 667개, 약 75 s)로 푼다.
+연산 장치 후보는 Jetson Nano부터 AGX Orin 64GB까지 일곱이다. 연산을 아끼면 Orin Nano에 카메라 없이 LiDAR만, 질량을 아끼면 카메라에 AGX Orin 64GB가 뽑혔다.
+
+**travplan에 주는 의미.** 사례 연구는 승용차(Smart·Pacifica·C63)와 자동차용 센서라 숫자를 그대로 쓸 수 없다. 가져올 것은 절차다.
+H.1의 다섯 배치를 감으로 비교하는 대신, travplan 시뮬에서 "Planner가 실제로 묻는 칸"을 요구로 모으고, L1 합성 센서별 미관측률을 성능으로 재면 같은 ILP로 배치를 고를 수 있다.
+배달로봇에서 지형(음의 장애물)은 이 논문의 물체 검출 요구와 다르므로, 요구 정의를 TravMap 칸 단위로 바꿔야 한다.
+
+![CODEI Fig. 1](https://arxiv.org/html/2503.10296v2/figures/intro-v3-comp-s.jpg)
+*그림 — CODEI (Fig. 1): 도심 자율주행차를 부품 목록(차체, 센서, 검출기, 계획기, 연산 장치)에서 골라 설계하는 문제의 개념도. 출처: [arXiv:2503.10296](https://arxiv.org/abs/2503.10296)*
+
 <!-- tab: 가격·연산 -->
 
 ## H.3 예상 가격 (2026-09 기준)

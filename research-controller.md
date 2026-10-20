@@ -2,7 +2,7 @@
 # Controller와 안전 필터 — Planner의 궤적을 실행하는 쪽 (§E, §C)
 
 **Controller는 Planner의 경로나 궤적을 받아 추종하면서, 지형과 동적 장애물을 로컬로 피하는 body twist를 낸다.** travplan은 Controller로 MPPI와
-acados NMPC 두 갈래를 함께 개발하고 같은 벤치마크에서 비교한다(2026-09-30 결정). 이 문서는 그 Controller를 고칠 때 보는 참고 지도이고, 개발 기록은 MPC 문서(§M)에 있다. 다섯 탭으로 나뉜다.
+acados NMPC 두 갈래를 함께 개발하고 같은 벤치마크에서 비교한다(2026-09-30 결정). 이 문서는 그 Controller를 고칠 때 보는 참고 지도이고, 개발 기록은 MPC 문서(§M)에 있다. 여섯 탭으로 나뉜다.
 
 | 탭 | 다루는 것 | 절 | travplan과의 관계 |
 |---|---|---|---|
@@ -10,6 +10,7 @@ acados NMPC 두 갈래를 함께 개발하고 같은 벤치마크에서 비교�
 | 학습 동역학·적응 | 학습 rollout 모델, 불확실성, 온라인 적응, 마일스톤, Zeilinger 그룹(학습 MPC의 보장·공개 코드·내비 MPC), GP 잔차 | E, E.2–E.10 | 슬립이 커질 때 바꿀 rollout 모델, 잔차 GP |
 | 안전 필터 | 비용 통합형과 외부 필터형, CBF 계열, 계보 | C.1–C.4 | 시간가변 비용 레이어(구현), CVaR-BF(TP-0014) |
 | 하위 제어 · 4족 RL | 4족 보행 RL의 계보, 자동 커리큘럼, RL과 MPC를 섞는 갈래, DreamWaQ 비공식 구현과 Extreme Parkour의 논문·코드 분석, 휴머노이드 분리형 WBC | F.1–F.8 | 지형 난이도 커리큘럼(TP-0039), Planner D RL 후학습(TP-0066), L1 belief 증류(TP-0055) |
+| 최근 연구 비교 | 2025–2026 Controller·안전 연구의 비교표, 공통점·차이점, travplan에 가져올 것과 시도 순서 | E.16 | TP-0170, TP-0151, TP-0154 후속 후보 |
 | 작업 기록 | Playground의 학습 Controller와 지도 없는 대조군, 휴머노이드·WBC, MPOT Planner, DreamWaQ 비공식 구현 점검 | E.12–E.15 | `travplan/control/tiny_policy.py`, `js/mpot.js`, TP-0128·0129·0135·0136·0155 |
 
 **계보 한눈에 보기.**
@@ -19,7 +20,7 @@ acados NMPC 두 갈래를 함께 개발하고 같은 벤치마크에서 비교�
 | 2015–2018 | MPPI, 정보이론적 MPC, Tube-MPPI | PETS | CBF-QP, HJ 도달 가능성, 예측 안전 필터 |
 | 2019–2021 | Robust MPPI | IKD, RMA | CBF 튜토리얼, 이산 CBF + MPC, safe-control-gym |
 | 2022–2023 | log-MPPI, SMPPI, Nav2 MPPI, RA-MPPI | PENN, TOAST, 지형 인지 운동 모델, 확률 앙상블 능동 탐색, TD-MPC2 | 안전 필터 통합 관점 |
-| 2024–2026 | MPPI-Generic, π-MPPI, DRA-MPPI, ProxPI, OT-MPC | 잠재 문맥 온라인 적응 | CVaR-BF, OcclusionCBF, Predictive Semantic Safety |
+| 2024–2026 | MPPI-Generic, π-MPPI, DRA-MPPI, ProxPI, OT-MPC, Feedback-MPPI, CLIS-MPPI | 잠재 문맥 온라인 적응, 범용 모델 특화(OptCar), 계수 RLS 적응 | CVaR-BF, OcclusionCBF, Predictive Semantic Safety, 표본 안전 필터, Exact-Safe MPPI |
 
 **공개 코드.** GitHub 별 순이다(2026-09).
 
@@ -58,6 +59,9 @@ MPPI), 샘플링 분포를 바꾼 판(log-MPPI, SMPPI), 범용 라이브러리(N
 | 2022 | SMPPI | 노이즈를 제어 변화율에 넣어 매끄럽게(B.5) | travplan `SmoothMPPIController` |
 | 2022–2023 | Nav2 MPPI Controller | ROS 2 표준 스택의 CPU MPPI | [ros-navigation/navigation2](https://github.com/ros-navigation/navigation2) 4.7k |
 | 2024 | MPPI-Generic | MPPI, Tube-MPPI, Robust MPPI의 C++/CUDA 템플릿 라이브러리 | [ACDSLab/MPPI-Generic](https://github.com/ACDSLab/MPPI-Generic) 0.3k |
+| 2025–2026 | Feedback-MPPI | rollout 미분으로 국소 되먹임 이득을 얻어 풀이 사이를 메운다 | [feedback-mppi.github.io](https://feedback-mppi.github.io) (JAX) |
+| 2026 | CLIS-MPPI | 실행 지연을 초기 상태 분포로 두고, rollout 회귀로 되먹임 이득을 얻는다 | — |
+| 2024–2025 | DIAL-MPC | 반복마다 잡음을 줄이는 확산식 담금질로 샘플 분포를 좁힌다, 4족 관절 토크(Planner 문서 B.16.4) | [LeCAR-Lab/dial-mpc](https://github.com/LeCAR-Lab/dial-mpc) |
 | — | pytorch_mppi | 근사 동역학을 쓰는 PyTorch 구현 | [UM-ARM-Lab/pytorch_mppi](https://github.com/UM-ARM-Lab/pytorch_mppi) 0.8k |
 
 **MPPI와 정보이론적 MPC — 샘플을 굴려 가중 평균한다**([arXiv:1509.01149](https://arxiv.org/abs/1509.01149), 2015;
@@ -111,6 +115,109 @@ $$ \delta \mathbf u = X \cdot Y, \qquad X \sim \mathcal N(0, \sigma_n^2), \quad 
 **travplan에 주는 것.** travplan `MPPIController`는 샘플 768개, 지평 40스텝(4초)으로 운동학 벤치마크에서 스텝당 약 10 ms가 걸린다(PyTorch).
 Orin 이식에서 지연이 문제가 되면 MPPI-Generic 같은 CUDA 구현이 첫 후보다. Isaac Sim이나 실물에서 슬립이 커지면, 실제 상태에서 매번
 다시 시작하는 지금 방식 대신 RMPPI식 명목 상태 선택이 로봇을 안정시킨다.
+
+</details>
+
+#### CLIS-MPPI: 실행 지연을 초기 상태 분포로 본다
+
+**CLIS-MPPI는 계획과 실행 사이의 지연을 "rollout을 어디서 시작해야 할지 모른다"는 초기 상태 불확실성으로 바꿔 MPPI에 넣는다**
+([arXiv:2610.21239](https://arxiv.org/abs/2610.21239), CDC 2026, University of Washington, Liu·Chen). 코드 공개는 확인하지 못했다.
+==지연을 동역학에 넣지 않고 샘플의 출발점에 퍼뜨린다.== 이 점이 travplan `mppi_plant_lag`와 갈린다.
+
+**동작 방식.** 계획하는 동안(실험의 계획 시간은 약 87.5 ms) 로봇은 이전 명령으로 계속 움직인다. 그래서 최적화한 제어가 실제로 걸릴 때의
+상태는 계획을 시작한 상태와 다르다. CLIS-MPPI는 그 차이를 평균 0의 가우시안으로 두고, 공분산은 지연의 통계와 지연 동안
+유지된 명령으로 계산한다. 논문은 실제로 잰 지연 통계를 보고하지 않았다. rollout마다 이 분포에서 초기 상태 섭동을 하나 뽑아 그 자리에서 굴린다. 가중치는 표준 MPPI와 같다.
+그다음 가중 rollout의 상태 편차와 제어 편차로 가중 최소제곱을 풀어 국소 되먹임 이득을 얻는다. 실행 명령은 MPPI의 피드포워드에
+"실제 상태와 명목 rollout 상태의 차이"에 이득을 곱한 항을 더한 것이다. 유효 샘플 수가 문턱 아래로 떨어지면 되먹임을 믿지 않는
+장치도 있다.
+
+**결과.** UR5e 팔 실물로 좁은 통로를 지나는 과제를 방법마다 5번 했다. MPPI는 2번 충돌했고 CLIS-MPPI는 한 번도 충돌하지 않았다.
+충돌하지 않은 시행만 평균하면 관절 위치 RMSE가 0.100 rad에서 0.017 rad로, 관절 속도 RMSE가 0.108 rad/s에서 0.011 rad/s로 줄었다.
+계획 시간은 87.5 ms와 87.6 ms로 같다. 시행이 5번뿐이고 분산이나 유의성은 보고하지 않았다.
+
+**travplan에 주는 의미.** travplan의 지연은 두 종류다. 스워브 plant의 1차 지연(0.2 s)은 `mppi_plant_lag`가 rollout 동역학 안에서
+굴린다(TP-0150). TP-0032가 넣은 L0 지연(`--latency`, PR #234, 미병합)은 아직 Controller가 모른다. 이 지연은 센서에서 지도까지, 계획,
+제어의 셋이다. `--latency 2 2 3`이면 셋을 에피소드마다 각각 0–2, 0–2, 0–3 스텝(한 스텝 0.1 s)에서 하나씩 뽑고, 그 에피소드 안에서는
+일정하게 둔다. 고정 지연이 아니라 "모르지만 에피소드 안에서는 일정한" 지연이다. 스모크 한 판에서 이 지연을 켜면 12개 중 9개가
+성공했다(짝 비교 전이라 판정이 아니다, TP-0169). 그 실패 셋이 제어 지연 탓인지부터 가려야 한다. 제어 지연만 켠 `--latency 0 0 3`
+한 판이 TP-0170의 첫 단계다.
+
+모델은 그다음에 고른다. 지연의 고전 기준선은 상태 예측기(predictor)다. 계획을 시작한 상태를, 이미 보냈지만 아직 바퀴에 닿지 않은
+명령으로 명령이 걸릴 시각까지 굴린 뒤 거기서 최적화한다. Controller는 자기가 보낸 명령 기록을 알므로 이 부분은 확률이 아니라
+결정적으로 굴린다. 남는 불확실성은 지연이 몇 스텝인가뿐이다. 지금 시뮬에서는 그 값이 에피소드 안에서 일정한 이산값(0–3)이다.
+그래서 맞는 모델은 rollout마다 지연 d를 0–3에서 하나 뽑아 명령 기록(FIFO)을 d스텝 굴리는 혼합 분포다. CLIS-MPPI의 평균 0 가우시안
+섭동은 이 경우에 맞지 않는다. 유지한 명령이 0이 아니면 어긋남의 평균도 0이 아니어서, 명목 상태를 어디 두느냐에 따라 치우침이 생긴다.
+CLIS-MPPI가 맞는 경우는 지연이 매 스텝 흔들리는 경우다. 그런 지연은 지금 시뮬에 없으므로, 시험하려면 시뮬 기능부터 더해야 한다.
+어느 쪽이든 rollout의 시작점만 바꾸므로 `LagSlipSwerveModel`처럼 모델 쪽에 넣고 최적화기(`mppi.py`)는 그대로 둔다. 되먹임 이득은
+Controller 출력 단계라 `PlantAwareMPPIController` 같은 하위 클래스에 둔다.
+
+![CLIS-MPPI Fig. 1](https://arxiv.org/html/2610.21239v1/Figures/delay.png)
+*그림 — CLIS-MPPI (Fig. 1): i번째 계획 주기에서 계획을 시작한 상태와 제어가 실제로 걸리는 상태가 어긋나는 모습. 출처: [arXiv:2610.21239](https://arxiv.org/abs/2610.21239)*
+
+![CLIS-MPPI Fig. 2](https://arxiv.org/html/2610.21239v1/Figures/Framework2.png)
+*그림 — CLIS-MPPI (Fig. 2): 초기 상태 샘플, 가중 rollout, rollout 회귀로 얻은 되먹임 이득을 잇는 전체 흐름. 출처: [arXiv:2610.21239](https://arxiv.org/abs/2610.21239)*
+
+<details markdown="1">
+<summary>자세히: CLIS-MPPI의 초기 상태 샘플과 rollout 회귀 이득</summary>
+
+**지연을 상태 오차로 바꾼다.** 지연 $\tau$ 동안 유지된 명령을 $u_{\text{hold}}$라 하면 위치 어긋남은 $\Delta q \approx u_{\text{hold}}\,\tau$이다.
+$\tau$와 $u_{\text{hold}}$가 모두 흔들리므로 공분산은 두 몫의 합이다. 지연은 계획 시각과 적용 시각의 차이 $\tau_t = s_t^{\text{apply}} - s_t^{\text{plan}}$로 잰다.
+
+$$ \Sigma_{\Delta q} \approx \mathbb E[\tau^2]\, \Sigma_{u,\text{hold}} + \sigma_\tau^2\, \mu_u \mu_u^\top $$
+
+**초기 상태 샘플.** rollout $k$마다 시작 상태를 따로 뽑고, 비용과 가중치는 MPPI 그대로다(배경 0.2).
+
+$$ x_t^{(k)} = x_t^{\text{ref}} + \delta^{(k)}, \quad \delta^{(k)} \sim \mathcal N(0, \Sigma_{\text{init}}), \qquad w^{(k)} \propto \exp\!\big(-S^{(k)}/\lambda\big) $$
+
+**평균 0이라는 가정.** $\Delta q \approx u_{\text{hold}}\,\tau$의 평균은 $\mu_u\,\mathbb E[\tau]$로, 움직이는 동안에는 0이 아니다. 그래서 $x^{\text{ref}}$를
+계획 시작 상태에 두면 섭동이 한쪽으로 치우친다. 알고 있는 명령 기록만큼은 먼저 결정적으로 굴려 $x^{\text{ref}}$를 옮기고, 남은 흔들림만 표본으로 퍼뜨리는 편이 맞다.
+
+**rollout 회귀 이득.** 가중 평균으로 명목 상태 $\bar x$와 제어 $\bar u$를 구하고, 편차의 가중 공분산 $\Sigma_{ux}$, $\Sigma_{xx}$로 이득을 맞춘다.
+$\alpha I$는 표본이 적을 때의 정칙화다.
+
+$$ K_{t+j} = \Sigma_{ux,t+j}\big(\Sigma_{xx,t+j} + \alpha I\big)^{-1}, \qquad u_{\text{cmd}} = u_{\text{ff},t} + K_t\,(x_t - \bar x_t) $$
+
+**travplan에 주는 것.** 이득은 미분이 아니라 표본 회귀라서 치명 셀 같은 비평활 비용에서도 정의된다. 아래 Feedback-MPPI와 갈리는 지점이다.
+
+</details>
+
+#### Feedback-MPPI: rollout을 미분해 되먹임 이득을 얻는다
+
+**Feedback-MPPI(F-MPPI)는 MPPI 해가 초기 상태에 얼마나 민감한지를 rollout 미분으로 구해, 다음 풀이 전까지 쓰는 선형 되먹임 이득을 만든다**
+([arXiv:2506.14855](https://arxiv.org/abs/2506.14855), RA-L 2026, Inria·UCL·IIT, [프로젝트·코드](https://feedback-mppi.github.io)).
+경사 기반 MPC가 Riccati 이득을 주는 일을 샘플링 MPC에서 한다.
+
+**동작 방식.** 중요도 가중치는 rollout 비용의 지수 함수이고, 비용은 초기 상태의 함수다. 그래서 가중 평균 제어를 초기 상태로 미분하면
+"샘플 섭동, 가중치, 그 샘플의 비용 기울기와 가중 평균 기울기의 차이"를 곱해 더한 꼴이 된다. 비용 기울기는 JAX 자동 미분으로 rollout과
+병렬로 계산한다. rollout은 국소적으로만 미분 가능하면 된다. 진자 예제에서 표본을 늘리면 이 이득이 무한 지평 LQR 이득에 다가갔고,
+입력 포화가 걸리면 이득이 0으로 갔다. 제약은 비용으로만 들어가므로 이득은 제약을 보지 못한다.
+
+**결과.** Jetson Orin NX를 실은 쿼드로터 실물에서 F-MPPI(풀이 50 Hz, 되먹임 200 Hz)가 MPPI(하드웨어 최대 66.7 Hz)보다 x RMSE를
+0.048 m에서 0.017 m로, z RMSE를 0.038 m에서 0.027 m로 줄였다. Aliengo 4족은 MuJoCo 시뮬레이션뿐이다. F-MPPI 50 Hz가 MPPI 100 Hz와
+비슷하고 80 Hz보다 낫다고 그림으로만 보고했다. 이득 계산은 Jetson에서 실행 시간을 40–70% 늘린다.
+
+**travplan에 주는 의미.** travplan MPPI는 스텝당 약 10 ms라 이미 제어 주기마다 다시 푼다. 그래서 "풀이 사이를 메운다"는 원래 목적은
+작다. 쓸모는 CLIS-MPPI와 같은 자리, 곧 지연이 있을 때 실제 상태와 명목 rollout의 차이를 되먹임하는 항이다. 두 방법은 이득을 얻는
+방식이 다르다. CLIS-MPPI는 가중 공분산 회귀로, F-MPPI는 미분으로 얻는다. travplan 비용에는 치명 셀과 이진 충돌처럼 기울기가 0이거나
+정의되지 않는 항이 많으므로 회귀 쪽을 먼저 쓴다. Orin 이식에서 MPPI 주기가 길어지면 이 절을 다시 본다.
+
+![Feedback-MPPI Fig. 4](https://arxiv.org/html/2506.14855v3/fig_panel_fmppi.png)
+*그림 — Feedback-MPPI (Fig. 4): 쿼드로터 실물의 x–z 궤적, 연속 촬영, 로터 속도를 F-MPPI와 MPPI로 비교했다. 출처: [arXiv:2506.14855](https://arxiv.org/abs/2506.14855)*
+
+<details markdown="1">
+<summary>자세히: Feedback-MPPI의 이득 유도</summary>
+
+**가중 평균을 미분한다.** 제어를 직접 샘플할 때 해는 $u^\star = \sum_k \omega_k v_k$이고 $\omega_k \propto \exp(-J_k/\lambda)$이다.
+$\sum_k \omega_k = 1$이므로 가중치의 미분은 기울기에서 가중 평균을 뺀 꼴이 된다.
+
+$$ \frac{\partial u^\star}{\partial x_0} = -\frac{1}{\lambda} \sum_k \omega_k\, v_k \Big(\frac{\partial J_k}{\partial x_0} - \sum_j \omega_j \frac{\partial J_j}{\partial x_0}\Big)^{\!\top} $$
+
+정책이 파라미터 $\theta$로 표현되면(스플라인 등) $v_k$ 자리에 $\frac{\partial \pi}{\partial \theta}\Delta\theta_k$가 들어가고, 정책이 상태에 직접 의존하는 몫 $\frac{\partial \pi}{\partial x_0}$이 더해진다.
+실행은 $u = u^\star + F\,(x - x_{\text{set}})$이고, 설정점은 $x_0$와 $x_1$ 사이를 보간한다.
+논문은 $v_k$ 자리에 명목에서의 섭동 $\Delta u_0^k$를 쓴다. 논문 Eq. 13은 앞의 −가 없다. 직접 미분하면 −가 나온다. 구현을 옮길 때는 부호를 확인한다.
+
+**travplan에 주는 것.** 기울기 $\partial J_k / \partial x_0$가 필요하다. travplan의 `CostTerm`은 TravMap 조회와 문턱 함수가 많아 이 값이
+거의 0이다. 그래서 그대로는 쓰지 않는다.
 
 </details>
 
@@ -839,6 +946,73 @@ travplan에서 같은 분석을 하면 노면 조건이 잠재로 분리되는�
 조건 입력으로 넣고, 노면 조건이 실제로 군집되는지 보는 것이다. E.3과 묶으면 역할이 갈린다. HDVIO2.0은 지금 받는 외란을 상태로
 추정해 읽고, 이 연구는 겪어 본 조건을 기억해 미리 대비한다.
 
+#### OptCar: 범용 동역학 모델을 한 차량에 특화하고, 이력 문맥 하나로 지형에 맞춘다
+
+**OptCar는 여러 차량으로 사전학습한 범용 순운동(FKD, forward kinodynamic) 모델 AnyCar를 오프로드 차량 한 대에 특화해 MPPI rollout 모델로 쓴다**
+([arXiv:2607.13319](https://arxiv.org/abs/2607.13319), 2026-07, CoRL 2026, UT Austin·DEVCOM ARL, Biswas 연구실, [프로젝트](https://amrl.cs.utexas.edu/optcar/)).
+코드 저장소는 확인하지 못했다. ==온라인 가중치 갱신 없이, 최근 이력을 압축한 문맥 토큰 하나가 지형 적응을 맡는다.==
+
+**동작 방식.** 양방향 transformer 인코더(2층)가 최근 상태·행동 약 250개(0.02 s 간격, 약 5초)를 학습 가능한 문맥 토큰 하나로 압축한다.
+인과 transformer 디코더(2블록)는 그 토큰을 FiLM으로 받아 몸체 좌표의 SE(3) 자세 증분 50스텝을 낸다. AnyCar는 이력 토큰마다 교차
+attention을 걸었는데, 토큰 하나로 줄이자 6 m/s에서 도로 30%, 젖은 잔디 경사 19% 더 정확해졌다. 미세조정에는 지형마다 실제 주행 약
+5분과, 그 지형으로 보정한 동적 자전거 모델이 만든 합성 데이터(약 40만 창)를 섞는다. 자전거 모델은 데이터만 만들고 rollout에는 쓰지
+않는다. 모델은 약 30만 파라미터이고, Jetson AGX Orin에서 FP16 TensorRT로 MPPI(표본 600, 지평 50)를 37 Hz로 돌린다.
+
+**결과.** 1/5 크기 오프로드 차량 실물로 2·4·6 m/s의 8자 주행을 했다. 6 m/s의 궤적 추종 오차는 실제 데이터로만 미세조정한 AnyCar보다
+42–57% 작다. 덤불과 흙에서는 0.776 m에서 0.348 m로 줄었다. 합성 데이터를 섞으면 실제 데이터만 쓸 때보다 17–46% 낮아졌다. 학습에 없던
+수레 끌기에서도 오차가 가장 낮았다(0.229 m). 도로 30분으로 학습한 전용 모델과 비교하면 도로에서는 약 14% 뒤지고 젖은 잔디 경사에서는
+약 46% 앞선다.
+
+**travplan에 주는 의미.** OptCar의 요리법은 "보정한 물리 모델로 합성 데이터를 만들고 학습 모델이 rollout을 맡는다"이다. travplan에는 보정한
+물리 모델이 이미 있다. `robot/plant.py`의 1차 지연·슬립식이고, `mppi_plant_lag`는 그 식을 rollout에 그대로 넣었다(TP-0150). 학습 모델은
+Isaac Sim이나 실물에서 그 식이 틀릴 때 필요하다. 그때의 순서는 이렇다. plant 식으로 합성 데이터를 만들고, Isaac 로그 몇 분으로 미세조정하고,
+문맥 토큰을 노면 조건의 자리로 쓴다. 저자가 적은 한계도 그대로 걸린다. 합성 데이터가 평면 자전거 모델이라 경사 효과가 빠졌다.
+travplan의 남은 병목이 경사로(TP-0151)이므로, 경사 슬립은 합성 쪽이 아니라 실제 데이터 쪽에서 배워야 한다.
+
+![OptCar Fig. 2](https://arxiv.org/html/2607.13319v4/optcar_method.png)
+*그림 — OptCar (Fig. 2): 왼쪽은 이력을 문맥 벡터 하나로 압축해 FKD rollout을 조건화하는 구조, 오른쪽은 범용 사전학습 뒤 실제·합성 데이터로 특화하는 학습 흐름. 출처: [arXiv:2607.13319](https://arxiv.org/abs/2607.13319)*
+
+![OptCar Fig. 5](https://arxiv.org/html/2607.13319v4/images/fig8.png)
+*그림 — OptCar (Fig. 5): 덤불·흙 지형에서 세 속도의 8자 주행을 위에서 본 모습. OptCar FT-RS와 AnyCar FT-R을 비교했다. 출처: [arXiv:2607.13319](https://arxiv.org/abs/2607.13319)*
+
+#### FE-RLS: 기저 함수의 계수만 재귀 최소제곱으로 갱신해 몇 초 안에 적응한다
+
+**Zero to Autonomy in Real-Time(FE-RLS)은 동역학을 학습한 신경 ODE 기저 함수 k개의 선형 결합으로 두고, 그 계수만 주행 중 재귀 최소제곱(RLS)으로 갱신한다**
+([arXiv:2509.12516](https://arxiv.org/abs/2509.12516), 2025-09, RA-L 투고, UT Austin·DEVCOM ARL, Topcu 연구실). 코드 공개는 확인하지 못했다.
+경사 하강 내부 루프가 없으므로 갱신은 계수 수의 제곱에 비례하는 상수 시간이다. 계수는 0(사전 지식 없음)에서 시작한다.
+
+**동작 방식과 결과.** 기저 수는 시뮬레이션과 실물 데이터의 오프라인 평가에서 8개이고, 실물 자율 주행 스택에서는 속도 때문에 3개다. 갱신된 모델을 MPPI가 rollout으로 굴린다. 시뮬레이션
+Warthog는 얼음 지형에서 약 5초 만에 적응했고, MAML은 부정확한 rollout 때문에 장애물에 부딪혔다. 실물은 Clearpath Jackal(T4 GPU)이다.
+아이스 링크 위에 잔디(turf)를 깔아 잔디와 얼음을 오가는 코스를 MPPI(표본 100, 지평 2.5 s)로 달렸다. 예측 오차가 신경 ODE와 MAML보다
+낮았다고 그림으로 보고했고 표의 수치는 없다. 저자는 실물 속도가 느려 지형 차이가 덜 드러났다고 적었다. 한 번 추론에 2.5 ms로 신경
+ODE(0.32 ms)보다 느리다.
+
+**travplan에 주는 의미.** RLS 갱신은 travplan 잔차 모델(MPC 문서 M.3.6)과 같은 자리다. E.9에서 본 대로 travplan 잔차의 큰 몫은 선형인
+지연이다. 그래서 잔차를 기저 몇 개의 선형 결합으로 두고 RLS로 갱신하는 편이 GP보다 싸고, E.9의 wBLR 결론과도 맞는다. FE-RLS는 기저를
+오프라인으로 학습한다. travplan에서는 plant 식의 지연·슬립 계수가 기저 노릇을 하므로 학습 없이 같은 구조를 만들 수 있다. 노면이 바뀌는
+L1 레벨 3에서 `mppi_plant_lag`의 슬립 계수를 주행 중 추정하는 작은 실험이 첫 적용이다.
+
+![FE-RLS Fig. 1](https://arxiv.org/html/2509.12516v2/img/icra_terrain_adaptation_figure.png)
+*그림 — FE-RLS (Fig. 1): 스트리밍 데이터로 함수 인코더 계수를 RLS로 갱신하면 rollout과 MPPI 성능이 좋아진다. 출처: [arXiv:2509.12516](https://arxiv.org/abs/2509.12516)*
+
+![FE-RLS Fig. 8](https://arxiv.org/html/2509.12516v2/img/hero_autonomy.png)
+*그림 — FE-RLS (Fig. 8): 아이스 링크 위 잔디와 얼음이 섞인 코스에서 Jackal 실물이 적응하며 달리는 모습. 출처: [arXiv:2509.12516](https://arxiv.org/abs/2509.12516)*
+
+<details markdown="1">
+<summary>자세히: 함수 인코더와 RLS 계수 갱신</summary>
+
+**함수 인코더.** 상태 변화를 학습한 기저 $g_i$(신경 ODE)의 선형 결합으로 쓴다. 지형이 바뀌면 기저는 그대로이고 계수 $c$만 바뀐다.
+
+$$ \dot x = \sum_{i=1}^{k} c_i\, g_i(x, u), \qquad c \in \mathbb R^k $$
+
+**RLS 갱신.** 새 관측마다 회귀 벡터 $\phi_t$(기저 출력)와 실제 상태 변화 $y_t$로 계수와 공분산을 갱신한다. $\gamma$는 잊음 인자이고, 시작은 $c_0 = 0$, $P_0 = \eta^{-1} I$이다(MPPI 온도 $\lambda$와 다른 기호로 썼다).
+
+$$ K_t = \frac{P_{t-1}\phi_t}{\gamma + \phi_t^\top P_{t-1}\phi_t}, \qquad c_t = c_{t-1} + K_t\big(y_t - \phi_t^\top c_{t-1}\big), \qquad P_t = \frac{1}{\gamma}\big(P_{t-1} - K_t \phi_t^\top P_{t-1}\big) $$
+
+**travplan에 주는 것.** 잊음 인자는 노면이 바뀌는 속도를 정한다. 보도와 경사로가 몇 초 단위로 바뀌는 travplan 레벨 3에서는 $\gamma$를 작게 둬야 한다.
+
+</details>
+
 ### E.5 모르는 것 위에서의 보장: 학습 MPC의 세 갈래
 
 **Melanie Zeilinger(ETH Zürich)의 MIT Robotics 세미나 "Learning for Complex Control Systems — Guarantees in the Unknown"
@@ -1177,6 +1351,52 @@ E.9의 스키드 스티어 운동 모델과 같은 연구실)는 동적 유니�
 층이 다르다 — 동역학이 아니라 **주행 시간의 불확실성**을 집합으로 잡아 경로를 고른다. travplan의 전역 경로 위쪽 층이고,
 TP-0038의 100 m당 지표와 이어 볼 값이 있다.
 
+#### 고도 불확실성을 바퀴 접촉의 최댓값으로 닫힌 형태로 전파한다
+
+**바퀴가 놓이는 높이는 바퀴 발자국 안 칸 높이의 최댓값이다. 이 연구는 칸마다 가우시안 불확실성이 있을 때 그 최댓값의 평균과 분산을 Clark의 근사로 닫힌 형태로 구한다**
+([arXiv:2610.06103](https://arxiv.org/abs/2610.06103), 2026-10, ICRA 2027 투고, CTU Prague, Kučera·Zimmermann). 코드는 공개 예정이라고만 적었다.
+==평균 지도에서 이긴 칸 하나로만 선형화하면 최댓값의 평균이 부푸는 몫과 경쟁하는 칸의 분산을 놓친다.==
+
+**동작 방식.** 두 가우시안의 최댓값의 1·2차 모멘트(Clark 1961)를 발자국 칸에 차례로 적용해 접고, 접을 때마다 가우시안으로 모멘트를
+맞춘다. 공유하는 지도 칸과의 공분산도 따라간다. 그 위에서 pitch·roll 제곱합 같은 2차 경로 비용의 평균과 분산을 가우시안 2차형식의
+정확한 공식으로 낸다. 경로 전체를 합치면 표준편차가 여전히 작게 나와서, 매개변수 둘로 된 보정 법칙을 주행 두 개에 맞춰 곱한다.
+경로 순위는 평균에 표준편차의 배수를 더한 가우시안 CVaR(q = 0.90)로 매긴다.
+
+**결과.** BASEPROD 반사막 로버 고도 데이터의 보지 않은 주행 18개를 두 지도 조건(미리 보기, 지나온 뒤)에서 4 m 창 317개와 323개로 잘라 2만 표본 몬테카를로와 비교했다. 보정한 접기의
+CVaR 오차 중앙값은 선형화보다 2.7–3.4배 작았다. 기준 최선 경로를 고른 비율은 98%로, 선형화 93–96%, 평균 지도 88–90%보다 높다.
+다만 미리 보는 조건에서 선형화와의 차이는 유의하지 않았다(p = 0.09). 계획 하나에 약 5.5 µs(RTX 3090, 계획 256개 × 40스텝)이고,
+32표본 몬테카를로의 0.4배다. 저자가 적은 가장 큰 한계는 지도 자체의 보정이다. 드론 측량과 비교하니 ±1σ 안에 드는 점이 20–21%뿐이었다
+(명목 68%). 실험은 닫힌 루프 주행이 아니라 오프라인 평가다.
+
+**travplan에 주는 의미.** 위 표의 ③(지도 자체)과 확률 제약 길 (b)를 잇는 계산이다. TravMap에는 `ELEV`와 `SIGMA`가 있다. 지금 `SIGMA`는
+`RiskCost`(CVaR)에서 cost에 더하는 몫으로만 들어가고, rollout 자세(`terrain_attitude`)는 평균 고도의 기울기 채널로 계산하고, 바퀴 접촉 높이는 따로 계산하지 않는다. 바퀴 네 개의 접촉 높이를
+접기로 계산하면 rollout마다 pitch의 평균과 분산이 나오고, 그 CVaR를 `CostTerm` 하나로 넣을 수 있다. 계획 하나에 마이크로초 단위라
+768 rollout × 40스텝에도 부담이 작다. 다만 이 수치는 GPU 커널 기준이라 PyTorch 구현은 따로 재야 한다. 순서는 이 논문의 마지막 결과가 정한다. σ가 실제 오차를 덮지 못하면 전파를 정확히 해도 이득이 없다.
+그래서 L1 매퍼의 `SIGMA`가 실제 고도 오차를 얼마나 덮는지(인식 문서의 지도 품질 지표)를 먼저 잰다. C.2의 DUCCT-MPPI 보정 평가와 같은 교훈이다.
+
+![Contact-max uncertainty Fig. 4](https://arxiv.org/html/2610.06103v1/rover.png)
+*그림 — 접촉 최댓값 전파 (Fig. 4): BASEPROD 고도 지도의 4 m 창. 평균 지도를 CVaR 위험으로 칠하고 위험이 가장 큰 자리에 로봇을 그렸다. 뒤쪽 접촉의 경쟁과 스텝별 비용의 ±1σ 띠도 보인다. 출처: [arXiv:2610.06103](https://arxiv.org/abs/2610.06103)*
+
+<details markdown="1">
+<summary>자세히: 접촉 높이와 Clark의 최댓값 모멘트</summary>
+
+**접촉 높이.** 바퀴 발자국의 칸 $c$마다 불확실한 높이 $h_c$와 바퀴 모양에 따른 기하 오프셋 $\kappa_c$가 있다.
+
+$$ e = \max_{c}\ (h_c + \kappa_c), \qquad h_c \sim \mathcal N(\mu_c, \sigma_c^2) $$
+
+**Clark의 두 변수 최댓값.** $X_1, X_2$가 결합 가우시안이고 $\theta^2 = \sigma_1^2 + \sigma_2^2 - 2\rho\sigma_1\sigma_2$, $\alpha = (\mu_1 - \mu_2)/\theta$이면 평균은 다음과 같다.
+$\Phi$, $\varphi$는 표준 정규 누적분포와 밀도다. 2차 모멘트도 같은 꼴로 닫힌다.
+
+$$ \mathbb E[\max(X_1, X_2)] = \mu_1 \Phi(\alpha) + \mu_2 \Phi(-\alpha) + \theta\, \varphi(\alpha) $$
+
+마지막 항 $\theta\,\varphi(\alpha)$가 Jensen 부등식으로 평균이 부푸는 몫이다. 두 칸의 평균이 비슷할수록($\alpha \approx 0$) 커지고, 선형화는 이 몫을 0으로 둔다.
+
+**보정.** 접기를 여러 번 하면 표준편차를 과소 추정한다. 저자는 경쟁 깊이 $\alpha_w$에 대한 법칙 $d(\alpha_w) = 1 - \beta e^{-\gamma \alpha_w}$($\beta = 0.110$, $\gamma = 1.02$)를 맞추고 예측 표준편차에 $1/d$를 곱한다.
+
+**travplan에 주는 것.** 포트홀 가장자리와 연석처럼 높이가 다른 칸이 한 바퀴 아래서 경쟁하는 곳이 travplan 치명 실패가 나는 곳이다. 평균이 부푸는 몫이 바로 거기서 커진다.
+
+</details>
+
 ---
 
 <!-- tab: 안전 필터 -->
@@ -1272,12 +1492,67 @@ $$ \beta_k := \min\big\{\beta \in (0, \beta_u] \ \big|\ \mathcal{U}^k_\beta \neq
 
 **OA-MPC / OACP / Control-Tree MPC** — 가림을 다루는 다른 대안들이지만 모두 48–200 ms로 Orin 예산 밖이다(OcclusionCBF 논문의 비교 기준).
 
+#### DUCCT-MPPI와 위험 보정 평가: 확률 제약 MPPI는 입력 불확실성이 맞을 때만 안전하다
+
+**확률 제약 MPPI는 위치 추정과 보행자 예측이 내는 불확실성이 맞다고 가정한다. 이 연구는 그 가정이 틀릴 때 생기는 실패를 닫힌 루프에서 재는 방법을 내놓는다**
+([arXiv:2605.28330](https://arxiv.org/abs/2605.28330), 2026-05, IROS 2026 투고, Aschaffenburg 응용과학대). 코드 공개는 확인하지 못했다.
+==불확실성이 과신이면 안전을 어기고, 과소신이면 멈추거나 위험이 문턱 아래로 묽어진다.==
+
+**동작 방식.** 위치 추정 공분산을 이전 주기의 명목 궤적을 따라 무향 변환(UT, unscented transform)으로 한 번만 전파한다. 모든 rollout은
+이 튜브 하나를 공유한다. 로봇 점유는 공분산의 주축 좌표에서 오차 함수로 닫힌 형태로 구한다. 보행자는 DRA-MPPI처럼 몬테카를로로 뽑아
+결합 충돌 확률을 내고, 둘을 곱해 rollout의 스텝별 충돌 위험을 만든다. 위험은 비용에 더하는 벌점과, 문턱을 넘는 rollout을 버리는
+기각에 함께 쓴다. 보정은 실행한 스텝의 예측 위험과 실제 충돌 여부를 Brier 점수와 로그 손실로 비교해 잰다. 둘 다 확률 예측을
+채점하는 적정 점수 규칙(proper scoring rule)이다.
+
+**결과.** Nav2·Gazebo의 TurtleBot3 시뮬레이션이고 실물은 없다. 6 × 40 m 복도에서 36 m를 주행하며 보행자 3·6·9명을 두고 설정마다 100번 이상 돌렸다.
+9명에서 성공률은 Nav2 기본 MPPI 47.83%, DRA-MPPI 50.38%, DUCCT-MPPI 77.97%다. 보정을 일부러 틀어 본 실험이 이 연구의 핵심이다.
+9명 조건에서 보행자 예측이 과신이면 로그 손실이 1.04를 넘는다. 예측은 과소신, 위치 추정은 과신으로 두면 성공률이 95.41%로 가장 높지만
+도달 시간이 길어진다(멈춤). 두 모듈을 모두 과소신으로 두면 성공률이 67.33%로 떨어진다. 저자는 이를 확률 희석(probability dilution)이라 부른다.
+위험이 넓게 퍼지면 스텝별 위험값이 작아지고, 그만큼 벌점이 작아진다. 실제로 평균 속도는 0.72에서 0.80 m/s로 오르고 평균 예측 위험은
+1.59%에서 0.76%로 내려갔다. 로봇이 덜 조심하게 된 것이다. 계산 시간은 보고하지 않았다(RTX 4090, 20 Hz 설정).
+
+**travplan에 주는 의미.** travplan `RiskCost`의 보행자 예측과 확률 제약 MPPI(`control/mppi/chance.py`, TP-0076)는 모두 입력 불확실성이
+맞다고 가정한다. 이 보정 평가를 옮기려면 두 가지가 먼저 필요하다.
+
+첫째는 확률 출력이다. `RiskCost`는 확률이 아니라 비용을 낸다. 보행자는 등속 원판에 시간에 따라 커지는 반경이고, 겹치면(층 비용 1 이상)
+고정 벌점이 붙는다. 그래서 "실행 스텝에서 보행자와 겹치는 표본의 가중 비율" 같은 확률 출력을 먼저 정의해야 Brier 점수를 낼 수 있다.
+`chance.py`는 GP 잔차의 위치 σ로 z 값을 내므로 정규 분포의 꼬리 확률로 바로 바꿀 수 있다.
+
+둘째는 사건 수다. TP-0154의 720 에피소드에서 충돌은 8건이고, 원인은 이미 갈렸다(STATE.md의 TP-0160·0161·0162). 레벨 3의 4건은 모든 표본이
+같은 hard 벌점에 걸린 포화였고, 등급화 벌점(`mppi_plant_lag_pg`)으로 없어졌다. bumps_potholes 레벨 0 seed 1의 4건은 조향 한계 때문에
+비키지 못하고 멈춘 로봇에 보행자가 부딪힌 것이다. 8건으로는 스텝 단위 Brier 점수와 로그 손실이 가를 것이 거의 없다. 그래서 간격이
+문턱보다 작아진 근접 사건까지 세어 신뢰도 도표(reliability diagram)를 그린다. 남는 질문은 레벨 0 도달이 116에서 107/120으로 준 것이
+과소신 멈춤 탓인가이다. 확률 희석은 L1 belief의 `SIGMA`를 확률 제약에 넣을 때도 생긴다. 그래서 조임 폭을 정하기 전에 보정부터 잰다.
+
+<details markdown="1">
+<summary>자세히: DUCCT-MPPI의 점유 확률과 보정 점수</summary>
+
+**로봇 점유.** 로봇과 보행자를 합친 한 변 $l$의 정사각형(반폭 $L$)으로 두고, 위치 공분산의 주축 좌표 $\xi_i$와 고윳값 $\lambda_i$로 점유 확률을 닫힌 형태로 쓴다.
+
+$$ \mathcal P_{\text{occ}}(x, y) = \tfrac14 \prod_{i=1}^{2} \Big[\operatorname{erf}\Big(\tfrac{\xi_i + L}{\sqrt{2\lambda_i}}\Big) - \operatorname{erf}\Big(\tfrac{\xi_i - L}{\sqrt{2\lambda_i}}\Big)\Big] $$
+
+**rollout 위험.** 보행자 표본 $N_{MC}$개의 결합 점유 $\mathcal P_{\text{joint}} = 1 - \prod_o (1 - \mathcal P_o)$에 로봇 점유를 곱해 더한다. 비용에는 $S_k \leftarrow S_k + \lambda_{\text{risk}} \sum_t \hat{\mathcal P}_{k,t}$로 더하고, $\hat{\mathcal P}_{k,t}$가 문턱을 넘으면 그 rollout을 버린다.
+
+$$ \hat{\mathcal P}_{k,t} \approx \frac{l^2}{N_{MC}} \sum_j \mathcal P_{\text{joint}, j, t}\; \mathcal P_{\text{occ}}(x_j, y_j) $$
+
+**보정 점수.** 실행 스텝의 위험 $\hat P_t = \sum_k w_k \hat{\mathcal P}_{k,1}$과 실제 충돌 $y_t \in \{0, 1\}$로 Brier 점수와 로그 손실을 낸다. 둘 다 작을수록 보정이 맞다.
+
+$$ \mathrm{BS} = \frac1T \sum_t (\hat P_t - y_t)^2, \qquad \mathrm{LL} = -\frac1T \sum_t \big[y_t \log \hat P_t + (1 - y_t)\log(1 - \hat P_t)\big] $$
+
+**적어 둘 것.** 두 식은 모두 충돌 확률의 상한이지만 같은 $\sigma$를 다른 뜻으로 쓴다. 제약은 충돌 확률 상한을 $1 - \sigma = 0.05$로 두는데, 기각 규칙은 $\hat{\mathcal P} > \sigma = 0.95$일 때만 버린다.
+보고된 평균 예측 위험(0.76–1.59%)으로 보면 기각은 거의 일어나지 않는다. 안전은 사실상 벌점 항에서 나온다. 확률 희석이 바꾸는 것도 이 벌점의 크기다.
+
+**travplan에 주는 것.** 위의 $\hat P_t$ 자리에 `RiskCost`가 실행 스텝에서 본 겹침 위험을, $y_t$ 자리에 벤치마크의 충돌 판정을 두면 된다.
+
+</details>
+
 ### C.3 비교
 
 | 방식 | 스텝당 지연 | 안전 보장 | 솔버·의존성 | 가림 대응 | travplan 통합 |
 |---|---|---|---|---|---|
 | 시간가변 비용 레이어 | 거의 0(TravMap 조회) | 없음(휴리스틱) | 없음 | 부분적(마지막 관측 위치 유지) | **채택·구현 완료** |
 | RA-MPPI / DRA-MPPI | 97–115 ms(RTX 2080) | 확률적(chance constraint) | MPPI 샘플러 확장 | 없음 | 계획에서 제외(MPPI 개선) |
+| DUCCT-MPPI(2026) | 논문 미보고(RTX 4090, 20 Hz 설정) | 확률적(chance constraint), 보정 평가 | MPPI 샘플러 확장 | 없음 | 확률 출력을 정의한 뒤 근접 사건 신뢰도 도표(TP-0154 로그) |
 | 표준 CBF-QP | 0.6–0.8 ms | 강함(barrier 불변) | 소형 QP(OSQP 등) | 없음(반응형) | 중간(새 QP 계층) |
 | OcclusionCBF | 1.6–4.5 ms | 강함 + 가림 인증 | **Gurobi(상용)** | ✅ 사전 개입 | 어려움(라이선스) — **보류** |
 | CVaR-BF(Adaptive) | 논문 미보고(CBF-QP급 추정) | 확률적(CVaR) + 적응형 여유 | **CasADi(오픈소스, 확인)** | 없음 | **중간 — 가장 유력(TP-0014)** |
@@ -1307,6 +1582,9 @@ barrier 함수를 바로 만드는 Poisson 안전 함수가 나왔고, 다리 �
 | 2024 | ABS | 도달 가능성(학습) | 정책 조건 도달-회피 가치로 빠른 정책과 회복 정책을 전환(Planner 문서 B.9) | [LeCAR-Lab/ABS](https://github.com/LeCAR-Lab/ABS) 0.6k |
 | 2025 | Poisson 안전 함수 | barrier | 점유 지도에서 Poisson 방정식을 풀어 CBF를 곧바로 만든다 | — |
 | 2025 | Poisson 안전 함수 + CBF MPC | barrier + 예측 | 로봇 모양(Minkowski 차)과 움직이는 장애물까지 넣은 예측 안전 필터, G1·Go2 | — |
+| 2024 | GS-MPPI | barrier + 표본 | 여러 제약을 합성 CBF 하나로 묶고, 닫힌 형태 안전 제어를 rollout 동역학에 넣어 모든 표본을 안전하게 | — |
+| 2026 | 표본 안전 필터 | 예측(표본) | 안전 표본이 하나도 없을 때만 백업, 시나리오 기법으로 괜한 개입에 확률 상한 | — |
+| 2026 | Exact-Safe MPPI | barrier + 표본 | 여러 CBF를 정확한 최솟값과 δ-활성 집합으로 합쳐 좁은 틈을 지킨다 | [lc-lab25/Exact-Safe-MPPI](https://github.com/lc-lab25/Exact-Safe-MPPI) |
 | — | safe_control | 구현 모음 | 단일·다중 로봇 내비의 CBF-QP, MPC-CBF 등 | [tkkim-robot/safe_control](https://github.com/tkkim-robot/safe_control) 0.3k |
 
 **CBF-QP — 안전과 목표를 한 QP로**([arXiv:1609.06408](https://arxiv.org/abs/1609.06408), IEEE TAC 2017, Caltech 등). 자동차 적응형 순항
@@ -1377,6 +1655,101 @@ $$ \min_{u_{0:N-1}} \lVert u_0 - u_L \rVert^2 \quad \text{s.t.} \quad x_{k+1} = 
 **travplan에 주는 것.** travplan의 다음 안전 층 후보인 CVaR-BF(TP-0014)는 CBF-QP 갈래의 확률판이다. 예측 안전 필터는 travplan 구조와 더 잘
 맞는다. Planner D의 이전 계획(`keep_previous`)이나 GuidancePlanner 경로를 "안전 대체 정책"으로 두고, Controller 명령이 그 대체 계획으로
 돌아갈 여지를 남기는지만 짧은 rollout으로 검사하면 된다. 이미 가진 rollout 코드(`SwerveModel.rollout`)로 구현할 수 있다.
+
+</details>
+
+#### Exact-Safe MPPI: 여러 barrier를 soft-min으로 합치면 좁은 틈이 닫힌다
+
+**GS-MPPI는 여러 제약을 합성 CBF 하나로 묶고, 거기서 나온 안전 제어 법칙을 rollout 동역학에 넣어 모든 rollout을 안전하게 만든다. Exact-Safe MPPI는 barrier를 합치는 방식을 고친다**
+([arXiv:2610.07369](https://arxiv.org/abs/2610.07369), 2026-10, ACC 2027 투고, University of New Mexico, [코드](https://github.com/lc-lab25/Exact-Safe-MPPI)).
+GS-MPPI(Guaranteed-Safe MPPI, [arXiv:2410.02154](https://arxiv.org/abs/2410.02154), Rabiee·Hoagg)는 장애물마다 있는 barrier를 soft-min 하나로 합치고,
+그 합성 CBF에서 안전 제어를 닫힌 형태로 얻는다. 표본마다 QP를 풀지 않는다.
+==soft-min은 늘 실제 최솟값보다 작아서, 모든 제약을 만족하는 상태도 안전 집합에서 빼 버린다.==
+
+**동작 방식.** soft-min 대신 정확한 최솟값을 쓴다. 최솟값에서 δ 안에 드는 barrier를 모두 활성 집합으로 묶어 QP에서 동시에 제약한다.
+동점인 곳에서는 Clarke 일반화 기울기를 쓴다. 완화 변수는 barrier 값에 곱해져 경계에서 사라진다. 그래서 경계 위에서는 완화 없는 CBF
+조건이 성립한다. 저자는 Filippov 해에 대해 정확한 안전 집합의 전방 불변성을 보였다. 샘플마다, rollout 스텝마다 QP를 풀고, 실행할 평균
+제어도 한 번 더 거른다.
+
+**결과.** 이중 적분기 시뮬레이션뿐이다. 두 장애물 사이 틈을 지나는 실험에서 틈 폭과 soft-min 날카로움으로 만든 지표가 ln 2보다 작으면
+soft-min 실행 1,050번 가운데 틈을 지난 것이 하나도 없었다(99.6%가 교착). 정확한 합성은 틈을 지났다. 4,950번 실행 모두 안전 위반이
+없었다. 제약 9개 비교에서 soft-min은 날카로움을 200과 1000으로 올리자 위반 34건과 53건을 냈고, 정확한 합성은 0건이었다. 가장 가까운
+barrier 하나만 제약하면 위반과 떨림이 생겼다. 계산 시간은 보고하지 않았다.
+
+**travplan에 주는 의미.** TravMap에서는 치명 셀 하나하나가 barrier 후보다. barrier가 많을수록 soft-min이 깎는 몫이 커지고, 좁은 통로가 먼저
+닫힌다. 레벨 3 경사로의 0.2 m 띠가 그런 곳이다. 그래서 CBF를 MPPI 안에 넣는다면 barrier를 칸마다 두고 합치는 방식은 피한다. 위 Poisson
+안전 함수처럼 격자 전체를 하나의 매끄러운 함수로 풀면 합성 문제 자체가 없다. 계산 비용은 두 방법이 다르다. GS-MPPI의 닫힌 형태 안전 제어는
+PyTorch에서 표본 전체를 한꺼번에 계산할 수 있고, 문제는 틈이 닫힌다는 점이다. Exact-Safe MPPI는 표본 768개 × 40스텝마다 δ-활성 집합의 QP를
+풀어야 해서 지금의 PyTorch MPPI 예산 밖이다.
+
+<details markdown="1">
+<summary>자세히: soft-min이 잃는 몫과 δ-활성 집합</summary>
+
+**soft-min.** barrier $b_j$(상대 차수에 맞춘 마지막 함수)를 날카로움 $\rho$로 합친다. 늘 $h_\rho \le h_{\min}$이다.
+
+$$ h_\rho = -\frac{1}{\rho} \ln \sum_j e^{-\rho\, b_j}, \qquad h_{\min} - h_\rho \le \frac{\ln k}{\rho} $$
+
+$k$개가 동점이면 그 차이가 정확히 $\ln k / \rho$다. 두 장애물 사이 틈에서는 두 barrier가 거의 같으므로 틈 가운데가 $\ln 2/\rho$만큼 안전 집합에서 깎인다.
+
+**δ-활성 집합과 QP.** 최솟값에서 $\delta$ 안에 드는 barrier를 모두 모은다.
+
+$$ \mathcal A_\delta(x) = \{\, j : b_j(x) \le h_{\min}(x) + \delta \,\} $$
+
+샘플 제어 $v$에 가장 가까운 $\hat u$를 찾되, 활성 barrier마다 CBF 조건을 건다. 완화 $\hat\mu_j$는 $b_j$에 곱해지므로 경계($b_j = 0$)에서는 사라진다.
+
+$$ \min_{\hat u,\, \hat\mu}\ \tfrac12 \lVert \hat u - v \rVert^2 + \tfrac{\gamma}{2} \lVert \hat\mu \rVert^2 \quad \text{s.t.} \quad a_j + B_j \hat u + \hat\mu_j\, b_j \ge 0, \ \ j \in \mathcal A_\delta $$
+
+**travplan에 주는 것.** 정확한 최솟값은 거리장(ESDF) 값과 같지만, 틈 가운데(중심축)에서 ESDF 기울기가 불연속이다. Exact-Safe MPPI가 Clarke 기울기와 δ-활성 집합으로
+다루는 것이 바로 이 자리다. 그래서 ESDF 하나로 같은 효과가 싸게 나오지는 않는다. 기울기가 어디서나 매끄러운 $h$가 필요하면 Poisson 안전 함수가 그 길이다.
+
+</details>
+
+#### 표본 안전 필터: 모든 후보가 위험할 때만 개입하고, 그 보수성을 확률로 묶는다
+
+**이 필터는 명목 제어기의 명령을 받아, 그 뒤로 안전한 제어열이 하나라도 남는지 Stein 변분 MPC(SV-MPC) 표본으로 확인한다**
+([arXiv:2604.22149](https://arxiv.org/abs/2604.22149), 2026-04, KAIST, Park·Sung·Ahn). 코드 공개는 확인하지 못했다.
+==남은 안전 표본이 하나도 없을 때만 백업으로 바꾸고, 그 개입이 쓸데없을 확률에 상한을 건다.==
+
+**동작 방식.** 명목 명령을 한 스텝 적용했다고 보고 거기서 제어열을 뽑는다. 표본은 "궤적이 안전하다"는 조건 아래의 사후분포에서 Stein 변분
+경사 하강으로 뽑는다. 입자 사이 RBF 커널의 반발항이 비볼록 환경의 여러 안전 영역을 따로 잡는다. 표본이 안전하다는 것은 지평 동안 최대
+위반이 음수이고, 끝 상태가 안전 불변 집합(최대 제동으로 멈출 수 있는 상태) 안에 있다는 뜻이다. 그런 표본이 하나라도 있으면 명목 명령을
+그대로 쓴다. 없으면 저장해 둔 안전한 백업 제어열의 첫 입력을 쓴다. 보장은 시나리오 기법에서 온다. 표본 수가 충분하면, 필터가 개입했을 때
+무작위 표본이 안전할 확률이 작다는 것을 높은 확률로 보장한다. 곧 "괜히 개입하는 정도"에 상한을 건다.
+
+**결과.** 시뮬레이션뿐이다. 신호 없는 교차로에서 Decision Transformer가 운전하는 차량 3·4·5대일 때, 필터 없이 100건 중 4·12·15건 충돌했다.
+필터를 켜면 충돌은 0건이고 개입률은 0.08·0.21·0.38이었다. 충돌하지 않았을 경우에도 개입한 적이 있다. 같은 필터를 CEM 표본으로 만들면
+개입한 격자 상태가 더 많았고(단일 로봇, ε = 0.1·표본 757개에서 5,730 대 4,672) 닫힌 루프에서 교착에 빠졌다. 계산 시간은 보고하지 않았다.
+
+**travplan에 주는 의미.** 이 필터는 C.4 예측 안전 필터를 표본으로 구현한 것이다. travplan MPPI는 이미 768개 rollout을 굴리므로 SV-MPC가
+없어도 같은 감시기를 만들 수 있다. 다만 논문의 안전 판정은 끝 상태가 정지 가능한 불변 집합 안에 있어야 한다는 것이다. travplan rollout은
+정지로 끝나지 않으므로, rollout마다 `LagSlipSwerveModel`로 제동 꼬리를 붙여 정지까지 굴려야 한다. plant의 0.2 s 지연은 제동 거리를 늘린다.
+그렇게 정지할 수 있는 rollout이 하나라도 있으면 그대로 두고, 없을 때만 백업으로 바꾼다. 백업은 저장해 두고 이미 안전을 확인한 제어열(직전 주기의
+안전한 정지열)이어야 한다. "Guidance 경로 추종"은 안전이 확인된 열이 아니므로 백업이 될 수 없다. 시나리오 경계는 "얼마나 자주 괜히 멈추나"를 표본 수와 묶는다. 남은 병목이 시간 초과(TP-0151)이므로,
+이 필터를 넣는다면 바로 그 값을 재야 한다. 다만 MPPI 표본은 안전 조건부 분포가 아니라 비용 가중 분포에서 나온다. 그래서 경계 자체는
+그대로 성립하지만 개입이 더 잦을 수 있다. 저자의 CEM 비교가 그 차이를 보여 준다.
+
+![Sampling safety filter Fig. 1](https://arxiv.org/html/2604.22149v1/fig1.png)
+*그림 — 표본 안전 필터 (Fig. 1): SV-MPC로 만든 필터(a)와 CEM으로 만든 필터(b)의 닫힌 루프 궤적. CEM 쪽은 교착에 빠진다. 출처: [arXiv:2604.22149](https://arxiv.org/abs/2604.22149)*
+
+![Sampling safety filter Fig. 3](https://arxiv.org/html/2604.22149v1/fig3.png)
+*그림 — 표본 안전 필터 (Fig. 3): 차량 3대 교차로. 필터 없이 충돌(a), 필터로 충돌 회피(b), 세 차량의 속도(c). 출처: [arXiv:2604.22149](https://arxiv.org/abs/2604.22149)*
+
+<details markdown="1">
+<summary>자세히: 안전 판정과 시나리오 경계</summary>
+
+**안전 판정.** 표본 제어열 $U$를 명목 명령 뒤의 상태에서 굴리고, 지평 동안 수준 함수 $\ell$(장애물 거리에서 반경 합을 뺀 값)의 최소를 본다.
+$C(U) < 0$이면 안전하다. 사후분포의 우도는 $L = \exp(-\alpha C)$다.
+
+$$ C(U) = \max_{t \le H} \big(-\ell(x_t)\big), \qquad x_H \in \mathcal C $$
+
+**개입 규칙.** $\min_i C(U_i) < 0$이면 명목 명령을 쓰고, 아니면 저장한 백업 제어열의 첫 입력을 쓰고 백업을 한 칸 민다.
+
+**시나리오 경계.** 표본 수 $N$이 다음을 만족하면, 개입했을 때 무작위 표본이 안전할 확률이 $\epsilon$ 이하임을 $1 - \beta$ 이상의 확률로 보장한다.
+이 경계는 어떤 표본 분포에도 성립하므로, 실제 쓸모는 분포의 질에 달렸다.
+
+$$ N \ge \frac{2}{\epsilon}\Big(\ln\frac{1}{\beta} + 1\Big) $$
+
+예를 들어 $\epsilon = 0.1$, $\beta = 10^{-6}$이면 $N \ge 297$이다. 논문의 $N = 757$은 $\epsilon = 0.1$, $\beta = 10^{-16}$에서 나온다. travplan MPPI의 표본 768개는 이 조건을 넉넉히 넘는다.
 
 </details>
 
@@ -2741,6 +3114,83 @@ travplan에는 둘 다 있다. 코드는 CC BY-NC 4.0이라 읽고 구조만 옮
 **travplan에 주는 것.** 다리 로봇을 쓰게 되면 travplan의 Controller(MPPI·NMPC)는 이 하체 정책 **위에** 앉는다.
 그때 Controller가 명령한 속도는 곧바로 몸체 속도가 되지 않는다. ==하체 정책의 닫힌 루프(추종 지연, 서기 전환)를 Controller의 예측 모델에 넣어야 한다.==
 Playground에서 이를 쟀다(E.13, TP-0135). 하체 지연(0.4 s 가정)을 아는 MPPI는 10번 중 10번 도달했고, 모르는 MPPI는 6번이었다.
+
+---
+
+<!-- tab: 최근 연구 비교 -->
+
+## E.16 최근 연구 비교 (2025–2026)
+
+**여기 모은 2025–2026년 연구는 대부분 MPPI 최적화기보다 rollout이 믿는 것을 고쳤다.** ==고친 것은 셋이다. 시작 상태, 동역학, 불확실성이 실제와 맞도록 했다.==
+지연은 초기 상태 분포(CLIS-MPPI)나 되먹임 이득(Feedback-MPPI)으로 다룬다. 동역학 불일치는 이력 문맥(OptCar, Continual VND)이나 계수 갱신(FE-RLS)으로 줄인다.
+불확실성은 보정 평가(DUCCT-MPPI)와 닫힌 형태 전파(접촉 최댓값)로 다룬다. 안전 필터 쪽은 MPPI 표본을 그대로 감시기로 쓰는 연구가 늘었다(표본 안전 필터, Exact-Safe MPPI).
+travplan이 `mppi_plant_lag`로 얻은 교훈과 같은 방향이다. rollout이 plant의 지연을 몰라서 치명 실패가 났고, 알게 하자 줄었다(TP-0149·0150).
+
+| 이름(연·발표) | 자리 | 입력·불확실성 | 방법의 핵심 | 최적화·학습 신호 | 로봇·실험 | 코드 | 절 |
+|---|---|---|---|---|---|---|---|
+| CLIS-MPPI (2026, CDC 2026) | MPPI 샘플링 | 실행 지연 분포 | 초기 상태 샘플, rollout 회귀 되먹임 이득 | MPPI | UR5e 팔 실물, 방법마다 5회 | 확인하지 못했다 | E.1 |
+| Feedback-MPPI (2025, RA-L 2026) | MPPI 되먹임 | 없음 | rollout 미분으로 국소 이득, 풀이 사이를 메운다 | MPPI + 자동 미분 | 쿼드로터 실물, 4족은 시뮬 | 공개(JAX) | E.1 |
+| ProxPI (2026) | MPPI prior | 학습 prior | prior를 샘플 평균이 아니라 근접 비용으로 | MPPI | 실물·시뮬 5로봇 | 확인하지 못했다 | B.5 |
+| OT-MPC (2026) | MPPI 최적화기 | 없음 | 가중 평균 대신 엔트로피 최적 수송 | 비용만 | 시뮬뿐 | 없음 | E.11 |
+| DRA-MPPI (2025, IROS 2025) | 확률 제약 | 보행자 예측 혼합 분포 | 몬테카를로 결합 충돌 확률 | MPPI | Jackal + 보행자 실물 | 확인하지 못했다 | C.2 |
+| DUCCT-MPPI (2026, IROS 2026 투고) | 확률 제약, 보정 | 위치 추정 + 보행자 예측 | UT 튜브와 몬테카를로 위험, Brier 점수·로그 손실 | MPPI | TurtleBot3 시뮬 | 확인하지 못했다 | C.2 |
+| Data-Driven Sampling SMPC (2024, ICRA 2025) | 확률 제약 | GP 잔차 | GP 잔차 위의 확률 제약을 MPPI로 | MPPI | 스키드 스티어 실물 | 확인하지 못했다 | E.10 |
+| 접촉 최댓값 전파 (2026, ICRA 2027 투고) | 위험 비용 | 고도 σ | 바퀴 접촉 최댓값의 Clark 모멘트, 가우시안 CVaR | 해석 계산 + 보정 법칙 | 로버 고도 데이터 오프라인 | 공개 예정 | E.10 |
+| HDVIO2.0 (2025, T-RO 2025) | 학습 동역학(추정) | 외력을 가우시안 상태로 | 물리 모델 + TCN 잔차를 VIO에 | 지도학습(힘 라벨 없음) | 쿼드로터 실물 | 공개(GPL-3.0) | E.3 |
+| Continual VND (2026) | 학습 동역학 | 이력 0.4 s의 잠재 | 잠재 조건 잔차, 재생 버퍼 | 미분 가능 시뮬 정책 | 쿼드로터 실물 | 확인하지 못했다 | E.4 |
+| OptCar (2026, CoRL 2026) | 학습 동역학 | 이력 약 5 s의 문맥 토큰 | 범용 모델을 한 차량에 특화 | 지도학습, 실제 + 합성 | 1/5 오프로드 차량 실물, 6 m/s | 프로젝트 페이지만 | E.4 |
+| FE-RLS (2025, RA-L 투고) | 온라인 적응 | 스트리밍 주행 데이터 | 신경 ODE 기저의 계수를 RLS로 | 오프라인 기저 + RLS | Jackal 실물, 잔디·얼음 | 확인하지 못했다 | E.4 |
+| Poisson 안전 함수 (2025) | 외부 안전 필터 | 점유 지도 | Poisson 방정식으로 h를 만든 CBF-QP | QP | Go2·G1 실물 | 확인하지 못했다 | C.4 |
+| 표본 안전 필터 (2026) | 외부 안전 필터 | 없음 | 안전 표본이 없을 때만 백업, 시나리오 상한 | Stein 변분 MPC | 시뮬뿐 | 확인하지 못했다 | C.4 |
+| Exact-Safe MPPI (2026, ACC 2027 투고) | MPPI 안의 안전 | 없음 | 정확한 최솟값과 δ-활성 CBF-QP | MPPI + 샘플별 QP | 이중 적분기 시뮬 | 공개 | C.4 |
+
+### 공통점
+
+1. **최적화기는 두고 rollout을 고친다.** CLIS-MPPI는 시작 상태를, OptCar·FE-RLS·Continual VND는 동역학을, 접촉 최댓값 전파는 비용을 바꾼다.
+   MPPI의 가중 평균은 그대로 쓴다. travplan의 "`mppi.py`는 건드리지 않는다" 규칙과 맞는다. 예외도 있다. OT-MPC는 가중 평균 단계를 바꾼다.
+   Feedback-MPPI와 CLIS-MPPI의 되먹임 이득은 실행 단계를, Exact-Safe MPPI의 샘플별 QP는 표본 자체를 바꾼다. 셋 다 rollout이 믿는 것은 그대로 둔다.
+2. **물리 모델 위에 작은 학습 몫을 얹는다.** HDVIO2.0과 Continual VND는 강체 물리에 잔차를 더한다. OptCar는 보정한 자전거 모델로 합성 데이터를 만든다.
+   FE-RLS는 기저 3–8개의 계수만 바꾼다. 큰 블랙박스 동역학을 처음부터 배우는 연구는 없다.
+3. **짧은 이력이 숨은 조건을 나른다.** OptCar는 약 5초, Continual VND는 0.4초 이력을 문맥으로 압축한다. FE-RLS는 스트리밍 RLS로 계수를 바꾼다.
+   셋 다 배포 중에 신경망 가중치는 바꾸지 않는다.
+4. **표본이 곧 안전 판정이다.** DRA-MPPI와 DUCCT-MPPI는 충돌 확률을 몬테카를로로 잰다. 표본 안전 필터는 "안전한 표본이 하나라도 있나"로 개입을 정한다.
+   Exact-Safe MPPI는 표본마다 CBF-QP를 건다. 해석적 위험 모델 없이 rollout 수로 확률을 잰다.
+
+### 차이점
+
+1. **지연을 어디에 넣나.** 고전 기준선은 상태 예측기다. 계획 시작 상태를 이미 보낸 명령으로 명령이 걸릴 시각까지 굴린다.
+   동역학 안에 넣는 쪽은 travplan `mppi_plant_lag`와 Continual VND(이력)다. 지연이 결정적일 때 정확하지만 흔들리는 지연은 잡지 못한다.
+   시작 상태 분포에 넣는 쪽은 CLIS-MPPI다. 흔들림을 잡지만 rollout이 넓게 퍼져 보수적이 된다. 실행 뒤 되먹임으로 메우는 쪽은 Feedback-MPPI와 CLIS-MPPI의 이득이다.
+   계산은 싸지만, 미분 이득(Feedback-MPPI)은 비평활 비용에서 의미를 잃는다.
+2. **무엇으로 적응하나.** 문맥 전방 추론(OptCar, Continual VND)은 빠르고 안정적이지만 큰 사전학습이 필요하다. 계수 RLS(FE-RLS)는 사전 지식 없이 몇 초 안에
+   적응하지만 기저 밖의 현상은 잡지 못한다. GP 잔차(Data-Driven Sampling SMPC, travplan MPC 문서 M.3.6)는 분산을 주지만 확장성이 걸림돌이다(E.9).
+3. **불확실성을 믿나, 재나.** DRA-MPPI, Data-Driven Sampling SMPC, 접촉 최댓값 전파는 입력 σ가 맞다고 보고 전파만 정확히 한다. DUCCT-MPPI는 그 가정을
+   Brier 점수와 로그 손실로 잰다. 접촉 최댓값 전파의 저자도 지도 σ가 실제 오차의 20–21%만 덮는다는 것을 보였다. σ가 틀리면 정확한 전파는 이득이 없다.
+4. **안전을 어디서 거나.** 비용으로 거는 쪽(DRA-MPPI, DUCCT-MPPI의 벌점)은 보장이 없지만 매끄럽게 타협한다. 외부 필터(Poisson 안전 함수, 표본 안전 필터)는
+   명목 제어기와 분리되고, 보장은 모델이 맞는 범위 안에서 성립한다. MPPI 안의 CBF(GS-MPPI, Exact-Safe MPPI)는 모든 rollout을 안전하게 만든다.
+   GS-MPPI는 닫힌 형태라 싸지만 soft-min 합성에서 틈이 닫히고, Exact-Safe MPPI는 틈을 지키는 대신 표본마다 QP를 푼다.
+5. **실물로 검증했나.** 바퀴 지상 로봇 실물은 OptCar, FE-RLS, DRA-MPPI, Data-Driven Sampling SMPC 넷뿐이다. CLIS-MPPI는 팔 5회, Feedback-MPPI·HDVIO2.0·Continual VND는
+   쿼드로터다. DUCCT-MPPI, 표본 안전 필터, Exact-Safe MPPI, OT-MPC는 시뮬레이션뿐이다.
+
+### travplan에 주는 의미
+
+**가져올 것.** 셋이다.
+- **지연을 시작 상태로.** TP-0032의 L0 지연(PR #234, 미병합)은 Controller가 아직 모른다. 에피소드마다 0–3 스텝에서 뽑고 에피소드 안에서는 일정하다.
+  알고 있는 명령 기록은 상태 예측기처럼 결정적으로 굴리고, 모르는 지연 스텝 수만 rollout마다 이산값으로 뽑는다. CLIS-MPPI의 가우시안 섭동은 지연이 매 스텝 흔들릴 때의 몫인데, 그런 지연은 지금 시뮬에 없다.
+- **위험 보정.** 확률 제약(`chance.py`)이나 `SIGMA` 조임을 더 손보기 전에, 실행 스텝 위험이 실제 사건과 맞는지 잰다. `RiskCost`는 비용을 내므로 확률 출력부터 정의하고, 충돌이 드물어 근접 사건까지 센다.
+- **표본 백업 감시.** 제동 꼬리를 붙인 MPPI 표본 중 치명 셀을 피해 정지할 수 있는 것이 없을 때만, 저장해 둔 안전한 정지열로 바꾼다. C.4 예측 안전 필터의 표본판이다.
+
+**가져오지 않을 것.**
+- Feedback-MPPI의 미분 이득. travplan 비용은 치명 셀과 이진 충돌이라 기울기가 거의 0이고, MPPI는 이미 매 주기 다시 푼다.
+- MPPI 안의 CBF. Exact-Safe MPPI는 768 rollout × 40스텝마다 QP를 풀어야 해서 PyTorch MPPI 예산 밖이다. GS-MPPI는 닫힌 형태라 한꺼번에 계산되지만, 치명 셀이 많은 TravMap에서는 soft-min 합성이 좁은 틈을 닫는다. CBF는 Poisson $h$ 하나를 Controller 뒤에 붙이는 쪽으로 간다.
+- OptCar식 대규모 사전학습. plant 식이 정확한 L0·L1 벤치마크에서는 필요 없다. Isaac Sim이나 실물 로그가 생기면 다시 본다.
+
+**시도 순서(TP 후보).**
+1. **지연 실패의 출처 가리기.** TP-0170보다 먼저 `--latency 0 0 3`(제어 지연만) 스모크 한 판을 돌려, `--latency 2 2 3`의 치명 3/12가 제어 지연에서 오는지 본다. PR #234가 병합돼야 main에서 돌릴 수 있다.
+2. **지연을 아는 MPPI.** TP-0170에 붙인다. 명령 기록을 결정적으로 굴리는 상태 예측기 판과, 지연 스텝 수를 rollout마다 0–3에서 뽑는 혼합 판을 `mppi`와 2층 짝 비교한다. 판정은 치명 수와 짝 비교 성공이다. 매 스텝 흔들리는 지연(CLIS-MPPI의 자리)은 시뮬 기능을 더한 뒤의 일이다.
+3. **위험 보정 지표.** 실행 스텝에서 보행자와 겹치는 표본의 가중 비율을 `RiskCost`의 확률 출력으로 정의하고, `chance.py`의 z 값은 꼬리 확률로 바꿔 에피소드 로그에 남긴다. TP-0154 묶음에서 간격 문턱 아래의 근접 사건까지 세어 신뢰도 도표를 그린다. 충돌 8건의 원인은 이미 갈렸으므로(TP-0160·0162), 묻는 것은 레벨 0 도달 감소(116에서 107/120)가 과소신 멈춤인가이다.
+4. **표본 백업 감시.** rollout마다 제동 꼬리를 붙여 "정지 가능한 안전 표본 수"를 스텝마다 기록하고, 0일 때만 저장한 안전 정지열을 쓰는 선택 옵션을 plant 레벨 3에서 짝 비교한다. 치명이 줄고 시간 초과(TP-0151)가 늘지 않아야 한다.
+5. **접촉 최댓값 σ 전파.** 바퀴 접촉 높이를 Clark 접기로 계산한 pitch CVaR `CostTerm`. 그 전에 L1 `SIGMA`가 실제 고도 오차를 얼마나 덮는지(지도 품질 지표)를 잰다.
 
 ---
 

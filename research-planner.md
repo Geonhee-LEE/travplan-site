@@ -15,6 +15,7 @@
 | 생성형 궤적 | 시간 인덱스 궤적 여러 개를 생성 모델에서 샘플한다(Diffuser에서 Diffusion Planner까지, 후속 연구, Planner D) | B.8.0, B.8 | **Planner D**(flow matching)의 직계 설계 |
 | Foundation·VLA·언어 | 시각 내비 기반 모델, VLA, 도시 보행 내비, 시연 로그 학습 | B.6, B.6b–B.6d | Planner 위의 **목표 선택 층** |
 | 위험 인지·로컬 내비 | 지형 위험 그래프, 보이지 않는 지형 상상, CVaR 여유 | B.9 | 위험 비용 설계 |
+| 최근 연구 비교 | 2025–2026 학습 로컬 Planner·생성형 궤적·위험 인지 계획의 비교표, 공통점과 차이점 | B.17 | Planner D 다음 시도 순서 |
 
 **■ 현황 — 누가 무엇을 내놨나**
 
@@ -32,8 +33,8 @@
 | 2019–2022 | Nav2 | CrowdNav, Crocoddyl, EPSILON, FAR, TARE, PUTN | — | Diffuser | GNM | — |
 | 2023 | — | PDM-Closed, ArtPlanner, DRL-VO | iPlanner | Diffusion Policy, MPD | ViNT, NoMaD | UniAD, VAD |
 | 2024 | Smac Planner | X-Mobility, HOVER | ViPlanner | π0, DiffusionDrive | OpenVLA, NaVILA, Uni-NaVid, CityWalker | SparseDrive, NAVSIM, Hydra-MDP, DriveVLM, EMMA |
-| 2025 | — | CaRL, Alpamayo, COMPASS, ASAP, Gallant, HEAD | NavDP, Skill-Nav | Diffusion Planner, GoalFlow | — | — |
-| 2026 | — | Click-and-Traverse, Alpamayo 1.5 | AgniNav, CORE, MILER | PC-Diffuser, FeaXDrive, MISTY, JPPD, GRACE | Can VFMs Navigate? | — |
+| 2025 | — | CaRL, Alpamayo, COMPASS, ASAP, Gallant, HEAD | NavDP, Skill-Nav, S2E, LoGoPlanner, LogoNav, CARE | Diffusion Planner, GoalFlow, ReinFlow | UrbanVLA | — |
+| 2026 | Occlusion-Aware Stability-Oriented Planning | Click-and-Traverse, Alpamayo 1.5 | AgniNav, CORE, MILER, X-NavDP, Beyond Imitation | PC-Diffuser, FeaXDrive, MISTY, JPPD, GRACE | Can VFMs Navigate?, Slow Brain Fast Planner | — |
 
 **공개 코드와 모델.** GitHub 별 순이다(2026-09). HF 다운로드는 대표 가중치의 최근 30일 값이다.
 
@@ -322,6 +323,94 @@ $$ V(\hat\tau) = \gamma \sum_{m=0}^{M} \big(d^{m+1}_{\hat\tau} - d^m_{\hat\tau}\
 
 </details>
 
+#### X-NavDP: 같은 상태의 후보끼리 Q를 정규화해 확산 내비 정책을 RL로 후학습한다
+
+**X-NavDP**([arXiv:2607.28560](https://arxiv.org/abs/2607.28560), 2026-07, Shanghai AI Lab·Fudan·Sun Yat-sen,
+[프로젝트](https://yty-sky.github.io/x-navdp-project-page/), 코드는 NavDP 저장소의 `baselines/x-navdp`)는 NavDP를 IsaacLab 폐루프 RL로 후학습해 보지 않은 장면 40개의 성공률을
+61.20%에서 84.28%로 올렸다. 시연만으로는 배우지 못하는 막다른 길 탈출과 긴 장애물 우회가 RL에서 생겼다. 실물의 어려운 경우는 10%에서 65%가 됐다고 초록에 적었다.
+
+확산 정책은 우도를 계산하기 어렵다. 그래서 우도에 기대는 정책 기울기(DPPO 계열)는 불안정하다. X-NavDP는 우도 대신 **재가중 score matching**을 쓴다.
+같은 상태에서 후보 64개를 뽑고, twin critic이 배운 Q 값을 그 그룹 안에서 정규화한다. 정규화한 값이 양수인 상위 k개만 지수 가중치로 score matching
+손실에 넣는다. 3초 추종 구간 하나가 RL 전이 하나이고, 할인율은 0.99다. 10 denoise 스텝 가운데 마지막 6개만 미세 조정한다.
+탐색은 같은 정책의 목표 조건 궤적과 목표 없는 궤적을 섞고, waypoint 좌표의 부호를 무작위로 뒤집어 옆·뒤·우회 행동을 만든다.
+로봇 임베딩은 두 곳에 들어간다. 디코더 앞에서는 행동 토큰마다 더하고, 디코더 뒤에서는 FiLM으로 은닉 특징을 조절한다. 이렇게 Dingo(바퀴), Go2, G1 셋을 한 모델로 다룬다. 배포에서는 MPC가 waypoint를 속도 명령으로 바꾼다.
+
+**travplan에 주는 것.** TP-0066의 RL 후학습은 한 계획 시점의 후보 16개를 4초 개루프로 GT 지도에서 한 번 채점했다. TP-0138은 이 보상이
+경사로를 지나친 뒤 되돌아가는 몇 초짜리 재탐색을 보상하지 못한다고 진단했다. X-NavDP의 Q critic은 할인된 다단계 보상을 배우므로 그 구멍을 메우는
+가장 직접적인 후보다. 그룹 정규화와 상위 k개만 남기는 규칙은 TP-0066의 그룹 상대 이점 가중치와 거의 같다. 그래서 바꿀 곳은 후보 점수의 출처 하나다.
+개루프 GT 채점을 폐루프 전이로 배운 Q로 바꾼다. 다만 23점이 모두 Q critic 덕은 아니다. 그룹 정규화만으로 9점(그룹 없는 DPMD 71.57%에서 80.48%)이 더해졌다. 같은 보상으로 비교한 절제에서 DPPO(33.98%)가 모방만 한 모델(53.50%)보다 낮았다는 점도 함께 적어 둔다.
+
+![X-NavDP Fig. 2](https://arxiv.org/html/2607.28560v2/pipeline_final2.png)
+*그림 — X-NavDP (Fig. 2): NavDP 백본에 로봇 임베딩 FiLM을 넣고, 구조적 섭동으로 탐색하며, 같은 상태 그룹 안에서 Q 점수를 정규화해 여러 몸체를 함께 RL로 후학습한다. 출처: [arXiv:2607.28560](https://arxiv.org/abs/2607.28560)*
+
+![X-NavDP Fig. 3](https://arxiv.org/html/2607.28560v2/figures/compare_vis2.jpg)
+*그림 — X-NavDP (Fig. 3): NavDP에는 없던 회복, 우회, 더 안전한 행동이 후학습 뒤에 나타난다. 출처: [arXiv:2607.28560](https://arxiv.org/abs/2607.28560)*
+
+<details markdown="1">
+<summary>자세히: X-NavDP의 방법과 수식</summary>
+
+**무엇을 하나.** 확산 정책의 score를 조건부 가우시안 score로 회귀하되, 표본마다 Q로 가중한다(DPMD 방식, 배경 0.5). 다른 점은 Q를 미니배치 전체가 아니라
+**같은 상태에서 뽑은 후보 그룹 안에서** 정규화한다는 것이다. 상태마다 Q의 크기가 크게 달라 미니배치 정규화로는 가중치가 한쪽 상태에 몰리기 때문이다.
+
+$$ \tilde Q_j = \mathrm{clip}\Big(\frac{c\,(Q(s, a_j) - \bar Q_G(s))}{\sigma_G(s) + \epsilon},\ -h,\ h\Big), \qquad \mathcal L(\theta) = \mathbb E_{s,\ j \in \mathrm{top}k,\ \tilde Q_j > 0}\Big[\, e^{\tilde Q_j / \lambda}\, \big\lVert s_\theta(a_j^t, t \mid s) - \nabla \log q(a_j^t \mid a_j^0) \big\rVert^2 \Big] $$
+
+$c$는 정규화한 이점의 크기를 정하고, $h$는 그 상한이며, $\epsilon$은 퇴화한 그룹을 막는 작은 수다. top-k는 5이고, 온도 $\lambda$는 학습한다(부록 B.2). 부록 B.2는 자르는 범위를 $[-3, 3]$으로 적고 "미니배치 분산으로 정규화한다"고 써서, 본문의 같은 상태 그룹 정규화와 어긋난다. 어느 쪽이 맞는지는 코드로 확인해야 한다. Q는 twin critic의 최솟값을 쓰고, 목표망 갱신률은 0.005다. 보상은 여섯 항이다.
+매 시뮬 스텝 생존 벌점 −0.025, 장애물을 아는 경로 진행 0.075, 도착 2.0, 충돌 2.0(벌점), 정지 0.2(벌점), 휴머노이드 안정 −0.4.
+IsaacLab에서 GRScenes-100의 56개 장면(가정 47, 상업 9)을 448개 병렬 환경으로 약 12시간 후학습했다.
+
+**결과.** 시뮬 보지 않은 장면 40개에서 SR/SPL은 iPlanner 33.84/32.60, ViPlanner 43.87/42.84, NavDP 61.20/58.95, X-NavDP 84.28/77.19다.
+24개 장면 절제의 SR은 모방만 53.50, DPPO 33.98, DSRL 13.65, 그룹 없는 DPMD 71.57, X-NavDP 80.48이다. 실물은 세 로봇이 세 장소에서 10번씩 달렸다.
+NavDP는 0–40%, X-NavDP는 50–80%다.
+
+**travplan에 주는 것.** Planner D는 flow matching이라 score 대신 속도장을 회귀한다. 같은 가중치를 flow matching 손실 앞에 곱하면 된다(TP-0066의 AWR 가중치 자리).
+critic은 TravMap 크롭과 후보를 받아 3–4초 뒤의 할인 보상을 예측하는 작은 망이면 된다. 학습 시간은 재지 않았다. X-NavDP의 12시간은 IsaacLab 448개 환경의 값이라 travplan 운동학 시뮬에 그대로 옮길 수 없다. 위험도 셋 있다. 후보가 16개뿐이면 그중 최댓값 쪽 Q가 과대평가되기 쉽다(X-NavDP는 64개와 twin critic의 최솟값으로 이를 누른다). critic 학습 자료를 따로 모아야 한다. plant 지연을 켜면 같은 후보라도 전이가 달라지므로 plant마다 critic을 다시 배워야 할 수 있다.
+
+</details>
+
+#### Beyond Imitation: 인코더를 얼리고 DiT 뒤쪽 층만 에피소드 보상 GRPO로 미세 조정한다
+
+**Beyond Imitation**([arXiv:2603.12868](https://arxiv.org/abs/2603.12868), 2026-03, NTU·NUS·A\*STAR)은 NavDP를 critic 없는 GRPO로 미세 조정해
+보지 않은 장면의 성공률을 0.520에서 0.587로, SPL을 0.490에서 0.537로 올렸다. 같은 조건의 DPPO는 0.527이었다. 실물 Go2에서는 20번 중 10번에서 14번으로 늘었다.
+코드 공개는 확인하지 못했다.
+
+NavDP(173.59M)에서 시각 인코더 둘과 DiT 앞 11층을 얼리고, 뒤 5층과 행동 머리(11.83M, 6.8%)만 학습한다. 관측마다 궤적 후보 16개를 뽑아 GRPO 그룹으로 쓴다.
+PPO식 클리핑을 쓰고, 중요도 비는 마지막 7 denoise 스텝에서 계산하며, KL 벌점은 0이다. 보상은 에피소드 결과를 그대로 쓴다.
+성공 +10, 진행 +3, 충돌 −5, 팽창 충돌 −1, 거리 −0.1, 부드러움 −0.1, 지그재그 −0.05다. Isaac Sim의 InternScenes-Home 장면에서 Dingo로 8 반복(반복당 130 에피소드)을 돌렸다.
+
+**travplan에 주는 것.** X-NavDP와 출발점(NavDP)이 같아 RL 신호를 비교하기 좋다. 에피소드 보상 GRPO는 성공률을 6.7점, 학습한 Q는 23점 올렸다.
+다만 장면과 평가 집합이 달라 두 숫자를 직접 견줄 수는 없다. Planner D는 작은 망이라 층을 얼릴 이유는 작다. 가져올 것은 충돌 근처를 따로 벌하는 "팽창 충돌" 항이다.
+travplan 보상의 치명 항은 치명 셀을 밟았을 때만 걸린다. 치명 셀과 보행자에서 한 칸 떨어진 띠에 작은 벌점을 두면 아슬아슬한 경우를 줄일 수 있다. 예를 들어 TP-0138 2단계는 보행자 최소 여유가 0.11 m까지 줄었다.
+충돌 횟수가 줄었다는 초록의 주장은 본문에 수치가 없어 확인하지 못했다.
+
+![Beyond Imitation Fig. 1](https://arxiv.org/html/2603.12868v1/framework.png)
+*그림 — Beyond Imitation (Fig. 1): 사전학습한 NavDP에서 시각 인코더와 앞쪽 DiT 층을 얼리고, 뒤쪽 층과 행동 머리만 GRPO로 미세 조정한다. 출처: [arXiv:2603.12868](https://arxiv.org/abs/2603.12868)*
+
+#### ReinFlow: flow 정책에 학습하는 잡음을 넣어 가능도를 정확히 계산한다
+
+**ReinFlow**([arXiv:2505.22094](https://arxiv.org/abs/2505.22094), NeurIPS 2025)는 flow matching 정책을 온라인 정책 기울기로 미세 조정한다.
+결정적인 flow 적분의 스텝마다 학습하는 잡음을 더해 이산 Markov 과정으로 바꾸므로, 가능도를 정확히 계산할 수 있다. 상세는 강화학습 문서 R.13에 있다.
+
+**travplan에 주는 것.** Planner D는 확산이 아니라 flow matching이다. 그래서 X-NavDP의 재가중 score matching보다 ReinFlow가 Planner D의 손실과 그대로 맞는다.
+X-NavDP의 Q critic과 ReinFlow의 정책 기울기는 서로 바꿔 끼울 수 있다. Q critic으로 다단계 보상을 만들고, 그 이점으로 ReinFlow의 정확한 가능도 기울기를 주는 조합이 Planner D에 가장 가깝다.
+
+#### LoGoPlanner: 위치 추정 모듈 없이 기하 백본이 자세와 장면을 함께 낸다
+
+**LoGoPlanner**([arXiv:2512.19629](https://arxiv.org/abs/2512.19629), 2025-12, Shanghai AI Lab 등,
+[프로젝트](https://steinate.github.io/logoplanner.github.io/), 코드는 NavDP 저장소의 `baselines/logoplanner`)는 RGB-D 영상에서 미터 스케일 자세와 장면 점군을 함께 추정하고, 그 기하를 조건으로
+diffusion 머리가 행동 묶음을 낸다. 실물 20번씩의 성공은 TurtleBot 17, Go2 14, G1 10번이다. 같은 조건의 ViPlanner는 10, 9, 0번이다.
+
+VGGT 계열 영상 기하 모델에 깊이 영상을 가벼운 ViT로 넣어 스케일 prior를 주입하고, 미터 스케일 출력으로 미세 조정한다. 지난 관측으로 장면을 재구성해
+장애물 회피에 쓰고, 상태·기하·목표 query로 만든 계획 문맥에서 (Δx, Δy, Δθ) 묶음을 denoise한다. 학습은 시뮬로 만든 InternData-N1의 20만 궤적, 약 1천만 영상이다.
+로봇 높이를 0.25–1.25 m, 카메라 pitch를 0–30°로 무작위화했다. 시뮬 가정 장면의 SR/SPL은 57.3/52.4이고, 위치 정답을 준 ViPlanner는 45.0/43.2다.
+초록의 "27.3%"는 이 SR의 상대 향상이다.
+
+**travplan에 주는 것.** Planner D는 TravMap 크롭을 추정 자세 기준으로 잘라 받으므로, 위치 오차는 곧 지도 어긋남이다. TP-0146에서 반 칸 어긋남 하나가 L1 수치를 바꾼 것과 같은 종류다.
+LoGoPlanner는 이 문제를 학습 안으로 넣었지만, travplan은 기하를 TravMap으로 드러내 두는 쪽을 유지한다. 치명 셀 검사와 Guidance 폴백이 명시적 지도에 기대기 때문이다.
+가져올 것은 학습 데이터 무작위화의 발상이다. Planner D 학습 때 크롭 자세에 위치·방향 잡음을 넣으면, 실물의 위치 추정 오차에 덜 민감해진다.
+
+![LoGoPlanner Fig. 2](https://arxiv.org/html/2512.19629v2/graph.png)
+*그림 — LoGoPlanner (Fig. 2): ViT 패치에 깊이 스케일 prior를 넣어 영상 기하 모델을 미터 스케일로 맞추고, query 기반 계획 문맥이 diffusion 행동 머리로 이어진다. 출처: [arXiv:2512.19629](https://arxiv.org/abs/2512.19629)*
+
 ### B.4 인식에서 속도 명령까지 RL로 곧장 가는 방식
 
 **MILER**([arXiv:2609.20747](https://arxiv.org/abs/2609.20747))와 **CORE Planner**([arXiv:2606.29222](https://arxiv.org/abs/2606.29222), [코드](https://github.com/BBD00/core_planner))는
@@ -442,6 +531,8 @@ $$ \mathcal L = 3\,\overline{c}_{\text{blur}} + 12\,\overline{\mathrm{relu}(c - 
 | waypoint 직접 회귀 | AgniNav | 이미지 + 몸체 치수 → 1D 스캔·waypoint | **Jetson 실측 30 Hz**, 여러 몸체 | 답이 하나(갈림길에 약함) | LearnedPlanner 개선 |
 | 비용 지도 자기지도 | iPlanner, ViPlanner | 깊이(+의미) + 목표 → key point 경로 | 라벨 불필요, 시뮬 학습만으로 실물 | 비용 지도 품질에 묶임 | **LearnedPlanner 손실의 원형**(B.4b) |
 | diffusion 궤적 | NavDP | RGB-D → 궤적 분포 + critic | 여러 답, sim-to-real 검증 | Jetson 지연 미보고 | **Planner D 직접 참고** |
+| diffusion 궤적 + 폐루프 RL 후학습 | X-NavDP, Beyond Imitation | 사전학습 NavDP → Q 가중 score matching 또는 GRPO | 시연에 없던 탈출·우회, 실물 개선 | 시뮬 RL 비용(IsaacLab 12시간) | **Planner D RL 후학습(TP-0066)의 다음 판** |
+| 위치 추정 내장 diffusion | LoGoPlanner | RGB-D 영상 → 자세·장면·행동 묶음 | 위치 추정 모듈이 필요 없다 | 기하가 잠재라 검사하기 어렵다 | 구조는 쓰지 않고 크롭 자세 잡음 증강만 |
 | RL 직접 매핑 | MILER, CORE | 인식 → 속도 명령 | **임베디드 실배포** | 해석 가능성 손실 | 보류 |
 | 학습 prior + MPPI 비용 항 | ProxPI | Planner 경로 → 근접 비용 | 최적화기 유지, prior가 틀려도 복구 | — | Controller 참고(`ReferenceCost`가 이미 유사) |
 | 학습 워밍스타트 | Self-Supervised MPC Init | 상태 → 초기해 | 샘플링 MPC 안전 +100% 보고 | 시뮬레이션만 | Controller 참고 |
@@ -1184,6 +1275,27 @@ travplan에서는 VLM·VLA가 "어느 보도로, 어디까지"를 정하고, Pla
 CityWalker의 웹 영상 라벨링은 보도 장면 데이터를 싸게 얻는 방법이라, Planner 학습 데이터를 실제 보도 분포로 넓힐 때 참고한다.
 이 분담이 옳다는 것을 수치로 보인 것이 B.6c다. VAMOS도 위층 VLM과 아래층 몸체 판단을 나눠 실제 코스에서 90 %를 냈다(NaVILA 10 %).
 
+#### UrbanVLA: 길 안내 앱의 경로점을 영상과 맞춰 보며 궤적을 낸다
+
+**UrbanVLA**([arXiv:2510.23576](https://arxiv.org/abs/2510.23576), 2025-10, Peking University·Galbot 등,
+ICRA 2026(저자 저장소 표기), [프로젝트](https://pku-epic.github.io/UrbanVLA-Web/), [코드](https://github.com/GalaxyGeneralRobotics/UrbanVLA))는 소비자 길 안내 앱의 경로점을 조건으로 받아 도시 보도를 수백 미터 가는 VLA다.
+지도 경로점은 실제 보도와 기하적으로 어긋난다. 이 모델은 그 어긋남을 영상과 맞춰 보며 궤적을 낸다.
+
+입력은 앞 40 m 경로를 2 m 간격으로 다시 뽑은 20점과 "30 m 뒤 우회전" 같은 회전 안내문, 그리고 앞·좌·우·뒤 카메라 넷의 최근 영상이다.
+내비 기반 모델 NavFoM에서 출발해 DINOv2·SigLIP 인코더, Qwen2 언어 모델, MLP 행동 머리로 궤적을 낸다. 학습은 두 단계다.
+첫 단계는 지도 학습이다. MetaUrban 시뮬의 PPO 전문가 궤적과 웹 영상(Sekai)을 쓴다. 궤적에 잡음을 넣고 다시 뽑아 "어긋난 경로 지시"를 만드는 HTL(heuristic trajectory lifting)이 핵심이다.
+둘째 단계는 오프라인 RL(IQL)이다. 시뮬 2,400 에피소드(약 40시간)와 베이징 원격조종 약 8시간을 섞고, 보상은 완주 0.5, 충돌 −1, 경로 이탈 −1이다.
+MetaUrban PointNav 시험 성공률은 94%(LiDAR PPO 66%)다. RL 단계는 SocialNav 보지 않은 장면 성공률을 82%에서 88%로 올렸다.
+HTL은 시뮬과 실물에서 반대로 움직였다. 시뮬 SocialNav 시험 성공률은 HTL을 넣으면 93%에서 89%로 내려갔고, 실물 60 m C자 보도 경로의 완주율은 42%에서 100%로 올랐다(10번).
+초록은 "SocialNav에서 강한 기준선보다 55% 이상 높다"고 적었다. 표에서 SocialNav 시험의 최고 기준선은 IQL 36%이고 UrbanVLA는 91%라, 맞는 해석은 상대 비율이 아니라 55점 차이다. Go2에서 원격 RTX 4090으로 2 Hz로 돌렸고, 궤적은 기존 로컬 Planner가 실행했다.
+
+**travplan에 주는 것.** 배달로봇의 전역 경로도 소비자 지도에서 온다. travplan Planner D는 Guidance 경로의 subgoal을 조건으로 받는데, 지금 그 경로는 같은 좌표계의 belief 지도에서 나온다(`travplan/eval/runner.py`의 `guidance.compute(belief_p, ...)`). 그래서 지도 정합이나 위치 오차로 인한 어긋남이 없다.
+HTL처럼 학습 때 경로에 잡음을 넣고 다시 뽑는 것은 B.9 Path-conditioned RL의 "일부러 나쁜 경로로 학습"과 같은 처방이다. 실물로 가기 전에 Planner D의 route 조건에 이 증강을 넣는다.
+2 Hz VLA는 Controller 주기(0.1 s)보다 훨씬 느리므로, 위 결론대로 VLA는 위층에만 둔다.
+
+![UrbanVLA Fig. 1](https://arxiv.org/html/2510.23576v2/UrbanVLA-Pipeline.png)
+*그림 — UrbanVLA (Fig. 1): 시뮬과 웹 영상으로 지도 학습한 뒤, 시뮬과 실물을 섞은 자료로 오프라인 RL 미세 조정을 하는 두 단계 파이프라인. 출처: [arXiv:2510.23576](https://arxiv.org/abs/2510.23576)*
+
 ### B.6c 시연 투어와 위상 그래프: 멀티모달 지시를 좌표 없이 푼다
 
 **Mobility VLA — 긴 문맥 VLM은 목표 프레임만 고르고, 기하는 위상 그래프가 맡는다**([arXiv:2407.07775](https://arxiv.org/abs/2407.07775),
@@ -1275,6 +1387,58 @@ Coco의 바퀴 로봇 여러 대로 모았다. 입력은 어안 영상 256 × 25
 
 다만 입력이 다르다. MIMIC은 어안 RGB로 배우고 높이를 명시하지 않는다. 연석 높이나 포트홀 깊이를 비용으로 다루지 않으므로, travplan의
 2.5D 표현을 대체하지 않는다. 겹치는 곳은 표현이 아니라 **학습 방법과 평가**다.
+
+#### S2E: 영상으로 사전학습한 내비 모델에 RL 잔차 attention을 더한다
+
+**S2E**("From Seeing to Experiencing", [arXiv:2507.22028](https://arxiv.org/abs/2507.22028), ICLR 2026(저자 저장소 표기), UCLA(He·Ma·Wu·Zhou)·Coco Robotics(Squicciarini),
+[프로젝트](https://vail-ucla.github.io/S2E), [코드](https://github.com/VAIL-UCLA/S2E))는 MIMIC과 같은 연구진이 영상 사전학습과 시뮬 RL을 잇는 방법이다.
+수치는 v2(2026-06-10) 기준이다. v1과는 자료 규모와 결과가 다르다. 약 100시간 자료로 학습했고, 3DGS로 재구성한 실제 장면 벤치마크(NavBench-GS)의
+장애물과 보행자 장면에서 성공률 0.51을 냈다. 2,000시간으로 학습한 CityWalker는 0.37이다.
+
+입력은 RGB 몇 프레임과 목표점이다. 행동은 **앵커 유도 분포 정합**으로 낸다. 자료 전체에 K-means를 돌려 얻은 앵커가 가우시안 혼합의 모드가 되고,
+앵커마다 점수와 속도 배율을 배운다. v2의 앵커 수는 확인하지 못했다(v1은 로봇 앞쪽에 고르게 둔 8개였다). 사전학습 자료는 SCAND, X-Mobility, COMPASS, MBRA 등이다.
+RL은 PPO이고 시뮬 환경은 URBAN-SIM과 Vid2Sim에서 가져왔다. v1 기준으로는 EfficientNet-B0와 4층 transformer(약 89.4M), 256개 환경, L40S 한 장 약 15시간이다.
+RL이 사전학습 지식을 덮지 않도록 **잔차 attention 모듈(RAM)**을 둔다. 사전학습한 cross-attention 블록은 얼리고, 그 복사본을 0으로 초기화한 선형층 둘로 감싸 이 경로만 학습한다.
+실물 성공률은 바퀴 로봇 0.51(CityWalker 0.28, 모방만 한 S2E-BC 0.32), Go2 0.55(CityWalker 0.31, S2E-BC 0.34)다. 빈 장면의 시뮬 성공률은 0.82(CityWalker 0.66)다.
+
+**travplan에 주는 것.** RAM은 RL 후학습이 모방 지식을 지우지 않게 하는 구조적 방법이다. TP-0138의 2단계는 curb_ramp 레벨 3 지형만으로 학습했고,
+벤치마크가 24/24에서 22/24로 떨어졌다. travplan은 지금 모방 손실을 섞어(λ = 0.5) 이 위험을 막는다. 0으로 초기화한 잔차 경로만 RL로 학습하면, 학습을 시작할 때의 출력이 모방 정책과 정확히 같다.
+그래서 학습 뒤 레벨 0 성적이 바뀌면 그 차이는 모두 잔차가 만든 것이다. 레벨 0 스모크 게이트는 학습을 마친 뒤에야 의미가 있다. 앵커 GMM은 DiffusionDrive와 MIMIC의 앵커와 같은 계열이다.
+
+![S2E Fig. 3](https://arxiv.org/html/2507.22028v2/Figs/corl-pipeline-latest.png)
+*그림 — S2E (Fig. 3): 앵커 query와 잔차 attention 블록, 그리고 사전학습과 RL 단계에서 각각 학습하는 부분. 출처: [arXiv:2507.22028](https://arxiv.org/abs/2507.22028)*
+
+#### Slow Brain, Fast Planner: 늦게 오는 VLM 답을 Planner 점수에 섞는다
+
+**Slow Brain, Fast Planner**([arXiv:2606.20458](https://arxiv.org/abs/2606.20458), 2026-06, Amazon FAR·UCLA)는 배달로봇의 빠른 학습 Planner가 후보를 내고,
+클라우드 VLM이 몇 초 늦게 그중 하나를 고르는 구조다. 늦은 답을 그대로 따르면 실물 개입이 100 m당 3.49회에서 8.15회로 늘었다.
+점수에 섞으면 0.87회로 줄었다. 코드 공개는 확인하지 못했다.
+
+Planner는 S2E 계열의 앵커 Planner다. RGB 5프레임과 목표를 받아 앵커 query 64개마다 점수, 4초 20 waypoint 폴리라인, 속도 배율을 5 Hz로 낸다.
+점수 상위 18개를 영상 위에 그려 VLM(실물은 Gemini 2.5 Flash Lite, 4G 클라우드)에 보낸다. 질의는 1 Hz로 응답을 기다리지 않고 흘려보낸다.
+실측 왕복 지연은 중앙값 2.7초다. 늦게 온 VLM 궤적은 움직임을 보정해 현재 좌표로 옮기고, 지평을 아는 유사도로 지금 후보와 맞춘다.
+Score Fusion은 이 유사도를 Planner 점수에 더한다. Probability Fusion은 두 softmax를 오래된 정도에 따라 섞는다. 오래된 정도의 가중은 지수 감쇠(시상수 5초)이고, 5초가 넘으면 보수적 폴백으로 간다.
+waypoint는 pure pursuit가 추종한다. 실물은 4륜 차동 배달로봇이 캠퍼스 보도 5경로를 달렸다. 100 m당 개입은 Planner만 3.49, Score Fusion 1.31, Probability Fusion 0.87회다.
+시뮬에서 Score Fusion은 VLM 지연 5초까지 성공률 80% 이상을 지켰다. 그대로 따르기(Hold)는 4초에서 0에 가까워졌다.
+
+**travplan에 주는 것.** 구조가 `planner_df`와 같다. 빠른 학습 Planner가 후보를 내고, 느린 판정자가 고르고, 폴백이 있다. 다른 것은 판정자의 일이다.
+여기서는 안전이 아니라 의미(교차로에서 어느 길로)를 판정한다. 가져올 것은 늦은 신호를 다루는 규칙이다. 늦은 판정을 현재 좌표로 옮기고, 오래된 정도로 가중하고, 시간 한계를 넘으면 폴백한다.
+위 B.6b 결론대로 VLM을 Planner 위층에 붙일 때 그대로 쓴다. 100 m당 개입 지표는 TP-0038(100 m당 실패)과 같은 방향이다.
+
+![Slow Brain, Fast Planner Fig. 1](https://arxiv.org/html/2606.20458v1/teaser.png)
+*그림 — Slow Brain, Fast Planner (Fig. 1): 빠른 Planner가 동역학적으로 가능한 후보를 만들고, 느린 VLM이 그중 하나를 고른다. 출처: [arXiv:2606.20458](https://arxiv.org/abs/2606.20458)*
+
+![Slow Brain, Fast Planner Fig. 3](https://arxiv.org/html/2606.20458v1/corl_method.png)
+*그림 — Slow Brain, Fast Planner (Fig. 3): 지연된 VLM 궤적을 움직임 보정으로 현재 좌표에 옮긴 뒤, 지평을 아는 유사도로 지금 후보와 맞춘다. 출처: [arXiv:2606.20458](https://arxiv.org/abs/2606.20458)*
+
+#### LogoNav (MBRA): 질 낮은 보도 원격조종 로그의 행동을 모델로 다시 매긴다
+
+**LogoNav**("Learning to Drive Anywhere with Model-Based Reannotation", [arXiv:2505.05592](https://arxiv.org/abs/2505.05592), RA-L 2025, Hirose·Levine·Shah 등)는
+크라우드소싱 원격조종 자료와 영상처럼 수동으로 모은 자료의 행동을, 짧은 지평의 학습 모델 전문가(MBRA)로 다시 매기거나 새로 만든다.
+그렇게 고친 자료로 영상 목표나 GPS waypoint를 조건으로 받는 장거리 정책 LogoNav를 학습했다. 보지 않은 실내외 환경에서 300 m 넘게 갔고, 사족 로봇을 포함한 로봇 여러 대로 3개 대륙 6개 도시에서 평가했다.
+
+**travplan에 주는 것.** MIMIC과 같은 질문(실물 로그를 어떻게 시연으로 쓰나)에 다른 답을 냈다. MIMIC은 이탈 상태를 기하로 합성하고, LogoNav는 행동 라벨을 모델로 고친다.
+travplan이 실물 배달 로그를 Planner D 학습에 쓸 때는 사람 조종의 흔들림이 그대로 시연이 된다. 그 로그의 행동을 Guidance + MPPI 같은 모델 전문가로 다시 매기는 것이 같은 처방이다. 코드 공개는 확인하지 못했다.
 
 ---
 
@@ -1574,6 +1738,54 @@ $$ F_i(x) = \mathrm{sdf}_i(x) - \kappa(\alpha)\,\sigma_i,\quad \kappa(\alpha) = 
 
 </details>
 
+#### Feasibility-Guided Planning: 보행 정책마다 "이 지형을 따라갈 수 있나"를 배워 Dijkstra 비용으로 쓴다
+
+**Feasibility-Guided Planning**([arXiv:2602.07932](https://arxiv.org/abs/2602.07932), 2026-02, ICRA 2026(arXiv 주석), National Taiwan University·Inventec)은 지형별 보행 정책 넷의 속도 추종 정도를
+높이 지도에서 예측하고, 그 역수를 간선 비용으로 Dijkstra를 돌린다. 한 정책으로는 0%인 혼합 지형을 시뮬 98.60%, 실물 혼합 지형 70%(Unitree A1, 20번)로 지났다. 코드 공개는 확인하지 못했다.
+
+계단, 틈, 좁은 다리, 골짜기의 네 지형마다 PPO 보행 정책을 따로 학습한다. 정책마다 Feasibility-Net이 로봇 둘레 높이 지도 조각과 속도 명령 벡터를 받아 0–1 점수를 낸다.
+라벨은 정책 학습 rollout의 속도 추종 보상을 그대로 쓴다. 따로 라벨을 만들 필요가 없다. VAE의 재구성 오차로 학습 분포 밖 지형에서는 점수의 신뢰를 낮춘다.
+높이 지도 조각을 45° 간격 8방향으로 돌려 8채널 텐서를 만들고, 정책끼리는 칸과 방향마다 최댓값으로 합친다. 비용이 방향과 정책에 따라 달라 A\*의 허용성이 깨지므로 Dijkstra를 쓴다.
+경로의 구간마다 점수가 가장 높은 정책을 고른다. 계단 정책이 학습되며 좋아지면 같은 지형의 경로가 26.75 m에서 9.73 m로 짧아진다. Planner가 Controller의 능력을 따라간다.
+
+**travplan에 주는 것.** 핵심은 라벨이 "그 Controller가 실제로 따라간 정도"라는 점이다. travplan `GuidancePlanner`의 간선은 TravMap cost로 정한 식이다.
+plant 레벨 3의 시간 초과(TP-0151)는 cost가 낮아도 plant와 `mppi_plant_lag`가 따라가지 못하는 칸이 있다는 뜻이다. TP-0151은 2026-10-04 사용자 결정으로 plant 로봇의 설계 한계로 보고 닫았다.
+다시 연다면, 벤치마크 rollout의 추종 오차로 칸·방향별 실행 가능성을 배워 Guidance 간선에 곱하는 것이 후보다. 그러면 경사로처럼 "기하로는 갈 수 있지만 이 로봇은 못 가는" 곳을 Planner가 미리 피하거나 다른 길을 고른다.
+다만 라벨이 순환한다. travplan의 추종 오차는 Planner가 낸 경로에 따라 달라지므로, 그 라벨로 Planner 비용을 배우면 Planner의 영향이 라벨에 섞인다.
+Feasibility-Net은 정책마다 따로 배우고 경로가 아니라 속도 명령을 입력으로 받아 이 순환을 피했다. travplan도 칸·방향·명령 속도를 입력으로 두고, 정해진 직선 명령을 따라가게 하는 rollout으로 라벨을 모아야 Planner의 영향을 떼어 낼 수 있다.
+8방향 텐서는 Guidance의 8-연결 격자와 같은 모양이다.
+VAMOS(B.6b)의 affordance 함수도 같은 8방향을 썼다. 두 연구 모두 몸체 판단을 Planner 비용으로 옮겼다.
+
+![Feasibility-Guided Planning Fig. 1](https://arxiv.org/html/2602.07932v1/Figures/teaser.png)
+*그림 — Feasibility-Guided Planning (Fig. 1): 정책별 실행 가능성 지도로 혼합 지형에서 경로를 고르고, 구간마다 보행 정책을 바꾼다. 출처: [arXiv:2602.07932](https://arxiv.org/abs/2602.07932)*
+
+![Feasibility-Guided Planning Fig. 4](https://arxiv.org/html/2602.07932v1/Figures/policy_selection.png)
+*그림 — Feasibility-Guided Planning (Fig. 4): 정책별 텐서를 칸·방향마다 최댓값으로 합쳐 하나의 비용을 만들고, 경로를 따라 정책을 배정한다. 출처: [arXiv:2602.07932](https://arxiv.org/abs/2602.07932)*
+
+#### Occlusion-Aware Stability-Oriented Planning: 가림 분산을 차체 자세까지 전파해 CEM 벌점으로 쓴다
+
+**Occlusion-Aware Stability-Oriented Planning**([arXiv:2609.39105](https://arxiv.org/abs/2609.39105), 2026-09, University of Tartu·IIIT Hyderabad·CTU Prague)은
+가림 때문에 생긴 지형 맞춤 분산을 차체 자세(roll·pitch)와 바퀴 접촉까지 전파해 CEM 벌점으로 쓴다. Gazebo 6지형에서 실패율이 18.9%이고, 불확실성 항을 빼면 34.4%다.
+시뮬은 LiDAR(최대 10 m)와 깊이 카메라(최대 5 m)로 지형을 맞췄다. 실물은 Husky·Jackal로 실외 여섯 곳에서 했고, 논문에 둘, 보조 영상에 넷을 실었다.
+방법과 분산 계산의 상세는 인식 문서 A.2b.7에 있다.
+
+**travplan에 주는 것.** Planner 쪽 함의는 위험 항이 칸이 아니라 자세 단위일 수 있다는 것 하나뿐이다. 절제는 불확실성 항의 유무만 비교했다.
+칸 σ와 자세 분산 중 무엇이 나은지는 이 논문이 답하지 않는다. TP-0054에서 매퍼 분산은 σ로 쓸 수 없고, cost 민감도 σ는 폐루프를 바꾸지 못했다.
+L0 가림의 포트홀 실패는 그림자 상한과 깊이 prior로 이미 40/40이 됐다(TP-0044·0047). 그래서 자세 분산을 시도할 이유는 L0가 아니라 L1 레벨 3의 남은 치명 에피소드에서 찾아야 한다.
+
+![Occlusion-Aware Stability-Oriented Planning Fig. 1](https://arxiv.org/html/2609.39105v1/teaser2.png)
+*그림 — Occlusion-Aware Stability-Oriented Planning (Fig. 1): 바퀴 로봇이 불확실성이 큰 사각 지대와 지날 수 없는 장애물을 함께 피해야 하는 장면. 출처: [arXiv:2609.39105](https://arxiv.org/abs/2609.39105)*
+
+#### CARE: 사전학습 시각 내비 정책의 궤적을 척력장으로 밀어내는 부착형 안전 층
+
+**CARE**([arXiv:2506.03834](https://arxiv.org/abs/2506.03834), CoRL 2025(PMLR 305), Kim·Sycara·Nam 등, [프로젝트](https://airlab-sogang.github.io/CARE/))는
+RGB만 쓰는 사전학습 내비 정책에 재학습 없이 붙이는 충돌 회피 층이다. RGB에서 추정한 깊이로 척력 벡터를 계산해, 정책이 낸 로컬 궤적을 장애물에서 밀어낸다.
+여러 실물 로봇의 목표 도달 과제에서 충돌을 최대 100% 줄였고, 탐색 과제에서 충돌 없이 간 거리가 최대 10.7배 늘었다(초록 기준).
+
+**travplan에 주는 것.** 학습 Planner 출력 뒤에 비학습 안전 층을 두는 구조는 travplan의 Guidance 폴백, MPPI 치명 비용과 같은 자리다. travplan은 이미 TravMap으로 기하를 명시하므로 깊이 추정은 필요 없다.
+가져올 것은 "후보를 버리지 않고 밀어서 고친다"는 점이다. 지금 `planner_df`는 치명 비율이 높으면 Guidance로 바꾼다. 치명 셀 근처의 후보를 cost 기울기로 조금 밀어 살리는 판을 폴백 앞에 둘 수 있다.
+다만 TP-0143에서 cost 안내 샘플링(`planner_dg`)은 3/30으로 무너졌다. 미는 힘은 생성 중이 아니라 생성 뒤 한 번만 걸어야 한다.
+
 | 연구 | 층위 | 핵심 | travplan 적용 |
 |---|---|---|---|
 | TRG-planner | 전역 경로(비학습) | 위험 가중 그래프, 계층 관리, 대규모 실시간 | `GuidancePlanner` 대안·비교 기준 |
@@ -1584,6 +1796,9 @@ $$ F_i(x) = \mathrm{sdf}_i(x) - \kappa(\alpha)\,\sigma_i,\quad \kappa(\alpha) = 
 | ABS | 빠른 정책 + 감시 + 회복 정책 | 정책 조건 도달-회피 가치로 정책 전환, 광선 11개 인식 | **RL 후학습한 Planner D의 폴백 규칙**(TP-0066). 치명 비율로 감시하는 첫 판은 TP-0078 |
 | Path-conditioned RL | 로컬 정책(RL) | 경로를 관측으로만, 추종 보상 없이 | **Guidance가 틀려도 버티는 학습 Planner** |
 | 행성 로버 AO-RRT + SCP | 궤적 계획(비학습) | CVaR 위험, 샘플링 → 최적화 | Planner D 선택기의 위험 항, `RiskCost` |
+| Feasibility-Guided Planning | 전역 경로(학습 비용 + Dijkstra) | 정책마다 높이 지도 → 추종 보상 회귀, 8방향 텐서, VAE 분포 밖 가중 | Guidance 간선에 Controller 실행 가능성을 곱한다(TP-0151을 다시 열 경우) |
+| Occlusion-Aware Stability-Oriented Planning | 궤적 계획(CEM, 비학습) | 지형 맞춤 불확실성 → 자세·접촉 분산 벌점 | 위험 항을 자세 단위로 두는 후보(상세는 인식 A.2b.7) |
+| CARE | 학습 Planner 뒤 안전 층(비학습) | 추정 깊이 척력장으로 궤적을 밀어낸다 | 폴백 전에 치명 근처 후보를 밀어 고치는 판 |
 
 ---
 
@@ -7471,6 +7686,74 @@ B.14.6은 RSL 한 연구실에서 가져올 일곱 가지다. 실패 확률 머�
 두 목록이 만나는 곳은 넷이다. 지연은 B.14.6의 4번이 rollout에 넣고 실물 기록을 모으는 데까지이고, 이 목록의 5번과 10번이 그 범위를 재고 실측으로 맞춘다.
 RobotMDM의 critic(B.16.3)과 Trace and Pace의 가치 함수(B.16.1)는 B.14.6 1번의 실패 확률 머리와 같은 선택기 자리라 따로 적지 않았다.
 학습 Controller는 B.14.6 7번(DTC의 사건 단위 갱신과 경로 교란)과 이 목록 8번을 함께 쓴다. AME-2의 융합 규칙(B.16.3)도 B.14.6 5번과 같은 TP-0054의 후보다.
+
+<!-- tab: 최근 연구 비교 -->
+
+## B.17 최근 연구 비교 (2025–2026)
+
+2025–2026의 학습 로컬 Planner는 거의 모두 "사전학습한 생성 Planner가 후보 여럿을 내고, 다른 무엇이 고르거나 다듬는다"로 수렴했다.
+갈리는 곳은 그 "다른 무엇"이다. 학습한 critic, 폐루프 RL, 느린 VLM, 로봇별 실행 가능성 모델, 비학습 안전 층이 그 자리에 들어간다.
+==Planner 트랙을 다시 연다면, 먼저 바꿀 것은 새 구조가 아니라 RL 후학습의 신호다. 개루프 후보 채점을 폐루프 전이로 배운 Q로 바꾸는 것이 첫 시도다(X-NavDP).==
+학습 쪽 네 시도(TP-0138 둘, TP-0143 둘)는 모두 TP-0066 1단계를 넘지 못했다. TP-0138은 그 원인을 보상이 몇 초짜리 재탐색을 보지 못하는 데서 찾았다(해석이다. TP-0143은 보상이 없는 DAgger였다).
+NavDP에서 출발한 X-NavDP는 RL 후학습으로 시뮬 성공률을 23점 올렸다. 그중 9점(71.57%에서 80.48%)은 Q critic이 아니라 같은 상태 그룹 정규화가 더했다.
+지금 Planner 트랙은 쉬고 있다. 사용자 결정 1(2026-10-03, B)로 학습 Planner 단독은 26/30에 두고, 다음 병목인 L1 인식과 보행자로 넘어갔다.
+
+| 이름 (연·발표) | 입력·표현 | 방법의 핵심 | 학습 신호·최적화 | 로봇·실험 | 코드 | 절 |
+|---|---|---|---|---|---|---|
+| NavDP (2025, ICRA 2026) | RGB-D 이력 | 확산 궤적 후보 + 특권 정보 critic | 시뮬 시연 모방, ESDF로 critic 라벨 | Turtlebot·Go2·G1 실물 | 공개 | B.3 |
+| X-NavDP (2026-07, 프리프린트) | RGB-D 이력 | NavDP + 그룹 안 Q 정규화 재가중 score matching, 몸체 임베딩 | 폐루프 RL(twin critic, 3초 전이) | Dingo·Go2·G1 실물, 시뮬 SR 61→84% | NavDP 저장소 `baselines/x-navdp` | B.3 |
+| Beyond Imitation (2026-03, 프리프린트) | RGB-D 이력 | NavDP 뒤쪽 DiT 층만 미세 조정 | 에피소드 보상 GRPO | Go2 실물 20회 10→14 | 미확인 | B.3 |
+| ReinFlow (2025-05, NeurIPS 2025) | 상태·영상 | flow 경로에 학습 잡음, 정확한 가능도 | 온라인 정책 기울기 | 시뮬 보행·조작 | 미확인 | B.3, R.13 |
+| LoGoPlanner (2025-12, 프리프린트) | RGB-D 영상 | 미터 스케일 기하 백본 + 확산 행동 머리, 위치 추정 내장 | 시뮬 시연 모방 | TurtleBot·Go2·G1 실물 | NavDP 저장소 `baselines/logoplanner` | B.3 |
+| S2E (2025-07, ICLR 2026(저자 저장소 표기)) | RGB + 목표점 | K-means 앵커 GMM + 0 초기화 잔차 attention | 영상 약 100시간 모방 뒤 PPO | 바퀴 로봇·Go2 실물, NavBench-GS (v2) | [VAIL-UCLA/S2E](https://github.com/VAIL-UCLA/S2E) | B.6d |
+| MIMIC (2026-03) | 어안 RGB + GPS 목표 | 다중 지평 앵커 + 교정 행동 확장 | 배달로봇 원격조종 로그 모방 | 배달로봇 실물 400 m | 미확인 | B.6d |
+| LogoNav (2025-05, RA-L 2025) | 영상 + 영상 목표 또는 GPS | 모델 전문가로 행동 라벨을 다시 매김(MBRA) | 재라벨한 수동 수집 자료 모방 | 3개 대륙 6개 도시, 300 m 이상 | 미확인 | B.6d |
+| Slow Brain, Fast Planner (2026-06, 프리프린트) | RGB + 목표 | 앵커 Planner 후보 + 지연 VLM 선택을 점수에 융합 | 학습 Planner + zero-shot VLM | 4륜 배달로봇 보도 5경로 | 미확인 | B.6d |
+| UrbanVLA (2025-10, ICRA 2026(저자 저장소 표기)) | 카메라 4대 + 지도 경로점 | NavFoM 기반 VLA, 어긋난 경로점을 영상과 정렬 | 지도 학습 뒤 오프라인 RL(IQL) | Go2 실물 500 m 이상 | [GalaxyGeneralRobotics/UrbanVLA](https://github.com/GalaxyGeneralRobotics/UrbanVLA) | B.6b |
+| VAMOS (2025-10) | RGB + 목표 문장, 높이 지도 | VLM 후보 + 로봇별 affordance 선택 | 모방 + 시뮬 성공 라벨 | Spot·Hound 실물 코스 6곳 90% | 공개 | B.6b |
+| JPPD (2026-06) | 상태·보행자 이력·지도 | 예측·계획 공동 flow matching + 안전 포텐셜 guidance | 모방 + 추론 guidance | 메카넘 실물, Isaac Sim | 게재 후 공개 예정 | B.8.2 |
+| DreamFlow (2026-03, ICRA 2026) | 높이 지도 잠재 | 센서 밖 지형 잠재를 flow matching으로 상상 | PPO 내비 정책 | Go2 실물 | 프로젝트 페이지 | B.9 |
+| Feasibility-Guided Planning (2026-02, ICRA 2026(arXiv 주석)) | 높이 지도 조각 + 속도 명령 | 정책별 실행 가능성 8방향 텐서 → Dijkstra | rollout 추종 보상 회귀 | A1 실물 혼합 지형 70% | 미확인 | B.9 |
+| Occlusion-Aware Stability-Oriented Planning (2026-09, 프리프린트) | LiDAR·깊이 → 푸리에 지형 | 맞춤 불확실성을 자세·접촉으로 전파, CEM | 비학습 최적화 | Gazebo, Husky·Jackal 실외 6곳 | 미확인 | B.9, 인식 A.2b.7 |
+| CARE (2025-06, CoRL 2025) | RGB → 추정 깊이 | 사전학습 정책 궤적을 척력장으로 밀어냄 | 비학습 부착 층 | 여러 실물 로봇 | 프로젝트 페이지 | B.9 |
+
+**공통점.**
+- **후보를 여럿 내고 따로 고른다.** NavDP는 critic이, Slow Brain은 VLM이, VAMOS는 affordance 함수가, JPPD는 규칙 점수가 고른다. S2E와 MIMIC은 앵커마다 점수를 함께 배운다.
+  travplan Planner D도 같은 꼴이다(후보 16개 + 규칙 선택기).
+- **모방으로 시작하고 RL로 다듬는다.** X-NavDP, Beyond Imitation, S2E, UrbanVLA가 이 순서다. 시연은 분포를, RL은 시연에 없던 회복과 우회를 준다.
+  RL만으로 시작한 연구는 DreamFlow처럼 작은 높이 지도 입력을 쓴 경우다.
+- **시연의 질을 고친다.** MIMIC은 이탈 상태를 합성하고, LogoNav는 행동 라벨을 모델로 다시 매기고, UrbanVLA는 경로 지시에 잡음을 넣는다. 셋 다 실물 로그의 분포 이동을 다룬다.
+- **앵커나 모드로 다양성을 지킨다.** S2E(K-means 앵커), Slow Brain(앵커 64), MIMIC(지평별 앵커)이 앵커를 쓰고, 확산 계열은 표본 수로 같은 일을 한다. 급회전 같은 드문 모드를 놓치지 않으려는 것이다.
+- **추종은 별도 Controller가 한다.** X-NavDP는 MPC, Slow Brain은 pure pursuit, Occlusion-Aware Stability-Oriented Planning은 π-MPPI로 추종한다. UrbanVLA는 기존 로컬 Planner에 맡긴다. Planner가 제어를 내지 않는 travplan 구조와 같다.
+
+**차이점.**
+- **표현.** RGB·RGB-D를 바로 쓰는 쪽(NavDP 계열, LoGoPlanner, S2E, MIMIC, UrbanVLA, CARE)과 높이 지도를 쓰는 쪽(DreamFlow, Feasibility-Guided Planning, VAMOS의 아래층, Occlusion-Aware Stability-Oriented Planning)으로 나뉜다.
+  영상 쪽은 자료를 싸게 늘리고 의미를 얻지만, 연석 높이와 구덩이 깊이를 명시하지 않는다. 지도 쪽은 기하가 검사 가능하고 시뮬과 실물의 차이가 작지만, 지도 품질에 묶인다.
+- **RL 신호.** 에피소드 결과 보상(Beyond Imitation, S2E의 PPO), 학습한 Q(X-NavDP), 오프라인 Q(UrbanVLA의 IQL), 정확한 가능도의 정책 기울기(ReinFlow), 개루프 후보 채점(travplan TP-0066)이 있다.
+  에피소드 보상은 간단하지만 신호가 드물다. Q는 다단계 결과를 후보 하나에 돌려주지만 critic을 따로 배워야 하고 과대평가 위험이 있다. 개루프 채점은 가장 싸지만 몇 초 뒤에 드러나는 결과를 보지 못한다.
+- **불확실성 처리.** 분포 밖 가중(Feasibility-Guided Planning의 VAE), 맞춤 분산의 자세 전파(Occlusion-Aware Stability-Oriented Planning), 센서 밖 상상(DreamFlow), 예측 흩어짐으로 보수성 조절(JPPD)이 있다.
+  NavDP 계열과 영상 VLA는 불확실성을 따로 다루지 않는다. 불확실성을 칸 cost 대신 차체 자세나 Controller 추종 정도로 옮긴 연구가 늘었다. 칸 cost와 직접 비교한 연구는 없다.
+- **실시간성과 층.** 학습 Planner는 5 Hz 안팎(S2E, Slow Brain)이고, VLA는 2 Hz(UrbanVLA)이며, 클라우드 VLM은 2–3초 늦다(Slow Brain). 느린 모델일수록 위층에 두고, 늦은 답을 현재 좌표로 보정하는 규칙이 따로 필요하다.
+- **몸체 판단과 안전의 자리.** 몸체 정보를 Planner 입력에 넣는 쪽(X-NavDP의 임베딩, LoGoPlanner의 높이 무작위화)과 Planner 밖의 선택 비용이나 안전 층으로 두는 쪽(VAMOS, Feasibility-Guided Planning, CARE)이 있다.
+  밖에 두면 Controller가 바뀔 때 비용이나 안전 층만 다시 맞추면 된다.
+
+**travplan에 주는 의미.** 가져올 것은 RL 신호, 잔차 학습 구조, Controller 실행 가능성 비용, 경로 잡음 증강의 넷이다. 영상 입력 VLA와 위치 추정 내장 백본은 가져오지 않는다.
+TravMap을 명시적 표현으로 두는 것이 치명 셀 검사, Guidance 폴백, 잡음 바닥 비교를 가능하게 하기 때문이다.
+아래는 **Planner 트랙을 다시 열 때의 순서**다. 지금은 사용자 결정 1(B)대로 L1 인식과 보행자가 먼저다.
+현재 병목과 잇는 길도 있다. 1번의 Q critic은 재탐색뿐 아니라 치명 결과와 보행자 충돌도 할인 보상으로 채점할 수 있다. 그러면 L1 레벨 3의 남은 치명 에피소드와 보행자 5명 충돌(720 중 8건)을 같은 critic으로 볼 수 있다.
+
+1. **Q critic으로 RL 후학습(X-NavDP, ReinFlow).** TP-0066의 개루프 GT 채점 대신, 폐루프 3–4초 전이로 배운 Q를 후보 가중치로 쓴다. 판정은 curb_ramp 레벨 3 단독 26/30을 짝 비교로 넘는지다.
+   대가와 위험이 있다. 후보 16개에서는 최댓값 쪽 Q가 과대평가되기 쉬워 twin critic의 최솟값이 필요하다. critic 학습 자료를 따로 모아야 한다. plant 지연을 켜면 같은 후보라도 전이가 달라져 critic을 다시 배워야 할 수 있다.
+   학습 시간은 재지 않았다. X-NavDP의 12시간은 IsaacLab 448개 환경의 값이라 옮겨 쓸 수 없다.
+   TP 후보: "Planner D RL 후학습의 후보 점수를 폐루프 전이로 학습한 Q critic으로 바꾼다(TP-0138 후속, 치명·보행자 충돌 항 포함)".
+2. **잔차 경로만 RL로 학습(S2E RAM).** 1번과 함께 쓴다. 0으로 초기화한 잔차 층만 학습하면 학습을 시작할 때의 출력은 모방 정책과 같다.
+   그래서 레벨 0 스모크 게이트는 학습을 마친 뒤에 돌려야 의미가 있고, 그때 바뀐 수는 모두 잔차가 만든 것이다.
+   TP 후보: "Planner D에 0 초기화 잔차 블록을 두고 RL은 그 블록만 학습한다".
+3. **Controller 실행 가능성 간선 비용(Feasibility-Guided Planning). TP-0151을 다시 열 경우에만.** TP-0151은 2026-10-04 사용자 결정으로 레벨 3 경사로를 plant 로봇의 설계 한계로 보고 닫았다.
+   다시 연다면, 추종 오차로 칸·방향별 실행 가능성을 배워 `GuidancePlanner` 간선에 곱한다. 라벨이 Planner의 경로에 따라 달라지는 순환을 피하려고, 정해진 명령 속도를 따라가게 하는 rollout으로 라벨을 모으고 명령 속도를 입력으로 둔다.
+   TP 후보: "(TP-0151 재개 시) plant + `mppi_plant_lag`의 명령 속도별 추종 오차로 8방향 실행 가능성 지도를 배워 Guidance 간선 비용에 넣는다".
+4. **경로 잡음 증강(UrbanVLA HTL, B.9 Path-conditioned RL).** Planner D 학습 때 route subgoal에 잡음과 재표집을 넣는다. 실물의 소비자 지도 경로를 대비하는 일이라 Isaac 폐루프(P1) 전에 한다.
+   TP 후보: "Planner D route 조건에 경로 잡음·재표집 증강을 넣고 어긋난 경로 시나리오로 잰다".
 
 <!-- tab: 작업 기록 -->
 
