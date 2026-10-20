@@ -30,6 +30,42 @@ h2.grp { font-family:'Noto Serif KR', Georgia, serif; font-size:24px; margin:40p
 <main>
 <h1>travplan 스터디 슬라이드</h1>
 <p class="lead">슬라이드에서는 ← → 키로 넘기고, N 키로 발표자 노트를 엽니다.</p>
+<h2 class="grp">챕터 발표 덱</h2>
+<p class="lead">리서치 탭의 챕터 하나를 30–45분 발표로 고른 덱입니다. 핵심 연구, 최근 연구 비교, travplan에서 잰 결과, 다음 할 일 순서로 갑니다.
+PPTX는 글자·표·도형을 고칠 수 있는 판입니다(별행 수식은 그림).</p>
+<div class="grid">
+<article class="card">
+<h2>travplan 챕터 발표 — 인식</h2>
+<p class="n">40장 · 발표자 노트 포함</p>
+<ul><li>인식이 travplan에서 답하는 질문: 센서 관측을 TravMap과 동적 장애물로</li><li>지형 지도: 자동차 occupancy 대신 로봇 elevation mapping, 음의 장애물과 못 본 칸</li><li>Traversability: 사람 라벨에서 자기지도로, PU 문제와 VLM 보조 판단</li><li>시각 기반 모델과 동적 장애물: 라벨 교사, 검출·추적·예측, 얼어붙기</li><li>최근 연구 비교(A.14): 비교표, 공통점, 차이점, 시도 순서</li><li>travplan 작업 기록(A.13): 그림자 규칙, 못 본 칸, 권장 L1, 다음 병목</li><li>센서 배치(§H): 다섯 배치, 가격·연산, 주기·지연</li><li>정리, 다음 할 일, 참고문헌</li></ul>
+<p class="act"><a class="btn" href="talk-perception/">슬라이드 보기</a><a class="btn ghost" href="talk-perception/talk-perception.pptx" download>PPTX 내려받기</a></p>
+</article><article class="card">
+<h2>travplan 챕터 발표 — Planner</h2>
+<p class="n">40장 · 발표자 노트 포함</p>
+<ul><li>Planner의 계약과 고전 기준선(GuidancePlanner)</li><li>학습 로컬 Planner: 비용 지도 자기지도, NavDP, X-NavDP</li><li>생성형 궤적: Diffuser에서 Diffusion Planner, 그리고 Planner D</li><li>Foundation·VLA·언어: Planner 위의 목표 선택 층</li><li>위험 인지 계획: 실행 가능성, 방향, 센서 밖, 안전 층</li><li>자율주행 자동차: 후보 생성, 검증, 선택</li><li>B.17 최근 연구 비교: 공통점, 차이점, 다음 시도 순서</li><li>B.15 작업 기록: Planner D 폴백, RL 후학습, 레벨 스윕</li><li>정리와 참고문헌</li></ul>
+<p class="act"><a class="btn" href="talk-planner/">슬라이드 보기</a><a class="btn ghost" href="talk-planner/talk-planner.pptx" download>PPTX 내려받기</a></p>
+</article><article class="card">
+<h2>travplan 챕터 발표 — Controller·안전</h2>
+<p class="n">40장 · 발표자 노트 포함</p>
+<ul><li>Controller가 하는 일과 새 연구가 들어오는 세 자리</li><li>MPPI 계열: 가중 평균, 계보, SMPPI, ProxPI, 지연을 다루는 MPPI</li><li>학습 동역학·적응: rollout 모델, 잔차, 선형 대 GP, GP가 앉는 자리</li><li>안전 필터: 비용 통합형과 외부 필터, 보정, barrier 합성, 표본 감시</li><li>하위 제어·4족 RL: LP-ACRL 커리큘럼과 DreamWaQ 구현 점검</li><li>최근 연구 비교(E.16): 비교표, 공통점, 차이점, 가져올 것과 시도 순서</li><li>travplan 작업 기록: plant 지연, NMPC 비교, 보행자, 멈춤 진단, 학습 정책</li><li>정리, 다음 할 일, 참고문헌</li></ul>
+<p class="act"><a class="btn" href="talk-controller/">슬라이드 보기</a><a class="btn ghost" href="talk-controller/talk-controller.pptx" download>PPTX 내려받기</a></p>
+</article><article class="card">
+<h2>travplan 챕터 발표 — MPC 구축</h2>
+<p class="n">35장 · 발표자 노트 포함</p>
+<ul><li>MPPI 옆에 NMPC 갈래를 두는 이유</li><li>설계: 스워브 twist 모델, OCP, 솔버, 치명 셀 제약</li><li>GP 잔차의 0차 근사, 희소 GP, 튜브, 세 층 예측 모델, 시뮬 리그</li><li>최근 연구 비교(M.4): 공통점, 차이점, 가져올 것과 시도 순서</li><li>작업 기록(M.3): 0단계 6/12에서 plant 비교 TP-0152까지</li><li>정리, 다음 할 일, 참고문헌</li></ul>
+<p class="act"><a class="btn" href="talk-mpc/">슬라이드 보기</a><a class="btn ghost" href="talk-mpc/talk-mpc.pptx" download>PPTX 내려받기</a></p>
+</article><article class="card">
+<h2>travplan 챕터 발표 — 강화학습</h2>
+<p class="n">40장 · 발표자 노트 포함</p>
+<ul><li>왜 강화학습인가 — travplan이 이미 쓰는 세 자리</li><li>문제 설정과 모방 — MDP, Bellman 식, 행동 복제의 분포 이동</li><li>정책 기울기 — REINFORCE, 진화 전략(TP-0128), GAE, PPO</li><li>가치 기반과 오프라인 — Q-learning의 과대평가, CQL·IQL, AWR</li><li>추론으로서의 제어와 모델 기반 — MPPI의 바탕과 모델 오차(TP-0150)</li><li>생성 정책의 RL과 안전 — GRPO, FPO·FPO++, 꼬리 위험</li><li>최근 연구 비교(R.19) — 14편의 공통점·차이점과 시도 순서</li><li>travplan에서 — TP-0066·0138 결과, 판정의 통계, 다음 후보</li><li>정리와 공부 순서, 참고문헌</li></ul>
+<p class="act"><a class="btn" href="talk-rl/">슬라이드 보기</a><a class="btn ghost" href="talk-rl/talk-rl.pptx" download>PPTX 내려받기</a></p>
+</article><article class="card">
+<h2>travplan 챕터 발표 — 시뮬레이션</h2>
+<p class="n">35장 · 발표자 노트 포함</p>
+<ul><li>왜 네 층의 시뮬레이션이 필요한가, 오늘의 운동학 시뮬</li><li>엔진과 리그: Isaac Sim 유지, 엔진 속도와 재현성은 직접 잰다</li><li>보도 장면·평가 벤치마크와 보행자 모델, travplan 보행자 측정</li><li>센서·렌더링과 sim-to-real: L0 가림 허점, 3DGS 장면, 예측력(SRCC)</li><li>지형 커리큘럼, 바퀴 물리의 한계, AntBot 비동축, 동역학 plant</li><li>최근 연구 16편 비교: 공통점, 차이점, 가져올 것과 시도 순서</li><li>권고 로드맵, 정리와 다음 할 일, 참고문헌</li></ul>
+<p class="act"><a class="btn" href="talk-simulation/">슬라이드 보기</a><a class="btn ghost" href="talk-simulation/talk-simulation.pptx" download>PPTX 내려받기</a></p>
+</article>
+</div>
 <h2 class="grp">리서치 문서 덱</h2>
 <p class="lead">대시보드 리서치 탭의 문서마다 한 덱입니다. 본문·표·그림·수식을 모두 옮겼고, 논문 상세 토글은 토글마다 한 장으로 줄였습니다.
 PPTX는 글자와 표를 고칠 수 있는 판입니다(별행 수식은 그림).</p>
@@ -101,7 +137,7 @@ PPTX는 글자와 표를 고칠 수 있는 판입니다(별행 수식은 그림)
 <p class="act"><a class="btn" href="study-papers/">슬라이드 보기</a><a class="btn ghost" href="study-papers/study-papers.pptx" download>PPTX 내려받기</a></p>
 </article>
 </div>
-<p class="foot">모두 생성물입니다. 리서치 문서 덱은 <code>scripts/build_research_slides.py</code>, 스터디 덱은 <code>scripts/build_study_slides.py</code>가 만듭니다.</p>
+<p class="foot">모두 생성물입니다. 리서치 문서 덱은 <code>scripts/build_research_slides.py</code>, 챕터 발표 덱과 스터디 덱은 <code>scripts/build_study_slides.py</code>가 만듭니다.</p>
 <p class="foot"><a href="../" style="color:inherit">← 대시보드 첫 화면</a></p>
 </main>
 </body>

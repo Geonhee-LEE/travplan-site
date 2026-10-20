@@ -1,0 +1,880 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>travplan 챕터 발표 — MPC 구축</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=IBM+Plex+Sans+KR:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<style>
+:root { --bg:#0E1526; --bar:#16213A; --fg:#F4F1EA; --muted:#C9D1E0; --accent:#F59E5B; }
+* { box-sizing:border-box; }
+html, body { margin:0; height:100%; background:var(--bg); color:var(--fg); font-family:'IBM Plex Sans KR', Arial, sans-serif; }
+#stage { position:fixed; inset:0 0 56px 0; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+#frame { width:1920px; height:1080px; flex:none; transform-origin:center center; box-shadow:0 8px 40px rgba(0,0,0,.5); }
+#frame > section:not(.on) { display:none !important; }
+body.all #frame > section:not(.on) { display:block !important; }
+section { position:relative; width:1920px; height:1080px; overflow:hidden; }
+section * { margin:0; }
+section aside { display:none; }
+section table { border-collapse:collapse; }
+section th, section td { padding:10px 16px; vertical-align:top; }
+section tr + tr td { border-top:1px solid rgba(127,140,160,.25); }
+section .katex { font-size:1.05em; }
+section .katex-display { margin:0; text-align:left; }
+section .katex-display > .katex { text-align:left; }
+x-shape { display:block; flex:none; }
+x-shape[kind="arrow-right"] { clip-path:polygon(0 32%,58% 32%,58% 0,100% 50%,58% 100%,58% 68%,0 68%); }
+#bar { position:fixed; left:0; right:0; bottom:0; height:56px; background:var(--bar); display:flex; align-items:center; gap:12px; padding:0 16px; font-size:15px; }
+#bar button, #bar a { background:none; border:1px solid #3A4A6B; color:var(--fg); border-radius:8px; padding:6px 12px; font:inherit; cursor:pointer; text-decoration:none; }
+#bar button:hover, #bar a:hover { border-color:var(--accent); }
+#count { min-width:72px; text-align:center; color:var(--muted); }
+#ttl { flex:1; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; color:var(--muted); }
+#notes { position:fixed; right:16px; bottom:72px; width:min(560px, calc(100% - 32px)); max-height:45vh; overflow:auto; background:#FFFDF8; color:#16213A; border-radius:12px; padding:16px 20px; font-size:16px; line-height:1.6; box-shadow:0 8px 30px rgba(0,0,0,.4); display:none; }
+#notes.show { display:block; }
+#notes b { display:block; margin-bottom:6px; color:#C2410C; font-family:'JetBrains Mono', monospace; font-size:13px; }
+body.shot #bar, body.shot #notes { display:none; }
+body.shot #stage { inset:0; }
+body.shot #frame { box-shadow:none; transform:none !important; }
+@media (max-width:640px) { #ttl { display:none; } }
+</style>
+</head>
+<body>
+<div id="stage"><div id="frame">
+<style>
+/* 챕터 발표 덱(slides_src/talk-*) 공용 스타일. deck.json의 "css": "_talk/talk.css"로 읽는다.
+   PPTX(편집 가능)는 이 스타일이 그린 결과의 좌표·색·글자 크기를 그대로 옮긴다. 규칙은 slides_src/_talk/README.md. */
+section.t { background:#F7F5F0; color:#16213A; font-family:'IBM Plex Sans KR', Arial, sans-serif;
+  padding:80px 112px 120px; display:flex; flex-direction:column; gap:28px; }
+section.t.dark { background:#16213A; color:#F4F1EA; }
+section.t .kicker { font-family:'JetBrains Mono', 'Courier New', monospace; font-size:22px; color:#C2410C; letter-spacing:1px; }
+section.t.dark .kicker { color:#F59E5B; }
+section.t h1 { font-family:'Noto Serif KR', Georgia, serif; font-size:96px; font-weight:700; line-height:1.15; }
+section.t h2 { font-family:'Noto Serif KR', Georgia, serif; font-size:52px; font-weight:700; line-height:1.22; }
+section.t h3 { font-size:30px; font-weight:600; line-height:1.3; }
+section.t p, section.t li { font-size:26px; line-height:1.5; }
+section.t .lead { font-size:34px; line-height:1.45; color:#3D4A63; }
+section.t.dark .lead { color:#C9D1E0; }
+section.t .muted { color:#5A6478; }
+section.t.dark .muted { color:#9AA6BC; }
+section.t .small { font-size:22px; line-height:1.4; }
+section.t b, section.t strong { font-weight:600; }
+section.t .hl { color:#C2410C; font-weight:600; }
+section.t code { font-family:'JetBrains Mono', monospace; font-size:0.86em; color:#7C2D12; }
+section.t ul, section.t ol { padding-left:36px; display:flex; flex-direction:column; gap:10px; }
+section.t .head { display:flex; flex-direction:column; gap:10px; }
+section.t .cols { display:flex; gap:40px; align-items:flex-start; }
+section.t .cols > * { flex:1; min-width:0; }
+section.t .stack { display:flex; flex-direction:column; gap:18px; }
+section.t .grid2, section.t .grid3 { display:grid; gap:24px; }
+section.t .grid2 { grid-template-columns:1fr 1fr; }
+section.t .grid3 { grid-template-columns:1fr 1fr 1fr; }
+section.t .card { background:#FFFDF8; border:1px solid #D9D4C7; border-radius:12px; padding:22px 26px; display:flex; flex-direction:column; gap:12px; }
+section.t .card.or { border-left:8px solid #C2410C; }
+section.t .card.bl { border-left:8px solid #1D4ED8; }
+section.t .card.gr { border-left:8px solid #15803D; }
+section.t .card.gy { border-left:8px solid #9AA6BC; }
+section.t.dark .card { background:#22304F; border-color:#3A4A6B; }
+section.t .card h3 { font-size:28px; }
+section.t .card p, section.t .card li { font-size:24px; line-height:1.45; }
+section.t .tag { align-self:flex-start; font-size:20px; font-weight:600; padding:4px 14px; border-radius:999px; background:#ECE8DF; color:#16213A; }
+section.t .tag.or { background:#FDE7C8; color:#7C2D12; }
+section.t .tag.bl { background:#DBE5FB; color:#1E3A8A; }
+section.t .tag.gr { background:#D7EFDD; color:#14532D; }
+section.t .pills { display:flex; flex-wrap:wrap; gap:16px; }
+section.t .pill { font-size:24px; padding:8px 22px; border-radius:999px; background:#C9D1E0; color:#16213A; }
+section.t .pill.on { background:#F59E5B; }
+section.t .take { background:#16213A; color:#F4F1EA; border-radius:12px; padding:20px 28px; font-size:27px; line-height:1.45; }
+section.t .take b { color:#F59E5B; }
+section.t.dark .take { background:#F59E5B; color:#16213A; }
+section.t .flow { display:flex; align-items:stretch; gap:14px; }
+section.t .flow > .step { flex:1; background:#FFFDF8; border:1px solid #D9D4C7; border-top:6px solid #C2410C; border-radius:10px; padding:16px 18px;
+  display:flex; flex-direction:column; gap:8px; }
+section.t .flow > .step p { font-size:22px; line-height:1.4; }
+section.t .flow > .arrow { flex:none; align-self:center; font-size:36px; color:#C2410C; }
+section.t table { border-collapse:collapse; width:100%; font-size:21px; line-height:1.35; background:#FFFDF8; }
+section.t th { background:#16213A; color:#F4F1EA; text-align:left; font-weight:600; padding:10px 14px; }
+section.t td { padding:9px 14px; border-top:1px solid #D9D4C7; vertical-align:top; }
+section.t tr:nth-child(even) td { background:#F1EDE4; }
+section.t td.good { color:#14532D; font-weight:600; }
+section.t td.bad { color:#9F1239; font-weight:600; }
+section.t figure { margin:0; display:flex; flex-direction:column; gap:10px; }
+section.t figure img { display:block; max-width:100%; object-fit:contain; background:#FFFFFF; border:1px solid #D9D4C7; border-radius:8px; }
+section.t figcaption { font-size:20px; line-height:1.4; color:#5A6478; }
+section.t .math { background:#FFFDF8; border-left:6px solid #C2410C; border-radius:8px; padding:8px 24px; font-size:30px; }
+section.t .math .katex-display { margin:6px 0; }
+section.t .foot { position:absolute; left:112px; right:112px; bottom:32px; border-top:2px solid #D9D4C7; padding-top:10px;
+  display:flex; flex-direction:column; gap:2px; }
+section.t .foot p { font-size:18px; line-height:1.35; color:#5A6478; }
+section.t.dark .foot { border-color:#3A4A6B; }
+section.t.dark .foot p { color:#9AA6BC; }
+section.t .num { position:absolute; right:112px; top:84px; font-family:'JetBrains Mono', monospace; font-size:20px; color:#9AA6BC; }
+section.t.cover { justify-content:space-between; padding:120px 128px; }
+section.t.divider { justify-content:center; gap:36px; padding:120px 128px; }
+section.t.divider h2 { font-size:80px; }
+</style>
+
+<script>
+// ?export=1: 장마다 도형·글상자·표·그림의 좌표와 스타일을 적는다. scripts/slides_editable.py가 읽는다.
+(function () {
+  if (!/[?&]export=/.test(location.search)) return;
+  var INLINE = /^(inline|inline-block|inline-flex|contents)$/;
+  function transparent(c) { return !c || c === 'transparent' || /rgba\(.*,\s*0\)$/.test(c); }
+  function rect(el, base) { var r = el.getBoundingClientRect(); return [r.left - base.left, r.top - base.top, r.width, r.height]; }
+  function style(cs) {
+    return { size: parseFloat(cs.fontSize), bold: parseInt(cs.fontWeight, 10) >= 600, italic: cs.fontStyle === 'italic',
+             color: cs.color, mono: /Mono|Courier|monospace/.test(cs.fontFamily) };
+  }
+  function runs(el) {
+    var out = [];
+    (function rec(node) {
+      Array.prototype.forEach.call(node.childNodes, function (c) {
+        if (c.nodeType === 3) { if (c.textContent) out.push({ s: c.textContent, st: style(getComputedStyle(node)), href: node.closest('a') ? node.closest('a').href : null }); return; }
+        if (c.nodeType !== 1 || c.tagName === 'ASIDE') return;
+        if (c.tagName === 'BR') { out.push({ s: '\n', st: style(getComputedStyle(node)) }); return; }
+        if (c.classList.contains('katex')) {
+          var a = c.querySelector('annotation');
+          out.push({ s: a ? a.textContent : c.textContent, st: style(getComputedStyle(node)), math: true });
+          return;
+        }
+        var cs = getComputedStyle(c);
+        if (cs.display === 'none') return;
+        if (INLINE.test(cs.display) && c.tagName !== 'IMG') rec(c);
+      });
+    })(el);
+    return out;
+  }
+  function hasOwnText(el) {
+    return Array.prototype.some.call(el.childNodes, function (c) {
+      if (c.nodeType === 3) return c.textContent.trim() !== '';
+      if (c.nodeType !== 1 || c.tagName === 'ASIDE') return false;
+      var cs = getComputedStyle(c);
+      return (INLINE.test(cs.display) || c.classList.contains('katex')) && c.tagName !== 'IMG' && c.textContent.trim() !== '';
+    });
+  }
+  function marker(li) {
+    var p = li.parentElement;
+    if (!p || getComputedStyle(li).listStyleType === 'none') return null;
+    if (p.tagName === 'OL') return { n: Array.prototype.indexOf.call(p.children, li) + parseInt(p.getAttribute('start') || '1', 10) };
+    return { n: 0 };
+  }
+  function textItem(el, base, cs) {
+    var r = rect(el, base), pl = parseFloat(cs.paddingLeft), pr = parseFloat(cs.paddingRight), pt = parseFloat(cs.paddingTop),
+        pb = parseFloat(cs.paddingBottom), bl = parseFloat(cs.borderLeftWidth), bt = parseFloat(cs.borderTopWidth);
+    var rr = runs(el), m = el.tagName === 'LI' ? marker(el) : null;
+    if (m) { r[0] -= 30; r[2] += 30; }   // 글머리표 자리. PPTX에서는 내어쓰기 30px의 진짜 글머리표가 된다
+    var lh = parseFloat(cs.lineHeight);
+    return { t: 'text', r: [r[0] + pl + bl, r[1] + pt + bt, r[2] - pl - pr - bl, r[3] - pt - pb - bt], runs: rr, li: m,
+             align: cs.textAlign, lh: isNaN(lh) ? 1.3 : lh / parseFloat(cs.fontSize) };
+  }
+  function boxItem(el, base, cs) {
+    var sides = {};
+    ['Top', 'Right', 'Bottom', 'Left'].forEach(function (s) {
+      var w = parseFloat(cs['border' + s + 'Width']);
+      if (w > 0 && cs['border' + s + 'Style'] !== 'none' && !transparent(cs['border' + s + 'Color'])) sides[s[0]] = [w, cs['border' + s + 'Color']];
+    });
+    var fill = transparent(cs.backgroundColor) ? null : cs.backgroundColor;
+    if (!fill && !Object.keys(sides).length) return null;
+    return { t: 'box', r: rect(el, base), fill: fill, radius: parseFloat(cs.borderTopLeftRadius) || 0, sides: sides };
+  }
+  function tableItem(el, base) {
+    var rows = Array.prototype.map.call(el.rows, function (tr) {
+      return { h: tr.getBoundingClientRect().height, cells: Array.prototype.map.call(tr.cells, function (c) {
+        var cs = getComputedStyle(c), bg = cs.backgroundColor;
+        if (transparent(bg)) bg = getComputedStyle(tr).backgroundColor;
+        if (transparent(bg)) bg = getComputedStyle(el).backgroundColor;
+        return { w: c.getBoundingClientRect().width, span: c.colSpan || 1, fill: transparent(bg) ? null : bg, runs: runs(c),
+                 align: cs.textAlign, size: parseFloat(cs.fontSize) };
+      }) };
+    });
+    return { t: 'table', r: rect(el, base), rows: rows };
+  }
+  function img(el, base) {
+    var r = rect(el, base), nw = el.naturalWidth, nh = el.naturalHeight;
+    if (nw && nh && getComputedStyle(el).objectFit === 'contain') {
+      var s = Math.min(r[2] / nw, r[3] / nh), w = nw * s, h = nh * s;
+      r = [r[0] + (r[2] - w) / 2, r[1] + (r[3] - h) / 2, w, h];
+    }
+    return { t: 'img', r: r, src: el.getAttribute('src') };
+  }
+  function slide(sec) {
+    var base = sec.getBoundingClientRect(), items = [];
+    (function walk(el) {
+      if (el.tagName === 'ASIDE') return;
+      var cs = getComputedStyle(el);
+      if (cs.display === 'none' || cs.visibility === 'hidden') return;
+      if (el !== sec && el.tagName !== 'TABLE') { var b = boxItem(el, base, cs); if (b) items.push(b); }
+      if (el.matches('.katex-display, svg, canvas, x-shape, [data-raster]')) {
+        var k = el.matches('.katex-display') ? (el.querySelector('.katex') || el) : el;
+        items.push({ t: 'raster', r: rect(k, base) }); return;
+      }
+      if (el.tagName === 'IMG') { items.push(img(el, base)); return; }
+      if (el.tagName === 'TABLE') { items.push(tableItem(el, base)); return; }
+      if (el !== sec && hasOwnText(el)) items.push(textItem(el, base, cs));
+      Array.prototype.forEach.call(el.children, function (c) {
+        var d = getComputedStyle(c).display;
+        if (!(INLINE.test(d) && c.tagName !== 'IMG' && !c.querySelector('img, .katex-display'))) walk(c);
+      });
+    })(sec);
+    var a = sec.querySelector('aside');
+    return { bg: getComputedStyle(sec).backgroundColor, items: items, note: a ? a.textContent.trim() : '' };
+  }
+  function run() {
+    var secs = Array.prototype.slice.call(document.querySelectorAll('#frame > section')), out = [];
+    secs.forEach(function (sec) {
+      secs.forEach(function (s) { s.classList.toggle('on', s === sec); });
+      out.push(slide(sec));
+    });
+    var rep = document.getElementById('report'); rep.textContent = JSON.stringify(out); rep.setAttribute('data-done', '1');
+  }
+  window.addEventListener('DOMContentLoaded', function () {
+    // 뷰어의 start()가 수식을 조판한 뒤에 잰다.
+    document.fonts.ready.then(function () { setTimeout(function () { window.withAllFonts(run); }, 300); });
+  });
+})();
+</script>
+<section id="cover" class="t dark cover">
+<p class="kicker">TRAVPLAN · 챕터 발표 · MPC 구축 (§M)</p>
+<div class="stack"><h1>MPPI 옆에<br>acados NMPC를 세우다</h1><p class="lead">치명 셀 제약, 0차 GP 잔차, 튜브 — 그리고 plant에서 잰 결과</p></div>
+<div class="pills"><p class="pill on">§M</p><p class="pill">TP-0070 → TP-0152</p><p class="pill">acados v0.3.4</p><p class="pill">최근 연구 13편</p></div>
+<aside>이 발표는 리서치 탭의 MPC 구축 문서(§M)를 이야기로 옮긴 것입니다. MPPI를 대체하지 않고 형제로 NMPC를 더한 과정을 설계, 최근 연구, 작업 기록 순서로 봅니다. 숫자는 모두 문서의 작업 기록과 STATE에서 가져왔고 TP 번호를 달았습니다.</aside>
+</section>
+<section id="agenda" class="t">
+<div class="head"><p class="kicker">순서</p><h2>설계에서 시작해 plant 비교의 판정으로 끝난다</h2></div>
+<div class="grid3">
+<div class="card or"><span class="tag or">1</span><h3>왜 두 갈래인가</h3><p>MPPI와 NMPC가 잘 다루는 것</p></div>
+<div class="card or"><span class="tag or">2</span><h3>설계</h3><p>twist 모델, OCP, 솔버, 치명 셀 제약</p></div>
+<div class="card bl"><span class="tag bl">3</span><h3>GP·튜브·시뮬 리그</h3><p>0차 GP 잔차, 희소 GP, 튜브, plant</p></div>
+<div class="card bl"><span class="tag bl">4</span><h3>최근 연구 비교</h3><p>2025–2026 13편의 공통점과 차이점</p></div>
+<div class="card gr"><span class="tag gr">5</span><h3>작업 기록</h3><p>0단계 6/12 → 정적 40/40 → plant 비교</p></div>
+<div class="card gr"><span class="tag gr">6</span><h3>정리와 다음</h3><p>지연 상태 NMPC, 부호 있는 경사 GP</p></div>
+</div>
+<div class="flow">
+<div class="step"><h3>6/12</h3><p>0단계, 지형 없음 (TP-0070)</p></div><p class="arrow">→</p>
+<div class="step"><h3>9/12</h3><p>치명 셀 제약 (TP-0071)</p></div><p class="arrow">→</p>
+<div class="step"><h3>38/40</h3><p>제약의 구멍 + CBF (TP-0093)</p></div><p class="arrow">→</p>
+<div class="step"><h3>40/40</h3><p>명령 수정 (TP-0122)</p></div><p class="arrow">→</p>
+<div class="step"><h3>222/360</h3><p>plant 레벨 3, 치명 34 (TP-0152)</p></div>
+</div>
+<aside>여섯 부분으로 나눕니다. 앞의 셋은 무엇을 어떻게 세웠는지, 넷째는 바깥 연구와 비교, 다섯째는 실제로 잰 결과입니다. 결론을 먼저 말하면, 정적·보행자 조건에서는 NMPC가 MPPI와 같아졌지만 plant 조건에서는 지연을 아는 MPPI에 졌습니다.</aside>
+</section>
+<section id="why" class="t">
+<div class="head"><p class="kicker">0 · 왜 두 갈래인가</p><h2>MPPI는 비평활 비용을, NMPC는 제약을 잘 다룬다</h2></div>
+<div class="cols">
+<div class="card bl"><span class="tag bl">MPPI</span><h3>샘플로 절벽 비용을 넘는다</h3><ul><li>치명 셀·이진 충돌을 그대로 쓴다</li><li>Jacobian이 필요 없다</li><li>확률 제약에 GP 분산을 쓴다(E.10)</li></ul></div>
+<div class="card or"><span class="tag or">NMPC (acados)</span><h3>제약을 조이는 자리가 있다</h3><ul><li>hard 제약과 slack</li><li>튜브로 제약을 조인다</li><li>0차 GP 잔차(TP-0070·0071)</li></ul></div>
+</div>
+<p>둘은 같은 <code>Controller</code> 프로토콜이고 같은 벤치마크(<code>guidance+mppi</code>, <code>guidance+mpc</code>)에서 비교한다. 잔차 GP(<code>control/acados_mpc/gp.py</code>)는 둘이 공유한다.</p>
+<figure><img src="../../assets/figs/tp0076_controller_matrix.webp" style="height:300px"><figcaption>세 조건에서 Controller별 성공 비율. 파랑 MPPI 계열, 주황 MPC 계열 (TP-0076, 명령 수정 전)</figcaption></figure>
+<p class="take"><b>travplan:</b> 목적은 성능이 아니라, GP 잔차·0차 근사·튜브를 얹을 <b>조일 제약</b>을 만드는 것이다.</p>
+<aside>2026-09-30 사용자 결정으로 MPPI와 NMPC를 함께 개발합니다. 강점이 갈리기 때문입니다. MPPI는 미분이 없어 치명 셀 같은 계단 비용을 그대로 다루고, NMPC는 제약을 명시적으로 두므로 GP 분산이나 튜브가 조일 자리가 있습니다. 벤치마크가 planner+controller 문자열이라 guidance+mpc 스택이 그대로 생기고, 기존 MPPI 결과가 기준선이 됩니다.</aside>
+</section>
+<section id="d-design" class="t dark divider">
+<p class="kicker">1 · 설계 (M.1)</p>
+<h2>OCP를 어떻게 세우나</h2>
+<p class="lead">스워브 twist 모델, 추종 비용, 솔버 설정, 그리고 치명 셀을 제약으로 옮기는 일</p>
+<aside>첫 주제는 설계입니다. 모델과 OCP를 보고, 솔버 설정에서 배운 것, 마지막으로 이 문서의 핵심인 치명도를 비용에서 제약으로 옮기는 결정을 봅니다.</aside>
+</section>
+<section id="model" class="t">
+<div class="head"><p class="kicker">M.1 · 모델</p><h2>twist를 상태에 두어 가속을 상자 제약으로 묶는다</h2></div>
+<div class="cols">
+<table>
+<tr><th>항목</th><th>값</th></tr>
+<tr><td>상태</td><td>\(z = (x, y, \theta, v_x, v_y, \omega)\) — 6</td></tr>
+<tr><td>입력</td><td>\(u = (a_x, a_y, \alpha_z)\) — twist 변화율</td></tr>
+<tr><td>지평</td><td>40 × 0.1 s = 4 s (MPPI와 같다)</td></tr>
+<tr><td>솔버</td><td>acados SQP-RTI, HPIPM, ERK</td></tr>
+</table>
+<div class="stack">
+<div class="math">$$\begin{aligned}\dot x &= v_x\cos\theta - v_y\sin\theta\\ \dot y &= v_x\sin\theta + v_y\cos\theta\\ \dot\theta &= \omega\\ \dot v &= u + \mu_d\end{aligned}$$</div>
+<p class="small muted">\(\mu_d\): GP 잔차 평균(파라미터). <code>control/acados_mpc/model.py</code></p>
+</div>
+</div>
+<div class="grid3">
+<div class="card gy"><h3>모델에 없는 것 ①</h3><p>모듈 역기구학. 차체 상자 제약으로 번역한다.</p></div>
+<div class="card gy"><h3>모델에 없는 것 ②</h3><p>액추에이터 지연과 지형 슬립. plant가 만든다.</p></div>
+<div class="card gy"><h3>그 차이는</h3><p>잔차 \(\mu_d\)가 흡수한다(TP-0068).</p></div>
+</div>
+<p class="take"><b>travplan:</b> 입력 좌표계가 SmoothMPPI·Planner D와 같아서, 지평이 같으면 비교가 성립한다.</p>
+<aside>상태에 차체 twist까지 넣은 것은 변화율, 즉 가속을 상자로 제약하려고입니다. 입력은 twist 변화율이고 이것은 SmoothMPPI와 Planner D의 제어 공간과 같은 좌표계입니다. 지평은 MPPI와 똑같이 40 스텝 0.1초로 맞췄습니다. 다르면 비교가 성립하지 않기 때문입니다. 마지막 줄의 mu_d는 뒤에서 볼 GP 잔차 자리입니다.</aside>
+</section>
+<section id="ocp" class="t">
+<div class="head"><p class="kicker">M.1 · OCP</p><h2>추종 비용은 선형 최소제곱, 장애물은 노드마다 반평면이다</h2></div>
+<div class="math">$$\min_{u}\ \sum_{k=0}^{N-1}\big\lVert y_k - y_k^{\text{ref}}\big\rVert_W^2 + \big\lVert p_N - p_N^{\text{ref}}\big\rVert_{W_e}^2 + \sum_k \rho_s\, s_k$$</div>
+<div class="math">$$\text{s.t.}\ \ z_{k+1} = F(z_k, u_k; \mu_{d,k}),\quad |v_k| \le v_{\max},\quad |u_k| \le a_{\max},\quad n_k^\top p_k \ge b_k - s_k$$</div>
+<div class="grid3">
+<div class="card bl"><h3>추종 비용</h3><p>\(y = (x, y, v_y, \omega, a)\). \(W = \mathrm{diag}(10, 10, 0.1, 0.1, 0.05, 0.05, 0.02)\)</p></div>
+<div class="card bl"><h3>종단 = 진행</h3><p>\(W_e = 50\)이 MPPI <code>ReferenceCost</code>의 진행 역할을 맡는다.</p></div>
+<div class="card or"><h3>반평면 두 줄</h3><p>치명 셀(행 0)과 그 시각의 보행자(행 1). 모두 slack을 둔다.</p></div>
+</div>
+<div class="cols">
+<div class="card gy"><h3>참조 만들기</h3><p>Guidance 경로는 \(v_{des} = 1.0\) m/s로 시간을 매기고, Planner D는 시간 인덱스를 그대로 쓴다.</p></div>
+<div class="card gy"><h3>slack 가중치</h3><p>장애물·보행자 행 1e6, twist 상자 1e5. 나쁜 초기해가 문제를 불능으로 만들지 않게 한다.</p></div>
+</div>
+<p class="small muted">비용 형식 LINEAR_LS, 가중치는 <code>MPCConfig</code> 기본값(<code>control/acados_mpc/ocp.py</code>)</p>
+<aside>OCP는 단순합니다. 참조와의 위치 오차, 옆걸음과 회전을 약하게, 가속을 약하게 벌하는 선형 최소제곱 비용입니다. 종단 가중치 50이 MPPI의 ReferenceCost가 하던 진행 역할을 맡습니다. 제약은 twist와 가속 상자, 그리고 노드마다 치명 셀과 보행자에 대한 반평면 두 줄입니다. 가중치 값은 코드의 MPCConfig 기본값입니다.</aside>
+</section>
+<section id="solver" class="t">
+<div class="head"><p class="kicker">M.3.5 · 솔버 설정</p><h2>벌점 1e6과 RTI 3회가 함께여야 접평면 제약이 선다</h2></div>
+<div class="cols">
+<table>
+<tr><th>변형 (seed 0, 4 시나리오)</th><th>성공</th></tr>
+<tr><td>느슨한 벌점 1e4, RTI 1회</td><td class="bad">2/4</td></tr>
+<tr><td>벌점만 1e6</td><td class="bad">2/4</td></tr>
+<tr><td>RTI만 3회</td><td>3/4</td></tr>
+<tr><td><b>벌점 1e6 + RTI 3회</b></td><td class="good">4/4</td></tr>
+<tr><td>하드 제약</td><td class="bad">2/4 (QP status 3)</td></tr>
+</table>
+<div class="stack">
+<div class="card or"><h3>접평면은 iterate에 매달려 있다</h3><p>RTI는 호출당 뉴턴 한 걸음이다. 노드가 움직이면 접평면도 바뀌므로 반복을 늘려야 제약과 해가 만난다.</p></div>
+<p class="small">HPIPM 부분 condensing(N=5), Gauss-Newton, 리셋 뒤 첫 풀이는 RTI 5회</p>
+</div>
+</div>
+<div class="flow">
+<div class="step"><h3>EDT</h3><p>가장 가까운 치명 칸을 수치로</p></div><p class="arrow">→</p>
+<div class="step"><h3>접평면</h3><p>노드별 \(n_k, b_k\)를 파라미터로</p></div><p class="arrow">→</p>
+<div class="step"><h3>RTI 1회</h3><p>뉴턴 한 걸음, 노드가 움직인다</p></div><p class="arrow">→</p>
+<div class="step"><h3>다시 접평면</h3><p>3회 반복해 제약과 해가 만난다</p></div>
+</div>
+<p class="take"><b>travplan:</b> 풀리지 않는 QP는 안전이 아니라 무작위다. 그래서 모든 행을 soft로 둔다.</p>
+<aside>처음 반평면을 넣었을 때 2/4였습니다. 예측 노드가 제약을 위반한 채 status 0으로 최적이 되고 있었습니다. 벌점만 키우거나 반복만 늘려서는 부족했고, 둘을 함께 바꿔야 4/4가 됐습니다. 하드 제약은 QP가 반복 한계로 터지면서 오히려 나빴습니다. 그래서 기본값은 soft 1e6과 RTI 3회입니다.</aside>
+</section>
+<section id="costmap" class="t">
+<div class="head"><p class="kicker">M.1.1 · 비용 옮기기</p><h2>MPPI 비용 항은 MPC에서 비용·제약·종단으로 갈라진다</h2></div>
+<table>
+<tr><th>MPPI 비용 항</th><th>MPC에서</th><th>주의</th></tr>
+<tr><td><code>ReferenceCost</code></td><td>참조 추종 2차 비용 또는 진행도</td><td>Planner D는 시간 인덱스, Guidance는 경로만 준다</td></tr>
+<tr><td><code>TraversabilityCost</code></td><td>매끄러운 항만(경사·거칠기)</td><td>치명도는 빠져 제약으로 간다</td></tr>
+<tr><td><code>RiskCost</code></td><td>보행자 → 제약, σ → 제약 조이기</td><td>σ가 비용으로 남으면 GP·튜브가 붙을 데가 없다</td></tr>
+<tr><td><code>AttitudeCost</code></td><td>roll/pitch 제약</td><td>지도 보간이 매끄러워야 한다</td></tr>
+<tr><td><code>ControlCost</code> · <code>GoalApproachCost</code></td><td>입력 2차 비용 · 종단 비용</td><td>그대로</td></tr>
+<tr><td>—</td><td class="good">신설: 거리 제약 \(d(x) - r \ge \rho_k\)</td><td>세 기법이 모두 여기 붙는다</td></tr>
+</table>
+<div class="cols">
+<div class="card gr"><h3>비용으로 남는 것</h3><p>매끄럽고 미분할 수 있는 것: 추종, 입력, 종단.</p></div>
+<div class="card or"><h3>제약으로 가는 것</h3><p>계단처럼 끊기는 것: 치명 셀, 보행자, 자세 한계.</p></div>
+</div>
+<p class="take"><b>travplan:</b> 경사·거칠기의 매끄러운 지형 항은 아직 없다. 치명 칸 근처 여유는 부드러운 여유 행(TP-0117)이 맡는다.</p>
+<aside>MPPI의 CostTerm들을 MPC로 옮기면 세 갈래가 됩니다. 매끄러운 것은 비용으로 남고, 치명도와 보행자는 제약으로 가고, 목표 쪽은 종단 비용이 됩니다. 핵심은 마지막 줄입니다. 거리 제약의 오프셋 rho_k가 GP 분산, 튜브, SLP가 모두 조이는 양입니다. 경사와 거칠기의 매끄러운 지형 항은 아직 넣지 않았습니다.</aside>
+</section>
+<section id="lethal" class="t">
+<div class="head"><p class="kicker">M.1.2 · M.3.4 · 치명 셀 제약</p><h2>기울기가 없는 치명 셀은 비용이 아니라 제약으로 넣는다</h2></div>
+<div class="cols">
+<div class="stack">
+<p>치명 셀(cost ≥ 0.95)은 계단이라 미분이 없다. MPPI는 샘플로 넘지만 MPC는 절벽에서 죽는다.</p>
+<p>CasADi는 기호 인덱스로 격자를 읽지 못한다. 그래서 매 스텝 EDT로 가장 가까운 치명 칸을 <b>수치로</b> 찾아 접평면을 파라미터로 넘긴다.</p>
+<p class="small muted">EDT 2.5 ms, 41노드 조회 0.27 ms. 노드마다 따로라 좁은 틈도 표현된다.</p>
+</div>
+<div class="stack">
+<div class="math">$$n_k^\top p_k \ \ge\ n_k^\top c_k + \tfrac12\Delta + m + (1-\gamma)^k \max(h_0 - m, 0)$$</div>
+<p class="small">\(\Delta\) 칸 크기, \(m\) 여유, \(\gamma = 0.2\): 이산 CBF 감쇠(TP-0093). 벽에 붙기 전에 감속한다.</p>
+</div>
+</div>
+<div class="grid3">
+<div class="card or"><span class="tag or">채택</span><h3>소수 장애물을 파라미터로</h3><p>Zeilinger 그룹 방식. travplan은 원 대신 노드별 접평면</p></div>
+<div class="card gy"><h3>매끄러운 함수 근사</h3><p>지역 비용장을 다항식·RBF로</p></div>
+<div class="card gy"><h3>격자 고정 코드 생성</h3><p><code>ca.interpolant</code>. 정적 지도에만 쓴다</p></div>
+</div>
+<p class="take"><b>travplan:</b> 이것은 우회가 아니라 전제다. 조일 제약이 없으면 GP 분산도 튜브도 쓸 자리가 없다.</p>
+<aside>MPPI는 치명 벌점 10의 3승으로 그 샘플을 버리지만, 미분으로 푸는 MPC에는 그 길이 없습니다. CasADi가 기호 위치로 격자를 고를 수 없어서, 실무 해법 셋 가운데 소수 장애물을 파라미터로 넘기는 방법을 골랐습니다. travplan의 치명 기하는 대부분 연석 벽이라 원 대신 접평면을 씁니다. 나중에 이산 CBF 감쇠를 더해, 노드의 여유 하한이 로봇 자신의 여유에서 기하급수로 줄어들게 했습니다.</aside>
+</section>
+<section id="steer" class="t">
+<div class="head"><p class="kicker">M.1 · 모듈 한계</p><h2>모듈 역기구학은 넣지 않고, 차체 상자 제약으로 번역한다</h2></div>
+<div class="cols">
+<div class="stack">
+<div class="card gy"><h3>IK는 비평활이다</h3><p><code>atan2</code>, 모듈 반전, 클램프, 고정점 반복 3회. 넣으면 SQP가 죽는다. 비동축 오차는 6 mm/s로 작아 잔차가 흡수한다.</p></div>
+<div class="card or"><h3>조향 ±56.2°가 원뿔을 만든다</h3><p>바퀴마다 \(|v_{iy}| \le \tan\delta_{\max}|v_{ix}|\). 차체 축에서 56.2°–123.8° 방향은 못 낸다(TP-0162). NMPC는 이 원뿔을 모른다.</p></div>
+</div>
+<figure><img src="../../assets/thumbs/66b749905fa2.webp" style="height:560px"><figcaption>조향 한계 ±2π/3이 속도 공간을 자르는 불연속 평면 — Liu 외, ICAR 2025 [1]</figcaption></figure>
+</div>
+<div class="foot" data-foot><p>[1] Liu 외, ICAR 2025 — arXiv:2510.19054</p></div>
+<aside>AntBot 제어기의 역기구학은 미분할 수 없는 연산으로 되어 있어 최적화에 넣지 않았습니다. 대신 모듈 한계를 차체 수준의 상자 제약으로 옮겼습니다. Liu 외는 조향이 ±130°로 막힌 로봇에서 불연속 평면 8개가 속도 공간을 12구역으로 나눈다고 보였습니다. travplan plant는 ±56.2°라 구역 대신 바퀴마다 실현 가능 원뿔이 생기고, 정면 보행자를 옆걸음으로 비키지 못한 원인이 이것이었습니다. NMPC에 넣는다면 원뿔의 매끄러운 근사를 써야 합니다.</aside>
+</section>
+<section id="d-gp" class="t dark divider">
+<p class="kicker">2 · GP 잔차 · 튜브 · 시뮬 리그</p>
+<h2>모델 오차를 어디서 얻고 어떻게 넣나</h2>
+<p class="lead">GP 평균은 파라미터로, 분산은 제약의 오프셋으로. 그 전에 배울 오차가 있는 plant가 필요하다</p>
+<aside>둘째 주제는 학습 잔차입니다. GP 평균을 acados에 넣는 방법이 곧 0차 근사라는 점, 희소 GP를 고른 근거, 튜브의 설계, 세 층 예측 모델, 그리고 plant를 어디서 얻는지를 봅니다.</aside>
+</section>
+<section id="gp" class="t">
+<div class="head"><p class="kicker">M.3.6 · GP 잔차</p><h2>GP 평균을 노드별 파라미터로 넣으면 0차 근사가 공짜로 선다</h2></div>
+<div class="cols">
+<div class="stack">
+<div class="math">$$x_{k+1} = f_{\text{swerve}}(x_k, u_k) + d(x_k, u_k),\quad d \sim \mathcal{GP}$$</div>
+<div class="math">$$\dot v = u + \underbrace{\mu_d/\Delta t}_{\text{param}},\qquad \frac{\partial \mu_d}{\partial x} \equiv 0$$</div>
+<p class="small">탐색 방향은 \(f_{\text{swerve}}\)의 미분만 쓰고, 전방 시뮬레이션에는 \(\mu_d\)가 그대로 들어간다.</p>
+</div>
+<div class="stack">
+<div class="card bl"><h3>plant가 만드는 오차 (크기 순)</h3><ul><li>액추에이터 1차 지연, τ = 0.2 s</li><li>모듈 기구학: 조향 한계·반전·스크럽</li><li>지형 슬립: twist를 \((1-s)\)배</li></ul></div>
+<p class="small">명목 대비 RMSE 66–78% 감소. 첫 시도는 95% 적중 0.35였다(관측 잡음 \(\sigma_n^2\)을 빠뜨림).</p>
+</div>
+</div>
+<table>
+<tr><th>잔차 (plant + guidance+mppi, 2,000 샘플)</th><th>dv_x</th><th>dv_y</th><th>dω</th></tr>
+<tr><td>|d| 평균 / 최대</td><td>0.048 / 0.167</td><td>0.021 / 0.107</td><td>0.052 / 0.281</td></tr>
+<tr><td>선형모형 R²</td><td>0.708</td><td>0.951</td><td>0.888</td></tr>
+</table>
+<p class="take"><b>travplan:</b> TP-0071에서 반평면용으로 깐 파라미터 배관이 그대로 0차 GP-MPC가 됐다.</p>
+<aside>GP 평균을 노드별 acados 파라미터로 넣으면 솔버는 그것을 상수로 봅니다. 그래서 잔차의 미분이 구조적으로 0이 되고, 이것이 바로 0차 근사입니다. 따로 구현할 것이 없었습니다. 잔차는 plant를 켜고 guidance+mppi로 2,000 샘플을 모아 배웠고, 지연이 선형이라 선형 모형도 상당히 맞았습니다. 처음에는 예측 분산에 관측 잡음을 더하지 않아 크게 과신했습니다.</aside>
+</section>
+<section id="sgpr" class="t">
+<div class="head"><p class="kicker">M.3.8 · M.3.9 · 희소 GP</p><h2>SGPR 유도점 64만 네 축을 모두 통과한다</h2></div>
+<table>
+<tr><th>모델 (훈련 1,400)</th><th>refresh</th><th>41노드 예측</th><th>\(d\omega\) RMSE</th><th>분포 밖 최대 |μ|</th></tr>
+<tr><td>정확 GP 400점</td><td>4.5 ms</td><td>0.72 ms</td><td>0.0233</td><td>0.4</td></tr>
+<tr><td>정확 GP 1400점</td><td class="bad">121.8 ms</td><td>4.75 ms</td><td class="good">0.0190</td><td>0.6</td></tr>
+<tr><td><b>SGPR 유도점 64</b></td><td>5.5 ms</td><td class="good">0.36 ms</td><td>0.0223</td><td class="good">0.4</td></tr>
+<tr><td>RFF 특징 128</td><td>2.4 ms</td><td>0.21 ms</td><td>0.0208</td><td class="bad">1.9</td></tr>
+<tr><td><i>선형 기준</i></td><td>—</td><td>—</td><td>0.0241</td><td>—</td></tr>
+</table>
+<div class="grid2">
+<div class="card bl"><h3>① 정확도 · ③ 시간</h3><p>차이는 \(d\omega\)에서만 난다. SGPR 64는 1,400점을 다 쓰면서 주기 안에 든다.</p></div>
+<div class="card bl"><h3>② 보정 · ④ 분포 밖</h3><p>SGPR은 보수적이고 데이터에서 멀면 prior로 돌아간다. RFF는 1.9까지 튄다.</p></div>
+</div>
+<p class="take"><b>travplan:</b> 정확 GP를 SGPR 64로 바꾼 것만으로 폐루프 발산(0/12)이 멈췄다. 발상이 아니라 근사의 문제였다.</p>
+<aside>같은 잔차 데이터로 정확 GP, SGPR, RFF를 정확도, 보정, 시간, 분포 밖의 네 축으로 쟀습니다. dvx와 dvy는 지연이 선형이라 모든 모델이 같고 차이는 d omega에서만 납니다. 정확 GP는 데이터를 다 쓰면 refresh가 제어 주기를 넘고, RFF는 빠르지만 분포 밖에서 1.9까지 튑니다. SGPR 64로 바꾸자 정확 GP에서 나던 폐루프 발산이 사라졌습니다.</aside>
+</section>
+<section id="tube" class="t">
+<div class="head"><p class="kicker">M.1.2 · M.3.18 · 튜브</p><h2>튜브는 반평면의 오프셋 \(\rho_k\) 하나를 조이는 일이다</h2></div>
+<div class="math">$$\rho_k = \underbrace{\Phi^{-1}(1-\epsilon)\sqrt{h^\top\Sigma_k h}}_{\text{GP variance (TP-0069)}} \ \longrightarrow\ \underbrace{\max_{w\in\mathcal W} h^\top w}_{\text{tube / SLP}}$$</div>
+<div class="cols">
+<div class="card or"><span class="tag or">travplan 구현 (TP-0069)</span><p>\(t_k = \min(z\sigma_k,\ 0.08\ \mathrm{m})\), \(z = \Phi^{-1}(0.95)\). 파라미터라 0차이고 코드 생성을 다시 하지 않는다.</p></div>
+<div class="card gy"><span class="tag">다리 놓기</span><p>GP는 확률, 튜브는 유계 외란이다. GP의 β-신뢰 타원체를 외란 집합으로 쓴다(Koller 2018). 실무는 <b>고정 반경 튜브부터</b>.</p></div>
+</div>
+<div class="math">$$\dot\delta = -(\rho - L_G)\,\delta + G_M\,\beta_N\sigma_N(z) + E_M \qquad \text{(Dubied et al. [5])}$$</div>
+<p class="small">먼 노드까지 보장되는 튜브를 상태 하나로 얻는다. 보장은 상수가 오프라인 LMI에서 나올 때만 선다.</p>
+<p class="take"><b>travplan:</b> 1번 노드 coverage 97.4%로 보정은 맞았지만, 실행 여유도 성공도 늘지 않았다(선택 스택 mpc_gpcc).</p>
+<div class="foot" data-foot><p>[5] Dubied 외, Automatica 2026 — arXiv:2507.02098</p></div>
+<aside>GP 분산이든 튜브든 SLP든 결국 같은 rho_k를 정하는 장치입니다. GP는 확률이고 튜브는 유계 외란이라 그대로 잇지 못하므로, GP의 신뢰 타원체를 외란 집합으로 쓰는 것이 다리입니다. travplan은 잔차 SGPR의 분산을 노드별 조임으로 바꾸고 8 cm 상한을 두었습니다. 결과는 작업 기록에서 다시 보지만, 측정되는 효과가 없어 기본값은 꺼져 있습니다.</aside>
+</section>
+<section id="layers" class="t">
+<div class="head"><p class="kicker">M.1.3 · TP-0124–0126</p><h2>예측 모델은 기구학 → 동역학 → 학습의 세 층으로 쌓는다</h2></div>
+<table>
+<tr><th>층</th><th>travplan에서</th><th>지금</th></tr>
+<tr><td>기구학</td><td>twist 적분 + 상자·가속 한계 (<code>SwerveModel</code>)</td><td>MPPI·MPC 모두 이것. 기준선</td></tr>
+<tr><td>동역학</td><td>모듈 1차 지연 + 슬립 (<code>SwervePlant</code>)</td><td>MPPI 지연 rollout <code>mppi_plant_lag</code>(TP-0150). MPC의 <code>mpc_lag</code>는 선택</td></tr>
+<tr><td>학습</td><td>GP 잔차, NN 잔차, forward dynamics 모델(FDM)</td><td>GP 잔차만(TP-0120). 같은 프로토콜로 묶는다</td></tr>
+</table>
+<div class="cols">
+<p class="small">학습 층은 로봇 메쉬를 고도 지도 위에서 굴린 forward 시뮬레이션에서 자기 지도로 배운다(TP-0125). 한 점의 cost로는 자세·하부 간섭·단차를 구별하지 못한다.</p>
+<p class="small">선례: FDM + 샘플링 MPC(Kim 외, RSS 2022)는 6초 궤적 1,500개를 3 ms에 굴린다 [10]. actuator net(Hwangbo 외, 2019) [11].</p>
+</div>
+<figure><img src="../../assets/thumbs/b75e146329bb.webp" style="height:250px"><figcaption>FDM 기반 안전 내비게이션: 샘플러 → FDM 예측 → 보상 가중 평균 — Kim 외, RSS 2022 [10]</figcaption></figure>
+<div class="foot" data-foot><p>[10] Kim, Kim, Hwangbo, RSS 2022 — arXiv:2204.08647 · [11] Hwangbo 외, Science Robotics 2019 — arXiv:1901.08652</p></div>
+<aside>2026-10-01 사용자 결정으로 예측 모델을 세 층으로 쌓습니다. 잘 아는 것은 식으로 두고, 식이 못 담는 것만 배운다는 생각입니다. 지금 MPPI와 MPC는 둘 다 기구학 모델 하나로 예측하고 학습 층은 GP 잔차뿐입니다. 학습 층의 데이터는 로봇 메쉬로 굴린 시뮬레이션에서 나오게 하려고 하고, KAIST RaiLab의 FDM 연구가 그 선례입니다.</aside>
+</section>
+<section id="simrig" class="t">
+<div class="head"><p class="kicker">M.2 · 시뮬 리그</p><h2>plant가 MPC 모델과 같으면 아무것도 검증되지 않는다</h2></div>
+<div class="cols">
+<div class="stack">
+<table>
+<tr><th>층</th><th>무엇</th><th>언제</th></tr>
+<tr><td>1</td><td><b>MuJoCo</b> (CPU, 1대)</td><td>MJCF 제작, 폐루프 검증</td></tr>
+<tr><td>2</td><td>MuJoCo Warp (GPU 배치)</td><td>잔차 데이터 수집</td></tr>
+<tr><td>3</td><td>Isaac Sim 6.0</td><td>P1 폐루프, LiDAR → TravMap</td></tr>
+</table>
+<p class="small">MuJoCo 비동축 모듈 smoke: 5,000스텝 11 ms, 실시간의 938배</p>
+</div>
+<div class="stack">
+<div class="card or"><h3>URDF에 없는 것은 손으로 쓴다</h3><ul><li>접촉 마찰·solref·solimp</li><li>Dynamixel 액추에이터 모델</li><li>관성은 자리표시자(TP-0035)</li><li>조향 범위: URDF ±90° / 제어기 ±60° / 모터 ±56.2°</li></ul></div>
+</div>
+</div>
+<div class="grid3">
+<div class="card gr"><h3><code>robot/plant.py</code></h3><p>모듈 모델 + 액추에이터 지연 + 지형 슬립. <code>SimConfig(plant=...)</code>, 기본 끔</p></div>
+<div class="card gr"><h3>이상 설정 검증</h3><p>명령을 1e-9로 재현. 기존 테스트 134개 그대로 통과</p></div>
+<div class="card gr"><h3>스워브 plant</h3><p>벤치마크 <code>--plant</code>. 조향 한계 ±56.2°</p></div>
+</div>
+<p class="take"><b>travplan:</b> 실험의 plant는 robot/plant.py(지연·모듈·슬립)다. 목표는 정확한 AntBot이 아니라 명목과 다른 plant다.</p>
+<aside>L0에서는 시뮬과 Controller가 같은 SwerveModel을 써서 모델 오차가 0입니다. 그러면 MPC는 자기 모델로 자기를 예측할 뿐이라 검증되는 것이 없습니다. Isaac Gym은 개발이 멈춰 고르지 않았고, MuJoCo 한 대부터 시작합니다. 다만 작업 기록의 plant 수치는 모두 운동학 시뮬 위의 robot/plant.py로 잰 것입니다. 관성이 임시값이어도 모델 오차를 만난 MPC의 거동은 그대로 드러납니다.</aside>
+</section>
+<section id="d-recent" class="t dark divider">
+<p class="kicker">3 · 최근 연구 비교 (M.4, 2025–2026)</p>
+<h2>모델을 더 맞게, 초기해를 더 좋게</h2>
+<p class="lead">두 방향 모두 TP-0152의 실패 원인인 지연과 명령 떨림을 직접 고치지는 않는다</p>
+<aside>셋째 주제는 최근 연구입니다. 2025–2026년 MPC 계열은 모델을 더 맞게 하는 쪽과 초기해를 더 좋게 하는 쪽으로 움직였습니다. 하지만 뒤에서 볼 우리 실패의 원인, 즉 지연과 명령 떨림을 정면으로 다룬 바퀴 로봇 NMPC 실험 논문은 2026-10 조사에서 찾지 못했습니다.</aside>
+</section>
+<section id="cmp1" class="t">
+<div class="head"><p class="kicker">M.4 · 비교표 (1/2)</p><h2>기울기 쪽은 잔차·튜브를, 초기해 쪽은 학습 모델을 더한다</h2></div>
+<table>
+<tr><th>연구 (연·발표)</th><th>입력·표현</th><th>방법의 핵심</th><th>최적화기</th><th>실험</th></tr>
+<tr><td>AWOISV 필터 튜브 MPC (2025.08 · 프리프린트)</td><td>Frenet 좌표, 회전 중심 각도</td><td>운동 모드 + 칼만 필터 오차로 튜브</td><td>LTV-MPC</td><td>TruckSim, HIL</td></tr>
+<tr><td>확산 초기해 MPC (2026.01 · RA-L 2026)</td><td>RGB 영상의 물체 슬롯 6개</td><td>확산 초안을 SDF hard 제약 OCP가 다듬는다</td><td>Crocoddyl</td><td>Franka 실물</td></tr>
+<tr><td>RL 유도 PAC-NMPC (2026.09 · 프리프린트)</td><td>LiDAR 또는 깊이 영상</td><td>RL 정책 → 초기해, 가치 → 종단 비용</td><td>샘플링(SNOPT)</td><td>1/10 랠리카 실물</td></tr>
+<tr><td>경로를 품은 MPC (2025.09 · 프리프린트)</td><td>가시성 그래프 Dijkstra 경로</td><td>앞쪽 경로 구간을 결정 변수로</td><td>NMPC</td><td>1:28 차량</td></tr>
+<tr><td>강건·적응 GP-MPC (2025.07 · Automatica 2026)</td><td>상태, GP 오차 상한</td><td>수축 계량 위 스칼라 튜브로 GP 오차 전파</td><td>L4acados SQP</td><td>쿼드로터 시뮬</td></tr>
+<tr><td>데이터에서 강건 MPC까지 (2025.08 · 프리프린트)</td><td>입출력 기록</td><td>기록에서 외란 상자, SDP로 튜브</td><td>acados·ForcesPro</td><td>쿼드로터 시뮬</td></tr>
+</table>
+<p class="take"><b>travplan:</b> 초기해 쪽 연구는 OCP가 붙어야 성공했다. Planner D 궤적도 NMPC가 제약으로 다듬게 한다.</p>
+<aside>표를 둘로 나눴습니다. 첫 장은 튜브와 초기해 계열입니다. 확산 초기해 MPC는 OCP 단독 성공이 10% 아래였는데 초기해를 받자 80% 안팎이 됐습니다. 강건·적응 GP-MPC는 GP 오차 상한을 스칼라 미분방정식 하나로 전파하는데, SQP 반복 한 번이 50–90 ms라 실시간과는 거리가 있습니다. 조향 제약 4WIS 계획(Liu 외)은 MPC가 아니라 배경으로만 둡니다.</aside>
+</section>
+<section id="cmp2" class="t">
+<div class="head"><p class="kicker">M.4 · 비교표 (2/2)</p><h2>지형은 모델 입력이나 제약으로 들어가고, 샘플링이 비평활 모델을 굴린다</h2></div>
+<table>
+<tr><th>연구 (연·발표)</th><th>입력·표현</th><th>방법의 핵심</th><th>최적화기</th><th>실험</th></tr>
+<tr><td>강건 비선형 MPC 외란 피드백 (2025.09 · ICRA 2026)</td><td>상태</td><td>명목·외란 피드백·오차 상한을 함께</td><td>SCP</td><td>시뮬</td></tr>
+<tr><td>고속 전지형 자율주행 (2026.03 · T-RO 투고)</td><td>고도 지도와 수치 기울기</td><td>3차원 강체 모델 + 에너지 안정 여유</td><td>GPU 샘플링</td><td>실차 48회</td></tr>
+<tr><td>비평면 재귀 희소 GP (2026.02 · IEEE IV 2026)</td><td>표면 법선의 roll·pitch</td><td>roll·pitch 입력 GP 잔차, 온라인 갱신</td><td>MPPI</td><td>Isaac Sim만</td></tr>
+<tr><td>에너지 정규화 NN 잔차 (2026.04 · 프리프린트)</td><td>상태, 서보각, 로터 추력</td><td>MLP 잔차에 에너지 증가 벌점</td><td>acados RTI</td><td>틸트 쿼드로터</td></tr>
+<tr><td>전체 모델 물리 롤아웃 (2025.06 · Sci. Robotics 2025)</td><td>고도 지도, 발판 후보</td><td>필터 뒤 RaiSim 롤아웃으로 고른다</td><td>샘플링 + 물리</td><td>Raibo 실물</td></tr>
+<tr><td>L4acados (2024.11 · IEEE TCST)</td><td>상태</td><td>acados에 Python 잔차, 0차 GP-MPC</td><td>SQP-RTI</td><td>경주차·실차</td></tr>
+</table>
+<p class="take"><b>travplan:</b> 잔차 GP 구조는 이미 같다. 새로운 것은 부호 있는 roll·pitch 입력 하나다.</p>
+<aside>둘째 장은 모델 쪽입니다. 비평면 재귀 희소 GP는 travplan 잔차 GP와 구조가 거의 같고, 다른 점은 부호 있는 roll·pitch를 입력으로 쓴다는 것입니다. 에너지 정규화 잔차는 학습 잔차가 물리적으로 말이 안 되는 가속을 만들면 NMPC가 그것을 이용해 떨리는 명령을 낸다는 점을 짚습니다. L4acados는 acados에 학습 잔차를 꽂는 틀이고, travplan의 mpc_gp도 같은 구조입니다.</aside>
+</section>
+<section id="common" class="t">
+<div class="head"><p class="kicker">M.4 · 공통점</p><h2>명목 모델에 잔차를 더하고, 그 불확실성으로 제약을 조인다</h2></div>
+<div class="grid2">
+<div class="card or"><span class="tag or">1</span><h3>명목 모델 + 학습 잔차</h3><p>식으로 아는 부분은 남기고 남는 오차만 배운다. <code>mpc_gp</code>도 같다.</p></div>
+<div class="card or"><span class="tag or">2</span><h3>불확실성으로 제약을 조인다</h3><p>GP 오차 상한, 외란 상자, 오차 불변 집합. M.1.2의 \(\rho_k\) 자리다.</p></div>
+<div class="card bl"><span class="tag bl">3</span><h3>학습 모델이 출발점을 준다</h3><p>확산 궤적, RL 정책, 전역 경로 구간이 국소해 문제를 위에서 푼다.</p></div>
+<div class="card bl"><span class="tag bl">4</span><h3>지형은 비용 한 항으로 남지 않는다</h3><p>GP 입력(roll·pitch), 3차원 강체 모델과 전복 제약, 물리 엔진으로 들어간다.</p></div>
+</div>
+<figure><img src="../../assets/thumbs/8a39b9cc9865.webp" style="height:190px"><figcaption>확산 초기해 + SDF hard 제약 OCP의 구조 — Haffemayer 외, RA-L 2026 [3]</figcaption></figure>
+<aside>공통점은 넷입니다. 처음 둘은 travplan이 이미 가진 구조입니다. 셋째, 초기해를 학습 모델에서 받는 것은 NMPC가 국소해에 갇히는 약점을 겨냥합니다. 넷째는 지형을 비용의 한 항으로 두지 않고 모델이나 제약에 넣는다는 점인데, travplan이 치명도를 제약으로 옮긴 것과 같은 방향입니다.</aside>
+</section>
+<section id="diff" class="t">
+<div class="head"><p class="kicker">M.4 · 차이점</p><h2>네 축에서 갈리고, travplan은 그 축마다 한쪽에 서 있다</h2></div>
+<div class="grid2">
+<div class="card gy"><h3>잔차를 언제 배우나</h3><p>오프라인 고정 vs 온라인 갱신. <code>mpc_gp</code>는 온라인(고리 버퍼 200, 5 스텝마다). 경사 부호가 없고 하이퍼파라미터는 고정이다.</p></div>
+<div class="card gy"><h3>확률이냐 상자냐</h3><p>확률은 신뢰도를 고르고, 상자는 단순하지만 크기를 데이터로 정한다. TP-0069의 먼 노드 폭은 보정되지 않았다.</p></div>
+<div class="card gy"><h3>기울기냐 샘플이냐</h3><p>기울기는 매끄러운 모델이 필요하고, 샘플은 접촉·바퀴 이탈을 그대로 굴린다. MPPI와 NMPC가 양쪽에 있다.</p></div>
+<div class="card gy"><h3>조향 한계를 어디서</h3><p>Planner 비용(±130°), MPC 운동 모드(±90°). travplan ±56.2°는 원뿔이고, NMPC는 상자만 쓴다.</p></div>
+</div>
+<p class="take"><b>travplan:</b> 두 갈래가 기울기·샘플 축의 양 끝에 있으니, 같은 벤치마크의 짝 비교가 곧 이 축의 실험이다.</p>
+<aside>차이는 네 축으로 정리됩니다. 잔차 학습 시점에서 travplan은 이미 온라인 쪽이지만 경사의 부호가 없습니다. 불확실성 표현에서는 TP-0069가 손으로 정한 오차 모델에 8 cm 상한을 두어 먼 노드가 보정되지 않았습니다. 최적화 방식에서는 travplan의 두 갈래가 이 축의 양쪽 끝에 있습니다. 조향 한계는 travplan plant가 ±56.2°라 다른 연구와 사정이 다릅니다.</aside>
+</section>
+<section id="take" class="t">
+<div class="head"><p class="kicker">M.4 · travplan에 주는 의미</p><h2>지연 상태 NMPC를 먼저, 학습 초기해는 마지막에 시도한다</h2></div>
+<div class="cols">
+<div class="stack">
+<div class="card gr"><span class="tag gr">시도 순서</span><ol><li><b>지연 상태 NMPC</b> (TP-0124 MPC 쪽): 명령을 상태 3개로, 변화율에 비용</li><li>부호 있는 경사 입력 GP: 1 s 예측 오차부터</li><li>조향 원뿔의 매끄러운 근사: 저속 처리 함께</li><li>Planner D 궤적을 초기해로: 경사로 제외 시간 초과로 판정</li><li>자세 여유(ESM)를 <code>CostTerm</code>으로 먼저</li></ol></div>
+</div>
+<div class="stack">
+<div class="card gy"><span class="tag">가져오지 않을 것</span><p>수축 계량 튜브·SDP 파이프라인: 오프라인 LMI·SDP가 필요하고 실험이 쿼드로터 시뮬뿐이다.</p><p>PAC-NMPC의 SNOPT: acados RTI 구조와 맞지 않는다. 학습 가치를 종단 비용으로 쓰는 부분만 따로 본다.</p></div>
+</div>
+</div>
+<p class="take"><b>travplan:</b> 실패 원인(bang-bang 떨림)에 직접 닿는 것은 고전 해법인 지연 상태 확장뿐이다.</p>
+<aside>가져올 것 가운데 TP-0152의 실패 원인에 직접 닿는 것은 조사 밖의 고전 해법인 지연 상태 확장입니다. 명령을 상태로 두고 명령 변화율에 비용을 겁니다. Planner D 초기해는 기대할 몫이 작습니다. mpc 시간 초과 104/360 가운데 82가 설계 한계로 둔 경사로라, 판정은 경사로를 뺀 시간 초과 22/270으로 합니다. 이 순서는 아직 TODO에 넣지 않은 후보입니다.</aside>
+</section>
+<section id="d-log" class="t dark divider">
+<p class="kicker">4 · 작업 기록 (M.3)</p>
+<h2>무엇을 만들고 무엇을 쟀나</h2>
+<p class="lead">0단계 6/12 → 정적 40/40·보행자 24/24 → plant에서 지연을 아는 MPPI에 진다</p>
+<aside>넷째 주제는 우리가 실제로 만들고 잰 것입니다. 2026-09-29 첫 폐루프부터 10-04 plant 비교까지, 단계별 게이트를 따라갑니다. 중간에 틀린 해석을 정정한 곳이 여러 번 있고, 그것도 함께 보여 드립니다.</aside>
+</section>
+<section id="gates" class="t">
+<div class="head"><p class="kicker">M.3.2 · 단계와 게이트</p><h2>네 단계 가운데 셋은 넘었고, 분산 튜브는 효과가 없었다</h2></div>
+<table>
+<tr><th>단계</th><th>TP</th><th>통과 기준</th><th>결과</th></tr>
+<tr><td>0 명목 MPC</td><td>TP-0070</td><td>MPPI와 동률 40/40, &lt; 20 ms</td><td class="good">명령 수정 뒤 40/40, 6.4 ms</td></tr>
+<tr><td>1 치명 셀 제약 + 보행자</td><td>TP-0071</td><td>치명 셀을 제약으로</td><td class="good">정적 40/40, 보행자 24/24</td></tr>
+<tr><td>2 GP 평균</td><td>TP-0068</td><td>1초 예측 오차 50% 감소</td><td class="good">RMSE 66–78% 감소</td></tr>
+<tr><td>3 분산으로 조이기</td><td>TP-0069</td><td>성공 ≥ 11/12 유지</td><td class="bad">효과 없음, 선택 스택</td></tr>
+<tr><td>4 PCBF 회복, 튜브·SLP</td><td>—</td><td>—</td><td>시작 안 함</td></tr>
+</table>
+<p class="small">툴체인: acados v0.3.4 소스 빌드, casadi 3.6.x. smoke OCP 0.087 ms/해(SQP-RTI, HPIPM). acados v0.3.4는 <code>ocp.dims.N</code>을 쓴다.</p>
+<div class="flow">
+<div class="step"><h3>09-29</h3><p>툴체인, 0단계 6/12, 1단계 9/12, plant·GP</p></div><p class="arrow">→</p>
+<div class="step"><h3>09-30</h3><p>구멍 진단, CBF, 보행자 23/24</p></div><p class="arrow">→</p>
+<div class="step"><h3>10-01</h3><p>GP 44/48, 명령 수정 40/40, 선택 스택들</p></div><p class="arrow">→</p>
+<div class="step"><h3>10-04</h3><p>GPU PC acados, plant 비교 TP-0152</p></div>
+</div>
+<aside>단계는 넷이고 각 단계에 미리 정한 게이트가 있었습니다. 0단계는 처음에 6/12로 미달했다가, 이틀 뒤 명령 수정으로 40/40에 닿았습니다. 2단계 GP 평균은 오프라인 게이트를 넘었지만, 그 plant 이득의 상당 부분은 GP가 아니라 명령 수정이었습니다. 3단계 분산 튜브는 측정되는 효과가 없었습니다.</aside>
+</section>
+<section id="stage0" class="t">
+<div class="head"><p class="kicker">M.3.3 · TP-0070 · 0단계</p><h2>지형 항이 없는 MPC는 지형이 결정하는 곳에서 전멸했다</h2></div>
+<div class="cols">
+<div class="stack">
+<table>
+<tr><th>4 시나리오 × 3 seed</th><th>mpc</th><th>mppi</th></tr>
+<tr><td>성공</td><td class="bad">6/12</td><td>12/12</td></tr>
+<tr><td>curb_ramp</td><td class="bad">0/3</td><td>3/3</td></tr>
+<tr><td>slope_crossfall</td><td>3/3</td><td>3/3</td></tr>
+<tr><td>jerk</td><td class="good">2.5</td><td>4.4</td></tr>
+<tr><td>제어 시간</td><td class="good">8.6 ms</td><td>12.6 ms</td></tr>
+</table>
+</div>
+<figure><img src="../../assets/figs/tp0070_mpc_vs_mppi.webp" style="height:430px"><figcaption>노란 선 MPC, 파란 선 MPPI, 빨간 칸 치명 셀, X 실패 지점</figcaption></figure>
+</div>
+<p class="take"><b>travplan:</b> 추종과 계산 예산은 이미 이겼다. 부족한 것은 지형 인지 하나다.</p>
+<aside>첫 측정에서 MPC는 6/12, 실패는 전부 치명 실패였습니다. 평평한 slope_crossfall에서는 MPPI와 같았고 curb_ramp에서는 전멸했습니다. 이유는 숨어 있지 않습니다. 0단계 MPC에는 지형 항이 하나도 없어서, Guidance 경로가 연석 면을 스치면 그대로 들어갔습니다. 대신 제어 시간과 jerk는 이미 MPPI보다 나았습니다.</aside>
+</section>
+<section id="stage1" class="t">
+<div class="head"><p class="kicker">M.3.5 · TP-0071 · 1단계</p><h2>치명 셀을 접평면 제약으로 넣자 6/12가 9/12가 됐다</h2></div>
+<div class="cols">
+<div class="stack">
+<table>
+<tr><th>단계</th><th>성공</th><th>GT cost</th><th>제어</th></tr>
+<tr><td>0단계 (지형 없음)</td><td>6/12</td><td>0.039</td><td>8.6 ms</td></tr>
+<tr><td><b>1단계 (치명을 제약으로)</b></td><td class="good">9/12</td><td>0.031</td><td>13.5 ms</td></tr>
+<tr><td>기준 <code>guidance+mppi</code></td><td>12/12</td><td>0.018</td><td>12.6 ms</td></tr>
+</table>
+<p class="small">대가: 여유 0.15 m를 지키느라 curb_ramp 경로가 23–25 m(MPPI 13.8 m).</p>
+<p class="small muted">당시 "남은 셋은 솔버 문제"로 적었다 → 틀렸다(다음 장).</p>
+</div>
+<figure><img src="../../assets/figs/tp0071_mpc_vs_mppi.webp" style="height:430px"><figcaption>같은 네 장면, 치명을 제약으로 넣은 뒤. MPC는 하나에서만 죽는다</figcaption></figure>
+</div>
+<p class="take"><b>travplan:</b> 노드마다 따로 거는 접평면이라 램프 양옆 벽을 서로 다른 노드가 집는다.</p>
+<aside>노드마다 접평면 하나를 걸자 9/12가 됐습니다. curb_ramp에서는 램프 틈을 통과하고 bumps_potholes에서는 블록 사이를 MPPI와 비슷한 선으로 지납니다. 남은 세 실패는 제어 시간 상위 셋과 정확히 같았고 QP가 반복 한계를 뱉었습니다. 그래서 솔버 문제라고 적었는데, 이것은 다음 장에서 정정합니다.</aside>
+</section>
+<section id="holes" class="t">
+<div class="head"><p class="kicker">M.3.10 · TP-0093</p><h2>남은 실패는 솔버가 아니라 제약의 구멍이었다</h2></div>
+<table>
+<tr><th>구멍</th><th>무엇이 일어났나</th><th>고침</th></tr>
+<tr><td>덩어리 안의 노드</td><td>가장 가까운 치명 칸이 자기 자신이라 법선이 없어 행을 껐다</td><td>가장 가까운 자유 칸 쪽 법선</td></tr>
+<tr><td>칸 중심에서 잰 여유</td><td>0.15 m가 가장자리 기준으로는 0.125 m였다</td><td>가장자리에서 잰다(반 칸)</td></tr>
+<tr><td>지도 경계</td><td>지도 밖은 COST 1인데 <code>LethalField</code>는 격자 안만 봤다</td><td>바깥 한 칸을 치명으로</td></tr>
+<tr><td>칸 조회 (코드 리뷰)</td><td>내림으로 찾아 반 칸 어긋났다</td><td>반올림</td></tr>
+</table>
+<div class="cols">
+<p class="small">+ 이산 CBF 감쇠(γ = 0.2): 경로가 뒤집힐 때 벽에 붙기 전에 감속한다.</p>
+<p class="small">정적 seed 0–9: <b>38/40</b>, 제어 6.6 ms(MPPI 40/40). 여유 하나로는 램프 모서리와 좁은 틈을 함께 맞추지 못했다.</p>
+</div>
+<p class="take"><b>travplan:</b> QP 반복 한계(status 3)는 원인이 아니라 증상이었다. 실패 에피소드를 스텝마다 계측해서 찾았다.</p>
+<aside>실패한 에피소드를 스텝마다 계측하자 세 실패가 모두 제약의 구멍이었습니다. QP 반복 한계는 원인이 아니라 증상이었습니다. 네 번째 구멍은 코드 리뷰가 찾았는데, 이것을 막기 전의 40/40은 한쪽 면의 낙관 덕분에 틈이 넓어 보였던 결과였습니다. 정확한 기하로는 38/40이었고, 여유를 스윕해도 40/40을 내는 값은 없었습니다.</aside>
+</section>
+<section id="peds" class="t">
+<div class="head"><p class="kicker">M.3.11 · TP-0071 나머지</p><h2>보행자도 반평면 하나로, 다만 앞 2초에만 건다</h2></div>
+<div class="cols">
+<div class="stack">
+<table>
+<tr><th>보행자 3명, seed 0–5</th><th>성공</th><th>충돌</th><th>최소 여유</th></tr>
+<tr><td>앞 2 s, slack 1e4</td><td>22/24</td><td class="bad">2</td><td>−0.04 m</td></tr>
+<tr><td><b>앞 2 s, slack 1e6</b> (기본)</td><td class="good">23/24</td><td class="good">0</td><td>0.08 m</td></tr>
+<tr><td><code>guidance+mppi</code></td><td>24/24</td><td>0</td><td>0.24 m</td></tr>
+</table>
+<p class="small">명령 수정(TP-0122) 뒤 MPC도 24/24, 충돌 0이다.</p>
+</div>
+<div class="card or"><h3>지평 전체에 걸면 로봇이 얼어붙는다</h3><p>원판은 예측 시간에 따라 0.15 m/s씩 자란다. 폭 1 m 통로에서 마주 오는 보행자의 원판은 4초 뒤 반경 1.15 m가 되어 통로를 막는다. 앞으로 가는 해가 없어진 MPC는 물러나다 블록에 닿았다.</p></div>
+</div>
+<p class="take"><b>travplan:</b> freezing robot 구조다. 근본 처방은 로봇의 움직임에 반응하는 예측이다(TP-0090).</p>
+<aside>보행자는 지형과 같은 방식으로, 노드마다 그 시각의 가장 가까운 보행자 원판에 접평면을 겁니다. 처음 지평 4초 전체에 걸었더니 원판이 통로를 막아 MPC가 물러나다 블록에 닿았습니다. 그래서 자라는 원판은 앞 2초에만 제약으로 걸고 나머지는 재계획에 맡깁니다. slack을 낮추면 보행자를 스쳐서 가중치는 지형과 같게 둡니다. MPC는 여유를 경계까지 써서 MPPI보다 보행자에게 바짝 붙습니다.</aside>
+</section>
+<section id="gploop" class="t">
+<div class="head"><p class="kicker">M.3.7 · M.3.12 · TP-0068</p><h2>GP 평균의 폐루프를 무너뜨린 원인은 명령과 데이터 범위였다</h2></div>
+<div class="cols">
+<div class="stack">
+<div class="card or"><span class="tag or">① 명령</span><p>GP를 넣은 모델의 \(Z_k\)는 plant가 실현할 twist다. 그것을 명령으로 보내 지연이 두 번 걸렸다. 보낼 것은 \(Z_k + u_k\Delta t\)다.</p></div>
+<div class="card bl"><span class="tag bl">② 데이터</span><p>MPPI 주행은 명령 \(v_x\)가 0.93 m/s를 넘지 않았다. 지평 뒤쪽은 1.1–1.5 m/s를 계획한다. 가진 주행 998 샘플을 더했다.</p></div>
+</div>
+<table>
+<tr><th>plant, mpc_gp</th><th>curb_ramp</th><th>bumps</th></tr>
+<tr><td>정확 GP (M.3.7, 12 에피소드)</td><td colspan="2" class="bad">합 0/12</td></tr>
+<tr><td>새 GP, 구간 평균 명령</td><td class="bad">0/3</td><td>1/3</td></tr>
+<tr><td><b>새 GP + 명령 수정</b></td><td class="good">10/12</td><td class="good">10/12</td></tr>
+<tr><td>GP 없음 <code>mpc</code></td><td>6/12</td><td>8/12</td></tr>
+</table>
+</div>
+<p class="take"><b>travplan:</b> plant seed 0–11에서 mpc_gp 44/48, mpc 37/48. 데이터만 바꿔서는 curb_ramp가 하나도 풀리지 않았다.</p>
+<aside>오프라인 GP는 게이트를 넘었지만 MPC에 넣자 폐루프가 0/12로 무너졌습니다. SGPR로 발산은 멈췄고, 남은 원인 둘을 찾았습니다. 첫째, 이미 지연을 반영한 twist를 명령으로 보내 plant가 한 번 더 지연시켰습니다. 둘째, 학습 데이터가 MPC가 계획하는 속도를 덮지 못했습니다. 명령을 고친 것이 주된 원인이었고, 데이터는 분산을 믿을 만하게 만들었습니다.</aside>
+</section>
+<section id="command" class="t">
+<div class="head"><p class="kicker">M.3.15 · TP-0122</p><h2>명목 MPC는 계획한 가속의 절반만 내고 있었다</h2></div>
+<figure><img src="../../assets/figs/tp0122_brake.webp" style="height:330px"><figcaption>curb_ramp s0, 여유 0.10 m. 구간 평균 명령(회색)은 실현/계획 비가 0.50이고 연석면을 넘어 실패, 다음 노드 명령(주황)은 1.00이고 도달</figcaption></figure>
+<div class="cols">
+<div class="stack"><p>구간 평균 \(Z_k + \tfrac12 u_k\Delta t\)를 보내면 감속도 절반이라 정지 거리가 두 배다. <code>command="next"</code>는 \(Z_{k+1} = Z_k + u_k\Delta t\)를 보낸다.</p></div>
+<table>
+<tr><th>조건</th><th>이전</th><th>고친 뒤</th></tr>
+<tr><td>정적, 모든 여유</td><td>31–39/40</td><td class="good">40/40</td></tr>
+<tr><td>plant seed 0–11</td><td>37/48</td><td class="good">44/48</td></tr>
+<tr><td>rms jerk (정적)</td><td>3.1</td><td class="bad">6.7</td></tr>
+</table>
+</div>
+<aside>명목 분기가 구간 평균 twist를 보내고 있었는데, 시뮬레이터는 받은 명령을 그대로 새 twist로 씁니다. 그래서 계획한 가속의 절반만 실현됐습니다. 실패한 아홉 장면 모두 실현 대 계획 비의 중앙값이 정확히 0.50이었습니다. 다음 노드 twist로 바꾸자 정적 실패가 모두 사라졌고, 대가로 jerk가 두 배가 됐습니다. 명령만 고친 mpc도 plant 44/48이라, 앞 장의 GP 이득 상당 부분은 이 명령 차이였습니다.</aside>
+</section>
+<section id="options" class="t">
+<div class="head"><p class="kicker">M.3.13–M.3.19 · 선택 스택</p><h2>여유를 더하는 장치들은 여유를 넓혔지만 기본값이 되지 못했다</h2></div>
+<table>
+<tr><th>장치</th><th>잰 것</th><th>판정</th></tr>
+<tr><td>부드러운 여유 행 <code>mpc_sc</code> (TP-0117)</td><td>최소 GT 여유 5% 분위 10.2 → 12.2 cm, plant 41/48</td><td>성공 이득 없음</td></tr>
+<tr><td>GP 분산 튜브 <code>mpc_gpcc</code> (TP-0069)</td><td>1번 노드 coverage 97.4%, 실행 여유 차 0.00 cm, plant 42/48</td><td>기준 44/48 미달</td></tr>
+<tr><td>여유를 아는 Guidance <code>guidance_c</code> (TP-0118)</td><td>다섯 Controller 합 plant 221 → 228/240</td><td>JS·Planner D 때문에 보류</td></tr>
+<tr><td>MPPI 확률 제약 0선 (TP-0076·0119)</td><td>0선 오차 최대 4.97 → 0.78 cm, plant 85 → 89/96 (기준 88)</td><td>p ≈ 0.29, 유의하지 않음</td></tr>
+<tr><td>GP 평균 rollout <code>mppi_ccgpm</code> (TP-0120)</td><td>plant curb_ramp 치명 0, 대신 멈춤 3 증가 43/48</td><td>승격 기준 미달</td></tr>
+</table>
+<figure><img src="../../assets/figs/tp0119_zero_line.webp" style="height:250px"><figcaption>회색 굵은 선이 시뮬레이터의 실패 경계, 주황 점선 rim 0선, 파란 선 exact 0선(TP-0119)</figcaption></figure>
+<p class="take"><b>travplan:</b> 남은 plant 치명 실패는 기하가 아니라 지연 편향을 가리켰다.</p>
+<aside>명령을 고친 뒤 여러 장치를 더했고, 모두 미리 정한 기준으로 판정했습니다. 부드러운 여유 행과 분산 튜브는 여유나 보정은 개선했지만 성공 수를 늘리지 못했습니다. MPPI 쪽 확률 제약은 두 Controller가 잔차 GP와 치명 거리장을 공유해서 이 문서에 기록했습니다. GP 평균을 MPPI rollout에 넣으면 램프 치명 실패가 사라졌고, 이것이 남은 실패의 원인이 지연 편향이라는 가설을 뒷받침했습니다.</aside>
+</section>
+<section id="plant" class="t">
+<div class="head"><p class="kicker">M.3.22 · M.3.24 · TP-0150·0152</p><h2>plant 조건에서 NMPC는 지연을 아는 MPPI보다 치명이 여덟 배 많다</h2></div>
+<div class="cols">
+<table>
+<tr><th>권장 L1 + plant</th><th>mppi</th><th>mppi_plant_lag</th><th>mpc</th><th>mpc_gp</th></tr>
+<tr><td>레벨 3 합 (360)</td><td>221 (55)</td><td class="good">239 (4)</td><td>222 (34)</td><td>215 (32)</td></tr>
+<tr><td>경사로 제외 (270)</td><td>206 (40)</td><td class="good">238 (1)</td><td>222 (26)</td><td>215 (22)</td></tr>
+<tr><td>레벨 0 (120)</td><td>112 (4)</td><td class="good">116 (0)</td><td>109 (3)</td><td>108 (0)</td></tr>
+</table>
+<figure><img src="../../assets/figs/tp0152_nmpc_plant.webp" style="height:300px"><figcaption>왼쪽 네 지형 전체, 오른쪽 경사로 제외. 주황 글자가 NMPC</figcaption></figure>
+</div>
+<p class="small">괄호는 치명 수. 짝 비교(대 <code>mppi_plant_lag</code>) 레벨 3: <code>mpc</code> 34 : 17 (p = 0.024), <code>mpc_gp</code> 34 : 10 (p = 0.0004). seed 0–9 × 오프셋 3.</p>
+<p class="take"><b>travplan:</b> plant 조건의 배포 Controller는 mppi_plant_lag다. NMPC 갈래는 안전 원칙에서 탈락이다.</p>
+<aside>MPPI rollout에 plant의 지연을 넣은 mppi_plant_lag가 레벨 3 치명을 55에서 4로 줄였습니다. 같은 조건에서 NMPC 갈래는 plant를 모르는 명목 MPPI와 비슷합니다. 짝 비교 차이는 잡음 바닥을 넘고, 치명 실패가 늘면 채택하지 않는다는 원칙에도 걸립니다. 잔차 GP도 차이를 메우지 못했는데, 당시에는 레벨 0에서 맞춘 GP가 레벨 3 지형에 듣지 않는 것으로 봤지만, 온라인 버퍼가 레벨 3 데이터로 차므로 문서는 입력 표현과 고정 하이퍼파라미터를 원인 후보로 고쳐 적었습니다. 참고로 guidance와 NMPC는 결정적이라 guidance 줄은 같은 40 에피소드를 세 번 센 것입니다.</aside>
+</section>
+<section id="mpclag" class="t">
+<div class="head"><p class="kicker">M.3.24 · <code>mpc_lag</code></p><h2>지연을 되돌린 NMPC는 plant의 저역 통과까지 없애 더 나빠졌다</h2></div>
+<div class="math">$$v' = v + a(c - v),\quad a = \frac{\Delta t}{\tau + \Delta t} = \frac13,\qquad c = Z_k + \frac{u_k\Delta t}{a}$$</div>
+<div class="cols">
+<div class="stack">
+<table>
+<tr><th>bumps 레벨 3, 짝</th><th>mpc</th><th>mpc_lag</th></tr>
+<tr><td>1. 지연 역변환 (29)</td><td>25 도달, 치명 1</td><td class="bad">19, 치명 6</td></tr>
+<tr><td>2. + 가속 비용 \(1/a^2\)배 (18)</td><td>14, 치명 1</td><td class="bad">10, 치명 8</td></tr>
+</table>
+</div>
+<div class="card or"><h3>지연 모델은 맞았다. 계획이 bang-bang이다</h3><p>두 NMPC 모두 계획이 가속 상한에 붙는다. 명목 <code>mpc</code>에서는 plant 지연이 그것을 걸러 줬다. 되돌리면 명령이 스텝마다 한계 양끝을 오가고, 조향 속도 한계에 걸리는 스텝이 6%에서 20%로 는다.</p></div>
+</div>
+<p class="take"><b>travplan:</b> 다음 후보는 명령을 상태로 두고 변화율에 비용을 거는 지연 상태 모델이다(TP-0124).</p>
+<aside>공정한 비교를 위해 mppi_plant_lag와 같은 정보를 가진 NMPC를 만들었습니다. 가속 상자에 a를 곱하고 명령에서 지연을 되돌리면, 지연만 있는 plant에서 계획한 twist가 그대로 실현됩니다. 그런데 치명이 늘었습니다. 지연 모델은 맞았지만, 지연이 bang-bang 계획을 걸러 주던 필터 역할까지 없어졌기 때문입니다. 가속 비용을 키우면 떨림은 줄었지만 회피가 굼떠져 치명이 더 늘었습니다.</aside>
+</section>
+<section id="summary" class="t">
+<div class="head"><p class="kicker">5 · 정리와 다음</p><h2>NMPC는 정적·보행자에서 MPPI와 같아졌고, plant의 지연에서 졌다</h2></div>
+<div class="grid3">
+<div class="card gr"><span class="tag gr">된 것</span><ul><li>치명 셀 접평면 + CBF</li><li>보행자 앞 2 s 제약</li><li>0차 GP(SGPR 64)</li><li>정적 40/40, 보행자 24/24</li></ul></div>
+<div class="card or"><span class="tag or">배운 것</span><ul><li>"솔버 문제"는 제약의 구멍이었다</li><li>GP 이득 상당 부분은 명령 수정</li><li>튜브는 보정돼도 여유를 늘리지 않았다</li><li>지연이 bang-bang을 걸러 줬다</li></ul></div>
+<div class="card bl"><span class="tag bl">다음 후보</span><ul><li>지연 상태 NMPC (TP-0124)</li><li>jerk 줄이기 (TP-0123)</li><li>부호 있는 경사 GP</li><li>Planner D 초기해</li></ul></div>
+</div>
+<table>
+<tr><th>조건</th><th>NMPC</th><th>MPPI</th><th>근거</th></tr>
+<tr><td>정적 seed 0–9</td><td>mpc 40/40</td><td>mppi 40/40</td><td>TP-0122</td></tr>
+<tr><td>보행자 3명 seed 0–5</td><td>24/24, 충돌 0</td><td>24/24, 충돌 0</td><td>TP-0122</td></tr>
+<tr><td>권장 L1 + plant 레벨 3</td><td class="bad">mpc 222/360 (치명 34)</td><td class="good">mppi_plant_lag 239/360 (치명 4)</td><td>TP-0152</td></tr>
+</table>
+<p class="take"><b>travplan:</b> NMPC 갈래는 지금 멈춤이다. 이어 간다면 지연 상태 모델이 먼저이고, 우선순위는 보행자·인식 뒤다(STATE).</p>
+<aside>정리하면, NMPC 갈래는 제약을 조일 자리를 만드는 목적은 이뤘고 정적·보행자 조건에서 MPPI와 같아졌습니다. 그러나 plant 조건에서는 지연을 아는 MPPI보다 치명이 여덟 배 많아 배포 Controller는 mppi_plant_lag입니다. STATE의 판단은 NMPC 갈래를 멈추고, 이어 간다면 지연 상태 모델을 먼저 하는 것입니다. 배포 Controller가 MPPI라서 우선순위는 보행자와 인식 뒤입니다.</aside>
+</section>
+<section id="refs" class="t">
+<div class="head"><p class="kicker">참고문헌</p><h2>이 발표가 인용한 연구</h2></div>
+<div class="cols">
+<div class="stack">
+<p class="small">[1] Liu 외, ICAR 2025 — arXiv:2510.19054</p>
+<p class="small">[2] Yang 외, 2025 프리프린트 — arXiv:2508.13457</p>
+<p class="small">[3] Haffemayer 외, RA-L 2026 — arXiv:2601.02873</p>
+<p class="small">[4] Polevoy 외, 2026 프리프린트 — arXiv:2609.39854</p>
+<p class="small">[5] Dubied 외, Automatica 2026 — arXiv:2507.02098</p>
+<p class="small">[6] Benders 외, 2025 프리프린트 — arXiv:2508.07045</p>
+<p class="small">[7] Baxter 외, T-RO 투고 2026 — arXiv:2603.20525</p>
+</div>
+<div class="stack">
+<p class="small">[8] Amine 외, IEEE IV 2026 — arXiv:2602.16206</p>
+<p class="small">[9] Kübel 외, 2026 프리프린트 — arXiv:2604.14678</p>
+<p class="small">[10] Kim, Kim, Hwangbo, RSS 2022 — arXiv:2204.08647</p>
+<p class="small">[11] Hwangbo 외, Science Robotics 2019 — arXiv:1901.08652</p>
+<p class="small">[12] Kim 외, Science Robotics 2025 — arXiv:2506.02835</p>
+<p class="small">[13] Kalaria 외, 2022 (지연 상태 확장) — arXiv:2208.13856</p>
+<p class="small">경로를 품은 MPC, 외란 피드백 강건 MPC, L4acados: Controller 문서 E.6·E.7</p>
+</div>
+</div>
+<p class="small muted">travplan 결과: <code>docs/research-mpc.md</code> M.3, <code>STATE.md</code>. 코드: <code>control/acados_mpc/</code></p>
+<aside>인용한 연구의 목록입니다. 저자와 학회는 리서치 문서에 적힌 그대로이고, 표에 이름만 있는 세 연구는 Controller 문서 E.6과 E.7에 자세히 있습니다. travplan 수치의 출처는 MPC 문서의 작업 기록과 STATE입니다.</aside>
+</section>
+</div></div>
+<div id="notes"><b>발표자 노트</b><div id="notes-body"></div></div>
+<div id="bar">
+<button id="prev" aria-label="이전">◀</button><span id="count"></span><button id="next" aria-label="다음">▶</button>
+<span id="ttl">travplan 챕터 발표 — MPC 구축</span>
+<button id="nb" title="N 키">노트</button><button id="fs" title="F 키">전체 화면</button>
+<a href="talk-mpc.pptx" download>PPTX</a><a href="./../">목록</a>
+</div>
+<pre id="report" hidden></pre>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script>
+(function () {
+  var slides = Array.prototype.slice.call(document.querySelectorAll('#frame > section'));
+  var frame = document.getElementById('frame'), notes = document.getElementById('notes');
+  var q = new URLSearchParams(location.search), shot = q.has('shot') || q.has('check');
+  if (shot) document.body.classList.add('shot');
+  var i = 0;
+  function fit() {
+    if (shot) return;
+    var st = document.getElementById('stage');
+    var s = Math.min(st.clientWidth / 1920, st.clientHeight / 1080);
+    frame.style.transform = 'scale(' + s + ')';
+  }
+  function show(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach(function (el, k) { el.classList.toggle('on', k === i); });
+    document.getElementById('count').textContent = (i + 1) + ' / ' + slides.length;
+    var a = slides[i].querySelector('aside');
+    document.getElementById('notes-body').textContent = a ? a.textContent : '';
+    if (!shot) history.replaceState(null, '', '#' + (i + 1));
+  }
+  function withAllFonts(fn) {
+    document.body.classList.add('all');
+    void document.body.offsetHeight;
+    requestAnimationFrame(function () {
+      document.fonts.ready.then(function () { document.body.classList.remove('all'); fn(); });
+    });
+  }
+  window.withAllFonts = withAllFonts;
+  // 넘침 검사: 본문 요소가 장 밖으로 나가거나 각주 띠를 덮으면 적는다.
+  function check() {
+    var bad = [];
+    slides.forEach(function (sec, k) {
+      show(k);
+      var box = sec.getBoundingClientRect();
+      Array.prototype.forEach.call(sec.querySelectorAll('.katex-error'), function (el) {
+        bad.push({ slide: k + 1, id: sec.id, tag: 'TeX', text: (el.getAttribute('title') || el.textContent).slice(0, 60), over: 0 });
+      });
+      Array.prototype.forEach.call(sec.querySelectorAll('img'), function (el) {
+        if (!el.complete || !el.naturalWidth) bad.push({ slide: k + 1, id: sec.id, tag: 'IMG', text: el.getAttribute('src'), over: 0 });
+      });
+      var foot = sec.querySelector('[data-foot]');
+      var limit = foot ? foot.getBoundingClientRect().top - 4 : box.bottom - 24;
+      Array.prototype.forEach.call(sec.querySelectorAll('p, h1, h2, h3, img, td, th, li, .katex-display, [data-box]'), function (el) {
+        if (foot && foot.contains(el)) return;
+        if (el.closest('aside')) return;
+        var r = el.getBoundingClientRect();
+        if (r.width === 0 && r.height === 0) return;
+        if (r.bottom > limit + 0.5 || r.right > box.right - 40) {
+          bad.push({ slide: k + 1, id: sec.id, tag: el.tagName, text: (el.textContent || el.alt || '').slice(0, 40), over: Math.round(Math.max(r.bottom - limit, r.right - (box.right - 40))) });
+        }
+      });
+    });
+    var rep = document.getElementById('report');
+    rep.textContent = JSON.stringify(bad);
+    rep.setAttribute('data-done', '1');
+  }
+  function start() {
+    if (window.renderMathInElement) {
+      renderMathInElement(document.getElementById('frame'), {
+        delimiters: [{ left: '$$', right: '$$', display: true }, { left: '\\(', right: '\\)', display: false }],
+        throwOnError: false
+      });
+    }
+    // 한글 웹 글꼴은 글자 묶음마다 따로 받고, 숨은 장의 글자는 받지 않는다. 장을 모두 보여 글꼴을 받은 뒤 잰다.
+    if (q.has('check')) { withAllFonts(check); return; }
+    var s = shot ? parseInt(q.get('shot'), 10) - 1 : parseInt(location.hash.slice(1), 10) - 1;
+    show(isNaN(s) ? 0 : s);
+  }
+  show(0); fit(); window.addEventListener('resize', fit);
+  window.addEventListener('DOMContentLoaded', function () {
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(start); else start();
+  });
+  document.getElementById('prev').onclick = function () { show(i - 1); };
+  document.getElementById('next').onclick = function () { show(i + 1); };
+  document.getElementById('nb').onclick = function () { notes.classList.toggle('show'); };
+  document.getElementById('fs').onclick = function () {
+    if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen();
+  };
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { show(i + 1); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { show(i - 1); e.preventDefault(); }
+    else if (e.key === 'Home') show(0);
+    else if (e.key === 'End') show(slides.length - 1);
+    else if (e.key === 'n' || e.key === 'N') notes.classList.toggle('show');
+    else if (e.key === 'f' || e.key === 'F') document.getElementById('fs').click();
+  });
+  var x0 = null;
+  document.getElementById('stage').addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+  document.getElementById('stage').addEventListener('touchend', function (e) {
+    if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0; x0 = null;
+    if (Math.abs(dx) > 40) show(i + (dx < 0 ? 1 : -1));
+  });
+})();
+</script>
+</body>
+</html>

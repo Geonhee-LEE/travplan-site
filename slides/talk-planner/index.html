@@ -1,0 +1,990 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>travplan 챕터 발표 — Planner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=IBM+Plex+Sans+KR:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<style>
+:root { --bg:#0E1526; --bar:#16213A; --fg:#F4F1EA; --muted:#C9D1E0; --accent:#F59E5B; }
+* { box-sizing:border-box; }
+html, body { margin:0; height:100%; background:var(--bg); color:var(--fg); font-family:'IBM Plex Sans KR', Arial, sans-serif; }
+#stage { position:fixed; inset:0 0 56px 0; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+#frame { width:1920px; height:1080px; flex:none; transform-origin:center center; box-shadow:0 8px 40px rgba(0,0,0,.5); }
+#frame > section:not(.on) { display:none !important; }
+body.all #frame > section:not(.on) { display:block !important; }
+section { position:relative; width:1920px; height:1080px; overflow:hidden; }
+section * { margin:0; }
+section aside { display:none; }
+section table { border-collapse:collapse; }
+section th, section td { padding:10px 16px; vertical-align:top; }
+section tr + tr td { border-top:1px solid rgba(127,140,160,.25); }
+section .katex { font-size:1.05em; }
+section .katex-display { margin:0; text-align:left; }
+section .katex-display > .katex { text-align:left; }
+x-shape { display:block; flex:none; }
+x-shape[kind="arrow-right"] { clip-path:polygon(0 32%,58% 32%,58% 0,100% 50%,58% 100%,58% 68%,0 68%); }
+#bar { position:fixed; left:0; right:0; bottom:0; height:56px; background:var(--bar); display:flex; align-items:center; gap:12px; padding:0 16px; font-size:15px; }
+#bar button, #bar a { background:none; border:1px solid #3A4A6B; color:var(--fg); border-radius:8px; padding:6px 12px; font:inherit; cursor:pointer; text-decoration:none; }
+#bar button:hover, #bar a:hover { border-color:var(--accent); }
+#count { min-width:72px; text-align:center; color:var(--muted); }
+#ttl { flex:1; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; color:var(--muted); }
+#notes { position:fixed; right:16px; bottom:72px; width:min(560px, calc(100% - 32px)); max-height:45vh; overflow:auto; background:#FFFDF8; color:#16213A; border-radius:12px; padding:16px 20px; font-size:16px; line-height:1.6; box-shadow:0 8px 30px rgba(0,0,0,.4); display:none; }
+#notes.show { display:block; }
+#notes b { display:block; margin-bottom:6px; color:#C2410C; font-family:'JetBrains Mono', monospace; font-size:13px; }
+body.shot #bar, body.shot #notes { display:none; }
+body.shot #stage { inset:0; }
+body.shot #frame { box-shadow:none; transform:none !important; }
+@media (max-width:640px) { #ttl { display:none; } }
+</style>
+</head>
+<body>
+<div id="stage"><div id="frame">
+<style>
+/* 챕터 발표 덱(slides_src/talk-*) 공용 스타일. deck.json의 "css": "_talk/talk.css"로 읽는다.
+   PPTX(편집 가능)는 이 스타일이 그린 결과의 좌표·색·글자 크기를 그대로 옮긴다. 규칙은 slides_src/_talk/README.md. */
+section.t { background:#F7F5F0; color:#16213A; font-family:'IBM Plex Sans KR', Arial, sans-serif;
+  padding:80px 112px 120px; display:flex; flex-direction:column; gap:28px; }
+section.t.dark { background:#16213A; color:#F4F1EA; }
+section.t .kicker { font-family:'JetBrains Mono', 'Courier New', monospace; font-size:22px; color:#C2410C; letter-spacing:1px; }
+section.t.dark .kicker { color:#F59E5B; }
+section.t h1 { font-family:'Noto Serif KR', Georgia, serif; font-size:96px; font-weight:700; line-height:1.15; }
+section.t h2 { font-family:'Noto Serif KR', Georgia, serif; font-size:52px; font-weight:700; line-height:1.22; }
+section.t h3 { font-size:30px; font-weight:600; line-height:1.3; }
+section.t p, section.t li { font-size:26px; line-height:1.5; }
+section.t .lead { font-size:34px; line-height:1.45; color:#3D4A63; }
+section.t.dark .lead { color:#C9D1E0; }
+section.t .muted { color:#5A6478; }
+section.t.dark .muted { color:#9AA6BC; }
+section.t .small { font-size:22px; line-height:1.4; }
+section.t b, section.t strong { font-weight:600; }
+section.t .hl { color:#C2410C; font-weight:600; }
+section.t code { font-family:'JetBrains Mono', monospace; font-size:0.86em; color:#7C2D12; }
+section.t ul, section.t ol { padding-left:36px; display:flex; flex-direction:column; gap:10px; }
+section.t .head { display:flex; flex-direction:column; gap:10px; }
+section.t .cols { display:flex; gap:40px; align-items:flex-start; }
+section.t .cols > * { flex:1; min-width:0; }
+section.t .stack { display:flex; flex-direction:column; gap:18px; }
+section.t .grid2, section.t .grid3 { display:grid; gap:24px; }
+section.t .grid2 { grid-template-columns:1fr 1fr; }
+section.t .grid3 { grid-template-columns:1fr 1fr 1fr; }
+section.t .card { background:#FFFDF8; border:1px solid #D9D4C7; border-radius:12px; padding:22px 26px; display:flex; flex-direction:column; gap:12px; }
+section.t .card.or { border-left:8px solid #C2410C; }
+section.t .card.bl { border-left:8px solid #1D4ED8; }
+section.t .card.gr { border-left:8px solid #15803D; }
+section.t .card.gy { border-left:8px solid #9AA6BC; }
+section.t.dark .card { background:#22304F; border-color:#3A4A6B; }
+section.t .card h3 { font-size:28px; }
+section.t .card p, section.t .card li { font-size:24px; line-height:1.45; }
+section.t .tag { align-self:flex-start; font-size:20px; font-weight:600; padding:4px 14px; border-radius:999px; background:#ECE8DF; color:#16213A; }
+section.t .tag.or { background:#FDE7C8; color:#7C2D12; }
+section.t .tag.bl { background:#DBE5FB; color:#1E3A8A; }
+section.t .tag.gr { background:#D7EFDD; color:#14532D; }
+section.t .pills { display:flex; flex-wrap:wrap; gap:16px; }
+section.t .pill { font-size:24px; padding:8px 22px; border-radius:999px; background:#C9D1E0; color:#16213A; }
+section.t .pill.on { background:#F59E5B; }
+section.t .take { background:#16213A; color:#F4F1EA; border-radius:12px; padding:20px 28px; font-size:27px; line-height:1.45; }
+section.t .take b { color:#F59E5B; }
+section.t.dark .take { background:#F59E5B; color:#16213A; }
+section.t .flow { display:flex; align-items:stretch; gap:14px; }
+section.t .flow > .step { flex:1; background:#FFFDF8; border:1px solid #D9D4C7; border-top:6px solid #C2410C; border-radius:10px; padding:16px 18px;
+  display:flex; flex-direction:column; gap:8px; }
+section.t .flow > .step p { font-size:22px; line-height:1.4; }
+section.t .flow > .arrow { flex:none; align-self:center; font-size:36px; color:#C2410C; }
+section.t table { border-collapse:collapse; width:100%; font-size:21px; line-height:1.35; background:#FFFDF8; }
+section.t th { background:#16213A; color:#F4F1EA; text-align:left; font-weight:600; padding:10px 14px; }
+section.t td { padding:9px 14px; border-top:1px solid #D9D4C7; vertical-align:top; }
+section.t tr:nth-child(even) td { background:#F1EDE4; }
+section.t td.good { color:#14532D; font-weight:600; }
+section.t td.bad { color:#9F1239; font-weight:600; }
+section.t figure { margin:0; display:flex; flex-direction:column; gap:10px; }
+section.t figure img { display:block; max-width:100%; object-fit:contain; background:#FFFFFF; border:1px solid #D9D4C7; border-radius:8px; }
+section.t figcaption { font-size:20px; line-height:1.4; color:#5A6478; }
+section.t .math { background:#FFFDF8; border-left:6px solid #C2410C; border-radius:8px; padding:8px 24px; font-size:30px; }
+section.t .math .katex-display { margin:6px 0; }
+section.t .foot { position:absolute; left:112px; right:112px; bottom:32px; border-top:2px solid #D9D4C7; padding-top:10px;
+  display:flex; flex-direction:column; gap:2px; }
+section.t .foot p { font-size:18px; line-height:1.35; color:#5A6478; }
+section.t.dark .foot { border-color:#3A4A6B; }
+section.t.dark .foot p { color:#9AA6BC; }
+section.t .num { position:absolute; right:112px; top:84px; font-family:'JetBrains Mono', monospace; font-size:20px; color:#9AA6BC; }
+section.t.cover { justify-content:space-between; padding:120px 128px; }
+section.t.divider { justify-content:center; gap:36px; padding:120px 128px; }
+section.t.divider h2 { font-size:80px; }
+</style>
+
+<script>
+// ?export=1: 장마다 도형·글상자·표·그림의 좌표와 스타일을 적는다. scripts/slides_editable.py가 읽는다.
+(function () {
+  if (!/[?&]export=/.test(location.search)) return;
+  var INLINE = /^(inline|inline-block|inline-flex|contents)$/;
+  function transparent(c) { return !c || c === 'transparent' || /rgba\(.*,\s*0\)$/.test(c); }
+  function rect(el, base) { var r = el.getBoundingClientRect(); return [r.left - base.left, r.top - base.top, r.width, r.height]; }
+  function style(cs) {
+    return { size: parseFloat(cs.fontSize), bold: parseInt(cs.fontWeight, 10) >= 600, italic: cs.fontStyle === 'italic',
+             color: cs.color, mono: /Mono|Courier|monospace/.test(cs.fontFamily) };
+  }
+  function runs(el) {
+    var out = [];
+    (function rec(node) {
+      Array.prototype.forEach.call(node.childNodes, function (c) {
+        if (c.nodeType === 3) { if (c.textContent) out.push({ s: c.textContent, st: style(getComputedStyle(node)), href: node.closest('a') ? node.closest('a').href : null }); return; }
+        if (c.nodeType !== 1 || c.tagName === 'ASIDE') return;
+        if (c.tagName === 'BR') { out.push({ s: '\n', st: style(getComputedStyle(node)) }); return; }
+        if (c.classList.contains('katex')) {
+          var a = c.querySelector('annotation');
+          out.push({ s: a ? a.textContent : c.textContent, st: style(getComputedStyle(node)), math: true });
+          return;
+        }
+        var cs = getComputedStyle(c);
+        if (cs.display === 'none') return;
+        if (INLINE.test(cs.display) && c.tagName !== 'IMG') rec(c);
+      });
+    })(el);
+    return out;
+  }
+  function hasOwnText(el) {
+    return Array.prototype.some.call(el.childNodes, function (c) {
+      if (c.nodeType === 3) return c.textContent.trim() !== '';
+      if (c.nodeType !== 1 || c.tagName === 'ASIDE') return false;
+      var cs = getComputedStyle(c);
+      return (INLINE.test(cs.display) || c.classList.contains('katex')) && c.tagName !== 'IMG' && c.textContent.trim() !== '';
+    });
+  }
+  function marker(li) {
+    var p = li.parentElement;
+    if (!p || getComputedStyle(li).listStyleType === 'none') return null;
+    if (p.tagName === 'OL') return { n: Array.prototype.indexOf.call(p.children, li) + parseInt(p.getAttribute('start') || '1', 10) };
+    return { n: 0 };
+  }
+  function textItem(el, base, cs) {
+    var r = rect(el, base), pl = parseFloat(cs.paddingLeft), pr = parseFloat(cs.paddingRight), pt = parseFloat(cs.paddingTop),
+        pb = parseFloat(cs.paddingBottom), bl = parseFloat(cs.borderLeftWidth), bt = parseFloat(cs.borderTopWidth);
+    var rr = runs(el), m = el.tagName === 'LI' ? marker(el) : null;
+    if (m) { r[0] -= 30; r[2] += 30; }   // 글머리표 자리. PPTX에서는 내어쓰기 30px의 진짜 글머리표가 된다
+    var lh = parseFloat(cs.lineHeight);
+    return { t: 'text', r: [r[0] + pl + bl, r[1] + pt + bt, r[2] - pl - pr - bl, r[3] - pt - pb - bt], runs: rr, li: m,
+             align: cs.textAlign, lh: isNaN(lh) ? 1.3 : lh / parseFloat(cs.fontSize) };
+  }
+  function boxItem(el, base, cs) {
+    var sides = {};
+    ['Top', 'Right', 'Bottom', 'Left'].forEach(function (s) {
+      var w = parseFloat(cs['border' + s + 'Width']);
+      if (w > 0 && cs['border' + s + 'Style'] !== 'none' && !transparent(cs['border' + s + 'Color'])) sides[s[0]] = [w, cs['border' + s + 'Color']];
+    });
+    var fill = transparent(cs.backgroundColor) ? null : cs.backgroundColor;
+    if (!fill && !Object.keys(sides).length) return null;
+    return { t: 'box', r: rect(el, base), fill: fill, radius: parseFloat(cs.borderTopLeftRadius) || 0, sides: sides };
+  }
+  function tableItem(el, base) {
+    var rows = Array.prototype.map.call(el.rows, function (tr) {
+      return { h: tr.getBoundingClientRect().height, cells: Array.prototype.map.call(tr.cells, function (c) {
+        var cs = getComputedStyle(c), bg = cs.backgroundColor;
+        if (transparent(bg)) bg = getComputedStyle(tr).backgroundColor;
+        if (transparent(bg)) bg = getComputedStyle(el).backgroundColor;
+        return { w: c.getBoundingClientRect().width, span: c.colSpan || 1, fill: transparent(bg) ? null : bg, runs: runs(c),
+                 align: cs.textAlign, size: parseFloat(cs.fontSize) };
+      }) };
+    });
+    return { t: 'table', r: rect(el, base), rows: rows };
+  }
+  function img(el, base) {
+    var r = rect(el, base), nw = el.naturalWidth, nh = el.naturalHeight;
+    if (nw && nh && getComputedStyle(el).objectFit === 'contain') {
+      var s = Math.min(r[2] / nw, r[3] / nh), w = nw * s, h = nh * s;
+      r = [r[0] + (r[2] - w) / 2, r[1] + (r[3] - h) / 2, w, h];
+    }
+    return { t: 'img', r: r, src: el.getAttribute('src') };
+  }
+  function slide(sec) {
+    var base = sec.getBoundingClientRect(), items = [];
+    (function walk(el) {
+      if (el.tagName === 'ASIDE') return;
+      var cs = getComputedStyle(el);
+      if (cs.display === 'none' || cs.visibility === 'hidden') return;
+      if (el !== sec && el.tagName !== 'TABLE') { var b = boxItem(el, base, cs); if (b) items.push(b); }
+      if (el.matches('.katex-display, svg, canvas, x-shape, [data-raster]')) {
+        var k = el.matches('.katex-display') ? (el.querySelector('.katex') || el) : el;
+        items.push({ t: 'raster', r: rect(k, base) }); return;
+      }
+      if (el.tagName === 'IMG') { items.push(img(el, base)); return; }
+      if (el.tagName === 'TABLE') { items.push(tableItem(el, base)); return; }
+      if (el !== sec && hasOwnText(el)) items.push(textItem(el, base, cs));
+      Array.prototype.forEach.call(el.children, function (c) {
+        var d = getComputedStyle(c).display;
+        if (!(INLINE.test(d) && c.tagName !== 'IMG' && !c.querySelector('img, .katex-display'))) walk(c);
+      });
+    })(sec);
+    var a = sec.querySelector('aside');
+    return { bg: getComputedStyle(sec).backgroundColor, items: items, note: a ? a.textContent.trim() : '' };
+  }
+  function run() {
+    var secs = Array.prototype.slice.call(document.querySelectorAll('#frame > section')), out = [];
+    secs.forEach(function (sec) {
+      secs.forEach(function (s) { s.classList.toggle('on', s === sec); });
+      out.push(slide(sec));
+    });
+    var rep = document.getElementById('report'); rep.textContent = JSON.stringify(out); rep.setAttribute('data-done', '1');
+  }
+  window.addEventListener('DOMContentLoaded', function () {
+    // 뷰어의 start()가 수식을 조판한 뒤에 잰다.
+    document.fonts.ready.then(function () { setTimeout(function () { window.withAllFonts(run); }, 300); });
+  });
+})();
+</script>
+<section id="cover" class="t dark cover">
+<p class="kicker">TRAVPLAN · 챕터 발표 · Planner (§B)</p>
+<div class="stack"><h1>학습 Planner는 후보를 내고,<br>고르는 일은 따로 한다</h1>
+<p class="lead">고전 기준선, 학습 로컬 Planner, 생성형 궤적, VLA, 위험 인지 계획, 그리고 Planner D에서 잰 것</p></div>
+<div class="pills"><p class="pill on">B.1–B.16 연구</p><p class="pill on">B.17 최근 연구 비교</p><p class="pill">B.15 작업 기록</p><p class="pill">2026-10</p></div>
+<aside>이 발표는 Planner 리서치 문서 한 챕터를 이야기로 묶은 것입니다. 결론부터 말하면, 2025–2026의 학습 Planner는 거의 모두 "생성기가 후보 여럿을 내고 다른 무엇이 고른다"로 모였고, travplan Planner D도 같은 꼴입니다. 갈리는 곳은 그 "다른 무엇"입니다. 마지막에는 travplan에서 실제로 잰 결과와 다음 시도 순서를 봅니다.</aside>
+</section>
+<section id="agenda" class="t">
+<div class="head"><p class="kicker">순서</p><h2>방법 다섯 갈래를 보고, 비교한 뒤, 우리가 잰 것으로 끝낸다</h2></div>
+<div class="cols">
+<div class="stack">
+<div class="card gy"><h3>0 · Planner의 계약과 고전 기준선</h3><p>B.1, B.10 · GuidancePlanner(Dijkstra)</p></div>
+<div class="card or"><h3>1 · 학습 로컬 Planner</h3><p>B.3, B.4b · iPlanner, NavDP, X-NavDP</p></div>
+<div class="card or"><h3>2 · 생성형 궤적</h3><p>B.8 · Diffuser에서 Planner D까지</p></div>
+<div class="card or"><h3>3 · Foundation·VLA·언어</h3><p>B.6 · VAMOS, Slow Brain, UrbanVLA</p></div>
+</div>
+<div class="stack">
+<div class="card or"><h3>4 · 위험 인지·로컬 내비</h3><p>B.9 · Feasibility-Guided, DreamFlow</p></div>
+<div class="card bl"><h3>5 · 자율주행 자동차</h3><p>B.12.1, B.13 · PDM-Closed, 규칙의 자리</p></div>
+<div class="card gr"><h3>6 · 최근 연구 비교 (B.17)</h3><p>공통점, 차이점, 다음 시도 순서</p></div>
+<div class="card gr"><h3>7 · travplan 작업 기록 (B.15)</h3><p>폴백, RL 후학습, 레벨 스윕</p></div>
+</div>
+</div>
+<aside>앞의 다섯 절은 "어떻게 계획하나"라는 방법이고, 자율주행 절은 "누가 무엇을 내놨나"라는 현황입니다. 다리·바퀴 로봇 계보 탭은 분량이 커서 이번 발표에서는 자율주행과의 공통 결론만 짚습니다. 6절의 비교와 7절의 작업 기록이 이 발표의 결론부입니다.</aside>
+</section>
+<section id="role" class="t">
+<div class="head"><p class="kicker">B.1 · Planner의 계약</p><h2>Planner는 경로나 4초 궤적만 내고, 제어는 Controller가 맡는다</h2></div>
+<div class="flow">
+<div class="step"><h3>입력</h3><p>로봇 상태</p><p><code>TravMap[8,H,W]</code></p><p>목표</p></div><p class="arrow">→</p>
+<div class="step"><h3>Planner</h3><p>GuidancePlanner(Dijkstra)</p><p>LearnedPlanner(waypoint 8개)</p><p>Planner D(flow matching)</p></div><p class="arrow">→</p>
+<div class="step"><h3>PlanResult</h3><p><code>path</code> 경로</p><p><code>times</code> 시간 인덱스</p></div><p class="arrow">→</p>
+<div class="step"><h3>Controller</h3><p>MPPI · NMPC · pure pursuit</p><p>로컬 회피 후 body twist</p></div>
+</div>
+<div class="grid3">
+<div class="card gy"><span class="tag">전역</span><h3>고전 경로</h3><p>Guidance가 Dijkstra로 subgoal과 cost-to-go를 준다</p></div>
+<div class="card or"><span class="tag or">로컬</span><h3>학습 궤적 생성</h3><p>Planner D가 flow matching으로 후보 16개를 만든다</p></div>
+<div class="card bl"><span class="tag bl">선택</span><h3>규칙 점수</h3><p>TravMap cost, 치명 셀, cost-to-go로 하나를 고른다</p></div>
+</div>
+<p class="take"><b>travplan:</b> Planner는 "고전 전역 경로 + 학습 로컬 궤적 + 규칙 점수 선택"의 세 층이다.</p>
+<aside>2026-09-25부터 Planner와 Controller를 나눴습니다. Planner는 상태, TravMap, 목표를 받아 PlanResult의 path와 times를 내고, 제어 명령은 내지 않습니다. Planner D는 이 세 층 가운데 가운데 층, 즉 학습 생성기입니다. VLA는 이 세 층 위에서 목표를 정하는 층으로 쓰겠다는 것이 문서의 결론이고, 뒤에서 다시 봅니다.</aside>
+</section>
+<section id="baselines" class="t">
+<div class="head"><p class="kicker">B.10 · 고전 기준선</p><h2>학습 Planner의 기준선은 TravMap 위 Dijkstra다</h2></div>
+<div class="cols">
+<table>
+<tr><th>연도</th><th>이름</th><th>층</th><th>핵심</th></tr>
+<tr><td>1959</td><td>Dijkstra</td><td>전역</td><td>누적 비용이 작은 칸부터 확정</td></tr>
+<tr><td>1968</td><td>A*</td><td>전역</td><td>남은 비용 추정으로 탐색 순서</td></tr>
+<tr><td>1997</td><td>DWA</td><td>로컬</td><td>가속 한계 안 속도 창에서 고름</td></tr>
+<tr><td>2008–10</td><td>Hybrid A*</td><td>전역</td><td>칸마다 연속 자세, 차량 기구학</td></tr>
+<tr><td>2012–17</td><td>TEB</td><td>로컬</td><td>시간 간격 궤적의 희소 최적화</td></tr>
+<tr><td>2020, 2024</td><td>Nav2, Smac</td><td>스택</td><td>behavior tree, 비용 인식 A*</td></tr>
+</table>
+<div class="stack">
+<p class="small muted">GuidancePlanner 간선 비용(8방향 격자, 치명 셀은 그래프에서 뺀다)</p>
+<div class="math">$$w_{ij} = \ell_{ij}\cdot\tfrac12(c'_i + c'_j),\quad c'_i = 1 + 4\,\mathrm{cost}_i + 0.5\,\sigma_i$$</div>
+<ul>
+<li>Dijkstra 한 번으로 모든 칸의 <b>cost-to-go</b></li>
+<li>학습 Planner는 4 m 앞 점을 <b>subgoal</b>로 받는다</li>
+<li>3 seed 벤치마크 guidance+mppi <b>12/12</b></li>
+</ul>
+<figure><img src="../../assets/thumbs/07b6296b9d02.webp" style="height:300px"><figcaption>Smac Planner (Fig. 1): Nav2 Smac을 쓰는 산업용·수상 로봇들 — 출처 [1]</figcaption></figure>
+</div>
+</div>
+<p class="take"><b>travplan:</b> Guidance는 기준선, subgoal 공급원, 폴백을 겸한다.</p>
+<div class="foot" data-foot><p>Dijkstra 1959; Hart·Nilsson·Raphael 1968; Fox·Burgard·Thrun, IEEE RAM 1997; Rösmann 외, RAS 2017; Nav2 arXiv:2003.00368; [1] Smac Planner arXiv:2401.13078</p></div>
+<aside>고전 계획은 전역 경로, 로컬 속도 선택, 궤적 최적화의 세 층입니다. travplan의 GuidancePlanner는 이 중 Dijkstra 하나지만 쓰임이 셋입니다. 비교 기준선이고, Planner D가 받는 subgoal과 cost-to-go의 출처이며, 뒤에서 볼 폴백 후보입니다. Nav2의 전역 계획기와 MPPI Controller 조합이 travplan의 Guidance와 MPPIController 조합과 같은 구조라 나중에 ROS 2로 섞을 때도 경계가 분명합니다.</aside>
+</section>
+<section id="sec-local" class="t dark divider">
+<p class="kicker">1 · 학습 로컬 Planner · B.2–B.4b, B.7</p>
+<h2>한 답을 회귀하던 Planner가<br>후보를 생성하고 고르는 쪽으로 옮겨 갔다</h2>
+<p class="lead">회귀는 빠르지만 갈림길에서 두 답의 평균이 장애물로 들어간다. diffusion 계열은 여러 답을 내고 critic이 고른다.</p>
+<aside>학습 로컬 Planner는 로봇 주변만 보고 가까운 경로를 내는 학습 모듈입니다. 이 절에서는 세 단계를 봅니다. 비용 지도로 직접 배우는 iPlanner 계열, 후보를 생성하고 critic이 고르는 NavDP, 그리고 그것을 폐루프 RL로 다듬은 X-NavDP입니다.</aside>
+</section>
+<section id="iplanner" class="t">
+<div class="head"><p class="kicker">B.4b · 비용 지도 자기지도</p><h2>라벨 없이 비용 지도의 기울기만으로 경로를 배울 수 있다</h2></div>
+<figure><img src="../../assets/thumbs/dc9244052a6b.webp" style="height:300px"><figcaption>iPlanner (Fig. 2): 깊이와 목표로 key point 경로와 충돌 확률을 예측하고, 궤적 비용과 fear loss를 역전파한다 — 출처 [2]</figcaption></figure>
+<div class="grid3">
+<div class="card bl"><span class="tag bl">iPlanner · RSS 2023</span><p>ESDF 비용을 손실로 쓰는 이층 최적화</p><p>약 4배 빠르고 SPL 26–87% 향상</p></div>
+<div class="card bl"><span class="tag bl">ViPlanner · ICRA 2024</span><p>의미 클래스 30개의 비용을 더했다</p><p>traversability 비용 38.02% 감소</p></div>
+<div class="card or"><span class="tag or">travplan LearnedPlanner</span><p>TravMap cost와 σ로 같은 손실</p><p>3 seed 벤치마크 learned+mppi <b>8/12</b></p></div>
+</div>
+<p class="take"><b>travplan:</b> 답이 하나라 갈림길에서 약하다. 그래서 Planner D로 옮겼다.</p>
+<div class="foot" data-foot><p>[2] iPlanner, arXiv:2302.11434, RSS 2023 · [3] ViPlanner, arXiv:2310.00982, ICRA 2024 (ETH RSL)</p></div>
+<aside>ETH RSL이 명령형 학습이라 부른 방식입니다. 예측한 경로 점에서 비용 지도를 쌍선형으로 읽으면 미분이 가능해서, 비용의 기울기가 네트워크까지 흐릅니다. travplan의 LearnedPlanner, 즉 Planner B가 이 계열이고 plan_loss는 평균 비용, 치명 영역 벌점, σ, 목표 거리, 매끄러움, 길이의 여섯 항입니다. 답이 하나라서 8/12에 머물렀고, 그래서 개발의 무게가 생성형인 Planner D로 옮겨 갔습니다.</aside>
+</section>
+<section id="navdp" class="t">
+<div class="head"><p class="kicker">B.3 · diffusion 궤적 + critic</p><h2>NavDP는 확산으로 후보를 내고, 특권 정보로 배운 critic이 고른다</h2></div>
+<div class="cols">
+<div class="stack">
+<ul>
+<li>RGB-D 이력으로 궤적 후보를 생성한다</li>
+<li>장면 3,000개, <b>시뮬 1,000 km 이상</b>만으로 학습</li>
+<li>critic 라벨은 시뮬 ESDF에서 만든다</li>
+<li>실물에서 critic은 영상만 보고 점수를 맞힌다</li>
+</ul>
+<table>
+<tr><th>평가</th><th>결과</th></tr>
+<tr><td>시뮬 PointGoal 성공률</td><td class="good">67.2% (ViPlanner 60.9%)</td></tr>
+<tr><td>실물 Turtlebot · Go2 · G1</td><td>9/10 · 7/10 · 7/10</td></tr>
+<tr><td>학습 비용</td><td>A100 32장, 24시간</td></tr>
+</table>
+</div>
+<figure><img src="../../assets/thumbs/907cbef63910.webp" style="height:540px"><figcaption>NavDP (Fig. 1): 시뮬 데이터로만 학습해 여러 로봇에 옮긴다 — 출처 [4]</figcaption></figure>
+</div>
+<p class="take"><b>travplan:</b> critic은 Planner D 규칙 선택기의 대체 후보다.</p>
+<div class="foot" data-foot><p>[4] NavDP, arXiv:2505.08712, ICRA 2026</p></div>
+<aside>NavDP는 학습 Planner와 입출력 계약이 같고 여러 답을 낼 수 있어서 Planner D의 직접 참고 대상입니다. 하나의 transformer가 궤적 생성 헤드와 critic 헤드를 함께 갖습니다. Jetson 지연은 보고하지 않았다는 점은 짚어 둡니다. travplan은 시뮬에서 TravMap 정답 비용과 치명 셀을 알기 때문에 같은 방식의 critic 라벨을 공짜로 만들 수 있습니다.</aside>
+</section>
+<section id="xnavdp" class="t">
+<div class="head"><p class="kicker">B.3 · 폐루프 RL 후학습</p><h2>폐루프 Q로 같은 상태의 후보를 재가중하자 성공률이 61%에서 84%가 됐다</h2></div>
+<div class="cols">
+<div class="stack">
+<ul>
+<li>같은 상태의 후보 64개, Q를 <b>그룹 안에서</b> 정규화</li>
+<li>상위 5개만 지수 가중 score matching</li>
+<li>3초 추종 구간이 RL 전이 하나</li>
+<li>23점 중 9점은 그룹 정규화 몫</li>
+</ul>
+<table>
+<tr><th>보지 않은 장면 40개</th><th>SR %</th></tr>
+<tr><td>iPlanner · ViPlanner</td><td>33.84 · 43.87</td></tr>
+<tr><td>NavDP</td><td>61.20</td></tr>
+<tr><td>X-NavDP</td><td class="good">84.28</td></tr>
+<tr><td>절제: DPPO · 모방만</td><td class="bad">33.98 · 53.50</td></tr>
+</table>
+</div>
+<figure><img src="../../assets/thumbs/1d7390b54f10.webp" style="height:360px"><figcaption>X-NavDP (Fig. 2): 로봇 임베딩 FiLM, 구조적 섭동 탐색, 그룹 안 Q 정규화 — 출처 [5]</figcaption></figure>
+</div>
+<p class="take"><b>travplan:</b> TP-0066의 개루프 채점을 폐루프 Q로 바꾼다.</p>
+<div class="foot" data-foot><p>[5] X-NavDP, arXiv:2607.28560, 2026-07 프리프린트 · [6] Beyond Imitation, arXiv:2603.12868 · [7] ReinFlow, arXiv:2505.22094, NeurIPS 2025</p></div>
+<aside>확산 정책은 우도를 계산하기 어려워 DPPO 계열 정책 기울기가 불안정합니다. 절제에서도 DPPO는 모방만 한 모델보다 낮았습니다. 비교 대상으로 같은 NavDP에서 출발한 Beyond Imitation은 에피소드 보상 GRPO로 0.520에서 0.587로 올렸고, ReinFlow는 flow 정책에 학습 잡음을 넣어 정확한 가능도를 얻습니다. Planner D는 flow matching이라 Q critic으로 다단계 보상을 만들고 ReinFlow식 기울기를 쓰는 조합이 가장 가깝습니다. 위험은 후보 16개에서의 Q 과대평가와 plant마다 critic을 다시 배워야 할 가능성입니다.</aside>
+</section>
+<section id="sec-gen" class="t dark divider">
+<p class="kicker">2 · 생성형 궤적 · B.8.0–B.8.3</p>
+<h2>궤적 전체를 생성 모델에서 샘플하고,<br>스텝 수를 1–2개로 줄여 왔다</h2>
+<p class="lead">공통점은 셋이다. 궤적 전체를 한 번에 만들고, 여러 모드를 표현하고, 비용이나 목표로 생성을 유도한다.</p>
+<aside>"계획을 생성 모델에서 샘플한다"는 발상은 2022년 Diffuser에서 시작해 로봇 정책, 운동 계획, 자율주행으로 퍼졌습니다. 2025년부터는 truncated diffusion, flow matching, 한 스텝 증류로 적분 스텝을 줄이는 쪽이 주류입니다. travplan Planner D는 이 계보의 flow matching 갈래에 있습니다.</aside>
+</section>
+<section id="lineage" class="t">
+<div class="head"><p class="kicker">B.8.0 · 계보</p><h2>Diffuser에서 GoalFlow까지 바뀐 것은 조건, 시작점, 스텝 수다</h2></div>
+<div class="cols">
+<table>
+<tr><th>연도</th><th>이름</th><th>바꾼 것</th></tr>
+<tr><td>2022</td><td>Diffuser</td><td>궤적 전체를 확산으로, 보상 기울기 guidance</td></tr>
+<tr><td>2023</td><td>Diffusion Policy</td><td>관측 조건 행동 열, receding horizon</td></tr>
+<tr><td>2023</td><td>MPD</td><td>확산 prior × 비용 likelihood 사후 샘플</td></tr>
+<tr><td>2024</td><td>π0</td><td>VLM에 flow matching 행동 전문가</td></tr>
+<tr><td>2024</td><td>DiffusionDrive</td><td>anchor에서 시작, 2스텝</td></tr>
+<tr><td>2025</td><td>Diffusion Planner</td><td>예측과 계획을 함께 생성</td></tr>
+<tr><td>2025</td><td>GoalFlow</td><td>목표점 먼저, flow matching 1스텝</td></tr>
+</table>
+<div class="stack">
+<figure><img src="../../assets/thumbs/dd3516347a80.webp" style="height:300px"><figcaption>GoalFlow (Fig. 2): 목표점을 고르고, 후보를 생성하고, 점수기가 고른다 — 출처 [10]</figcaption></figure>
+<div class="card or"><p>Planner D는 GoalFlow와 구조가 같다</p><p>목표점은 subgoal, 점수기는 TravMap 규칙</p></div>
+</div>
+</div>
+<table>
+<tr><th></th><th>회귀 계열 (LearnedPlanner)</th><th>생성형 궤적 (Planner D)</th></tr>
+<tr><td>답의 수</td><td class="bad">대개 하나. 갈림길에서 두 답의 평균</td><td class="good">여러 개를 샘플하고 고른다</td></tr>
+<tr><td>시간</td><td>waypoint 8개, 시간 없음</td><td>4초 × 10 Hz, <code>PlanResult.times</code></td></tr>
+</table>
+<div class="foot" data-foot><p>[8] Diffuser, arXiv:2205.09991, ICML 2022 · [9] Diffusion Policy, arXiv:2303.04137, RSS 2023 · [10] GoalFlow, arXiv:2503.05689, CVPR 2025</p></div>
+<aside>회귀 Planner는 대개 시간 없는 waypoint 열을 하나 내고, 생성형은 여러 개의 시간 인덱스 궤적을 내고 고릅니다. 다만 시간이 붙느냐는 생성형이냐가 아니라 출력 표현을 어떻게 약속했느냐의 문제입니다. GoalFlow는 NAVSIM에서 PDMS 90.3을 냈고, 잡음 제거 한 스텝으로도 성능이 좋았습니다. 차이는 GoalFlow가 목표점을 어휘에서 점수로 고르는 데 비해 Planner D는 고정 규칙으로 정한다는 것입니다.</aside>
+</section>
+<section id="diffplanner" class="t">
+<div class="head"><p class="kicker">B.8.1 · Diffusion Planner</p><h2>Diffusion Planner는 네 성질을 한 생성기에 담았다</h2></div>
+<table>
+<tr><th>성질</th><th>Diffusion Planner</th><th>travplan Planner D</th></tr>
+<tr><td>시간이 붙은 궤적</td><td>8초 × 10 Hz = 80스텝, 20 Hz 재계획</td><td>4초 × 10 Hz, <code>PlanResult.times</code></td></tr>
+<tr><td>주변 에이전트</td><td>이웃 10대의 미래를 자기 궤적과 한 텐서로 denoise</td><td>등속 예측을 Controller <code>RiskCost</code>가 채점</td></tr>
+<tr><td>목적지 비연결</td><td>차선 경로를 조건으로 8초만 생성</td><td>Guidance subgoal을 조건으로 받음</td></tr>
+<tr><td>기구학</td><td>보장 안 함. 출력을 LQR 추종기에 넘김</td><td class="good"><code>SwerveModel</code>로 굴려 만들 때부터 실행 가능</td></tr>
+<tr><td>실행 중 제약</td><td>재학습 없는 classifier guidance</td><td><code>planner_dg</code>가 TravMap 비용 기울기로</td></tr>
+</table>
+<div class="cols">
+<div class="stack">
+<div class="card bl"><h3>nuPlan Test14-hard</h3><p>75.99 (PDM-Closed 65.08)</p><p>후처리를 붙이면 78.87</p></div>
+<div class="card or"><h3>배달 차량 실주행 200시간</h3><p>폭 1.03 m, 자전거도로에서 92.08</p><p>travplan 도메인에 가장 가깝다</p></div>
+</div>
+<figure><img src="../../assets/thumbs/9c7a69654a46.webp" style="height:340px"><figcaption>Diffusion Planner (Fig. 1): ego와 이웃의 미래를 한 번에 denoise하는 DiT — 출처 [11]</figcaption></figure>
+</div>
+<div class="foot" data-foot><p>[11] Zheng 외, Diffusion-Based Planning for Autonomous Driving with Flexible Guidance, arXiv:2501.15564, ICLR 2025</p></div>
+<aside>출발점은 TIER IV의 Autoware Diffusion Planner입니다. DiT 3블록, hidden 192, DPM-Solver++ 10스텝으로 A6000에서 0.05초입니다. 가장 큰 차이는 기구학입니다. Diffusion Planner는 네트워크가 실행 가능성을 보장하지 않고 LQR에 맡기지만, Planner D는 제어 변화율을 생성해 스워브 모델로 굴리므로 후처리가 필요 없습니다. 이웃과의 공동 생성은 Planner D의 2단계로 미뤄 두었습니다.</aside>
+</section>
+<section id="followups" class="t">
+<div class="head"><p class="kicker">B.8.2 · 후속 연구</p><h2>후속 연구는 스텝 수, 안전, 실행 가능성을 생성 과정 안팎에서 보강한다</h2></div>
+<table>
+<tr><th>논문</th><th>핵심</th><th>보고한 수치</th></tr>
+<tr><td>Flow Planner (NeurIPS 2025)</td><td>궤적을 잘게 토큰화, 시공간 융합 + CFG</td><td>nuPlan Val14 90.43(refinement 없이), MIT</td></tr>
+<tr><td>DiffusionDrive (CVPR 2025)</td><td>모드 anchor 20개에서 truncated diffusion 2스텝</td><td>RTX 4090 45 FPS</td></tr>
+<tr><td>MISTY (2026-04)</td><td>반복 denoise 대신 단일 스텝</td><td>10.1 ms, Test14-hard 80.32</td></tr>
+<tr><td>PC-Diffuser (2026-03)</td><td>denoise 루프 안 capsule CBF, 단계마다 LQR rollout</td><td>—</td></tr>
+<tr><td>JPPD (2026-06)</td><td><b>보도 배달로봇</b>·보행자 예측·계획 공동 생성</td><td>CPU 32 ms, 충돌률 0.9%(ORCA 11.2%)</td></tr>
+<tr><td>GRACE (2026-07)</td><td>guidance 평균을 MPPI 한 번으로 추정</td><td>미분 불가능한 충돌 비용도 사용</td></tr>
+</table>
+<div class="grid3">
+<div class="card gy"><span class="tag">스텝 줄이기 1</span><h3>적분기</h3><p>DPM-Solver++ 10스텝</p></div>
+<div class="card gy"><span class="tag">스텝 줄이기 2</span><h3>시작점 당기기</h3><p>anchor에서 2스텝</p></div>
+<div class="card or"><span class="tag or">스텝 줄이기 3</span><h3>증류</h3><p>단일 스텝, 다양성을 잃는다</p></div>
+</div>
+<p class="take"><b>travplan:</b> JPPD가 도메인과 가장 가깝다. Flow Planner는 MIT다.</p>
+<div class="foot" data-foot><p>[12] Flow Planner arXiv:2510.11083 · [13] DiffusionDrive arXiv:2411.15139 · [14] MISTY arXiv:2604.21489 · PC-Diffuser arXiv:2603.10330 · [15] JPPD arXiv:2606.20686 · [16] GRACE arXiv:2607.21661</p></div>
+<aside>이 표에는 diffusion과 flow matching이 섞여 있고, 거의 모든 행이 스텝 수를 자랑합니다. 스텝 수를 줄이는 길은 적분기, 시작점 당기기, 증류의 셋이고, 증류는 다양성을 대가로 치릅니다. JPPD는 Isaac Sim과 메카넘 실물로 보도 공유 공간을 다뤘지만 코드는 게재 후 공개 예정입니다. GRACE처럼 기울기 없이 MPPI로 guidance를 추정하는 방식은 travplan의 이진 치명 비용과 잘 맞습니다.</aside>
+</section>
+<section id="plannerd" class="t">
+<div class="head"><p class="kicker">B.8.3 · travplan Planner D</p><h2>Planner D는 제어 변화율을 생성해 스워브 모델로 굴린다</h2></div>
+<div class="flow">
+<div class="step"><h3>조건</h3><p>TravMap 크롭</p><p>route subgoal, 현재 속도</p></div><p class="arrow">→</p>
+<div class="step"><h3>생성</h3><p>flow matching</p><p>변화율 <code>a[40,3]</code> × K=16</p></div><p class="arrow">→</p>
+<div class="step"><h3>굴리기</h3><p>적분 후</p><p><code>SwerveModel.rollout</code></p></div><p class="arrow">→</p>
+<div class="step"><h3>선택</h3><p>cost × 6 + 치명 10³</p><p>+ cost-to-go × 4</p></div><p class="arrow">→</p>
+<div class="step"><h3>출력</h3><p><code>path[41,3]</code></p><p><code>times[41]</code>, 4초</p></div>
+</div>
+<div class="cols">
+<div class="stack">
+<div class="card gr"><h3>고른 이유</h3><p>속도·가속 한계가 이미 스워브 모델에 있다</p><p>LQR·QP 후처리 없이 실행 가능하다</p><p>갈림길은 후보 16개 중에서 고른다</p></div>
+<div class="card or"><h3>학습 데이터와 공백</h3><p>지형 256개, Guidance + MPPI 시연 32,768개</p><p>교사가 상태마다 답 <b>하나</b>만 준다</p></div>
+</div>
+<figure><img src="img/plannerd_flow10.webp" style="height:400px"><figcaption>후보 16개(연보라, 빨강 = 치명)와 고른 궤적(청록), flow 10스텝 — TP-0137 그림에서 잘라 냄</figcaption></figure>
+</div>
+<p class="take"><b>travplan:</b> 다봉 교사(MPOT)가 빈자리다. 아직 착수하지 않았다.</p>
+<div class="foot" data-foot><p>planners/learned/ · 선택기 가중치는 B.15.1 · MPOT arXiv:2309.15970, NeurIPS 2023 (B.10.1)</p></div>
+<aside>Planner D는 MPPI에 후보를 넣는 구조가 아니라 완결된 시간 인덱스 궤적을 냅니다. Controller는 그 궤적을 시각별로 따라가며 지형과 보행자에 대한 로컬 안전만 맡습니다. 적분 누적 오차는 Controller의 폐루프 추종이 흡수합니다. 생성 Planner의 존재 이유는 여러 모드인데, 교사가 단일 모드라는 구조적 공백이 있다는 점을 강조하고 싶습니다. 여러 궤적을 한 배치로 미는 MPOT를 오프라인 오라클로 쓰는 것이 그 자리의 후보입니다.</aside>
+</section>
+<section id="sec-vla" class="t dark divider">
+<p class="kicker">3 · Foundation·VLA·언어 · B.6–B.6d</p>
+<h2>VLA는 Planner를 대체하지 않고,<br>그 위에서 목표를 정하는 층이다</h2>
+<p class="lead">느린 모델은 위층에 두고, 기하와 시간은 Planner와 Controller가 맡는다.</p>
+<aside>2024년부터 시각 내비 기반 모델은 VLA와 웹 영상 학습의 두 방향으로 커졌습니다. 그러나 2026년 실제 환경 평가는 이 모델들의 기하 이해가 아직 약하다는 것을 보였습니다. 이 절에서는 층을 나눠 성공한 VAMOS, 늦은 답을 다루는 Slow Brain, 그리고 보도 로봇의 시연 질을 고치는 연구들을 봅니다.</aside>
+</section>
+<section id="vamos" class="t">
+<div class="head"><p class="kicker">B.6b · VAMOS</p><h2>의미 계획과 몸체 판단을 두 모델로 나누자 실제 코스에서 90%가 됐다</h2></div>
+<figure><img src="../../assets/thumbs/eb619991296d.webp" style="height:360px"><figcaption>VAMOS (Fig. 2): VLM이 영상 위 경로 후보를 내고 로봇별 affordance 모듈이 고른다. 같은 장면에서 Spot은 계단, 바퀴 로봇은 경사로 — 출처 [17]</figcaption></figure>
+<div class="cols">
+<ul>
+<li><b>위층:</b> VLM이 영상 위 경로 후보를 낸다</li>
+<li><b>아래층:</b> 로봇별 통과 확률(8방향)</li>
+<li>판단을 켜면 Hound 60%에서 90%</li>
+</ul>
+<table>
+<tr><th>코스 6곳 × 5회</th><th>성공률</th></tr>
+<tr><td>VAMOS</td><td class="good">90%</td></tr>
+<tr><td>ViPlanner · 모듈식 스택</td><td>67% · 53%</td></tr>
+<tr><td>NoMaD · NaVILA</td><td class="bad">27% · 10%</td></tr>
+</table>
+</div>
+<div class="foot" data-foot><p>[17] VAMOS, arXiv:2510.20818, 2025-10 · [18] Can Vision Foundation Models Navigate?, arXiv:2603.25937 · [19] NaVILA, arXiv:2412.04453, RSS 2025</p></div>
+<aside>VAMOS는 "어디로 갈지"와 "이 로봇이 갈 수 있는지"를 나눴습니다. 아래층 affordance 함수는 Isaac Lab 지형 1,000개에서 정책을 굴린 성공 여부를 라벨로 썼습니다. 한편 Can VFMs Navigate? 논문은 GNM, ViNT, NoMaD 등을 zero-shot으로 평가해 충돌이 잦고 기하 이해가 약하다는 것을 보였습니다. 그래서 VLA는 위층, 기하는 아래층이라는 분담이 수치로 뒷받침됩니다. 다만 VAMOS 코드는 라이선스 표기가 없어 설계만 참고합니다.</aside>
+</section>
+<section id="slowbrain" class="t">
+<div class="head"><p class="kicker">B.6d · Slow Brain, Fast Planner</p><h2>늦게 오는 VLM 답은 그대로 따르지 말고 Planner 점수에 섞는다</h2></div>
+<div class="cols">
+<div class="stack">
+<ul>
+<li>앵커 Planner가 후보 64개를 5 Hz로 낸다</li>
+<li>VLM 왕복 지연은 중앙값 <b>2.7초</b></li>
+<li>늦은 답은 현재 좌표로 옮겨 가중한다</li>
+<li>5초가 넘으면 보수적 폴백</li>
+</ul>
+<table>
+<tr><th>4륜 배달로봇, 보도 5경로</th><th>100 m당 개입</th></tr>
+<tr><td>Planner만</td><td>3.49</td></tr>
+<tr><td>VLM 답을 그대로 따르기</td><td class="bad">8.15</td></tr>
+<tr><td>Score Fusion</td><td>1.31</td></tr>
+<tr><td>Probability Fusion</td><td class="good">0.87</td></tr>
+</table>
+</div>
+<figure><img src="../../assets/thumbs/5724c66a0b1c.webp" style="height:480px"><figcaption>Slow Brain, Fast Planner (Fig. 1): 빠른 Planner가 후보를 만들고 느린 VLM이 고른다 — 출처 [21]</figcaption></figure>
+</div>
+<p class="take"><b>travplan:</b> planner_df와 같은 꼴이다. 판정자가 의미를 본다.</p>
+<div class="foot" data-foot><p>[21] Slow Brain, Fast Planner, arXiv:2606.20458, 2026-06 (Amazon FAR·UCLA)</p></div>
+<aside>빠른 학습 Planner가 후보를 내고, 느린 판정자가 고르고, 폴백이 있다는 점에서 travplan의 planner_df와 같은 꼴입니다. 가져올 것은 늦은 신호를 다루는 규칙 세 가지입니다. 시뮬에서는 Score Fusion이 VLM 지연 5초까지 성공률 80% 이상을 지켰고, 그대로 따르기는 4초에서 0에 가까워졌습니다. 100 m당 개입 지표는 travplan TP-0038의 100 m당 실패 지표와 같은 방향입니다.</aside>
+</section>
+<section id="urban" class="t">
+<div class="head"><p class="kicker">B.6b, B.6d · 보도 로봇의 시연</p><h2>보도 로봇 연구는 시연의 질을 고쳐 실물의 분포 이동을 다룬다</h2></div>
+<div class="grid3">
+<div class="card or"><span class="tag or">UrbanVLA · 2025-10</span><h3>경로에 잡음을 넣는다</h3><p>경로점을 흔들고 다시 뽑는 HTL</p><p>실물 C자 보도 완주 42% → 100%</p><p>시뮬은 93% → 89%로 반대</p></div>
+<div class="card bl"><span class="tag bl">MIMIC · 2026-03</span><h3>배달 함대 로그로 배운다</h3><p>원격조종 궤적 3,040개, 약 50시간</p><p>이탈 상태를 합성해 교정 행동 확장</p><p>지평마다 앵커를 둔다</p></div>
+<div class="card gr"><span class="tag gr">S2E · ICLR 2026</span><h3>잔차만 RL로 배운다</h3><p>영상 약 100시간 모방 뒤 PPO</p><p>0 초기화 잔차 attention만 학습</p><p>실물 0.51(CityWalker 0.28)</p></div>
+</div>
+<figure><img src="../../assets/thumbs/961dc8731a78.webp" style="height:330px"><figcaption>S2E (Fig. 3): 앵커 query와 잔차 attention 블록, 단계별로 학습하는 부분 — 출처 [23]</figcaption></figure>
+<div class="foot" data-foot><p>[20] UrbanVLA, arXiv:2510.23576 · [22] MIMIC, arXiv:2603.22527 · [23] S2E, arXiv:2507.22028 (학회 표기는 저자 저장소 기준)</p></div>
+<aside>세 연구 모두 실물 로그와 시뮬의 분포 차이를 다룹니다. UrbanVLA의 HTL이 시뮬과 실물에서 반대로 움직였다는 점이 흥미롭습니다. 시뮬 수치만 보면 버렸을 처방이 실물에서는 결정적이었습니다. S2E의 잔차 구조는 travplan에 바로 옮길 수 있습니다. 학습 시작 시 출력이 모방 정책과 같으므로, 학습 뒤 레벨 0 성적이 바뀌면 그 차이는 모두 잔차가 만든 것입니다.</aside>
+</section>
+<section id="sec-risk" class="t dark divider">
+<p class="kicker">4 · 위험 인지·로컬 내비 · B.9</p>
+<h2>위험을 칸 cost 하나에 두지 않고<br>방향, Controller, 차체 자세로 옮긴다</h2>
+<p class="lead">같은 땅도 지나가는 방향에 따라, 따라가는 Controller에 따라 위험이 다르다.</p>
+<aside>이 절은 학습 Planner를 키울 때 비교 기준으로 삼거나 기법을 빌려 올 연구입니다. 공통된 흐름은 위험의 단위가 칸에서 방향, Controller의 추종 능력, 차체 자세로 옮겨 가고 있다는 것입니다. 다만 칸 cost와 직접 비교한 연구는 아직 없다는 점도 함께 기억해 주십시오.</aside>
+</section>
+<section id="feasibility" class="t">
+<div class="head"><p class="kicker">B.9 · Feasibility-Guided Planning</p><h2>Controller가 실제로 따라간 정도를 배워 Dijkstra 간선 비용으로 쓴다</h2></div>
+<div class="cols">
+<div class="stack">
+<ul>
+<li>지형별 보행 정책마다 Feasibility-Net</li>
+<li>입력: 높이 지도 조각, 속도 명령</li>
+<li>라벨: rollout의 속도 추종 보상</li>
+<li><b>8방향 텐서</b>를 Dijkstra 간선 비용으로</li>
+<li>혼합 지형: 시뮬 98.60%, 실물 A1 70%</li>
+<li>계단 정책이 좋아지면 경로 26.75 → 9.73 m</li>
+</ul>
+</div>
+<figure><img src="../../assets/thumbs/f90c6f9eef78.webp" style="height:540px"><figcaption>Feasibility-Guided Planning (Fig. 1): 정책별 실행 가능성 지도로 경로를 고르고 구간마다 정책을 바꾼다 — 출처 [26]</figcaption></figure>
+</div>
+<p class="take"><b>travplan:</b> TP-0151을 다시 열면 이 방식이 첫 후보다.</p>
+<div class="foot" data-foot><p>[26] Feasibility-Guided Planning, arXiv:2602.07932, 2026-02, ICRA 2026(arXiv 주석)</p></div>
+<aside>핵심은 라벨이 "그 Controller가 실제로 따라간 정도"라는 점입니다. plant 레벨 3의 시간 초과는 cost가 낮아도 plant와 mppi_plant_lag가 따라가지 못하는 칸이 있다는 뜻입니다. 다만 travplan의 추종 오차는 Planner가 낸 경로에 따라 달라지므로, 그대로 배우면 라벨이 순환합니다. 그래서 정해진 명령 속도를 따라가는 rollout으로 라벨을 모아야 합니다. 8방향 텐서는 Guidance의 8-연결 격자와 모양이 같습니다.</aside>
+</section>
+<section id="risk4" class="t">
+<div class="head"><p class="kicker">B.9 · 위험의 다른 자리</p><h2>방향, 센서 밖, 차체 자세, 부착 안전 층이 칸 cost를 보완한다</h2></div>
+<div class="grid2">
+<div class="card bl"><span class="tag bl">TRG-planner · RA-L 2025</span><p>간선이 경사면의 종·횡 방향을 담는다</p><p>같은 땅도 <b>지나가는 방향에 따라</b> 값이 다르다</p><p class="small muted">Commons Clause로 판매 금지</p></div>
+<div class="card or"><span class="tag or">DreamFlow · ICRA 2026</span><p>센서 밖 지형을 flow matching으로 상상</p><p>시뮬 Maze(Hard) 83.1%, Hallway 89.8%</p><p class="small muted">경사로가 센서 밖인 curb_ramp에 해당</p></div>
+<div class="card gy"><span class="tag">Occlusion-Aware · 2026-09</span><p>가림 분산을 차체 자세까지 전파한다</p><p>Gazebo 실패율 18.9%, 항을 빼면 34.4%</p><p class="small muted">칸 σ와의 비교는 없다</p></div>
+<div class="card gr"><span class="tag gr">CARE · CoRL 2025</span><p>정책 궤적을 척력장으로 밀어낸다</p><p>후보를 버리지 않고 밀어서 고친다</p><p class="small muted">재학습 없이 붙이는 안전 층</p></div>
+</div>
+<p class="take"><b>travplan:</b> 미는 힘은 생성 뒤 한 번만 건다(생성 중 안내는 3/30).</p>
+<div class="foot" data-foot><p>[24] TRG-planner arXiv:2501.01806 · [25] DreamFlow arXiv:2603.02976 · [28] Occlusion-Aware Stability-Oriented Planning arXiv:2609.39105 · [27] CARE arXiv:2506.03834</p></div>
+<aside>TRG-planner는 처음에 규모 확장의 대안으로 적었다가 2026-10-02에 정정했습니다. 가져올 것은 규모가 아니라 방향 의존성입니다. DreamFlow는 travplan의 알려진 한계인 센서 범위 밖 탐색을 정면으로 다룹니다. Occlusion-Aware 논문은 불확실성 항의 유무만 비교했으므로 칸 σ와 자세 분산 중 무엇이 나은지는 답하지 않습니다. CARE식 밀기는 지금의 Guidance 폴백 앞에 둘 수 있는 판입니다.</aside>
+</section>
+<section id="sec-av" class="t dark divider">
+<p class="kicker">5 · 자율주행 자동차 · B.11–B.13</p>
+<h2>자동차 스택도 "후보 생성, 검증, 선택"으로 모였다</h2>
+<p class="lead">E2E 주행의 결론은 하나를 회귀하지 말고, 후보를 만들어 규칙과 학습 점수로 고르라는 것이다.</p>
+<aside>자동차 오픈소스는 규칙 기반 풀스택에서 벤치마크 위의 학습 Planner로, 다시 둘을 섞는 구조로 왔습니다. Autoware는 생성형과 규칙 기반 Planner가 함께 후보를 내고 검증기와 순위기가 고르는 구조를 넣고 있습니다. 상용 스택도 모두 학습 계획 위에 규칙 안전 층을 둡니다.</aside>
+</section>
+<section id="pdm" class="t">
+<div class="head"><p class="kicker">B.12.1 · PDM-Closed</p><h2>규칙 후보 15개를 굴려 고른 PDM-Closed가 학습 Planner를 이겼다</h2></div>
+<figure><img src="../../assets/thumbs/f66d45834c3d.webp" style="height:400px"><figcaption>PDM (Fig. 1): 학습한 PDM-Open은 사람 차선을 따르다 0.5초 뒤부터 자기 오차를 키워 도로를 벗어난다 — 출처 [29]</figcaption></figure>
+<div class="cols">
+<ul>
+<li>IDM 속도 5 × 횡 오프셋 3 = <b>후보 15개</b></li>
+<li>LQR + 자전거 모델로 4초 시뮬레이션</li>
+</ul>
+<ul>
+<li>규칙·진행·편안함 점수로 하나를 고른다</li>
+<li>nuPlan 2023 계획 챌린지 우승</li>
+</ul>
+</div>
+<p class="take"><b>travplan:</b> 규칙 후보 판을 두면 학습 생성기의 몫을 잴 수 있다.</p>
+<div class="foot" data-foot><p>[29] PDM-Closed, arXiv:2306.07962, CoRL 2023 (Tübingen), tuplan_garage Apache-2.0</p></div>
+<aside>PDM 논문은 학습 Planner가 장기 예측에는 강하지만 폐루프에서는 오차를 스스로 키운다는 것을 보였습니다. 2초 안 충돌이 예상되면 비상 제동으로 바꾸는 규칙도 있습니다. Planner D도 후보 16개를 만들고 스워브 모델로 굴리고 규칙 점수로 고르니, 다른 곳은 후보 생성뿐입니다. 그래서 "Guidance 경로 + 규칙 속도·오프셋 후보 + 같은 점수기"를 비학습 Planner D로 두면 학습이 실제로 얼마를 더하는지 잴 수 있습니다. Autoware식 검증기로 스워브 한계와 치명 셀을 어기는 후보를 먼저 거르는 것도 가져올 것입니다.</aside>
+</section>
+<section id="rules" class="t">
+<div class="head"><p class="kicker">B.12.1, B.13 · 규칙의 자리</p><h2>학습 Planner는 규칙을 없앤 것이 아니라 규칙의 자리를 옮겼다</h2></div>
+<figure><img src="../../assets/figs/rule_migration.webp" style="height:420px"><figcaption>구성 요소별 규칙과 학습(회색 규칙, 파랑 학습, 주황 학습 + 규칙) — 출처: travplan scripts/make_doc_figures.py, 각 논문</figcaption></figure>
+<div class="flow">
+<div class="step"><h3>PlanT · 2022</h3><p>규칙은 <b>교사</b></p></div><p class="arrow">→</p>
+<div class="step"><h3>PlanTF · 2024</h3><p>지름길 막는 <b>설계</b></p></div><p class="arrow">→</p>
+<div class="step"><h3>PLUTO · 2024</h3><p>후보 <b>채점기</b></p></div><p class="arrow">→</p>
+<div class="step"><h3>CaRL · 2025</h3><p><b>보상·종료 조건</b></p></div>
+</div>
+<p class="take"><b>travplan:</b> 교사는 Guidance + MPPI, 채점은 규칙 선택기다.</p>
+<div class="foot" data-foot><p>[30] PlanT arXiv:2210.14222, CoRL 2022 · PlanTF arXiv:2309.10443, ICRA 2024 · PLUTO arXiv:2404.14327 · CaRL arXiv:2504.17838, CoRL 2025</p></div>
+<aside>2022–2025년의 네 편은 "학습 Planner가 규칙 Planner를 대체할 수 있는가"에 차례로 답했습니다. 답은 대체했지만 규칙은 다른 자리에 남았다는 것입니다. 자율주행의 지금 관심사도 3DGS와 시뮬 안의 RL 후학습, 폐루프 평가입니다. travplan의 다음 단계도 같은 방향이라, Planner D를 폐루프 RL로 후학습한 TP-0066 결과를 7절에서 봅니다.</aside>
+</section>
+<section id="sec-cmp" class="t dark divider">
+<p class="kicker">6 · 최근 연구 비교 · B.17 (2025–2026)</p>
+<h2>생성 Planner가 후보를 내고,<br>갈리는 곳은 "누가 고르나"다</h2>
+<p class="lead">학습한 critic, 폐루프 RL, 느린 VLM, 로봇별 실행 가능성 모델, 비학습 안전 층이 그 자리에 들어간다.</p>
+<aside>B.17은 2025–2026의 학습 로컬 Planner, 생성형 궤적, 위험 인지 계획 16편을 한 표로 비교한 탭입니다. 거의 모두 "사전학습한 생성 Planner가 후보 여럿을 내고, 다른 무엇이 고르거나 다듬는다"로 수렴했습니다. 이 절에서 비교표, 공통점, 차이점을 보고 travplan이 무엇을 가져올지 정리합니다.</aside>
+</section>
+<section id="cmp1" class="t">
+<div class="head"><p class="kicker">B.17 · 비교표 1/2 · 학습 로컬 Planner</p><h2>영상 입력 계열은 모방으로 시작해 RL로 다듬는다</h2></div>
+<table>
+<tr><th>이름 (연)</th><th>입력</th><th>방법의 핵심</th><th>학습 신호</th><th>로봇·실험</th></tr>
+<tr><td>NavDP (2025)</td><td>RGB-D</td><td>확산 후보 + 특권 critic</td><td>시뮬 시연 모방</td><td>Turtlebot·Go2·G1</td></tr>
+<tr><td>X-NavDP (2026-07)</td><td>RGB-D</td><td>그룹 안 Q 재가중</td><td>폐루프 RL, 3초 전이</td><td>시뮬 SR 61→84%</td></tr>
+<tr><td>Beyond Imitation (2026-03)</td><td>RGB-D</td><td>DiT 뒤쪽 층만 조정</td><td>에피소드 GRPO</td><td>Go2 20회 10→14</td></tr>
+<tr><td>ReinFlow (2025-05)</td><td>상태·영상</td><td>flow에 학습 잡음</td><td>정확한 가능도 PG</td><td>시뮬 보행·조작</td></tr>
+<tr><td>LoGoPlanner (2025-12)</td><td>RGB-D 영상</td><td>기하 백본, 위치 추정 내장</td><td>시뮬 시연 모방</td><td>TurtleBot·Go2·G1</td></tr>
+<tr><td>S2E (2025-07)</td><td>RGB + 목표점</td><td>앵커 GMM + 0 초기화 잔차</td><td>영상 모방 뒤 PPO</td><td>바퀴 로봇·Go2</td></tr>
+<tr><td>MIMIC (2026-03)</td><td>어안 + GPS</td><td>다중 지평 앵커, 교정 확장</td><td>원격조종 로그 모방</td><td>배달로봇 400 m</td></tr>
+<tr><td>LogoNav (2025-05)</td><td>영상 + 목표</td><td>행동 라벨 재매김(MBRA)</td><td>재라벨 자료 모방</td><td>6개 도시, 300 m+</td></tr>
+</table>
+<div class="grid3">
+<div class="card or"><h3>출발점이 같은 넷</h3><p>NavDP에서 출발해 RL 신호만 다르다</p></div>
+<div class="card bl"><h3>실물 로그를 고치는 둘</h3><p>MIMIC은 이탈 합성, LogoNav는 재라벨</p></div>
+<div class="card gy"><h3>공통 입력</h3><p>영상이라 연석 높이를 명시하지 않는다</p></div>
+</div>
+<div class="foot" data-foot><p>B.17 표에서 줄였다. 코드 공개: NavDP·X-NavDP·LoGoPlanner(NavDP 저장소), S2E 공개, 나머지 미확인</p></div>
+<aside>앞의 여덟은 영상이나 RGB-D를 바로 쓰는 학습 로컬 Planner입니다. NavDP 계열 넷은 같은 출발점에서 서로 다른 RL 신호를 썼다는 점에서 비교하기 좋습니다. MIMIC과 LogoNav는 실물 로그를 고쳐 쓰는 쪽입니다. 숫자는 각 논문이 보고한 것이고, 장면과 평가 집합이 달라 행끼리 직접 견줄 수는 없습니다.</aside>
+</section>
+<section id="cmp2" class="t">
+<div class="head"><p class="kicker">B.17 · 비교표 2/2 · 선택·위험·안전</p><h2>높이 지도 계열은 비용과 안전 층에서 몸체를 판단한다</h2></div>
+<table>
+<tr><th>이름 (연)</th><th>입력</th><th>방법의 핵심</th><th>학습 신호</th><th>로봇·실험</th></tr>
+<tr><td>Slow Brain (2026-06)</td><td>RGB + 목표</td><td>앵커 후보 + 지연 VLM 융합</td><td>학습 Planner + VLM</td><td>4륜 배달로봇 5경로</td></tr>
+<tr><td>UrbanVLA (2025-10)</td><td>카메라 4대 + 경로점</td><td>경로점을 영상과 정렬</td><td>지도 학습 뒤 IQL</td><td>Go2 500 m+</td></tr>
+<tr><td>VAMOS (2025-10)</td><td>RGB + 문장, 높이 지도</td><td>VLM 후보 + affordance</td><td>모방 + 성공 라벨</td><td>Spot·Hound 90%</td></tr>
+<tr><td>JPPD (2026-06)</td><td>상태·보행자·지도</td><td>공동 flow + 안전 포텐셜</td><td>모방 + guidance</td><td>메카넘 실물</td></tr>
+<tr><td>DreamFlow (2026-03)</td><td>높이 지도 잠재</td><td>센서 밖 지형 상상</td><td>PPO 내비 정책</td><td>Go2 실물</td></tr>
+<tr><td>Feasibility-Guided (2026-02)</td><td>높이 지도 + 속도</td><td>8방향 실행 가능성 → Dijkstra</td><td>추종 보상 회귀</td><td>A1 혼합 지형 70%</td></tr>
+<tr><td>Occlusion-Aware (2026-09)</td><td>LiDAR·깊이</td><td>맞춤 분산 → 자세, CEM</td><td>비학습 최적화</td><td>Husky·Jackal 6곳</td></tr>
+<tr><td>CARE (2025-06)</td><td>RGB → 깊이</td><td>척력장으로 궤적 밀기</td><td>비학습 부착 층</td><td>여러 실물 로봇</td></tr>
+</table>
+<div class="grid3">
+<div class="card or"><h3>고르는 쪽이 느리다</h3><p>VLM은 1–2 Hz, 위층에 둔다</p></div>
+<div class="card bl"><h3>몸체 판단은 8방향</h3><p>VAMOS와 Feasibility가 같은 모양</p></div>
+<div class="card gy"><h3>비학습 층</h3><p>Occlusion-Aware, CARE는 밖에 붙는다</p></div>
+</div>
+<div class="foot" data-foot><p>B.17 표에서 줄였다. 학회 표기 중 일부(UrbanVLA, S2E)는 저자 저장소, Feasibility-Guided는 arXiv 주석 기준</p></div>
+<aside>뒤의 여덟은 고르는 쪽, 위험, 안전 층에 무게를 둔 연구입니다. 앞 표와 달리 높이 지도나 명시적 기하를 쓰는 연구가 여기 몰려 있습니다. VAMOS와 Feasibility-Guided가 둘 다 8방향으로 몸체 판단을 Planner 비용에 옮겼다는 점이 눈에 띕니다. 비학습인 Occlusion-Aware와 CARE는 학습 Planner 바깥에 붙는 층입니다.</aside>
+</section>
+<section id="common" class="t">
+<div class="head"><p class="kicker">B.17 · 공통점</p><h2>다섯 가지 공통점은 travplan Planner D의 구조와 거의 겹친다</h2></div>
+<div class="grid2">
+<div class="card or"><h3>1 · 후보를 여럿 내고 따로 고른다</h3><p>critic, VLM, affordance, 규칙이 고른다</p><p>Planner D도 후보 16개 + 규칙 선택기</p></div>
+<div class="card or"><h3>2 · 모방으로 시작해 RL로 다듬는다</h3><p>X-NavDP, Beyond Imitation, S2E, UrbanVLA</p><p>시연은 분포를, RL은 회복과 우회를 준다</p></div>
+<div class="card bl"><h3>3 · 시연의 질을 고친다</h3><p>이탈 합성, 라벨 재매김, 경로 잡음</p><p>셋 다 실물 로그의 분포 이동을 다룬다</p></div>
+<div class="card bl"><h3>4 · 앵커나 모드로 다양성을 지킨다</h3><p>S2E, Slow Brain(64개), MIMIC</p><p>확산 계열은 표본 수로 같은 일을 한다</p></div>
+</div>
+<div class="card gr"><h3>5 · 추종은 별도 Controller가 한다</h3><p>X-NavDP는 MPC, Slow Brain은 pure pursuit, Occlusion-Aware는 π-MPPI</p><p>Planner가 제어를 내지 않는 travplan 구조와 같다</p></div>
+<aside>다섯 공통점 가운데 넷은 travplan이 이미 하고 있는 것입니다. 후보 여럿과 따로 고르기, 모방 뒤 RL, 별도 Controller는 Planner D와 planner_df에 들어 있습니다. 비어 있는 것은 셋째, 시연의 질을 고치는 일입니다. RL만으로 시작한 연구는 DreamFlow처럼 작은 높이 지도 입력을 쓴 경우뿐이었습니다.</aside>
+</section>
+<section id="diff" class="t">
+<div class="head"><p class="kicker">B.17 · 차이점</p><h2>갈리는 축은 표현, RL 신호, 불확실성, 실시간성, 몸체 판단의 자리다</h2></div>
+<div class="grid3">
+<div class="card bl"><span class="tag bl">표현</span><h3>영상 대 높이 지도</h3><p>영상은 자료가 싸다</p><p>지도는 기하를 검사할 수 있다</p></div>
+<div class="card or"><span class="tag or">RL 신호</span><h3>에피소드, Q, 개루프</h3><p>Q는 critic을 따로 배운다</p><p>개루프는 몇 초 뒤를 못 본다</p></div>
+<div class="card gy"><span class="tag">불확실성</span><h3>자세, 센서 밖, 분포 밖</h3><p>NavDP 계열은 다루지 않는다</p><p>칸 cost와 직접 비교한 연구는 없다</p></div>
+<div class="card gy"><span class="tag">실시간성</span><h3>5 Hz, 2 Hz, 2–3초</h3><p>학습 Planner, VLA, 클라우드 VLM</p><p>느릴수록 위층에 둔다</p></div>
+<div class="card gr"><span class="tag gr">몸체 판단</span><h3>입력 안 대 밖</h3><p>밖에 두면 그 층만 다시 맞춘다</p><p>VAMOS, Feasibility, CARE</p></div>
+<div class="card or"><span class="tag or">travplan 위치</span><h3>높이 지도 + 개루프</h3><p>TravMap 입력, TP-0066 채점</p><p>가장 싼 신호에 있다</p></div>
+</div>
+<aside>다섯 축을 카드로 나눴고 마지막 카드는 travplan의 위치입니다. travplan의 TP-0066은 RL 신호 축에서 가장 싼 개루프 채점에 있습니다. 싼 대신 경사로를 지나친 뒤 몇 초짜리 재탐색을 보지 못하고, 이것이 뒤에서 볼 정체의 해석입니다. 표현 축에서는 travplan이 높이 지도, 즉 TravMap 쪽에 서 있고 그 이유가 다음 장의 "가져오지 않을 것"입니다.</aside>
+</section>
+<section id="takeleave" class="t">
+<div class="head"><p class="kicker">B.17 · travplan에 주는 의미</p><h2>RL 신호와 잔차 구조는 가져오고, 영상 입력 VLA는 가져오지 않는다</h2></div>
+<div class="cols">
+<div class="card gr"><span class="tag gr">가져올 것</span>
+<p>1 · 폐루프 RL 신호(Q critic)</p>
+<p>2 · 0 초기화 잔차 학습 구조</p>
+<p>3 · Controller 실행 가능성 간선 비용</p>
+<p>4 · route 경로 잡음 증강</p></div>
+<div class="stack">
+<div class="card gy"><span class="tag">가져오지 않을 것</span>
+<p>영상 입력 VLA를 Planner로 쓰기</p>
+<p>위치 추정을 내장한 기하 백본</p></div>
+<div class="card bl"><h3>이유: TravMap이 명시적이어야 한다</h3>
+<p>치명 셀 검사, Guidance 폴백</p>
+<p>잡음 바닥 위의 짝 비교</p></div>
+</div>
+</div>
+<p class="take"><b>travplan:</b> Q critic은 치명 결과와 보행자 충돌도 함께 본다.</p>
+<aside>가져올 것 넷과 가져오지 않을 것 둘입니다. 가져오지 않는 이유는 하나로 모입니다. TravMap이 명시적이어야 치명 셀을 검사하고, Guidance로 폴백하고, 잡음 바닥 위에서 짝 비교를 할 수 있습니다. 그리고 Q critic은 재탐색뿐 아니라 L1 레벨 3의 남은 치명 에피소드와 보행자 5명 충돌(720 중 8건)도 같은 할인 보상으로 볼 수 있어 지금의 병목과도 이어집니다.</aside>
+</section>
+<section id="order" class="t">
+<div class="head"><p class="kicker">B.17 · 다시 열 때의 순서</p><h2>Planner 트랙을 다시 열면 첫 수는 Q critic RL 후학습이다</h2></div>
+<div class="grid2">
+<div class="card or"><span class="tag or">1 · X-NavDP, ReinFlow</span><h3>폐루프 Q로 후보 가중</h3><p>판정: curb_ramp L3 단독 26/30을 짝 비교로 넘나</p><p>위험: 후보 16개의 Q 과대평가</p></div>
+<div class="card or"><span class="tag or">2 · S2E RAM</span><h3>0 초기화 잔차만 RL로</h3><p>1번과 함께 쓴다</p><p>레벨 0 스모크는 학습 뒤에 의미가 있다</p></div>
+<div class="card gy"><span class="tag">3 · Feasibility-Guided</span><h3>실행 가능성 간선 비용</h3><p>명령 속도별 추종 오차로 8방향을 배운다</p><p>TP-0151을 다시 열 경우에만</p></div>
+<div class="card bl"><span class="tag bl">4 · UrbanVLA HTL</span><h3>route 경로 잡음 증강</h3><p>어긋난 경로 시나리오로 잰다</p><p>Isaac 폐루프(P1) 전에 한다</p></div>
+</div>
+<p class="take"><b>travplan:</b> 지금은 사용자 결정 1(B)대로 L1 인식과 보행자가 먼저다.</p>
+<aside>각 항목에 TP 후보 문장이 문서에 적혀 있습니다. 1번은 TP-0138 후속으로, 치명과 보행자 충돌 항을 포함하고 twin critic의 최솟값이 필요합니다. 학습 시간은 재지 않았고, X-NavDP의 12시간은 IsaacLab 448개 환경의 값이라 그대로 옮길 수 없습니다. plant 지연을 켜면 같은 후보라도 전이가 달라져 critic을 다시 배워야 할 수 있다는 위험도 있습니다. 지금 Planner 트랙은 쉬고 있습니다.</aside>
+</section>
+<section id="sec-log" class="t dark divider">
+<p class="kicker">7 · travplan 작업 기록 · B.15</p>
+<h2>Planner D는 레벨 0에서 기준선과 같고,<br>좁은 경사로는 학습만으로 넘지 못했다</h2>
+<p class="lead">폴백과 RL 후학습을 더하면 curb_ramp 레벨 3 30/30이다. 학습 쪽 네 시도는 RL 1단계를 넘지 못했다.</p>
+<aside>여기서부터는 남의 연구가 아니라 travplan이 고치고 잰 결과입니다. 모든 숫자에 TP 번호를 달았습니다. 판정은 CLAUDE.md의 게이트 규칙을 따릅니다. 혼돈 조건에서는 seed 10개와 난수 오프셋 3판의 짝 비교로만 판정하고, 한 판의 1–2개 차이는 잡음 바닥 안이라고 적습니다.</aside>
+</section>
+<section id="pd-first" class="t">
+<div class="head"><p class="kicker">B.8.3 · TP-0025</p><h2>1차 8/12의 원인은 Planner가 아니라 Controller 추종 방식이었다</h2></div>
+<div class="cols">
+<table>
+<tr><th>스택 (4 시나리오 × 3 seed)</th><th>성공</th><th>계획</th></tr>
+<tr><td>guidance+mppi</td><td>12/12</td><td>—</td></tr>
+<tr><td>learned+mppi</td><td class="bad">8/12</td><td>0.5 ms</td></tr>
+<tr><td><b>planner_d+mppi</b></td><td class="good">12/12</td><td>3.4 ms</td></tr>
+<tr><td>planner_d+tracker</td><td class="bad">6/12</td><td>3.4 ms</td></tr>
+<tr><td>(이전) planner_d+mppi</td><td>8/12</td><td>3 ms</td></tr>
+</table>
+<div class="stack">
+<div class="card gy"><h3>원인을 좁힌 과정</h3>
+<p>DAgger로도 bumps는 0/24 그대로</p>
+<p>요철 띠 비용 0.7–0.9, 틈이 없다</p>
+<p>시간 참조에서 멈춤과 건넘의 비용이 비슷</p></div>
+<div class="card gr"><h3>수정</h3><p>시간 모드에 지평 끝 진행 항을 더했다</p><p><code>ReferenceCost</code>, <code>w_progress</code></p></div>
+</div>
+</div>
+<p class="take"><b>travplan:</b> Planner를 고치기 전에 Controller 추종부터 본다.</p>
+<div class="foot" data-foot><p>results/tp0025_v2/bench.log · docs/ARCHITECTURE.md §4</p></div>
+<aside>초기 Planner D는 8/12였고, 실패는 curb_ramp와 bumps_potholes의 시간 초과였습니다. Planner는 요철 띠를 건너는 궤적을 계속 냈지만, MPPI 시간 참조 비용은 스텝별 추종 오차뿐이라 멈춤과 건넘의 비용이 비슷해져 제자리에 머물렀습니다. 경로 모드에 있던 진행 항을 시간 모드에도 대칭으로 넣자 12/12가 됐습니다. 직전 계획 유지(keep_previous)도 매 스텝 재선택으로 참조가 흔들리는 문제를 줄였습니다. planner_d+tracker 6/12는 Controller 보정 없는 Planner 자체 품질을 보여 줍니다.</aside>
+</section>
+<section id="pd-browser" class="t">
+<div class="head"><p class="kicker">B.15.1 · TP-0137</p><h2>1스텝 후보의 퍼짐은 모드의 다양성이 아니라 두 번 적분된 잡음이다</h2></div>
+<figure><img src="../../assets/figs/tp0137_planner_d.webp" style="height:340px"><figcaption>curb_ramp seed 1 첫 계획의 후보 16개(연보라, 빨강 = 치명)와 고른 궤적(청록). 왼쪽부터 flow 10스텝, diffusion 10스텝, flow 1스텝 — 출처: docs/playground/plannerd_fig.html</figcaption></figure>
+<div class="cols">
+<table>
+<tr><th>스텝</th><th>flow 퍼짐</th><th>diffusion 퍼짐</th></tr>
+<tr><td>1</td><td>0.996 m</td><td>0.996 m</td></tr>
+<tr><td>4</td><td>0.238 m</td><td>0.220 m</td></tr>
+<tr><td>20</td><td>0.554 m</td><td>0.564 m</td></tr>
+</table>
+<ul>
+<li>JS 추론이 파이썬과 7×10⁻⁶ 안에서 같다</li>
+<li>두 샘플러 모두 <b>12/12</b>(4 지형 × 3 seed)</li>
+<li>1스텝은 평균으로 <b>83%만</b> 무너진다</li>
+<li>남은 잡음이 두 번 적분돼 끝점이 약 1 m 퍼진다</li>
+</ul>
+</div>
+<aside>Planner D를 float16으로 내보내 Playground에서 돌렸고, 같은 속도망을 DDPM 조상 샘플링으로도 샘플합니다. 학습된 망은 1스텝에서 -x를 95–99%만 갚아서 표본 표준편차 0.17이 남고, 출력이 변화율이라 twist와 자세로 두 번 적분돼 끝점이 약 1 m 흩어집니다. 2–4스텝에서는 표본이 평균 쪽으로 오그라들고 10–20스텝에서 퍼짐이 돌아옵니다. 도달이 모두 12/12인 것은 선택기와 MPPI가 받쳐 주기 때문이라, 이 지형에서는 다양성 차이가 도달로 드러나지 않습니다.</aside>
+</section>
+<section id="fallback" class="t">
+<div class="head"><p class="kicker">B.15.2 · TP-0078</p><h2>Guidance 폴백이 curb_ramp 레벨 3을 20/30에서 29/30으로 올렸다</h2></div>
+<figure><img src="../../assets/figs/tp0078_fallback.webp" style="height:400px"><figcaption>왼쪽: 단독(주황)은 경사로를 지나쳐 60 s를 넘기고, 폴백(초록)은 돌아가 오른다. 오른쪽: 30 에피소드 도달 수 — 출처: scripts/make_evidence_figures.py</figcaption></figure>
+<div class="grid3">
+<div class="card gy"><h3>잡음 바닥부터</h3><p>재실행만으로 8 · 6 · 6/10</p><p>seed 10 × 오프셋 3 짝 비교</p></div>
+<div class="card or"><h3>규칙</h3><p>표본 90% 치명이 3번 이어지면</p><p>2 s 동안 Guidance 경로를 후보로</p></div>
+<div class="card gr"><h3>결과</h3><p>짝 비교 <b>1 : 10, p = 0.012</b></p><p>Guidance도 29/30</p></div>
+</div>
+<p class="take"><b>travplan:</b> 개선은 Guidance 몫이다. 계획의 51%를 Guidance가 이긴다.</p>
+<aside>후보가 이기면 계획이 Guidance 경로 자체가 되고, MPPI는 경로 모드로 따릅니다. 첫 설계는 Guidance를 pure pursuit로 굴린 시간 인덱스 궤적이었는데 실패했습니다. 레벨 3 경사로의 자유 통로가 한 칸 폭이라 시간 참조 모드로는 꺾어 들지 못한 것으로 보입니다. 트리거 값 0.9, 3번, 20은 미리 정한 한 벌만 돌렸고 최선인지는 모릅니다. 폴백을 끄면 main과 궤적이 비트 단위로 같습니다.</aside>
+</section>
+<section id="rl" class="t">
+<div class="head"><p class="kicker">B.15.3 · TP-0066</p><h2>폐루프 RL 후학습 12분으로 단독 26/30, 폴백과 함께 30/30이 됐다</h2></div>
+<div class="cols">
+<table>
+<tr><th>curb_ramp L3, 30 에피소드</th><th>도달</th><th>짝 비교</th><th>폴백 몫</th></tr>
+<tr><td>DAgger 단독</td><td>20/30</td><td>—</td><td>—</td></tr>
+<tr><td>RL 단독</td><td>26/30</td><td>1 : 7, p = 0.070</td><td>—</td></tr>
+<tr><td>DAgger + 폴백</td><td>29/30</td><td>1 : 10, p = 0.012</td><td>51%</td></tr>
+<tr><td><b>RL + 폴백</b></td><td class="good">30/30</td><td>0 : 10, p = 0.002</td><td>42%</td></tr>
+<tr><td>guidance+mppi</td><td>29/30</td><td>1 : 10, p = 0.012</td><td>—</td></tr>
+</table>
+<figure><img src="../../assets/figs/tp0066_rl.webp" style="height:290px"><figcaption>왼쪽: 30 에피소드 도달 수. 오른쪽: 폴백이 이긴 계획 비율과 도달 시간 — 출처: scripts/make_evidence_figures.py</figcaption></figure>
+</div>
+<ul>
+<li>라운드마다 지형 64개 폐루프, 후보 16개를 GT 지도로 채점</li>
+<li>GRPO식 이점으로 AWR 가중 flow matching, 모방 λ = 0.5</li>
+<li>단독 26/30은 판정 기준 27/30에 못 미친다</li>
+<li>RL + 폴백 도달 28.9 s, Guidance 28.0 s와 같다</li>
+</ul>
+<div class="foot" data-foot><p>짝 비교는 DAgger 단독 대비. 체크포인트 planner_d_L0123_rl.pt, 릴리스 ckpt-2026-10-03</p></div>
+<aside>데스크톱 한 대에서 rollout이 라운드당 208–245초, 미세 조정이 5–6초로 전체 12분이었습니다. RL 단독의 개선은 p = 0.07이라 잡음 바닥 밖이라고 말할 수 없습니다. 대신 폴백과 함께 재면 Guidance 경로에 기대는 계획이 51%에서 42%로 줄고 도달도 7 s 빨라집니다. 지금 가장 좋은 학습 스택은 RL 체크포인트에 폴백을 켠 것이고, 보행자 최소 여유도 0.24 m로 기준 0.2 m를 넘습니다. 학습은 한 번만 돌렸습니다.</aside>
+</section>
+<section id="sweep" class="t">
+<div class="head"><p class="kicker">B.15.4 · TP-0039 · TP-0074</p><h2>레벨 0–3 스윕에서 급격한 붕괴는 없고, 실패는 모두 시간 초과다</h2></div>
+<figure><img src="../../assets/figs/tp0039_levels.webp" style="height:360px"><figcaption>왼쪽: 스택별 레벨 0–3 도달(4 지형 × seed 0–9, 40 중). 오른쪽: Planner D 단독의 에피소드별 평균 치명 표본 비율, 큰 X가 시간 초과 — 출처: scripts/make_evidence_figures.py</figcaption></figure>
+<div class="cols">
+<table>
+<tr><th>합 (레벨 0 · 1 · 2 · 3)</th><th>40 중</th></tr>
+<tr><td>guidance+mppi</td><td>40 · 39 · 38 · 37</td></tr>
+<tr><td>planner_d+mppi (DAgger)</td><td>40 · 39 · 38 · 36</td></tr>
+<tr><td>planner_df+mppi (RL + 폴백)</td><td>39 · 40 · 38 · 39</td></tr>
+</table>
+<ul>
+<li>치명 표본 비율: 실패 <b>0.75–0.99</b></li>
+<li>성공은 0.10–0.57, 폴백 트리거의 근거</li>
+<li>random_mix s3 L2·L3는 세 스택 모두 멈춤</li>
+</ul>
+</div>
+<aside>스윕은 지형마다 한 번씩만 돌렸으므로 스택 사이의 1–3개 차이는 재실행 차이와 구별되지 않습니다. 말할 수 있는 것은 레벨 3까지 급격한 붕괴가 없다는 것뿐입니다. 진단 쪽 결론이 더 쓸모 있습니다. 치명 표본 비율이 높으면 실패한다는 TP-0050의 관계가 네 지형과 네 레벨 모두에서 유지되고, 이것이 폴백 트리거의 근거입니다. random_mix s3는 belief 잡음이 한 칸 폭 통로를 닫는 결정적 실패입니다.</aside>
+</section>
+<section id="attempts" class="t">
+<div class="head"><p class="kicker">B.15.5–B.15.6 · TP-0138 · TP-0143</p><h2>학습 쪽 네 시도는 모두 RL 1단계 26/30을 넘지 못했다</h2></div>
+<div class="cols">
+<table>
+<tr><th>시도</th><th>단독</th><th>+ 폴백</th><th>폴백 몫</th></tr>
+<tr><td>RL 1단계 (TP-0066)</td><td>26/30</td><td>30/30</td><td>42%</td></tr>
+<tr><td>RL 2단계: curb_ramp L3만</td><td>26/30</td><td>28/30</td><td>48%</td></tr>
+<tr><td>RL 재시도: 모든 지형 L2–3</td><td>26/30</td><td>27/30</td><td>46%</td></tr>
+<tr><td>리셋 DAgger, 멈춘 채</td><td>23/30</td><td>29/30</td><td>45%</td></tr>
+<tr><td>리셋 DAgger, 움직이며</td><td>23/30</td><td>28/30</td><td>43%</td></tr>
+<tr><td>진단: 표본 64개</td><td>24/30</td><td>—</td><td>—</td></tr>
+<tr><td>진단: cost 안내 샘플링</td><td class="bad">3/30</td><td>—</td><td>—</td></tr>
+</table>
+<div class="stack">
+<div class="card or"><h3>보상의 구멍 (TP-0138)</h3><p>4 s 개루프 후보를 한 번 채점한다</p><p>몇 초짜리 재탐색을 보상하지 못한다</p><p class="small muted">해석이다</p></div>
+<div class="card bl"><h3>남은 가설: 구조 (TP-0143)</h3><p>관측 ±3.2 m, subgoal 3 m, 지평 4 s</p><p>실패 때 경사로는 관측 가장자리 밖</p></div>
+</div>
+</div>
+<p class="take"><b>travplan:</b> 데이터와 표본 수는 병목이 아니다. 여기서 멈췄다.</p>
+<aside>2단계는 curb_ramp 레벨 3만으로 학습해 벤치마크가 24/24에서 22/24로 떨어졌고, 보행자 최소 여유도 0.11 m까지 줄었습니다. 리셋 DAgger는 경사로를 지나친 상태에서 시작해 재탐색 상태에 전문가 이름표를 붙였지만, 둘 다 23/30으로 잡음 안이었습니다. 표본을 64개로 늘려도 24/30이고, 생성 중 cost 안내는 3/30으로 무너졌습니다. 관측을 넓히거나 지평을 늘리면 시연 수집부터 처음부터 다시 학습해야 하므로, 비평가 재시도 규칙에 따라 여기서 멈췄습니다.</aside>
+</section>
+<section id="summary" class="t">
+<div class="head"><p class="kicker">정리</p><h2>구조는 이미 맞다. 다음에 바꿀 것은 RL 신호와 교사의 다양성이다</h2></div>
+<div class="grid3">
+<div class="card or"><span class="tag or">연구 흐름</span><h3>후보를 내고 따로 고른다</h3><p>학습 Planner, 생성형, 자동차, VLA</p><p>모두 이 꼴로 모였다</p></div>
+<div class="card bl"><span class="tag bl">travplan 현재</span><h3>Planner D + 폴백</h3><p>레벨 0 12/12, 계획 3.4 ms</p><p>curb_ramp L3 단독 26/30</p><p>폴백과 함께 30/30</p></div>
+<div class="card gr"><span class="tag gr">다음 시도</span><h3>Q critic RL</h3><p>개루프 채점을 폐루프 Q로</p><p>0 초기화 잔차, 다봉 교사</p></div>
+</div>
+<div class="card gy"><h3>지금의 우선순위</h3>
+<p>Planner 트랙은 쉰다. 사용자 결정 1(B)로 단독은 26/30에 두었다</p>
+<p>다음 병목은 L1 인식과 보행자다. 후보는 TP-0055(L1 belief 재학습)</p>
+<p>판정은 짝 비교, 치명 실패가 하나라도 늘면 채택하지 않는다</p></div>
+<aside>세 줄로 정리하면 이렇습니다. 첫째, 2025–2026 연구는 후보 생성과 선택을 나누는 쪽으로 모였고 travplan 구조도 같습니다. 둘째, Planner D는 레벨 0에서 기준선과 같고 폴백과 RL을 더하면 레벨 3 경사로도 넘지만, 학습만으로는 26/30에서 멈췄습니다. 셋째, 다시 열 때의 첫 수는 Q critic이며, 지금은 L1 인식과 보행자가 먼저입니다.</aside>
+</section>
+<section id="refs1" class="t">
+<div class="head"><p class="kicker">참고문헌 1/2</p><h2>학습 로컬 Planner와 생성형 궤적</h2></div>
+<div class="cols">
+<div class="stack">
+<p class="small">[1] Smac Planner, arXiv:2401.13078 · Nav2, arXiv:2003.00368</p>
+<p class="small">[2] iPlanner, arXiv:2302.11434, RSS 2023</p>
+<p class="small">[3] ViPlanner, arXiv:2310.00982, ICRA 2024</p>
+<p class="small">[4] NavDP, arXiv:2505.08712, ICRA 2026</p>
+<p class="small">[5] X-NavDP, arXiv:2607.28560, 2026</p>
+<p class="small">[6] Beyond Imitation, arXiv:2603.12868, 2026</p>
+<p class="small">[7] ReinFlow, arXiv:2505.22094, NeurIPS 2025</p>
+<p class="small">[8] Diffuser, arXiv:2205.09991, ICML 2022</p>
+</div>
+<div class="stack">
+<p class="small">[9] Diffusion Policy, arXiv:2303.04137, RSS 2023</p>
+<p class="small">[10] GoalFlow, arXiv:2503.05689, CVPR 2025</p>
+<p class="small">[11] Diffusion Planner, arXiv:2501.15564, ICLR 2025</p>
+<p class="small">[12] Flow Planner, arXiv:2510.11083, NeurIPS 2025</p>
+<p class="small">[13] DiffusionDrive, arXiv:2411.15139, CVPR 2025</p>
+<p class="small">[14] MISTY, arXiv:2604.21489, 2026</p>
+<p class="small">[15] JPPD, arXiv:2606.20686, 2026</p>
+<p class="small">[16] GRACE, arXiv:2607.21661, 2026</p>
+</div>
+</div>
+<p class="small muted">MPOT, arXiv:2309.15970, NeurIPS 2023 · LoGoPlanner, arXiv:2512.19629 · PC-Diffuser, arXiv:2603.10330</p>
+<aside>번호는 각 장 각주의 번호와 같습니다. 학회 표기는 리서치 문서에 적힌 대로이고, 프리프린트는 연월만 적었습니다. 코드와 라이선스는 리서치 문서 머리말의 공개 코드 표에 있습니다.</aside>
+</section>
+<section id="refs2" class="t">
+<div class="head"><p class="kicker">참고문헌 2/2</p><h2>VLA, 위험 인지 계획, 자율주행</h2></div>
+<div class="cols">
+<div class="stack">
+<p class="small">[17] VAMOS, arXiv:2510.20818, 2025</p>
+<p class="small">[18] Can Vision Foundation Models Navigate?, arXiv:2603.25937</p>
+<p class="small">[19] NaVILA, arXiv:2412.04453, RSS 2025</p>
+<p class="small">[20] UrbanVLA, arXiv:2510.23576, 2025</p>
+<p class="small">[21] Slow Brain, Fast Planner, arXiv:2606.20458</p>
+<p class="small">[22] MIMIC, arXiv:2603.22527, 2026</p>
+<p class="small">[23] S2E, arXiv:2507.22028</p>
+</div>
+<div class="stack">
+<p class="small">[24] TRG-planner, arXiv:2501.01806, RA-L 2025</p>
+<p class="small">[25] DreamFlow, arXiv:2603.02976, ICRA 2026</p>
+<p class="small">[26] Feasibility-Guided Planning, arXiv:2602.07932</p>
+<p class="small">[27] CARE, arXiv:2506.03834, CoRL 2025</p>
+<p class="small">[28] Occlusion-Aware Stability-Oriented Planning, arXiv:2609.39105</p>
+<p class="small">[29] PDM-Closed, arXiv:2306.07962, CoRL 2023</p>
+<p class="small">[30] PlanT 2210.14222 · PlanTF 2309.10443 · PLUTO 2404.14327 · CaRL 2504.17838</p>
+</div>
+</div>
+<p class="small muted">travplan 결과: docs/research-planner.md B.15, STATE.md, results/tp0025_v2 · tp0066_rl · tp0078 · tp0039_levels</p>
+<aside>travplan 결과의 원본은 Planner 문서 작업 기록 탭 B.15와 STATE.md입니다. 그림은 scripts/make_evidence_figures.py와 scripts/make_doc_figures.py가 만든 저장소 그림이고, 논문 그림은 문서에 걸린 원본의 썸네일입니다.</aside>
+</section>
+</div></div>
+<div id="notes"><b>발표자 노트</b><div id="notes-body"></div></div>
+<div id="bar">
+<button id="prev" aria-label="이전">◀</button><span id="count"></span><button id="next" aria-label="다음">▶</button>
+<span id="ttl">travplan 챕터 발표 — Planner</span>
+<button id="nb" title="N 키">노트</button><button id="fs" title="F 키">전체 화면</button>
+<a href="talk-planner.pptx" download>PPTX</a><a href="./../">목록</a>
+</div>
+<pre id="report" hidden></pre>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script>
+(function () {
+  var slides = Array.prototype.slice.call(document.querySelectorAll('#frame > section'));
+  var frame = document.getElementById('frame'), notes = document.getElementById('notes');
+  var q = new URLSearchParams(location.search), shot = q.has('shot') || q.has('check');
+  if (shot) document.body.classList.add('shot');
+  var i = 0;
+  function fit() {
+    if (shot) return;
+    var st = document.getElementById('stage');
+    var s = Math.min(st.clientWidth / 1920, st.clientHeight / 1080);
+    frame.style.transform = 'scale(' + s + ')';
+  }
+  function show(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach(function (el, k) { el.classList.toggle('on', k === i); });
+    document.getElementById('count').textContent = (i + 1) + ' / ' + slides.length;
+    var a = slides[i].querySelector('aside');
+    document.getElementById('notes-body').textContent = a ? a.textContent : '';
+    if (!shot) history.replaceState(null, '', '#' + (i + 1));
+  }
+  function withAllFonts(fn) {
+    document.body.classList.add('all');
+    void document.body.offsetHeight;
+    requestAnimationFrame(function () {
+      document.fonts.ready.then(function () { document.body.classList.remove('all'); fn(); });
+    });
+  }
+  window.withAllFonts = withAllFonts;
+  // 넘침 검사: 본문 요소가 장 밖으로 나가거나 각주 띠를 덮으면 적는다.
+  function check() {
+    var bad = [];
+    slides.forEach(function (sec, k) {
+      show(k);
+      var box = sec.getBoundingClientRect();
+      Array.prototype.forEach.call(sec.querySelectorAll('.katex-error'), function (el) {
+        bad.push({ slide: k + 1, id: sec.id, tag: 'TeX', text: (el.getAttribute('title') || el.textContent).slice(0, 60), over: 0 });
+      });
+      Array.prototype.forEach.call(sec.querySelectorAll('img'), function (el) {
+        if (!el.complete || !el.naturalWidth) bad.push({ slide: k + 1, id: sec.id, tag: 'IMG', text: el.getAttribute('src'), over: 0 });
+      });
+      var foot = sec.querySelector('[data-foot]');
+      var limit = foot ? foot.getBoundingClientRect().top - 4 : box.bottom - 24;
+      Array.prototype.forEach.call(sec.querySelectorAll('p, h1, h2, h3, img, td, th, li, .katex-display, [data-box]'), function (el) {
+        if (foot && foot.contains(el)) return;
+        if (el.closest('aside')) return;
+        var r = el.getBoundingClientRect();
+        if (r.width === 0 && r.height === 0) return;
+        if (r.bottom > limit + 0.5 || r.right > box.right - 40) {
+          bad.push({ slide: k + 1, id: sec.id, tag: el.tagName, text: (el.textContent || el.alt || '').slice(0, 40), over: Math.round(Math.max(r.bottom - limit, r.right - (box.right - 40))) });
+        }
+      });
+    });
+    var rep = document.getElementById('report');
+    rep.textContent = JSON.stringify(bad);
+    rep.setAttribute('data-done', '1');
+  }
+  function start() {
+    if (window.renderMathInElement) {
+      renderMathInElement(document.getElementById('frame'), {
+        delimiters: [{ left: '$$', right: '$$', display: true }, { left: '\\(', right: '\\)', display: false }],
+        throwOnError: false
+      });
+    }
+    // 한글 웹 글꼴은 글자 묶음마다 따로 받고, 숨은 장의 글자는 받지 않는다. 장을 모두 보여 글꼴을 받은 뒤 잰다.
+    if (q.has('check')) { withAllFonts(check); return; }
+    var s = shot ? parseInt(q.get('shot'), 10) - 1 : parseInt(location.hash.slice(1), 10) - 1;
+    show(isNaN(s) ? 0 : s);
+  }
+  show(0); fit(); window.addEventListener('resize', fit);
+  window.addEventListener('DOMContentLoaded', function () {
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(start); else start();
+  });
+  document.getElementById('prev').onclick = function () { show(i - 1); };
+  document.getElementById('next').onclick = function () { show(i + 1); };
+  document.getElementById('nb').onclick = function () { notes.classList.toggle('show'); };
+  document.getElementById('fs').onclick = function () {
+    if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen();
+  };
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { show(i + 1); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { show(i - 1); e.preventDefault(); }
+    else if (e.key === 'Home') show(0);
+    else if (e.key === 'End') show(slides.length - 1);
+    else if (e.key === 'n' || e.key === 'N') notes.classList.toggle('show');
+    else if (e.key === 'f' || e.key === 'F') document.getElementById('fs').click();
+  });
+  var x0 = null;
+  document.getElementById('stage').addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+  document.getElementById('stage').addEventListener('touchend', function (e) {
+    if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0; x0 = null;
+    if (Math.abs(dx) > 40) show(i + (dx < 0 ? 1 : -1));
+  });
+})();
+</script>
+</body>
+</html>
