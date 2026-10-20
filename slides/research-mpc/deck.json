@@ -1,0 +1,12 @@
+{
+ "title": "travplan 리서치 — MPC 구축",
+ "label": "MPC 구축",
+ "n": 112,
+ "tabs": [
+  "설계",
+  "시뮬 리그",
+  "작업 기록"
+ ],
+ "order": 7,
+ "source": "docs/research-mpc.md"
+}

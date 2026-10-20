@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>travplan 리서치 — 센서 배치</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=IBM+Plex+Sans+KR:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<style>
+:root { --bg:#0E1526; --bar:#16213A; --fg:#F4F1EA; --muted:#C9D1E0; --accent:#F59E5B; }
+* { box-sizing:border-box; }
+html, body { margin:0; height:100%; background:var(--bg); color:var(--fg); font-family:'IBM Plex Sans KR', Arial, sans-serif; }
+#stage { position:fixed; inset:0 0 56px 0; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+#frame { width:1920px; height:1080px; flex:none; transform-origin:center center; box-shadow:0 8px 40px rgba(0,0,0,.5); }
+#frame > section:not(.on) { display:none !important; }
+body.all #frame > section:not(.on) { display:block !important; }
+section { position:relative; width:1920px; height:1080px; overflow:hidden; }
+section * { margin:0; }
+section aside { display:none; }
+section table { border-collapse:collapse; }
+section th, section td { padding:10px 16px; vertical-align:top; }
+section tr + tr td { border-top:1px solid rgba(127,140,160,.25); }
+section .katex { font-size:1.05em; }
+section .katex-display { margin:0; text-align:left; }
+section .katex-display > .katex { text-align:left; }
+x-shape { display:block; flex:none; }
+x-shape[kind="arrow-right"] { clip-path:polygon(0 32%,58% 32%,58% 0,100% 50%,58% 100%,58% 68%,0 68%); }
+#bar { position:fixed; left:0; right:0; bottom:0; height:56px; background:var(--bar); display:flex; align-items:center; gap:12px; padding:0 16px; font-size:15px; }
+#bar button, #bar a { background:none; border:1px solid #3A4A6B; color:var(--fg); border-radius:8px; padding:6px 12px; font:inherit; cursor:pointer; text-decoration:none; }
+#bar button:hover, #bar a:hover { border-color:var(--accent); }
+#count { min-width:72px; text-align:center; color:var(--muted); }
+#ttl { flex:1; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; color:var(--muted); }
+#notes { position:fixed; right:16px; bottom:72px; width:min(560px, calc(100% - 32px)); max-height:45vh; overflow:auto; background:#FFFDF8; color:#16213A; border-radius:12px; padding:16px 20px; font-size:16px; line-height:1.6; box-shadow:0 8px 30px rgba(0,0,0,.4); display:none; }
+#notes.show { display:block; }
+#notes b { display:block; margin-bottom:6px; color:#C2410C; font-family:'JetBrains Mono', monospace; font-size:13px; }
+body.shot #bar, body.shot #notes { display:none; }
+body.shot #stage { inset:0; }
+body.shot #frame { box-shadow:none; transform:none !important; }
+@media (max-width:640px) { #ttl { display:none; } }
+</style>
+</head>
+<body>
+<div id="stage"><div id="frame">
+<style>
+section.r { background:#F7F5F0; color:#16213A; font-family:'IBM Plex Sans KR', Arial, sans-serif; }
+section.r .kicker { position:absolute; left:96px; top:52px; width:1728px; font:600 18px/1.3 'JetBrains Mono', monospace; color:#C2410C;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+section.r .ttl { position:absolute; left:96px; top:88px; width:1728px; font:700 42px/1.25 'Noto Serif KR', Georgia, serif; color:#16213A;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+section.r .ttl small { font:500 22px 'IBM Plex Sans KR', sans-serif; color:#5A6478; margin-left:14px; }
+section.r .body { position:absolute; left:96px; top:196px; width:1728px; }
+section.r .foot { position:absolute; left:96px; right:96px; bottom:28px; padding-top:10px; border-top:1px solid #D9D4C7;
+  font:14px/1.4 'IBM Plex Sans KR', sans-serif; color:#5A6478; display:flex; justify-content:space-between; }
+.body { font-size:22px; line-height:1.55; }
+.body > * + * { margin-top:14px; }
+.body a { color:#1D4ED8; text-decoration:none; }
+.body mark { background:#FDE7C8; color:inherit; padding:0 2px; }
+.body strong { font-weight:600; }
+.body code { font:0.86em 'JetBrains Mono', monospace; background:#ECE8DF; padding:1px 5px; border-radius:4px; }
+.body pre { background:#16213A; color:#F4F1EA; padding:14px 18px; border-radius:10px; font:16px/1.45 'JetBrains Mono', monospace; white-space:pre-wrap; }
+.body pre code { background:none; padding:0; color:inherit; }
+.body ul, .body ol { padding-left:32px; }
+.body li + li { margin-top:4px; }
+.body li > ul, .body li > ol { margin-top:4px; }
+.body h4 { font:700 25px/1.35 'IBM Plex Sans KR', sans-serif; color:#16213A; border-left:5px solid #C2410C; padding-left:12px; }
+.body h5 { font:600 22px/1.35 'IBM Plex Sans KR', sans-serif; color:#5A6478; }
+.body blockquote { border-left:5px solid #9AA6BC; background:#EEF1F6; padding:10px 18px; color:#33405A; }
+.body blockquote > * + * { margin-top:8px; }
+.body table { border-collapse:collapse; width:100%; font-size:17px; line-height:1.4; background:#FFFDF8; }
+.body th { background:#16213A; color:#F4F1EA; text-align:left; font-weight:600; }
+.body th, .body td { padding:7px 12px; border:1px solid #D9D4C7; vertical-align:top; }
+.body .figrow { display:flex; gap:24px; justify-content:center; align-items:flex-start; }
+.body figure { margin:0; }
+.body figure img { display:block; background:#fff; border:1px solid #D9D4C7; }
+.body figcaption { font-size:16px; line-height:1.4; color:#5A6478; margin-top:6px; }
+.body .mathp { overflow:hidden; }
+.body .more { font-size:17px; color:#5A6478; border-top:1px dashed #C9C2B3; padding-top:8px; }
+section.r.cover { background:#16213A; color:#F4F1EA; }
+section.r.cover .kicker { color:#F59E5B; top:120px; }
+section.r.cover .big { position:absolute; left:96px; top:170px; width:1728px; font:700 64px/1.25 'Noto Serif KR', serif; }
+section.r.cover .lead { position:absolute; left:96px; top:400px; width:1500px; font-size:26px; line-height:1.6; color:#C9D1E0; }
+section.r.cover .foot, section.r.divider .foot { border-color:#2E3B5A; color:#9AA6BC; }
+section.r.divider { background:#16213A; color:#F4F1EA; }
+section.r.divider .kicker { color:#F59E5B; }
+section.r.divider .ttl { color:#F4F1EA; font-size:56px; top:96px; }
+section.r.divider .body { columns:2; column-gap:64px; font-size:21px; color:#C9D1E0; }
+section.r.divider .body p { break-inside:avoid; margin:0 0 6px; }
+section.r.divider .body p.h2 { color:#F59E5B; font-weight:600; margin-top:10px; }
+section.r.details .kicker::after { content:'  ·  논문 상세(토글 요약)'; }
+</style>
+<section class="r cover"><div class="kicker">travplan 리서치 · 센서 배치</div><div class="big">센서 배치 — 낮은 실외 배달로봇 (§H)</div><div class="lead"><p>센서 배치 문서 · 탭 3개</p><p>배치 비교 · 가격·연산 · 주기·지연</p></div><div class="foot" data-foot><span>travplan 리서치 · 센서 배치 (docs/research-sensors.md)</span><span>1 / 12</span></div><aside>원본 docs/research-sensors.md. 대시보드 리서치 탭의 &#x27;센서 배치&#x27; 문서를 장으로 옮겼다.</aside></section>
+<section class="r content"><div class="kicker">센서 배치 · 개요</div><h2 class="ttl">센서 배치 — 낮은 실외 배달로봇 (§H)</h2><div class="body"><p><strong>배달로봇의 센서 배치는 "LiDAR를 어디에 몇 개, 카메라가 무엇을 맡는가"로 갈린다.</strong> 이 문서는 다섯 가지 배치를 비교하고, 2026-09 기준
+센서·연산 장치 가격, 필요한 연산 성능, 센서·지도·계획·제어 주기를 정리한다. travplan의 권장 배치와 시뮬 근거는
+<code>docs/design-sensor-layout.md</code>(TP-0060)에 있다. 가격은 판매처와 시점에 따라 크게 달라지므로 출처를 함께 적었고, 공개 가격이 없는 제품은
+"견적"으로 표시했다.</p></div><div class="foot" data-foot><span>travplan 리서치 · 센서 배치 (docs/research-sensors.md)</span><span>2 / 12</span></div><aside>docs/research-sensors.md 머리말</aside></section>
+<section class="r divider"><div class="kicker">센서 배치 · 탭</div><h2 class="ttl">배치 비교</h2><div class="body"><p class="h2">H.1 다섯 가지 배치</p><p class="h2">H.2 센서별 장단점</p></div><div class="foot" data-foot><span>travplan 리서치 · 센서 배치 (docs/research-sensors.md)</span><span>3 / 12</span></div><aside>docs/research-sensors.md · 탭 &#x27;배치 비교&#x27;</aside></section>
+<section class="r content"><div class="kicker">센서 배치 · 배치 비교</div><h2 class="ttl">H.1 다섯 가지 배치<small>1/2</small></h2><div class="body"><p><strong>한눈에 보기</strong></p><ul>
+<li>지금 구성(전면 LiDAR 1 + 카메라 5)은 <strong>가격 대비 좋고, 약점은 옆·뒤 지형</strong>이다. 후면에 저가 반구형 LiDAR(약 400달러)를 더하면 가장 싸게 보강된다.</li>
+<li>연산은 <strong>카메라 5대 검출이 가장 무겁다</strong>(AGX Orin GPU의 55–65%). AGX Orin 32GB 이상을 권한다. Jetson 가격은 2026-07에 최대 101% 올랐다.</li>
+<li>주기는 LiDAR·지도 10 Hz, Planner 5–10 Hz, Controller 10–20 Hz, 모듈 100 Hz 이상. <strong>센서에서 바퀴까지 300 ms 안</strong>이면 탐지 거리 1.5 m에서 약 1.3 m/s.</li>
+</ul><div class="figrow"><figure style="width:1600px"><a href="../../assets/figs/sensor_layouts.webp"><img src="../../assets/figs/sensor_layouts.webp" width="1600" height="395" alt="센서 배치 다섯 가지"></a><figcaption>그림 — 다섯 가지 배치의 시야 개념도(파랑: LiDAR, 초록: 카메라). 출처: travplan scripts/make_doc_figures.py</figcaption></figure></div><p><strong>결론부터: 사용자 구성(전면 LiDAR 1 + 카메라 5)은 가격 대비 지형 인식이 좋고, 약점은 옆·뒤 지형이다.</strong> 360° LiDAR는 그 약점이 없지만
+센서값이 몇 배다. 카메라만 쓰는 배치는 가장 싸지만 음의 장애물과 거리 정확도를 학습 모델에 맡긴다.</p></div><div class="foot" data-foot><span>travplan 리서치 · 센서 배치 (docs/research-sensors.md)</span><span>4 / 12</span></div><aside>docs/research-sensors.md · H.1 다섯 가지 배치</aside></section>
+<section class="r content"><div class="kicker">센서 배치 · 배치 비교</div><h2 class="ttl">H.1 다섯 가지 배치<small>2/2</small></h2><div class="body"><table>
+<thead>
+<tr>
+<th>배치</th>
+<th>지형(근거리 / 원거리)</th>
+<th>사람 360°</th>
+<th>옆·뒤 지형</th>
+<th>센서 가격대</th>
+<th>대표 사례</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A. 전면 LiDAR 1 + 카메라 5(전면 스테레오)</td>
+<td>숙이면 좋음 / 좋음</td>
+<td>카메라로 가능</td>
+<td>기억뿐</td>
+<td>낮음–중간</td>
+<td>사용자 구성</td>
+</tr>
+<tr>
+<td>B. 차체 위 360° LiDAR 1 + 스테레오·ToF</td>
+<td>좋음 / 좋음</td>
+<td>LiDAR + 카메라</td>
+<td>좋음</td>
+<td>높음</td>
+<td>Serve Gen3(Ouster REV7)</td>
+</tr>
+<tr>
+<td>C. 카메라 중심(LiDAR 없음) + 초음파·레이더</td>
+<td>학습 의존 / 약함</td>
+<td>카메라</td>
+<td>카메라</td>
+<td>낮음</td>
+<td>Starship(카메라 12), Neubility(멀티카메라 V-SLAM)</td>
+</tr>
+<tr>
+<td>D. 저가 반구형 LiDAR 2(전·후) + 카메라</td>
+<td>좋음 / 중간(30 m)</td>
+<td>LiDAR + 카메라</td>
+<td>좋음</td>
+<td>낮음–중간</td>
+<td>—</td>
+</tr>
+<tr>
+<td>E. 반구형 LiDAR 1(차체 위) + 카메라</td>
+<td>매우 좋음(사각 거의 없음) / 중간</td>
+<td>LiDAR + 카메라</td>
+<td>좋음</td>
+<td>중간(견적)</td>
+<td>AMR·휴머노이드용 신제품</td>
+</tr>
+</tbody>
+</table><p><strong>A. 전면 LiDAR 1 + 카메라 5.</strong> 전면 LiDAR를 숙이면 앞쪽 근거리와 음의 장애물을 잘 본다. 전면 카메라 두 대를 스테레오로 묶으면 LiDAR 근거리
+사각을 메운다. 측면·후면 카메라는 사람을 360°로 보지만 거리는 단안 바닥 평면이라 부정확하다. 옆과 뒤의 지형은 기억뿐이어서, 스워브의
+옆·뒤 이동을 제한해야 한다(설계 D5). L1 시뮬에서 15° 숙인 전면 120° 센서는 360° 센서와 비슷한 폐루프 성공률을 냈다(40/40, 37/40).</p><p><strong>B. 차체 위 360° LiDAR.</strong> Serve Robotics Gen3은 Ouster REV7 디지털 LiDAR, 스테레오·ToF 카메라, IMU, NVIDIA Jetson Orin을 싣는다
+(<a href="https://electrek.co/2024/10/16/serve-robotics-unveils-gen3-autonomous-delivery-robots-scale-across-us/">Electrek</a>). 360°를 한 번에 보므로
+옆·뒤 이동이 자유롭다. 대신 센서가 비싸고(Ouster 32채널은 6,000달러부터, <a href="https://ouster.com/insights/blog/os1-32-high-resolution-low-cost-lidar-sensor">Ouster</a>),
+차체 위로 솟아 디자인과 파손 위험을 감수해야 한다. 차체 위 높이 덕분에 사각과 그림자가 작다.</p><p><strong>C. 카메라 중심.</strong> Starship은 카메라 12대(ToF 포함), 초음파, 레이더로 장애물을 본다(<a href="https://www.starship.xyz/faq/">Starship FAQ</a>).
+Neubility는 LiDAR 없이 멀티카메라 visual SLAM으로 위치를 잡는다(<a href="https://techcrunch.com/2023/03/28/neubility-plans-to-roll-out-400-lidar-free-delivery-and-security-robots-by-year-end/">TechCrunch</a>).
+센서가 싸고 차체에 숨기기 쉽다. 대신 거리와 음의 장애물을 학습 모델과 대량의 주행 데이터에 기댄다. 역광·야간·비에 약하고, 검증에 긴
+시간이 든다.</p><p><strong>D. 저가 반구형 LiDAR 두 대.</strong> Unitree L2는 360° × 96° 시야, 30 m, 초당 64,000점에 419달러다(<a href="https://shop.unitree.com/products/unitree-4d-lidar-l2">Unitree</a>).
+전·후에 하나씩 달면 A의 옆·뒤 약점이 사라진다. 점이 성겨서 먼 곳의 사람과 작은 턱은 약하므로 카메라가 보완한다.</p><p><strong>E. 반구형 LiDAR 한 대.</strong> RoboSense Airy(360° × 90°, 96/192채널, 초당 86만/172만 점, 8 W 이하,
+<a href="https://www.robosense.ai/en/IncrementalComponents/Airy">RoboSense</a>)와 Hesai JT128(360° × 189°, 128채널, 60 m,
+<a href="https://www.hesaitech.com/product/jt128/">Hesai</a>)은 아래쪽까지 한 번에 봐서 근거리 사각이 거의 없다. 차체 위 중앙에 달면 A와 B의 장점을
+합친다. 가격은 공개되지 않아 견적이 필요하다.</p><p><strong>travplan에 주는 의미.</strong> <mark>사용자 구성(A)은 유지하되, 옆·뒤 이동이 잦으면 후면에 저가 반구형 LiDAR 하나를 더하는 것(A + D)이 가장 싼 보강이다.</mark>
+L2급 한 대(약 400달러)면 옆·뒤 지형이 "기억"에서 "관측"으로 바뀐다. 예산이 허락하면 전면 LiDAR를 반구형(E)으로 바꿔 숙이지 않고도 근거리를
+본다.</p></div><div class="foot" data-foot><span>travplan 리서치 · 센서 배치 (docs/research-sensors.md)</span><span>5 / 12</span></div><aside>docs/research-sensors.md · H.1 다섯 가지 배치</aside></section>
+<section class="r content"><div class="kicker">센서 배치 · 배치 비교</div><h2 class="ttl">H.2 센서별 장단점</h2><div class="body"><table>
+<thead>
+<tr>
+<th>센서</th>
+<th>장점</th>
+<th>단점</th>
+<th>배달로봇에서의 역할</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>회전식·반구형 LiDAR</td>
+<td>거리가 정확, 조명 무관, 360°</td>
+<td>비싸다(회전식), 점이 성김(저가), 비·먼지 반사</td>
+<td>지형 기하, 사람 거리</td>
+</tr>
+<tr>
+<td>비반복 스캔 LiDAR(Livox Mid-360 등)</td>
+<td>싸고 작다, 시간이 지나면 조밀</td>
+<td>아래쪽 시야가 좁아(−7°) 숙여 달아야 한다</td>
+<td>지형 기하</td>
+</tr>
+<tr>
+<td>스테레오 카메라</td>
+<td>싸다, 조밀한 깊이와 영상</td>
+<td>거리 제곱에 비례하는 오차, 무늬 없는 면·야간 약함</td>
+<td>근거리 지형, 사람 검출</td>
+</tr>
+<tr>
+<td>단안 카메라</td>
+<td>가장 싸다, 의미 정보</td>
+<td>거리를 모른다(바닥 평면 가정), 자세 오차에 민감</td>
+<td>측면·후면 사람 검출</td>
+</tr>
+<tr>
+<td>ToF 카메라</td>
+<td>근거리 깊이가 정확</td>
+<td>햇빛에 약하다, 거리가 짧다</td>
+<td>도킹, 근접</td>
+</tr>
+<tr>
+<td>초음파</td>
+<td>아주 싸다, 유리·투명체 감지</td>
+<td>해상도가 없다, 거리 짧다</td>
+<td>근접 안전</td>
+</tr>
+<tr>
+<td>레이더(4D 포함)</td>
+<td>비·안개·먼지에 강함, 속도 직접 측정</td>
+<td>해상도가 낮다</td>
+<td>악천후 보조, 움직이는 물체 속도</td>
+</tr>
+</tbody>
+</table></div><div class="foot" data-foot><span>travplan 리서치 · 센서 배치 (docs/research-sensors.md)</span><span>6 / 12</span></div><aside>docs/research-sensors.md · H.2 센서별 장단점</aside></section>
+<section class="r divider"><div class="kicker">센서 배치 · 탭</div><h2 class="ttl">가격·연산</h2><div class="body"><p class="h2">H.3 예상 가격 (2026-09 기준)</p><p class="h2">H.4 필요한 연산 성능</p></div><div class="foot" data-foot><span>travplan 리서치 · 센서 배치 (docs/research-sensors.md)</span><span>7 / 12</span></div><aside>docs/research-sensors.md · 탭 &#x27;가격·연산&#x27;</aside></section>
+<section class="r content"><div class="kicker">센서 배치 · 가격·연산</div><h2 class="ttl">H.3 예상 가격 (2026-09 기준)<small>1/2</small></h2><div class="body"><p><strong>가격은 판매처와 시점에 따라 두 배 가까이 차이 난다. 특히 NVIDIA Jetson은 2026-07에 최대 101% 올랐다.</strong> 아래는 공개 가격이고, 양산 수량
+가격은 별도 견적이다.</p><table>
+<thead>
+<tr>
+<th>품목</th>
+<th>가격</th>
+<th>출처</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Livox Mid-360(360° × 59°, 10 Hz, 초당 20만 점)</td>
+<td>소매 약 480–1,350달러(판매처별)</td>
+<td><a href="https://www.livoxtech.com/mid-360/specs">Livox 사양</a>, <a href="https://store.vertexunmanned.com/products/livox-mid-360">Vertex</a></td>
+</tr>
+<tr>
+<td>Unitree 4D LiDAR L2(360° × 96°, 30 m)</td>
+<td>419달러</td>
+<td><a href="https://shop.unitree.com/products/unitree-4d-lidar-l2">Unitree</a></td>
+</tr>
+<tr>
+<td>Ouster OS1-32</td>
+<td>6,000달러부터(출시 당시)</td>
+<td><a href="https://ouster.com/insights/blog/os1-32-high-resolution-low-cost-lidar-sensor">Ouster</a></td>
+</tr>
+<tr>
+<td>RoboSense Airy, Hesai JT128</td>
+<td>견적</td>
+<td><a href="https://store.robosense.ai/products/airy">RoboSense</a>, <a href="https://www.hesaitech.com/product/jt128/">Hesai</a></td>
+</tr>
+<tr>
+<td>Stereolabs ZED X Mini(GMSL2 스테레오)</td>
+<td>549달러</td>
+<td><a href="https://www.stereolabs.com/store/products/zed-x-mini-stereo-camera">Stereolabs</a></td>
+</tr>
+<tr>
+<td>Stereolabs ZED X</td>
+<td>599달러부터</td>
+<td><a href="https://www.stereolabs.com/store/collections/gmsl2-cameras">Stereolabs</a></td>
+</tr>
+<tr>
+<td>GMSL2 차량용 카메라(IMX490, 120 dB HDR 등)</td>
+<td>견적</td>
+<td><a href="https://leopardimaging.com/product-category/automotive-cameras/cameras-by-interface/adi-gmsl2-cameras/li-imx490-gmsl2/">Leopard Imaging</a></td>
+</tr>
+<tr>
+<td>Jetson AGX Orin 64GB 모듈 / 32GB 모듈</td>
+<td>2,999 / 1,799달러(인상 전 1,599 / 899)</td>
+<td><a href="https://www.cnx-software.com/2026/07/22/nvidia-increases-the-price-of-jetson-modules-and-devkits-by-up-to-101/">CNX Software</a></td>
+</tr>
+<tr>
+<td>Jetson AGX Orin 개발 키트</td>
+<td>3,499달러(인상 전 1,999)</td>
+<td>같음</td>
+</tr>
+<tr>
+<td>Jetson Orin NX 16GB 모듈</td>
+<td>999달러(인상 전 599)</td>
+<td>같음</td>
+</tr>
+<tr>
+<td>Jetson T4000 / T5000(Thor) 모듈</td>
+<td>2,999 / 4,999달러</td>
+<td>같음</td>
+</tr>
+</tbody>
+</table><p><strong>배치별 센서 + 연산 예산(대략).</strong> 카메라 한 대를 200–600달러로 보면 다음과 같다.</p><table>
+<thead>
+<tr>
+<th>배치</th>
+<th>센서</th>
+<th>연산</th>
+<th>합계</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A. 전면 Mid-360 + 스테레오 1 + 카메라 3</td>
+<td>약 1,600–3,700달러</td>
+<td>AGX Orin 32GB 1,799달러</td>
+<td>약 3,400–5,500달러</td>
+</tr>
+<tr>
+<td>A + D. 위 + 후면 L2</td>
+<td>약 2,000–4,100달러</td>
+<td>같음</td>
+<td>약 3,800–5,900달러</td>
+</tr>
+<tr>
+<td>B. Ouster 32채널 + 스테레오 + 카메라 3</td>
+<td>약 7,100–8,300달러</td>
+<td>같음</td>
+<td>약 8,900–10,100달러</td>
+</tr>
+<tr>
+<td>C. 카메라 10대 이상 + 초음파·레이더</td>
+<td>약 2,000–6,000달러</td>
+<td>AGX Orin 64GB 2,999달러(학습 모델 부하)</td>
+<td>약 5,000–9,000달러</td>
+</tr>
+</tbody>
+</table></div><div class="foot" data-foot><span>travplan 리서치 · 센서 배치 (docs/research-sensors.md)</span><span>8 / 12</span></div><aside>docs/research-sensors.md · H.3 예상 가격 (2026-09 기준)</aside></section>
+<section class="r content"><div class="kicker">센서 배치 · 가격·연산</div><h2 class="ttl">H.3 예상 가격 (2026-09 기준)<small>2/2</small></h2><div class="body"><p>합계에는 배선, 캐리어 보드, 보정 장비, 방수 하우징이 빠져 있다.</p></div><div class="foot" data-foot><span>travplan 리서치 · 센서 배치 (docs/research-sensors.md)</span><span>9 / 12</span></div><aside>docs/research-sensors.md · H.3 예상 가격 (2026-09 기준)</aside></section>
+<section class="r content"><div class="kicker">센서 배치 · 가격·연산</div><h2 class="ttl">H.4 필요한 연산 성능</h2><div class="body"><p><strong>카메라 다섯 대의 검출이 가장 큰 부하이고, AGX Orin급이 필요하다.</strong> Isaac ROS 공식 벤치마크(Jetson AGX Orin)와 travplan 실측을 합쳤다.</p><table>
+<thead>
+<tr>
+<th>작업</th>
+<th>주기</th>
+<th>한 번 시간</th>
+<th>연산 점유</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>사람 검출 RT-DETR(720p) × 카메라 5</td>
+<td>10 Hz</td>
+<td>13 ms(87 fps)</td>
+<td>GPU 약 55–65%</td>
+<td><a href="https://nvidia-isaac-ros.github.io/performance/index.html">Isaac ROS 성능표</a></td>
+</tr>
+<tr>
+<td>스테레오 시차(1080p)</td>
+<td>15–30 Hz</td>
+<td>8.6 ms(124 fps)</td>
+<td>GPU 약 15–25%</td>
+<td>같음</td>
+</tr>
+<tr>
+<td>학습 스테레오 ESS</td>
+<td>15 Hz</td>
+<td>약 12 ms(85 fps)</td>
+<td>GPU 약 20%</td>
+<td><a href="https://nvidia-isaac-ros.github.io/performance/index.html">Isaac ROS</a></td>
+</tr>
+<tr>
+<td>Visual SLAM(cuVSLAM, mono-depth)</td>
+<td>30 Hz</td>
+<td>15.1 ms(Orin)</td>
+<td>CPU·GPU 일부</td>
+<td><a href="https://arxiv.org/html/2506.04359v2">cuVSLAM 논문</a></td>
+</tr>
+<tr>
+<td>elevation mapping(점군 → 높이 지도)</td>
+<td>10 Hz</td>
+<td>22 ms(RTX 5080, Orin 미측정)</td>
+<td>GPU</td>
+<td>travplan TP-0053</td>
+</tr>
+<tr>
+<td>TravMap 특징·비용</td>
+<td>10 Hz</td>
+<td>수 ms</td>
+<td>GPU</td>
+<td>travplan</td>
+</tr>
+<tr>
+<td>Planner D(flow matching, 후보 16)</td>
+<td>5–10 Hz</td>
+<td>3.4–5 ms(데스크톱 CPU)</td>
+<td>CPU</td>
+<td>travplan TP-0025</td>
+</tr>
+<tr>
+<td>MPPI Controller(샘플 768)</td>
+<td>10–20 Hz</td>
+<td>8–11 ms(데스크톱 CPU)</td>
+<td>CPU·GPU</td>
+<td>travplan 벤치마크</td>
+</tr>
+</tbody>
+</table><ul>
+<li><strong>AGX Orin 32GB 이상을 권한다.</strong> 검출 5대만으로 GPU의 절반을 넘으므로, Orin NX 16GB(AI 연산 100 TOPS, AGX Orin 64GB 275 TOPS의 약 1/3)는 검출 주기나 해상도를 낮춰야
+  한다. 검출을 카메라마다 번갈아 돌리거나(5 Hz), 측면·후면은 저해상도로 돌리면 NX도 가능하다.</li>
+<li><strong>학습 Planner나 VLA를 올리려면 Thor급이다.</strong> Joint Planner(TP-0049)는 CPU에서 180 ms였다.</li>
+<li><strong>카메라 인터페이스.</strong> USB 카메라 다섯 대는 대역폭과 케이블 신뢰성이 문제다. GMSL2 카메라와 역직렬화 캐리어 보드를 권한다.</li>
+<li><strong>Orin에서 elevation mapping 시간은 아직 모른다.</strong> 실측이 필요하다(TP-0053의 매퍼를 Orin에서 돌린다).</li>
+</ul></div><div class="foot" data-foot><span>travplan 리서치 · 센서 배치 (docs/research-sensors.md)</span><span>10 / 12</span></div><aside>docs/research-sensors.md · H.4 필요한 연산 성능</aside></section>
+<section class="r divider"><div class="kicker">센서 배치 · 탭</div><h2 class="ttl">주기·지연</h2><div class="body"><p class="h2">H.5 센서·지도·계획·제어 주기</p></div><div class="foot" data-foot><span>travplan 리서치 · 센서 배치 (docs/research-sensors.md)</span><span>11 / 12</span></div><aside>docs/research-sensors.md · 탭 &#x27;주기·지연&#x27;</aside></section>
+<section class="r content"><div class="kicker">센서 배치 · 주기·지연</div><h2 class="ttl">H.5 센서·지도·계획·제어 주기</h2><div class="body"><p><strong>제어는 10–20 Hz, 계획은 5–10 Hz, 지도는 센서 주기(10 Hz)를 따른다. 전체 지연(센서에서 바퀴까지)은 300 ms 안에 둔다.</strong> 이 지연이
+설계 D6의 속도 제한식에 들어간다.</p><table>
+<thead>
+<tr>
+<th>층</th>
+<th>권장 주기</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LiDAR</td>
+<td>10 Hz</td>
+<td>Mid-360 기본 10 Hz</td>
+</tr>
+<tr>
+<td>카메라</td>
+<td>15–30 fps(검출은 10 Hz)</td>
+<td>검출 부하(H.4)</td>
+</tr>
+<tr>
+<td>IMU</td>
+<td>200 Hz 이상</td>
+<td>자세 보정, 카메라 바닥 평면 거리</td>
+</tr>
+<tr>
+<td>휠 오도메트리</td>
+<td>50–100 Hz</td>
+<td>상태 추정</td>
+</tr>
+<tr>
+<td>elevation mapping, TravMap</td>
+<td>10 Hz</td>
+<td>LiDAR 주기</td>
+</tr>
+<tr>
+<td>사람 추적(칼만)</td>
+<td>10–30 Hz</td>
+<td>검출 주기, 예측으로 사이를 메움</td>
+</tr>
+<tr>
+<td>Planner(Guidance, Planner D)</td>
+<td>5–10 Hz</td>
+<td>4초 궤적, 재계획</td>
+</tr>
+<tr>
+<td>Controller(MPPI)</td>
+<td>10–20 Hz</td>
+<td>travplan 시뮬 10 Hz(dt 0.1 s), Nav2 기본 20 Hz</td>
+</tr>
+<tr>
+<td>스워브 모듈 제어(조향·바퀴 속도)</td>
+<td>100 Hz 이상</td>
+<td>모터 드라이버, ros2_control</td>
+</tr>
+<tr>
+<td>비상 정지(범퍼, 근접 초음파)</td>
+<td>하드웨어</td>
+<td>소프트웨어 지연과 무관하게 멈춘다</td>
+</tr>
+</tbody>
+</table><p><strong>지연 예산.</strong> 센서 도착에서 지도 갱신까지 약 100 ms, 계획 50 ms, 제어 한 주기 50–100 ms를 더하면 약 300 ms다. 설계 D6의 식
+$v t + v^2 / (2a) + m \le d_{\text{det}}$에서 $t$ = 0.3 s로 두면, 음의 장애물 탐지 거리 1.5 m에서 최고 속도는 약 1.3 m/s다. 지연이 0.5 s로
+늘면 같은 거리에서 약 1.1 m/s로 내려간다.</p><p><strong>시간 동기화.</strong> 센서 여섯 개(LiDAR 1, 카메라 5)와 IMU를 PTP나 하드웨어 트리거로 맞춘다. 1 m/s로 움직일 때 50 ms 어긋나면 5 cm가 틀리고,
+회전 중이면 먼 곳일수록 더 틀린다. 스테레오 두 대는 반드시 같은 트리거로 찍는다.</p><p><strong>travplan 시뮬과의 차이.</strong> 운동학 시뮬은 모든 층이 10 Hz(dt 0.1 s)로 같은 순간에 돌고 지연이 없다. 지연·위치 잡음 무작위화(TP-0032)를
+켜면 위 지연 예산을 시뮬에서 시험할 수 있다.</p></div><div class="foot" data-foot><span>travplan 리서치 · 센서 배치 (docs/research-sensors.md)</span><span>12 / 12</span></div><aside>docs/research-sensors.md · H.5 센서·지도·계획·제어 주기</aside></section>
+<script>
+// ?layout=1: 장마다 요소 위치를 적는다. PPTX가 이 좌표에 글상자·표·그림을 놓는다.
+(function () {
+  if (!/[?&]layout=/.test(location.search)) return;
+  function rect(el, base) { var r = el.getBoundingClientRect(); return [r.left - base.left, r.top - base.top, r.width, r.height]; }
+  function run() {
+    var secs = Array.prototype.slice.call(document.querySelectorAll('#frame > section')), out = [];
+    secs.forEach(function (sec) {
+      secs.forEach(function (s) { s.classList.toggle('on', s === sec); });
+      var base = sec.getBoundingClientRect(), body = sec.querySelector('.body'), blocks = [];
+      if (body && !sec.classList.contains('divider')) Array.prototype.forEach.call(body.children, function (b) {
+        var d = { r: rect(b, base) };
+        if (b.tagName === 'TABLE') {
+          d.cols = Array.prototype.map.call((b.rows[0] || { cells: [] }).cells, function (c) { return c.getBoundingClientRect().width; });
+          d.rows = Array.prototype.map.call(b.rows, function (tr) { return tr.getBoundingClientRect().height; });
+        }
+        if (b.classList.contains('figrow')) d.figs = Array.prototype.map.call(b.querySelectorAll('figure'), function (f) {
+          var img = f.querySelector('img'), cap = f.querySelector('figcaption');
+          return { img: img ? rect(img, base) : null, cap: cap ? rect(cap, base) : null };
+        });
+        var kd = b.querySelector('.katex-display');
+        if (kd && b.classList.contains('mathp')) d.math = rect(kd.querySelector('.katex') || kd, base);
+        blocks.push(d);
+      });
+      out.push({ blocks: blocks, errors: sec.querySelectorAll('.katex-error').length });
+    });
+    var rep = document.getElementById('report'); rep.textContent = JSON.stringify(out); rep.setAttribute('data-done', '1');
+  }
+  window.addEventListener('DOMContentLoaded', function () { document.fonts.ready.then(function () { setTimeout(function () { window.withAllFonts(run); }, 50); }); });
+})();
+</script>
+</div></div>
+<div id="notes"><b>발표자 노트</b><div id="notes-body"></div></div>
+<div id="bar">
+<button id="prev" aria-label="이전">◀</button><span id="count"></span><button id="next" aria-label="다음">▶</button>
+<span id="ttl">travplan 리서치 — 센서 배치</span>
+<button id="nb" title="N 키">노트</button><button id="fs" title="F 키">전체 화면</button>
+<a href="research-sensors.pptx" download>PPTX</a><a href="./../">목록</a>
+</div>
+<pre id="report" hidden></pre>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script>
+(function () {
+  var slides = Array.prototype.slice.call(document.querySelectorAll('#frame > section'));
+  var frame = document.getElementById('frame'), notes = document.getElementById('notes');
+  var q = new URLSearchParams(location.search), shot = q.has('shot') || q.has('check');
+  if (shot) document.body.classList.add('shot');
+  var i = 0;
+  function fit() {
+    if (shot) return;
+    var st = document.getElementById('stage');
+    var s = Math.min(st.clientWidth / 1920, st.clientHeight / 1080);
+    frame.style.transform = 'scale(' + s + ')';
+  }
+  function show(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach(function (el, k) { el.classList.toggle('on', k === i); });
+    document.getElementById('count').textContent = (i + 1) + ' / ' + slides.length;
+    var a = slides[i].querySelector('aside');
+    document.getElementById('notes-body').textContent = a ? a.textContent : '';
+    if (!shot) history.replaceState(null, '', '#' + (i + 1));
+  }
+  function withAllFonts(fn) {
+    document.body.classList.add('all');
+    void document.body.offsetHeight;
+    requestAnimationFrame(function () {
+      document.fonts.ready.then(function () { document.body.classList.remove('all'); fn(); });
+    });
+  }
+  window.withAllFonts = withAllFonts;
+  // 넘침 검사: 본문 요소가 장 밖으로 나가거나 각주 띠를 덮으면 적는다.
+  function check() {
+    var bad = [];
+    slides.forEach(function (sec, k) {
+      show(k);
+      var box = sec.getBoundingClientRect();
+      Array.prototype.forEach.call(sec.querySelectorAll('.katex-error'), function (el) {
+        bad.push({ slide: k + 1, id: sec.id, tag: 'TeX', text: (el.getAttribute('title') || el.textContent).slice(0, 60), over: 0 });
+      });
+      Array.prototype.forEach.call(sec.querySelectorAll('img'), function (el) {
+        if (!el.complete || !el.naturalWidth) bad.push({ slide: k + 1, id: sec.id, tag: 'IMG', text: el.getAttribute('src'), over: 0 });
+      });
+      var foot = sec.querySelector('[data-foot]');
+      var limit = foot ? foot.getBoundingClientRect().top - 4 : box.bottom - 24;
+      Array.prototype.forEach.call(sec.querySelectorAll('p, h1, h2, h3, img, td, th, li, .katex-display, [data-box]'), function (el) {
+        if (foot && foot.contains(el)) return;
+        if (el.closest('aside')) return;
+        var r = el.getBoundingClientRect();
+        if (r.width === 0 && r.height === 0) return;
+        if (r.bottom > limit + 0.5 || r.right > box.right - 40) {
+          bad.push({ slide: k + 1, id: sec.id, tag: el.tagName, text: (el.textContent || el.alt || '').slice(0, 40), over: Math.round(Math.max(r.bottom - limit, r.right - (box.right - 40))) });
+        }
+      });
+    });
+    var rep = document.getElementById('report');
+    rep.textContent = JSON.stringify(bad);
+    rep.setAttribute('data-done', '1');
+  }
+  function start() {
+    if (window.renderMathInElement) {
+      renderMathInElement(document.getElementById('frame'), {
+        delimiters: [{ left: '$$', right: '$$', display: true }, { left: '$', right: '$', display: false }],
+        throwOnError: false
+      });
+    }
+    // 한글 웹 글꼴은 글자 묶음마다 따로 받고, 숨은 장의 글자는 받지 않는다. 장을 모두 보여 글꼴을 받은 뒤 잰다.
+    if (q.has('check')) { withAllFonts(check); return; }
+    var s = shot ? parseInt(q.get('shot'), 10) - 1 : parseInt(location.hash.slice(1), 10) - 1;
+    show(isNaN(s) ? 0 : s);
+  }
+  show(0); fit(); window.addEventListener('resize', fit);
+  window.addEventListener('DOMContentLoaded', function () {
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(start); else start();
+  });
+  document.getElementById('prev').onclick = function () { show(i - 1); };
+  document.getElementById('next').onclick = function () { show(i + 1); };
+  document.getElementById('nb').onclick = function () { notes.classList.toggle('show'); };
+  document.getElementById('fs').onclick = function () {
+    if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen();
+  };
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { show(i + 1); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { show(i - 1); e.preventDefault(); }
+    else if (e.key === 'Home') show(0);
+    else if (e.key === 'End') show(slides.length - 1);
+    else if (e.key === 'n' || e.key === 'N') notes.classList.toggle('show');
+    else if (e.key === 'f' || e.key === 'F') document.getElementById('fs').click();
+  });
+  var x0 = null;
+  document.getElementById('stage').addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+  document.getElementById('stage').addEventListener('touchend', function (e) {
+    if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0; x0 = null;
+    if (Math.abs(dx) > 40) show(i + (dx < 0 ? 1 : -1));
+  });
+})();
+</script>
+</body>
+</html>

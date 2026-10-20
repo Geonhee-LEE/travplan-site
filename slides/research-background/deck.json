@@ -1,0 +1,13 @@
+{
+ "title": "travplan 리서치 — 배경 · 수식",
+ "label": "배경 · 수식",
+ "n": 105,
+ "tabs": [
+  "개요",
+  "인식",
+  "Planner·학습",
+  "제어·안전"
+ ],
+ "order": 5,
+ "source": "docs/research-background.md"
+}

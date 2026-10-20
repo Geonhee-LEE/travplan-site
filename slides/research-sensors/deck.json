@@ -1,0 +1,12 @@
+{
+ "title": "travplan 리서치 — 센서 배치",
+ "label": "센서 배치",
+ "n": 12,
+ "tabs": [
+  "배치 비교",
+  "가격·연산",
+  "주기·지연"
+ ],
+ "order": 1,
+ "source": "docs/research-sensors.md"
+}

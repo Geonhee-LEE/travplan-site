@@ -23,12 +23,71 @@ ul { margin:0 0 20px; padding-left:18px; color:var(--muted); font-size:14px; }
 .btn { display:inline-block; padding:8px 16px; border-radius:8px; background:var(--accent); color:#fff; text-decoration:none; font-weight:600; font-size:14px; }
 .btn.ghost { background:none; color:var(--fg); border:1px solid var(--line); }
 .foot { margin-top:32px; color:var(--muted); font-size:13px; }
+h2.grp { font-family:'Noto Serif KR', Georgia, serif; font-size:24px; margin:40px 0 6px; }
 </style>
 </head>
 <body>
 <main>
 <h1>travplan 스터디 슬라이드</h1>
-<p class="lead">대시보드 리서치 문서로 만든 두 덱입니다. 첫 덱은 개념과 수식을, 둘째 덱은 논문 한 편씩을 다룹니다. 슬라이드에서는 ← → 키로 넘기고, N 키로 발표자 노트를 엽니다.</p>
+<p class="lead">슬라이드에서는 ← → 키로 넘기고, N 키로 발표자 노트를 엽니다.</p>
+<h2 class="grp">리서치 문서 덱</h2>
+<p class="lead">대시보드 리서치 탭의 문서마다 한 덱입니다. 본문·표·그림·수식을 모두 옮겼고, 논문 상세 토글은 토글마다 한 장으로 줄였습니다.
+PPTX는 글자와 표를 고칠 수 있는 판입니다(별행 수식은 그림).</p>
+<div class="grid">
+<article class="card">
+<h2>travplan 리서치 — 개요</h2>
+<p class="n">12장 · 발표자 노트 포함</p>
+<ul><li>탭: 개요</li></ul>
+<p class="act"><a class="btn" href="research-overview/">슬라이드 보기</a><a class="btn ghost" href="research-overview/research-overview.pptx" download>PPTX 내려받기</a></p>
+</article><article class="card">
+<h2>travplan 리서치 — 인식</h2>
+<p class="n">359장 · 발표자 노트 포함</p>
+<ul><li>탭: 지형 지도·Occupancy · 작업 기록 · Traversability · 시각 기반 모델 · 동적 장애물 · 예측·World model · 보행 로봇</li></ul>
+<p class="act"><a class="btn" href="research-perception/">슬라이드 보기</a><a class="btn ghost" href="research-perception/research-perception.pptx" download>PPTX 내려받기</a></p>
+</article><article class="card">
+<h2>travplan 리서치 — 센서 배치</h2>
+<p class="n">12장 · 발표자 노트 포함</p>
+<ul><li>탭: 배치 비교 · 가격·연산 · 주기·지연</li></ul>
+<p class="act"><a class="btn" href="research-sensors/">슬라이드 보기</a><a class="btn ghost" href="research-sensors/research-sensors.pptx" download>PPTX 내려받기</a></p>
+</article><article class="card">
+<h2>travplan 리서치 — Planner</h2>
+<p class="n">439장 · 발표자 노트 포함</p>
+<ul><li>탭: travplan과 고전 기준선 · 학습 로컬 Planner · 생성형 궤적 · Foundation·VLA·언어 · 위험 인지·로컬 내비 · 자율주행 자동차 · 다리·바퀴 로봇과 계보 · 작업 기록</li></ul>
+<p class="act"><a class="btn" href="research-planner/">슬라이드 보기</a><a class="btn ghost" href="research-planner/research-planner.pptx" download>PPTX 내려받기</a></p>
+</article><article class="card">
+<h2>travplan 리서치 — Controller · 안전</h2>
+<p class="n">159장 · 발표자 노트 포함</p>
+<ul><li>탭: MPPI 계열 · 학습 동역학·적응 · 안전 필터 · 하위 제어 · 4족 RL · 작업 기록</li></ul>
+<p class="act"><a class="btn" href="research-controller/">슬라이드 보기</a><a class="btn ghost" href="research-controller/research-controller.pptx" download>PPTX 내려받기</a></p>
+</article><article class="card">
+<h2>travplan 리서치 — 시뮬레이션</h2>
+<p class="n">83장 · 발표자 노트 포함</p>
+<ul><li>탭: 물리 엔진 · 보도·도시 · 보행자 · 센서·렌더링 · 지형·바퀴 · sim-to-real · 로봇 리그 · travplan 권고</li></ul>
+<p class="act"><a class="btn" href="research-simulation/">슬라이드 보기</a><a class="btn ghost" href="research-simulation/research-simulation.pptx" download>PPTX 내려받기</a></p>
+</article><article class="card">
+<h2>travplan 리서치 — 배경 · 수식</h2>
+<p class="n">105장 · 발표자 노트 포함</p>
+<ul><li>탭: 개요 · 인식 · Planner·학습 · 제어·안전</li></ul>
+<p class="act"><a class="btn" href="research-background/">슬라이드 보기</a><a class="btn ghost" href="research-background/research-background.pptx" download>PPTX 내려받기</a></p>
+</article><article class="card">
+<h2>travplan 리서치 — 강화학습</h2>
+<p class="n">137장 · 발표자 노트 포함</p>
+<ul><li>탭: 개요 · 문제 설정·모방 · 정책 기울기 · 가치 기반 · 추론으로서의 제어 · 모델 기반 · 오프라인·탐색 · LLM·생성 정책·안전 · 이론·다과제 · travplan에서</li></ul>
+<p class="act"><a class="btn" href="research-rl/">슬라이드 보기</a><a class="btn ghost" href="research-rl/research-rl.pptx" download>PPTX 내려받기</a></p>
+</article><article class="card">
+<h2>travplan 리서치 — 참고문헌</h2>
+<p class="n">87장 · 발표자 노트 포함</p>
+<ul><li>탭: 개요 · 인식 · Planner · Controller·안전 · 강화학습 · 연구 그룹 · 로코모션·데이터·산업</li></ul>
+<p class="act"><a class="btn" href="research-references/">슬라이드 보기</a><a class="btn ghost" href="research-references/research-references.pptx" download>PPTX 내려받기</a></p>
+</article><article class="card">
+<h2>travplan 리서치 — MPC 구축</h2>
+<p class="n">112장 · 발표자 노트 포함</p>
+<ul><li>탭: 설계 · 시뮬 리그 · 작업 기록</li></ul>
+<p class="act"><a class="btn" href="research-mpc/">슬라이드 보기</a><a class="btn ghost" href="research-mpc/research-mpc.pptx" download>PPTX 내려받기</a></p>
+</article>
+</div>
+<h2 class="grp">스터디 덱</h2>
+<p class="lead">개념과 수식을 고른 덱과, 논문 한 편씩을 다루는 덱입니다. PPTX는 슬라이드를 그림으로 넣은 판입니다.</p>
 <div class="grid">
 <article class="card">
 <h2>travplan 리서치 스터디 — 보도 로봇을 움직이는 수식들</h2>
@@ -36,13 +95,13 @@ ul { margin:0 0 20px; padding-left:18px; color:var(--muted); font-size:14px; }
 <ul><li>왜 costmap 대신 TravMap인가, 파이프라인 지도</li><li>인식: 점군을 높이·비용·불확실성 지도로</li><li>Planner: diffusion과 flow matching으로 궤적을 생성</li><li>Controller: MPPI와 GP를 품은 NMPC</li><li>안전: CVaR, CBF, conformal prediction</li><li>결과, 공부 순서, 참고문헌</li></ul>
 <p class="act"><a class="btn" href="study-overview/">슬라이드 보기</a><a class="btn ghost" href="study-overview/study-overview.pptx" download>PPTX 내려받기</a></p>
 </article><article class="card">
-<h2>travplan 논문 스터디 — 챕터별</h2>
-<p class="n">60장 · 발표자 노트 포함</p>
+<h2>travplan 논문 스터디 — 챕터별 (편마다 세 장)</h2>
+<p class="n">152장 · 발표자 노트 포함</p>
 <ul><li>표지와 목차</li><li>1장 인식: 지형 지도, traversability, 시각 기반 모델, 동적 장애물 예측</li><li>2장 플래닝·고전/모델 기반: 그래프 탐색, 로컬 플래너, 궤적 최적화</li><li>3장 플래닝·학습 기반: 명령형 학습, diffusion·flow 정책, VLA</li><li>4장 제어·모델 기반: MPPI 계열과 GP-MPC</li><li>5장 제어·학습 기반: 학습 동역학, 적응, world model, 보행 RL</li><li>6장 안전: CBF, 도달 가능성, 예측 안전 필터, 위험 척도, conformal</li><li>7장 시뮬레이션: 물리 엔진, 보도 시뮬레이터, sim-to-real</li><li>정리와 참고문헌</li></ul>
 <p class="act"><a class="btn" href="study-papers/">슬라이드 보기</a><a class="btn ghost" href="study-papers/study-papers.pptx" download>PPTX 내려받기</a></p>
 </article>
 </div>
-<p class="foot">PPTX는 슬라이드를 그림으로 넣은 판입니다. 글자를 고치려면 HTML 원본을 고친 뒤 다시 만듭니다.</p>
+<p class="foot">모두 생성물입니다. 리서치 문서 덱은 <code>scripts/build_research_slides.py</code>, 스터디 덱은 <code>scripts/build_study_slides.py</code>가 만듭니다.</p>
 <p class="foot"><a href="../" style="color:inherit">← 대시보드 첫 화면</a></p>
 </main>
 </body>

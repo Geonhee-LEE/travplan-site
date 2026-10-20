@@ -1,0 +1,14 @@
+{
+ "title": "travplan 리서치 — Controller · 안전",
+ "label": "Controller · 안전",
+ "n": 159,
+ "tabs": [
+  "MPPI 계열",
+  "학습 동역학·적응",
+  "안전 필터",
+  "하위 제어 · 4족 RL",
+  "작업 기록"
+ ],
+ "order": 3,
+ "source": "docs/research-controller.md"
+}

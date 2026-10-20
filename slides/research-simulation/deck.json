@@ -1,0 +1,17 @@
+{
+ "title": "travplan 리서치 — 시뮬레이션",
+ "label": "시뮬레이션",
+ "n": 83,
+ "tabs": [
+  "물리 엔진",
+  "보도·도시",
+  "보행자",
+  "센서·렌더링",
+  "지형·바퀴",
+  "sim-to-real",
+  "로봇 리그",
+  "travplan 권고"
+ ],
+ "order": 4,
+ "source": "docs/research-simulation.md"
+}

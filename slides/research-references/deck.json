@@ -1,0 +1,16 @@
+{
+ "title": "travplan 리서치 — 참고문헌",
+ "label": "참고문헌",
+ "n": 87,
+ "tabs": [
+  "개요",
+  "인식",
+  "Planner",
+  "Controller·안전",
+  "강화학습",
+  "연구 그룹",
+  "로코모션·데이터·산업"
+ ],
+ "order": 6,
+ "source": "docs/research-references.md"
+}

@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>travplan 리서치 — 개요</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=IBM+Plex+Sans+KR:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<style>
+:root { --bg:#0E1526; --bar:#16213A; --fg:#F4F1EA; --muted:#C9D1E0; --accent:#F59E5B; }
+* { box-sizing:border-box; }
+html, body { margin:0; height:100%; background:var(--bg); color:var(--fg); font-family:'IBM Plex Sans KR', Arial, sans-serif; }
+#stage { position:fixed; inset:0 0 56px 0; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+#frame { width:1920px; height:1080px; flex:none; transform-origin:center center; box-shadow:0 8px 40px rgba(0,0,0,.5); }
+#frame > section:not(.on) { display:none !important; }
+body.all #frame > section:not(.on) { display:block !important; }
+section { position:relative; width:1920px; height:1080px; overflow:hidden; }
+section * { margin:0; }
+section aside { display:none; }
+section table { border-collapse:collapse; }
+section th, section td { padding:10px 16px; vertical-align:top; }
+section tr + tr td { border-top:1px solid rgba(127,140,160,.25); }
+section .katex { font-size:1.05em; }
+section .katex-display { margin:0; text-align:left; }
+section .katex-display > .katex { text-align:left; }
+x-shape { display:block; flex:none; }
+x-shape[kind="arrow-right"] { clip-path:polygon(0 32%,58% 32%,58% 0,100% 50%,58% 100%,58% 68%,0 68%); }
+#bar { position:fixed; left:0; right:0; bottom:0; height:56px; background:var(--bar); display:flex; align-items:center; gap:12px; padding:0 16px; font-size:15px; }
+#bar button, #bar a { background:none; border:1px solid #3A4A6B; color:var(--fg); border-radius:8px; padding:6px 12px; font:inherit; cursor:pointer; text-decoration:none; }
+#bar button:hover, #bar a:hover { border-color:var(--accent); }
+#count { min-width:72px; text-align:center; color:var(--muted); }
+#ttl { flex:1; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; color:var(--muted); }
+#notes { position:fixed; right:16px; bottom:72px; width:min(560px, calc(100% - 32px)); max-height:45vh; overflow:auto; background:#FFFDF8; color:#16213A; border-radius:12px; padding:16px 20px; font-size:16px; line-height:1.6; box-shadow:0 8px 30px rgba(0,0,0,.4); display:none; }
+#notes.show { display:block; }
+#notes b { display:block; margin-bottom:6px; color:#C2410C; font-family:'JetBrains Mono', monospace; font-size:13px; }
+body.shot #bar, body.shot #notes { display:none; }
+body.shot #stage { inset:0; }
+body.shot #frame { box-shadow:none; transform:none !important; }
+@media (max-width:640px) { #ttl { display:none; } }
+</style>
+</head>
+<body>
+<div id="stage"><div id="frame">
+<style>
+section.r { background:#F7F5F0; color:#16213A; font-family:'IBM Plex Sans KR', Arial, sans-serif; }
+section.r .kicker { position:absolute; left:96px; top:52px; width:1728px; font:600 18px/1.3 'JetBrains Mono', monospace; color:#C2410C;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+section.r .ttl { position:absolute; left:96px; top:88px; width:1728px; font:700 42px/1.25 'Noto Serif KR', Georgia, serif; color:#16213A;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+section.r .ttl small { font:500 22px 'IBM Plex Sans KR', sans-serif; color:#5A6478; margin-left:14px; }
+section.r .body { position:absolute; left:96px; top:196px; width:1728px; }
+section.r .foot { position:absolute; left:96px; right:96px; bottom:28px; padding-top:10px; border-top:1px solid #D9D4C7;
+  font:14px/1.4 'IBM Plex Sans KR', sans-serif; color:#5A6478; display:flex; justify-content:space-between; }
+.body { font-size:22px; line-height:1.55; }
+.body > * + * { margin-top:14px; }
+.body a { color:#1D4ED8; text-decoration:none; }
+.body mark { background:#FDE7C8; color:inherit; padding:0 2px; }
+.body strong { font-weight:600; }
+.body code { font:0.86em 'JetBrains Mono', monospace; background:#ECE8DF; padding:1px 5px; border-radius:4px; }
+.body pre { background:#16213A; color:#F4F1EA; padding:14px 18px; border-radius:10px; font:16px/1.45 'JetBrains Mono', monospace; white-space:pre-wrap; }
+.body pre code { background:none; padding:0; color:inherit; }
+.body ul, .body ol { padding-left:32px; }
+.body li + li { margin-top:4px; }
+.body li > ul, .body li > ol { margin-top:4px; }
+.body h4 { font:700 25px/1.35 'IBM Plex Sans KR', sans-serif; color:#16213A; border-left:5px solid #C2410C; padding-left:12px; }
+.body h5 { font:600 22px/1.35 'IBM Plex Sans KR', sans-serif; color:#5A6478; }
+.body blockquote { border-left:5px solid #9AA6BC; background:#EEF1F6; padding:10px 18px; color:#33405A; }
+.body blockquote > * + * { margin-top:8px; }
+.body table { border-collapse:collapse; width:100%; font-size:17px; line-height:1.4; background:#FFFDF8; }
+.body th { background:#16213A; color:#F4F1EA; text-align:left; font-weight:600; }
+.body th, .body td { padding:7px 12px; border:1px solid #D9D4C7; vertical-align:top; }
+.body .figrow { display:flex; gap:24px; justify-content:center; align-items:flex-start; }
+.body figure { margin:0; }
+.body figure img { display:block; background:#fff; border:1px solid #D9D4C7; }
+.body figcaption { font-size:16px; line-height:1.4; color:#5A6478; margin-top:6px; }
+.body .mathp { overflow:hidden; }
+.body .more { font-size:17px; color:#5A6478; border-top:1px dashed #C9C2B3; padding-top:8px; }
+section.r.cover { background:#16213A; color:#F4F1EA; }
+section.r.cover .kicker { color:#F59E5B; top:120px; }
+section.r.cover .big { position:absolute; left:96px; top:170px; width:1728px; font:700 64px/1.25 'Noto Serif KR', serif; }
+section.r.cover .lead { position:absolute; left:96px; top:400px; width:1500px; font-size:26px; line-height:1.6; color:#C9D1E0; }
+section.r.cover .foot, section.r.divider .foot { border-color:#2E3B5A; color:#9AA6BC; }
+section.r.divider { background:#16213A; color:#F4F1EA; }
+section.r.divider .kicker { color:#F59E5B; }
+section.r.divider .ttl { color:#F4F1EA; font-size:56px; top:96px; }
+section.r.divider .body { columns:2; column-gap:64px; font-size:21px; color:#C9D1E0; }
+section.r.divider .body p { break-inside:avoid; margin:0 0 6px; }
+section.r.divider .body p.h2 { color:#F59E5B; font-weight:600; margin-top:10px; }
+section.r.details .kicker::after { content:'  ·  논문 상세(토글 요약)'; }
+</style>
+<section class="r cover"><div class="kicker">travplan 리서치 · 개요</div><div class="big">리서치 개요 (2026-09)</div><div class="lead"><p>개요 문서 · 탭 1개</p><p>개요</p></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>1 / 12</span></div><aside>원본 docs/research-overview.md. 대시보드 리서치 탭의 &#x27;개요&#x27; 문서를 장으로 옮겼다.</aside></section>
+<section class="r content"><div class="kicker">개요 · 개요</div><h2 class="ttl">리서치 개요 (2026-09)<small>1/3</small></h2><div class="body"><p><strong>travplan의 리서치는 이 개요와, 파이프라인 순서의 네 주제 문서, 두 보조 문서로 나뉜다.</strong> 주제 문서는 인식, Planner,
+Controller·안전, 시뮬레이션이고, 보조 문서는 여러 논문이 함께 쓰는 수식(배경·수식)과 전체 목록(참고문헌)이다. 각 주제 문서의 첫 탭은 그 분야의
+<strong>계보</strong>다. 분야를 연 마일스톤에서 2026년 최신(SOTA)까지 한 표로 보여 주고, 공개 모델(HuggingFace)과 코드(GitHub) 현황을 함께 둔다.
+그다음 탭들이 세부 주제별 설명이다.</p><p>각 방식은 같은 순서로 소개한다. <strong>한 줄 요약</strong>으로 무엇인지 말하고, <strong>동작 방식</strong>을 설명하고, <strong>travplan에 주는 의미</strong>로 마무리한다.
+논문 그림에는 무엇을 보여주는지 한 줄 설명을 붙였다. 방법과 수식은 그림 뒤의 <strong>"자세히"</strong> 토글에 있다. <mark>노란 강조</mark>는 그 절에서
+가장 먼저 기억할 문장이다.</p><pre><code> 센서(카메라/LiDAR)                                                            동적 장애물(보행자)
+      │                                                                              │
+      ▼                                                                              ▼
+ ┌──────────────────┐    ┌───────────┐    ┌──────────────────┐    ┌──────────────────────────────┐
+ │ 인식 (§A)         │──▶ │ TravMap   │──▶ │ Planner (§B)      │──▶ │ Controller · 안전 (§E, §C)     │──▶ body twist
+ │ 지형 지도, 가통행성 │    │ [8,H,W]   │    │ 학습 궤적 생성     │    │ MPPI 추종, 안전 필터            │
+ │ 동적 장애물 인식    │    └───────────┘    └──────────────────┘    └──────────────────────────────┘
+ └──────────────────┘
+          시뮬레이션 (§S): 운동학 시뮬 · Isaac Sim · 보도 장면 · sim-to-real 로 위 전체를 검증
+</code></pre><p><strong>문서 지도.</strong> 문서마다 첫 탭이 개요(분야 계보, 공개 코드·모델 현황, travplan의 위치)이고, 그 뒤가 주제별 탭이다. 절 번호는 문서를 옮겨도
+그대로 둔다(인식 A, Planner B, Controller E와 안전 필터 C, 시뮬레이션 S, 배경 0, 강화학습 R, 참고문헌 D).</p><table style="table-layout:fixed"><colgroup><col style="width:145.2px"><col style="width:875.4px"><col style="width:315.8px"><col style="width:390.5px"></colgroup><thead>
+<tr>
+<th>문서</th>
+<th>탭과 절</th>
+<th>무엇을 보나</th>
+<th>travplan에서</th>
+</tr>
+</thead><tbody><tr>
+<td>인식 (§A)</td>
+<td>지형 지도·Occupancy(A.1–A.5), Traversability(A.10), 시각 기반 모델(A.11), 동적 장애물(A.12), 예측·World model(A.6), 보행 로봇(A.7–A.9)</td>
+<td>센서에서 TravMap과 동적 장애물까지</td>
+<td>elevation mapping(P2.1), TravNet(TP-0010), 검출·추적 PoC(TP-0011)</td>
+</tr><tr>
+<td>Planner (§B)</td>
+<td><strong>방법</strong> — travplan과 고전 기준선(B.1, B.10), 학습 로컬 Planner(B.2–B.4, B.4b, B.7), 생성형 궤적(B.8.0, B.8), Foundation·VLA·언어(B.6, B.6b–B.6d), 위험 인지·로컬 내비(B.9). <strong>현황</strong> — 자율주행 자동차(B.12.1, B.11, B.13), 다리·바퀴 로봇과 계보(B.12, B.14, B.16)</td>
+<td>경로와 시간 인덱스 궤적 생성</td>
+<td>GuidancePlanner, LearnedPlanner, Planner D</td>
+</tr><tr>
+<td>Controller·안전 (§E, §C)</td>
+<td>MPPI 계열(E.1, B.5), 학습 동역학·적응(E, E.2), 안전 필터(C.1–C.4)</td>
+<td>궤적 추종과 안전</td>
+<td>MPPIController(유지보수), 시간가변 비용 레이어, CVaR-BF 후보</td>
+</tr></tbody></table></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>2 / 12</span></div><aside>docs/research-overview.md 머리말</aside></section>
+<section class="r content"><div class="kicker">개요 · 개요</div><h2 class="ttl">리서치 개요 (2026-09)<small>2/3</small></h2><div class="body"><table style="table-layout:fixed"><colgroup><col style="width:145.2px"><col style="width:875.4px"><col style="width:315.8px"><col style="width:390.5px"></colgroup><thead>
+<tr>
+<th>문서</th>
+<th>탭과 절</th>
+<th>무엇을 보나</th>
+<th>travplan에서</th>
+</tr>
+</thead><tbody><tr>
+<td>시뮬레이션 (§S)</td>
+<td>물리 엔진(S.1), 보도·도시(S.2), 보행자(S.3), 센서·렌더링(S.4), 지형·바퀴(S.5), sim-to-real(S.6), travplan 권고(S.7)</td>
+<td>검증 환경의 네 층(L0–L3)</td>
+<td>운동학 시뮬(L0), Isaac Sim(L1)</td>
+</tr><tr>
+<td>배경·수식 (§0)</td>
+<td>인식(0.1, 0.8, 0.9, 0.10, 0.14), Planner·학습(0.5, 0.6, 0.7, 0.12, 0.13), 제어·안전(0.2, 0.3, 0.4, 0.11)</td>
+<td>여러 논문이 공유하는 수식</td>
+<td>각 토글이 "배경 0.N"으로 가리킨다</td>
+</tr><tr>
+<td>강화학습 (§R)</td>
+<td>개요(R.0), 문제 설정·모방(R.1–R.2), 정책 기울기(R.3–R.5), 가치 기반(R.6), 추론으로서의 제어(R.7–R.8, R.17), 모델 기반(R.9, R.18), 오프라인·탐색(R.10–R.11), LLM·생성 정책·안전(R.12–R.13), 이론·다과제(R.14–R.15), travplan에서(R.16)</td>
+<td>버클리 CS 185/285의 강의마다 풀어 쓴 설명과 영상(2023, 2018), 확산·flow 정책의 RL</td>
+<td>TP-0066 후학습(AWR, 그룹 이점), TP-0128 진화 전략, MPPI(제어를 추론으로), NMPC(iLQR 계열)</td>
+</tr><tr>
+<td>참고문헌 (§D)</td>
+<td>인식(D.1–D.3b), Planner(D.0–D.5b), Controller·안전(D.6–D.7b), 강화학습(D.14), 연구 그룹(D.13), 로코모션·데이터·산업(D.8–D.12)</td>
+<td>전체 목록, 발표처, 코드 링크</td>
+<td>—</td>
+</tr></tbody></table><p><strong>전체 연표.</strong> 분야마다 흐름을 바꾼 연구를 한 표에 놓았다. 2023년 전후로 네 분야가 함께 "큰 사전학습 모델 + 생성형 출력"으로
+옮겨 갔다. 인식은 시각 기반 모델로, Planner는 diffusion과 flow matching으로, Controller는 학습 world model로, 시뮬레이션은 GPU 병렬
+학습과 사진 같은 렌더링으로 갔다. 각 이름의 설명은 해당 문서의 개요 탭과 본문에 있다.</p><table style="table-layout:fixed"><colgroup><col style="width:95.1px"><col style="width:432.0px"><col style="width:444.8px"><col style="width:388.1px"><col style="width:367.0px"></colgroup><thead>
+<tr>
+<th>연도</th>
+<th>인식</th>
+<th>Planner</th>
+<th>Controller·안전</th>
+<th>시뮬레이션</th>
+</tr>
+</thead><tbody><tr>
+<td>1959–1997</td>
+<td>—</td>
+<td>Dijkstra, A*, DWA</td>
+<td>—</td>
+<td>—</td>
+</tr><tr>
+<td>2008–2014</td>
+<td>Robot-centric elevation mapping</td>
+<td>Hybrid A*, TEB</td>
+<td>—</td>
+<td>—</td>
+</tr><tr>
+<td>2015–2018</td>
+<td>Social GAN</td>
+<td>Apollo EM planner</td>
+<td>MPPI, 정보이론적 MPC, CBF-QP, HJ 도달 가능성, PETS, 예측 안전 필터</td>
+<td>Sorour 등, Domain Randomization, Dynamics Randomization</td>
+</tr><tr>
+<td>2019–2020</td>
+<td>Lift-Splat-Shoot, RELLIS-3D, BADGR, 등속 모델, Trajectron++</td>
+<td>Nav2</td>
+<td>CBF 튜토리얼, 이산 CBF + MPC</td>
+<td>Actuator net, ADR, Sim2Real Predictivity</td>
+</tr><tr>
+<td>2021–2022</td>
+<td>BEVFormer, BEVFusion, MonoScene, elevation_mapping_cupy, ByteTrack, BoT-SORT</td>
+<td>Diffuser, GNM, FAR Planner, PUTN</td>
+<td>Robust MPPI, IKD, RMA, log-MPPI, SMPPI</td>
+<td>Learning to Walk in Minutes, ART/ATK</td>
+</tr></tbody></table></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>3 / 12</span></div><aside>docs/research-overview.md 머리말</aside></section>
+<section class="r content"><div class="kicker">개요 · 개요</div><h2 class="ttl">리서치 개요 (2026-09)<small>3/3</small></h2><div class="body"><table style="table-layout:fixed"><colgroup><col style="width:95.1px"><col style="width:432.0px"><col style="width:444.8px"><col style="width:388.1px"><col style="width:367.0px"></colgroup><thead>
+<tr>
+<th>연도</th>
+<th>인식</th>
+<th>Planner</th>
+<th>Controller·안전</th>
+<th>시뮬레이션</th>
+</tr>
+</thead><tbody><tr>
+<td>2023</td>
+<td>DINOv2, Grounding DINO, Occ3D, WVN, RT-DETR</td>
+<td>iPlanner, ViNT, NoMaD, Diffusion Policy, MPD, UniAD, VAD, PDM-Closed, ArtPlanner</td>
+<td>TD-MPC2, 안전 필터 통합 관점</td>
+<td>HuNavSim, Gazebo Harmonic</td>
+</tr><tr>
+<td>2024</td>
+<td>Depth Anything V2, SAM 2, V-STRONG, RoadRunner, YOLOv10, D-FINE</td>
+<td>ViPlanner, OpenVLA, π0, NaVILA, CityWalker, DiffusionDrive, NAVSIM, Hydra-MDP</td>
+<td>MPPI-Generic</td>
+<td>MetaUrban, Arena 4.0, X-Mobility, Navigation World Models</td>
+</tr><tr>
+<td>2025</td>
+<td>DINOv3, Depth Anything 3, SAM 3, RF-DETR, MoFlow</td>
+<td>Diffusion Planner, GoalFlow, NavDP, CaRL, Alpamayo, MolmoAct, VAMOS, FPO</td>
+<td>CVaR-BF, DRA-MPPI</td>
+<td>Isaac Lab, MuJoCo Playground, URBAN-SIM, UrbanVerse, COMPASS, Cosmos</td>
+</tr><tr>
+<td>2026</td>
+<td>WalkOCC, ViTA, CATNAV, PIVOT, RayOcc, 4D panoptic occupancy tracking, EgoHTR</td>
+<td>AgniNav, MILER, PC-Diffuser, JPPD, GRACE, Can VFMs Navigate?, Click-and-Traverse, TNT, DYNA-2.1</td>
+<td>ProxPI, Predictive Semantic Safety, HDVIO2.0, OGM-CBF, Safe Score Matching, PolyStep</td>
+<td>Isaac Sim 6.x, Newton, SidewalkBench, NavIsaacLab</td>
+</tr></tbody></table></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>4 / 12</span></div><aside>docs/research-overview.md 머리말</aside></section>
+<section class="r divider"><div class="kicker">개요 · 탭</div><h2 class="ttl">개요</h2><div class="body"><p class="h2">ROS/ROS2 costmap의 한계 — travplan이 TravMap을 쓰는 이유</p><p class="h3">다섯 가지 한계</p><p class="h3">업스트림도 같은 결론을 적어 두었다</p><p class="h3">TravMap의 여덟 채널이 어느 한계에 답하나</p><p class="h3">그래도 costmap을 버리지는 않는다</p><p class="h2">학회 수확 — IROS 2026 (피츠버그)</p><p class="h3">골라 볼 다섯 편</p></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>5 / 12</span></div><aside>docs/research-overview.md · 탭 &#x27;개요&#x27;</aside></section>
+<section class="r content"><div class="kicker">개요 · 개요</div><h2 class="ttl">ROS/ROS2 costmap의 한계 — travplan이 TravMap을 쓰는 이유</h2><div class="body"><p><strong>travplan은 지금도 ROS 2 위에서 돌고 Nav2 생태계를 쓴다.</strong> 그런데 공통 표현만은 <code>costmap_2d</code>가 아니라
+<code>TravMap[8,H,W]</code>다. 왜 갈라섰는지를 여기에 적는다. <mark>결론부터: costmap은 "여기 무언가 있나"를 답하는 자료구조이고,
+보도 주행이 물어야 하는 것은 "여기를 지날 수 있나"다.</mark></p><p><strong>먼저 costmap이 무엇인지.</strong> <code>nav2_costmap_2d</code>는 2D 격자에 레이어를 쌓는다. static(정적 지도), obstacle(센서로
+mark/clear), voxel(3D로 쌓았다가 2D로 투영), inflation(장애물 주위를 로봇 반지름만큼 부풀림)이다. 각 셀은
+0–255의 비용 하나를 갖는다.</p></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>6 / 12</span></div><aside>docs/research-overview.md · ROS/ROS2 costmap의 한계 — travplan이 TravMap을 쓰는 이유</aside></section>
+<section class="r content"><div class="kicker">개요 · 개요 · ROS/ROS2 costmap의 한계 — travplan이 TravMap을 쓰는 이유</div><h2 class="ttl">다섯 가지 한계</h2><div class="body"><p><strong>① 점유/비점유의 이분법.</strong> 셀은 "비었다 / 찼다 / 모른다"와 inflation 비용을 갖는다. <mark><strong>"지날 수는 있지만 비싼 곳"</strong>을
+표현할 자리가 없다.</mark> 경사 8°의 램프와 평지가 같은 값이고, 자갈과 아스팔트가 같은 값이다. 경사·거칠기를 넣으려면
+직접 레이어를 만들어야 하는데, 그러면 그 레이어의 의미는 더 이상 표준이 아니다.</p><p><strong>② 2D 투영이 높이를 무너뜨린다.</strong> 이것이 보도에서 가장 아프다. 세 가지가 함께 무너진다.</p><ul>
+<li><strong>연석.</strong> 3D 점을 2D로 투영하면 높이 10 cm 턱과 높이 2 m 벽이 같은 "장애물"이다. 반대로 투영 문턱 아래의 턱은
+  아예 사라진다(Planner 문서 B.12.4의 BotBrain 사례: 10 cm 미만 턱을 놓친다).</li>
+<li><strong>오버행.</strong> 나뭇가지나 간판 아래는 로봇이 지나갈 수 있는데 2D로는 막힌 것이 된다.</li>
+<li><mark><strong>음의 장애물.</strong></mark> 포트홀·배수구·내려가는 연석은 <strong>반사가 돌아오지 않는다.</strong> costmap에서 "반사 없음"은 장애물이
+  아니라 <strong>미관측</strong>이고, 미관측은 보통 자유공간처럼 지나간다. travplan이 TP-0031(가림)·TP-0044(그림자 상한)·
+  TP-0047(깊이 prior)·TP-0067(관측 증거로 묶기)에 들인 일이 전부 이 한 칸을 메우는 작업이다.</li>
+</ul><p><strong>③ 불확실성이 없다.</strong> 셀은 비용 <strong>하나</strong>를 갖는다. "얼마나 확신하는가"를 담을 곳이 없다. 미관측은 플래그이지
+분포가 아니다. 그래서 <em>"못 본 곳에서는 천천히"</em>를 표현할 수 없고, 그 결정은 전부 플래너·제어기 쪽 임시 규칙이 된다.
+TravMap의 <code>SIGMA</code> 채널이 이 자리다.</p><p><strong>④ inflation은 고정된 기하 연산이다.</strong> 로봇 반지름과 감쇠 계수로 정해지고, 속도·지형·불확실성에 따라 변하지 않는다.
+Controller 문서 F.5의 4족 확률 제약 MPC가 <strong>"손으로 맞춘 제약 조이기"를 이겼다</strong>고 보고하는데, costmap의 inflation이
+바로 그 손으로 맞춘 조이기의 전형이다. travplan의 TP-0069가 겨냥하는 것도 같다.</p><p><strong>⑤ 지면 평면을 가정한다.</strong> 투영 기준면이 평평하다고 보므로, 경사면에서는 <strong>지면 자체가 장애물로 마킹된다.</strong> 실외
+적용에서 흔한 실패이고, 농업 쪽 보고에서는 로봇이 밟고 지나갈 수 있는 키 큰 풀이 장애물로 찍혀 경로가 길어지거나
+주행이 중단됐다(<a href="https://arxiv.org/abs/2407.18535">arXiv:2407.18535</a>).</p></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>7 / 12</span></div><aside>docs/research-overview.md · 다섯 가지 한계</aside></section>
+<section class="r content"><div class="kicker">개요 · 개요 · ROS/ROS2 costmap의 한계 — travplan이 TravMap을 쓰는 이유</div><h2 class="ttl">업스트림도 같은 결론을 적어 두었다</h2><div class="body"><p>이것은 바깥의 비판이 아니다. Nav2 저장소의 이슈
+<a href="https://github.com/ros-navigation/navigation2/issues/1278">#1278 <em>Redesign Environmental Representation</em></a>에서
+메인테이너가 2019년에 이렇게 썼고, 그 이슈는 지금도 <strong>열려 있다.</strong></p><blockquote>
+<p>오늘 우리는 독립된 셀들의 2D costmap을 쓴다. 싸고 쓸모 있는 방법이지만, 당분간 우리를 2.5D 땅에 묶어 둘 것이다.
+(…) 경사를 3D로 다루면 램프나 언덕, <strong>내려가는 계단이나 낙차</strong>를 표현할 수 있다. (…)
+<mark>비었나 찼나를 따지는 대신 이제 이렇게 생각하자 — <strong>여기를 지날 수 있나.</strong></mark></p>
+</blockquote><p>travplan의 <code>TravMap</code>은 그 제안을 실제로 구현한 형태에 가깝다. 제안된 "gradient map"이 <code>GRAD_X</code>·<code>GRAD_Y</code>·<code>SLOPE</code>이고,
+"지날 수 있나"가 <code>COST</code>다.</p></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>8 / 12</span></div><aside>docs/research-overview.md · 업스트림도 같은 결론을 적어 두었다</aside></section>
+<section class="r content"><div class="kicker">개요 · 개요 · ROS/ROS2 costmap의 한계 — travplan이 TravMap을 쓰는 이유</div><h2 class="ttl">TravMap의 여덟 채널이 어느 한계에 답하나</h2><div class="body"><table>
+<thead>
+<tr>
+<th>채널</th>
+<th>답하는 한계</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ELEV</code></td>
+<td>② 높이를 버리지 않는다</td>
+</tr>
+<tr>
+<td><code>GRAD_X</code>, <code>GRAD_Y</code>, <code>SLOPE</code></td>
+<td>①·⑤ 경사를 값으로 갖는다. 지면 평면을 가정하지 않는다</td>
+</tr>
+<tr>
+<td><code>STEP</code></td>
+<td>② 연석 높이를 벽과 구분한다(<code>max_step_m = 0.08</code>)</td>
+</tr>
+<tr>
+<td><code>ROUGH</code></td>
+<td>① 자갈과 아스팔트를 구분한다</td>
+</tr>
+<tr>
+<td><code>COST</code></td>
+<td>① "지날 수 있나"를 연속값으로</td>
+</tr>
+<tr>
+<td><code>SIGMA</code></td>
+<td>③ 얼마나 확신하는지</td>
+</tr>
+</tbody>
+</table></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>9 / 12</span></div><aside>docs/research-overview.md · TravMap의 여덟 채널이 어느 한계에 답하나</aside></section>
+<section class="r content"><div class="kicker">개요 · 개요 · ROS/ROS2 costmap의 한계 — travplan이 TravMap을 쓰는 이유</div><h2 class="ttl">그래도 costmap을 버리지는 않는다</h2><div class="body"><p><mark>표현을 바꾼 것이지 생태계를 버린 것이 아니다.</mark> Nav2의 행동 트리, 복구 행동, 전역 플래너(Smac), 그리고 실물
+배포의 안전 장치는 그대로 값이 있다. travplan이 Nav2와 겹치는 지점과 비교 기준은 Planner 문서 B.12.4에 정리해 두었다.
+실물 배달로봇 스택(AntBot)도 Nav2 위에 있다. <strong>바뀌는 것은 "무엇을 공통 표현으로 쓰는가" 하나다.</strong></p></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>10 / 12</span></div><aside>docs/research-overview.md · 그래도 costmap을 버리지는 않는다</aside></section>
+<section class="r content"><div class="kicker">개요 · 개요</div><h2 class="ttl">학회 수확 — IROS 2026 (피츠버그)</h2><div class="body"><p><strong>채택 논문 1,929편을 제목으로 훑어 travplan의 열린 질문에 걸리는 것만 골랐다</strong>(<a href="https://2026.ieee-iros.org/program/paper-index/">논문 색인</a>).
+세부는 각 주제 문서에 들어가고, 여기서는 지도만 둔다.</p><p><mark>제목에 "sidewalk"가 들어간 논문이 한 편도 없다.</mark> 보도 배달로봇이라는 자리는 여전히 비어 있다. 가장 가까운 것은 험지(off-road)와
+다리 로봇이고, 그 방법을 보도 규모로 옮기는 일은 travplan의 몫으로 남는다. 키워드별 편수는 terrain 41, traversability 9, off-road 8,
+elevation map 7, occupancy 11, MPPI 9, sidewalk 0이다.</p><table>
+<thead>
+<tr>
+<th>travplan의 열린 질문</th>
+<th>IROS 2026에서 걸리는 논문</th>
+<th>어디에</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>기하만으로 매기는 비용의 한계(TP-0010, TP-0022)</td>
+<td><strong>TNT</strong>(508), <strong>Remember Your Driving Feel</strong>(1304), <strong>TravKAN</strong>(2427), Implicit Neural Representation of Terrain Traversability(4937)</td>
+<td>인식 A.10</td>
+</tr>
+<tr>
+<td>가림과 미관측(TP-0031, TP-0044, TP-0047)</td>
+<td><strong>RayOcc</strong>(1720), <strong>OGM-CBF</strong>(3618), BEACON(3266), What's Hidden Matters(1569)</td>
+<td>인식 A.5, Controller C</td>
+</tr>
+<tr>
+<td>고도지도 위의 샘플링 제어(Controller)</td>
+<td><strong>Observation-Conditioned Rollout Allocation</strong>(3312), PA-MPPI(68), Value Function-Guided MPPI(3764)</td>
+<td>Controller E.1, B.5</td>
+</tr>
+<tr>
+<td>비동축 스워브 제어(TP-0034)</td>
+<td><strong>MSC: Multi-Stage Caster-Aware Control</strong>(3480), CHUTNI(2438)</td>
+<td>Planner B.12.4</td>
+</tr>
+<tr>
+<td>occupancy 표현과 추적</td>
+<td><strong>Streaming Gaussian Encoding for 4D Panoptic Occupancy Tracking</strong>(2962, Best Paper 후보), OccTrack360(1298)</td>
+<td>인식 A.2</td>
+</tr>
+</tbody>
+</table></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>11 / 12</span></div><aside>docs/research-overview.md · 학회 수확 — IROS 2026 (피츠버그)</aside></section>
+<section class="r content"><div class="kicker">개요 · 개요 · 학회 수확 — IROS 2026 (피츠버그)</div><h2 class="ttl">골라 볼 다섯 편</h2><div class="body"><p><strong>TNT — 넘어갈 수 없어 보이는 지형을 가른다</strong>(508, Pan·Datar·Xiao 등, GMU, <a href="https://arxiv.org/abs/2409.17479">arXiv:2409.17479</a>).
+대부분의 traversability 추정은 지형을 갈 수 있는 곳(포장, 자갈, 풀)과 없는 곳(바위, 덤불, 도랑)으로 나눈다. 이 연구는 <strong>바퀴 로봇이 실제로는
+차체만 한 바위도 넘는다</strong>는 데서 출발해, 과거의 기구·동역학적 차량–지형 상호작용에서 "보기에 못 갈 것 같은데 갈 수 있는" 곳을 데이터로
+가려낸다. 6자유도 기구·동역학 모델을 가진 샘플링 Planner를 그 추정으로 안내해, 실물에서 계획 성능 50%, 효율 26.7%, 안정성 9.2%를
+개선했다. travplan의 <code>GeometricTraversability</code>는 경사·턱·거칠기의 최댓값으로 비용을 매기는데, 이 방식은 정확히 그 보수성을 문제 삼는다.
+TP-0057(TravNet 잔차 방향)에서 "올리는 쪽만 허용할지"를 정할 때 반대 방향의 근거가 된다.</p><p><strong>Remember Your Driving Feel — 주행 감각으로 온라인 학습</strong>(1304, Xie 등). proprioception 기반으로 복잡한 지형의 traversability를 주행
+중에 배운다. travplan TravNet의 자기지도 라벨(TP-0010 설계, TP-0022 실험)과 같은 계열이고, 온라인 갱신이라는 점이 다르다.</p><p><strong>Observation-Conditioned Rollout Allocation — 근시안적 고도지도 위의 샘플링 MPC</strong>(3312, Diaz Pichardo·Mandow·Vazquez-Martin).
+<mark>로봇 중심 고도지도가 좁아 앞을 멀리 못 볼 때, 관측 상태에 따라 rollout 예산을 나눠 준다.</mark> travplan Controller가 belief TravMap 위에서
+MPPI를 돌리고, 가림으로 미관측이 생기는 상황(TP-0031)과 정확히 같은 설정이다. 샘플을 어디에 더 쓸지는 travplan이 아직 다루지 않은 축이다.</p><p><strong>MSC — caster를 아는 제어</strong>(3480, Park 등, KAIST). 불확실성을 아는 NMPC와 RL 실행 층을 여러 단계로 묶는다. caster, 즉 조향축과 접지점이
+어긋난 바퀴가 대상이다. travplan 로봇의 비동축 스워브(B.12.4의 PCV, 오프셋 55.5 mm)와 같은 문제를 제어 쪽에서 다룬 것이라
+TP-0034의 참고가 된다.</p><p><strong>Streaming Gaussian Encoding for 4D Panoptic Occupancy Tracking</strong>(2962, Luz·Valada 등, <strong>Best Paper 후보</strong>). 3D 가우시안으로 장면을
+흘려보내며 occupancy를 개체 단위로 추적한다. 같은 주제의 <strong>OccTrack360</strong>(1298, <a href="https://arxiv.org/abs/2603.08521">arXiv:2603.08521</a>)은
+어안 카메라 서라운드 뷰로 4D panoptic occupancy 추적 벤치마크를 낸다. 시퀀스가 174–2234프레임으로 기존보다 길고, <strong>가림 마스크와 어안
+시야 마스크로 미관측 복셀을 명시</strong>한다. travplan에 직접 쓰지는 않는다. 관심 범위가 복셀 의미·개체이고 travplan은 2.5D 지형 비용이기
+때문이다. 다만 미관측을 마스크로 명시해 평가에서 제외하는 규약은 travplan이 σ 채널과 치명 재현율을 재는 방식(TP-0053, <code>eval/map_quality.py</code>)과
+같은 문제의식이다.</p><p><strong>travplan에 주는 의미.</strong> <mark>험지 연구는 "보수적으로 막는 것"에서 "실제로 넘을 수 있는지 데이터로 가르는 것"으로 옮겨 가고 있다.</mark>
+TNT가 대표다. travplan은 반대로 보수적인 최댓값 규칙을 쓰고 있고, 그것이 안전 쪽으로는 옳지만 0.07 m 턱을 막는 오탐(TP-0048, TP-0067)의
+뿌리이기도 하다. 두 흐름을 어떻게 화해시킬지가 TP-0057의 결정 사항이다. 2026-10-03에는 기본을 "올리는 쪽만"으로 두고, 낮추는 쪽은 치명이 늘지 않는지로 판정하는 선택 실험으로 남겼다. 가림 쪽은 RayOcc와 OGM-CBF가 각각 인식과 제어에서 "못 본 것을
+어떻게 들고 갈 것인가"를 다루는데, travplan의 그림자 상한·깊이 prior와 비교할 값이 있다.</p></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>12 / 12</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편</aside></section>
+<script>
+// ?layout=1: 장마다 요소 위치를 적는다. PPTX가 이 좌표에 글상자·표·그림을 놓는다.
+(function () {
+  if (!/[?&]layout=/.test(location.search)) return;
+  function rect(el, base) { var r = el.getBoundingClientRect(); return [r.left - base.left, r.top - base.top, r.width, r.height]; }
+  function run() {
+    var secs = Array.prototype.slice.call(document.querySelectorAll('#frame > section')), out = [];
+    secs.forEach(function (sec) {
+      secs.forEach(function (s) { s.classList.toggle('on', s === sec); });
+      var base = sec.getBoundingClientRect(), body = sec.querySelector('.body'), blocks = [];
+      if (body && !sec.classList.contains('divider')) Array.prototype.forEach.call(body.children, function (b) {
+        var d = { r: rect(b, base) };
+        if (b.tagName === 'TABLE') {
+          d.cols = Array.prototype.map.call((b.rows[0] || { cells: [] }).cells, function (c) { return c.getBoundingClientRect().width; });
+          d.rows = Array.prototype.map.call(b.rows, function (tr) { return tr.getBoundingClientRect().height; });
+        }
+        if (b.classList.contains('figrow')) d.figs = Array.prototype.map.call(b.querySelectorAll('figure'), function (f) {
+          var img = f.querySelector('img'), cap = f.querySelector('figcaption');
+          return { img: img ? rect(img, base) : null, cap: cap ? rect(cap, base) : null };
+        });
+        var kd = b.querySelector('.katex-display');
+        if (kd && b.classList.contains('mathp')) d.math = rect(kd.querySelector('.katex') || kd, base);
+        blocks.push(d);
+      });
+      out.push({ blocks: blocks, errors: sec.querySelectorAll('.katex-error').length });
+    });
+    var rep = document.getElementById('report'); rep.textContent = JSON.stringify(out); rep.setAttribute('data-done', '1');
+  }
+  window.addEventListener('DOMContentLoaded', function () { document.fonts.ready.then(function () { setTimeout(function () { window.withAllFonts(run); }, 50); }); });
+})();
+</script>
+</div></div>
+<div id="notes"><b>발표자 노트</b><div id="notes-body"></div></div>
+<div id="bar">
+<button id="prev" aria-label="이전">◀</button><span id="count"></span><button id="next" aria-label="다음">▶</button>
+<span id="ttl">travplan 리서치 — 개요</span>
+<button id="nb" title="N 키">노트</button><button id="fs" title="F 키">전체 화면</button>
+<a href="research-overview.pptx" download>PPTX</a><a href="./../">목록</a>
+</div>
+<pre id="report" hidden></pre>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script>
+(function () {
+  var slides = Array.prototype.slice.call(document.querySelectorAll('#frame > section'));
+  var frame = document.getElementById('frame'), notes = document.getElementById('notes');
+  var q = new URLSearchParams(location.search), shot = q.has('shot') || q.has('check');
+  if (shot) document.body.classList.add('shot');
+  var i = 0;
+  function fit() {
+    if (shot) return;
+    var st = document.getElementById('stage');
+    var s = Math.min(st.clientWidth / 1920, st.clientHeight / 1080);
+    frame.style.transform = 'scale(' + s + ')';
+  }
+  function show(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach(function (el, k) { el.classList.toggle('on', k === i); });
+    document.getElementById('count').textContent = (i + 1) + ' / ' + slides.length;
+    var a = slides[i].querySelector('aside');
+    document.getElementById('notes-body').textContent = a ? a.textContent : '';
+    if (!shot) history.replaceState(null, '', '#' + (i + 1));
+  }
+  function withAllFonts(fn) {
+    document.body.classList.add('all');
+    void document.body.offsetHeight;
+    requestAnimationFrame(function () {
+      document.fonts.ready.then(function () { document.body.classList.remove('all'); fn(); });
+    });
+  }
+  window.withAllFonts = withAllFonts;
+  // 넘침 검사: 본문 요소가 장 밖으로 나가거나 각주 띠를 덮으면 적는다.
+  function check() {
+    var bad = [];
+    slides.forEach(function (sec, k) {
+      show(k);
+      var box = sec.getBoundingClientRect();
+      Array.prototype.forEach.call(sec.querySelectorAll('.katex-error'), function (el) {
+        bad.push({ slide: k + 1, id: sec.id, tag: 'TeX', text: (el.getAttribute('title') || el.textContent).slice(0, 60), over: 0 });
+      });
+      Array.prototype.forEach.call(sec.querySelectorAll('img'), function (el) {
+        if (!el.complete || !el.naturalWidth) bad.push({ slide: k + 1, id: sec.id, tag: 'IMG', text: el.getAttribute('src'), over: 0 });
+      });
+      var foot = sec.querySelector('[data-foot]');
+      var limit = foot ? foot.getBoundingClientRect().top - 4 : box.bottom - 24;
+      Array.prototype.forEach.call(sec.querySelectorAll('p, h1, h2, h3, img, td, th, li, .katex-display, [data-box]'), function (el) {
+        if (foot && foot.contains(el)) return;
+        if (el.closest('aside')) return;
+        var r = el.getBoundingClientRect();
+        if (r.width === 0 && r.height === 0) return;
+        if (r.bottom > limit + 0.5 || r.right > box.right - 40) {
+          bad.push({ slide: k + 1, id: sec.id, tag: el.tagName, text: (el.textContent || el.alt || '').slice(0, 40), over: Math.round(Math.max(r.bottom - limit, r.right - (box.right - 40))) });
+        }
+      });
+    });
+    var rep = document.getElementById('report');
+    rep.textContent = JSON.stringify(bad);
+    rep.setAttribute('data-done', '1');
+  }
+  function start() {
+    if (window.renderMathInElement) {
+      renderMathInElement(document.getElementById('frame'), {
+        delimiters: [{ left: '$$', right: '$$', display: true }, { left: '$', right: '$', display: false }],
+        throwOnError: false
+      });
+    }
+    // 한글 웹 글꼴은 글자 묶음마다 따로 받고, 숨은 장의 글자는 받지 않는다. 장을 모두 보여 글꼴을 받은 뒤 잰다.
+    if (q.has('check')) { withAllFonts(check); return; }
+    var s = shot ? parseInt(q.get('shot'), 10) - 1 : parseInt(location.hash.slice(1), 10) - 1;
+    show(isNaN(s) ? 0 : s);
+  }
+  show(0); fit(); window.addEventListener('resize', fit);
+  window.addEventListener('DOMContentLoaded', function () {
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(start); else start();
+  });
+  document.getElementById('prev').onclick = function () { show(i - 1); };
+  document.getElementById('next').onclick = function () { show(i + 1); };
+  document.getElementById('nb').onclick = function () { notes.classList.toggle('show'); };
+  document.getElementById('fs').onclick = function () {
+    if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen();
+  };
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { show(i + 1); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { show(i - 1); e.preventDefault(); }
+    else if (e.key === 'Home') show(0);
+    else if (e.key === 'End') show(slides.length - 1);
+    else if (e.key === 'n' || e.key === 'N') notes.classList.toggle('show');
+    else if (e.key === 'f' || e.key === 'F') document.getElementById('fs').click();
+  });
+  var x0 = null;
+  document.getElementById('stage').addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+  document.getElementById('stage').addEventListener('touchend', function (e) {
+    if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0; x0 = null;
+    if (Math.abs(dx) > 40) show(i + (dx < 0 ? 1 : -1));
+  });
+})();
+</script>
+</body>
+</html>
