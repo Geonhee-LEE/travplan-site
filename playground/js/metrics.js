@@ -8,7 +8,9 @@ import { DIFFICULTY } from "./terrain.js";
 export const METRIC_COLUMNS = [
   "planner", "scenario", "seed", "success", "failure", "time_s", "path_len_m", "max_roll_deg", "max_pitch_deg",
   "mean_gt_cost", "rms_jerk", "plan_ms_mean", "plan_ms_p95", "control_ms_mean", "min_obs_clear_m",
+  "collision_speed_mps", "cargo_jerk_cost",
 ];
+const CARGO_JERK_TOL = 10.0;   // travplan/eval/metrics.py의 CARGO_JERK_TOL
 const FAILURE = { lethal: "lethal", tipover: "tip", collision: "collision", timeout: "timeout" };   // JS failCode -> Python failure
 const DEG = 180 / Math.PI;
 
@@ -21,7 +23,7 @@ function percentile(a, q) {
 // 스텝마다 world.step() 직후에 after(world, k0)을 부른다. k0은 그 스텝을 시작할 때의 world.k다.
 // run_episode처럼 재계획은 k % replanEvery == 0 스텝에서만 센다(reset의 첫 계획은 세지 않는다).
 export class EpisodeMeter {
-  constructor() { this.tw = []; this.jerkSq = 0; this.jerkN = 0; this.plan = []; this.ctrl = 0; this.n = 0; }
+  constructor() { this.tw = []; this.jerkSq = 0; this.jerkN = 0; this.cargo = 0; this.plan = []; this.ctrl = 0; this.n = 0; }
   after(world, k0) {
     if (k0 % SIM.replanEvery === 0) this.plan.push(world.ms.plan);
     this.ctrl += world.ms.ctrl; this.n++;
@@ -30,6 +32,7 @@ export class EpisodeMeter {
     if (this.tw.length === 3) {                 // np.diff(twist[:, :2], n=2) / dt**2
       const [a, b, c] = this.tw, d2 = SIM.dt * SIM.dt, jx = (c[0] - 2 * b[0] + a[0]) / d2, jy = (c[1] - 2 * b[1] + a[1]) / d2;
       this.jerkSq += jx * jx + jy * jy; this.jerkN++;
+      this.cargo += Math.max(0, Math.hypot(jx, jy) - CARGO_JERK_TOL) * SIM.dt;
     }
   }
   // 끝난 주행 -> { 열 이름: 값 }. tags.edited면 scenario에 '+edit'를 붙인다(Python에는 지형 편집이 없다).
@@ -51,6 +54,8 @@ export class EpisodeMeter {
       plan_ms_mean: plan.reduce((a, b) => a + b, 0) / plan.length, plan_ms_p95: percentile(plan, 95),
       control_ms_mean: this.n ? this.ctrl / this.n : 0,
       min_obs_clear_m: Number.isFinite(s.minClear) ? s.minClear : "nan",   // 보행자가 없으면 Python처럼 nan
+      collision_speed_mps: "",   // JS는 충돌 순간 속도를 기록하지 않는다(빈 칸)
+      cargo_jerk_cost: k > 3 ? this.cargo : 0,
     };
   }
 }
