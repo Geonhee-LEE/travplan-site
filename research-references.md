@@ -9,7 +9,7 @@
 
 목차: D.0 E2E 분해 · D.1 지형·traversability·중간 표현(A.10) · D.2 Occupancy · D.3 예측(occupancy flow·world model·
 행위자) · D.3b 인식 마일스톤·시각 기반 모델·동적 장애물 · D.4 학습 Planner · D.4b 비학습 위험 인지 경로 계획 · D.5 생성형 궤적 Planner ·
-D.5b 고전 기준선·마일스톤·VLA·E2E 주행 · D.5c 로봇별 오픈소스 스택 · D.6 Controller(참고) · D.7 안전 필터 · D.7b Controller·안전 마일스톤 · **D.14 강화학습** ·
+D.5b 고전 기준선·마일스톤·VLA·E2E 주행 · D.5c 로봇별 오픈소스 스택 · D.6 Controller(참고) · D.7 안전 필터 · D.7b Controller·안전 마일스톤 · **D.14 강화학습** · **D.15 딥러닝** ·
 **D.13 연구 그룹과 사람** · D.8 로코모션·시스템 스택 · D.9 데이터셋·벤치마크 · D.10 벤더·산업 자료 ·
 D.12 IROS 2026 수확 · D.11 기타
 (시뮬레이션 참고문헌은 시뮬레이션 문서의 S.8에 있다)
@@ -686,6 +686,74 @@ E.1(MPPI 계보), E.2(학습 동역학·적응 마일스톤), C.4(안전 필터 
 | Safe Score Matching | 2026.09 · NeurIPS 2026 | HJ 도달 가능성 critic으로 확산 정책의 점수 목표를 보상과 회복 두 갈래로 나눈다 | R.13, C | [논문](https://arxiv.org/abs/2609.33337) · [코드](https://github.com/byli888/safe-score-matching) |
 | QF3 | 2026.10 | replay 행동 가까운 차원에만 Q 기울기를 흘리는 off-policy flow RL | R.13, R.19 | [논문](https://arxiv.org/abs/2610.08789) · [프로젝트](https://qf3-rl.github.io/) |
 
+### D.15 딥러닝 (§L)
+
+딥러닝 문서(L.0–L.22)에서 다룬 연구다. 교재와 강의가 먼저 오고, 논문은 arXiv 첫 게재 순이다.
+flow matching 원논문·Flow Matching Guide·Diffusion Policy·π0·OpenVLA(D.5b), DINOv2(D.3b)는 각 절에 있다.
+
+| 이름 | 연·발표 | 요약 | 본문 | 링크 |
+|---|---|---|---|---|
+| Understanding Deep Learning | 2023 · MIT Press · Simon J. D. Prince | 무료 PDF 교재 21장과 노트북. 딥러닝 문서의 순서와 표기 | L 전체 | [교재](https://udlbook.github.io/udlbook/) · [코드](https://github.com/udlbook/udlbook) |
+| MIT 6.S184 Flow Matching and Diffusion Models | 2025 · MIT · 강의 노트 Holderrieth·Erives | flow matching과 diffusion을 SDE·ODE로 한 번에 정리한 강의 | L.10–L.12 | [과목](https://diffusion.csail.mit.edu/) · [노트](https://arxiv.org/abs/2506.02070) |
+| Stanford CS336 Language Modeling from Scratch | 2025 봄 · Stanford | 토크나이저·transformer·규모의 법칙·정렬을 직접 구현 | L.5–L.8, L.13, L.16–L.18 | [과목](https://stanford-cs336.github.io/spring2025/) |
+| MIT 6.S191 Introduction to Deep Learning | 매년 · MIT | 짧은 입문 강의와 실습 | L.0–L.3 | [과목](https://introtodeeplearning.com/) |
+| Stanford CS231n | 매년 · Stanford | 시각 인식: 합성곱, ViT, 자기지도 표현 | L.4, L.14 | [과목](https://cs231n.stanford.edu/) |
+| Dive into Deep Learning | 온라인 교재 | 코드가 붙은 무료 교재 | L 전체 | [교재](https://d2l.ai/) |
+| Adam | 2014.12 · ICLR 2015 | 성분마다 기울기 제곱 평균으로 나누는 적응 학습률 | L.2 | [논문](https://arxiv.org/abs/1412.6980) |
+| GAN | 2014.06 · NeurIPS 2014 | 생성자와 판별자의 게임 | L.9 | [논문](https://arxiv.org/abs/1406.2661) |
+| VAE(Auto-Encoding Variational Bayes) | 2013.12 · ICLR 2014 | ELBO와 재매개변수화 | L.9 | [논문](https://arxiv.org/abs/1312.6114) |
+| BatchNorm | 2015.02 · ICML 2015 | 배치 안에서 활성을 정규화 | L.3 | [논문](https://arxiv.org/abs/1502.03167) |
+| 지식 증류(Hinton 외) | 2015.03 | 교사의 부드러운 확률을 학생이 맞힌다 | L.17 | [논문](https://arxiv.org/abs/1503.02531) |
+| U-Net | 2015.05 · MICCAI 2015 | 해상도를 줄였다 늘리며 같은 해상도끼리 건너뛰기 연결 | L.4 | [논문](https://arxiv.org/abs/1505.04597) |
+| ResNet | 2015.12 · CVPR 2016 | 잔차 연결로 아주 깊은 망을 학습 | L.4 | [논문](https://arxiv.org/abs/1512.03385) |
+| LayerNorm | 2016.07 | 표본 하나의 특징 안에서 정규화. transformer의 기본 | L.3 | [논문](https://arxiv.org/abs/1607.06450) |
+| 일반화 다시 생각하기(Zhang 외) | 2016.11 · ICLR 2017 | 큰 망은 무작위 라벨까지 외운다 | L.3 | [논문](https://arxiv.org/abs/1611.03530) |
+| Deep Ensembles | 2016.12 · NeurIPS 2017 | 초기값만 다른 망 여러 개의 의견 차이로 불확실성 추정 | L.3 | [논문](https://arxiv.org/abs/1612.01474) |
+| PointNet | 2016.12 · CVPR 2017 | 점마다 같은 MLP와 최댓값 모음으로 순서와 무관한 점군 함수 | L.4 | [논문](https://arxiv.org/abs/1612.00593) |
+| 희소 게이트 MoE(Shazeer 외) | 2017.01 · ICLR 2017 | 토큰마다 전문가 몇 개만 켠다 | L.8 | [논문](https://arxiv.org/abs/1701.06538) |
+| Transformer(Attention Is All You Need) | 2017.06 · NeurIPS 2017 | scaled dot-product attention과 여러 머리 | L.5 | [논문](https://arxiv.org/abs/1706.03762) |
+| AdamW | 2017.11 · ICLR 2019 | 가중 감쇠를 적응 학습률 밖으로 뗐다 | L.2 | [논문](https://arxiv.org/abs/1711.05101) |
+| 복권 가설 | 2018.03 · ICLR 2019 | 큰 망 안의 잘 학습되는 작은 부분망 | L.17 | [논문](https://arxiv.org/abs/1803.03635) |
+| BERT | 2018.10 · NAACL 2019 | 양방향 마스크 언어 모델 사전학습 | L.13, L.14 | [논문](https://arxiv.org/abs/1810.04805) |
+| Deep Double Descent | 2019.12 · ICLR 2020 | 모델·자료·학습 길이에 대한 이중 하강 | L.3 | [논문](https://arxiv.org/abs/1912.02292) |
+| Kaplan 규모의 법칙 | 2020.01 | 손실이 크기·자료·계산의 거듭제곱 법칙을 따른다 | L.16 | [논문](https://arxiv.org/abs/2001.08361) |
+| SimCLR | 2020.02 · ICML 2020 | 두 증강을 가깝게 하는 대조 학습 | L.14 | [논문](https://arxiv.org/abs/2002.05709) |
+| GPT-3 | 2020.05 · NeurIPS 2020 | 크기를 키워 생긴 몇 예시 학습 | L.13 | [논문](https://arxiv.org/abs/2005.14165) |
+| DDPM | 2020.06 · NeurIPS 2020 | 잡음 예측 제곱 오차로 학습하는 diffusion | L.10, 0.5 | [논문](https://arxiv.org/abs/2006.11239) |
+| DDIM | 2020.10 · ICLR 2021 | 학습은 그대로, 결정적 샘플러로 걸음을 줄인다 | L.10 | [논문](https://arxiv.org/abs/2010.02502) |
+| ViT | 2020.10 · ICLR 2021 | 16×16 패치를 토큰으로 쓰는 영상 transformer | L.5 | [논문](https://arxiv.org/abs/2010.11929) |
+| Score SDE | 2020.11 · ICLR 2021 | 잡음 예측 = 점수, 확률 흐름 ODE | L.10 | [논문](https://arxiv.org/abs/2011.13456) |
+| Switch Transformer | 2021.01 · JMLR 2022 | 전문가 하나만 고르는 단순한 MoE | L.8 | [논문](https://arxiv.org/abs/2101.03961) |
+| CLIP | 2021.02 · ICML 2021 | 영상–글 4억 쌍의 대조 학습, 영점 분류 | L.14, L.19 | [논문](https://arxiv.org/abs/2103.00020) |
+| RoFormer(RoPE) | 2021.04 | 질의·키를 위치만큼 회전시키는 상대 위치 부호화 | L.6 | [논문](https://arxiv.org/abs/2104.09864) |
+| DINO | 2021.04 · ICCV 2021 | 라벨 없는 자기 증류 ViT | L.14 | [논문](https://arxiv.org/abs/2104.14294) |
+| LoRA | 2021.06 · ICLR 2022 | 얼린 가중에 저랭크 갱신만 학습 | L.17 | [논문](https://arxiv.org/abs/2106.09685) |
+| MAE | 2021.11 · CVPR 2022 | 패치 75 %를 가리고 복원 | L.14 | [논문](https://arxiv.org/abs/2111.06377) |
+| InstructGPT | 2022.03 · NeurIPS 2022 | 시연 미세 조정 → 보상 모델 → PPO | L.18, R.12 | [논문](https://arxiv.org/abs/2203.02155) |
+| Chinchilla | 2022.03 · NeurIPS 2022 | 계산 고정 시 크기와 토큰을 같이 키운다 | L.16 | [논문](https://arxiv.org/abs/2203.15556) |
+| FlashAttention | 2022.05 · NeurIPS 2022 | 메모리 왕복을 줄인 정확한 attention | L.6 | [논문](https://arxiv.org/abs/2205.14135) |
+| Classifier-Free Guidance | 2022.07 | 조건 있는·없는 예측을 섞는 guidance | L.10 | [논문](https://arxiv.org/abs/2207.12598) |
+| Rectified Flow | 2022.09 · ICLR 2023 | 직선 경로의 flow와 reflow로 곧게 펴기 | L.11, L.12 | [논문](https://arxiv.org/abs/2209.03003) |
+| DiT | 2022.12 · ICCV 2023 | adaLN 조건의 diffusion transformer | L.5 | [논문](https://arxiv.org/abs/2212.09748) |
+| I-JEPA | 2023.01 · CVPR 2023 | 가린 부분의 표현을 예측 | L.15 | [논문](https://arxiv.org/abs/2301.08243) |
+| DreamerV3 | 2023.01 | 잠재 world model 안의 상상으로 actor-critic | L.21 | [논문](https://arxiv.org/abs/2301.04104) |
+| Consistency Models | 2023.03 · ICML 2023 | 확률 흐름 ODE의 끝점을 한 번에 내는 사상 | L.12 | [논문](https://arxiv.org/abs/2303.01469) |
+| LLaVA(Visual Instruction Tuning) | 2023.04 · NeurIPS 2023 | CLIP 특징을 언어 모델 입력으로 사영 | L.19 | [논문](https://arxiv.org/abs/2304.08485) |
+| QLoRA | 2023.05 · NeurIPS 2023 | 4비트로 얼린 가중 위의 LoRA | L.17 | [논문](https://arxiv.org/abs/2305.14314) |
+| DPO | 2023.05 · NeurIPS 2023 | 보상 모델 없이 선호 쌍에서 정책 학습 | L.18, R.12 | [논문](https://arxiv.org/abs/2305.18290) |
+| RT-2 | 2023.07 · CoRL 2023 | 행동을 글자 토큰으로 바꿔 VLM과 함께 학습한 VLA | L.13, L.20 | [논문](https://arxiv.org/abs/2307.15818) |
+| Mamba | 2023.12 | 입력에 따라 바뀌는 선택적 상태공간 모델 | L.7 | [논문](https://arxiv.org/abs/2312.00752) |
+| Genie | 2024.02 · ICML 2024 | 행동 라벨 없는 영상에서 잠재 행동을 배운 생성 world model | L.21 | [논문](https://arxiv.org/abs/2402.15391) |
+| Jamba | 2024.03 | attention 층과 Mamba 층을 섞은 언어 모델 | L.7 | [논문](https://arxiv.org/abs/2403.19887) |
+| xLSTM | 2024.05 · NeurIPS 2024 | 지수 게이트와 행렬 기억의 LSTM | L.7 | [논문](https://arxiv.org/abs/2405.04517) |
+| TTT(Learning to Learn at Test Time) | 2024.07 | 숨은 상태를 시퀀스를 읽으며 학습하는 작은 모델로 | L.7 | [논문](https://arxiv.org/abs/2407.04620) |
+| 추론 시간 계산의 최적 배분 | 2024.08 | 추론 때 계산을 더 쓰는 것이 더 큰 모델보다 나을 수 있다 | L.16 | [논문](https://arxiv.org/abs/2408.03314) |
+| FAST | 2025.01 | 행동 묶음에 DCT와 BPE를 건 행동 토크나이저 | L.13, L.20 | [논문](https://arxiv.org/abs/2501.09747) |
+| Cosmos | 2025.01 | 물리 AI용 world model 플랫폼(diffusion·자기회귀) | L.21 | [논문](https://arxiv.org/abs/2501.03575) |
+| Muon is Scalable | 2025.02 | 직교화 모멘텀 최적화기를 큰 언어 모델에 | L.2 | [논문](https://arxiv.org/abs/2502.16982) |
+| V-JEPA 2 | 2025.06 | 영상 사전학습 + 행동 조건 예측기로 계획 | L.15, L.21 | [논문](https://arxiv.org/abs/2506.09985) |
+| DINOv3 | 2025.08 | DINO 계열을 더 키우고 조밀 특징 붕괴를 다룸 | L.14 | [논문](https://arxiv.org/abs/2508.10104) |
+
 <!-- tab: 연구 그룹 -->
 
 ### D.13 연구 그룹과 사람 — 누구를 따라갈 것인가
@@ -1072,6 +1140,16 @@ TP-0036에 바로 들어간다)다.
 | AMO | 2025.05 · RSS 2025 | sim-to-real RL과 궤적 최적화를 묶은 전신 작업 공간 제어, 29자유도 G1 | B.16.6 | [논문](https://arxiv.org/abs/2505.03738) · [코드](https://github.com/OpenTeleVision/AMO) |
 | GMT | 2025.06 · arXiv | 적응 표집과 동작 MoE로 정책 하나가 여러 동작을 따르는 범용 동작 추종, G1 | B.16.6 | [논문](https://arxiv.org/abs/2506.14770) · [코드](https://github.com/zixuan417/humanoid-general-motion-tracking) |
 | BeyondMimic | 2025.08 · Science Robotics 11(117) 2026 | 한 설정의 동작 추종 RL과 잠재 상태–행동 diffusion, SDF 장벽 유도로 장애물 회피, OU 잡음 오차 띠 | B.16.6 | [논문](https://arxiv.org/abs/2508.08241) · [코드](https://github.com/HybridRobotics/whole_body_tracking) |
+| autonomy_stack_diablo_setup | GitHub (CMU) | 메카넘·Go2판과 같은 기본 자율을 Diablo 바퀴 다리 로봇에(Mid-360, ROS 2 Jazzy). 라이선스 표기 없음 | B.16.8 | [코드](https://github.com/jizhang-cmu/autonomy_stack_diablo_setup) |
+| End-to-End Humanoid Safe and Comfortable Locomotion | 2025.08 | 시공간 LiDAR 점군 → 관절 명령, CBF를 CMDP 비용으로 P3O 학습 | B.16.8 | [논문](https://arxiv.org/abs/2508.07611) |
+| Whole-Body Inverse Dynamics MPC | 2025.11 · RA-L | 전체 역동역학으로 관절 토크를 최적화하는 전신 MPC, B2 + Z1 80 Hz | B.16.8 | [논문](https://arxiv.org/abs/2511.19709) |
+| FocusNav | 2026.01 | 정책이 예측한 waypoint 둘레의 BEV 특징만 보는 cross-attention, 안정성 게이트, G1 | B.16.8 | [논문](https://arxiv.org/abs/2601.12790) |
+| PILOT | 2026.01 | 지각 보행과 전신 제어를 한 RL 정책에, MoE, G1 | B.16.8, L.8 | [논문](https://arxiv.org/abs/2601.17440) |
+| CMP(Competence Manifold Projection) | 2026.04 · CoRL 2026 | 잠재 명령을 안전 확률이 정한 구 안으로 투영, Go2 + 팔 | B.16.8 | [논문](https://arxiv.org/abs/2604.07457) · [프로젝트](https://shepherd1226.github.io/CMP/) |
+| GLAD | 2026.05 | 높이 지도 전역·국소 attention 분해, 전진 명령만으로 좁은 길 따라가기, G1 | B.16.8 | [논문](https://arxiv.org/abs/2606.00637) |
+| LP-NavOA | 2026.06 | 얼린 보행 정책의 진행 방향만 덮어쓰는 GRU Planner, G1 | B.16.8 | [논문](https://arxiv.org/abs/2606.23249) |
+| PADP(From Policy Actions to Whole-Body Dynamics) | 2026 · RA-L 11(11) | 관절 행동을 동역학·접촉을 지키는 전신 변수로 투영한 뒤 전신 QP, 점 발·바퀴 발 사족 + 팔. 본문 비공개, 초록 기준 | B.16.8 | [DOI](https://doi.org/10.1109/LRA.2026.3734869) |
+| FIBER | 2026.10 | 기술 정책을 얼린 행동 기반 모델의 잠재 명령으로 투영, flow Planner 하나, G1 | B.16.8 | [논문](https://arxiv.org/abs/2610.24675) · [프로젝트](https://fiberaa.github.io/) |
 
 ### D.9 데이터셋·벤치마크
 

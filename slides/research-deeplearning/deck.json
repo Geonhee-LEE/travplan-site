@@ -1,0 +1,16 @@
+{
+ "title": "travplan 리서치 — 딥러닝",
+ "label": "딥러닝",
+ "n": 49,
+ "tabs": [
+  "개요",
+  "기초",
+  "구조",
+  "생성 모델",
+  "자기지도·규모",
+  "멀티모달·로봇",
+  "travplan에서"
+ ],
+ "order": 5,
+ "source": "docs/research-deeplearning.md"
+}
