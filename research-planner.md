@@ -4839,7 +4839,7 @@ LLM이 장애물 코스 지형을 코드로 쓰고, 정책 무리의 성적을 �
 travplan의 Planner D 학습은 손으로 정한 지형 레벨 0–3(TP-0039)을 고르게 뽑는다(B.15.3). 그 고정 분포와 비교할 상대다.
 
 **ASE에서 MaskedMimic까지 — 캐릭터 애니메이션의 물리 기반 모션 모방이 휴머노이드 제어의 표준 재료가 됐다**([ASE arXiv:2205.01906](https://arxiv.org/abs/2205.01906), Peng·Guo·Halper·Levine·Fidler, ACM TOG 41(4) SIGGRAPH 2022, [코드](https://github.com/nv-tlabs/ASE) NVIDIA License(비상업); [PHC arXiv:2305.06456](https://arxiv.org/abs/2305.06456), Luo·Cao·Winkler·Kitani·Xu, ICCV 2023, CMU·Meta, [코드](https://github.com/ZhengyiLuo/PHC) BSD-3-Clause Clear; [MaskedMimic arXiv:2409.14393](https://arxiv.org/abs/2409.14393), Tessler·Guo·Nabati·Chechik·Peng, ACM TOG SIGGRAPH Asia 2024; [ProtoMotions](https://github.com/NVlabs/ProtoMotions) Apache-2.0).
-이 계열은 사람 모션 캡처를 시뮬레이션 속 물리 캐릭터가 따라 하게 만드는 연구이고, 적대적 모방 AMP(adversarial motion prior)에서 출발했다. AMP는 B.14.4의 Multi-AMP 카드에, 적대적 모방 일반론은 RL 문서 R.17에 있다.
+이 계열은 사람 모션 캡처를 시뮬레이션 속 물리 캐릭터가 따라 하게 만드는 연구이고, 적대적 모방 AMP(adversarial motion prior)에서 출발했다. AMP보다 앞선 추종 보상의 원형(DeepMimic)과 리타기팅은 모방 문서 I.3–I.7에 있다. AMP는 B.14.4의 Multi-AMP 카드에, 적대적 모방 일반론은 RL 문서 R.17에 있다.
 ASE(2022)는 AMP의 판별기 보상에 기술 잠재 변수를 더해, 한 번 사전학습한 저수준 정책을 과제마다 다른 상위 정책이 다시 쓰게 했다. 칼과 방패를 든 37자유도 캐릭터를 187개 클립(약 30분)으로 학습했고, 시뮬레이션 약 10년 분량(100억 표본 이상)을 V100 한 장으로 약 10일에 모았다.
 같은 팀의 CALM(Tessler 외, SIGGRAPH 2023, [arXiv:2305.02195](https://arxiv.org/abs/2305.02195))은 ASE를 가장 가까운 선행 연구로 둔다. 동작 인코더를 함께 배워, 사용자가 방향을 줄 수 있는 잠재 기술로 넓혔다.
 PHC(2023)는 프레임마다 목표 자세를 따라가는 추종 보상에 AMP 판별기 보상을 반씩 더한 추종 정책이다. AMASS 학습 셋 11,313개 중 98.9%를 외력 없이 따라 했고, 1저자 Luo는 뒤에 NVIDIA GEAR로 옮겨 SONIC(이 소절)의 공동 1저자가 됐다.
@@ -7290,6 +7290,7 @@ OSU의 Siekmann 외(Fern·Hurst 공저)는 힘과 속도에 거는 확률적 주
 *그림 — Digit 발 디딤 회복 (블로그 그림): Digit에 앞뒤(세로축)와 좌우(가로축) 충격량(N·s)을 준 시험의 결과다. 시뮬레이션인지 실물인지는 글에 적혀 있지 않다. 초록은 회복, 붉은색은 넘어짐, 파랑은 걸음 없이 버틴 경우다. 왼쪽 모델 기반 제어기보다 오른쪽 RL 제어기의 초록 영역이 넓다(그림 제목은 둘 다 2024-08-15). 출처: [Agility Robotics 2024-10-31](https://www.agilityrobotics.com/content/crossing-sim2real-gap-with-isaaclab)*
 
 **둘째 갈래(사람 동작 추종).** 이 갈래는 사람 동작을 따라 하는 전신 정책이고, 공통 문제는 로봇이 할 수 없는 동작을 거르고 시뮬레이터의 오차를 고치는 일이다. H2O는 시뮬레이션 실행 가능성으로, ExBody2는 기본 정책의 추종 오차로 데이터를 걸렀다.
+이 갈래의 데이터·리타기팅·동작 추종과 2026년의 범용 추종기(SONIC, SuperMimic)는 모방 문서(§I)에 한 흐름으로 모았다. 아래 카드는 그대로 두고, 표 하나로 비교한 것은 I.8에 있다.
 ASAP은 실물 기록으로 시뮬레이터 쪽을 고쳤다. 로봇은 대부분 Unitree H1과 G1이다.
 
 **ExBody — 상체만 사람 동작을 따라 하고 하체는 몸통 속도 목표만 지키게 해, H1이 실외에서 춤추고 걸었다**([arXiv:2402.16796](https://arxiv.org/abs/2402.16796), Cheng·Ji·Chen·Yang·Yang·Wang, RSS 2024, [프로젝트](https://expressive-humanoid.github.io), [코드](https://github.com/chengxuxin/expressive-humanoid) Apache-2.0).

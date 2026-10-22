@@ -1,0 +1,15 @@
+{
+ "title": "travplan 리서치 — 모방",
+ "label": "모방",
+ "n": 67,
+ "tabs": [
+  "개요",
+  "데이터·리타기팅",
+  "동작 추종",
+  "범용 추종기",
+  "위 층",
+  "travplan에서"
+ ],
+ "order": 5,
+ "source": "docs/research-mimic.md"
+}

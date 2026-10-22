@@ -106,7 +106,7 @@ Controller·안전, 시뮬레이션이고, 보조 문서는 여러 논문이 함
  └──────────────────┘
           시뮬레이션 (§S): 운동학 시뮬 · Isaac Sim · 보도 장면 · sim-to-real 로 위 전체를 검증
 </code></pre><p><strong>문서 지도.</strong> 문서마다 첫 탭이 개요(분야 계보, 공개 코드·모델 현황, travplan의 위치)이고, 그 뒤가 주제별 탭이다. 절 번호는 문서를 옮겨도
-그대로 둔다(인식 A, Planner B, Controller E와 안전 필터 C, 시뮬레이션 S, 배경 0, 강화학습 R, 딥러닝 L, 참고문헌 D).</p><table style="table-layout:fixed"><colgroup><col style="width:140.2px"><col style="width:786.0px"><col style="width:435.2px"><col style="width:365.6px"></colgroup><thead>
+그대로 둔다(인식 A, Planner B, Controller E와 안전 필터 C, 시뮬레이션 S, 배경 0, 강화학습 R, 딥러닝 L, 모방 I, 참고문헌 D).</p><table style="table-layout:fixed"><colgroup><col style="width:132.6px"><col style="width:648.8px"><col style="width:593.1px"><col style="width:352.5px"></colgroup><thead>
 <tr>
 <th>문서</th>
 <th>탭과 절</th>
@@ -129,7 +129,7 @@ Controller·안전, 시뮬레이션이고, 보조 문서는 여러 논문이 함
 <td>궤적 추종과 안전</td>
 <td>MPPIController(유지보수), 시간가변 비용 레이어, CVaR-BF 후보</td>
 </tr></tbody></table></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>2 / 12</span></div><aside>docs/research-overview.md 머리말</aside></section>
-<section class="r content"><div class="kicker">개요 · 개요</div><h2 class="ttl">리서치 개요 (2026-09)<small>2/3</small></h2><div class="body"><table style="table-layout:fixed"><colgroup><col style="width:140.2px"><col style="width:786.0px"><col style="width:435.2px"><col style="width:365.6px"></colgroup><thead>
+<section class="r content"><div class="kicker">개요 · 개요</div><h2 class="ttl">리서치 개요 (2026-09)<small>2/3</small></h2><div class="body"><table style="table-layout:fixed"><colgroup><col style="width:132.6px"><col style="width:648.8px"><col style="width:593.1px"><col style="width:352.5px"></colgroup><thead>
 <tr>
 <th>문서</th>
 <th>탭과 절</th>
@@ -157,8 +157,13 @@ Controller·안전, 시뮬레이션이고, 보조 문서는 여러 논문이 함
 <td>교재 Understanding Deep Learning과 MIT 6.S184·Stanford CS336을 뼈대로 한 딥러닝 개념. 장난감 문제를 실제로 풀어 그린 그림</td>
 <td>Planner D(flow matching), Joint Planner(DiT식 transformer), TravNet, TinyPolicy의 구조와 학습</td>
 </tr><tr>
+<td>모방 (§I)</td>
+<td>개요(I.0), 데이터·리타기팅(I.1–I.6), 동작 추종(I.7–I.9), 범용 추종기(I.10–I.12), 위 층(I.13), travplan에서(I.14)</td>
+<td>사람 동작 데이터와 라이선스, 리타기팅(로봇 쪽 고전, GMR·OmniRetarget), 동작 추종(SAMCON·DeepMimic에서 BeyondMimic까지의 계보), 범용 추종기(SONIC, SuperMimic)와 2026년 후속, 공개 코드. 장난감 문제를 풀어 그린 그림</td>
+<td>학습 절차(적응 표집, 교사–학생, world model을 통한 정책 기울기), Planner·Controller 분리, Playground 휴머노이드</td>
+</tr><tr>
 <td>참고문헌 (§D)</td>
-<td>인식(D.1–D.3b), Planner(D.0–D.5b), Controller·안전(D.6–D.7b), 강화학습(D.14), 연구 그룹(D.13), 로코모션·데이터·산업(D.8–D.12)</td>
+<td>인식(D.1–D.3b), Planner(D.0–D.5b), Controller·안전(D.6–D.7b), 강화학습(D.14), 딥러닝(D.15), 모방(D.16), 연구 그룹(D.13), 로코모션·데이터·산업(D.8–D.12)</td>
 <td>전체 목록, 발표처, 코드 링크</td>
 <td>—</td>
 </tr></tbody></table><p><strong>전체 연표.</strong> 분야마다 흐름을 바꾼 연구를 한 표에 놓았다. 2023년 전후로 네 분야가 함께 "큰 사전학습 모델 + 생성형 출력"으로
@@ -183,7 +188,16 @@ Controller·안전, 시뮬레이션이고, 보조 문서는 여러 논문이 함
 <td>Hybrid A*, TEB</td>
 <td>—</td>
 <td>—</td>
-</tr><tr>
+</tr></tbody></table></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>3 / 12</span></div><aside>docs/research-overview.md 머리말</aside></section>
+<section class="r content"><div class="kicker">개요 · 개요</div><h2 class="ttl">리서치 개요 (2026-09)<small>3/3</small></h2><div class="body"><table style="table-layout:fixed"><colgroup><col style="width:95.1px"><col style="width:432.0px"><col style="width:444.8px"><col style="width:388.1px"><col style="width:367.0px"></colgroup><thead>
+<tr>
+<th>연도</th>
+<th>인식</th>
+<th>Planner</th>
+<th>Controller·안전</th>
+<th>시뮬레이션</th>
+</tr>
+</thead><tbody><tr>
 <td>2015–2018</td>
 <td>Social GAN</td>
 <td>Apollo EM planner</td>
@@ -195,16 +209,7 @@ Controller·안전, 시뮬레이션이고, 보조 문서는 여러 논문이 함
 <td>Nav2</td>
 <td>CBF 튜토리얼, 이산 CBF + MPC</td>
 <td>Actuator net, ADR, Sim2Real Predictivity</td>
-</tr></tbody></table></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>3 / 12</span></div><aside>docs/research-overview.md 머리말</aside></section>
-<section class="r content"><div class="kicker">개요 · 개요</div><h2 class="ttl">리서치 개요 (2026-09)<small>3/3</small></h2><div class="body"><table style="table-layout:fixed"><colgroup><col style="width:95.1px"><col style="width:432.0px"><col style="width:444.8px"><col style="width:388.1px"><col style="width:367.0px"></colgroup><thead>
-<tr>
-<th>연도</th>
-<th>인식</th>
-<th>Planner</th>
-<th>Controller·안전</th>
-<th>시뮬레이션</th>
-</tr>
-</thead><tbody><tr>
+</tr><tr>
 <td>2021–2022</td>
 <td>BEVFormer, BEVFusion, MonoScene, elevation_mapping_cupy, ByteTrack, BoT-SORT</td>
 <td>Diffuser, GNM, FAR Planner, PUTN</td>
