@@ -42,7 +42,7 @@ body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.6 var(--
 header { display: grid; gap: 10px; }
 .top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 16px; }
 .eyebrow { font: 600 12px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
-/* 도움말 단추: 머리말 오른쪽 위. 로컬 서버·HTTP·curl의 원리와 문제 해결(help/)로 간다. */
+/* 도움말 단추: 머리말 오른쪽 위. 도움말 첫 페이지(help/, help_src/에서 만든다)로 간다. */
 a.help { display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 6px 14px 6px 7px; border: 1px solid var(--line); border-radius: 999px;
   background: var(--panel); color: var(--fg); text-decoration: none; font: 600 14px var(--body); transition: border-color .15s; }
 a.help span { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font: 700 13px var(--mono); }
@@ -91,7 +91,7 @@ footer a { color: var(--muted); }
   <header>
     <div class="top">
       <div class="eyebrow">sidewalk delivery robot · 2.5D traversability · learned planner</div>
-      <a class="help" href="help/" title="로컬 서버, HTTP, curl, 외부 서버의 원리와 문제 해결"><span aria-hidden="true">?</span>도움말</a>
+      <a class="help" href="help/" title="사이트 사용법, 연구 코드 실행, 페이지가 만들어지는 방식, 로컬 서버와 웹 통신, 용어 사전"><span aria-hidden="true">?</span>도움말</a>
     </div>
     <h1>travplan<span>.</span></h1>
     <p class="lede">실외 보도 배달로봇(비동축 스워브)이 costmap 대신 <b>2.5D 지형 표현</b>(높이, 경사, 턱, 거칠기, 불확실성)만으로
@@ -168,7 +168,7 @@ footer a { color: var(--muted); }
   <footer>
     <a href="https://github.com/Geonhee-LEE/travplan-site">사이트 저장소 · Geonhee-LEE/travplan-site</a>
     <a href="https://github.com/Geonhee-LEE/travplan-site/tree/main/playground">Playground 소스와 문서</a>
-    <a href="help/">도움말 · 로컬 서버와 문제 해결</a>
+    <a href="help/">도움말 · 사용법과 문제 해결</a>
     <span>연구 저장소(비공개)의 <code>docs/</code>가 바뀌면 자동으로 이 사이트에 동기화된다. 페이지 안의 이슈·PR 번호와 원본 문서 이름은 연구 저장소의 것이라 링크 없이 글자로 보인다.</span>
   </footer>
 </div>

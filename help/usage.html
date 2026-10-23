@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>사이트 사용법 · 도움말 · travplan</title>
+<meta name="description" content="첫 화면, 대시보드, Playground, 슬라이드, 도움말을 어디서 열고 어떻게 읽는지">
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/site/favicon.png">
+<link rel="apple-touch-icon" href="../assets/site/apple-touch-icon.png">
+<meta name="theme-color" content="#e9ece7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d1113" media="(prefers-color-scheme: dark)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans+KR:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="help.css">
+</head>
+<body data-page="usage">
+<!-- 생성물: help_src/usage.md에서 scripts/build_help.py가 만든다. 손으로 고치지 않는다. -->
+<div class="wrap">
+  <header>
+    <div class="eyebrow"><a href="../">travplan</a> · <a href="./">도움말</a></div>
+    <nav class="topics" aria-label="도움말 주제"><a href="usage.html" aria-current="page">사이트 사용법</a><a href="run.html">연구 코드 실행</a><a href="build.html">페이지가 만들어지는 방식</a><a href="web.html">로컬 서버와 웹 통신</a><a href="glossary.html">용어 사전</a></nav>
+    <h1>사이트 사용법<span>.</span></h1>
+    <p class="lede">첫 화면, 대시보드, Playground, 슬라이드, 도움말을 어디서 열고 어떻게 읽는지</p>
+    <div class="intro"><p>공개 사이트와 로컬 서버는 같은 페이지를 보여 준다. 다른 점은 공개 사이트에서 이슈·PR 링크가 글자로 바뀌는 것뿐이다.</p></div>
+    <div class="search" id="searchbox" hidden>
+      <input id="q" type="search" placeholder="이 주제에서 찾기" aria-label="이 주제에서 찾기" autocomplete="off">
+      <small><kbd>/</kbd> 찾기 · <kbd>Esc</kbd> 지우기 · <a id="qall" href="./">모든 주제에서 찾기</a> <span id="qinfo" aria-live="polite"></span></small>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav class="toc" aria-label="목차"><a href="#open"><b>1</b>어디서 여나</a><a href="#home"><b>2</b>첫 화면</a><a href="#dashboard"><b>3</b>대시보드</a><a href="#dash-todo"><b>4</b>TODO 탭 읽는 법</a><a href="#dash-research"><b>5</b>리서치 탭</a><a href="#playground"><b>6</b>Playground</a><a href="#slides"><b>7</b>슬라이드</a><a href="#using-help"><b>8</b>도움말 쓰는 법</a></nav>
+    <main>
+<section id="open">
+  <h2><span class="n">1</span>어디서 여나</h2>
+<p><span class="key">모든 페이지는 공개 사이트와 로컬 서버 두 곳에서 열린다.</span> 로컬은 저장소의 지금 상태를, 공개 사이트는 main에 merge된 상태를 보여 준다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>페이지</th>
+<th>공개 사이트</th>
+<th>로컬</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="페이지">첫 화면</td>
+<td data-label="공개 사이트"><a href="https://geonhee-lee.github.io/travplan-site/">https://geonhee-lee.github.io/travplan-site/</a></td>
+<td data-label="로컬"><a href="http://127.0.0.1:8765/">http://127.0.0.1:8765/</a></td>
+</tr>
+<tr>
+<td data-label="페이지">대시보드</td>
+<td data-label="공개 사이트"><a href="https://geonhee-lee.github.io/travplan-site/dashboard.html">https://geonhee-lee.github.io/travplan-site/dashboard.html</a></td>
+<td data-label="로컬"><a href="http://127.0.0.1:8765/dashboard.html">http://127.0.0.1:8765/dashboard.html</a></td>
+</tr>
+<tr>
+<td data-label="페이지">Playground</td>
+<td data-label="공개 사이트"><a href="https://geonhee-lee.github.io/travplan-site/playground/">https://geonhee-lee.github.io/travplan-site/playground/</a></td>
+<td data-label="로컬"><a href="http://127.0.0.1:8765/playground/">http://127.0.0.1:8765/playground/</a></td>
+</tr>
+<tr>
+<td data-label="페이지">슬라이드 목록</td>
+<td data-label="공개 사이트"><a href="https://geonhee-lee.github.io/travplan-site/slides/">https://geonhee-lee.github.io/travplan-site/slides/</a></td>
+<td data-label="로컬"><a href="http://127.0.0.1:8765/slides/">http://127.0.0.1:8765/slides/</a></td>
+</tr>
+<tr>
+<td data-label="페이지">도움말</td>
+<td data-label="공개 사이트"><a href="https://geonhee-lee.github.io/travplan-site/help/">https://geonhee-lee.github.io/travplan-site/help/</a></td>
+<td data-label="로컬"><a href="http://127.0.0.1:8765/help/">http://127.0.0.1:8765/help/</a></td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li>로컬은 <code>source .venv/bin/activate</code> 뒤 <code>./scripts/open_dashboard.sh</code>로 연다. 대시보드를 다시 만들고, 서버를 띄우고, 브라우저로 연다.</li>
+<li><code>file://</code>로 열면 Playground가 돌지 않는다. 이유는 <a href="web.html#browser">로컬 서버와 웹 통신 11절</a>에 있다.</li>
+<li>공개 사이트는 main에 push한 뒤 몇 분 안에 바뀐다(<a href="build.html#build-publish">페이지가 만들어지는 방식 5절</a>).</li>
+<li>로컬 주소가 안 열리면 <a href="web.html#fix">로컬 서버와 웹 통신 1절</a>을 본다.</li>
+</ul>
+<pre class="cmd"><code>source .venv/bin/activate
+./scripts/open_dashboard.sh            # 8765가 차 있으면 PORT=8766 ./scripts/open_dashboard.sh
+</code></pre>
+</section>
+<section id="home">
+  <h2><span class="n">2</span>첫 화면</h2>
+<p><span class="key">첫 화면은 대시보드, Playground, 슬라이드, 도움말로 들어가는 문이다.</span></p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>자리</th>
+<th>무엇</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="자리">오른쪽 위 <code>? 도움말</code></td>
+<td data-label="무엇">이 도움말. 바닥글에도 링크가 있다</td>
+</tr>
+<tr>
+<td data-label="자리">대시보드 카드</td>
+<td data-label="무엇">진행 현황, TODO, PRD, 리서치를 한 곳에서 본다(<a href="#dashboard">3절</a>)</td>
+</tr>
+<tr>
+<td data-label="자리">Playground 카드</td>
+<td data-label="무엇">브라우저 시뮬레이션(<a href="#playground">6절</a>)</td>
+</tr>
+<tr>
+<td data-label="자리">슬라이드 갤러리</td>
+<td data-label="무엇">챕터 발표 덱 6개와 스터디 슬라이드 2개. 카드를 누르면 뷰어가 열리고, PPTX 링크는 파일을 내려받는다. 오른쪽 위 '전체 슬라이드 목록'에 리서치 문서 덱까지 있다(<a href="#slides">7절</a>)</td>
+</tr>
+<tr>
+<td data-label="자리">아래 네 칸</td>
+<td data-label="무엇">표현, Planner, Controller, 평가의 한 줄 요약</td>
+</tr>
+</tbody>
+</table></div>
+</section>
+<section id="dashboard">
+  <h2><span class="n">3</span>대시보드</h2>
+<p><span class="key">대시보드는 TODO.md, STATE.md, 문서들을 한 화면에 모은 읽기 전용 페이지다.</span> 내용을 고치려면 원본 파일을 고친다(<a href="build.html#build-dashboard">페이지가 만들어지는 방식 2절</a>).</p>
+<div class="tbl"><table class="wide">
+<thead>
+<tr>
+<th>탭</th>
+<th>주소 끝</th>
+<th>무엇</th>
+<th>원본</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="탭">진행 현황</td>
+<td data-label="주소 끝"><code>#state</code>(기본)</td>
+<td data-label="무엇">북극성 거리, 현재 병목, 핵심 수치, 진행 중 실험, 다음 할 일</td>
+<td data-label="원본"><code>STATE.md</code></td>
+</tr>
+<tr>
+<td data-label="탭">TODO</td>
+<td data-label="주소 끝"><code>#todo</code></td>
+<td data-label="무엇">상태별 작업 목록(<a href="#dash-todo">4절</a>)</td>
+<td data-label="원본"><code>TODO.md</code></td>
+</tr>
+<tr>
+<td data-label="탭">PRD</td>
+<td data-label="주소 끝"><code>#prd</code></td>
+<td data-label="무엇">북극성, 로드맵, 요구사항, 위험, 의사결정</td>
+<td data-label="원본"><code>docs/prd*.md</code></td>
+</tr>
+<tr>
+<td data-label="탭">아키텍처 · 기능 설명</td>
+<td data-label="주소 끝"><code>#arch</code></td>
+<td data-label="무엇">저장소 구조, 실행법, 설계</td>
+<td data-label="원본"><code>README.md</code>, <code>docs/ARCHITECTURE.md</code></td>
+</tr>
+<tr>
+<td data-label="탭">리서치</td>
+<td data-label="주소 끝"><code>#research</code></td>
+<td data-label="무엇">리서치 문서 12개와 발표 덱(<a href="#dash-research">5절</a>)</td>
+<td data-label="원본"><code>docs/research-*.md</code></td>
+</tr>
+<tr>
+<td data-label="탭">설계 · PoC</td>
+<td data-label="주소 끝"><code>#design</code></td>
+<td data-label="무엇">작업별 설계 문서와 PoC 기록</td>
+<td data-label="원본"><code>docs/design-*.md</code>, <code>docs/poc-*.md</code></td>
+</tr>
+<tr>
+<td data-label="탭">시뮬레이션 ▶</td>
+<td data-label="주소 끝"><code>#sim</code></td>
+<td data-label="무엇">Playground를 대시보드 안에서 돌린다</td>
+<td data-label="원본"><code>docs/playground/</code></td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li>주소 끝에 <code>#todo</code>처럼 탭 이름을 붙이면 그 탭이 바로 열린다. 링크로 남길 때 쓴다.</li>
+<li>공개 사이트에서는 이슈·PR 번호와 원본 문서 이름이 링크 없이 글자로 보인다. 연구 저장소가 비공개라서다.</li>
+<li>수식이 있는 패널은 처음 열 때 MathJax를 받아 조판한다. 그래서 수식이 많은 리서치 문서는 처음 열 때 잠깐 걸린다.</li>
+<li>로컬 대시보드는 만든 시각의 원본을 보여 준다. 원본을 고친 뒤에는 <code>./scripts/open_dashboard.sh</code>로 다시 만든다.</li>
+</ul>
+</section>
+<section id="dash-todo">
+  <h2><span class="n">4</span>TODO 탭 읽는 법</h2>
+<p><span class="key">TODO 항목 한 줄에 상태, 우선순위, 담당, 연결된 이슈·PR, 시연 링크가 모두 붙는다.</span>
+항목은 진행 중, 오늘, 사용자 실행 대기, 백로그, 완료의 다섯 묶음으로 나뉜다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>표시</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="표시"><code>TP-0150</code></td>
+<td data-label="뜻">작업 번호. 모든 기록이 이 번호로 이어진다</td>
+</tr>
+<tr>
+<td data-label="표시"><code>P1</code>, <code>P2</code>, <code>P3</code></td>
+<td data-label="뜻">우선순위(첫 배지)</td>
+</tr>
+<tr>
+<td data-label="표시">두 번째 배지</td>
+<td data-label="뜻">단계. PRD 로드맵의 P1·P2 같은 묶음이다</td>
+</tr>
+<tr>
+<td data-label="표시"><code>user</code>, <code>claude</code></td>
+<td data-label="뜻">담당. user는 사용자가 실행하거나 정해야 하는 일이다</td>
+</tr>
+<tr>
+<td data-label="표시">UserTest</td>
+<td data-label="뜻">사용자가 직접 확인해야 하는 항목</td>
+</tr>
+<tr>
+<td data-label="표시">제목 안의 TP 번호</td>
+<td data-label="뜻">그 TP의 상태 칩. TODO.md에서 빠진 완료 TP는 원장(<code>journal/tp/</code>)의 상태로 그린다</td>
+</tr>
+<tr>
+<td data-label="표시">●</td>
+<td data-label="뜻">그 TP의 GitHub 이슈</td>
+</tr>
+<tr>
+<td data-label="표시">⇄</td>
+<td data-label="뜻">그 TP의 PR. 보라는 merge됨, 초록은 열림, 회색은 닫힘이다</td>
+</tr>
+<tr>
+<td data-label="표시">▶ 시뮬레이션</td>
+<td data-label="뜻">그 TP의 시연을 Playground로 연다(<a href="#playground">6절</a>)</td>
+</tr>
+<tr>
+<td data-label="표시">결과 그림</td>
+<td data-label="뜻"><code>docs/assets/evidence.json</code>에 적은 그 TP의 그림</td>
+</tr>
+</tbody>
+</table></div>
+</section>
+<section id="dash-research">
+  <h2><span class="n">5</span>리서치 탭</h2>
+<p><span class="key">리서치 탭은 문서 버튼 하나가 리서치 문서 하나이고, 문서 안은 다시 하위 탭으로 나뉜다.</span></p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>자리</th>
+<th>무엇</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="자리">맨 위 두 줄</td>
+<td data-label="무엇">챕터 발표 덱, 스터디 슬라이드, 전체 슬라이드 목록 링크</td>
+</tr>
+<tr>
+<td data-label="자리">문서 버튼</td>
+<td data-label="무엇">개요, 인식, 센서 배치, Planner, Controller·안전, 시뮬레이션, 배경·수식, 강화학습, 딥러닝, 모방, 참고문헌, MPC 구축</td>
+</tr>
+<tr>
+<td data-label="자리">하위 탭</td>
+<td data-label="무엇">문서 안의 큰 주제. '작업 기록' 탭에는 남의 연구가 아니라 우리가 고치고 잰 결과가 TP 번호와 함께 있다</td>
+</tr>
+<tr>
+<td data-label="자리">문서 위 덱 링크</td>
+<td data-label="무엇">그 문서 전체를 옮긴 리서치 문서 덱과 PPTX</td>
+</tr>
+<tr>
+<td data-label="자리"><code>자세히:</code> 토글</td>
+<td data-label="무엇">논문의 방법과 수식. 눌러야 펼쳐진다</td>
+</tr>
+<tr>
+<td data-label="자리">노란 강조</td>
+<td data-label="무엇">그 절에서 가장 먼저 기억할 문장</td>
+</tr>
+</tbody>
+</table></div>
+<p>절 번호(A.1, B.16.6, R.13 같은 것)는 문서가 바뀌어도 그대로 둔다. 다른 문서와 TODO가 그 번호로 가리키기 때문이다.</p>
+</section>
+<section id="playground">
+  <h2><span class="n">6</span>Playground</h2>
+<p><span class="key">Playground는 운동학 시뮬레이터를 브라우저로 옮긴 것이라, 설치 없이 지형·Planner·Controller를 바꿔 가며 돌려 본다.</span>
+JS로 다시 짠 것이라 지형이 Python과 똑같지는 않다(난수 생성기가 다르다).</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>자리</th>
+<th>하는 일</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="자리">지형 탭</td>
+<td data-label="하는 일">시나리오 넷(<code>curb_ramp</code>, <code>bumps_potholes</code>, <code>slope_crossfall</code>, <code>random_mix</code>)과 음의 지형 셋</td>
+</tr>
+<tr>
+<td data-label="자리">시연</td>
+<td data-label="하는 일">저장소 결과를 그 설정 그대로 다시 달린다. 설정을 바꾸면 '수정됨'이 붙는다. '카드로 보기'는 시연마다 볼 것과 기대 결과를 펼친다</td>
+</tr>
+<tr>
+<td data-label="자리">지도</td>
+<td data-label="하는 일">3D(기본) 또는 2D. 층을 바꿔 실제 높이, 로봇이 본 높이, cost를 비교한다. 커서를 올리면 그 칸의 값이 나온다</td>
+</tr>
+<tr>
+<td data-label="자리">재생 막대</td>
+<td data-label="하는 일">재생, 한 스텝, 다시 달리기, 새 지형, 배속, 링크 복사</td>
+</tr>
+<tr>
+<td data-label="자리">클릭 도구(2D)</td>
+<td data-label="하는 일">목표, 상자, 포트홀, 보행자(끌어서 방향·속도), 지우기</td>
+</tr>
+<tr>
+<td data-label="자리">오른쪽 패널</td>
+<td data-label="하는 일">레벨, seed, 로봇, 인식, Planner, Controller와 MPPI 파라미터</td>
+</tr>
+<tr>
+<td data-label="자리">아래</td>
+<td data-label="하는 일">MPPI 비용 항, 주행 기록 10회(행을 누르면 그 설정으로 다시 달린다, CSV 내보내기)</td>
+</tr>
+</tbody>
+</table></div>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>키</th>
+<th>하는 일</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="키">Space</td>
+<td data-label="하는 일">재생, 일시정지</td>
+</tr>
+<tr>
+<td data-label="키"><code>r</code></td>
+<td data-label="하는 일">다시 달리기</td>
+</tr>
+<tr>
+<td data-label="키"><code>n</code></td>
+<td data-label="하는 일">새 지형</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>주소 하나가 화면 하나다.</strong> 주소의 <code>#</code> 뒤에 설정 전체가 담긴다. 그 주소를 새 탭에서 열어도 같은 주행이 나온다.</p>
+<pre><code>#TP-0047                                   시연 그대로(대시보드의 ▶ 시뮬레이션 링크)
+#TP-0047?v=2d&amp;layer=belief_elev            시연 + 덮어쓰기
+#pg?sc=bumps_potholes&amp;s=4&amp;per=range        사용자 설정
+</code></pre>
+<p>키 목록, 화면 구성, 시연 목록, 검사는 <a href="../playground/README.md">Playground 설명서</a>에 있다.</p>
+</section>
+<section id="slides">
+  <h2><span class="n">7</span>슬라이드</h2>
+<p><span class="key">슬라이드는 세 종류이고, 모두 같은 뷰어로 열리며 PPTX를 내려받을 수 있다.</span></p>
+<div class="tbl"><table class="wide">
+<thead>
+<tr>
+<th>종류</th>
+<th>수</th>
+<th>무엇</th>
+<th>PPTX</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="종류">챕터 발표 덱</td>
+<td data-label="수">6</td>
+<td data-label="무엇">리서치 문서 한 편을 35–40장으로 줄인 발표용 덱</td>
+<td data-label="PPTX">글자를 고칠 수 있는 판</td>
+</tr>
+<tr>
+<td data-label="종류">스터디 슬라이드</td>
+<td data-label="수">2</td>
+<td data-label="무엇">수식 개요 25장, 논문 스터디 152장(논문 한 편에 세 장)</td>
+<td data-label="PPTX">장마다 캡처 그림과 발표자 노트</td>
+</tr>
+<tr>
+<td data-label="종류">리서치 문서 덱</td>
+<td data-label="수">12</td>
+<td data-label="무엇">리서치 문서 전체를 옮긴 덱(약 1,500장)</td>
+<td data-label="PPTX">글자를 고칠 수 있는 판</td>
+</tr>
+</tbody>
+</table></div>
+<p>첫 화면 갤러리에는 앞의 두 종류가 있고, <a href="../slides/">슬라이드 목록</a>에는 셋 다 있다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>키</th>
+<th>하는 일</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="키">→ , PageDown, Space</td>
+<td data-label="하는 일">다음 장</td>
+</tr>
+<tr>
+<td data-label="키">← , PageUp</td>
+<td data-label="하는 일">이전 장</td>
+</tr>
+<tr>
+<td data-label="키">Home, End</td>
+<td data-label="하는 일">처음, 끝</td>
+</tr>
+<tr>
+<td data-label="키"><code>N</code></td>
+<td data-label="하는 일">발표자 노트 보이기</td>
+</tr>
+<tr>
+<td data-label="키"><code>F</code></td>
+<td data-label="하는 일">전체 화면</td>
+</tr>
+<tr>
+<td data-label="키">옆으로 밀기</td>
+<td data-label="하는 일">폰에서 넘기기</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li>주소 끝에 <code>#5</code>처럼 번호를 붙이면 그 장이 바로 열린다.</li>
+<li>아래 막대의 PPTX 단추는 그 덱의 PPTX를 내려받는다.</li>
+<li>덱을 고치는 법은 <a href="build.html#build-slides">페이지가 만들어지는 방식 3절</a>에 있다.</li>
+</ul>
+</section>
+<section id="using-help">
+  <h2><span class="n">8</span>도움말 쓰는 법</h2>
+<p><span class="key">도움말은 첫 페이지에서 주제를 고르거나, 모든 주제를 한 번에 찾는다.</span></p>
+<ul>
+<li><strong>첫 페이지</strong>에는 주제 카드와 '문제가 생겼을 때' 바로 가기가 있다. 위 칸에 말을 넣으면 모든 주제의 절을 찾아 보여 준다.</li>
+<li><strong>주제 페이지</strong>는 왼쪽(폰에서는 위)에 목차가 있다. 지금 읽는 절이 목차에 표시된다.</li>
+<li>찾기 칸은 <code>/</code>로 열고 <code>Esc</code>로 지운다. 주제 페이지의 찾기는 그 주제의 절만 거른다. 용어 사전은 행까지 거른다.</li>
+<li>명령 블록 오른쪽 위의 '복사' 단추는 명령을 클립보드에 담는다.</li>
+<li>본문의 "N절" 링크는 그 절로 간다. 다른 주제의 절이면 주제 이름이 앞에 붙는다.</li>
+<li>도움말을 고치거나 주제를 더하는 법은 <a href="build.html#build-help">페이지가 만들어지는 방식 4절</a>에 있다.</li>
+</ul>
+</section>
+<p id="qempty" hidden>찾는 말이 이 주제에 없다. <a href="./">모든 주제에서 찾기</a>로 넓히거나 <kbd>Esc</kbd>로 지운다.</p>
+    </main>
+  </div>
+
+  <footer>
+    <a href="../">travplan 첫 화면</a>
+    <a href="./">도움말 첫 페이지</a>
+    <a href="../dashboard.html">대시보드</a>
+    <a href="../playground/">Playground</a>
+    <a href="../slides/">슬라이드</a>
+  </footer>
+</div>
+<script src="help.js"></script>
+</body>
+</html>

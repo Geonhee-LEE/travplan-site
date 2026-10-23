@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>연구 코드 실행 · 도움말 · travplan</title>
+<meta name="description" content="설치부터 벤치마크, 판정, NMPC, L1까지 하려는 일마다 무엇을 돌리는지">
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/site/favicon.png">
+<link rel="apple-touch-icon" href="../assets/site/apple-touch-icon.png">
+<meta name="theme-color" content="#e9ece7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d1113" media="(prefers-color-scheme: dark)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans+KR:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="help.css">
+</head>
+<body data-page="run">
+<!-- 생성물: help_src/run.md에서 scripts/build_help.py가 만든다. 손으로 고치지 않는다. -->
+<div class="wrap">
+  <header>
+    <div class="eyebrow"><a href="../">travplan</a> · <a href="./">도움말</a></div>
+    <nav class="topics" aria-label="도움말 주제"><a href="usage.html">사이트 사용법</a><a href="run.html" aria-current="page">연구 코드 실행</a><a href="build.html">페이지가 만들어지는 방식</a><a href="web.html">로컬 서버와 웹 통신</a><a href="glossary.html">용어 사전</a></nav>
+    <h1>연구 코드 실행<span>.</span></h1>
+    <p class="lede">설치부터 벤치마크, 판정, NMPC, L1까지 하려는 일마다 무엇을 돌리는지</p>
+    <div class="intro"><p>명령은 모두 저장소 루트에서 <code>.venv</code>를 켠 상태로 돌린다. 이 주제는 하려는 일마다 첫 명령을 모았다. 플래그 전체와 출력 파일의 뜻은 README의 '실행법' 절에 있다.</p></div>
+    <div class="search" id="searchbox" hidden>
+      <input id="q" type="search" placeholder="이 주제에서 찾기" aria-label="이 주제에서 찾기" autocomplete="off">
+      <small><kbd>/</kbd> 찾기 · <kbd>Esc</kbd> 지우기 · <a id="qall" href="./">모든 주제에서 찾기</a> <span id="qinfo" aria-live="polite"></span></small>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav class="toc" aria-label="목차"><a href="#run-setup"><b>1</b>처음 한 번: 설치</a><a href="#run-ckpt"><b>2</b>체크포인트 받기</a><a href="#run-bench"><b>3</b>벤치마크 한 번 돌리기</a><a href="#run-gate"><b>4</b>바꾼 것을 판정하기</a><a href="#run-mpc"><b>5</b>NMPC 스택</a><a href="#run-l1"><b>6</b>L1 인식 루프</a><a href="#run-view"><b>7</b>결과 보기</a><a href="#run-fix"><b>8</b>문제 해결</a></nav>
+    <main>
+<section id="run-setup">
+  <h2><span class="n">1</span>처음 한 번: 설치</h2>
+<p><span class="key">가상환경을 만들고 저장소를 편집 가능 모드로 깔면, 코드를 고친 것이 바로 반영된다.</span></p>
+<pre class="cmd"><code>python3 -m venv .venv &amp;&amp; source .venv/bin/activate   # miniforge 기본 python에는 usd-core(pxr) 등이 없다
+pip install -e &quot;.[dev]&quot;                               # 선택 묶음: .[mpc](casadi), .[slides](python-pptx), .[sim](mujoco)
+pytest -q                                             # acados·cupy·CUDA·체크포인트가 없으면 해당 시험은 건너뛴다
+</code></pre>
+<ul>
+<li>셸을 새로 열 때마다 <code>source .venv/bin/activate</code>를 다시 한다. 켰는지는 <code>which python3</code>가 <code>.venv/bin/python3</code>를 찍는지로 본다.</li>
+<li><code>pytest -q</code>의 skip은 실패가 아니다. 무엇을 건너뛰었는지는 <code>pytest -rs</code>로 본다.</li>
+</ul>
+</section>
+<section id="run-ckpt">
+  <h2><span class="n">2</span>체크포인트 받기</h2>
+<p><span class="key">학습 Planner 스택은 <code>checkpoints/</code>의 가중치가 있어야 도는데, 이 폴더는 git에 없다.</span> GitHub 릴리스에서 받거나 직접 학습한다.</p>
+<pre class="cmd"><code>mkdir -p checkpoints &amp;&amp; cd checkpoints
+for r in ckpt-2026-09-27 ckpt-2026-10-06; do      # Planner D·LearnedPlanner·Joint Planner·TravNet, 잔차 GP
+  gh release download $r -R Geonhee-LEE/travplan --clobber &amp;&amp; sha256sum -c SHA256SUMS
+done
+cd ..
+</code></pre>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>쓰는 스택</th>
+<th>필요한 파일</th>
+<th>받는 곳</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="쓰는 스택"><code>planner_d+…</code>, <code>planner_df+…</code></td>
+<td data-label="필요한 파일"><code>planner_d.pt</code></td>
+<td data-label="받는 곳"><code>ckpt-2026-09-27</code></td>
+</tr>
+<tr>
+<td data-label="쓰는 스택"><code>learned+…</code></td>
+<td data-label="필요한 파일"><code>waypoint_net.pt</code></td>
+<td data-label="받는 곳"><code>ckpt-2026-09-27</code></td>
+</tr>
+<tr>
+<td data-label="쓰는 스택"><code>…+mppi_ccgp</code>, <code>…+mpc_gp</code></td>
+<td data-label="필요한 파일"><code>residual_sgp_wide.pt</code></td>
+<td data-label="받는 곳"><code>ckpt-2026-10-06</code></td>
+</tr>
+<tr>
+<td data-label="쓰는 스택"><code>guidance+mppi</code></td>
+<td data-label="필요한 파일">없음</td>
+<td data-label="받는 곳"></td>
+</tr>
+</tbody>
+</table></div>
+<p><code>gh</code>가 인증을 물으면 <code>gh auth login</code>부터 한다. 직접 학습하는 명령은 <code>python scripts/train_planner_d.py --maps 256 --states 128</code>(Planner D, CPU 약 22분)이다.</p>
+</section>
+<section id="run-bench">
+  <h2><span class="n">3</span>벤치마크 한 번 돌리기</h2>
+<p><span class="key">벤치마크는 시나리오 × 레벨 × seed마다 같은 지형 위에서 스택을 하나씩 돌리고, 결과를 <code>metrics.csv</code>에 남긴다.</span></p>
+<pre class="cmd"><code>mkdir -p results/eval
+python scripts/run_benchmark.py --stacks guidance+mppi planner_d+mppi --seeds 0 1 2 --out results/eval | tee results/eval/bench.log
+python scripts/compare_runs.py results/eval results/other --labels base new     # 두 실행을 나란히 본다
+</code></pre>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>바꾸고 싶은 것</th>
+<th>플래그</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="바꾸고 싶은 것">어떤 스택</td>
+<td data-label="플래그"><code>--stacks 플래너+컨트롤러 …</code>(예: <code>guidance+mppi</code>, <code>planner_df+mppi</code>)</td>
+</tr>
+<tr>
+<td data-label="바꾸고 싶은 것">지형과 난이도</td>
+<td data-label="플래그"><code>--scenarios curb_ramp …</code>, <code>--levels 0 1 2 3</code></td>
+</tr>
+<tr>
+<td data-label="바꾸고 싶은 것">보행자</td>
+<td data-label="플래그"><code>--pedestrians 5</code>, 반응형은 <code>--ped-react 0.5</code></td>
+</tr>
+<tr>
+<td data-label="바꾸고 싶은 것">스워브 plant</td>
+<td data-label="플래그"><code>--plant</code>(Controller는 <code>mppi_plant_lag</code>)</td>
+</tr>
+<tr>
+<td data-label="바꾸고 싶은 것">GPU</td>
+<td data-label="플래그"><code>--device cuda</code></td>
+</tr>
+<tr>
+<td data-label="바꾸고 싶은 것">같은 지형에서 난수만 바꾸기</td>
+<td data-label="플래그"><code>--rng-offset 1000</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>화면에는 에피소드마다 한 줄이 찍히고, 끝에 스택별 집계표가 나온다. 전체 플래그는 <code>python scripts/run_benchmark.py --help</code>로 본다.</p>
+</section>
+<section id="run-gate">
+  <h2><span class="n">4</span>바꾼 것을 판정하기</h2>
+<p><span class="key">판정은 두 층이다. 재현되는 조건은 숫자 하나의 차이도 보고, 혼돈 조건은 짝 비교로만 본다.</span></p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>층</th>
+<th>조건</th>
+<th>판정</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="층">1층 스모크</td>
+<td data-label="조건">레벨 0, 정적, L0, seed 0–2(12 에피소드)</td>
+<td data-label="판정">다시 돌려도 수치가 같다. 숫자가 하나라도 바뀌면 변경이 낸 차이다</td>
+</tr>
+<tr>
+<td data-label="층">2층 짝 비교</td>
+<td data-label="조건">레벨 3, plant, 보행자, L1</td>
+<td data-label="판정">팔마다 seed 0–9 × 난수 오프셋 셋. 변경 쪽만 성공한 수가 잡음 바닥보다 커야 한다</td>
+</tr>
+</tbody>
+</table></div>
+<pre class="cmd"><code>python scripts/run_benchmark.py --stacks guidance+mppi planner_d+mppi --seeds 0 1 2 --out results/eval    # 1층
+for o in 0 1000 2000; do                                                                                  # 2층
+  for s in guidance+mppi planner_df+mppi; do
+    python scripts/run_benchmark.py --stacks $s --levels 3 --seeds $(seq 0 9) --rng-offset $o --out results/l3/${s%%+*}_o$o
+  done
+done
+python scripts/paired_success.py --a results/l3/guidance_o{0,1000,2000} --b results/l3/planner_df_o{0,1000,2000}
+</code></pre>
+<ul>
+<li><code>paired_success.py</code>는 에피소드를 시나리오와 seed로 짝짓는다. 그래서 실행 폴더 하나에 스택을 하나만 둔다.</li>
+<li>치명 실패가 기준보다 하나라도 늘면 두 층 모두에서 기본값으로 채택하지 않는다.</li>
+<li>기준표 전체와 결정 근거는 CLAUDE.md의 '평가 기준'에 있다.</li>
+</ul>
+</section>
+<section id="run-mpc">
+  <h2><span class="n">5</span>NMPC 스택</h2>
+<p><span class="key"><code>mpc*</code> 스택은 acados 소스 빌드가 필요하고, 라이브러리 경로를 셸에서 먼저 잡아야 한다.</span></p>
+<pre class="cmd"><code>pip install -e &quot;.[mpc]&quot;
+export ACADOS_SOURCE_DIR=$HOME/acados
+export LD_LIBRARY_PATH=$HOME/acados/lib:$LD_LIBRARY_PATH
+python scripts/run_benchmark.py --stacks guidance+mppi guidance+mpc --seeds 0 1 2 --out results/mpc
+</code></pre>
+<ul>
+<li>설치 순서는 <code>docs/research-mpc.md</code>의 M.3.1에 있다.</li>
+<li>코드 안에서 바꾼 <code>LD_LIBRARY_PATH</code>는 같은 프로세스에 듣지 않는다. 동적 로더가 프로세스를 시작할 때의 값만 읽기 때문이다.</li>
+<li>여러 프로세스를 함께 돌릴 때는 <code>TRAVPLAN_ACADOS_BUILD</code>로 프로세스마다 솔버 생성 폴더를 나눈다.</li>
+</ul>
+</section>
+<section id="run-l1">
+  <h2><span class="n">6</span>L1 인식 루프</h2>
+<p><span class="key">L1은 합성 LiDAR를 elevation_mapping_cupy 코어로 지도화하므로, GPU와 cupy가 든 별도 가상환경 <code>.venv-emap</code>에서 돌린다.</span></p>
+<pre class="cmd"><code>python3 -m venv .venv-emap
+.venv-emap/bin/pip install cupy-cuda12x numpy scipy torch simple_parsing &quot;ruamel.yaml&quot; opencv-python-headless shapely matplotlib
+PYTHONPATH=. .venv-emap/bin/python scripts/run_benchmark.py --stacks guidance+mppi planner_df+mppi --device cuda \
+  --perception l1 --shadow-ceiling --shadow-depth 0.10 --stereo --unknown-near 1.5 --shadow-low-fill --pit-margin 0.05 \
+  --seeds 0 1 2 --out results/l1
+</code></pre>
+<p><code>--perception l1</code> 뒤의 여섯 플래그가 권장 L1 설정이다(TP-0146·0148). 구성은 <code>travplan_ws/src/elevation_mapping_cupy/VENDORED.md</code>에 있다.</p>
+</section>
+<section id="run-view">
+  <h2><span class="n">7</span>결과 보기</h2>
+<p><span class="key">숫자는 <code>metrics.csv</code>와 집계표로, 궤적은 그림이나 GIF로 본다.</span></p>
+<pre class="cmd"><code>python scripts/plot_results.py --results results/eval --seed 0 --out results/eval/trajectories.png
+python scripts/visualize_joint_planner.py --scenario bumps_potholes --seed 0 --guidance --out results/viz.gif
+</code></pre>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>파일</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="파일"><code>metrics.csv</code></td>
+<td data-label="내용">에피소드마다 한 줄. 성공, 실패 유형(<code>lethal</code>, <code>tip</code>, <code>collision</code>, <code>timeout</code>), 도달 시각, 최대 pitch, GT cost, 계획·제어 시간</td>
+</tr>
+<tr>
+<td data-label="파일"><code>plan_stats.csv</code></td>
+<td data-label="내용">폴백을 켠 스택(<code>planner_df</code>)이 Guidance 폴백을 제안하고 고른 횟수</td>
+</tr>
+<tr>
+<td data-label="파일"><code>traj_&lt;시나리오&gt;_&lt;seed&gt;_&lt;스택&gt;.npy</code></td>
+<td data-label="내용">실행한 궤적(x, y)</td>
+</tr>
+</tbody>
+</table></div>
+<p><code>plot_results.py</code>는 기본 세 스택(<code>guidance+mppi</code>, <code>learned+tracker</code>, <code>learned+mppi</code>)만 그린다. <code>visualize_joint_planner.py</code>는 <code>--guidance</code>가 없으면 무작위로 초기화한 Joint Planner로 달린다.</p>
+</section>
+<section id="run-fix">
+  <h2><span class="n">8</span>문제 해결</h2>
+<p><span class="key">돌지 않으면 대부분 체크포인트, 가상환경, 라이브러리 경로 중 하나가 빠졌다.</span></p>
+<div class="tbl"><table class="wide">
+<thead>
+<tr>
+<th>증상</th>
+<th>원인</th>
+<th>확인</th>
+<th>해결</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="증상"><code>checkpoints/planner_d.pt</code>가 없다는 오류</td>
+<td data-label="원인">체크포인트를 받지 않았다</td>
+<td data-label="확인"><code>ls checkpoints/</code></td>
+<td data-label="해결">릴리스에서 받는다(<a href="#run-ckpt">2절</a>)</td>
+</tr>
+<tr>
+<td data-label="증상"><code>ModuleNotFoundError</code>(markdown, torch 등)</td>
+<td data-label="원인"><code>.venv</code>를 켜지 않았다</td>
+<td data-label="확인"><code>which python3</code></td>
+<td data-label="해결"><code>source .venv/bin/activate</code></td>
+</tr>
+<tr>
+<td data-label="증상"><code>ModuleNotFoundError: cupy</code></td>
+<td data-label="원인">L1을 <code>.venv</code>로 돌렸다</td>
+<td data-label="확인">명령의 파이썬 경로</td>
+<td data-label="해결"><code>.venv-emap/bin/python</code>으로 돌린다(<a href="#run-l1">6절</a>)</td>
+</tr>
+<tr>
+<td data-label="증상"><code>libqpOASES_e.so</code>를 못 찾는다</td>
+<td data-label="원인">셸에 <code>LD_LIBRARY_PATH</code>가 없다</td>
+<td data-label="확인"><code>echo $LD_LIBRARY_PATH</code></td>
+<td data-label="해결">셸에서 export한 뒤 다시 돌린다(<a href="#run-mpc">5절</a>)</td>
+</tr>
+<tr>
+<td data-label="증상">MPC 시험이 skip된다</td>
+<td data-label="원인"><code>acados_template</code>을 못 찾는다</td>
+<td data-label="확인"><code>pytest -rs</code></td>
+<td data-label="해결"><code>PYTHONPATH</code>를 덮어쓰지 말고 앞에 붙인다(<code>PYTHONPATH=$PWD:$PYTHONPATH</code>)</td>
+</tr>
+<tr>
+<td data-label="증상"><code>--device cuda needs CUDA</code></td>
+<td data-label="원인">이 PC에 CUDA가 없다</td>
+<td data-label="확인"><code>nvidia-smi</code></td>
+<td data-label="해결"><code>--device</code>를 빼고 CPU로 돌린다. 결과는 같다</td>
+</tr>
+<tr>
+<td data-label="증상">worktree에서 고친 코드가 결과에 안 나온다</td>
+<td data-label="원인"><code>python scripts/x.py</code>가 메인 트리의 패키지를 import했다</td>
+<td data-label="확인">결과가 고치기 전과 같다</td>
+<td data-label="해결"><code>PYTHONPATH=$PWD:$PYTHONPATH</code>를 붙여 돌린다</td>
+</tr>
+</tbody>
+</table></div>
+</section>
+<p id="qempty" hidden>찾는 말이 이 주제에 없다. <a href="./">모든 주제에서 찾기</a>로 넓히거나 <kbd>Esc</kbd>로 지운다.</p>
+    </main>
+  </div>
+
+  <footer>
+    <a href="../">travplan 첫 화면</a>
+    <a href="./">도움말 첫 페이지</a>
+    <a href="../dashboard.html">대시보드</a>
+    <a href="../playground/">Playground</a>
+    <a href="../slides/">슬라이드</a>
+  </footer>
+</div>
+<script src="help.js"></script>
+</body>
+</html>

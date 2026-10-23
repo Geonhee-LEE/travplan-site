@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>용어 사전 · 도움말 · travplan</title>
+<meta name="description" content="도움말과 저장소에 나오는 말을 한곳에 모았다. 뜻과 그 말을 설명하는 절">
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/site/favicon.png">
+<link rel="apple-touch-icon" href="../assets/site/apple-touch-icon.png">
+<meta name="theme-color" content="#e9ece7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d1113" media="(prefers-color-scheme: dark)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans+KR:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="help.css">
+</head>
+<body data-page="glossary">
+<!-- 생성물: help_src/glossary.md에서 scripts/build_help.py가 만든다. 손으로 고치지 않는다. -->
+<div class="wrap">
+  <header>
+    <div class="eyebrow"><a href="../">travplan</a> · <a href="./">도움말</a></div>
+    <nav class="topics" aria-label="도움말 주제"><a href="usage.html">사이트 사용법</a><a href="run.html">연구 코드 실행</a><a href="build.html">페이지가 만들어지는 방식</a><a href="web.html">로컬 서버와 웹 통신</a><a href="glossary.html" aria-current="page">용어 사전</a></nav>
+    <h1>용어 사전<span>.</span></h1>
+    <p class="lede">도움말과 저장소에 나오는 말을 한곳에 모았다. 뜻과 그 말을 설명하는 절</p>
+    <div class="intro"><p>찾기 칸에 넣으면 행까지 걸러진다. '어디' 열의 링크는 그 말을 자세히 설명하는 절로 간다.</p></div>
+    <div class="search" id="searchbox" hidden>
+      <input id="q" type="search" placeholder="이 주제에서 찾기" aria-label="이 주제에서 찾기" autocomplete="off">
+      <small><kbd>/</kbd> 찾기 · <kbd>Esc</kbd> 지우기 · <a id="qall" href="./">모든 주제에서 찾기</a> <span id="qinfo" aria-live="polite"></span></small>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav class="toc" aria-label="목차"><a href="#glossary"><b>1</b>용어 사전</a></nav>
+    <main>
+<section id="glossary" class="rows">
+  <h2><span class="n">1</span>용어 사전</h2>
+<p><span class="key">한 번 나온 말을 다시 찾을 때 쓴다.</span> 숫자와 영어 낱말이 먼저, 한글 낱말이 뒤에 온다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>용어</th>
+<th>뜻</th>
+<th>어디</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="용어">1층 스모크, 2층 짝 비교</td>
+<td data-label="뜻">변경을 판정하는 두 층. 재현되는 조건은 숫자 차이로, 혼돈 조건은 짝 비교로 본다</td>
+<td data-label="어디"><a href="run.html#run-gate">연구 코드 실행 4절</a></td>
+</tr>
+<tr>
+<td data-label="용어">API</td>
+<td data-label="뜻">프로그램이 읽을 데이터(JSON)를 주는 주소</td>
+<td data-label="어디"><a href="web.html#api">로컬 서버와 웹 통신 10절</a></td>
+</tr>
+<tr>
+<td data-label="용어">bind</td>
+<td data-label="뜻">서버가 어느 주소로 오는 연결을 받을지 정하는 것</td>
+<td data-label="어디"><a href="web.html#address">로컬 서버와 웹 통신 4절</a></td>
+</tr>
+<tr>
+<td data-label="용어">CDN</td>
+<td data-label="뜻">사본을 곳곳에 두고 가까운 서버가 답하게 하는 구조</td>
+<td data-label="어디"><a href="web.html#outside">로컬 서버와 웹 통신 9절</a></td>
+</tr>
+<tr>
+<td data-label="용어">Controller</td>
+<td data-label="뜻">Planner의 경로를 받아 따라가며 body twist를 내는 모듈(<code>control/</code>). MPPI와 NMPC가 여기 속한다</td>
+<td data-label="어디"><a href="run.html#run-bench">연구 코드 실행 3절</a></td>
+</tr>
+<tr>
+<td data-label="용어">CORS</td>
+<td data-label="뜻">다른 출처의 데이터를 읽어도 되는지 브라우저가 검사하는 규칙</td>
+<td data-label="어디"><a href="web.html#browser">로컬 서버와 웹 통신 11절</a></td>
+</tr>
+<tr>
+<td data-label="용어">curl</td>
+<td data-label="뜻">명령줄 HTTP 클라이언트</td>
+<td data-label="어디"><a href="web.html#curl">로컬 서버와 웹 통신 8절</a></td>
+</tr>
+<tr>
+<td data-label="용어">DHCP</td>
+<td data-label="뜻">공유기가 PC에 사설 주소를 나눠 주는 방식</td>
+<td data-label="어디"><a href="web.html#outside">로컬 서버와 웹 통신 9절</a></td>
+</tr>
+<tr>
+<td data-label="용어">DNS</td>
+<td data-label="뜻">이름을 IP 주소로 바꾸는 체계</td>
+<td data-label="어디"><a href="web.html#outside">로컬 서버와 웹 통신 9절</a></td>
+</tr>
+<tr>
+<td data-label="용어">ES 모듈</td>
+<td data-label="뜻">JS 파일끼리 서로 불러 쓰는 표준 방식. 브라우저가 출처를 검사한다</td>
+<td data-label="어디"><a href="web.html#browser">로컬 서버와 웹 통신 11절</a></td>
+</tr>
+<tr>
+<td data-label="용어"><code>file://</code></td>
+<td data-label="뜻">서버 없이 디스크 파일을 브라우저가 바로 여는 방식. 출처가 없다</td>
+<td data-label="어디"><a href="web.html#browser">로컬 서버와 웹 통신 11절</a></td>
+</tr>
+<tr>
+<td data-label="용어">HTTP</td>
+<td data-label="뜻">요청과 응답을 주고받는 글자 대화 규칙</td>
+<td data-label="어디"><a href="web.html#http">로컬 서버와 웹 통신 6절</a></td>
+</tr>
+<tr>
+<td data-label="용어">HTTPS</td>
+<td data-label="뜻">TLS로 암호화한 통로 안에서 하는 HTTP</td>
+<td data-label="어디"><a href="web.html#outside">로컬 서버와 웹 통신 9절</a></td>
+</tr>
+<tr>
+<td data-label="용어"><code>http.server</code></td>
+<td data-label="뜻">폴더의 파일을 그대로 내주는 파이썬 기본 웹 서버</td>
+<td data-label="어디"><a href="web.html#server">로컬 서버와 웹 통신 7절</a></td>
+</tr>
+<tr>
+<td data-label="용어">IP 주소</td>
+<td data-label="뜻">네트워크에서 컴퓨터를 찾는 숫자</td>
+<td data-label="어디"><a href="web.html#address">로컬 서버와 웹 통신 4절</a></td>
+</tr>
+<tr>
+<td data-label="용어">JSON</td>
+<td data-label="뜻">프로그램끼리 주고받기 쉬운 데이터 글자 형식(<code>{"키": 값}</code>)</td>
+<td data-label="어디"><a href="web.html#api">로컬 서버와 웹 통신 10절</a></td>
+</tr>
+<tr>
+<td data-label="용어">KaTeX, MathJax</td>
+<td data-label="뜻">수식을 조판하는 라이브러리. 슬라이드는 KaTeX, 대시보드는 MathJax를 쓴다</td>
+<td data-label="어디"><a href="usage.html#dashboard">사이트 사용법 3절</a></td>
+</tr>
+<tr>
+<td data-label="용어">L0, L1</td>
+<td data-label="뜻">인식 단계. L0는 칸마다 잡음 섞인 관측, L1은 합성 LiDAR와 elevation_mapping_cupy</td>
+<td data-label="어디"><a href="run.html#run-l1">연구 코드 실행 6절</a></td>
+</tr>
+<tr>
+<td data-label="용어">listen</td>
+<td data-label="뜻">서버가 포트에 앉아 연결을 기다리는 것</td>
+<td data-label="어디"><a href="web.html#address">로컬 서버와 웹 통신 4절</a></td>
+</tr>
+<tr>
+<td data-label="용어">localhost, 127.0.0.1</td>
+<td data-label="뜻">이 컴퓨터 자신(루프백)</td>
+<td data-label="어디"><a href="web.html#address">로컬 서버와 웹 통신 4절</a></td>
+</tr>
+<tr>
+<td data-label="용어">NAT</td>
+<td data-label="뜻">공유기가 사설 주소를 공인 주소로 바꿔 내보내는 것</td>
+<td data-label="어디"><a href="web.html#outside">로컬 서버와 웹 통신 9절</a></td>
+</tr>
+<tr>
+<td data-label="용어"><code>nc</code></td>
+<td data-label="뜻">TCP 통로만 열고 아무것도 해석하지 않는 도구</td>
+<td data-label="어디"><a href="web.html#tcp">로컬 서버와 웹 통신 5절</a></td>
+</tr>
+<tr>
+<td data-label="용어"><code>nohup</code></td>
+<td data-label="뜻">터미널이 닫혀도 프로그램이 꺼지지 않게 하는 명령</td>
+<td data-label="어디"><a href="web.html#shell">로컬 서버와 웹 통신 12절</a></td>
+</tr>
+<tr>
+<td data-label="용어"><code>PATH</code></td>
+<td data-label="뜻">셸이 명령을 찾아볼 폴더 목록</td>
+<td data-label="어디"><a href="web.html#shell">로컬 서버와 웹 통신 12절</a></td>
+</tr>
+<tr>
+<td data-label="용어">pid</td>
+<td data-label="뜻">프로세스 번호</td>
+<td data-label="어디"><a href="web.html#shell">로컬 서버와 웹 통신 12절</a></td>
+</tr>
+<tr>
+<td data-label="용어">Planner</td>
+<td data-label="뜻">상태·지도·목표를 받아 경로나 시간 인덱스 궤적을 내는 모듈(<code>planners/</code>). 개발 대상은 학습 Planner(Planner D)다</td>
+<td data-label="어디"><a href="run.html#run-bench">연구 코드 실행 3절</a></td>
+</tr>
+<tr>
+<td data-label="용어">plant</td>
+<td data-label="뜻">스워브 구동부의 지연과 미끄러짐을 흉내 내는 모델(<code>--plant</code>)</td>
+<td data-label="어디"><a href="run.html#run-bench">연구 코드 실행 3절</a></td>
+</tr>
+<tr>
+<td data-label="용어">publish-site</td>
+<td data-label="뜻"><code>docs/</code>를 공개 사이트로 올리는 GitHub Actions 워크플로</td>
+<td data-label="어디"><a href="build.html#build-publish">페이지가 만들어지는 방식 5절</a></td>
+</tr>
+<tr>
+<td data-label="용어">RST</td>
+<td data-label="뜻">"그 포트엔 아무도 없다"는 TCP 거절 신호</td>
+<td data-label="어디"><a href="web.html#tcp">로컬 서버와 웹 통신 5절</a></td>
+</tr>
+<tr>
+<td data-label="용어">SIGHUP</td>
+<td data-label="뜻">터미널이 닫힐 때 가는 "끝내라" 신호</td>
+<td data-label="어디"><a href="web.html#shell">로컬 서버와 웹 통신 12절</a></td>
+</tr>
+<tr>
+<td data-label="용어"><code>ss</code></td>
+<td data-label="뜻">열린 연결과 listen 중인 포트를 보여 주는 도구</td>
+<td data-label="어디"><a href="web.html#address">로컬 서버와 웹 통신 4절</a></td>
+</tr>
+<tr>
+<td data-label="용어">stateless</td>
+<td data-label="뜻">서버가 요청 사이에 아무것도 기억하지 않는 성질</td>
+<td data-label="어디"><a href="web.html#http">로컬 서버와 웹 통신 6절</a></td>
+</tr>
+<tr>
+<td data-label="용어">systemd</td>
+<td data-label="뜻">프로그램을 부팅 때 띄우고 다시 살리는 관리자</td>
+<td data-label="어디"><a href="web.html#shell">로컬 서버와 웹 통신 12절</a></td>
+</tr>
+<tr>
+<td data-label="용어">TCP</td>
+<td data-label="뜻">믿을 수 있는 통로를 만드는 규칙</td>
+<td data-label="어디"><a href="web.html#tcp">로컬 서버와 웹 통신 5절</a></td>
+</tr>
+<tr>
+<td data-label="용어">TLS</td>
+<td data-label="뜻">상대 신원을 확인하고 통로를 암호화하는 규칙</td>
+<td data-label="어디"><a href="web.html#outside">로컬 서버와 웹 통신 9절</a></td>
+</tr>
+<tr>
+<td data-label="용어">TP 번호</td>
+<td data-label="뜻">작업 하나의 번호(<code>TP-0150</code>). TODO, 이슈, PR, 커밋, 문서가 이 번호로 이어진다</td>
+<td data-label="어디"><a href="usage.html#dash-todo">사이트 사용법 4절</a></td>
+</tr>
+<tr>
+<td data-label="용어">TravMap</td>
+<td data-label="뜻">8채널 2.5D 지형 표현(높이, 경사, 턱, 거칠기, cost, σ 등). 모듈 사이의 공통 표현이다</td>
+<td data-label="어디"><code>core/types.py</code></td>
+</tr>
+<tr>
+<td data-label="용어">TTL</td>
+<td data-label="뜻">DNS 답을 기억해 둘 시간(초)</td>
+<td data-label="어디"><a href="web.html#outside">로컬 서버와 웹 통신 9절</a></td>
+</tr>
+<tr>
+<td data-label="용어">URL</td>
+<td data-label="뜻">방식, 주소, 포트, 경로를 한 줄로 쓴 것</td>
+<td data-label="어디"><a href="web.html#flow">로컬 서버와 웹 통신 2절</a></td>
+</tr>
+<tr>
+<td data-label="용어">가상환경(venv)</td>
+<td data-label="뜻">저장소 전용 파이썬과 패키지를 담은 폴더(<code>.venv</code>, L1은 <code>.venv-emap</code>)</td>
+<td data-label="어디"><a href="run.html#run-setup">연구 코드 실행 1절</a></td>
+</tr>
+<tr>
+<td data-label="용어">갤러리</td>
+<td data-label="뜻">첫 화면의 슬라이드 카드 묶음. <code>deck.json</code>에서 만든다</td>
+<td data-label="어디"><a href="usage.html#home">사이트 사용법 2절</a></td>
+</tr>
+<tr>
+<td data-label="용어">공개 사본</td>
+<td data-label="뜻">공개 사이트에 올리려고 <code>docs/</code>를 복사해 손질한 것</td>
+<td data-label="어디"><a href="build.html#build-publish">페이지가 만들어지는 방식 5절</a></td>
+</tr>
+<tr>
+<td data-label="용어">공유기, 기본 게이트웨이</td>
+<td data-label="뜻">사설망과 인터넷 사이의 문. 바깥으로 가는 패킷이 모두 지난다</td>
+<td data-label="어디"><a href="web.html#outside">로컬 서버와 웹 통신 9절</a></td>
+</tr>
+<tr>
+<td data-label="용어">공인 주소</td>
+<td data-label="뜻">인터넷에서 통하는 주소. 외부 서버에는 이것만 보인다</td>
+<td data-label="어디"><a href="web.html#outside">로컬 서버와 웹 통신 9절</a></td>
+</tr>
+<tr>
+<td data-label="용어">라우터</td>
+<td data-label="뜻">패킷을 다음 정거장으로 넘기는 중계기</td>
+<td data-label="어디"><a href="web.html#outside">로컬 서버와 웹 통신 9절</a></td>
+</tr>
+<tr>
+<td data-label="용어">리다이렉트</td>
+<td data-label="뜻">"저기로 가라"는 3xx 응답</td>
+<td data-label="어디"><a href="web.html#http">로컬 서버와 웹 통신 6절</a></td>
+</tr>
+<tr>
+<td data-label="용어">리서치 문서 덱</td>
+<td data-label="뜻">리서치 문서 전체를 옮긴 슬라이드(12개)</td>
+<td data-label="어디"><a href="usage.html#slides">사이트 사용법 7절</a></td>
+</tr>
+<tr>
+<td data-label="용어">메서드</td>
+<td data-label="뜻">요청이 원하는 일(GET, POST 등)</td>
+<td data-label="어디"><a href="web.html#http">로컬 서버와 웹 통신 6절</a></td>
+</tr>
+<tr>
+<td data-label="용어">발표자 노트</td>
+<td data-label="뜻">슬라이드 원본의 <code>&lt;aside&gt;</code>. 뷰어의 <code>N</code> 키와 PPTX 노트에 나온다</td>
+<td data-label="어디"><a href="usage.html#slides">사이트 사용법 7절</a></td>
+</tr>
+<tr>
+<td data-label="용어">사설 주소</td>
+<td data-label="뜻">집이나 사무실 안에서만 통하는 주소(<code>192.168.x.x</code> 등)</td>
+<td data-label="어디"><a href="web.html#address">로컬 서버와 웹 통신 4절</a></td>
+</tr>
+<tr>
+<td data-label="용어">상태 칩</td>
+<td data-label="뜻">TODO 제목 안의 TP 번호. 색이 그 TP의 상태다</td>
+<td data-label="어디"><a href="usage.html#dash-todo">사이트 사용법 4절</a></td>
+</tr>
+<tr>
+<td data-label="용어">상태 코드</td>
+<td data-label="뜻">응답 첫 줄의 세 자리 숫자(200, 404 등)</td>
+<td data-label="어디"><a href="web.html#http">로컬 서버와 웹 통신 6절</a></td>
+</tr>
+<tr>
+<td data-label="용어">생성물, 원본</td>
+<td data-label="뜻">스크립트가 만든 파일과, 그것을 만드는 데 쓴 손으로 쓴 파일. 고칠 때는 원본을 고친다</td>
+<td data-label="어디"><a href="build.html#build-map">페이지가 만들어지는 방식 1절</a></td>
+</tr>
+<tr>
+<td data-label="용어">스택</td>
+<td data-label="뜻"><code>planner+controller</code> 조합. 벤치마크의 비교 단위다</td>
+<td data-label="어디"><a href="run.html#run-bench">연구 코드 실행 3절</a></td>
+</tr>
+<tr>
+<td data-label="용어">스터디 슬라이드</td>
+<td data-label="뜻">수식 개요 덱과 논문 스터디 덱</td>
+<td data-label="어디"><a href="usage.html#slides">사이트 사용법 7절</a></td>
+</tr>
+<tr>
+<td data-label="용어">시연</td>
+<td data-label="뜻">Playground에 저장해 둔 저장소 결과의 설정. <code>#TP-0047</code>처럼 연다</td>
+<td data-label="어디"><a href="usage.html#playground">사이트 사용법 6절</a></td>
+</tr>
+<tr>
+<td data-label="용어">요청 한도(rate limit)</td>
+<td data-label="뜻">정해진 시간에 보낼 수 있는 요청 수</td>
+<td data-label="어디"><a href="web.html#api">로컬 서버와 웹 통신 10절</a></td>
+</tr>
+<tr>
+<td data-label="용어">원장(TP 원장)</td>
+<td data-label="뜻">TP마다 제목과 상태 이력을 쌓는 기록(<code>journal/tp/</code>). 손으로 고치지 않는다</td>
+<td data-label="어디"><a href="build.html#build-dashboard">페이지가 만들어지는 방식 2절</a></td>
+</tr>
+<tr>
+<td data-label="용어">위생 검사</td>
+<td data-label="뜻">공개 사본에서 경로, 토큰, 사설 IP, 비공개 링크를 찾아 push를 막는 검사</td>
+<td data-label="어디"><a href="build.html#build-lint">페이지가 만들어지는 방식 6절</a></td>
+</tr>
+<tr>
+<td data-label="용어">인증서</td>
+<td data-label="뜻">서버 신원을 발급 기관이 보증한 문서</td>
+<td data-label="어디"><a href="web.html#outside">로컬 서버와 웹 통신 9절</a></td>
+</tr>
+<tr>
+<td data-label="용어">잡음 바닥</td>
+<td data-label="뜻">같은 설정을 다시 돌렸을 때 저절로 뒤집히는 에피소드 수. 이보다 작은 차이는 근거가 아니다</td>
+<td data-label="어디"><a href="run.html#run-gate">연구 코드 실행 4절</a></td>
+</tr>
+<tr>
+<td data-label="용어">챕터 발표 덱</td>
+<td data-label="뜻">리서치 문서 한 편을 35–40장으로 줄인 발표용 덱(6개)</td>
+<td data-label="어디"><a href="usage.html#slides">사이트 사용법 7절</a></td>
+</tr>
+<tr>
+<td data-label="용어">체크포인트</td>
+<td data-label="뜻">학습한 가중치 파일(<code>checkpoints/*.pt</code>). git에 없고 릴리스에서 받는다</td>
+<td data-label="어디"><a href="run.html#run-ckpt">연구 코드 실행 2절</a></td>
+</tr>
+<tr>
+<td data-label="용어">출처(origin)</td>
+<td data-label="뜻">방식, 주소, 포트의 조합</td>
+<td data-label="어디"><a href="web.html#browser">로컬 서버와 웹 통신 11절</a></td>
+</tr>
+<tr>
+<td data-label="용어">치명 셀, 치명 실패</td>
+<td data-label="뜻">cost ≥ 0.95인 칸과, 그 칸에 들어가 끝난 에피소드(<code>lethal</code>)</td>
+<td data-label="어디"><a href="run.html#run-gate">연구 코드 실행 4절</a></td>
+</tr>
+<tr>
+<td data-label="용어">캐시</td>
+<td data-label="뜻">받은 것을 저장해 두고 다시 쓰는 것</td>
+<td data-label="어디"><a href="web.html#http">로컬 서버와 웹 통신 6절</a></td>
+</tr>
+<tr>
+<td data-label="용어">코어 버전(<code>CORE_VERSION</code>)</td>
+<td data-label="뜻">Playground 코어 JS의 판 번호. 코어를 고치면 바꾼다</td>
+<td data-label="어디"><a href="build.html#build-fix">페이지가 만들어지는 방식 8절</a></td>
+</tr>
+<tr>
+<td data-label="용어">클라이언트, 서버</td>
+<td data-label="뜻">요청하는 프로그램과 응답하는 프로그램</td>
+<td data-label="어디"><a href="web.html#process">로컬 서버와 웹 통신 3절</a></td>
+</tr>
+<tr>
+<td data-label="용어">토큰</td>
+<td data-label="뜻">누구인지 밝히는 비밀 문자열. 비밀번호처럼 다룬다</td>
+<td data-label="어디"><a href="web.html#api">로컬 서버와 웹 통신 10절</a></td>
+</tr>
+<tr>
+<td data-label="용어">포트</td>
+<td data-label="뜻">한 컴퓨터 안에서 어느 프로그램인지 정하는 번호</td>
+<td data-label="어디"><a href="web.html#address">로컬 서버와 웹 통신 4절</a></td>
+</tr>
+<tr>
+<td data-label="용어">프로세스</td>
+<td data-label="뜻">실행 중인 프로그램</td>
+<td data-label="어디"><a href="web.html#process">로컬 서버와 웹 통신 3절</a></td>
+</tr>
+<tr>
+<td data-label="용어">하위 탭</td>
+<td data-label="뜻">리서치 문서 안의 큰 주제 탭</td>
+<td data-label="어디"><a href="usage.html#dash-research">사이트 사용법 5절</a></td>
+</tr>
+<tr>
+<td data-label="용어">헤더</td>
+<td data-label="뜻">요청과 응답에 붙는 "이름: 값" 꼬리표</td>
+<td data-label="어디"><a href="web.html#http">로컬 서버와 웹 통신 6절</a></td>
+</tr>
+</tbody>
+</table></div>
+</section>
+<p id="qempty" hidden>찾는 말이 이 주제에 없다. <a href="./">모든 주제에서 찾기</a>로 넓히거나 <kbd>Esc</kbd>로 지운다.</p>
+    </main>
+  </div>
+
+  <footer>
+    <a href="../">travplan 첫 화면</a>
+    <a href="./">도움말 첫 페이지</a>
+    <a href="../dashboard.html">대시보드</a>
+    <a href="../playground/">Playground</a>
+    <a href="../slides/">슬라이드</a>
+  </footer>
+</div>
+<script src="help.js"></script>
+</body>
+</html>

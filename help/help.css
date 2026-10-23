@@ -1,0 +1,127 @@
+/* 도움말 공용 스타일. scripts/build_help.py가 docs/help/help.css로 복사한다. 색은 첫 화면(index.html)과 같은 아스팔트 + 연석 도색 노랑. */
+:root {
+  color-scheme: light;
+  --bg: #e9ece7; --panel: #f6f7f3; --line: #cfd6d0; --fg: #152024; --muted: #5a6964; --accent: #b88700; --accent-ink: #fffaf0; --route: #0f8c80;
+  --code-bg: #eef1ec; --hi: rgba(184, 135, 0, .22);
+  --display: "Bricolage Grotesque", "IBM Plex Sans KR", system-ui, sans-serif;
+  --body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root { color-scheme: dark; --bg: #0d1113; --panel: #141a1d; --line: #29333a; --fg: #e4e9e6; --muted: #8b9893; --accent: #f2b705; --accent-ink: #1a1400;
+    --route: #5fd3c6; --code-bg: #10161a; --hi: rgba(242, 183, 5, .22); }
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }   /* .cards·.results·.search·표 행의 display보다 hidden이 이긴다 */
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.7 var(--body); }
+a { color: var(--route); }
+a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: 16px; padding-block: 36px 56px; }
+
+/* 머리말 */
+header { display: grid; gap: 10px; margin-bottom: 22px; }
+.eyebrow { font: 600 12px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.eyebrow a { color: var(--muted); }
+h1 { font: 800 clamp(36px, 6.5vw, 60px)/0.98 var(--display); letter-spacing: -0.03em; margin: 0; }
+h1 span { color: var(--accent); }
+.lede { margin: 0; max-width: 72ch; font-size: 16.5px; }
+.intro { color: var(--muted); font-size: 13.5px; max-width: 78ch; }
+.intro p { margin: 0 0 4px; }
+.topics { display: flex; flex-wrap: wrap; gap: 6px; }
+.topics a { display: inline-flex; align-items: center; min-height: 32px; padding: 3px 12px; border: 1px solid var(--line); border-radius: 999px;
+  background: var(--panel); color: var(--fg); text-decoration: none; font-size: 13.5px; font-weight: 500; }
+.topics a:hover { border-color: var(--accent); }
+.topics a[aria-current="page"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+/* 폰에서는 주제 칩을 한 줄로 두고 옆으로 민다. 지금 주제가 보이게 help.js가 맞춘다. */
+@media (max-width: 759px) {
+  .topics { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-inline: -16px; padding: 0 16px 2px; }
+  .topics::-webkit-scrollbar { display: none; }
+  .topics a { flex: none; }
+}
+.search { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-top: 6px; }
+.search input { flex: 1 1 260px; max-width: 560px; min-height: 44px; padding: 8px 14px; font: 15px var(--body); color: var(--fg);
+  background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
+.search small { color: var(--muted); font-size: 13px; }
+kbd { font: 12px var(--mono); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px; background: var(--panel); }
+
+/* 주제 페이지: 목차 + 본문 */
+.layout { display: grid; gap: 24px; }
+.toc { display: flex; flex-wrap: wrap; gap: 6px; align-content: start; }
+.toc a { display: inline-block; padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--panel);
+  color: var(--fg); text-decoration: none; font-size: 13.5px; }
+.toc a:hover { border-color: var(--accent); }
+.toc a.on { border-color: var(--accent); color: var(--accent); }
+.toc a.dim { opacity: .35; }
+.toc a b { font: 600 11px var(--mono); color: var(--accent); margin-right: 5px; }
+@media (min-width: 960px) {
+  .layout { grid-template-columns: 220px minmax(0, 1fr); gap: 36px; }
+  .toc { position: sticky; top: 16px; align-self: start; max-height: calc(100vh - 32px); overflow: auto; flex-direction: column; flex-wrap: nowrap; gap: 2px; }
+  .toc a { border: 0; background: none; border-left: 2px solid transparent; border-radius: 0; padding: 4px 10px; }
+  .toc a.on { border-left-color: var(--accent); }
+}
+main { min-width: 0; }
+section { scroll-margin-top: 16px; padding: 22px 0 8px; border-top: 1px solid var(--line); }
+section:first-child { border-top: 0; padding-top: 0; }
+h2 { font: 700 25px/1.25 var(--display); letter-spacing: -0.01em; margin: 0 0 10px; }
+h2 .n { font: 600 13px var(--mono); color: var(--accent); margin-right: 10px; vertical-align: 3px; }
+h3 { font: 600 17px/1.4 var(--body); margin: 22px 0 8px; }
+p, li { max-width: 78ch; }
+p { margin: 0 0 10px; }
+ul, ol { margin: 0 0 12px; padding-left: 22px; }
+li { margin: 3px 0; }
+.key { background: linear-gradient(transparent 52%, var(--hi) 0); font-weight: 600; }
+code { font: .9em var(--mono); background: var(--code-bg); padding: 1px 5px; border-radius: 5px; overflow-wrap: anywhere; }
+pre { position: relative; margin: 0 0 14px; background: var(--code-bg); border: 1px solid var(--line); border-radius: 10px;
+  padding: 12px 14px; overflow-x: auto; font: 13px/1.6 var(--mono); }
+pre code { background: none; padding: 0; font: inherit; overflow-wrap: normal; }
+pre.cmd { padding-right: 64px; }
+pre .note { color: var(--muted); }
+.copy { position: absolute; top: 7px; right: 7px; font: 600 12px var(--body); color: var(--muted); background: var(--panel);
+  border: 1px solid var(--line); border-radius: 7px; padding: 3px 9px; cursor: pointer; }
+.copy:hover { color: var(--fg); border-color: var(--accent); }
+.tbl { overflow-x: auto; margin: 0 0 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); }
+table { border-collapse: collapse; width: 100%; font-size: 14px; line-height: 1.55; }
+th, td { padding: 8px 11px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+th { font: 600 12px var(--mono); letter-spacing: .04em; color: var(--muted); white-space: nowrap; }
+td:first-child { font-weight: 600; }
+table:not(.wide) td:first-child code { white-space: nowrap; overflow-wrap: normal; }
+.wide td:first-child { min-width: 160px; }
+/* 폰에서는 4열 이상 표를 행마다 한 장의 카드로 쌓는다. 열 이름은 build_help.py가 단 data-label이다. */
+@media (max-width: 759px) {
+  .wide thead { display: none; }
+  .wide, .wide tbody, .wide tr, .wide td { display: block; width: 100%; }
+  .wide tr { padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .wide tr:last-child { border-bottom: 0; }
+  .wide td { border: 0; padding: 3px 12px; }
+  .wide td:first-child { min-width: 0; font-size: 15px; padding-bottom: 6px; }
+  .wide td:not(:first-child)::before { content: attr(data-label); display: block; font: 600 11px var(--mono); letter-spacing: .05em; color: var(--muted); }
+}
+#qempty { color: var(--muted); padding: 24px 0; }
+.seen { font: 600 11px var(--mono); color: var(--accent); white-space: nowrap; }
+
+/* 첫 페이지: 바로 가기, 주제 카드, 찾기 결과 */
+.quick { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin: 2px 0 0; font-size: 14px; }
+.quick b { font: 600 12px var(--mono); letter-spacing: .06em; color: var(--muted); margin-right: 2px; }
+.quick a { padding: 2px 0; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr)); gap: 16px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px 10px; }
+.card h2 { font-size: 22px; margin: 0 0 6px; }
+.card h2 a { color: var(--fg); text-decoration: none; }
+.card h2 a:hover { color: var(--accent); }
+.card p { color: var(--muted); font-size: 14px; margin-bottom: 8px; }
+.card ol { margin: 0 0 6px; padding-left: 22px; font-size: 14px; columns: 2 150px; column-gap: 18px; }
+.card li { break-inside: avoid; margin: 2px 0; }
+.card li::marker { font: 600 11px var(--mono); color: var(--accent); }
+.results { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.results li { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; }
+.results a { font-weight: 600; text-decoration: none; }
+.results a:hover { text-decoration: underline; }
+.results small { display: block; color: var(--muted); font: 12px var(--mono); margin-bottom: 2px; }
+.results p { margin: 4px 0 0; font-size: 14px; color: var(--muted); }
+mark { background: var(--hi); color: inherit; border-radius: 3px; padding: 0 1px; }
+
+footer { margin-top: 28px; color: var(--muted); font-size: 13px; display: flex; flex-wrap: wrap; gap: 6px 16px; border-top: 1px solid var(--line); padding-top: 16px; }
+footer a { color: var(--muted); }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }

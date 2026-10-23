@@ -1,0 +1,1199 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>로컬 서버와 웹 통신 · 도움말 · travplan</title>
+<meta name="description" content="대시보드와 Playground를 로컬에서 띄울 때 쓰는 것들의 원리. 포트, TCP, HTTP, http.server, curl, DNS·NAT·TLS·CDN, 그리고 문제 해결">
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/site/favicon.png">
+<link rel="apple-touch-icon" href="../assets/site/apple-touch-icon.png">
+<meta name="theme-color" content="#e9ece7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d1113" media="(prefers-color-scheme: dark)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans+KR:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="help.css">
+</head>
+<body data-page="web">
+<!-- 생성물: help_src/web.md에서 scripts/build_help.py가 만든다. 손으로 고치지 않는다. -->
+<div class="wrap">
+  <header>
+    <div class="eyebrow"><a href="../">travplan</a> · <a href="./">도움말</a></div>
+    <nav class="topics" aria-label="도움말 주제"><a href="usage.html">사이트 사용법</a><a href="run.html">연구 코드 실행</a><a href="build.html">페이지가 만들어지는 방식</a><a href="web.html" aria-current="page">로컬 서버와 웹 통신</a><a href="glossary.html">용어 사전</a></nav>
+    <h1>로컬 서버와 웹 통신<span>.</span></h1>
+    <p class="lede">대시보드와 Playground를 로컬에서 띄울 때 쓰는 것들의 원리. 포트, TCP, HTTP, http.server, curl, DNS·NAT·TLS·CDN, 그리고 문제 해결</p>
+    <div class="intro"><p>측정값은 2026-10-23에 잰 것이다. 이 PC의 주소와 장치 이름은 예시 값으로 바꿨다. 나머지 절은 브라우저가 페이지를 받는 순서대로 놓았다.</p></div>
+    <div class="search" id="searchbox" hidden>
+      <input id="q" type="search" placeholder="이 주제에서 찾기" aria-label="이 주제에서 찾기" autocomplete="off">
+      <small><kbd>/</kbd> 찾기 · <kbd>Esc</kbd> 지우기 · <a id="qall" href="./">모든 주제에서 찾기</a> <span id="qinfo" aria-live="polite"></span></small>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav class="toc" aria-label="목차"><a href="#fix"><b>1</b>문제 해결</a><a href="#flow"><b>2</b>한눈에 보기</a><a href="#process"><b>3</b>프로세스와 서버</a><a href="#address"><b>4</b>주소와 포트</a><a href="#tcp"><b>5</b>TCP 연결</a><a href="#http"><b>6</b>HTTP</a><a href="#server"><b>7</b>python3 -m http.server</a><a href="#curl"><b>8</b>curl</a><a href="#outside"><b>9</b>외부 서버까지</a><a href="#api"><b>10</b>API와 인증</a><a href="#browser"><b>11</b>브라우저의 규칙</a><a href="#shell"><b>12</b>셸 쪽 용어</a><a href="#cheat"><b>13</b>명령 모음</a></nav>
+    <main>
+<section id="fix">
+  <h2><span class="n">1</span>문제 해결</h2>
+<p><span class="key">로컬 주소가 안 열리는 경우는 대부분 서버가 꺼져 있거나, 다른 프로그램이 그 포트를 쓰고 있는 경우다.</span>
+증상을 찾아 확인 명령을 돌리고 해결을 따른다. 기본 포트는 <code>open_dashboard.sh</code>의 8765다.</p>
+<div class="tbl"><table class="wide">
+<thead>
+<tr>
+<th>증상</th>
+<th>원인</th>
+<th>확인</th>
+<th>해결</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="증상">브라우저가 "연결할 수 없음", curl이 <code>Connection refused</code></td>
+<td data-label="원인">그 포트를 듣는 서버가 없다. 재부팅하면 서버가 사라진다(<a href="#process">3절</a>)</td>
+<td data-label="확인"><code>ss -ltn | grep 8765</code>가 아무것도 찍지 않는다</td>
+<td data-label="해결"><code>source .venv/bin/activate</code> 뒤 <code>./scripts/open_dashboard.sh</code></td>
+</tr>
+<tr>
+<td data-label="증상">서버를 띄울 때 <code>Address already in use</code></td>
+<td data-label="원인">다른 프로그램이 그 포트를 쓰고 있다. 한 포트에는 하나만 앉는다(<a href="#address">4절</a>)</td>
+<td data-label="확인"><code>ss -ltnp | grep :8765</code>로 어느 프로그램인지 본다</td>
+<td data-label="해결">다른 포트로 띄운다. <code>PORT=8766 ./scripts/open_dashboard.sh</code></td>
+</tr>
+<tr>
+<td data-label="증상">열리긴 하는데 다른 프로젝트 페이지나 404가 뜬다</td>
+<td data-label="원인">다른 프로젝트의 서버가 그 포트를 잡고 있다. <code>open_dashboard.sh</code>는 포트에 연결만 되면 새로 띄우지 않는다</td>
+<td data-label="확인"><code>ss -ltnp | grep :8765</code>, <code>curl -sI http://127.0.0.1:8765/ | grep -i server</code></td>
+<td data-label="해결">그 서버를 끄거나 <code>PORT=</code>로 다른 포트를 쓴다</td>
+</tr>
+<tr>
+<td data-label="증상"><code>/dashboard.html</code>만 404</td>
+<td data-label="원인">대시보드를 아직 만들지 않았다. <code>docs/dashboard.html</code>은 생성물이라 저장소에 없다(<a href="build.html#build-dashboard">페이지가 만들어지는 방식 2절</a>)</td>
+<td data-label="확인"><code>ls docs/dashboard.html</code></td>
+<td data-label="해결"><code>.venv</code>를 켜고 <code>python3 automation/render_dashboard.py</code></td>
+</tr>
+<tr>
+<td data-label="증상"><code>ModuleNotFoundError: No module named 'markdown'</code></td>
+<td data-label="원인">시스템 파이썬으로 돌았다. <code>.venv</code>를 켜지 않았다(<a href="#shell">12절</a>)</td>
+<td data-label="확인"><code>which python3</code>가 <code>/usr/bin/python3</code>를 찍는다</td>
+<td data-label="해결"><code>source .venv/bin/activate</code></td>
+</tr>
+<tr>
+<td data-label="증상">Playground가 빈 화면, 개발자 도구에 CORS 오류</td>
+<td data-label="원인"><code>file://</code>로 열었다. ES 모듈이 막힌다(<a href="#browser">11절</a>)</td>
+<td data-label="확인">주소창이 <code>file://</code>로 시작한다</td>
+<td data-label="해결"><code>http://127.0.0.1:8765/playground/</code>로 연다</td>
+</tr>
+<tr>
+<td data-label="증상">몇 초 기다리다 <code>timed out</code></td>
+<td data-label="원인">방화벽이 요청을 버리거나 주소가 틀렸다. 서버가 없을 때와 다르다(<a href="#tcp">5절</a>)</td>
+<td data-label="확인"><code>curl -m 5 -v &lt;주소&gt;</code></td>
+<td data-label="해결">주소, 포트, 네트워크 연결을 확인한다</td>
+</tr>
+<tr>
+<td data-label="증상">공개 사이트를 갱신했는데 옛 내용이 보인다</td>
+<td data-label="원인">브라우저와 CDN이 10분 동안 사본을 쓴다(<code>max-age=600</code>). 또는 동기화가 아직 안 끝났다(<a href="#outside">9절</a>)</td>
+<td data-label="확인"><code>curl -sI &lt;주소&gt; | grep -i last-modified</code></td>
+<td data-label="해결">Ctrl+Shift+R로 다시 받는다. 그래도 옛 것이면 Actions 탭의 publish-site 실행을 본다</td>
+</tr>
+<tr>
+<td data-label="증상">GitHub API가 <code>403</code>, <code>rate limit exceeded</code></td>
+<td data-label="원인">로그인 없는 요청은 공인 주소 하나당 시간당 60회다(<a href="#api">10절</a>)</td>
+<td data-label="확인"><code>curl -s https://api.github.com/rate_limit</code></td>
+<td data-label="해결"><code>gh auth login</code> 뒤 <code>gh api</code>로 요청한다(시간당 5000회)</td>
+</tr>
+<tr>
+<td data-label="증상">재부팅할 때마다 서버를 다시 띄우기 귀찮다</td>
+<td data-label="원인"><code>nohup</code>은 재부팅을 견디지 못한다</td>
+<td data-label="확인"><code>uptime -s</code>로 마지막 부팅 시각을 본다</td>
+<td data-label="해결">systemd 사용자 서비스로 등록한다(<a href="#shell">12절</a>)</td>
+</tr>
+</tbody>
+</table></div>
+</section>
+<section id="flow">
+  <h2><span class="n">2</span>한눈에 보기</h2>
+<p><span class="key">로컬 서버든 외부 서버든 HTTP 대화 자체는 같다.</span> 외부 서버에는 그 앞뒤로 단계가 붙는다.
+이름을 주소로 바꾸고(DNS), 공유기와 통신사 망을 지나고(라우팅), 통로를 암호화한다(TLS).</p>
+<pre><code>① 주소창에 URL을 넣는다
+② (외부만)  DNS   이름을 IP 주소로 바꾼다
+③           TCP   그 주소의 포트와 통로를 연다         <span class="note">← 서버가 없으면 여기서 Connection refused</span>
+④ (https만) TLS   인증서를 확인하고 통로를 암호화한다
+⑤           HTTP  &quot;GET /dashboard.html&quot;을 보내고 &quot;200 OK&quot;와 내용을 받는다
+⑥ 브라우저가 HTML을 그리고, 필요한 JS·CSS·그림을 ③–⑤로 더 받는다
+</code></pre>
+<h3>URL 읽는 법</h3>
+<pre><code>http://127.0.0.1:8765/dashboard.html
+└┬─┘   └───┬───┘ └┬─┘└──────┬──────┘
+ │         │      │         └─ 경로: 어떤 파일을 달라는지 (docs/dashboard.html)
+ │         │      └─ 포트: 그 컴퓨터의 어느 프로그램인지
+ │         └─ 주소: 어느 컴퓨터인지 (127.0.0.1은 이 PC 자신)
+ └─ 방식: HTTP로 대화하겠다 (https면 암호화한 HTTP)
+</code></pre>
+<h3>비유 하나로 기억하기</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>실제</th>
+<th>비유</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="실제">컴퓨터</td>
+<td data-label="비유">건물</td>
+</tr>
+<tr>
+<td data-label="실제">IP 주소</td>
+<td data-label="비유">건물 주소</td>
+</tr>
+<tr>
+<td data-label="실제">포트</td>
+<td data-label="비유">그 건물의 창구 번호</td>
+</tr>
+<tr>
+<td data-label="실제">서버 프로그램(프로세스)</td>
+<td data-label="비유">창구에 앉아 있는 직원</td>
+</tr>
+<tr>
+<td data-label="실제">브라우저, curl</td>
+<td data-label="비유">창구에 전화를 거는 손님</td>
+</tr>
+<tr>
+<td data-label="실제">TCP 연결</td>
+<td data-label="비유">전화가 연결되어 통화가 이어지는 것</td>
+</tr>
+<tr>
+<td data-label="실제">HTTP</td>
+<td data-label="비유">통화에서 쓰는 정해진 말투(주문 양식)</td>
+</tr>
+<tr>
+<td data-label="실제">DNS</td>
+<td data-label="비유">상호를 주소로 찾아 주는 전화번호부</td>
+</tr>
+<tr>
+<td data-label="실제">TLS</td>
+<td data-label="비유">상대 신분증을 확인한 뒤 암호로 말하기</td>
+</tr>
+</tbody>
+</table></div>
+</section>
+<section id="process">
+  <h2><span class="n">3</span>프로세스와 서버</h2>
+<p><span class="key">서버는 메모리에서 도는 프로세스라서, 재부팅하면 사라진다.</span> 부팅할 때 다시 띄우려면 따로 등록해야 한다.</p>
+<ul>
+<li><strong>프로그램</strong>은 디스크에 저장된 파일이다. 아직 일하지 않는 업무 설명서와 같다.</li>
+<li><strong>프로세스</strong>는 그 프로그램이 실행되어 메모리에서 돌고 있는 상태다. 직원이 설명서를 들고 창구에 앉아 있는 것과 같다.</li>
+<li>메모리는 전원이 꺼지면 지워진다. 그래서 재부팅하면 모든 프로세스가 끝난다. 부팅 때 다시 띄우는 일은 systemd나 cron의 <code>@reboot</code>가 한다(<a href="#shell">12절</a>).</li>
+<li><strong>클라이언트</strong>는 요청하는 프로그램이다. 브라우저, <code>curl</code>, <code>gh</code>, <code>git</code>, <code>pip</code>가 여기 속한다.</li>
+<li><strong>서버</strong>는 요청을 기다렸다가 응답하는 프로그램이다. 로컬의 <code>http.server</code>, 인터넷의 GitHub Pages가 여기 속한다.</li>
+<li>클라이언트와 서버가 꼭 다른 컴퓨터에 있을 필요는 없다. 로컬 대시보드는 둘 다 같은 PC 안에 있다.</li>
+</ul>
+<pre class="cmd"><code>uptime -s                                          # 마지막으로 부팅한 시각
+ps -eo pid,lstart,args | grep [h]ttp.server         # 돌고 있는 http.server와 시작 시각
+</code></pre>
+<p><code>grep [h]ttp.server</code>처럼 첫 글자를 대괄호로 감싸면 grep 자기 자신이 결과에 섞이지 않는다.</p>
+</section>
+<section id="address">
+  <h2><span class="n">4</span>주소와 포트</h2>
+<p><span class="key">IP 주소는 어느 컴퓨터인지를, 포트는 그 컴퓨터의 어느 프로그램인지를 정한다.</span></p>
+<h3>IP 주소</h3>
+<ul>
+<li>네트워크에서 컴퓨터를 찾는 숫자다. IPv4는 <code>185.199.108.153</code>처럼 0–255 숫자 네 묶음이다.</li>
+<li><code>127.0.0.1</code>은 "이 컴퓨터 자신"을 뜻한다. 루프백(loopback)이라 하고 <code>localhost</code>라는 이름도 같은 곳이다. 이 주소로 보낸 요청은 PC 밖으로 나가지 않는다. 인터넷이 끊겨도 동작하고, 다른 PC에서는 접속할 수 없다.</li>
+<li><strong>사설 주소</strong>는 집이나 사무실 안에서만 쓰는 주소다. <code>192.168.x.x</code>, <code>10.x.x.x</code>, <code>172.16.x.x</code>–<code>172.31.x.x</code>가 여기 속한다. 인터넷에서는 이 주소로 찾아갈 수 없다(<a href="#outside">9절</a>).</li>
+</ul>
+<h3>포트와 listen</h3>
+<ul>
+<li>한 컴퓨터에서 여러 프로그램이 동시에 통신한다. 그래서 주소만으로는 어느 프로그램에 갈지 모른다. 포트는 그것을 정하는 0–65535 사이의 번호다.</li>
+<li>서버 프로그램은 운영체제에 "이 번호로 오는 연결은 내가 받겠다"고 등록하고 기다린다. 이것을 <strong>listen</strong>이라 한다.</li>
+<li>한 주소와 포트 쌍에는 프로그램 하나만 listen할 수 있다. 이미 쓰는 번호에 띄우면 <code>Address already in use</code>로 실패한다.</li>
+</ul>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>포트</th>
+<th>쓰는 곳</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="포트">22</td>
+<td data-label="쓰는 곳">SSH(원격 접속)</td>
+</tr>
+<tr>
+<td data-label="포트">53</td>
+<td data-label="쓰는 곳">DNS</td>
+</tr>
+<tr>
+<td data-label="포트">80</td>
+<td data-label="쓰는 곳">HTTP. 주소에 포트를 안 쓰면 http는 80으로 간다</td>
+</tr>
+<tr>
+<td data-label="포트">443</td>
+<td data-label="쓰는 곳">HTTPS. 주소에 포트를 안 쓰면 https는 443으로 간다</td>
+</tr>
+<tr>
+<td data-label="포트">8765</td>
+<td data-label="쓰는 곳"><code>scripts/open_dashboard.sh</code>의 기본값. 계속 띄워 둔다</td>
+</tr>
+<tr>
+<td data-label="포트">8799</td>
+<td data-label="쓰는 곳"><code>scripts/check_playground.sh</code>. 검사가 끝나면 끈다</td>
+</tr>
+<tr>
+<td data-label="포트">8798</td>
+<td data-label="쓰는 곳"><code>scripts/check_site.sh</code>가 공개 사본을 띄우는 번호</td>
+</tr>
+</tbody>
+</table></div>
+<h3>bind: 누구의 연결을 받을까</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>묶는 주소</th>
+<th>누가 접속할 수 있나</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="묶는 주소"><code>--bind 127.0.0.1</code></td>
+<td data-label="누가 접속할 수 있나">이 PC 자신만. travplan 스크립트는 모두 이것을 쓴다</td>
+</tr>
+<tr>
+<td data-label="묶는 주소"><code>--bind 0.0.0.0</code></td>
+<td data-label="누가 접속할 수 있나">같은 공유기에 붙은 사람 누구나(<code>http://192.168.x.20:8765</code>처럼)</td>
+</tr>
+</tbody>
+</table></div>
+<p><code>docs/</code>에는 아직 공개하지 않은 내용도 있다. 그래서 이 PC에서만 보이게 묶는다.</p>
+<h3>지금 listen 중인 포트 보기</h3>
+<pre class="cmd"><code>ss -ltn          # l: listen 중인 것만, t: TCP만, n: 이름 대신 숫자로
+ss -ltnp         # p: 어느 프로그램인지까지(내 프로그램만 보인다)
+</code></pre>
+<pre><code>State   Recv-Q  Send-Q  Local Address:Port   Peer Address:Port  Process
+LISTEN  0       5           127.0.0.1:8765        0.0.0.0:*      users:((&quot;python3&quot;,pid=4242,fd=3))
+        <span class="note">↑ 127.0.0.1의 8765번 창구에 python3(pid 4242)가 앉아 기다리는 중</span>
+</code></pre>
+</section>
+<section id="tcp">
+  <h2><span class="n">5</span>TCP 연결</h2>
+<p><span class="key">TCP는 두 프로그램 사이에 믿을 수 있는 통로를 만든다.</span> 데이터가 빠지거나 순서가 뒤바뀌지 않게 보장하고, 사라진 조각은 다시 보낸다.
+HTTP는 이 통로 위에서 오간다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>단계</th>
+<th>패킷</th>
+<th>전화 비유</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="단계">1. 연결 요청</td>
+<td data-label="패킷">SYN</td>
+<td data-label="전화 비유">전화를 건다</td>
+</tr>
+<tr>
+<td data-label="단계">2. 수락</td>
+<td data-label="패킷">SYN-ACK</td>
+<td data-label="전화 비유">상대가 받는다</td>
+</tr>
+<tr>
+<td data-label="단계">3. 확인</td>
+<td data-label="패킷">ACK</td>
+<td data-label="전화 비유">"여보세요"가 오가고 통화가 시작된다</td>
+</tr>
+<tr>
+<td data-label="단계">4. 데이터</td>
+<td data-label="패킷">HTTP 요청과 응답</td>
+<td data-label="전화 비유">용건을 말하고 답을 듣는다</td>
+</tr>
+<tr>
+<td data-label="단계">5. 끊기</td>
+<td data-label="패킷">FIN</td>
+<td data-label="전화 비유">전화를 끊는다</td>
+</tr>
+</tbody>
+</table></div>
+<h3>거절과 시간 초과는 다르다</h3>
+<p>연결이 실패한 모양을 보면 원인을 좁힐 수 있다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>모양</th>
+<th>무슨 일</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="모양"><code>Connection refused</code>, 즉시(0 ms)</td>
+<td data-label="무슨 일">운영체제가 거절 신호(RST)를 곧바로 돌려보냈다</td>
+<td data-label="뜻">컴퓨터는 있는데 그 포트에 서버가 없다</td>
+</tr>
+<tr>
+<td data-label="모양"><code>timed out</code>, 몇 초 뒤</td>
+<td data-label="무슨 일">요청에 아무 답이 없었다</td>
+<td data-label="뜻">방화벽이 버렸거나, 그 주소에 컴퓨터가 없다</td>
+</tr>
+<tr>
+<td data-label="모양"><code>Could not resolve host</code></td>
+<td data-label="무슨 일">DNS가 이름을 주소로 바꾸지 못했다</td>
+<td data-label="뜻">이름이 틀렸거나 DNS에 닿지 못한다</td>
+</tr>
+</tbody>
+</table></div>
+<pre class="cmd"><code>nc -zv 127.0.0.1 8765      # z: 연결만 해 보고 끊는다, v: 결과를 말로 찍는다
+</code></pre>
+<pre><code>Connection to 127.0.0.1 8765 port [tcp/*] succeeded!                  <span class="note">← 서버가 있다</span>
+nc: connect to 127.0.0.1 port 8799 (tcp) failed: Connection refused    <span class="note">← 서버가 없다</span>
+</code></pre>
+</section>
+<section id="http">
+  <h2><span class="n">6</span>HTTP</h2>
+<p><span class="key">HTTP는 TCP 통로 안에서 쓰는 글자 대화다.</span> 요청과 응답 모두 첫 줄, 헤더, 빈 줄, 본문의 네 부분이다.
+브라우저는 이 글자를 자동으로 쓰고 읽을 뿐이다.</p>
+<h3>손으로 써 보는 HTTP</h3>
+<p><code>nc</code>는 TCP 통로만 열고 아무것도 해석하지 않는다. 요청을 손으로 써서 보내도 서버가 답한다.</p>
+<pre class="cmd"><code>printf 'GET /playground/ HTTP/1.0\r\nHost: 127.0.0.1\r\n\r\n' | nc -q 2 127.0.0.1 8765 | head -12
+</code></pre>
+<pre><code>보낸 것
+GET /playground/ HTTP/1.0             <span class="note">← 요청 줄: 메서드, 경로, 버전</span>
+Host: 127.0.0.1                       <span class="note">← 헤더(이름: 값)</span>
+                                      <span class="note">← 빈 줄: 헤더 끝</span>
+받은 것
+HTTP/1.0 200 OK                       <span class="note">← 상태 줄: 버전, 상태 코드, 설명</span>
+Server: SimpleHTTP/0.6 Python/3.10.12
+Content-type: text/html
+Content-Length: 31813                 <span class="note">← 본문 크기(바이트)</span>
+Last-Modified: Tue, 06 Oct 2026 06:08:23 GMT
+                                      <span class="note">← 빈 줄</span>
+&lt;meta charset=&quot;utf-8&quot;&gt;                <span class="note">← 본문: Playground의 HTML 그대로</span>
+&lt;title&gt;travplan Playground&lt;/title&gt;
+</code></pre>
+<p>줄 끝의 <code>\r\n</code>은 HTTP가 정한 줄바꿈이다. 헤더 뒤의 빈 줄 하나가 "헤더는 여기까지"라는 표시다.</p>
+<h3>메서드: 무엇을 해 달라는가</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>메서드</th>
+<th>뜻</th>
+<th>예</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="메서드">GET</td>
+<td data-label="뜻">달라</td>
+<td data-label="예">페이지 열기, 파일 받기</td>
+</tr>
+<tr>
+<td data-label="메서드">HEAD</td>
+<td data-label="뜻">머리말만 달라</td>
+<td data-label="예">파일이 있는지, 언제 바뀌었는지만 확인(<code>curl -I</code>)</td>
+</tr>
+<tr>
+<td data-label="메서드">POST</td>
+<td data-label="뜻">받아서 처리해 달라</td>
+<td data-label="예">로그인, 글 올리기, PR 만들기</td>
+</tr>
+<tr>
+<td data-label="메서드">PUT, PATCH</td>
+<td data-label="뜻">이것으로 바꿔 달라</td>
+<td data-label="예">설정 저장, PR 본문 고치기</td>
+</tr>
+<tr>
+<td data-label="메서드">DELETE</td>
+<td data-label="뜻">지워 달라</td>
+<td data-label="예">글 삭제</td>
+</tr>
+</tbody>
+</table></div>
+<p>로컬 <code>http.server</code>는 GET과 HEAD에 <code>200</code>, POST와 DELETE에 <code>501</code>을 낸다. 파일을 내주기만 하는 서버라서 무언가를 받아 처리하는 기능이 없기 때문이다.</p>
+<h3>상태 코드: 첫 자리 숫자가 종류다</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>코드</th>
+<th>뜻</th>
+<th>언제</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="코드">200 OK</td>
+<td data-label="뜻">성공</td>
+<td data-label="언제">파일을 찾아 보냈다 <span class="seen">로컬·외부에서 봄</span></td>
+</tr>
+<tr>
+<td data-label="코드">301 Moved Permanently</td>
+<td data-label="뜻">이사 갔다. <code>Location</code>으로 가라</td>
+<td data-label="언제">폴더 주소 끝에 <code>/</code>가 없을 때, http로 왔을 때 <span class="seen">봄</span></td>
+</tr>
+<tr>
+<td data-label="코드">304 Not Modified</td>
+<td data-label="뜻">바뀐 것 없다. 가진 것을 써라</td>
+<td data-label="언제">캐시 확인 요청 <span class="seen">봄</span></td>
+</tr>
+<tr>
+<td data-label="코드">400 Bad Request</td>
+<td data-label="뜻">요청 모양이 틀렸다</td>
+<td data-label="언제">HTTP 형식을 어긴 요청</td>
+</tr>
+<tr>
+<td data-label="코드">401 Unauthorized</td>
+<td data-label="뜻">누구인지 밝혀라</td>
+<td data-label="언제">로그인이나 토큰이 없다</td>
+</tr>
+<tr>
+<td data-label="코드">403 Forbidden</td>
+<td data-label="뜻">알지만 거절한다</td>
+<td data-label="언제">권한이 없거나 요청 한도를 넘었다 <span class="seen">봄</span></td>
+</tr>
+<tr>
+<td data-label="코드">404 Not Found</td>
+<td data-label="뜻">그런 것 없다</td>
+<td data-label="언제">경로가 틀렸거나 파일이 없다 <span class="seen">봄</span></td>
+</tr>
+<tr>
+<td data-label="코드">500 Internal Server Error</td>
+<td data-label="뜻">서버 안에서 오류가 났다</td>
+<td data-label="언제">서버 프로그램의 버그</td>
+</tr>
+<tr>
+<td data-label="코드">501 Not Implemented</td>
+<td data-label="뜻">그 기능은 없다</td>
+<td data-label="언제"><code>http.server</code>에 POST를 보냈다 <span class="seen">봄</span></td>
+</tr>
+<tr>
+<td data-label="코드">502, 503</td>
+<td data-label="뜻">뒤의 서버가 답하지 않는다, 지금 바쁘다</td>
+<td data-label="언제">중계 서버 뒤의 원본이 죽었거나 과부하다</td>
+</tr>
+</tbody>
+</table></div>
+<p>정리하면 2xx는 성공, 3xx는 다른 곳으로 가라, 4xx는 요청한 쪽 잘못, 5xx는 서버 쪽 잘못이다.</p>
+<h3>헤더: 요청과 응답에 붙는 꼬리표</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>헤더</th>
+<th>방향</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="헤더"><code>Host</code></td>
+<td data-label="방향">요청</td>
+<td data-label="뜻">어느 사이트에 묻는지. 서버 한 대가 사이트 여럿을 맡을 때 이것으로 가른다</td>
+</tr>
+<tr>
+<td data-label="헤더"><code>User-Agent</code></td>
+<td data-label="방향">요청</td>
+<td data-label="뜻">요청한 프로그램 이름(<code>curl/7.81.0</code>, 브라우저 이름)</td>
+</tr>
+<tr>
+<td data-label="헤더"><code>Accept</code></td>
+<td data-label="방향">요청</td>
+<td data-label="뜻">받고 싶은 형식</td>
+</tr>
+<tr>
+<td data-label="헤더"><code>Authorization</code></td>
+<td data-label="방향">요청</td>
+<td data-label="뜻">누구인지 밝히는 토큰(<a href="#api">10절</a>)</td>
+</tr>
+<tr>
+<td data-label="헤더"><code>If-Modified-Since</code>, <code>If-None-Match</code></td>
+<td data-label="방향">요청</td>
+<td data-label="뜻">"이 시각, 이 판 이후로 바뀌었으면 달라"</td>
+</tr>
+<tr>
+<td data-label="헤더"><code>Content-Type</code></td>
+<td data-label="방향">응답</td>
+<td data-label="뜻">본문 형식(<code>text/html</code>, <code>application/json</code>)</td>
+</tr>
+<tr>
+<td data-label="헤더"><code>Content-Length</code></td>
+<td data-label="방향">응답</td>
+<td data-label="뜻">본문 크기(바이트)</td>
+</tr>
+<tr>
+<td data-label="헤더"><code>Last-Modified</code>, <code>ETag</code></td>
+<td data-label="방향">응답</td>
+<td data-label="뜻">마지막 수정 시각, 판 번호. 캐시 확인에 쓴다</td>
+</tr>
+<tr>
+<td data-label="헤더"><code>Cache-Control</code></td>
+<td data-label="방향">응답</td>
+<td data-label="뜻">얼마 동안 다시 묻지 말고 써도 되는지(<code>max-age=600</code>은 10분)</td>
+</tr>
+<tr>
+<td data-label="헤더"><code>Location</code></td>
+<td data-label="방향">응답</td>
+<td data-label="뜻">3xx일 때 갈 곳</td>
+</tr>
+<tr>
+<td data-label="헤더"><code>Set-Cookie</code>, <code>Cookie</code></td>
+<td data-label="방향">응답, 요청</td>
+<td data-label="뜻">서버가 맡긴 꼬리표를 다음 요청마다 돌려준다(로그인 유지)</td>
+</tr>
+</tbody>
+</table></div>
+<h3>리다이렉트: 여기가 아니라 저기로 가라</h3>
+<ul>
+<li><code>/playground</code>(끝에 <code>/</code> 없음)를 달라고 하면 <code>301</code>과 <code>Location: /playground/</code>가 온다. 폴더 주소는 끝에 <code>/</code>가 있어야 그 안의 파일을 상대 경로로 찾기 때문이다.</li>
+<li>공개 사이트에 <code>http://</code>로 가면 <code>301</code>과 함께 <code>https://</code> 주소로 돌려보낸다. 암호화하지 않은 연결로는 페이지를 주지 않는다.</li>
+<li>브라우저는 <code>Location</code>을 보고 자동으로 다시 요청한다. curl은 <code>-L</code>을 줘야 따라간다.</li>
+</ul>
+<h3>캐시: 이미 가진 것은 다시 받지 않는다</h3>
+<ul>
+<li>서버는 응답에 <code>Last-Modified</code>를 붙인다. 다음 요청에 <code>If-Modified-Since: 그 시각</code>을 붙이면, 바뀌지 않았을 경우 본문 없이 <code>304</code>만 온다.</li>
+<li>4.7 MB짜리 대시보드에 이렇게 다시 물었더니 받은 양이 0 바이트였다.</li>
+<li>공개 사이트는 <code>cache-control: max-age=600</code>을 보낸다. 10분 동안은 묻지도 말고 가진 것을 쓰라는 뜻이다. 그래서 갱신 직후에 옛 페이지가 보일 수 있다. Ctrl+Shift+R은 이 사본을 무시하고 다시 받는다.</li>
+</ul>
+<pre class="cmd"><code>LM=$(curl -sI http://127.0.0.1:8765/dashboard.html | grep -i '^last-modified' | cut -d' ' -f2- | tr -d '\r')
+curl -s -o /dev/null -w '%{http_code}, %{size_download} bytes\n' -H &quot;If-Modified-Since: $LM&quot; http://127.0.0.1:8765/dashboard.html
+</code></pre>
+<pre><code>304, 0 bytes
+</code></pre>
+<h3>HTTP 버전</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>버전</th>
+<th>특징</th>
+<th>본 곳</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="버전">HTTP/1.0</td>
+<td data-label="특징">요청 하나마다 연결을 새로 열고 닫는다</td>
+<td data-label="본 곳">로컬 <code>http.server</code></td>
+</tr>
+<tr>
+<td data-label="버전">HTTP/1.1</td>
+<td data-label="특징">연결 하나를 여러 요청에 이어 쓴다</td>
+<td data-label="본 곳">공개 사이트의 http 리다이렉트</td>
+</tr>
+<tr>
+<td data-label="버전">HTTP/2</td>
+<td data-label="특징">연결 하나로 여러 요청을 동시에 주고받는다. 글자 대신 이진 형식이지만 뜻은 같다</td>
+<td data-label="본 곳">공개 사이트(https)</td>
+</tr>
+</tbody>
+</table></div>
+<h3>HTTP는 기억하지 않는다</h3>
+<p>서버는 요청마다 처음 보는 손님처럼 대한다. 이것을 stateless라 한다. 그래서 로그인처럼 "누구인지"가 필요하면 요청마다 쿠키나 토큰을 헤더에 붙인다.
+<strong>HTTPS</strong>는 같은 HTTP 대화를 TLS로 암호화한 통로 안에서 하는 것이다(<a href="#outside">9절</a>).</p>
+</section>
+<section id="server">
+  <h2><span class="n">7</span>python3 -m http.server</h2>
+<p><span class="key"><code>http.server</code>는 요청받은 경로를 정해 둔 폴더의 파일로 찾아 그대로 보내는, 파이썬에 기본으로 든 웹 서버다.</span>
+설치할 것이 없어서 로컬 미리보기에 쓴다. 기본 보안 검사만 하므로 파이썬 공식 문서도 실제 서비스에는 쓰지 말라고 한다.</p>
+<pre class="cmd"><code>python3 -m http.server 8765 --bind 127.0.0.1 --directory docs
+</code></pre>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>조각</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="조각"><code>python3 -m http.server</code></td>
+<td data-label="뜻">파이썬의 <code>http.server</code> 모듈을 프로그램처럼 실행한다</td>
+</tr>
+<tr>
+<td data-label="조각"><code>8765</code></td>
+<td data-label="뜻">8765번 포트에서 기다린다(빼면 8000)</td>
+</tr>
+<tr>
+<td data-label="조각"><code>--bind 127.0.0.1</code></td>
+<td data-label="뜻">이 PC 안에서 오는 연결만 받는다(빼면 모든 곳에서 받는다)</td>
+</tr>
+<tr>
+<td data-label="조각"><code>--directory docs</code></td>
+<td data-label="뜻"><code>docs/</code> 폴더의 파일을 내준다(빼면 지금 폴더)</td>
+</tr>
+</tbody>
+</table></div>
+<h3>주소가 파일로 바뀌는 규칙</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>요청</th>
+<th>응답</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="요청"><code>/dashboard.html</code></td>
+<td data-label="응답"><code>docs/dashboard.html</code>을 보낸다</td>
+</tr>
+<tr>
+<td data-label="요청"><code>/</code></td>
+<td data-label="응답"><code>docs/index.html</code>을 보낸다(폴더에 <code>index.html</code>이 있으면 그것)</td>
+</tr>
+<tr>
+<td data-label="요청"><code>/playground</code></td>
+<td data-label="응답"><code>301</code>로 <code>/playground/</code>에 보낸다</td>
+</tr>
+<tr>
+<td data-label="요청"><code>/playground/</code></td>
+<td data-label="응답"><code>docs/playground/index.html</code>을 보낸다</td>
+</tr>
+<tr>
+<td data-label="요청"><code>/assets/</code></td>
+<td data-label="응답"><code>index.html</code>이 없는 폴더라 파일 목록 페이지를 만들어 보낸다</td>
+</tr>
+<tr>
+<td data-label="요청"><code>/nope</code></td>
+<td data-label="응답">없는 파일이라 <code>404</code></td>
+</tr>
+</tbody>
+</table></div>
+<h3>요청 기록 보기, 끄기</h3>
+<p>앞에서(포그라운드로) 띄우면 요청마다 한 줄씩 기록이 찍힌다. <code>open_dashboard.sh</code>는 뒤에서 띄우면서 이 기록을 버린다.</p>
+<pre><code>127.0.0.1 - - [23/Oct/2026 13:42:24] &quot;GET / HTTP/1.1&quot; 200 -
+127.0.0.1 - - [23/Oct/2026 13:42:24] code 404, message File not found
+127.0.0.1 - - [23/Oct/2026 13:42:24] &quot;GET /nope HTTP/1.1&quot; 404 -
+└ 보낸 쪽 주소       └ 받은 시각              └ 요청 줄        └ 상태 코드
+</code></pre>
+<ul>
+<li>앞에서 띄운 서버는 그 터미널에서 Ctrl+C로 끈다.</li>
+<li>뒤에서 띄운 서버는 <code>ss -ltnp | grep :8765</code>로 pid를 찾아 <code>kill &lt;pid&gt;</code>로 끈다.</li>
+<li><code>pkill -f "http.server 8765"</code>는 조심해서 쓴다. 같은 글자가 든 다른 명령줄(그 명령을 돌린 셸 자신 등)까지 끌 수 있다.</li>
+</ul>
+<h3>travplan에서 쓰는 곳</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>스크립트</th>
+<th>포트</th>
+<th>하는 일</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="스크립트"><code>scripts/open_dashboard.sh</code></td>
+<td data-label="포트">8765(<code>PORT=</code>로 바꿈)</td>
+<td data-label="하는 일">대시보드를 다시 만들고, 서버가 없으면 띄우고, 브라우저로 연다. 서버는 계속 둔다</td>
+</tr>
+<tr>
+<td data-label="스크립트"><code>scripts/check_playground.sh</code></td>
+<td data-label="포트">8799</td>
+<td data-label="하는 일">서버를 띄워 헤드리스 Chrome으로 Playground 검사를 돌리고 끈다</td>
+</tr>
+<tr>
+<td data-label="스크립트"><code>scripts/check_site.sh</code></td>
+<td data-label="포트">8798</td>
+<td data-label="하는 일">공개 사본을 <code>/travplan-site/</code> 아래에 띄워 사이트 검사를 돌린다</td>
+</tr>
+</tbody>
+</table></div>
+</section>
+<section id="curl">
+  <h2><span class="n">8</span>curl</h2>
+<p><span class="key">curl은 화면을 그리지 않는 브라우저다.</span> 요청을 보내고 받은 내용을 그대로 보여 준다. 그래서 무엇이 오가는지 들여다볼 때 쓴다.
+<code>git</code>, <code>pip</code>, <code>gh</code>도 속으로는 같은 HTTP 요청을 보낸다.</p>
+<h3>자주 쓰는 옵션</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>옵션</th>
+<th>하는 일</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="옵션"><code>-v</code></td>
+<td data-label="하는 일">연결, 암호화, 요청, 응답 과정을 모두 보여 준다. <code>&gt;</code>는 보낸 줄, <code>&lt;</code>는 받은 줄, <code>*</code>는 curl의 설명이다</td>
+</tr>
+<tr>
+<td data-label="옵션"><code>-I</code></td>
+<td data-label="하는 일">HEAD 요청. 본문 없이 헤더만 받는다</td>
+</tr>
+<tr>
+<td data-label="옵션"><code>-i</code></td>
+<td data-label="하는 일">본문 앞에 응답 헤더도 찍는다</td>
+</tr>
+<tr>
+<td data-label="옵션"><code>-L</code></td>
+<td data-label="하는 일">3xx 리다이렉트를 따라간다</td>
+</tr>
+<tr>
+<td data-label="옵션"><code>-o 파일</code>, <code>-O</code></td>
+<td data-label="하는 일">본문을 그 파일에 저장한다, 주소의 파일 이름으로 저장한다</td>
+</tr>
+<tr>
+<td data-label="옵션"><code>-s</code>, <code>-S</code></td>
+<td data-label="하는 일">진행 표시를 끈다, 그래도 오류는 찍는다(<code>-sS</code>로 같이 쓴다)</td>
+</tr>
+<tr>
+<td data-label="옵션"><code>-f</code></td>
+<td data-label="하는 일">4xx·5xx면 본문을 찍지 않고 실패(종료 코드 22)로 끝낸다. 스크립트에서 쓴다</td>
+</tr>
+<tr>
+<td data-label="옵션"><code>-X 메서드</code></td>
+<td data-label="하는 일">메서드를 바꾼다(<code>-X POST</code>)</td>
+</tr>
+<tr>
+<td data-label="옵션"><code>-d 데이터</code></td>
+<td data-label="하는 일">요청 본문에 데이터를 싣는다. 메서드는 저절로 POST가 된다</td>
+</tr>
+<tr>
+<td data-label="옵션"><code>-H '이름: 값'</code></td>
+<td data-label="하는 일">요청 헤더를 더한다</td>
+</tr>
+<tr>
+<td data-label="옵션"><code>-m 초</code></td>
+<td data-label="하는 일">그 시간이 지나면 포기한다</td>
+</tr>
+<tr>
+<td data-label="옵션"><code>-w '형식'</code></td>
+<td data-label="하는 일">끝난 뒤 상태 코드, 시간 같은 값을 찍는다(아래 표)</td>
+</tr>
+</tbody>
+</table></div>
+<h3><code>-v</code>로 본 로컬 대화</h3>
+<pre class="cmd"><code>curl -v http://127.0.0.1:8765/dashboard.html -o /dev/null
+</code></pre>
+<pre><code>* Connected to 127.0.0.1 (127.0.0.1) port 8765 (#0)   <span class="note">← TCP 연결 성공</span>
+&gt; GET /dashboard.html HTTP/1.1                         <span class="note">← 보낸 요청</span>
+&gt; Host: 127.0.0.1:8765
+&gt; User-Agent: curl/7.81.0
+&gt; Accept: */*
+&gt;
+&lt; HTTP/1.0 200 OK                                      <span class="note">← 받은 응답</span>
+&lt; Server: SimpleHTTP/0.6 Python/3.10.12
+&lt; Content-type: text/html
+&lt; Content-Length: 4734038
+&lt; Last-Modified: Fri, 23 Oct 2026 04:02:23 GMT
+</code></pre>
+<h3><code>-w</code>로 단계별 시간 재기</h3>
+<pre class="cmd"><code>curl -s -o /dev/null -w 'DNS %{time_namelookup}  TCP %{time_connect}  TLS %{time_appconnect}  첫바이트 %{time_starttransfer}  끝 %{time_total}  HTTP/%{http_version} %{http_code}  %{remote_ip}:%{remote_port}\n' https://geonhee-lee.github.io/travplan-site/
+</code></pre>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>변수</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="변수"><code>time_namelookup</code></td>
+<td data-label="뜻">DNS가 끝난 시각(시작부터 잰 초)</td>
+</tr>
+<tr>
+<td data-label="변수"><code>time_connect</code></td>
+<td data-label="뜻">TCP 연결이 끝난 시각</td>
+</tr>
+<tr>
+<td data-label="변수"><code>time_appconnect</code></td>
+<td data-label="뜻">TLS가 끝난 시각(http면 0)</td>
+</tr>
+<tr>
+<td data-label="변수"><code>time_starttransfer</code></td>
+<td data-label="뜻">응답 첫 바이트가 온 시각</td>
+</tr>
+<tr>
+<td data-label="변수"><code>time_total</code></td>
+<td data-label="뜻">전부 끝난 시각</td>
+</tr>
+<tr>
+<td data-label="변수"><code>http_code</code>, <code>http_version</code></td>
+<td data-label="뜻">상태 코드, HTTP 버전</td>
+</tr>
+<tr>
+<td data-label="변수"><code>remote_ip</code>, <code>remote_port</code></td>
+<td data-label="뜻">실제로 연결한 상대 주소와 포트</td>
+</tr>
+<tr>
+<td data-label="변수"><code>size_download</code></td>
+<td data-label="뜻">받은 본문 크기(바이트)</td>
+</tr>
+</tbody>
+</table></div>
+<p>시각은 모두 시작부터 누적한 값이다. 한 단계가 걸린 시간은 앞 단계 값을 빼서 구한다(<a href="#outside">9절</a>의 표).</p>
+<h3>종료 코드로 실패 원인 읽기</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>코드</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="코드">0</td>
+<td data-label="뜻">성공(4xx·5xx 응답도 <code>-f</code>가 없으면 0이다)</td>
+</tr>
+<tr>
+<td data-label="코드">6</td>
+<td data-label="뜻">이름을 주소로 바꾸지 못했다(DNS)</td>
+</tr>
+<tr>
+<td data-label="코드">7</td>
+<td data-label="뜻">연결하지 못했다(<code>Connection refused</code>)</td>
+</tr>
+<tr>
+<td data-label="코드">22</td>
+<td data-label="뜻"><code>-f</code>를 줬는데 4xx·5xx가 왔다</td>
+</tr>
+<tr>
+<td data-label="코드">28</td>
+<td data-label="뜻">시간 초과(<code>-m</code>)</td>
+</tr>
+<tr>
+<td data-label="코드">35, 60</td>
+<td data-label="뜻">TLS 연결 실패, 인증서를 믿을 수 없음</td>
+</tr>
+</tbody>
+</table></div>
+<pre class="cmd"><code>curl -s http://127.0.0.1:8799/ &gt;/dev/null; echo $?     # 서버가 없으면 7
+</code></pre>
+</section>
+<section id="outside">
+  <h2><span class="n">9</span>외부 서버까지</h2>
+<p><span class="key">외부 서버로 가는 요청은 DNS, 공유기, 통신사 망, TLS를 차례로 거친다.</span> 받는 쪽도 서버 한 대가 아니라 전 세계에 흩어진 사본(CDN)이다.
+공개 사이트에 요청 하나를 보내고 단계별 시간을 쟀다.</p>
+<div class="tbl"><table class="wide">
+<thead>
+<tr>
+<th>단계</th>
+<th>로컬(127.0.0.1)</th>
+<th>외부(github.io)</th>
+<th>하는 일</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="단계">DNS</td>
+<td data-label="로컬(127.0.0.1)">0.00002초</td>
+<td data-label="외부(github.io)">0.020초</td>
+<td data-label="하는 일">이름을 IP 주소로 바꾼다</td>
+</tr>
+<tr>
+<td data-label="단계">TCP 연결</td>
+<td data-label="로컬(127.0.0.1)">0.0001초</td>
+<td data-label="외부(github.io)">+0.003초</td>
+<td data-label="하는 일">상대 포트와 통로를 연다</td>
+</tr>
+<tr>
+<td data-label="단계">TLS</td>
+<td data-label="로컬(127.0.0.1)">없음</td>
+<td data-label="외부(github.io)">+0.027초</td>
+<td data-label="하는 일">상대 신원을 확인하고 통로를 암호화한다</td>
+</tr>
+<tr>
+<td data-label="단계">첫 바이트</td>
+<td data-label="로컬(127.0.0.1)">0.001초</td>
+<td data-label="외부(github.io)">+0.228초</td>
+<td data-label="하는 일">서버가 답을 준비해 보내기 시작한다</td>
+</tr>
+<tr>
+<td data-label="단계">합계</td>
+<td data-label="로컬(127.0.0.1)">0.001초</td>
+<td data-label="외부(github.io)">0.279초</td>
+<td data-label="하는 일"></td>
+</tr>
+</tbody>
+</table></div>
+<h3>DNS: 이름을 주소로</h3>
+<p>컴퓨터는 숫자 주소로만 통신한다. 그래서 <code>geonhee-lee.github.io</code>라는 이름을 먼저 주소로 바꿔야 한다.</p>
+<pre class="cmd"><code>dig +noall +answer geonhee-lee.github.io
+</code></pre>
+<pre><code>geonhee-lee.github.io.  1351  IN  A  185.199.108.153
+geonhee-lee.github.io.  1351  IN  A  185.199.109.153
+geonhee-lee.github.io.  1351  IN  A  185.199.110.153
+geonhee-lee.github.io.  1351  IN  A  185.199.111.153
+└ 이름               └ TTL(초) └ A: IPv4 주소
+</code></pre>
+<ul>
+<li>PC는 통신사가 정해 준 DNS 서버에 묻는다(<code>resolvectl status</code>로 확인). 그 서버는 모르면 최상위 서버, <code>.io</code> 담당, <code>github.io</code> 담당에 차례로 물어 답을 찾는다.</li>
+<li>TTL은 그 답을 기억해 둘 시간이다. 그동안은 다시 묻지 않으므로 다음 요청이 빨라진다.</li>
+<li>주소가 넷인 것은 서버를 여러 대 두었기 때문이다. 하나가 죽어도 나머지로 접속한다.</li>
+<li><code>localhost</code>는 DNS에 묻지 않는다. <code>/etc/hosts</code> 파일에 <code>127.0.0.1</code>로 적혀 있다.</li>
+</ul>
+<h3>사설 주소, 공유기, NAT</h3>
+<pre class="cmd"><code>ip route show default      # 바깥으로 나가는 기본 경로
+ip -4 -o addr show         # 이 PC의 주소들
+</code></pre>
+<pre><code>default via 192.168.x.1 dev eth0  proto dhcp metric 100    <span class="note">← 유선</span>
+default via 192.168.x.1 dev wlan0 proto dhcp metric 600    <span class="note">← 무선(metric이 크면 뒤로 밀린다)</span>
+</code></pre>
+<ul>
+<li>PC의 주소는 <code>192.168.x.20</code> 같은 사설 주소다. 공유기가 나눠 준다(DHCP).</li>
+<li>바깥으로 가는 패킷은 모두 기본 경로인 공유기(<code>192.168.x.1</code>)로 보낸다. 공유기를 기본 게이트웨이라고도 한다.</li>
+<li>공유기는 나가는 패킷의 보낸 사람 주소를 자기 <strong>공인 주소</strong>(예: <code>203.0.113.7</code>)로 바꿔 내보낸다. 이것을 <strong>NAT</strong>라 한다. 외부 서버에는 이 공인 주소만 보인다.</li>
+<li>그래서 바깥 사람은 PC를 직접 부를 수 없다. 공유기 뒤에 숨어 있기 때문이다. 로컬 서버를 <code>0.0.0.0</code>에 묶어도 인터넷에서는 들어오지 못한다.</li>
+<li>같은 사무실 사람들은 공인 주소 하나를 함께 쓴다. 주소마다 세는 요청 한도(<a href="#api">10절</a>)를 남이 다 쓸 수 있는 이유다.</li>
+</ul>
+<h3>라우팅: 여러 정거장을 거쳐 간다</h3>
+<p>패킷은 목적지까지 라우터라는 중계기를 여러 개 거친다. 각 라우터는 "이 주소로 가려면 다음은 저쪽"만 알고 넘긴다.</p>
+<pre class="cmd"><code>tracepath -n -m 8 185.199.109.153    # 처음 8구간만
+</code></pre>
+<pre><code> 1:  192.168.x.1    0.9ms    <span class="note">← 공유기</span>
+ 2:  no reply                <span class="note">← 응답하지 않게 설정된 라우터(정상이다)</span>
+ 3:  10.x.x.x       2.0ms    <span class="note">← 통신사 내부망(통신사 안에서도 사설 주소를 쓴다)</span>
+ 5:  a.b.c.d        3.0ms    <span class="note">← 통신사 공인망</span>
+ …                           <span class="note">← 실제로는 목적지까지 더 간다</span>
+</code></pre>
+<h3>TLS: 진짜 그 서버인지 확인하고 암호화한다</h3>
+<p>https의 s가 TLS다. TCP 통로가 열린 뒤, HTTP를 보내기 전에 두 가지를 한다.</p>
+<ol>
+<li><strong>신원 확인.</strong> 서버가 인증서를 보인다. OS와 브라우저에는 믿을 수 있는 발급 기관 목록이 들어 있다. 클라이언트는 인증서의 서명이 그 목록의 기관 것인지, 이름이 접속한 주소와 맞는지, 기간이 지나지 않았는지 확인한다. 누군가 중간에서 가짜 서버로 가로채면 여기서 걸린다. 주소창의 자물쇠가 이 확인을 통과했다는 표시다.</li>
+<li><strong>암호화.</strong> 서로 열쇠를 정한 뒤 그 뒤의 모든 내용을 암호화한다. 같은 와이파이의 다른 사람이나 통신사는 내용을 읽지 못한다. 보이는 것은 어느 주소와 통신하는지까지다.</li>
+</ol>
+<pre class="cmd"><code>echo | openssl s_client -connect geonhee-lee.github.io:443 -servername geonhee-lee.github.io 2&gt;/dev/null \
+  | openssl x509 -noout -subject -issuer -dates
+</code></pre>
+<pre><code>subject=CN = *.github.io                       <span class="note">← &quot;나는 github.io의 서버다&quot;</span>
+issuer=C = US, O = Let's Encrypt, CN = YR1     <span class="note">← 이것을 보증한 발급 기관</span>
+notBefore=Sep 30 23:44:46 2026 GMT             <span class="note">← 90일짜리, 자동으로 갱신된다</span>
+notAfter=Dec 29 23:44:45 2026 GMT
+</code></pre>
+<h3>CDN: 가까운 사본이 답한다</h3>
+<p>CDN(콘텐츠 전송망)은 같은 파일의 사본을 전 세계 곳곳의 서버에 두고, 요청한 사람에게 가까운 서버가 답하게 하는 구조다. 응답 헤더를 보면 누가 답했는지 알 수 있다.</p>
+<pre class="cmd"><code>curl -sI https://geonhee-lee.github.io/travplan-site/
+</code></pre>
+<pre><code>HTTP/2 200
+server: GitHub.com
+cache-control: max-age=600              <span class="note">← 10분 동안 다시 묻지 말고 써라</span>
+access-control-allow-origin: *          <span class="note">← 어느 출처의 페이지든 읽어도 된다</span>
+via: 1.1 varnish                        <span class="note">← 캐시 서버 프로그램을 거쳤다</span>
+x-served-by: cache-icn…-ICN             <span class="note">← 인천(ICN)의 캐시 서버가 답했다</span>
+x-cache: HIT                            <span class="note">← 그 캐시에 이미 사본이 있었다</span>
+</code></pre>
+<p>공개 사이트가 갱신되는 흐름은 <a href="build.html#build-publish">페이지가 만들어지는 방식 5절</a>에 있다. push 직후 몇 분은 CDN에 옛 사본이 남아 있을 수 있다.</p>
+<h3>로컬과 외부를 한 그림으로</h3>
+<pre><code>[로컬]  curl ──TCP──▶ 127.0.0.1:8765 (PC 안에서 돌아옴) ──▶ http.server ──▶ docs/ 파일
+
+[외부]  curl ──DNS───▶ &quot;geonhee-lee.github.io는 185.199.109.153&quot;
+             ──TCP───▶ 공유기 ─(NAT)─▶ 통신사 망 ─▶ … ─▶ 185.199.109.153:443
+             ──TLS───▶ 인증서 확인, 암호화 통로
+             ─HTTP/2─▶ 가까운 CDN 캐시 ─(사본이 없으면)─▶ GitHub Pages 원본
+</code></pre>
+</section>
+<section id="api">
+  <h2><span class="n">10</span>API와 인증</h2>
+<p><span class="key">API는 사람용 페이지 대신 프로그램이 읽을 데이터(JSON)를 주는 주소다.</span> 같은 HTTP를 쓰고, 누구인지는 요청마다 토큰으로 밝힌다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>요청</th>
+<th>결과</th>
+<th>한도</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="요청">curl, 로그인 없이</td>
+<td data-label="결과"><code>403</code>, <code>"API rate limit exceeded for 203.0.113.7"</code></td>
+<td data-label="한도">공인 주소 하나당 시간당 60회</td>
+</tr>
+<tr>
+<td data-label="요청"><code>gh api</code>, 토큰을 붙여서</td>
+<td data-label="결과"><code>200</code>, <code>{"full_name":"Geonhee-LEE/travplan-site","private":false,…}</code></td>
+<td data-label="한도">계정 하나당 시간당 5000회</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li>두 요청은 주소도 메서드도 같다. 다른 것은 요청 헤더 한 줄(<code>Authorization: 토큰</code>)이다. HTTP는 기억하지 않으므로 <code>gh</code>는 요청마다 토큰을 붙인다.</li>
+<li>로그인 없는 요청은 어느 공인 주소에서 왔는지로만 센다. 같은 공인 주소를 쓰는 누군가가 60회를 다 쓰면 나도 막힌다.</li>
+<li>남은 횟수는 <code>/rate_limit</code>로 본다. 이 주소는 횟수를 깎지 않는다.</li>
+<li>토큰은 비밀번호와 같다. 저장소 문서와 공개 사이트에 넣지 않는다. 공개 사본의 위생 검사(<a href="build.html#build-lint">페이지가 만들어지는 방식 6절</a>)가 토큰 모양을 찾아 막는다.</li>
+</ul>
+<pre class="cmd"><code>curl -s https://api.github.com/rate_limit | python3 -m json.tool | head -12   # 로그인 없는 한도
+gh api rate_limit --jq .resources.core                                         # 토큰을 붙인 한도
+gh api repos/Geonhee-LEE/travplan-site --jq '{full_name, private, pushed_at}'
+</code></pre>
+</section>
+<section id="browser">
+  <h2><span class="n">11</span>브라우저의 규칙</h2>
+<p><span class="key">브라우저는 페이지가 어디서 왔는지(출처)를 보고, 다른 출처의 것을 함부로 섞지 못하게 막는다.</span> Playground를 http 서버로 여는 이유가 이 규칙이다.</p>
+<h3>출처(origin)</h3>
+<p>출처는 방식, 주소, 포트의 조합이다. 셋 중 하나만 달라도 다른 출처다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>주소</th>
+<th>출처</th>
+<th>같은가</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="주소"><code>http://127.0.0.1:8765/playground/</code></td>
+<td data-label="출처"><code>http://127.0.0.1:8765</code></td>
+<td data-label="같은가">기준</td>
+</tr>
+<tr>
+<td data-label="주소"><code>http://127.0.0.1:8765/dashboard.html</code></td>
+<td data-label="출처"><code>http://127.0.0.1:8765</code></td>
+<td data-label="같은가">같다</td>
+</tr>
+<tr>
+<td data-label="주소"><code>http://127.0.0.1:8766/playground/</code></td>
+<td data-label="출처"><code>http://127.0.0.1:8766</code></td>
+<td data-label="같은가">다르다(포트)</td>
+</tr>
+<tr>
+<td data-label="주소"><code>http://localhost:8765/playground/</code></td>
+<td data-label="출처"><code>http://localhost:8765</code></td>
+<td data-label="같은가">다르다(주소 글자)</td>
+</tr>
+<tr>
+<td data-label="주소"><code>file://</code>로 연 디스크의 <code>playground/index.html</code></td>
+<td data-label="출처">없음(<code>null</code>)</td>
+<td data-label="같은가">어느 것과도 다르다</td>
+</tr>
+</tbody>
+</table></div>
+<p>브라우저 저장소(localStorage)도 출처마다 따로다. 그래서 8765와 8766에서 연 Playground는 저장한 설정을 서로 보지 못한다.</p>
+<h3>ES 모듈과 <code>file://</code></h3>
+<ul>
+<li>Playground는 JS 파일들을 ES 모듈(<code>&lt;script type="module"&gt;</code>)로 서로 불러 쓴다. 브라우저는 모듈을 불러올 때 출처 검사(CORS)를 한다.</li>
+<li><code>file://</code>로 연 페이지는 출처가 없다. 그래서 Chrome은 같은 폴더의 모듈도 막는다. 개발자 도구에는 <code>blocked by CORS policy</code>가 찍힌다.</li>
+<li><code>http://127.0.0.1:8765</code>로 열면 출처가 생긴다. 모듈이 같은 출처에서 오므로 막히지 않는다.</li>
+</ul>
+<h3>CORS 헤더</h3>
+<p>다른 출처의 페이지가 데이터를 읽게 해 줄지는 서버가 응답 헤더로 정한다. GitHub Pages가 보내는 <code>access-control-allow-origin: *</code>은 "어느 출처의 페이지든 읽어도 된다"는 뜻이다.</p>
+</section>
+<section id="shell">
+  <h2><span class="n">12</span>셸 쪽 용어</h2>
+<p><span class="key">서버를 띄우고, 뒤에 두고, 끄는 일은 셸이 한다.</span> 아래는 그때 쓰는 말들이다.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>용어</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="용어">터미널, 셸</td>
+<td data-label="뜻">명령을 입력하는 창(터미널)과, 그 명령을 해석해 실행하는 프로그램(셸, 보통 bash)</td>
+</tr>
+<tr>
+<td data-label="용어">포그라운드, 백그라운드</td>
+<td data-label="뜻">끝날 때까지 터미널을 붙잡는 실행과, 뒤에서 돌고 터미널은 바로 돌려주는 실행</td>
+</tr>
+<tr>
+<td data-label="용어"><code>명령 &amp;</code></td>
+<td data-label="뜻">명령을 백그라운드로 돌린다. <code>$!</code>에 그 pid가 남는다</td>
+</tr>
+<tr>
+<td data-label="용어"><code>nohup 명령</code></td>
+<td data-label="뜻">터미널이 닫혀도 같이 꺼지지 않게 한다. 재부팅은 견디지 못한다</td>
+</tr>
+<tr>
+<td data-label="용어">SIGHUP</td>
+<td data-label="뜻">터미널이 닫힐 때 그 안의 프로그램에 가는 "끝내라" 신호. <code>nohup</code>은 이 신호를 무시하게 한다</td>
+</tr>
+<tr>
+<td data-label="용어">Ctrl+C, SIGINT</td>
+<td data-label="뜻">포그라운드 프로그램을 멈추는 키와 그때 가는 신호</td>
+</tr>
+<tr>
+<td data-label="용어"><code>kill &lt;pid&gt;</code></td>
+<td data-label="뜻">그 프로세스에 끝내라는 신호(SIGTERM)를 보낸다</td>
+</tr>
+<tr>
+<td data-label="용어">pid</td>
+<td data-label="뜻">프로세스마다 붙는 번호</td>
+</tr>
+<tr>
+<td data-label="용어">systemd</td>
+<td data-label="뜻">부팅할 때 프로그램을 띄우고, 죽으면 다시 살리는 관리자</td>
+</tr>
+<tr>
+<td data-label="용어"><code>PATH</code></td>
+<td data-label="뜻">셸이 <code>python3</code> 같은 명령을 찾아볼 폴더 목록. 앞에 적힌 폴더부터 찾는다</td>
+</tr>
+<tr>
+<td data-label="용어">가상환경(<code>.venv</code>)</td>
+<td data-label="뜻">이 저장소 전용 파이썬과 패키지를 담은 폴더. <code>source .venv/bin/activate</code>가 <code>PATH</code> 맨 앞에 <code>.venv/bin</code>을 넣는다</td>
+</tr>
+<tr>
+<td data-label="용어"><code>set -e</code></td>
+<td data-label="뜻">스크립트에서 명령 하나가 실패하면 그 자리에서 멈춘다. <code>open_dashboard.sh</code>가 대시보드 만들기에 실패하면 서버까지 가지 않는 이유다</td>
+</tr>
+<tr>
+<td data-label="용어"><code>$?</code></td>
+<td data-label="뜻">바로 앞 명령의 종료 코드. 0이면 성공이다</td>
+</tr>
+</tbody>
+</table></div>
+<h3>재부팅 뒤에도 서버 띄우기(선택)</h3>
+<p>systemd 사용자 서비스로 등록하면 로그인할 때 서버가 뜨고, 죽으면 다시 뜬다. 이 서버는 파일을 내주기만 한다. 대시보드를 새로 만드는 일은 여전히 <code>render_dashboard.py</code>가 한다.</p>
+<pre class="cmd"><code>mkdir -p &quot;$HOME/.config/systemd/user&quot;
+cat &gt; &quot;$HOME/.config/systemd/user/travplan-docs.service&quot; &lt;&lt;'EOF'
+[Unit]
+Description=travplan docs on 127.0.0.1:8765
+
+[Service]
+WorkingDirectory=%h/&lt;저장소 경로&gt;/docs
+ExecStart=/usr/bin/python3 -m http.server 8765 --bind 127.0.0.1
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
+EOF
+systemctl --user daemon-reload
+systemctl --user enable --now travplan-docs     # 지금 띄우고, 다음 로그인부터 저절로 띄운다
+systemctl --user status travplan-docs           # 상태 보기. 끄려면 disable --now
+</code></pre>
+<p><code>%h</code>는 systemd가 홈 폴더로 바꿔 주는 표시다. <code>&lt;저장소 경로&gt;</code>는 홈 아래의 저장소 위치로 바꾼다.</p>
+</section>
+<section id="cheat">
+  <h2><span class="n">13</span>명령 모음</h2>
+<p><span class="key">자주 쓰는 명령을 하는 일별로 모았다.</span> 저장소 루트에서 돌린다.</p>
+<h3>띄우기와 끄기</h3>
+<pre class="cmd"><code>source .venv/bin/activate
+./scripts/open_dashboard.sh                                        # 대시보드를 만들고 8765로 띄워 연다
+PORT=8766 ./scripts/open_dashboard.sh                              # 8765가 차 있을 때
+python3 -m http.server 8765 --bind 127.0.0.1 --directory docs      # 대시보드는 그대로 두고 서버만, 앞에서
+ss -ltnp | grep :8765                                              # 누가 8765를 쓰는지(pid)
+kill &lt;pid&gt;                                                         # 그 서버를 끈다
+</code></pre>
+<h3>상태 보기</h3>
+<pre class="cmd"><code>ss -ltn                                  # listen 중인 포트
+nc -zv 127.0.0.1 8765                    # 그 포트에 서버가 있나
+uptime -s                                # 마지막 부팅 시각
+which python3                            # 어느 파이썬을 집나
+</code></pre>
+<h3>HTTP 들여다보기</h3>
+<pre class="cmd"><code>curl -v http://127.0.0.1:8765/ -o /dev/null                          # 대화 전체
+curl -sI http://127.0.0.1:8765/dashboard.html                       # 헤더만
+curl -s -o /dev/null -w '%{http_code}\n' http://127.0.0.1:8765/nope  # 상태 코드만
+printf 'GET / HTTP/1.0\r\n\r\n' | nc -q 2 127.0.0.1 8765 | head      # 손으로 쓴 요청
+</code></pre>
+<h3>외부 확인</h3>
+<pre class="cmd"><code>curl -v https://geonhee-lee.github.io/travplan-site/ -o /dev/null    # TLS와 CDN 헤더까지
+curl -sI http://geonhee-lee.github.io/travplan-site/                # https로 돌려보내는 301
+dig +short geonhee-lee.github.io                                    # DNS 답
+ip route show default                                               # 공유기로 가는 기본 경로
+tracepath -n -m 8 185.199.109.153                                   # 거쳐 가는 라우터
+curl -s https://api.github.com/rate_limit | head -12               # API 남은 횟수
+</code></pre>
+</section>
+<p id="qempty" hidden>찾는 말이 이 주제에 없다. <a href="./">모든 주제에서 찾기</a>로 넓히거나 <kbd>Esc</kbd>로 지운다.</p>
+    </main>
+  </div>
+
+  <footer>
+    <a href="../">travplan 첫 화면</a>
+    <a href="./">도움말 첫 페이지</a>
+    <a href="../dashboard.html">대시보드</a>
+    <a href="../playground/">Playground</a>
+    <a href="../slides/">슬라이드</a>
+  </footer>
+</div>
+<script src="help.js"></script>
+</body>
+</html>
