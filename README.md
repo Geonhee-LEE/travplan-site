@@ -10,6 +10,7 @@
 | 대시보드 (진행 현황, TODO, PRD, 아키텍처, 리서치, 설계, 시뮬레이션 탭) | <https://geonhee-lee.github.io/travplan-site/dashboard.html> |
 | Playground (브라우저 실시간 시뮬레이션) | <https://geonhee-lee.github.io/travplan-site/playground/> |
 | Playground 사용법·구조·시연·검사 | [playground/README.md](playground/README.md) |
+| 도움말 (로컬 서버, HTTP, curl, 외부 서버의 원리와 문제 해결) | <https://geonhee-lee.github.io/travplan-site/help/> |
 
 이 저장소는 연구 저장소(비공개)의 `docs/`를 GitHub Actions가 자동으로 복사한 것이다. 여기서 직접 고치면 다음 동기화가 덮어쓴다.
 페이지 안의 이슈·PR 번호와 원본 문서 이름은 연구 저장소의 것이라 링크 없이 글자로 보인다.
