@@ -40,7 +40,14 @@
 body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.6 var(--body); }
 .wrap { max-width: 1080px; margin: 0 auto; padding-inline: 16px; padding-block: 40px 56px; display: grid; gap: 28px; }
 header { display: grid; gap: 10px; }
+.top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 16px; }
 .eyebrow { font: 600 12px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+/* 도움말 단추: 머리말 오른쪽 위. 로컬 서버·HTTP·curl의 원리와 문제 해결(help/)로 간다. */
+a.help { display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 6px 14px 6px 7px; border: 1px solid var(--line); border-radius: 999px;
+  background: var(--panel); color: var(--fg); text-decoration: none; font: 600 14px var(--body); transition: border-color .15s; }
+a.help span { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font: 700 13px var(--mono); }
+a.help:hover { border-color: var(--accent); }
+a.help:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 h1 { font: 800 clamp(40px, 7vw, 72px)/0.95 var(--display); letter-spacing: -0.03em; margin: 0; }
 h1 span { color: var(--accent); }
 .lede { margin: 0; max-width: 68ch; font-size: 17px; color: var(--fg); }
@@ -53,19 +60,39 @@ a.door img { width: 100%; max-width: 100%; aspect-ratio: 1000 / 691; object-fit:
 .door h2 { margin: 4px 2px 0; font: 700 22px/1.2 var(--display); display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
 .door h2 small { font: 600 12px var(--mono); color: var(--accent); }
 .door p { margin: 0 2px 4px; color: var(--muted); font-size: 14px; }
+/* 슬라이드 갤러리: 본문은 scripts/build_study_slides.py가 slides:gallery 표시 사이에 쓴다. */
+.decks { display: grid; gap: 10px; }
+.decks-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 16px; }
+.decks h2 { margin: 0; font: 700 26px/1.2 var(--display); letter-spacing: -0.01em; }
+.decks-head a { color: var(--route); font-weight: 600; font-size: 14px; }
+.decks-head a small, .decks h3 small { font: 400 13px var(--body); color: var(--muted); letter-spacing: 0; text-transform: none; }
+.decks h3 { margin: 8px 0 0; font: 600 12px var(--mono); letter-spacing: .08em; color: var(--muted); display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; }
+.deck-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 160px), 1fr)); gap: 12px; }
+.deck { display: grid; gap: 4px; align-content: start; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 8px; transition: border-color .15s; }
+.deck:hover { border-color: var(--accent); }
+.deck > a { display: grid; gap: 6px; color: inherit; text-decoration: none; border-radius: 8px; }
+.deck > a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.deck img { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 7px; border: 1px solid var(--line); display: block; background: #0a0d0f; }
+.deck b { font: 700 15px/1.3 var(--display); padding: 0 2px; }
+.deck b small { display: block; font: 400 12.5px/1.4 var(--body); color: var(--muted); margin-top: 2px; }
+.deck p { margin: 0; padding: 0 2px; font: 12px var(--mono); color: var(--muted); }
+.deck p a { display: inline-block; padding: 4px 2px; color: var(--accent); }
 .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 12px; }
 .fact { border-top: 2px solid var(--line); padding-top: 10px; }
 .fact b { display: block; font: 600 12px var(--mono); letter-spacing: .06em; color: var(--muted); text-transform: uppercase; margin-bottom: 4px; }
 .fact code, footer code { font: 12.5px var(--mono); }
 footer { color: var(--muted); font-size: 13px; display: flex; flex-wrap: wrap; gap: 6px 16px; border-top: 1px solid var(--line); padding-top: 16px; }
 footer a { color: var(--muted); }
-@media (prefers-reduced-motion: reduce) { a.door { transition: none; } a.door:hover { transform: none; } }
+@media (prefers-reduced-motion: reduce) { a.door, a.help, .deck { transition: none; } a.door:hover { transform: none; } }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <div class="eyebrow">sidewalk delivery robot · 2.5D traversability · learned planner</div>
+    <div class="top">
+      <div class="eyebrow">sidewalk delivery robot · 2.5D traversability · learned planner</div>
+      <a class="help" href="help/" title="로컬 서버, HTTP, curl, 외부 서버의 원리와 문제 해결"><span aria-hidden="true">?</span>도움말</a>
+    </div>
     <h1>travplan<span>.</span></h1>
     <p class="lede">실외 보도 배달로봇(비동축 스워브)이 costmap 대신 <b>2.5D 지형 표현</b>(높이, 경사, 턱, 거칠기, 불확실성)만으로
       턱·경사·포트홀을 피해 목적지까지 가게 하는 연구다. <b>학습 Planner</b>가 경로를 내고 MPPI·NMPC <b>Controller</b>가 따라간다.</p>
@@ -84,6 +111,53 @@ footer a { color: var(--muted); }
     </a>
   </nav>
 
+  <!-- slides:gallery: scripts/build_study_slides.py가 slides_src/*/deck.json으로 만든다. 손으로 고치지 않는다. -->
+  <section class="decks" aria-labelledby="decks-h">
+    <div class="decks-head">
+      <h2 id="decks-h">슬라이드</h2>
+      <a href="slides/">전체 슬라이드 목록 <small>리서치 문서 덱 포함</small></a>
+    </div>
+    <h3>챕터 발표 덱 <small>리서치 문서 한 편을 35–40장으로 줄인 발표용 덱</small></h3>
+    <div class="deck-grid">
+      <article class="deck">
+        <a href="slides/talk-perception/"><img src="slides/talk-perception/cover.webp" alt="인식 덱 첫 장" loading="lazy" width="640" height="360"><b>인식</b></a>
+        <p>40장 · <a href="slides/talk-perception/talk-perception.pptx" download>PPTX</a></p>
+      </article>
+      <article class="deck">
+        <a href="slides/talk-planner/"><img src="slides/talk-planner/cover.webp" alt="Planner 덱 첫 장" loading="lazy" width="640" height="360"><b>Planner</b></a>
+        <p>40장 · <a href="slides/talk-planner/talk-planner.pptx" download>PPTX</a></p>
+      </article>
+      <article class="deck">
+        <a href="slides/talk-controller/"><img src="slides/talk-controller/cover.webp" alt="Controller·안전 덱 첫 장" loading="lazy" width="640" height="360"><b>Controller·안전</b></a>
+        <p>40장 · <a href="slides/talk-controller/talk-controller.pptx" download>PPTX</a></p>
+      </article>
+      <article class="deck">
+        <a href="slides/talk-mpc/"><img src="slides/talk-mpc/cover.webp" alt="MPC 구축 덱 첫 장" loading="lazy" width="640" height="360"><b>MPC 구축</b></a>
+        <p>35장 · <a href="slides/talk-mpc/talk-mpc.pptx" download>PPTX</a></p>
+      </article>
+      <article class="deck">
+        <a href="slides/talk-rl/"><img src="slides/talk-rl/cover.webp" alt="강화학습 덱 첫 장" loading="lazy" width="640" height="360"><b>강화학습</b></a>
+        <p>40장 · <a href="slides/talk-rl/talk-rl.pptx" download>PPTX</a></p>
+      </article>
+      <article class="deck">
+        <a href="slides/talk-simulation/"><img src="slides/talk-simulation/cover.webp" alt="시뮬레이션 덱 첫 장" loading="lazy" width="640" height="360"><b>시뮬레이션</b></a>
+        <p>35장 · <a href="slides/talk-simulation/talk-simulation.pptx" download>PPTX</a></p>
+      </article>
+    </div>
+    <h3>스터디 슬라이드 <small>수식 개요와 논문별 정리</small></h3>
+    <div class="deck-grid">
+      <article class="deck">
+        <a href="slides/study-overview/"><img src="slides/study-overview/cover.webp" alt="리서치 스터디 덱 첫 장" loading="lazy" width="640" height="360"><b>리서치 스터디<small>보도 로봇을 움직이는 수식들</small></b></a>
+        <p>25장 · <a href="slides/study-overview/study-overview.pptx" download>PPTX</a></p>
+      </article>
+      <article class="deck">
+        <a href="slides/study-papers/"><img src="slides/study-papers/cover.webp" alt="논문 스터디 덱 첫 장" loading="lazy" width="640" height="360"><b>논문 스터디<small>챕터별 (편마다 세 장)</small></b></a>
+        <p>152장 · <a href="slides/study-papers/study-papers.pptx" download>PPTX</a></p>
+      </article>
+    </div>
+  </section>
+<!-- /slides:gallery -->
+
   <section class="facts" aria-label="구조">
     <div class="fact"><b>표현</b><code>TravMap[8,H,W]</code>: elev, grad, slope, step, rough, cost, sigma. 치명 셀은 cost ≥ 0.95.</div>
     <div class="fact"><b>Planner</b>Planner D(flow matching 4 s 궤적)가 개발 대상이고, Guidance(Dijkstra)는 비학습 기준선이다.</div>
@@ -94,6 +168,7 @@ footer a { color: var(--muted); }
   <footer>
     <a href="https://github.com/Geonhee-LEE/travplan-site">사이트 저장소 · Geonhee-LEE/travplan-site</a>
     <a href="https://github.com/Geonhee-LEE/travplan-site/tree/main/playground">Playground 소스와 문서</a>
+    <a href="help/">도움말 · 로컬 서버와 문제 해결</a>
     <span>연구 저장소(비공개)의 <code>docs/</code>가 바뀌면 자동으로 이 사이트에 동기화된다. 페이지 안의 이슈·PR 번호와 원본 문서 이름은 연구 저장소의 것이라 링크 없이 글자로 보인다.</span>
   </footer>
 </div>
