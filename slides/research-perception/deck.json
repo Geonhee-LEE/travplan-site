@@ -1,7 +1,7 @@
 {
  "title": "travplan 리서치 — 인식",
  "label": "인식",
- "n": 359,
+ "n": 391,
  "tabs": [
   "지형 지도·Occupancy",
   "작업 기록",
@@ -9,7 +9,8 @@
   "시각 기반 모델",
   "동적 장애물",
   "예측·World model",
-  "보행 로봇"
+  "보행 로봇",
+  "최근 연구 비교"
  ],
  "order": 1,
  "source": "docs/research-perception.md"

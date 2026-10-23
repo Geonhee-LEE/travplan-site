@@ -1337,11 +1337,6 @@ TravMap의 grad_x, grad_y는 고도의 기울기이고, 학습 스크립트는 �
 <td>ViBe(<a href="https://arxiv.org/abs/2609.09918">arXiv:2609.09918</a>, USC, <a href="https://github.com/lok-i/vibe">코드</a> BSD-3-Clause)</td>
 <td>고정한 SONIC에 고정 시각 인코더와 LoRA 어댑터만 RL로 붙여 장면(지형·물체)을 보게 함. 교사–학생 단계가 없다</td>
 <td>특권 관측 정책 성능의 89.6–95.5 %(걷기·파쿠르·이동 조작·피구), RTX 3090·5090·L40S급 GPU에서 학습 2일 미만</td>
-</tr><tr>
-<td>지형·접촉</td>
-<td>NEXUS(<a href="https://arxiv.org/abs/2609.39000">arXiv:2609.39000</a>)</td>
-<td>평지 동작을 지형 짝 데이터(약 1,000시간)로 바꿔, 운영자는 평지에 서 있고 로봇은 계단에 맞춤</td>
-<td>보지 않은 클립 8,300회 성공 91.07 %(시각 없이 87.77 %)</td>
 </tr></tbody></table></div><div class="foot" data-foot><span>travplan 리서치 · 모방 (docs/research-mimic.md)</span><span>55 / 67</span></div><aside>docs/research-mimic.md · I.12 2026년: 범용 추종기 다음에 온 것</aside></section>
 <section class="r content"><div class="kicker">모방 · 범용 추종기</div><h2 class="ttl">I.12 2026년: 범용 추종기 다음에 온 것<small>3/5</small></h2><div class="body"><table style="table-layout:fixed"><colgroup><col style="width:72.2px"><col style="width:453.4px"><col style="width:436.2px"><col style="width:765.2px"></colgroup><thead>
 <tr>
@@ -1351,6 +1346,11 @@ TravMap의 grad_x, grad_y는 고도의 기울기이고, 학습 스크립트는 �
 <th>대표 수치</th>
 </tr>
 </thead><tbody><tr>
+<td>지형·접촉</td>
+<td>NEXUS(<a href="https://arxiv.org/abs/2609.39000">arXiv:2609.39000</a>, <a href="https://github.com/Gamma-Robot/NEXUS">코드</a> CC BY-NC 4.0, Planner B.16.6)</td>
+<td>평지 동작을 지형 위 동작으로 자동 변환한 짝 데이터(적응 변형 포함 약 1,000시간)로, 운영자는 평지에 서 있고 로봇은 깊이 영상을 보고 계단·경사에 맞춤</td>
+<td>어려운 지형 성공 51.9 %(지형을 안 보는 SONIC v1.1 31.76 %). 보지 않은 이동 클립 415개 × 8,300회 시행에서 91.07 %(시각 없이 87.77 %, 교사–학생 없이 90.96 %)</td>
+</tr><tr>
 <td>지형·접촉</td>
 <td>P-BFM(<a href="https://arxiv.org/abs/2610.15833">arXiv:2610.15833</a>, <a href="https://github.com/Roboparty/P-BFM">코드</a>)</td>
 <td>비지도 RL 행동 기반 모델(BFM-Zero 갈래)에 지형 인식을 더함</td>

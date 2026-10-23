@@ -276,6 +276,13 @@ A.2·A.2b(지형 지도 계보), A.10.1–A.10.2(traversability 계보와 2026 S
 | Slow Brain, Fast Planner | 2026.06 | 앵커 Planner 후보에 지연된 클라우드 VLM 선택을 점수 융합, 배달로봇 100 m당 개입 0.87 | B.6d | [논문](https://arxiv.org/abs/2606.20458) |
 | LogoNav (MBRA) `E2E▸플래너` | 2025.05 · RA-L 2025 | 수동 수집 자료의 행동을 모델 전문가로 재라벨, 영상 목표·GPS 장거리 내비 300 m 이상 | B.6d | [논문](https://arxiv.org/abs/2505.05592) |
 | CARE | 2025.06 · CoRL 2025 | 사전학습 RGB 내비 정책 궤적을 추정 깊이 척력장으로 밀어내는 부착형 안전 층 | B.9 | [논문](https://arxiv.org/abs/2506.03834) · [프로젝트](https://airlab-sogang.github.io/CARE/) |
+| TAME-Nav `E2E▸플래너` | 2026.10 | 동적 궤적을 보는 특권 교사 → GRU + 밀집 게이팅 MoE 학생 잠재 증류, LiDAR CBF, Go2 함정 탈출 | B.4 | [논문](https://arxiv.org/abs/2610.12877) · [프로젝트](https://tame-nav.github.io/) |
+| SEA-Nav | 2026.03 | 학습 루프 안의 미분 가능한 LSE-CBF 방패 + 충돌 재생, Go2 LiDAR 내비 | B.4 | [논문](https://arxiv.org/abs/2603.09460) · [코드](https://github.com/11chens/SEA-Nav-Code) |
+| NavRL | 2024.09 · RA-L 2025 | PPO + 속도 장애물 안전 방패, 동적 환경 드론 비행 | B.4 | [논문](https://arxiv.org/abs/2409.15634) · [코드](https://github.com/Zhefan-Xu/NavRL) |
+| DRL-DCLP | RA-L 2025 | 몸체 치수를 설정 가능한 DRL 로컬 플래너(EIT Ningbo) | B.4 | — |
+| DCLP++ | 2026.09 | 발자국 여유를 상대 운동 특징으로 쓰는 DRL 로컬 내비(EIT Ningbo) | B.4 | [논문](https://arxiv.org/abs/2609.08711) |
+| DODGER | 2026.09 | CBF 안내를 학습 때만 쓰는 동적 장애물 RL 내비, LiDAR 휴머노이드 | B.4 | [논문](https://arxiv.org/abs/2609.38873) · [코드](https://github.com/psh0823/dodger) |
+| Student-Informed Teacher Training | 2024.12 · ICLR 2025 | 학생이 흉내 낼 수 있게 교사를 학습한다 | B.4 | [논문](https://arxiv.org/abs/2412.09149) · [코드](https://github.com/uzh-rpg/sitt) |
 
 ### D.4b Planner — 비학습 위험 인지 경로 계획 (비교 기준)
 
@@ -440,6 +447,47 @@ TEB, Smac, iPlanner, ViPlanner, X-Mobility, COMPASS, legged_gym, autonomy_stack_
 | DRL-VO | 2023.01 · T-RO 2023 | 속도 장애물 보상 RL 군중 내비 | B.12.4 | [논문](https://arxiv.org/abs/2301.06512) · [코드](https://github.com/TempleRAIL/drl_vo_nav) |
 | ORCA (RVO2) | ISRR 2009 | 상호 속도 장애물 기반 다중 에이전트 회피 | B.12.4, S.3 | [DOI](https://doi.org/10.1007/978-3-642-19457-3_1) · [코드](https://github.com/snape/RVO2) |
 | Open-RMF | GitHub | 여러 로봇의 교통 관리와 작업 배정 | B.12.4 | [코드](https://github.com/open-rmf/rmf) · [사이트](https://www.open-rmf.org/) |
+
+### D.5d Planner — 로봇 분야별 계획·제어 지형
+
+B.18(레이싱카, 모바일 로봇, 도로 자율주행, 사족보행, 휴머노이드의 계획·제어 지형)에서 처음 나온 논문이다. 회사 발표·뉴스·규제 자료와 이미 위에 있는 항목은 B.18 끝의 근거 토글에만 둔다.
+
+| 이름 | 연·발표 | 요약 | 본문 | 링크 |
+|---|---|---|---|---|
+| TUM A2RL 우승 스택 | 2026.02 · arXiv(Science Robotics 투고) | A2RL 2024 우승. 오프라인 OCP 레이스라인, 4 s 샘플링 다항식, Tube MPC, EKF | B.18 | [논문](https://arxiv.org/abs/2602.08571) |
+| er.autopilot 1.0 | 2023.10 · Field Robotics 2024 | TII Unimore 오벌 레이싱 스택. IPOPT 최소시간, Frenet, HPIPM MPC | B.18 | [논문](https://arxiv.org/abs/2310.18112) |
+| From Zero to High-Speed Racing | 2025.12 · arXiv | Indiana Univ. 레이싱 스택. 제어기를 PP, 선형 MPC, MPPI 순으로 바꿈 | B.18 | [논문](https://arxiv.org/abs/2512.06892) |
+| ForzaETH Race Stack | 2024.03 · JFR 2024 | 최소곡률 QP, Frenet 추월, F1TENTH 우승 | B.18 | [논문](https://arxiv.org/abs/2403.11784) |
+| Unifying F1TENTH Autonomous Racing | 2024.02 · arXiv | F1TENTH 서베이·벤치마크. 최적화 + 추종이 가장 빠르다 | B.18 | [논문](https://arxiv.org/abs/2402.18558) |
+| RLPP | 2025.01 · ICRA 2025 | Pure Pursuit 위 잔차 RL, 축소 플랫폼 zero-shot 실물 레이싱 | B.18 | [논문](https://arxiv.org/abs/2501.17311) |
+| GT Sophy | 2022 · Nature 602 | 심 레이싱 챔피언을 이긴 RL, GT7 상용 배포(2023) | B.18 | [논문](https://www.nature.com/articles/s41586-021-04357-7) |
+| SGTP | 2026.07 · arXiv | GPU 샘플링 게임이론 다차량 레이싱 계획, 시뮬레이션만 | B.18 | [논문](https://arxiv.org/abs/2607.25388) |
+| 월드 모델 중심 레이싱 에이전트(NTU·K2) | 2026.08 · arXiv | 학습 결정 정책 + CiLQR MPC, 실차 256 km/h | B.18 | [논문](https://arxiv.org/abs/2608.10618) |
+| Team KAIST at IAC | 2023.03 · Field Robotics 2024 | 결정, minimum-jerk 계획, 타당성 검사 계층 | B.18 | [논문](https://arxiv.org/abs/2303.09463) |
+| Autonomous Vehicles on the Edge | 2022.02 · IEEE OJ-ITS 2022 | 자율 레이싱 서베이 | B.18 | [논문](https://arxiv.org/abs/2202.07008) |
+| BARN Challenge 2024 교훈 | 2024.07 · RAM 2024 | 첫 종단간 모방학습 우승, 상위 팀 모두 상태 기계 하이브리드 | B.18 | [논문](https://arxiv.org/abs/2407.01862) |
+| Deploying Ten Thousand Robots | 2024.10 · ICRA 2025 | 1만 대 Lifelong MAPF, 모방학습 + 충돌 해소 탐색 | B.18 | [논문](https://arxiv.org/abs/2410.21415) |
+| Scaling Lifelong MAPF | 2024.04 · SoCS 2024 | League of Robot Runners 조건(최대 1만 대, 스텝당 1 s) | B.18 | [논문](https://arxiv.org/abs/2404.16162) |
+| DeepFleet | 2025.08 · arXiv | 이동 로봇 플릿의 다중 에이전트 파운데이션 모델. 논문은 오프라인 평가, 10% 개선은 회사 주장 | B.18 | [논문](https://arxiv.org/abs/2508.08574) |
+| OmniVLA | 2025.09 · ICRA 2026 | 10개 플랫폼 9,500시간으로 학습한 옴니모달 내비 VLA | B.18 | [논문](https://arxiv.org/abs/2509.19480) |
+| GTRS | 2025.06 · arXiv | 후보 궤적 일반화 스코어링, CVPR 2025 NAVSIM v2 우승 | B.18 | [논문](https://arxiv.org/abs/2506.06664) |
+| Poutine | 2025.06 · arXiv | 시각–언어–궤적 사전학습 + RL 후학습, 2025 Waymo 종단간 챌린지 1위 | B.18 | [논문](https://arxiv.org/abs/2506.11234) |
+| NAVSIM Score Basis Audit | 2026.08 · arXiv | 공유 rollout이 방어 운전 평가에서 깨지는 점수 산정 결함 | B.18 | [논문](https://arxiv.org/abs/2608.04896) |
+| Hierarchical Reduced-Order MPC | 2025.09 · Humanoids 2025 | 휴머노이드 강건 보행의 계층 저차 모델 MPC | B.18 | [논문](https://arxiv.org/abs/2509.04722) |
+| MPC-Guided RL 가속·확장 | 2026.06 · arXiv | MPC 가이드 RL을 휴머노이드 보행·조작으로 넓힘 | B.18 | [논문](https://arxiv.org/abs/2606.05687) |
+| Hiking in the Wild | 2026.01 · arXiv | 확장 가능한 휴머노이드 지각 파쿠르 틀 | B.18 | [논문](https://arxiv.org/abs/2601.07718) |
+| Reaching the Limit in Autonomous Racing | 2023.10 · Science Robotics 2023 | 드론 레이싱에서 최적 제어와 RL 비교. RL이 더 나은 목적 함수를 최적화한다 | B.18 | [논문](https://arxiv.org/abs/2310.10943) |
+| Veo 월드 시뮬레이터 정책 평가 | 2025.12 · arXiv | Veo 월드 모델로 Gemini Robotics 정책을 평가 | B.18 | [논문](https://arxiv.org/abs/2512.10675) |
+| Model-based Diffusion | 2024.07 · NeurIPS 2024 | 확산으로 궤적 최적화, 확산과 MPPI의 이론적 연결 | B.18 | [논문](https://arxiv.org/abs/2407.01573) |
+| Embodiment Scaling Laws | 2025.05 · CoRL 2025 | 절차 생성 embodiment 수백 개로 보행 정책 하나 | B.18 | [논문](https://arxiv.org/abs/2505.05753) |
+| Fail-Passive Gap | 2026.08 · arXiv | 산업 휴머노이드 기능 안전 인증의 fail-passive 공백 | B.18 | [논문](https://arxiv.org/abs/2608.02809) |
+| ENav(퍼서비어런스) | 2025 · IEEE T-FR | 후보 약 1,700개를 순위화하고 상위만 보수적으로 충돌 검사, 주행의 90% 이상 자율 | B.18 | [논문](https://ieeexplore.ieee.org/document/11265757) |
+| 변형 지형 사족 보행 | 2023 · Science Robotics 8(74) | 무른 지면 사족 보행 RL(KAIST Raibo) | B.18 | [논문](https://www.science.org/doi/10.1126/scirobotics.ade2256) |
+| MARVEL | 2022 · Science Robotics | 자석 발 사족 벽 등반, NMPC(KAIST 박해원 연구실) | B.18 | [논문](https://www.science.org/doi/10.1126/scirobotics.add1017) |
+| Contact-Implicit MPC | 2023.12 · IJRR 44(3) 2025 | 접촉 모드·궤적을 미리 정하지 않는 사족 MPC | B.18 | [논문](https://arxiv.org/abs/2312.08961) |
+| APT-RL | 2026.07 · Science Robotics 2026 | SRBD 궤적 최적화 18만 개로 사전 학습한 뒤 RL, 야외 다기술 사족 | B.18 | [논문](https://arxiv.org/abs/2607.13579) |
+| 토크 기반 이족 RL(TOCABI) | 2023 · RA-L 8(10) | 토크 제어 이족 sim-to-real RL | B.18 | [링크](https://researchwith.njit.edu/en/publications/torque-based-deep-reinforcement-learning-for-task-and-robot-agnos) |
+| LiCS | 2024.06 · RA-L 2024 | 혼잡 공간 모방학습 내비, BARN 2024 우승 | B.18 | [논문](https://arxiv.org/abs/2406.14947) |
 
 ---
 
@@ -851,7 +899,7 @@ Athena-WBC([arXiv:2607.04837](https://arxiv.org/abs/2607.04837))는 저자가 �
 | ViBe | 2026.09 · arXiv | 고정한 SONIC에 시각 인코더와 LoRA 어댑터만 RL로 붙여 장면을 보게 함 | I.12 | [논문](https://arxiv.org/abs/2609.09918) · [코드](https://github.com/lok-i/vibe) |
 | PLAT | 2026.09 · arXiv | 드문드문한 시각 지정 키프레임으로 추종기를 부름 | I.13 | [논문](https://arxiv.org/abs/2609.25754) |
 | GAE (지연 조건 원격조종) | 2026.09 · arXiv | 원격조종 지연을 조건으로 받는 추종기 | I.13 | [논문](https://arxiv.org/abs/2609.34233) |
-| NEXUS | 2026.09 · arXiv | 평지 동작을 지형 짝 데이터 약 1,000시간으로 바꾼 지형 적응 원격조종 | I.12 | [논문](https://arxiv.org/abs/2609.39000) |
+| NEXUS | 2026.09 · arXiv | 평지 동작을 지형 위 동작으로 바꾼 짝 데이터 약 1,000시간과 깊이 영상을 보는 지형 적응 원격조종 전신 추종기 | I.12, B.16.6 | [논문](https://arxiv.org/abs/2609.39000) · [코드](https://github.com/Gamma-Robot/NEXUS) |
 | CoFiT | 2026.10 · arXiv | 안전 필터를 아는 추종기 미세 조정, 제약 위반 시간 SONIC −21 % | I.12 | [논문](https://arxiv.org/abs/2610.02341) |
 | Beyond Retargeting | 2026.10 · arXiv | 리타기팅 없이 동작 기본 단위 코드북으로 원격조종 | I.13 | [논문](https://arxiv.org/abs/2610.07891) |
 | TTCO (Test-Time Compute for Humanoid BFMs) | 2026.10 · arXiv | 고정 추종기의 명령을 폐루프 시뮬레이션 표본으로 최적화 | I.12, I.13 | [논문](https://arxiv.org/abs/2610.14896) |
@@ -1085,6 +1133,17 @@ TP-0036에 바로 들어간다)다.
 | 지형 인지 발놓기 | 2023.10 | 궤적 생성기의 파라미터만 RL로 조절, 안전 발놓기 보상. 징검다리 25.5 cm | F.4 | [논문](https://arxiv.org/abs/2310.04675) |
 | Extreme Parkour | 2023.09 · ICRA 2024 | Unitree A1과 앞쪽 깊이 카메라 하나, 지도 없음. scandots 교사(RL)를 깊이 학생으로 DAgger 증류하고, 진행 방향도 학생이 예측한다(MTS). 내적 진행 보상과 가장자리 5 cm 벌점. 실물 0.5 m 오르기·0.8 m 건너기·37° 경사로, RTX 3090 한 장 20시간 미만. 코드는 CC BY-NC 4.0이고 가중치·실물 코드가 없으며, MTS 판정·커리큘럼 문턱이 논문과 다르다 | F.4, F.6.2, B.16.5 | [논문](https://arxiv.org/abs/2309.14341) · [프로젝트](https://extreme-parkour.github.io) · [코드](https://github.com/chengxuxin/extreme-parkour) |
 | CAI23sbP/Isaaclab_Parkour | 2025 · GitHub | Extreme Parkour를 Isaac Lab과 Unitree Go2로 옮긴 커뮤니티 구현(GPL-3.0). 교사·학생 과제와 학습된 정책 링크를 싣고, 원저자가 이슈 #61에서 반겼다. 프로젝트 페이지의 브라우저 데모가 이 재현의 Go2 교사 정책을 돌린다 | F.6.2 | [코드](https://github.com/CAI23sbP/Isaaclab_Parkour) |
+| LocoFormer | 2025.09 · CoRL 2025 | 절차 생성 로봇 10만 대에서 대규모 RL, Transformer-XL로 시도를 넘는 수십 초 맥락. 처음 보는 로봇 10종 시뮬 영점 0.96(전문가 0.99, GRU 0.37), 실물 G1·H1·Go2·Go2-W에서 무릎 고정·바퀴 잠금·종아리 절단에 적응. 코드·가중치 비공개(Skild AI) | B.16.5 | [논문](https://arxiv.org/abs/2509.23745) · [프로젝트](https://generalist-locomotion.github.io/) · [영상](https://youtu.be/_fQ1FwRj4ME) |
+| GenLoco | 2022.09 · CoRL 2022 | 관측·행동 이력 15스텝과 형태 무작위화로 절차 생성 사족 하나의 PPO 정책. LocoFormer가 가장 가까운 연구로 지목했다 | B.16.5 | [논문](https://arxiv.org/abs/2209.05309) · [코드](https://github.com/HybridRobotics/GenLoco) |
+| AdA | 2023.01 · arXiv | Transformer-XL 기억과 여러 시도로 XLand 과제에 맥락 안에서 적응하는 DeepMind 에이전트. LocoFormer의 TXL·시도 구조의 원형 | B.16.5 | [논문](https://arxiv.org/abs/2301.07608) |
+| URMA | 2024.09 · CoRL 2024 | 관절 설명 벡터를 attention으로 인코딩·디코딩하는 다몸체 보행 정책, 이력 기억 없음 | B.16.5 | [논문](https://arxiv.org/abs/2409.06366) · [코드](https://github.com/nico-bohlinger/one_policy_to_run_them_all) |
+| AnyCar | 2024.09 · ICRA 2025 | 이력 토큰 transformer 순동역학 모델을 MPPI rollout에 쓰는 바퀴 차량 범용 모델. 처음 보는 고속 주행 추종 오차 0.57(전문가 1.26) | B.16.5, E.4 | [논문](https://arxiv.org/abs/2409.15783) · [코드](https://github.com/LeCAR-Lab/anycar) |
+| COMPASS | 2025.02 · arXiv | 모방 → 몸체별 잔차 RL → one-hot 몸체 임베딩 정책 증류, (v, ω) 출력으로 Carter·H1·G1·Spot | B.16.5 | [논문](https://arxiv.org/abs/2502.16372) · [코드](https://github.com/NVlabs/COMPASS) |
+| Embodiment Scaling Laws | 2025.05 · CoRL 2025 | 절차 생성 1,012대의 PPO 전문가를 URMA 학생으로 증류, 몸체 수를 늘리면 일반화가 넓어진다 | B.16.5 | [논문](https://arxiv.org/abs/2505.05753) · [코드](https://github.com/BoAi01/embodiment-scaling-laws) |
+| X-Nav | 2025.07 · RA-L 2025 | 무작위 바퀴·사족 4,096대의 전문가를 Nav-ACT transformer로 증류한 교차 몸체 내비. 처음 보는 Jackal 88.3 %(NavDP 70.2 %) | B.16.5 | [논문](https://arxiv.org/abs/2507.14731) |
+| Rapid Embodiment Adaptation | 2026.08 · arXiv | URMA 정책 위의 짧은 이력 명시 식별, LocoFormer식 암묵 이력 정책을 기준선으로 재구현 | B.16.5 | [논문](https://arxiv.org/abs/2608.01506) |
+| RopeFormer | 2026.09 · arXiv | LocoFormer의 TXL과 다중 시도 에피소드를 밧줄 조작에 그대로 쓰고 명령 지연을 무작위화 | B.16.5 | [논문](https://arxiv.org/abs/2609.23432) |
+| PolyMorph | 2026.10 · arXiv | URDF 관절–링크 토큰과 그래프 Transformer, RTX 4090 한 장으로 사족·삼족·이족 Raibo | B.16.5 | [논문](https://arxiv.org/abs/2610.19615) |
 | 확률 제약 볼록 MPC (4족) | 2025 | 불확실성을 전파해 마찰 원뿔·접촉 제약을 적응 조임. **손으로 맞춘 조이기를 이김**, 미지 하중 7.5 kg | F.5 | [코드](https://github.com/RIVeR-Lab/Chance-Constrained-MPC) · [프로젝트](https://cc-mpc.github.io/) |
 | MULE | 2025.05 | 미지 하중과 다지형에 적응하는 RL | F.5 | [논문](https://arxiv.org/abs/2505.00488) |
 | RSL-RL | 2025.09 | GPU 학습에 맞춘 경량 RL 라이브러리(BSD-3). v5.5.1(2026-09-09)은 PPO와 DAgger식 증류, RND·대칭 증강, MLP·RNN·CNN 모델과 ONNX 내보내기를 담는다. Isaac Lab·mjlab·MuJoCo Playground가 학습기로 쓴다. 러너의 기본 장치는 CPU다 | F.6 | [논문](https://arxiv.org/abs/2509.10771) · [코드](https://github.com/leggedrobotics/rsl_rl) |
@@ -1205,6 +1264,7 @@ TP-0036에 바로 들어간다)다.
 | Learning Whole-Body Humanoid Locomotion via Motion Generation and Motion Tracking | 2026.04 · RA-L 11(9) 2026 | 지형을 보는 diffusion 생성기(2스텝, 약 0.02 s)와 RL 추종기, 생성기를 고정한 폐루프 미세 조정, G1 실물, elevation_mapping_cupy 사용 | B.16.3 | [논문](https://arxiv.org/abs/2604.17335) |
 | 인라인 스케이트 휴머노이드 | 2026.06 · IROS 2026 | Booster T1에 수동 인라인 스케이트, 사람 동작 없이 보상만으로 날을 밀어 나아가고 걷기보다 CoT 최대 50% 감소 | B.16.3 | [논문](https://arxiv.org/abs/2606.31807) |
 | 구름사다리 휴머노이드 | 2026.08 · arXiv | 머리 LiDAR 원시 스캔을 AME-2 인코더로 읽는 RL 정책, EngineAI PM01이 뛰어올라 매달려 건너기 15회 중 14회, 2 cm 굵기 머리 위 장애물 밑 숙이기 | B.16.3 | [논문](https://arxiv.org/abs/2608.29769) |
+| Watch Your Step (FPM) | 2026.10 · arXiv(IEEE 투고) | 고유감각 70차원만 보는 MLP가 다음 발 디딤 둘을 예측하고 높이 지도를 그 둘레 7×7 조각 둘(693칸 → 102값)로 거른다. 레벨 5 도달이 전체 지도보다 3.5배 빠르고, 복도 드문 디딤 지형 74.2%(AME2 71.7%), 실물 G1 0.55 m 틈·0.6 m 낙차 | B.16.3, B.14.2 | [논문](https://arxiv.org/abs/2610.29612) · [코드](https://github.com/leggedrobotics/foothold-prediction-model) · [영상](https://www.youtube.com/watch?v=3bLU6_OPv6s) · [프로젝트](https://leggedrobotics.github.io/watch-your-step/) |
 | EVORA | 2023.11 · IEEE T-RO 40(2024) | 견인(실현 속도와 명령 속도의 비)의 분포를 증거 학습으로 배우고, 그 왼쪽 꼬리 CVaR로 MPPI rollout을 굴린다(CVaR-Dyn). 잠재 특징 밀도로 OOD 지형을 피한다. Spot 실외(1저자의 Boston Dynamics AI Institute 인턴십), RC 차 실내 | B.16.4 | [논문](https://arxiv.org/abs/2311.06234) · [코드](https://github.com/mit-acl/mppi_numba) MIT · [프로젝트](https://xiaoyi-cai.github.io/evora/) |
 | MILD | 2026 · RA-L 11(2) | 무른 알갱이 지면 위 이족 보행을 위한 다루기 쉬운 지형 모델. 빠르게 박히는 물체 밑에 쌓이는 알갱이의 부가 질량 효과를 넣는다 | B.16.5 | [논문](https://arxiv.org/abs/2608.19955) |
 | GM-Loco | 2026.09 · arXiv | 알갱이 지면 위 지형 적응 휴머노이드 보행(Georgia Tech). 기존 지형 모델이 수직력만 입자 물리로 두고 접선력은 휴리스틱으로 채운다고 지적한다 | B.16.5 | [논문](https://arxiv.org/abs/2609.10286) |
@@ -1257,6 +1317,7 @@ TP-0036에 바로 들어간다)다.
 | AMO | 2025.05 · RSS 2025 | sim-to-real RL과 궤적 최적화를 묶은 전신 작업 공간 제어, 29자유도 G1 | B.16.6 | [논문](https://arxiv.org/abs/2505.03738) · [코드](https://github.com/OpenTeleVision/AMO) |
 | GMT | 2025.06 · arXiv | 적응 표집과 동작 MoE로 정책 하나가 여러 동작을 따르는 범용 동작 추종, G1 | B.16.6, I.8 | [논문](https://arxiv.org/abs/2506.14770) · [코드](https://github.com/zixuan417/humanoid-general-motion-tracking) |
 | BeyondMimic | 2025.08 · Science Robotics 11(117) 2026 | 한 설정의 동작 추종 RL과 잠재 상태–행동 diffusion, SDF 장벽 유도로 장애물 회피, OU 잡음 오차 띠 | B.16.6, I.8 | [논문](https://arxiv.org/abs/2508.08241) · [코드](https://github.com/HybridRobotics/whole_body_tracking) |
+| PASSAGE | 2026.09 · arXiv | VR 모션 캡처로 장면과 맞춘 사람 동작 100시간(증강 1,000시간), 3층 높이 지도를 보는 flow matching 계획기 + 지형을 보는 ScaleBFM 추종기, RTC·고정 추종기 아래 RL 후학습, 시뮬레이션 무접촉 성공 70.3 %, G1 실물 50/50 도달(무접촉 45) | B.16.6 | [논문](https://arxiv.org/abs/2609.18732) · [프로젝트](https://galaxygeneralrobotics.github.io/PASSAGE/) |
 | autonomy_stack_diablo_setup | GitHub (CMU) | 메카넘·Go2판과 같은 기본 자율을 Diablo 바퀴 다리 로봇에(Mid-360, ROS 2 Jazzy). 라이선스 표기 없음 | B.16.8 | [코드](https://github.com/jizhang-cmu/autonomy_stack_diablo_setup) |
 | End-to-End Humanoid Safe and Comfortable Locomotion | 2025.08 | 시공간 LiDAR 점군 → 관절 명령, CBF를 CMDP 비용으로 P3O 학습 | B.16.8 | [논문](https://arxiv.org/abs/2508.07611) |
 | Whole-Body Inverse Dynamics MPC | 2025.11 · RA-L | 전체 역동역학으로 관절 토크를 최적화하는 전신 MPC, B2 + Z1 80 Hz | B.16.8 | [논문](https://arxiv.org/abs/2511.19709) |
@@ -1286,6 +1347,7 @@ TP-0036에 바로 들어간다)다.
 |---|---|---|---|
 | Coco Robotics Coco 2 | 2026-02 발표. 보도 배달로봇 자율화. 학습 스택으로 Isaac Sim·Isaac Lab·Omniverse·Cosmos, 함대 운용 데이터와 사람 개입 피드백 | S.7, B.6d | [발표](https://www.cocodelivery.com/blog/coco-robotics-launches-next-gen-autonomous-robots-for-urban-deliveries) |
 | RIVR (구 Swiss-Mile) | ETH RSL 스핀오프 바퀴·다리 배달로봇. 창업자 다섯(Hutter 포함). 연구 때는 ANYmal, 법인 뒤 Unitree B2 기반, RIVR TWO(2026-03, 55 L)는 자체 설계. RIVR ONE 공식 14 km/h·적재 30 kg 이상·1회 충전 30 km 이상, 계단 보행. 오스틴(Veho)·취리히(Just Eat) 감독 아래 시범 배송(2025), 2026-03-19 Amazon 인수 | B.14.4 | [공식](https://www.rivr.ai) · [기사](https://www.therobotreport.com/amazon-acquires-robotic-doorstep-delivery-provider-rivr/) · [기사](https://startupticker.ch/en/news/swiss-mile-launches-a-new-breed-of-robots-powered-by-ai) |
+| Skild AI (Skild Brain, S1) | Pathak·Gupta 창업(2023). 몸체 무관 2층 로봇 두뇌, 시연 영상 한 편을 맥락에 넣는 조작 모델 S1(2026-08). 수치는 사내 벤치마크(사람 개입 복구를 허용한 단계별 누적 성공률), 가중치·논문 없음. 기업가치 140억 달러 이상(2026-01), ARR 1억 달러(자체 발표) | B.16.5 | [S1](https://www.skild.ai/blogs/s1) · [Skild Brain](https://www.skild.ai/blogs/building-the-general-purpose-robotic-brain) · [영상 보행](https://www.skild.ai/blogs/one-policy-all-scenarios) |
 | Boston Dynamics Spot | 스테레오 깊이 5쌍, 학습 기반 계단 분류 | A.7 | [공식](https://support.bostondynamics.com/s/article/About-the-Spot-Robot-72005) |
 | Boston Dynamics Atlas | ToF + 스테레오, 다중 평면 분할 매핑 | A.8 | [블로그](https://bostondynamics.com/blog/making-atlas-see-the-world/) |
 | ANYbotics ANYmal | 360° LiDAR + 깊이 카메라 6 | A.7 | [공식](https://www.anybotics.com/robotics/anymal/) |

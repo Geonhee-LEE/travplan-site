@@ -8122,7 +8122,7 @@ $\mathbf p_s$는 센서 좌표의 점, $(R_{bs}, \mathbf t_{bs})$는 센서→�
 |---|---|---|---|---|
 | Tesla Optimus | 카메라 8 | 차량 FSD 비전 스택 재사용 | 시연만, 인식 벤치마크 미공개 | 벤더 발표 |
 | Figure 03/Helix | 카메라 6 + 손바닥 카메라 + 촉각 | 사람 1인칭 영상으로 영상 → SE(2) 속도(Go-Big), 고fps 시각 + 촉각 | 벤더 시연(30가구 조작 56%) | [figure.ai](https://www.figure.ai/news/introducing-figure-03), A.8.1 |
-| Flexion Reflect | 1인칭 카메라 + 의미 지도 | VLM 임무 → VLA·RL 기술 → 전신 제어, 3DGS 현장 복제 학습 | 벤더 시연(16단계 임무 90%) | [flexion.ai](https://flexion.ai/news/flexion-reflect-v1.0), A.8.1 |
+| Flexion Reflect | 1인칭 카메라 + 의미 지도 | VLM 임무 → VLA·RL 기술 → 전신 제어, 배포 전 3DGS 시뮬 시험 | 회사 발표: 임무 제어기의 16단계 임무 평가 90%(평가 환경 미공개) | [flexion.ai](https://flexion.ai/news/flexion-reflect-v1.0), A.8.1 |
 | LimX + RealSense | RealSense 깊이 + IMU | 깊이 + cuVSLAM + Isaac Lab 학습 정책 | 벤더 시연(GTC 2026) | [RealSense](https://www.realsenseai.com/news-insights/news/realsense-unveils-first-of-its-kind-humanoid-autonomous-navigation-at-nvidia-gtc/), A.8.1 |
 | 1X NEO | 스테레오 어안 2 + Jetson Thor | 온보드 스테레오 + VLA | 벤더 스펙·시연 | [1x.tech](https://www.1x.tech/discover/neo-factory) |
 | Unitree G1/H1 | MID-360 + D435i | 공개 SDK·ROS 2 | **제3자 논문 다수**(가장 강함) | [SDK](https://github.com/unitreerobotics) |
@@ -8156,7 +8156,7 @@ $\mathbf p_s$는 센서 좌표의 점, $(R_{bs}, \mathbf t_{bs})$는 센서→�
 |---|---|---|---|---|
 | Figure (Helix, Go-Big, Helix 2.5) | Figure 02·03 휴머노이드 | 머리 카메라, 손바닥 카메라, 촉각 | 영상 + 언어 → SE(2) 속도, 사람 1인칭 영상만으로 학습 | 처음 보는 30가구 조작 56%(사전학습 없이 9%), 내비 수치 없음 |
 | Sunday (Memo, ACT-1) | 바퀴 몸통 + 두 팔 | 공개 안 함 | 집의 3D 지도를 조건으로 받는 한 모델이 이동과 조작을 함께 | 없음(Airbnb 시연) |
-| Flexion (Reflect v1.0, Reflex) | 공개 안 함 | 1인칭 카메라, 언어로 조회하는 의미 지도 | 전역 경로 + 국소 적응, RL 기술 | 16단계 임무 SFT 38% → SFT+RL 90%, 계단 100회 연속 |
+| Flexion (Reflect v1.0, Reflex) | 공개 안 함 | 1인칭 카메라, 언어로 조회하는 의미 지도 | 전역 경로 + 국소 적응, RL 기술 | 16단계 임무 SFT 38% → SFT+RL 90%(회사 발표), 계단 100회 연속(회사 영상) |
 | Dyna Robotics (DYNA-2.1) | Taku: 사람 모양 상체, 접히는 하체, **조향 바퀴 네 개**의 바닥 | 공개 안 함 | VL 오케스트레이터 → DYNA-2 정책(~5 Hz) → RL 전신 제어기(100 Hz), 공통 표현 URR | 호텔 세탁 작업 1시간 연속, 고정형 로봇의 새 현장 인수 시험 zero-shot 87 %(DYNA-1 46 %) |
 | LimX + RealSense (GTC 2026) | LimX 휴머노이드 | RealSense 깊이 + IMU | 깊이 + cuVSLAM 오도메트리 + 지도, Isaac Lab 학습 정책 | 없음 |
 
@@ -8181,9 +8181,9 @@ $\mathbf p_s$는 센서 좌표의 점, $(R_{bs}, \mathbf t_{bs})$는 센서→�
 [Series A](https://flexion.ai/news/flexion-raises-50m-to-build-the-brain-of-humanoid-robots-at-scale), 2025-11). 취리히의 휴머노이드
 소프트웨어 회사로, 5,000만 달러 Series A에 NVIDIA의 투자 조직(NVentures)이 참여했다. 맨 위 임무 제어기(자체 VLM)가 관측을 보며 계속
 재계획한다. 가운데 층은 실제 데이터로 학습한 VLA와, 내비게이션·장면 상호작용·조작 RL 기술을 섞는다. 아래 층 Reflex는 힘을 아는 전신
-제어기로, 적은 수고로 다른 로봇 형태에 옮긴다. 인식은 1인칭 카메라와, 언어로 조회하는 의미 지도 도구다. VLM이 지도에 장소를 물어 경로를
+제어기로, 로봇과 형태마다 적은 사람 수고로 학습해 배포한다. 인식은 1인칭 카메라와, 언어로 조회하는 의미 지도 도구다. VLM이 지도에 장소를 물어 경로를
 짠다. 지시 한 번으로 택배 상자를 찾아 계단과 엘리베이터로 층을 오가고, 상자를 열어 정리했다. 16단계 임무 평가에서 SFT만 쓰면 끝까지
-38%, SFT+RL이면 90%였고, 계단을 100번 넘게 연속으로 넘어지지 않고 오르내렸다. 기술은 대부분 Isaac Lab에서 학습하고, 3DGS로 만든 사진
+38%, SFT+RL이면 90%였다(시도 수와 평가 환경은 밝히지 않았다). 계단을 100번 넘게 연속으로 오르내리는 모습은 회사 영상이 보인다. 기술은 대부분 Isaac Lab에서 학습하고, 3DGS로 만든 사진
 같은 시뮬에서 배포 전에 시험한다.
 
 **Dyna Robotics — 스워브 바닥의 반휴머노이드가 한 시간짜리 작업을 끝까지 한다**([DYNA-2.1](https://www.dyna.co/dyna-2.1), 2026-09, 기술 블로그, 논문 없음).
