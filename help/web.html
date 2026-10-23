@@ -689,7 +689,7 @@ curl -s -o /dev/null -w '%{http_code}, %{size_download} bytes\n' -H &quot;If-Mod
 <tr>
 <td data-label="스크립트"><code>scripts/check_site.sh</code></td>
 <td data-label="포트">8798</td>
-<td data-label="하는 일">공개 사본을 <code>/travplan-site/</code> 아래에 띄워 사이트 검사를 돌린다</td>
+<td data-label="하는 일">공개 사본을 <code>/travplan-site/</code> 아래에 띄워 사이트 검사를 돌린다. 이것은 <code>http.server</code>가 아니라 Node 서버(<code>scripts/site_check.mjs</code>)다</td>
 </tr>
 </tbody>
 </table></div>
@@ -1077,7 +1077,7 @@ gh api repos/Geonhee-LEE/travplan-site --jq '{full_name, private, pushed_at}'
 <tbody>
 <tr>
 <td data-label="용어">터미널, 셸</td>
-<td data-label="뜻">명령을 입력하는 창(터미널)과, 그 명령을 해석해 실행하는 프로그램(셸, 보통 bash)</td>
+<td data-label="뜻">명령을 입력하는 창(터미널)과, 그 명령을 해석해 실행하는 프로그램(셸, 여기서는 bash)</td>
 </tr>
 <tr>
 <td data-label="용어">포그라운드, 백그라운드</td>

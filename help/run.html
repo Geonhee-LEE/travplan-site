@@ -22,7 +22,7 @@
     <nav class="topics" aria-label="도움말 주제"><a href="usage.html">사이트 사용법</a><a href="run.html" aria-current="page">연구 코드 실행</a><a href="build.html">페이지가 만들어지는 방식</a><a href="web.html">로컬 서버와 웹 통신</a><a href="glossary.html">용어 사전</a></nav>
     <h1>연구 코드 실행<span>.</span></h1>
     <p class="lede">설치부터 벤치마크, 판정, NMPC, L1까지 하려는 일마다 무엇을 돌리는지</p>
-    <div class="intro"><p>명령은 모두 저장소 루트에서 <code>.venv</code>를 켠 상태로 돌린다. 이 주제는 하려는 일마다 첫 명령을 모았다. 플래그 전체와 출력 파일의 뜻은 README의 '실행법' 절에 있다.</p></div>
+    <div class="intro"><p>명령은 모두 저장소 루트에서 <code>.venv</code>를 켠 상태로 돌린다. 이 주제는 하려는 일마다 첫 명령을 모았다. 스택 이름, 자주 쓰는 플래그, 출력 파일의 뜻은 README의 '실행법' 절에 있고, 플래그 전체는 <code>python scripts/run_benchmark.py --help</code>로 본다.</p></div>
     <div class="search" id="searchbox" hidden>
       <input id="q" type="search" placeholder="이 주제에서 찾기" aria-label="이 주제에서 찾기" autocomplete="off">
       <small><kbd>/</kbd> 찾기 · <kbd>Esc</kbd> 지우기 · <a id="qall" href="./">모든 주제에서 찾기</a> <span id="qinfo" aria-live="polite"></span></small>
@@ -30,7 +30,7 @@
   </header>
 
   <div class="layout">
-    <nav class="toc" aria-label="목차"><a href="#run-setup"><b>1</b>처음 한 번: 설치</a><a href="#run-ckpt"><b>2</b>체크포인트 받기</a><a href="#run-bench"><b>3</b>벤치마크 한 번 돌리기</a><a href="#run-gate"><b>4</b>바꾼 것을 판정하기</a><a href="#run-mpc"><b>5</b>NMPC 스택</a><a href="#run-l1"><b>6</b>L1 인식 루프</a><a href="#run-view"><b>7</b>결과 보기</a><a href="#run-fix"><b>8</b>문제 해결</a></nav>
+    <nav class="toc" aria-label="목차"><a href="#run-setup"><b>1</b>처음 한 번: 설치</a><a href="#run-ckpt"><b>2</b>체크포인트 받기</a><a href="#run-bench"><b>3</b>벤치마크 한 번 돌리기</a><a href="#run-view"><b>4</b>결과 보기</a><a href="#run-gate"><b>5</b>바꾼 것을 판정하기</a><a href="#run-mpc"><b>6</b>NMPC 스택</a><a href="#run-l1"><b>7</b>L1 인식 루프</a><a href="#run-fix"><b>8</b>문제 해결</a></nav>
     <main>
 <section id="run-setup">
   <h2><span class="n">1</span>처음 한 번: 설치</h2>
@@ -63,8 +63,13 @@ cd ..
 </thead>
 <tbody>
 <tr>
-<td data-label="쓰는 스택"><code>planner_d+…</code>, <code>planner_df+…</code></td>
+<td data-label="쓰는 스택"><code>planner_d+…</code>, <code>planner_df+…</code>, <code>planner_dg+…</code></td>
 <td data-label="필요한 파일"><code>planner_d.pt</code></td>
+<td data-label="받는 곳"><code>ckpt-2026-09-27</code></td>
+</tr>
+<tr>
+<td data-label="쓰는 스택"><code>planner_dd+…</code></td>
+<td data-label="필요한 파일"><code>planner_d_dagger.pt</code></td>
 <td data-label="받는 곳"><code>ckpt-2026-09-27</code></td>
 </tr>
 <tr>
@@ -73,18 +78,26 @@ cd ..
 <td data-label="받는 곳"><code>ckpt-2026-09-27</code></td>
 </tr>
 <tr>
-<td data-label="쓰는 스택"><code>…+mppi_ccgp</code>, <code>…+mpc_gp</code></td>
+<td data-label="쓰는 스택"><code>joint_planner+…</code></td>
+<td data-label="필요한 파일"><code>joint_planner.pt</code></td>
+<td data-label="받는 곳"><code>ckpt-2026-09-27</code>. 없으면 오류 없이 무작위로 초기화한 망으로 돈다</td>
+</tr>
+<tr>
+<td data-label="쓰는 스택"><code>…+mppi_ccgp</code>, <code>…+mppi_ccgpm</code>, <code>…+mpc_gp</code>, <code>…+mpc_gpcc</code>, <code>…+mpc_gp_sc</code></td>
 <td data-label="필요한 파일"><code>residual_sgp_wide.pt</code></td>
 <td data-label="받는 곳"><code>ckpt-2026-10-06</code></td>
 </tr>
 <tr>
-<td data-label="쓰는 스택"><code>guidance+mppi</code></td>
+<td data-label="쓰는 스택"><code>guidance+mppi</code> 등 나머지</td>
 <td data-label="필요한 파일">없음</td>
 <td data-label="받는 곳"></td>
 </tr>
 </tbody>
 </table></div>
-<p><code>gh</code>가 인증을 물으면 <code>gh auth login</code>부터 한다. 직접 학습하는 명령은 <code>python scripts/train_planner_d.py --maps 256 --states 128</code>(Planner D, CPU 약 22분)이다.</p>
+<p><code>gh</code>가 인증을 물으면 <code>gh auth login</code>부터 한다. 직접 학습하려면 아래 명령을 쓴다.</p>
+<pre class="cmd"><code>python scripts/train_planner_d.py --maps 256 --states 128          # Planner D, 시연 수집 3분 + 학습 19분(CPU)
+python scripts/train_learned_planner.py --iters 3000 --maps 64    # LearnedPlanner, CPU 약 8분
+</code></pre>
 </section>
 <section id="run-bench">
   <h2><span class="n">3</span>벤치마크 한 번 돌리기</h2>
@@ -103,7 +116,7 @@ python scripts/compare_runs.py results/eval results/other --labels base new     
 <tbody>
 <tr>
 <td data-label="바꾸고 싶은 것">어떤 스택</td>
-<td data-label="플래그"><code>--stacks 플래너+컨트롤러 …</code>(예: <code>guidance+mppi</code>, <code>planner_df+mppi</code>)</td>
+<td data-label="플래그"><code>--stacks Planner+Controller …</code>(예: <code>guidance+mppi</code>, <code>planner_df+mppi</code>)</td>
 </tr>
 <tr>
 <td data-label="바꾸고 싶은 것">지형과 난이도</td>
@@ -129,8 +142,38 @@ python scripts/compare_runs.py results/eval results/other --labels base new     
 </table></div>
 <p>화면에는 에피소드마다 한 줄이 찍히고, 끝에 스택별 집계표가 나온다. 전체 플래그는 <code>python scripts/run_benchmark.py --help</code>로 본다.</p>
 </section>
+<section id="run-view">
+  <h2><span class="n">4</span>결과 보기</h2>
+<p><span class="key">숫자는 <code>metrics.csv</code>와 집계표로, 궤적은 그림이나 GIF로 본다.</span></p>
+<pre class="cmd"><code>python scripts/plot_results.py --results results/eval --seed 0 --out results/eval/trajectories.png
+python scripts/visualize_joint_planner.py --scenario bumps_potholes --seed 0 --guidance --out results/viz.gif
+</code></pre>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>파일</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="파일"><code>metrics.csv</code></td>
+<td data-label="내용">에피소드마다 한 줄. 성공, 실패 유형(<code>lethal</code>, <code>tip</code>, <code>collision</code>, <code>timeout</code>), 도달 시각, 최대 pitch, GT cost, 계획·제어 시간</td>
+</tr>
+<tr>
+<td data-label="파일"><code>plan_stats.csv</code></td>
+<td data-label="내용">폴백을 켠 스택(<code>planner_df</code>)이 Guidance 폴백을 제안하고 고른 횟수</td>
+</tr>
+<tr>
+<td data-label="파일"><code>traj_&lt;시나리오&gt;_&lt;seed&gt;_&lt;스택&gt;.npy</code></td>
+<td data-label="내용">실행한 궤적(x, y)</td>
+</tr>
+</tbody>
+</table></div>
+<p><code>plot_results.py</code>는 정해 둔 세 스택(<code>guidance+mppi</code>, <code>learned+tracker</code>, <code>learned+mppi</code>)만 그린다. <code>planner_d+mppi</code> 같은 다른 스택의 궤적은 그리지 않는다. <code>visualize_joint_planner.py</code>는 <code>--guidance</code>가 없으면 무작위로 초기화한 Joint Planner로 달린다.</p>
+</section>
 <section id="run-gate">
-  <h2><span class="n">4</span>바꾼 것을 판정하기</h2>
+  <h2><span class="n">5</span>바꾼 것을 판정하기</h2>
 <p><span class="key">판정은 두 층이다. 재현되는 조건은 숫자 하나의 차이도 보고, 혼돈 조건은 짝 비교로만 본다.</span></p>
 <div class="tbl"><table>
 <thead>
@@ -168,59 +211,30 @@ python scripts/paired_success.py --a results/l3/guidance_o{0,1000,2000} --b resu
 </ul>
 </section>
 <section id="run-mpc">
-  <h2><span class="n">5</span>NMPC 스택</h2>
+  <h2><span class="n">6</span>NMPC 스택</h2>
 <p><span class="key"><code>mpc*</code> 스택은 acados 소스 빌드가 필요하고, 라이브러리 경로를 셸에서 먼저 잡아야 한다.</span></p>
 <pre class="cmd"><code>pip install -e &quot;.[mpc]&quot;
 export ACADOS_SOURCE_DIR=$HOME/acados
 export LD_LIBRARY_PATH=$HOME/acados/lib:$LD_LIBRARY_PATH
+pip install -e $ACADOS_SOURCE_DIR/interfaces/acados_template      # acados의 파이썬 인터페이스. 없으면 MPC 시험이 skip된다
 python scripts/run_benchmark.py --stacks guidance+mppi guidance+mpc --seeds 0 1 2 --out results/mpc
 </code></pre>
 <ul>
-<li>설치 순서는 <code>docs/research-mpc.md</code>의 M.3.1에 있다.</li>
+<li>acados 소스 빌드 순서는 <code>docs/research-mpc.md</code>의 M.3.1에 있다.</li>
 <li>코드 안에서 바꾼 <code>LD_LIBRARY_PATH</code>는 같은 프로세스에 듣지 않는다. 동적 로더가 프로세스를 시작할 때의 값만 읽기 때문이다.</li>
 <li>여러 프로세스를 함께 돌릴 때는 <code>TRAVPLAN_ACADOS_BUILD</code>로 프로세스마다 솔버 생성 폴더를 나눈다.</li>
 </ul>
 </section>
 <section id="run-l1">
-  <h2><span class="n">6</span>L1 인식 루프</h2>
+  <h2><span class="n">7</span>L1 인식 루프</h2>
 <p><span class="key">L1은 합성 LiDAR를 elevation_mapping_cupy 코어로 지도화하므로, GPU와 cupy가 든 별도 가상환경 <code>.venv-emap</code>에서 돌린다.</span></p>
 <pre class="cmd"><code>python3 -m venv .venv-emap
 .venv-emap/bin/pip install cupy-cuda12x numpy scipy torch simple_parsing &quot;ruamel.yaml&quot; opencv-python-headless shapely matplotlib
-PYTHONPATH=. .venv-emap/bin/python scripts/run_benchmark.py --stacks guidance+mppi planner_df+mppi --device cuda \
+PYTHONPATH=$PWD:$PYTHONPATH .venv-emap/bin/python scripts/run_benchmark.py --stacks guidance+mppi planner_df+mppi --device cuda \
   --perception l1 --shadow-ceiling --shadow-depth 0.10 --stereo --unknown-near 1.5 --shadow-low-fill --pit-margin 0.05 \
   --seeds 0 1 2 --out results/l1
 </code></pre>
 <p><code>--perception l1</code> 뒤의 여섯 플래그가 권장 L1 설정이다(TP-0146·0148). 구성은 <code>travplan_ws/src/elevation_mapping_cupy/VENDORED.md</code>에 있다.</p>
-</section>
-<section id="run-view">
-  <h2><span class="n">7</span>결과 보기</h2>
-<p><span class="key">숫자는 <code>metrics.csv</code>와 집계표로, 궤적은 그림이나 GIF로 본다.</span></p>
-<pre class="cmd"><code>python scripts/plot_results.py --results results/eval --seed 0 --out results/eval/trajectories.png
-python scripts/visualize_joint_planner.py --scenario bumps_potholes --seed 0 --guidance --out results/viz.gif
-</code></pre>
-<div class="tbl"><table>
-<thead>
-<tr>
-<th>파일</th>
-<th>내용</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td data-label="파일"><code>metrics.csv</code></td>
-<td data-label="내용">에피소드마다 한 줄. 성공, 실패 유형(<code>lethal</code>, <code>tip</code>, <code>collision</code>, <code>timeout</code>), 도달 시각, 최대 pitch, GT cost, 계획·제어 시간</td>
-</tr>
-<tr>
-<td data-label="파일"><code>plan_stats.csv</code></td>
-<td data-label="내용">폴백을 켠 스택(<code>planner_df</code>)이 Guidance 폴백을 제안하고 고른 횟수</td>
-</tr>
-<tr>
-<td data-label="파일"><code>traj_&lt;시나리오&gt;_&lt;seed&gt;_&lt;스택&gt;.npy</code></td>
-<td data-label="내용">실행한 궤적(x, y)</td>
-</tr>
-</tbody>
-</table></div>
-<p><code>plot_results.py</code>는 기본 세 스택(<code>guidance+mppi</code>, <code>learned+tracker</code>, <code>learned+mppi</code>)만 그린다. <code>visualize_joint_planner.py</code>는 <code>--guidance</code>가 없으면 무작위로 초기화한 Joint Planner로 달린다.</p>
 </section>
 <section id="run-fix">
   <h2><span class="n">8</span>문제 해결</h2>
@@ -251,19 +265,19 @@ python scripts/visualize_joint_planner.py --scenario bumps_potholes --seed 0 --g
 <td data-label="증상"><code>ModuleNotFoundError: cupy</code></td>
 <td data-label="원인">L1을 <code>.venv</code>로 돌렸다</td>
 <td data-label="확인">명령의 파이썬 경로</td>
-<td data-label="해결"><code>.venv-emap/bin/python</code>으로 돌린다(<a href="#run-l1">6절</a>)</td>
+<td data-label="해결"><code>.venv-emap/bin/python</code>으로 돌린다(<a href="#run-l1">7절</a>)</td>
 </tr>
 <tr>
 <td data-label="증상"><code>libqpOASES_e.so</code>를 못 찾는다</td>
 <td data-label="원인">셸에 <code>LD_LIBRARY_PATH</code>가 없다</td>
 <td data-label="확인"><code>echo $LD_LIBRARY_PATH</code></td>
-<td data-label="해결">셸에서 export한 뒤 다시 돌린다(<a href="#run-mpc">5절</a>)</td>
+<td data-label="해결">셸에서 export한 뒤 다시 돌린다(<a href="#run-mpc">6절</a>)</td>
 </tr>
 <tr>
 <td data-label="증상">MPC 시험이 skip된다</td>
 <td data-label="원인"><code>acados_template</code>을 못 찾는다</td>
 <td data-label="확인"><code>pytest -rs</code></td>
-<td data-label="해결"><code>PYTHONPATH</code>를 덮어쓰지 말고 앞에 붙인다(<code>PYTHONPATH=$PWD:$PYTHONPATH</code>)</td>
+<td data-label="해결"><code>pip install -e $ACADOS_SOURCE_DIR/interfaces/acados_template</code>로 깐다. <code>PYTHONPATH</code>로 잡았다면 덮어쓰지 말고 앞에 붙인다(<code>PYTHONPATH=$PWD:$PYTHONPATH</code>)</td>
 </tr>
 <tr>
 <td data-label="증상"><code>--device cuda needs CUDA</code></td>

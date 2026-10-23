@@ -47,7 +47,7 @@
 <tbody>
 <tr>
 <td data-label="생성물"><code>docs/dashboard.html</code></td>
-<td data-label="원본"><code>TODO.md</code>, <code>STATE.md</code>, <code>README.md</code>, <code>docs/*.md</code>, <code>docs/assets/gh_index.json</code>·<code>evidence.json</code>, <code>journal/tp/</code></td>
+<td data-label="원본"><code>TODO.md</code>, <code>STATE.md</code>, <code>README.md</code>, <code>docs/*.md</code>, <code>docs/assets/gh_index.json</code>·<code>evidence.json</code>, <code>journal/tp/</code>, <code>docs/playground/js/presets.js</code>, 덱의 <code>deck.json</code></td>
 <td data-label="다시 만드는 명령"><code>python3 automation/render_dashboard.py</code></td>
 <td data-label="커밋">하지 않는다. CI가 만든다</td>
 </tr>
@@ -113,7 +113,7 @@
 </tr>
 </tbody>
 </table></div>
-<p>손으로 쓰는 것은 <code>docs/index.html</code>(슬라이드 갤러리 표시 사이는 빼고), <code>docs/404.html</code>, <code>docs/playground/</code>의 코어 JS, 그리고 위 표의 원본들이다.</p>
+<p>손으로 쓰는 것은 <code>docs/index.html</code>(슬라이드 갤러리 표시 사이는 빼고), <code>docs/404.html</code>, <code>docs/playground/</code>(두 가중치 파일은 빼고), 그리고 위 표의 원본들이다.</p>
 </section>
 <section id="build-dashboard">
   <h2><span class="n">2</span>대시보드가 만들어지는 과정</h2>
@@ -129,7 +129,7 @@
 <tbody>
 <tr>
 <td data-label="탭">진행 현황</td>
-<td data-label="읽는 원본"><code>STATE.md</code></td>
+<td data-label="읽는 원본"><code>STATE.md</code>. 위 요약 칸은 <code>TODO.md</code>와 <code>gh_index.json</code></td>
 <td data-label="고치는 법">절 제목(<code>North star distance</code> 등)은 대시보드가 파싱하므로 그대로 둔다</td>
 </tr>
 <tr>
@@ -149,13 +149,18 @@
 </tr>
 <tr>
 <td data-label="탭">리서치</td>
-<td data-label="읽는 원본"><code>docs/research-*.md</code></td>
+<td data-label="읽는 원본"><code>docs/research-*.md</code>, 덱 링크는 <code>deck.json</code></td>
 <td data-label="고치는 법">첫 줄 <code>&lt;!-- doc: 이름 | 번호 --&gt;</code>가 문서 버튼, <code>&lt;!-- tab: 이름 --&gt;</code>가 하위 탭이다</td>
 </tr>
 <tr>
 <td data-label="탭">설계 · PoC</td>
 <td data-label="읽는 원본"><code>docs/design-*.md</code>, <code>docs/poc-*.md</code></td>
 <td data-label="고치는 법">직접 고친다</td>
+</tr>
+<tr>
+<td data-label="탭">시뮬레이션</td>
+<td data-label="읽는 원본"><code>docs/playground/</code>, <code>js/presets.js</code></td>
+<td data-label="고치는 법">시연은 <code>presets.js</code>의 <code>PRESETS</code>에 더한다. TODO 항목의 ▶ 링크가 저절로 붙는다</td>
 </tr>
 </tbody>
 </table></div>
@@ -171,7 +176,9 @@ python3 automation/gh_index.py          # 이슈·PR 색인(배지)
 </section>
 <section id="build-slides">
   <h2><span class="n">3</span>슬라이드가 만들어지는 과정</h2>
-<p><span class="key">덱은 장마다 HTML 조각 하나를 원본으로 두고, 스크립트가 뷰어와 PPTX로 굽는다.</span></p>
+<p><span class="key">덱은 장마다 HTML 조각 하나를 원본으로 두고, 스크립트가 뷰어와 PPTX로 굽는다.</span>
+굽는 데는 <code>pip install -e ".[slides]"</code>(python-pptx, Pillow, 그리고 python-pptx가 함께 까는 lxml)와 google-chrome이 필요하다.
+<code>build_research_slides.py</code>는 늘 둘 다 쓰고, <code>build_study_slides.py</code>는 <code>--check</code>·<code>--pptx</code>·<code>--covers</code>일 때만 쓴다.</p>
 <div class="tbl"><table>
 <thead>
 <tr>
@@ -291,7 +298,7 @@ python scripts/build_help.py --check    # 원본과 다른 생성물이 있으�
 <section id="build-publish">
   <h2><span class="n">5</span>공개 사이트 동기화</h2>
 <p><span class="key">main에 push하면 GitHub Actions(publish-site)가 <code>docs/</code>를 공개 저장소로 복사해 몇 분 안에 사이트가 바뀐다.</span>
-<code>docs/</code>, <code>TODO.md</code>, <code>STATE.md</code>, <code>README.md</code>, <code>JOURNAL.md</code>, <code>journal/</code>, <code>automation/</code>가 바뀐 push에서 돈다. Actions 탭에서 손으로 돌릴 수도 있다.</p>
+<code>docs/</code>, <code>TODO.md</code>, <code>STATE.md</code>, <code>README.md</code>, <code>JOURNAL.md</code>, <code>journal/</code>, <code>automation/</code>, 워크플로 파일(<code>.github/workflows/publish-site.yml</code>)이 바뀐 push에서 돈다. Actions 탭에서 손으로 돌릴 수도 있다.</p>
 <div class="tbl"><table>
 <thead>
 <tr>
@@ -368,7 +375,8 @@ python scripts/build_help.py --check    # 원본과 다른 생성물이 있으�
 <ul>
 <li>금지어 목록과 오탐 허용 목록(<code>site_lint_allowlist.txt</code>)은 <code>docs/</code> 밖에 있어 공개되지 않는다. 허용 목록은 금지어를 빼지 못한다.</li>
 <li>금지어 목록 첫 줄의 시험 문자열을 사본에 넣으면 검사가 막는다. 검사가 살아 있는지 볼 때 쓴다.</li>
-<li><code>tests/test_site_hygiene.py</code>는 같은 검사를 <code>docs/</code> 원본과 <code>README.md</code>, <code>STATE.md</code>에 돌린다. 그래서 push 전에 <code>pytest</code>에서 먼저 걸린다.</li>
+<li><code>tests/test_site_hygiene.py</code>는 같은 검사를 <code>docs/</code> 원본에 돌린다. 그래서 <code>docs/</code>의 문제는 push 전에 <code>pytest</code>에서 먼저 걸린다.</li>
+<li><code>README.md</code>, <code>STATE.md</code>, <code>TODO.md</code>는 대시보드에 들어간 뒤에야 검사된다. 이 파일들의 문제는 publish-site의 위생 검사에서 처음 걸린다.</li>
 <li>도움말과 문서에는 실제 값 대신 예시 값(<code>192.168.x.1</code>, <code>203.0.113.7</code>, <code>&lt;저장소 경로&gt;</code>)을 쓴다.</li>
 </ul>
 <pre class="cmd"><code>python3 automation/site_lint.py docs/help     # 폴더 하나만 검사한다

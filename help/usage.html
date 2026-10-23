@@ -22,7 +22,7 @@
     <nav class="topics" aria-label="도움말 주제"><a href="usage.html" aria-current="page">사이트 사용법</a><a href="run.html">연구 코드 실행</a><a href="build.html">페이지가 만들어지는 방식</a><a href="web.html">로컬 서버와 웹 통신</a><a href="glossary.html">용어 사전</a></nav>
     <h1>사이트 사용법<span>.</span></h1>
     <p class="lede">첫 화면, 대시보드, Playground, 슬라이드, 도움말을 어디서 열고 어떻게 읽는지</p>
-    <div class="intro"><p>공개 사이트와 로컬 서버는 같은 페이지를 보여 준다. 다른 점은 공개 사이트에서 이슈·PR 링크가 글자로 바뀌는 것뿐이다.</p></div>
+    <div class="intro"><p>공개 사이트와 로컬 서버는 같은 페이지를 보여 준다. 공개 사이트는 main에 merge된 상태이고, 이슈·PR·원본 문서 링크가 글자로 바뀐다.</p></div>
     <div class="search" id="searchbox" hidden>
       <input id="q" type="search" placeholder="이 주제에서 찾기" aria-label="이 주제에서 찾기" autocomplete="off">
       <small><kbd>/</kbd> 찾기 · <kbd>Esc</kbd> 지우기 · <a id="qall" href="./">모든 주제에서 찾기</a> <span id="qinfo" aria-live="polite"></span></small>
@@ -72,7 +72,7 @@
 </tbody>
 </table></div>
 <ul>
-<li>로컬은 <code>source .venv/bin/activate</code> 뒤 <code>./scripts/open_dashboard.sh</code>로 연다. 대시보드를 다시 만들고, 서버를 띄우고, 브라우저로 연다.</li>
+<li>로컬은 <code>source .venv/bin/activate</code> 뒤 <code>./scripts/open_dashboard.sh</code>로 연다. 대시보드를 다시 만들고, 서버를 띄우고, 브라우저로 연다. 가상환경이 아직 없으면 <a href="run.html#run-setup">연구 코드 실행 1절</a>부터 한다.</li>
 <li><code>file://</code>로 열면 Playground가 돌지 않는다. 이유는 <a href="web.html#browser">로컬 서버와 웹 통신 11절</a>에 있다.</li>
 <li>공개 사이트는 main에 push한 뒤 몇 분 안에 바뀐다(<a href="build.html#build-publish">페이지가 만들어지는 방식 5절</a>).</li>
 <li>로컬 주소가 안 열리면 <a href="web.html#fix">로컬 서버와 웹 통신 1절</a>을 본다.</li>
@@ -132,7 +132,7 @@
 <td data-label="탭">진행 현황</td>
 <td data-label="주소 끝"><code>#state</code>(기본)</td>
 <td data-label="무엇">북극성 거리, 현재 병목, 핵심 수치, 진행 중 실험, 다음 할 일</td>
-<td data-label="원본"><code>STATE.md</code></td>
+<td data-label="원본"><code>STATE.md</code>. 위 요약 칸은 <code>TODO.md</code>와 <code>gh_index.json</code></td>
 </tr>
 <tr>
 <td data-label="탭">TODO</td>
@@ -156,7 +156,7 @@
 <td data-label="탭">리서치</td>
 <td data-label="주소 끝"><code>#research</code></td>
 <td data-label="무엇">리서치 문서 12개와 발표 덱(<a href="#dash-research">5절</a>)</td>
-<td data-label="원본"><code>docs/research-*.md</code></td>
+<td data-label="원본"><code>docs/research-*.md</code>, 덱의 <code>deck.json</code></td>
 </tr>
 <tr>
 <td data-label="탭">설계 · PoC</td>
@@ -168,7 +168,7 @@
 <td data-label="탭">시뮬레이션 ▶</td>
 <td data-label="주소 끝"><code>#sim</code></td>
 <td data-label="무엇">Playground를 대시보드 안에서 돌린다</td>
-<td data-label="원본"><code>docs/playground/</code></td>
+<td data-label="원본"><code>docs/playground/</code>, 시연 목록 <code>js/presets.js</code></td>
 </tr>
 </tbody>
 </table></div>
@@ -182,7 +182,7 @@
 <section id="dash-todo">
   <h2><span class="n">4</span>TODO 탭 읽는 법</h2>
 <p><span class="key">TODO 항목 한 줄에 상태, 우선순위, 담당, 연결된 이슈·PR, 시연 링크가 모두 붙는다.</span>
-항목은 진행 중, 오늘, 사용자 실행 대기, 백로그, 완료의 다섯 묶음으로 나뉜다.</p>
+항목은 진행 중, 오늘, 막힘, 백로그, 완료의 다섯 묶음으로 나뉜다. 진행 현황 탭의 요약 칸은 막힘을 '사용자 실행 대기'로 센다.</p>
 <div class="tbl"><table>
 <thead>
 <tr>
@@ -251,7 +251,7 @@
 </tr>
 <tr>
 <td data-label="자리">문서 버튼</td>
-<td data-label="무엇">개요, 인식, 센서 배치, Planner, Controller·안전, 시뮬레이션, 배경·수식, 강화학습, 딥러닝, 모방, 참고문헌, MPC 구축</td>
+<td data-label="무엇">개요, 인식, 센서 배치, Planner, Controller·안전, 시뮬레이션, 배경·수식, 딥러닝, 모방, 강화학습, 참고문헌, MPC 구축</td>
 </tr>
 <tr>
 <td data-label="자리">하위 탭</td>
@@ -342,7 +342,7 @@ JS로 다시 짠 것이라 지형이 Python과 똑같지는 않다(난수 생성
 #TP-0047?v=2d&amp;layer=belief_elev            시연 + 덮어쓰기
 #pg?sc=bumps_potholes&amp;s=4&amp;per=range        사용자 설정
 </code></pre>
-<p>키 목록, 화면 구성, 시연 목록, 검사는 <a href="../playground/README.md">Playground 설명서</a>에 있다.</p>
+<p>키 목록, 화면 구성, 시연 목록, 검사는 <a href="https://github.com/Geonhee-LEE/travplan-site/blob/main/playground/README.md">Playground 설명서</a>에 있다.</p>
 </section>
 <section id="slides">
   <h2><span class="n">7</span>슬라이드</h2>
@@ -372,7 +372,7 @@ JS로 다시 짠 것이라 지형이 Python과 똑같지는 않다(난수 생성
 <tr>
 <td data-label="종류">리서치 문서 덱</td>
 <td data-label="수">12</td>
-<td data-label="무엇">리서치 문서 전체를 옮긴 덱(약 1,500장)</td>
+<td data-label="무엇">리서치 문서 전체를 옮긴 덱(2026-10-23 기준 1,667장)</td>
 <td data-label="PPTX">글자를 고칠 수 있는 판</td>
 </tr>
 </tbody>
@@ -387,11 +387,11 @@ JS로 다시 짠 것이라 지형이 Python과 똑같지는 않다(난수 생성
 </thead>
 <tbody>
 <tr>
-<td data-label="키">→ , PageDown, Space</td>
+<td data-label="키">→, PageDown, Space</td>
 <td data-label="하는 일">다음 장</td>
 </tr>
 <tr>
-<td data-label="키">← , PageUp</td>
+<td data-label="키">←, PageUp</td>
 <td data-label="하는 일">이전 장</td>
 </tr>
 <tr>
