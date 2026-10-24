@@ -1,0 +1,959 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>강화학습 기초 — 그림과 장단점으로 보는 핵심 개념</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=IBM+Plex+Sans+KR:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<style>
+:root { --bg:#0E1526; --bar:#16213A; --fg:#F4F1EA; --muted:#C9D1E0; --accent:#F59E5B; }
+* { box-sizing:border-box; }
+html, body { margin:0; height:100%; background:var(--bg); color:var(--fg); font-family:'IBM Plex Sans KR', Arial, sans-serif; }
+#stage { position:fixed; inset:0 0 56px 0; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+#frame { width:1920px; height:1080px; flex:none; transform-origin:center center; box-shadow:0 8px 40px rgba(0,0,0,.5); }
+#frame > section:not(.on) { display:none !important; }
+body.all #frame > section:not(.on) { display:block !important; }
+section { position:relative; width:1920px; height:1080px; overflow:hidden; }
+section * { margin:0; }
+section aside { display:none; }
+section table { border-collapse:collapse; }
+section th, section td { padding:10px 16px; vertical-align:top; }
+section tr + tr td { border-top:1px solid rgba(127,140,160,.25); }
+section .katex { font-size:1.05em; }
+section .katex-display { margin:0; text-align:left; }
+section .katex-display > .katex { text-align:left; }
+x-shape { display:block; flex:none; }
+x-shape[kind="arrow-right"] { clip-path:polygon(0 32%,58% 32%,58% 0,100% 50%,58% 100%,58% 68%,0 68%); }
+#bar { position:fixed; left:0; right:0; bottom:0; height:56px; background:var(--bar); display:flex; align-items:center; gap:12px; padding:0 16px; font-size:15px; }
+#bar button, #bar a { background:none; border:1px solid #3A4A6B; color:var(--fg); border-radius:8px; padding:6px 12px; font:inherit; cursor:pointer; text-decoration:none; }
+#bar button:hover, #bar a:hover { border-color:var(--accent); }
+#count { min-width:72px; text-align:center; color:var(--muted); }
+#ttl { flex:1; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; color:var(--muted); }
+#notes { position:fixed; right:16px; bottom:72px; width:min(560px, calc(100% - 32px)); max-height:45vh; overflow:auto; background:#FFFDF8; color:#16213A; border-radius:12px; padding:16px 20px; font-size:16px; line-height:1.6; box-shadow:0 8px 30px rgba(0,0,0,.4); display:none; }
+#notes.show { display:block; }
+#notes b { display:block; margin-bottom:6px; color:#C2410C; font-family:'JetBrains Mono', monospace; font-size:13px; }
+body.shot #bar, body.shot #notes { display:none; }
+body.shot #stage { inset:0; }
+body.shot #frame { box-shadow:none; transform:none !important; }
+@media (max-width:640px) { #ttl { display:none; } }
+</style>
+</head>
+<body>
+<div id="stage"><div id="frame">
+<style>
+/* 챕터 발표 덱(slides_src/talk-*) 공용 스타일. deck.json의 "css": "_talk/talk.css"로 읽는다.
+   PPTX(편집 가능)는 이 스타일이 그린 결과의 좌표·색·글자 크기를 그대로 옮긴다. 규칙은 slides_src/_talk/README.md. */
+section.t { background:#F7F5F0; color:#16213A; font-family:'IBM Plex Sans KR', Arial, sans-serif;
+  padding:80px 112px 120px; display:flex; flex-direction:column; gap:28px; }
+section.t.dark { background:#16213A; color:#F4F1EA; }
+section.t .kicker { font-family:'JetBrains Mono', 'Courier New', monospace; font-size:22px; color:#C2410C; letter-spacing:1px; }
+section.t.dark .kicker { color:#F59E5B; }
+section.t h1 { font-family:'Noto Serif KR', Georgia, serif; font-size:96px; font-weight:700; line-height:1.15; }
+section.t h2 { font-family:'Noto Serif KR', Georgia, serif; font-size:52px; font-weight:700; line-height:1.22; }
+section.t h3 { font-size:30px; font-weight:600; line-height:1.3; }
+section.t p, section.t li { font-size:26px; line-height:1.5; }
+section.t .lead { font-size:34px; line-height:1.45; color:#3D4A63; }
+section.t.dark .lead { color:#C9D1E0; }
+section.t .muted { color:#5A6478; }
+section.t.dark .muted { color:#9AA6BC; }
+section.t .small { font-size:22px; line-height:1.4; }
+section.t b, section.t strong { font-weight:600; }
+section.t .hl { color:#C2410C; font-weight:600; }
+section.t code { font-family:'JetBrains Mono', monospace; font-size:0.86em; color:#7C2D12; }
+section.t ul, section.t ol { padding-left:36px; display:flex; flex-direction:column; gap:10px; }
+section.t .head { display:flex; flex-direction:column; gap:10px; }
+section.t .cols { display:flex; gap:40px; align-items:flex-start; }
+section.t .cols > * { flex:1; min-width:0; }
+section.t .stack { display:flex; flex-direction:column; gap:18px; }
+section.t .grid2, section.t .grid3 { display:grid; gap:24px; }
+section.t .grid2 { grid-template-columns:1fr 1fr; }
+section.t .grid3 { grid-template-columns:1fr 1fr 1fr; }
+section.t .card { background:#FFFDF8; border:1px solid #D9D4C7; border-radius:12px; padding:22px 26px; display:flex; flex-direction:column; gap:12px; }
+section.t .card.or { border-left:8px solid #C2410C; }
+section.t .card.bl { border-left:8px solid #1D4ED8; }
+section.t .card.gr { border-left:8px solid #15803D; }
+section.t .card.gy { border-left:8px solid #9AA6BC; }
+section.t.dark .card { background:#22304F; border-color:#3A4A6B; }
+section.t .card h3 { font-size:28px; }
+section.t .card p, section.t .card li { font-size:24px; line-height:1.45; }
+section.t .tag { align-self:flex-start; font-size:20px; font-weight:600; padding:4px 14px; border-radius:999px; background:#ECE8DF; color:#16213A; }
+section.t .tag.or { background:#FDE7C8; color:#7C2D12; }
+section.t .tag.bl { background:#DBE5FB; color:#1E3A8A; }
+section.t .tag.gr { background:#D7EFDD; color:#14532D; }
+section.t .pills { display:flex; flex-wrap:wrap; gap:16px; }
+section.t .pill { font-size:24px; padding:8px 22px; border-radius:999px; background:#C9D1E0; color:#16213A; }
+section.t .pill.on { background:#F59E5B; }
+section.t .take { background:#16213A; color:#F4F1EA; border-radius:12px; padding:20px 28px; font-size:27px; line-height:1.45; }
+section.t .take b { color:#F59E5B; }
+section.t.dark .take { background:#F59E5B; color:#16213A; }
+section.t .flow { display:flex; align-items:stretch; gap:14px; }
+section.t .flow > .step { flex:1; background:#FFFDF8; border:1px solid #D9D4C7; border-top:6px solid #C2410C; border-radius:10px; padding:16px 18px;
+  display:flex; flex-direction:column; gap:8px; }
+section.t .flow > .step p { font-size:22px; line-height:1.4; }
+section.t .flow > .arrow { flex:none; align-self:center; font-size:36px; color:#C2410C; }
+section.t table { border-collapse:collapse; width:100%; font-size:21px; line-height:1.35; background:#FFFDF8; }
+section.t th { background:#16213A; color:#F4F1EA; text-align:left; font-weight:600; padding:10px 14px; }
+section.t td { padding:9px 14px; border-top:1px solid #D9D4C7; vertical-align:top; }
+section.t tr:nth-child(even) td { background:#F1EDE4; }
+section.t td.good { color:#14532D; font-weight:600; }
+section.t td.bad { color:#9F1239; font-weight:600; }
+section.t figure { margin:0; display:flex; flex-direction:column; gap:10px; }
+section.t figure img { display:block; max-width:100%; object-fit:contain; background:#FFFFFF; border:1px solid #D9D4C7; border-radius:8px; }
+section.t figcaption { font-size:20px; line-height:1.4; color:#5A6478; }
+section.t .math { background:#FFFDF8; border-left:6px solid #C2410C; border-radius:8px; padding:8px 24px; font-size:30px; }
+section.t .math .katex-display { margin:6px 0; }
+section.t .foot { position:absolute; left:112px; right:112px; bottom:32px; border-top:2px solid #D9D4C7; padding-top:10px;
+  display:flex; flex-direction:column; gap:2px; }
+section.t .foot p { font-size:18px; line-height:1.35; color:#5A6478; }
+section.t.dark .foot { border-color:#3A4A6B; }
+section.t.dark .foot p { color:#9AA6BC; }
+section.t .num { position:absolute; right:112px; top:84px; font-family:'JetBrains Mono', monospace; font-size:20px; color:#9AA6BC; }
+section.t.cover { justify-content:space-between; padding:120px 128px; }
+section.t.divider { justify-content:center; gap:36px; padding:120px 128px; }
+section.t.divider h2 { font-size:80px; }
+</style>
+
+<script>
+// ?export=1: 장마다 도형·글상자·표·그림의 좌표와 스타일을 적는다. scripts/slides_editable.py가 읽는다.
+(function () {
+  if (!/[?&]export=/.test(location.search)) return;
+  var INLINE = /^(inline|inline-block|inline-flex|contents)$/;
+  function transparent(c) { return !c || c === 'transparent' || /rgba\(.*,\s*0\)$/.test(c); }
+  function rect(el, base) { var r = el.getBoundingClientRect(); return [r.left - base.left, r.top - base.top, r.width, r.height]; }
+  function style(cs) {
+    return { size: parseFloat(cs.fontSize), bold: parseInt(cs.fontWeight, 10) >= 600, italic: cs.fontStyle === 'italic',
+             color: cs.color, mono: /Mono|Courier|monospace/.test(cs.fontFamily) };
+  }
+  function runs(el) {
+    var out = [];
+    (function rec(node) {
+      Array.prototype.forEach.call(node.childNodes, function (c) {
+        if (c.nodeType === 3) { if (c.textContent) out.push({ s: c.textContent, st: style(getComputedStyle(node)), href: node.closest('a') ? node.closest('a').href : null }); return; }
+        if (c.nodeType !== 1 || c.tagName === 'ASIDE') return;
+        if (c.tagName === 'BR') { out.push({ s: '\n', st: style(getComputedStyle(node)) }); return; }
+        if (c.classList.contains('katex')) {
+          var a = c.querySelector('annotation');
+          out.push({ s: a ? a.textContent : c.textContent, st: style(getComputedStyle(node)), math: true });
+          return;
+        }
+        var cs = getComputedStyle(c);
+        if (cs.display === 'none') return;
+        if (INLINE.test(cs.display) && c.tagName !== 'IMG') rec(c);
+      });
+    })(el);
+    return out;
+  }
+  function hasOwnText(el) {
+    return Array.prototype.some.call(el.childNodes, function (c) {
+      if (c.nodeType === 3) return c.textContent.trim() !== '';
+      if (c.nodeType !== 1 || c.tagName === 'ASIDE') return false;
+      var cs = getComputedStyle(c);
+      return (INLINE.test(cs.display) || c.classList.contains('katex')) && c.tagName !== 'IMG' && c.textContent.trim() !== '';
+    });
+  }
+  function marker(li) {
+    var p = li.parentElement;
+    if (!p || getComputedStyle(li).listStyleType === 'none') return null;
+    if (p.tagName === 'OL') return { n: Array.prototype.indexOf.call(p.children, li) + parseInt(p.getAttribute('start') || '1', 10) };
+    return { n: 0 };
+  }
+  function textItem(el, base, cs) {
+    var r = rect(el, base), pl = parseFloat(cs.paddingLeft), pr = parseFloat(cs.paddingRight), pt = parseFloat(cs.paddingTop),
+        pb = parseFloat(cs.paddingBottom), bl = parseFloat(cs.borderLeftWidth), bt = parseFloat(cs.borderTopWidth);
+    var rr = runs(el), m = el.tagName === 'LI' ? marker(el) : null;
+    if (m) { r[0] -= 30; r[2] += 30; }   // 글머리표 자리. PPTX에서는 내어쓰기 30px의 진짜 글머리표가 된다
+    var lh = parseFloat(cs.lineHeight);
+    return { t: 'text', r: [r[0] + pl + bl, r[1] + pt + bt, r[2] - pl - pr - bl, r[3] - pt - pb - bt], runs: rr, li: m,
+             align: cs.textAlign, lh: isNaN(lh) ? 1.3 : lh / parseFloat(cs.fontSize) };
+  }
+  function boxItem(el, base, cs) {
+    var sides = {};
+    ['Top', 'Right', 'Bottom', 'Left'].forEach(function (s) {
+      var w = parseFloat(cs['border' + s + 'Width']);
+      if (w > 0 && cs['border' + s + 'Style'] !== 'none' && !transparent(cs['border' + s + 'Color'])) sides[s[0]] = [w, cs['border' + s + 'Color']];
+    });
+    var fill = transparent(cs.backgroundColor) ? null : cs.backgroundColor;
+    if (!fill && !Object.keys(sides).length) return null;
+    return { t: 'box', r: rect(el, base), fill: fill, radius: parseFloat(cs.borderTopLeftRadius) || 0, sides: sides };
+  }
+  function tableItem(el, base) {
+    var rows = Array.prototype.map.call(el.rows, function (tr) {
+      return { h: tr.getBoundingClientRect().height, cells: Array.prototype.map.call(tr.cells, function (c) {
+        var cs = getComputedStyle(c), bg = cs.backgroundColor;
+        if (transparent(bg)) bg = getComputedStyle(tr).backgroundColor;
+        if (transparent(bg)) bg = getComputedStyle(el).backgroundColor;
+        return { w: c.getBoundingClientRect().width, span: c.colSpan || 1, fill: transparent(bg) ? null : bg, runs: runs(c),
+                 align: cs.textAlign, size: parseFloat(cs.fontSize) };
+      }) };
+    });
+    return { t: 'table', r: rect(el, base), rows: rows };
+  }
+  function img(el, base) {
+    var r = rect(el, base), nw = el.naturalWidth, nh = el.naturalHeight;
+    if (nw && nh && getComputedStyle(el).objectFit === 'contain') {
+      var s = Math.min(r[2] / nw, r[3] / nh), w = nw * s, h = nh * s;
+      r = [r[0] + (r[2] - w) / 2, r[1] + (r[3] - h) / 2, w, h];
+    }
+    return { t: 'img', r: r, src: el.getAttribute('src') };
+  }
+  function slide(sec) {
+    var base = sec.getBoundingClientRect(), items = [];
+    (function walk(el) {
+      if (el.tagName === 'ASIDE') return;
+      var cs = getComputedStyle(el);
+      if (cs.display === 'none' || cs.visibility === 'hidden') return;
+      if (el !== sec && el.tagName !== 'TABLE') { var b = boxItem(el, base, cs); if (b) items.push(b); }
+      if (el.matches('.katex-display, svg, canvas, x-shape, [data-raster]')) {
+        var k = el.matches('.katex-display') ? (el.querySelector('.katex') || el) : el;
+        items.push({ t: 'raster', r: rect(k, base) }); return;
+      }
+      if (el.tagName === 'IMG') { items.push(img(el, base)); return; }
+      if (el.tagName === 'TABLE') { items.push(tableItem(el, base)); return; }
+      if (el !== sec && hasOwnText(el)) items.push(textItem(el, base, cs));
+      Array.prototype.forEach.call(el.children, function (c) {
+        var d = getComputedStyle(c).display;
+        if (!(INLINE.test(d) && c.tagName !== 'IMG' && !c.querySelector('img, .katex-display'))) walk(c);
+      });
+    })(sec);
+    var a = sec.querySelector('aside');
+    return { bg: getComputedStyle(sec).backgroundColor, items: items, note: a ? a.textContent.trim() : '' };
+  }
+  function run() {
+    var secs = Array.prototype.slice.call(document.querySelectorAll('#frame > section')), out = [];
+    secs.forEach(function (sec) {
+      secs.forEach(function (s) { s.classList.toggle('on', s === sec); });
+      out.push(slide(sec));
+    });
+    var rep = document.getElementById('report'); rep.textContent = JSON.stringify(out); rep.setAttribute('data-done', '1');
+  }
+  window.addEventListener('DOMContentLoaded', function () {
+    // 뷰어의 start()가 수식을 조판한 뒤에 잰다.
+    document.fonts.ready.then(function () { setTimeout(function () { window.withAllFonts(run); }, 300); });
+  });
+})();
+</script>
+<section id="cover" class="t dark cover">
+<p class="kicker">강화학습 기초 · 개념 공부 덱</p>
+<div class="stack"><h1>정답 없이 보상만으로<br>행동을 배운다</h1><p class="lead">MDP에서 PPO·SAC·오프라인 RL까지, 그림과 배경지식과 장단점으로 보는 강화학습의 핵심 개념</p></div>
+<div class="pills"><p class="pill on">MDP · Bellman</p><p class="pill">정책 기울기 · PPO</p><p class="pill">Q-learning · DQN</p><p class="pill">오프라인 RL</p><p class="pill">모델 기반 · LQR</p><p class="pill">RLHF · 안전</p></div>
+<aside>이 덱은 강화학습을 처음 공부하거나 다시 정리하려는 사람을 위한 개념 덱이다. 특정 프로젝트의 결과는 넣지 않았다. 장마다 한 가지 개념을 다루고, 그 개념이 왜 필요한지, 수식이 무엇을 말하는지, 장점과 단점이 무엇인지를 함께 본다. 그림은 대부분 작은 장난감 문제를 실제로 계산해 그린 것이다. 순서는 버클리 CS 285의 강의 흐름을 따른다.</aside>
+</section>
+<section id="agenda" class="t">
+<div class="head"><p class="kicker">순서</p><h2>여섯 갈래를 차례로 쌓아 올린다</h2></div>
+<table style="font-size:30px">
+<tr><th>장</th><th>주제</th><th>답하는 질문</th></tr>
+<tr><td>0</td><td>시작</td><td>무엇을 알고 시작하나? 지도학습과 무엇이 다른가?</td></tr>
+<tr><td>1</td><td>문제 설정</td><td>MDP, 할인, Bellman 식은 무엇이고, 왜 탐색과 분포 이동이 문제인가?</td></tr>
+<tr><td>2</td><td>정책 기울기</td><td>정책을 직접 미분해 고치려면? 분산은 어떻게 줄이나?</td></tr>
+<tr><td>3</td><td>가치 기반과 오프라인</td><td>Q를 배우면 무엇이 좋고, 고정된 자료로만 배우면 무엇이 깨지나?</td></tr>
+<tr><td>4</td><td>추론으로서의 제어, 모델 기반</td><td>엔트로피와 온도는 무슨 일을 하나? 모델을 쓰면 무엇을 얻고 잃나?</td></tr>
+<tr><td>5</td><td>보상과 생성 정책</td><td>보상은 어떻게 주나? 언어 모델·flow 정책·안전은 어떻게 다루나?</td></tr>
+<tr><td>6</td><td>정리</td><td>방법들을 한 장에서 비교하면? 무엇부터 공부하나?</td></tr>
+</table>
+<aside>여섯 갈래는 앞의 것을 뒤에서 다시 쓴다. 1장의 Bellman 식은 3장의 Q-learning이 되고, 2장의 정책 기울기와 합쳐져 actor-critic이 된다. 4장은 같은 문제를 확률 추론으로 다시 보고, 5장은 보상을 어디서 얻느냐는 질문으로 넓힌다. 마지막 장의 장단점 표 두 장은 복습용으로 따로 떼어 볼 수 있게 만들었다.</aside>
+</section>
+<section id="course" class="t">
+<div class="head"><p class="kicker">0 · 커리큘럼 5/7</p><h2>학습 덱의 시작: 다른 덱 없이도 읽힌다</h2></div>
+<figure><img src="img/course.webp" style="height:400px"></figure>
+<div class="grid3">
+<div class="card gr"><span class="tag gr">앞에서 가져올 것</span><p>필수는 없다(확률과 기울기). 3 제어의 LQR·MPPI를 알면 4장이 쉽다.</p></div><div class="card bl"><span class="tag bl">뒤로 넘기는 것</span><p>PPO·표본 효율 → 6 시뮬레이션의 병렬 학습. PPO·증류 → 7 다리 로봇의 보행 정책.</p></div><div class="card or"><span class="tag or">함께 보면 좋은 것</span><p>1장 행동 복제·DAgger와 5장 flow 정책을 본 뒤 2 경로 계획 3–4장(학습·생성 Planner)을 다시 본다.</p></div>
+</div>
+<aside>다섯 번째 덱이고, 학습 쪽 덱의 시작이다. 배경지식이 확률과 기울기뿐이라 다른 덱 없이도 읽힌다. 학습 경로를 고른 사람은 여기서 시작해도 된다. 다만 4장의 LQR과 MPPI는 제어 덱을 본 사람에게 훨씬 익숙하다. 이 덱의 PPO는 시뮬레이션 덱의 병렬 학습과 다리 로봇 덱의 보행 정책으로 이어지고, 모방학습과 flow 정책은 경로 계획 덱의 학습 Planner 장을 다시 볼 때 쓰인다. 일곱 덱 전체의 순서와 10주 계획은 로드맵 덱에 있다.</aside>
+</section>
+<section id="prereq" class="t">
+<div class="head"><p class="kicker">0 · 배경지식</p><h2>네 가지 배경지식이면 이 덱의 수식을 읽을 수 있다</h2></div>
+<div class="grid2">
+<div class="card bl"><span class="tag bl">확률</span><h3>기댓값은 표본 평균으로 근사한다</h3><p>\(\mathbb E_{x\sim p}[f(x)] \approx \frac1N\sum_i f(x_i)\). 강화학습의 거의 모든 식이 "궤적을 뽑아 평균 낸다"로 계산된다.</p></div>
+<div class="card or"><span class="tag or">최적화</span><h3>기울기를 따라 조금씩 움직인다</h3><p>\(\theta \leftarrow \theta + \eta\, \nabla_\theta J(\theta)\). 보상을 키우므로 오르막(ascent)이다. η가 크면 튀고 작으면 느리다.</p></div>
+<div class="card gr"><span class="tag gr">함수 근사</span><h3>신경망은 크기가 큰 표 대신 쓰는 함수다</h3><p>상태가 많으면 칸마다 값을 적는 표를 쓸 수 없다. \(V_\phi(s)\), \(\pi_\theta(a\mid s)\)처럼 파라미터로 근사하고 회귀로 맞춘다.</p></div>
+<div class="card gy"><span class="tag">마르코프 성질</span><h3>다음 상태는 지금 상태와 행동만으로 정해진다</h3><p>\(p(s_{t+1}\mid s_{1:t}, a_{1:t}) = p(s_{t+1}\mid s_t, a_t)\). 이 가정 덕분에 과거 전체가 아니라 지금만 보고 행동을 고를 수 있다.</p></div>
+</div>
+<aside>확률은 기댓값과 표본 평균의 관계만 알면 된다. 최적화는 경사 하강법을 반대로 쓰는 경사 상승법이다. 함수 근사는 신경망을 회귀 손실로 맞추는 것인데, 강화학습에서는 맞출 목표값이 학습 중에 계속 바뀐다는 점이 지도학습과 다르다. 마르코프 성질이 깨지는 경우, 즉 센서가 상태의 일부만 보는 경우는 부분 관측 MDP라 부르고 과거 관측을 기억하는 정책이 필요하다.</aside>
+</section>
+<section id="biasvar" class="t">
+<div class="head"><p class="kicker">0 · 배경지식 · 추정기</p><h2>추정기는 편향과 분산 두 가지로 평가한다</h2></div>
+<div class="math">$$\mathbb E\big[(\hat\theta - \theta)^2\big] = \underbrace{\big(\mathbb E[\hat\theta] - \theta\big)^2}_{\text{편향}^2} + \underbrace{\operatorname{Var}[\hat\theta]}_{\text{분산}}$$</div>
+<div class="grid3">
+<div class="card bl"><span class="tag bl">편향</span><h3>평균이 과녁에서 벗어난 정도</h3><p>표본을 아무리 모아도 사라지지 않는다. 틀린 가치 추정을 빌려 쓰면 생긴다.</p></div>
+<div class="card or"><span class="tag or">분산</span><h3>표본마다 흔들리는 정도</h3><p>표본 N개 평균의 분산은 \(\sigma^2/N\)이다. 표본을 늘리면 줄지만 비용이 든다.</p></div>
+<div class="card gr"><span class="tag gr">맞바꿈</span><h3>조금의 편향으로 큰 분산을 줄인다</h3><p>강화학습의 많은 요령(기준선, critic, GAE, 할인)이 이 맞바꿈이다.</p></div>
+</div>
+<p class="take"><b>핵심:</b> 2장과 3장의 방법들은 "편향을 얼마나 받아들이고 분산을 얼마나 줄이나"로 줄을 세울 수 있다.</p>
+<aside>강화학습의 기울기와 가치는 모두 표본으로 추정한다. 몬테카를로 수익은 편향이 없지만 한 에피소드의 운에 크게 흔들린다. 학습한 가치 함수를 빌리면 흔들림은 줄지만, 그 가치 함수가 틀린 만큼 편향이 생긴다. 이후 장에서 "분산이 줄고 편향이 생긴다"는 말이 반복되는데, 모두 이 분해를 가리킨다. 기준선 빼기처럼 편향 없이 분산만 줄이는 드문 요령도 있다.</aside>
+</section>
+<section id="why" class="t">
+<div class="head"><p class="kicker">0 · 지도학습과의 차이</p><h2>정답 대신 점수를 받고, 내 행동이 다음 입력을 바꾼다</h2></div>
+<div class="cols">
+<figure><img src="img/loop.webp" style="height:340px"><figcaption>에이전트와 환경의 고리. 에이전트는 행동을 내고 상태와 보상을 받는다.</figcaption></figure>
+<table style="font-size:24px">
+<tr><th></th><th>지도학습</th><th>강화학습</th></tr>
+<tr><td>받는 신호</td><td>정답 라벨</td><td>숫자 하나의 보상</td></tr>
+<tr><td>자료</td><td>고정, 서로 독립(i.i.d.)</td><td>내 행동이 다음 자료를 만든다</td></tr>
+<tr><td>피드백 시점</td><td>즉시</td><td>늦게 온다(끝에 한 번일 수도)</td></tr>
+<tr><td>넘을 수 있는 한계</td><td>라벨을 단 사람만큼</td><td>시연자보다 나을 수 있다</td></tr>
+</table>
+</div>
+<div class="grid3">
+<div class="card or"><h3>신용 할당</h3><p>끝에 받은 보상이 어느 행동 덕인지 모른다.</p></div>
+<div class="card or"><h3>탐색</h3><p>해 보지 않은 행동의 결과는 알 수 없다.</p></div>
+<div class="card or"><h3>분포 이동</h3><p>정책이 바뀌면 만나는 상태도 바뀐다.</p></div>
+</div>
+<aside>지도학습과의 차이는 두 가지로 요약된다. 정답 대신 점수를 받는다는 것, 그리고 내 행동이 다음 입력을 바꾼다는 것이다. 여기서 강화학습의 세 가지 어려움이 나온다. 신용 할당은 늦게 오는 보상을 앞의 행동들에 나눠 주는 문제다. 탐색은 모르는 행동을 시도해야 더 좋은 것을 찾는다는 문제다. 분포 이동은 학습 자료가 고정되어 있지 않다는 문제다. 이 덱의 모든 방법은 이 셋 중 하나 이상을 푼다.</aside>
+</section>
+<section id="taxonomy" class="t">
+<div class="head"><p class="kicker">0 · 알고리즘 지도</p><h2>방법은 "무엇을 배우나"와 "무엇을 쓰나"로 나뉜다</h2></div>
+<figure><img src="img/taxonomy.webp" style="height:600px"><figcaption>강화학습 알고리즘의 큰 갈래. 실제 방법은 여러 칸에 걸친다(예: SAC는 가치와 정책을 함께 배운다).</figcaption></figure>
+<aside>정책을 직접 배우면 정책 기울기, 행동 가치를 배워 최댓값을 고르면 가치 기반, 둘을 함께 배우면 actor-critic이다. 전이 모델을 알거나 배워 미리 굴려 보면 모델 기반이고, 새 상호작용 없이 모아 둔 자료로만 배우면 오프라인 RL이나 모방학습이다. 처음 공부할 때는 이 지도를 옆에 두고, 지금 보는 방법이 어느 칸에 있는지 확인하며 읽으면 길을 잃지 않는다.</aside>
+</section>
+<section id="d1" class="t dark divider">
+<p class="kicker">1 · 문제 설정</p>
+<h2>문제를 MDP로 적으면<br>풀 방법이 보인다</h2>
+<p class="lead">상태·행동·전이·보상을 정하고, 할인된 보상의 합을 키우는 정책을 찾는다.</p>
+<aside>첫 장은 문제를 수식으로 세운다. 용어, MDP, 할인율, Bellman 식, 탐색, 그리고 모방학습의 분포 이동까지 본다. 이 장의 Bellman 식과 분포 이동은 뒤의 모든 장에 다시 나온다.</aside>
+</section>
+<section id="terms" class="t">
+<div class="head"><p class="kicker">1 · 용어</p><h2>아홉 개의 기호만 알면 강화학습 수식을 읽을 수 있다</h2></div>
+<table style="font-size:25px">
+<tr><th>기호</th><th>이름</th><th>뜻</th></tr>
+<tr><td>\(s_t\), \(o_t\)</td><td>상태, 관측</td><td>세계의 지금 모습. 관측은 그중 센서가 본 일부</td></tr>
+<tr><td>\(a_t\)</td><td>행동</td><td>에이전트가 고르는 것(이산: 버튼, 연속: 토크·속도)</td></tr>
+<tr><td>\(\pi_\theta(a\mid s)\)</td><td>정책</td><td>상태에서 행동의 확률분포. θ가 학습할 파라미터</td></tr>
+<tr><td>\(r(s,a)\)</td><td>보상</td><td>한 스텝의 점수. 설계자가 정한다</td></tr>
+<tr><td>\(\tau\)</td><td>궤적</td><td>\((s_1,a_1,s_2,a_2,\dots)\). 한 번 굴린 기록, 끝이 있으면 에피소드</td></tr>
+<tr><td>\(G_t\)</td><td>수익</td><td>t부터 받을 할인된 보상의 합 \(\sum_k \gamma^k r_{t+k}\)</td></tr>
+<tr><td>\(V^\pi(s)\)</td><td>상태 가치</td><td>s에서 π를 따를 때 수익의 기댓값</td></tr>
+<tr><td>\(Q^\pi(s,a)\)</td><td>행동 가치</td><td>s에서 a를 한 뒤 π를 따를 때 수익의 기댓값</td></tr>
+<tr><td>\(A^\pi(s,a)\)</td><td>이점</td><td>\(Q - V\). 평소보다 얼마나 나은 행동인가</td></tr>
+</table>
+<aside>보상과 수익을 구별하는 것이 첫걸음이다. 보상은 한 스텝의 점수이고, 수익은 앞으로 받을 보상을 할인해 더한 것이다. 가치는 수익의 기댓값이다. V는 상태만, Q는 상태와 행동을 함께 평가한다. 이점은 Q에서 V를 뺀 값으로, 0보다 크면 평균보다 좋은 행동이다. 정책 기울기와 오프라인 RL에서 이점이 계속 나오므로 이 장에서 확실히 해 두자.</aside>
+</section>
+<section id="mdp" class="t">
+<div class="head"><p class="kicker">1 · MDP</p><h2>목표는 수익의 기댓값이 가장 큰 정책을 찾는 것이다</h2></div>
+<div class="cols">
+<div class="math">$$J(\theta) = \mathbb E_{\tau \sim p_\theta(\tau)} \Big[ \sum_t \gamma^{t} r(s_t, a_t) \Big]$$</div>
+<div class="math">$$p_\theta(\tau) = p(s_1) \prod_t \pi_\theta(a_t\mid s_t)\, p(s_{t+1}\mid s_t, a_t)$$</div>
+</div>
+<figure><img src="../../assets/figs/rl_r01_gridworld.webp" style="height:400px"><figcaption>5×5 격자 MDP를 가치 반복으로 푼 결과. 목표 +1, 검은 칸은 함정 −1, 매 스텝 −0.04, 0.1의 확률로 옆으로 미끄러진다. γ가 작으면 함정 근처를 더 조심한다.</figcaption></figure>
+<aside>MDP는 상태 집합, 행동 집합, 전이 확률, 보상 함수, 할인율 다섯 가지로 정한다. 궤적의 확률은 시작 분포, 정책, 전이의 곱이다. 이 곱에서 정책만 우리가 바꿀 수 있다는 점이 2장의 정책 기울기에서 중요해진다. 그림의 격자에서는 바람에 미끄러질 수 있으므로, 최적 정책이 함정 바로 옆을 피해 돌아가는 모습을 볼 수 있다. 오른쪽 그래프는 가치 반복을 할 때마다 보상 정보가 한 칸씩 퍼지는 모습이다.</aside>
+</section>
+<section id="discount" class="t">
+<div class="head"><p class="kicker">1 · 할인율</p><h2>할인율 γ는 에이전트가 얼마나 먼 미래까지 볼지 정한다</h2></div>
+<figure><img src="img/discount.webp" style="height:400px"><figcaption>(a) t스텝 뒤 보상에 곱하는 무게 \(\gamma^t\)와 유효 지평 \(1/(1-\gamma)\) (b) 지금의 +1과 20스텝 뒤의 +3 중 무엇이 나은지는 γ가 정한다</figcaption></figure>
+<div class="grid3">
+<div class="card bl"><span class="tag bl">수학적 이유</span><p>무한히 긴 문제에서도 수익이 유한하다(\(|G| \le r_{\max}/(1-\gamma)\)).</p></div>
+<div class="card gr"><span class="tag gr">γ가 크면</span><p>멀리 보지만 수익의 분산이 커지고 학습이 느리다.</p></div>
+<div class="card or"><span class="tag or">γ가 작으면</span><p>빨리 배우지만 근시안이 되어 늦게 오는 큰 보상을 놓친다.</p></div>
+</div>
+<aside>할인율은 미래 보상의 무게를 기하급수적으로 줄인다. 대략 1/(1−γ) 스텝 너머의 보상은 거의 보지 않는다고 생각하면 된다. 0.99면 약 100스텝이다. 할인은 수학적 편의이면서 동시에 분산을 줄이는 장치이기도 하다. 먼 미래의 보상일수록 우연에 크게 흔들리기 때문이다. 그래서 실제 목표에는 할인이 없더라도 학습에는 0.95–0.99 정도를 흔히 쓴다.</aside>
+</section>
+<section id="bellman" class="t">
+<div class="head"><p class="kicker">1 · Bellman 식</p><h2>가치는 "지금 보상 + 다음 상태의 가치"로 스스로를 정의한다</h2></div>
+<div class="cols">
+<div class="math">$$Q^\pi(s, a) = r(s, a) + \gamma\, \mathbb E_{s' \sim p,\ a' \sim \pi} \big[ Q^\pi(s', a') \big]$$</div>
+<div class="math">$$Q^*(s, a) = r(s, a) + \gamma\, \mathbb E_{s'} \big[ \max_{a'} Q^*(s', a') \big]$$</div>
+</div>
+<figure><img src="img/backup.webp" style="height:380px"><figcaption>가치를 추정하는 세 방법의 백업 도식. DP는 모델로 모든 갈래를, MC는 끝까지 한 갈래를, TD는 한 스텝만 가고 나머지를 추정값으로 채운다.</figcaption></figure>
+<p class="take"><b>핵심:</b> 왼쪽 식을 배우면 정책 평가, 오른쪽 식(max)을 배우면 Q-learning이다.</p>
+<aside>Bellman 식은 큰 문제를 한 스텝짜리 문제로 쪼갠다. 지금 상태의 가치는 받을 보상과, 다음 상태 가치의 할인된 기댓값으로 쓸 수 있다. 이 식을 맞추는 방법이 세 가지다. 모델을 알면 동적 계획법으로 모든 다음 상태를 펼쳐 계산한다. 모델이 없으면 에피소드 끝까지 실제로 가 보는 몬테카를로, 또는 한 스텝만 가고 나머지는 지금의 추정을 빌리는 시간차 학습을 쓴다. 시간차 학습은 남의 추정을 빌리므로 부트스트랩이라고도 부르며, 편향과 분산의 맞바꿈이 여기서 처음 나온다.</aside>
+</section>
+<section id="explore" class="t">
+<div class="head"><p class="kicker">1 · 탐색과 활용</p><h2>모르는 행동도 가끔 해 봐야 더 좋은 것을 찾는다</h2></div>
+<figure><img src="../../assets/figs/rl_r11_bandit.webp" style="height:340px"><figcaption>(a) 10팔 밴딧에서 네 전략의 누적 후회(낮을수록 좋다) (b) UCB는 덜 해 본 팔에 낙관 보너스를 더해 고른다</figcaption></figure>
+<div class="grid3">
+<div class="card bl"><span class="tag bl">ε-greedy</span><h3>ε 확률로 아무거나</h3><p><b>장점</b> 가장 단순하다<br><b>단점</b> 이미 나쁜 걸 아는 행동도 계속 해 본다</p></div>
+<div class="card or"><span class="tag or">UCB</span><h3>모를수록 후하게</h3><p><b>장점</b> 덜 해 본 행동을 체계적으로 시도한다<br><b>단점</b> 큰 상태 공간에서 "몇 번 해 봤나"를 세기 어렵다</p></div>
+<div class="card gr"><span class="tag gr">Thompson</span><h3>믿음에서 뽑아서</h3><p><b>장점</b> 불확실성에 비례해 탐색한다<br><b>단점</b> 사후분포를 유지해야 한다</p></div>
+</div>
+<aside>밴딧은 상태가 하나뿐인 강화학습이다. 탐색과 활용의 맞바꿈만 따로 떼어 볼 수 있어 좋은 연습 문제다. 탐욕 전략은 처음에 운 좋게 나온 팔에 갇힌다. ε-greedy는 계속 무작위로 시도하므로 후회가 선형으로 늘어난다. UCB와 Thompson 샘플링은 덜 알려진 팔을 더 많이 시도해 후회가 로그 꼴로 늘어난다. 심층 강화학습에서는 정책의 엔트로피 보너스, 행동 잡음, 호기심 보상 같은 방법이 이 역할을 한다.</aside>
+</section>
+<section id="bc" class="t">
+<div class="head"><p class="kicker">1 · 모방학습</p><h2>행동 복제는 쉽지만 작은 실수가 쌓여 큰 이탈이 된다</h2></div>
+<div class="math">$$\max_\theta \sum_{(s,a)\in\mathcal D} \log \pi_\theta(a \mid s)$$</div>
+<figure><img src="../../assets/figs/rl_r02_bc.webp" style="height:400px"><figcaption>(a) 시연 띠 밖에서 틀린 정책은 한 번 벗어나면 돌아오지 못한다 (b) 실수 확률 ε이 작아도 누적 실수는 지평 T의 제곱으로 는다(DAgger는 선형) (c) 왼쪽·오른쪽 회피 시연을 평균하면 장애물로 간다</figcaption></figure>
+<p class="take"><b>핵심:</b> 학습 때 본 상태와 실행 때 만나는 상태가 달라지는 것이 분포 이동이다.</p>
+<div class="foot" data-foot><p>[1] Ross 외, DAgger — arXiv:1011.0686</p></div>
+<aside>행동 복제는 시연을 지도학습 자료로 보고 로그 가능도를 키운다. 가장 쉬운 출발점이지만 두 가지 함정이 있다. 첫째는 분포 이동이다. 한 번 틀리면 시연자가 가 본 적 없는 상태에 들어가고, 거기서 더 틀린다. 실수 확률 ε에 대해 누적 실수가 εT²로 커진다는 것이 고전 결과다. DAgger는 학습한 정책으로 굴려 만난 상태에서 전문가에게 다시 라벨을 받아 이를 εT로 줄인다. 둘째는 다봉 문제다. 왼쪽으로 피한 시연과 오른쪽으로 피한 시연을 평균하면 가운데로 간다. 이를 피하려면 혼합 분포, diffusion, flow처럼 여러 모드를 담는 정책을 쓴다.</aside>
+</section>
+<section id="imitation-pc" class="t">
+<div class="head"><p class="kicker">1 · 장단점</p><h2>모방은 빠르지만 시연자의 실력과 시연 범위를 넘지 못한다</h2></div>
+<table style="font-size:28px">
+<tr><th>방법</th><th>어떻게</th><th>장점</th><th>단점</th></tr>
+<tr><td>행동 복제(BC)</td><td>시연 (s, a)에 지도학습</td><td class="good">보상·시뮬레이터가 필요 없다. 가장 빠르다</td><td class="bad">분포 이동, 다봉 평균, 시연자보다 못 나아진다</td></tr>
+<tr><td>DAgger</td><td>내 정책이 만난 상태에 전문가가 다시 라벨</td><td class="good">분포 이동을 직접 줄인다</td><td class="bad">언제든 물어볼 전문가가 필요하다</td></tr>
+<tr><td>역강화학습(IRL)</td><td>시연이 최적이 되는 보상을 찾고 그 보상으로 RL</td><td class="good">보상은 새 환경에도 옮겨진다</td><td class="bad">안쪽에 RL을 돌려 비싸다. 보상이 하나로 정해지지 않는다</td></tr>
+<tr><td>BC + RL 미세조정</td><td>BC로 시작하고 보상으로 다듬는다</td><td class="good">탐색이 쉬워지고 시연을 넘을 수 있다</td><td class="bad">RL 단계에서 BC의 장점을 잃지 않게 묶어야 한다</td></tr>
+</table>
+<aside>현대 로봇 학습은 대부분 마지막 줄의 길을 간다. 시연으로 그럴듯한 정책을 먼저 만들고, 강화학습으로 다듬는다. 시연만으로는 시연자의 한계를 넘을 수 없고, 강화학습만으로는 보상이 드문 문제에서 탐색이 너무 오래 걸리기 때문이다. 미세조정 단계에서는 시연 정책과의 KL 거리나 모방 손실을 함께 걸어, 처음 배운 능력을 잃지 않게 한다. 역강화학습은 5장에서 그림과 함께 다시 본다.</aside>
+</section>
+<section id="d2" class="t dark divider">
+<p class="kicker">2 · 정책 기울기</p>
+<h2>잘된 궤적의 확률은 올리고<br>못된 궤적의 확률은 내린다</h2>
+<p class="lead">보상도 환경도 미분하지 않는다. 대가는 큰 분산이고, 이 장은 그 분산을 줄이는 요령들이다.</p>
+<aside>둘째 장은 정책을 직접 고치는 방법이다. 먼저 로그 미분 요령이라는 배경지식을 보고, REINFORCE, 기준선, 진화 전략, critic과 GAE, 그리고 PPO까지 간다. 모두 같은 질문에 답한다. 표본이 적을 때 기울기의 분산을 어떻게 줄이고, 한 번에 얼마나 고쳐도 되는가.</aside>
+</section>
+<section id="logtrick" class="t">
+<div class="head"><p class="kicker">2 · 배경지식 · 로그 미분 요령</p><h2>로그 미분 요령 하나로 환경을 미분하지 않고도 기울기를 얻는다</h2></div>
+<div class="math">$$\nabla_\theta p_\theta(\tau) = p_\theta(\tau)\, \nabla_\theta \log p_\theta(\tau) \quad\Rightarrow\quad \nabla_\theta J = \mathbb E_{\tau\sim p_\theta}\big[\nabla_\theta \log p_\theta(\tau)\, R(\tau)\big]$$</div>
+<div class="math">$$\nabla_\theta \log p_\theta(\tau) = \nabla_\theta \Big[\log p(s_1) + \sum_t \log \pi_\theta(a_t\mid s_t) + \sum_t \log p(s_{t+1}\mid s_t,a_t)\Big] = \sum_t \nabla_\theta \log \pi_\theta(a_t\mid s_t)$$</div>
+<div class="grid2">
+<div class="card gr"><span class="tag gr">좋은 소식</span><h3>전이 확률이 기울기에서 사라진다</h3><p>θ와 무관한 항은 미분하면 0이다. 그래서 환경 모델을 몰라도, 보상이 미분 불가여도 된다.</p></div>
+<div class="card or"><span class="tag or">나쁜 소식</span><h3>궤적 몇 개로 기댓값을 근사한다</h3><p>R(τ)는 운에 크게 흔들리므로 기울기 추정의 분산이 크다.</p></div>
+</div>
+<aside>이 요령은 점수 함수 추정기, 또는 가능도 비율 방법이라고도 부른다. 핵심은 확률의 기울기를 확률 곱하기 로그 확률의 기울기로 바꾸면, 기댓값 형태가 유지되어 표본 평균으로 근사할 수 있다는 것이다. 궤적 확률의 로그를 펼치면 시작 분포와 전이 확률은 θ에 의존하지 않으므로 사라지고, 정책의 로그 확률만 남는다. 이것이 정책 기울기가 모델 없이 동작하는 이유다. 같은 요령이 변분 추론과 진화 전략에도 나온다.</aside>
+</section>
+<section id="reinforce" class="t">
+<div class="head"><p class="kicker">2 · REINFORCE</p><h2>기준선을 빼면 기울기의 평균은 그대로, 분산은 크게 준다</h2></div>
+<div class="math">$$\nabla_\theta J(\theta) \approx \frac1N \sum_{i} \sum_t \nabla_\theta \log \pi_\theta(a_t^i \mid s_t^i)\, \big(\hat Q_t^i - b(s_t^i)\big)$$</div>
+<figure><img src="../../assets/figs/rl_r03_reinforce.webp" style="height:400px"><figcaption>(a) 표본 16개로 낸 기울기 추정: 기준선이 없으면 표준편차 5.8, 배치 평균을 빼면 1.6. 평균은 둘 다 참값 4 (b) seed 20개의 학습 곡선</figcaption></figure>
+<div class="grid2">
+<div class="card gr"><span class="tag gr">장점</span><p>구현이 몇 줄이다. 이산·연속 행동 모두 된다. 편향이 없다.</p></div>
+<div class="card or"><span class="tag or">단점</span><p>분산이 커서 표본이 많이 든다. on-policy라 한 번 고치면 자료를 버린다.</p></div>
+</div>
+<aside>REINFORCE는 로그 미분 요령을 그대로 쓴 가장 단순한 정책 기울기다. 분산을 줄이는 요령은 둘이다. 첫째는 인과성이다. 시각 t의 행동은 그 이전의 보상에 영향을 줄 수 없으므로 t 이후의 보상만 곱한다. 둘째는 기준선이다. 행동에 의존하지 않는 값을 빼도 기울기의 기댓값은 변하지 않는다는 것을 증명할 수 있다. 가장 흔한 기준선은 평균 수익이나 학습한 상태 가치다. 그림 (a)에서 두 히스토그램의 중심이 같고 폭만 다르다는 것이 그 증거다.</aside>
+</section>
+<section id="es" class="t">
+<div class="head"><p class="kicker">2 · 진화 전략</p><h2>진화 전략은 파라미터에 잡음을 주고 점수만으로 방향을 찾는다</h2></div>
+<div class="math">$$\nabla_\theta\, \mathbb E_{\epsilon\sim\mathcal N(0,I)} \big[ F(\theta + \sigma\epsilon) \big] \approx \frac{1}{n\sigma} \sum_{i=1}^n F(\theta+\sigma\epsilon_i)\, \epsilon_i$$</div>
+<div class="flow">
+<div class="step"><h3>① 흔들기</h3><p>파라미터 θ 주변에 잡음 ε를 n개 뽑는다</p></div><p class="arrow">→</p>
+<div class="step"><h3>② 굴리기</h3><p>각 θ+σε로 에피소드를 돌려 점수 F를 얻는다</p></div><p class="arrow">→</p>
+<div class="step"><h3>③ 기울이기</h3><p>점수가 높았던 잡음 쪽으로 θ를 옮긴다</p></div>
+</div>
+<div class="grid2">
+<div class="card gr"><span class="tag gr">장점</span><ul><li>점수가 계단 함수(성공/실패)여도 된다</li><li>에피소드 단위라 신용 할당·할인이 필요 없다</li><li>작업자 사이에 잡음 seed만 주고받아 병렬이 쉽다</li></ul></div>
+<div class="card or"><span class="tag or">단점</span><ul><li>파라미터가 많으면 필요한 표본이 크게 는다</li><li>스텝별 정보를 버려 표본 효율이 가장 낮은 편이다</li><li>작은 정책에 잘 맞고 큰 신경망에는 불리하다</li></ul></div>
+</div>
+<div class="foot" data-foot><p>[1] Salimans 외, Evolution Strategies as a Scalable Alternative to RL — arXiv:1703.03864</p></div>
+<aside>진화 전략은 행동 대신 정책 파라미터에 잡음을 준다. 그러면 정책 전체를 한 덩어리로 보고 에피소드 점수만으로 기울기를 근사할 수 있다. 파라미터 공간의 REINFORCE라고 보면 된다. 미분할 수 없는 점수, 긴 지평, 쉬운 병렬화가 장점이다. 대신 차원이 커질수록 무작위 방향 하나가 담는 정보가 줄어 표본이 많이 든다. 시뮬레이터가 아주 싸고 정책이 작을 때 좋은 선택이다.</aside>
+</section>
+<section id="gae" class="t">
+<div class="head"><p class="kicker">2 · Actor-critic과 GAE</p><h2>critic이 앞을 내다보면 분산은 줄고 편향이 생긴다</h2></div>
+<div class="cols">
+<div class="stack">
+<div class="math">$$\delta_t = r_t + \gamma V_\phi(s_{t+1}) - V_\phi(s_t)$$</div>
+<div class="math">$$\hat A_t^{\mathrm{GAE}(\lambda)} = \sum_{l \ge 0} (\gamma \lambda)^l\, \delta_{t+l}$$</div>
+<ul><li><b>actor</b>는 정책 π, <b>critic</b>은 가치 V를 배운다</li><li>\(\lambda = 0\): 한 스텝 TD — 분산 작고 편향 있음</li><li>\(\lambda = 1\): 몬테카를로 — 편향 없고 분산 큼</li></ul>
+</div>
+<figure><img src="../../assets/figs/rl_r04_gae.webp" style="height:430px"><figcaption>21칸 무작위 보행에서 일부러 틀리게 만든 critic으로 잰 λ별 이점 추정의 편향과 분산. 흔히 0.95 안팎을 쓴다</figcaption></figure>
+</div>
+<div class="foot" data-foot><p>[1] Schulman 외, GAE — arXiv:1506.02438</p></div>
+<aside>REINFORCE의 수익 대신 critic이 낸 이점을 쓰면 actor-critic이 된다. 한 스텝 TD 오차 δ는 분산이 작지만, critic이 틀리면 그 오차가 그대로 편향이 된다. GAE는 TD 오차를 λ로 지수 가중해 더해서 한 스텝과 몬테카를로 사이를 연속적으로 고른다. 실무 팁 하나는 비대칭 critic이다. 배포할 때는 actor만 쓰므로, 시뮬레이션에서 학습할 때 critic에게는 센서로 볼 수 없는 정답 정보를 줘도 된다.</aside>
+</section>
+<section id="ppo" class="t">
+<div class="head"><p class="kicker">2 · TRPO와 PPO</p><h2>PPO는 확률 비율을 잘라 한 번에 너무 멀리 가지 않게 한다</h2></div>
+<div class="math">$$L^{\mathrm{CLIP}}(\theta) = \mathbb E_t \Big[ \min\big( \rho_t \hat A_t,\ \operatorname{clip}(\rho_t, 1-\epsilon, 1+\epsilon)\, \hat A_t \big) \Big], \qquad \rho_t = \frac{\pi_\theta(a_t\mid s_t)}{\pi_{\mathrm{old}}(a_t\mid s_t)}$$</div>
+<figure><img src="../../assets/figs/rl_r05_ppo.webp" style="height:360px"><figcaption>(a)(b) ε = 0.2의 자른 목표: 이점이 양이면 1+ε에서, 음이면 1−ε에서 더 밀지 않는다 (c) 같은 KL 거리라도 파라미터 거리는 방향마다 다르다</figcaption></figure>
+<div class="grid2">
+<div class="card gr"><span class="tag gr">장점</span><p>구현이 쉽고 하이퍼파라미터에 덜 민감하다. 병렬 시뮬과 잘 맞아 보행·조작·언어 모델 미세조정의 표준이 됐다.</p></div>
+<div class="card or"><span class="tag or">단점</span><p>여전히 on-policy라 표본 효율이 낮다. 로그 확률이 필요해 diffusion·flow 정책에 바로 쓰기 어렵다.</p></div>
+</div>
+<div class="foot" data-foot><p>[1] TRPO — arXiv:1502.05477 · [2] PPO — arXiv:1707.06347</p></div>
+<aside>정책을 한 번에 너무 많이 바꾸면 옛 정책으로 모은 표본이 새 정책을 대표하지 못해 학습이 무너진다. TRPO는 옛 정책과의 KL 거리를 제약으로 걸고 켤레 기울기와 선 탐색으로 푼다. PPO는 제약 대신 비율을 1±ε 범위로 잘라 같은 효과를 근사한다. 그 덕에 같은 배치로 여러 번 갱신해도 안전하다. 그림 (c)는 왜 파라미터 거리가 아니라 분포 거리로 보폭을 재야 하는지를 보여 준다.</aside>
+</section>
+<section id="pg-pc" class="t">
+<div class="head"><p class="kicker">2 · 장단점</p><h2>정책 기울기 계열은 안정성을 얻는 대신 표본을 많이 쓴다</h2></div>
+<table style="font-size:28px">
+<tr><th>방법</th><th>기울기 신호</th><th>장점</th><th>단점</th></tr>
+<tr><td>REINFORCE</td><td>몬테카를로 수익 − 기준선</td><td class="good">가장 단순, 편향 없음</td><td class="bad">분산이 매우 크다</td></tr>
+<tr><td>진화 전략</td><td>파라미터 잡음 × 점수</td><td class="good">미분 불가 점수, 병렬 쉬움</td><td class="bad">파라미터가 많으면 비효율</td></tr>
+<tr><td>A2C + GAE</td><td>critic의 이점</td><td class="good">분산이 작고 매 스텝 갱신</td><td class="bad">critic 오차가 편향이 된다</td></tr>
+<tr><td>TRPO</td><td>KL 제약 아래 이점</td><td class="good">단조 개선에 가까운 보장</td><td class="bad">2차 계산이 무겁고 구현이 복잡</td></tr>
+<tr><td>PPO</td><td>자른 비율 × 이점</td><td class="good">쉽고 튼튼하다, 사실상 표준</td><td class="bad">on-policy, 로그 확률 필요</td></tr>
+</table>
+<p class="take"><b>공통 장점:</b> 연속 행동과 확률적 정책을 자연스럽게 다룬다. <b>공통 단점:</b> 방금 모은 자료만 쓰므로 표본이 많이 든다.</p>
+<aside>정책 기울기 계열은 목표를 직접 최적화하므로 수렴이 안정적인 편이다. 대신 on-policy라서 정책이 바뀌면 이전 자료를 버린다. 시뮬레이터가 빠르고 병렬로 수천 개 돌릴 수 있다면 이 단점은 크지 않다. 실물 로봇처럼 표본이 비싸다면 다음 장의 off-policy 방법이나 4장의 모델 기반 방법을 본다.</aside>
+</section>
+<section id="d3" class="t dark divider">
+<p class="kicker">3 · 가치 기반과 오프라인</p>
+<h2>가치를 배우면 자료를 다시 쓸 수 있지만<br>max가 잡음을 과대평가한다</h2>
+<p class="lead">새 상호작용 없이 모은 자료로만 배우면 그 오차를 바로잡을 길이 없다.</p>
+<aside>셋째 장은 가치를 배워 행동을 고르는 쪽이다. Q-learning은 off-policy라 어떤 정책이 모은 자료든 다시 쓸 수 있다. 대신 max 연산이 과대평가를 낳는다. 고정된 자료로만 배우는 오프라인 RL에서는 이 문제가 가장 크게 드러나고, AWR·CQL·IQL 세 가지 해법을 비교한다.</aside>
+</section>
+<section id="qlearning" class="t">
+<div class="head"><p class="kicker">3 · Q-learning</p><h2>Q-learning은 Bellman 최적 식을 맞추고, max는 가치를 과대평가한다</h2></div>
+<div class="math">$$\mathcal L(\phi) = \mathbb E_{(s, a, r, s') \sim \mathcal D} \Big[ \big( Q_\phi(s, a) - r - \gamma \max_{a'} Q_{\bar\phi}(s', a') \big)^2 \Big]$$</div>
+<figure><img src="../../assets/figs/rl_r06_qlearning.webp" style="height:400px"><figcaption>(a) 표 Q-learning의 학습 곡선 (b) 수렴한 가치와 정책 (c) 참 Q가 모두 0이어도 추정에 잡음이 있으면 max는 위로 치우친다. 행동이 많을수록 더 심하다. Double Q는 이를 거의 없앤다</figcaption></figure>
+<div class="grid2">
+<div class="card gr"><span class="tag gr">장점</span><p>off-policy라 쌓아 둔 자료를 계속 다시 쓴다. 표본 효율이 높다.</p></div>
+<div class="card or"><span class="tag or">단점</span><p>신경망과 함께면 수렴 보장이 없다. 연속 행동에서는 max를 풀기 어렵다.</p></div>
+</div>
+<aside>Q-learning은 Bellman 최적 식의 고정점을 찾는다. 목표값에 max가 있으므로 데이터를 모은 정책이 무엇이든 상관없다. 이것이 off-policy다. 문제는 max의 과대평가다. 추정값마다 잡음이 있으면, 그중 최댓값은 평균적으로 참 최댓값보다 크다. 이 과대평가가 부트스트랩으로 퍼지면 학습이 발산할 수 있다. Double Q는 행동을 고르는 망과 값을 매기는 망을 나눠서 이 치우침을 줄인다.</aside>
+</section>
+<section id="dqn" class="t">
+<div class="head"><p class="kicker">3 · DQN</p><h2>DQN은 세 가지 장치로 신경망 Q-learning을 안정시킨다</h2></div>
+<div class="grid3">
+<div class="card bl"><span class="tag bl">경험 재생</span><h3>자료를 버퍼에 쌓고 무작위로 뽑는다</h3><p>연속된 표본의 상관을 끊고, 한 번 모은 자료를 여러 번 쓴다.</p></div>
+<div class="card bl"><span class="tag bl">목표망</span><h3>목표값은 느리게 바뀌는 사본 \(Q_{\bar\phi}\)로 계산한다</h3><p>맞출 과녁이 매 스텝 움직이는 것을 막는다.</p></div>
+<div class="card bl"><span class="tag bl">Double Q</span><h3>행동 고르기와 값 매기기를 다른 망이 한다</h3><p>max의 과대평가를 줄인다(Double DQN).</p></div>
+</div>
+<div class="grid2">
+<div class="card gr"><span class="tag gr">장점</span><ul><li>화면 픽셀만 보고 Atari 게임 여럿을 한 구조로 배웠다</li><li>off-policy라 표본 효율이 높다</li></ul></div>
+<div class="card or"><span class="tag or">단점</span><ul><li>이산 행동 전용이다(연속은 DDPG·TD3·SAC)</li><li>하이퍼파라미터에 민감하고 seed마다 결과가 크게 갈린다</li></ul></div>
+</div>
+<p class="take"><b>함께 기억할 것:</b> 함수 근사 + 부트스트랩 + off-policy가 겹치면 발산할 수 있다("치명적 세 가지").</p>
+<div class="foot" data-foot><p>[1] DQN — arXiv:1312.5602 · [2] Double DQN — arXiv:1509.06461 · [3] TD3 — arXiv:1802.09477</p></div>
+<aside>DQN은 표 대신 신경망으로 Q를 표현하면서 생기는 불안정을 공학 장치로 막았다. 경험 재생은 자료 사이의 상관을 끊고 재사용을 늘린다. 목표망은 회귀의 과녁을 일정 시간 고정한다. Double Q는 과대평가를 줄인다. Sutton과 Barto는 함수 근사, 부트스트랩, off-policy 학습이 함께 있으면 발산할 수 있다는 점을 deadly triad라고 불렀다. 연속 행동으로 넓힌 것이 DDPG와 TD3이고, TD3는 두 critic 중 작은 값을 써서 과대평가를 더 줄인다.</aside>
+</section>
+<section id="onoff" class="t">
+<div class="head"><p class="kicker">3 · on-policy와 off-policy</p><h2>on-policy는 방금 모은 자료만, off-policy는 쌓아 둔 자료도 쓴다</h2></div>
+<div class="cols">
+<div class="stack">
+<h3>on-policy (REINFORCE, PPO)</h3>
+<div class="flow"><div class="step"><h3>지금 정책으로 수집</h3></div><p class="arrow">→</p><div class="step"><h3>갱신</h3></div><p class="arrow">→</p><div class="step"><h3>자료 버림</h3></div></div>
+<div class="card gr"><span class="tag gr">장점</span><p>목표를 직접 최적화해 안정적이다.</p></div>
+<div class="card or"><span class="tag or">단점</span><p>표본을 한 번(또는 몇 번)만 쓴다.</p></div>
+</div>
+<div class="stack">
+<h3>off-policy (Q-learning, SAC, TD3)</h3>
+<div class="flow"><div class="step"><h3>아무 정책으로 수집</h3></div><p class="arrow">→</p><div class="step"><h3>재생 버퍼</h3></div><p class="arrow">→</p><div class="step"><h3>여러 번 갱신</h3></div></div>
+<div class="card gr"><span class="tag gr">장점</span><p>표본 효율이 높고 시연·옛 자료도 섞을 수 있다.</p></div>
+<div class="card or"><span class="tag or">단점</span><p>critic이 자료 밖에서 틀리면 막을 장치가 따로 필요하다.</p></div>
+</div>
+</div>
+<p class="take"><b>핵심:</b> 이 구분은 "누가 모은 자료로 배워도 되나"의 질문이다. 끝까지 가면 새 수집이 없는 오프라인 RL이 된다.</p>
+<aside>on-policy 방법은 학습하는 정책이 직접 모은 자료로만 기울기를 낸다. 정책이 바뀌면 옛 자료는 다른 분포에서 온 것이 되어 쓸 수 없다. 중요도 가중으로 고칠 수는 있지만 비율이 커지면 분산이 폭발한다. off-policy 방법은 Bellman 식의 목표값이 데이터를 모은 정책과 무관하므로 옛 자료를 계속 쓸 수 있다. 수집을 아예 멈추고 고정된 자료만 쓰면 다음 장의 오프라인 RL이다.</aside>
+</section>
+<section id="offline" class="t">
+<div class="head"><p class="kicker">3 · 오프라인 RL</p><h2>오프라인 RL은 자료 밖 행동의 가치를 믿지 않는 법을 배운다</h2></div>
+<div class="cols">
+<div class="stack">
+<div class="card bl"><span class="tag bl">정책 제약</span><h3>AWR <span class="muted">Advantage-Weighted Regression</span></h3><p>자료에 있는 행동만, 좋았던 만큼 무게를 실어 따라 한다</p></div>
+<div class="card or"><span class="tag or">보수적 가치</span><h3>CQL <span class="muted">Conservative Q-Learning</span></h3><p>Q를 배울 때 자료 밖 행동의 값을 벌점으로 끌어내린다</p></div>
+<div class="card gr"><span class="tag gr">표본 안 기댓값</span><h3>IQL <span class="muted">Implicit Q-Learning</span></h3><p>자료 밖 행동은 묻지 않고, 자료 안 행동의 높은 쪽 값으로 배운다</p></div>
+</div>
+<figure><img src="../../assets/figs/rl_r10_offline.webp" style="height:400px"><figcaption>한 상태의 오프라인 문제. 그냥 맞춘 Q는 자료 없는 a=−2.00을 고르고 참 보상은 0.00이다. 보수적 Q는 +0.15(참 0.99), AWR은 +0.12(참 0.98)를 고른다</figcaption></figure>
+</div>
+<p class="take"><b>핵심:</b> 새로 시도해 볼 수 없으니, 자료가 없는 곳에서 회귀가 내놓은 "높은 값"을 고치지 못한다.</p>
+<div class="foot" data-foot><p>[1] AWR — arXiv:1910.00177 · [2] CQL — arXiv:2006.04779 · [3] IQL — arXiv:2110.06169</p></div>
+<aside>오프라인 RL은 자료를 모은 정책보다 나은 정책을 같은 자료로 찾는다. 의료 기록, 주행 로그, 로봇 시연처럼 새로 실험하기 어렵거나 위험한 곳에서 쓴다. Q-learning을 그대로 쓰면 max가 자료에 없는 행동의 틀린 값을 고르고, 해 볼 수 없으니 그 믿음이 고쳐지지 않는다. 그림의 빨간 곡선이 그 실패다. 세 방법은 이 행동을 다루는 위치가 다르다. AWR은 정책에서, CQL과 IQL은 가치에서 막는다.</aside>
+</section>
+<section id="awr" class="t">
+<div class="head"><p class="kicker">3 · AWR</p><h2>AWR은 이점의 지수로 가중한 행동 복제다</h2></div>
+<div class="math">$$\pi_{\mathrm{new}} = \arg\max_\pi\ \mathbb E_{(s, a) \sim \mathcal D} \Big[ \log \pi(a \mid s)\, \exp\big( A(s, a) / \beta \big) \Big]$$</div>
+<div class="cols">
+<div class="card bl"><span class="tag bl">숫자로</span><h3>이점 +0.3, 0, −0.3, β = 0.15</h3><p>가중은 7.39, 1, 0.135이고 정규화하면 <b>0.867, 0.117, 0.016</b>이다.</p><p>좋은 행동을 거의 다 따라 하고 나쁜 행동은 거의 무시한다.</p></div>
+<div class="stack">
+<div class="card gr"><span class="tag gr">장점</span><p>지도학습 손실에 가중치만 곱하면 된다. 어떤 정책 구조(가우시안, diffusion, flow)에도 붙는다. 자료 밖 행동을 만들지 않아 안전하다.</p></div>
+<div class="card or"><span class="tag or">단점</span><p>자료에 없는 더 좋은 행동은 끝내 찾지 못한다. β가 작으면 소수 표본에 몰려 분산이 커진다.</p></div>
+</div>
+</div>
+<aside>KL 제약 아래 최적 정책을 구하면 자료 정책에 이점의 지수를 곱한 꼴이 나온다. 그래서 자료의 행동을 그 지수로 가중해 행동 복제하면 최적 정책에 투영된다. 이것이 AWR이다. β는 온도다. 작으면 가장 좋은 행동에만 몰리고, 크면 그냥 행동 복제에 가까워진다. 가중 회귀라는 꼴이 단순해서, 로그 확률을 계산하기 어려운 생성 정책을 강화학습으로 다듬을 때 자주 쓰인다.</aside>
+</section>
+<section id="cql" class="t">
+<div class="head"><p class="kicker">3 · CQL</p><h2>CQL은 자료 밖 행동의 Q를 벌점으로 끌어내린다</h2></div>
+<div class="math">$$\min_Q\ \mathcal L_{\mathrm{TD}}(Q) + \alpha \Big( \mathbb E_{s \sim \mathcal D} \Big[ \log \sum_a e^{Q(s, a)} \Big] - \mathbb E_{(s, a) \sim \mathcal D} \big[ Q(s, a) \big] \Big)$$</div>
+<div class="cols">
+<div class="card bl"><span class="tag bl">어떻게</span><h3>모든 행동은 누르고, 자료 행동은 올린다</h3><p>앞 항(soft max)은 Q가 큰 행동일수록 세게 누르고, 뒤 항은 자료에 있는 행동만 다시 올린다. 자료 안에서는 둘이 거의 상쇄되어 <b>자료 밖에서만 값이 내려간다.</b></p></div>
+<div class="card or"><span class="tag or">숫자로</span><h3>Q = 0.5, 0.8, 1.5 · 1.5인 a₃는 자료에 없다</h3><p>앞 항의 기울기는 softmax라 0.20, 0.27, 0.54다. 자료가 a₁과 a₂를 반씩 담으면 뒤 항은 0.5, 0.5, 0이다.</p><p>벌점만 보면 Q가 움직이는 방향은 <b>+0.30, +0.23, −0.54</b>다.</p></div>
+</div>
+<div class="grid2">
+<div class="card gr"><span class="tag gr">장점</span><p>Q가 참값보다 낮은 쪽(보수적)으로 배워져 자료 밖 행동에 속지 않는다.</p></div>
+<div class="card or"><span class="tag or">단점</span><p>α가 크면 좋은 새 행동도 깎인다. 연속 행동은 앞 항을 표본으로 근사해 계산이 든다.</p></div>
+</div>
+<div class="foot" data-foot><p>[1] Kumar 외, CQL — NeurIPS 2020, arXiv:2006.04779</p></div>
+<aside>CQL은 Conservative Q-Learning, 보수적인 Q 학습이다. 보통의 Q-learning 손실에 벌점 하나를 더한다. 벌점의 앞 항은 모든 행동에 걸친 로그합지수, 즉 부드러운 최댓값이다. 이것을 줄이면 Q가 큰 행동부터 내려간다. 뒤 항은 자료에 실제로 있는 행동의 Q를 다시 올린다. 숫자 예에서 a₃는 자료에 없는데 Q가 1.5로 가장 높았다. 벌점의 기울기만 보면 a₃가 내려가고 자료의 두 행동은 오히려 올라간다. 손잡이는 α 하나다.</aside>
+</section>
+<section id="iql" class="t">
+<div class="head"><p class="kicker">3 · IQL</p><h2>IQL은 자료 밖 행동을 한 번도 묻지 않고 가치를 배운다</h2></div>
+<div class="math">$$\mathcal L_V = \mathbb E_{\mathcal D} \big[ L_2^\tau \big( Q(s, a) - V(s) \big) \big],\ \ L_2^\tau(u) = \lvert \tau - \mathbb 1(u < 0) \rvert\, u^2, \qquad \mathcal L_Q = \mathbb E_{\mathcal D} \big[ \big( r + \gamma V(s') - Q(s, a) \big)^2 \big]$$</div>
+<div class="cols">
+<div class="card bl"><span class="tag bl">세 단계</span><h3>V, Q, 정책을 차례로 배운다</h3><p>① V는 자료 안 행동들의 Q 중 높은 쪽(expectile τ)을 맞춘다.</p><p>② Q의 목표는 r + γV(s′)다. max가 없으니 자료 밖 행동을 묻지 않는다.</p><p>③ 정책은 AWR처럼 exp(A/β)로 가중해 따라 한다.</p></div>
+<div class="card or"><span class="tag or">배경지식 · expectile</span><h3>자료 행동의 Q = 0.2, 0.5, 0.9</h3><p>τ = 0.5면 평균 0.53, τ = 0.7이면 0.65, τ = 0.9면 0.80이다.</p><p>τ를 1로 올릴수록 자료 안의 최댓값 0.9에 다가간다. <b>자료 밖의 더 큰 값은 처음부터 계산에 없다.</b></p></div>
+</div>
+<div class="grid2">
+<div class="card gr"><span class="tag gr">장점</span><p>학습이 안정적이고 구현이 단순하다. 오프라인으로 배운 뒤 온라인 미세조정으로 이어 가기 쉽다.</p></div>
+<div class="card or"><span class="tag or">단점</span><p>자료에 없는 행동은 끝까지 고르지 못한다. τ와 β 두 손잡이를 맞춰야 한다.</p></div>
+</div>
+<div class="foot" data-foot><p>[1] Kostrikov·Nair·Levine, IQL — ICLR 2022, arXiv:2110.06169</p></div>
+<aside>IQL은 Implicit Q-Learning이다. Q-learning 목표의 max가 문제라면, max를 아예 쓰지 않는다. 대신 상태 가치 V를 따로 두고, 자료에 있는 행동들의 Q 가운데 높은 쪽을 V가 맞추게 한다. 이때 쓰는 것이 expectile이다. 평균은 제곱 오차를 최소화하는 값이고, expectile은 양쪽 오차에 다른 무게를 주어 최소화하는 값이다. τ가 0.5면 평균, 1에 가까우면 최댓값 쪽이다. Q는 다음 상태의 V로 배우므로 학습 내내 자료 밖 행동의 Q를 계산하지 않는다.</aside>
+</section>
+<section id="offline-cmp" class="t">
+<div class="head"><p class="kicker">3 · 세 방법 비교</p><h2>자료 밖 행동을 AWR은 피하고, CQL은 깎고, IQL은 묻지 않는다</h2></div>
+<table style="font-size:28px">
+<tr><th>방법</th><th>자료 밖 행동을 다루는 법</th><th>배우는 것</th><th>손잡이</th><th>약점</th></tr>
+<tr><td>AWR</td><td>정책이 자료의 행동만 이점으로 가중해 따라 한다</td><td>V, 정책</td><td>β: 작을수록 좋은 행동에 몰린다</td><td>자료보다 멀리 가지 못한다</td></tr>
+<tr><td>CQL</td><td>Q 학습에 벌점을 더해 자료 밖 값을 깎는다</td><td>Q, 정책</td><td>α: 벌점 세기</td><td>α가 크면 좋은 새 행동도 깎인다</td></tr>
+<tr><td>IQL</td><td>Q와 V를 자료 안 행동만으로 배운다</td><td>Q, V, 정책</td><td>τ, β</td><td>자료에 없는 행동은 고르지 못한다</td></tr>
+</table>
+<div class="card gy"><span class="tag">비유</span><p>지도에 없는 길을 두고, AWR은 가 본 길만 다시 고르고, CQL은 안 가 본 길에 감점을 주고, IQL은 안 가 본 길에는 점수를 매기지 않는다.</p></div>
+<p class="take"><b>고르는 법:</b> 자료가 좋고 단순함이 중요하면 AWR·IQL, 자료가 섞여 있고 과대평가가 걱정되면 CQL부터 시도한다.</p>
+<aside>세 방법을 한 표로 놓았다. 모두 같은 문제, 즉 자료에 없는 행동의 값을 믿지 않으려는 방법이다. AWR은 정책 쪽에서 막는다. CQL은 Q 자체를 자료 밖에서 낮게 배운다. IQL도 가치 쪽이지만 깎는 대신 묻지 않는다. 오프라인 RL의 공통 한계는 자료의 범위다. 자료에 좋은 행동이 전혀 없다면 어떤 방법도 그것을 만들어 내지 못한다. 그래서 오프라인으로 시작해 온라인 미세조정으로 넘어가는 순서가 흔하다.</aside>
+</section>
+<section id="d4" class="t dark divider">
+<p class="kicker">4 · 추론으로서의 제어와 모델 기반</p>
+<h2>최적 행동 찾기를<br>확률 추론으로 다시 본다</h2>
+<p class="lead">엔트로피와 온도가 탐색을 정하고, 모델을 알면 미리 굴려 보고 고를 수 있다. 대신 모델의 오차를 떠안는다.</p>
+<aside>넷째 장은 같은 문제를 다른 눈으로 본다. 제어를 확률 추론으로 보면 최대 엔트로피 강화학습과 SAC, 그리고 표본 기반 MPC인 MPPI가 같은 식에서 나온다. 이어서 KL의 방향과 온도라는 배경지식, 고전 최적 제어인 LQR, 그리고 모델을 배워 쓰는 모델 기반 강화학습의 장단점을 본다.</aside>
+</section>
+<section id="soft" class="t">
+<div class="head"><p class="kicker">4 · 최대 엔트로피 RL</p><h2>보상과 함께 엔트로피도 키우면 탐색과 여러 해가 함께 남는다</h2></div>
+<div class="cols">
+<div class="math">$$p(\tau \mid \text{최적}) \propto p(\tau)\, \exp\Big( \sum_t r(s_t, a_t) \Big)$$</div>
+<div class="math">$$J_{\mathrm{ent}}(\pi) = \mathbb E_\pi \Big[ \sum_t r + \alpha\, \mathcal H\big( \pi(\cdot \mid s_t) \big) \Big]$$</div>
+</div>
+<div class="grid2">
+<div class="card bl"><span class="tag bl">정책으로 근사</span><h3>SAC</h3><p>최적 정책은 \(\pi(a \mid s) \propto \exp(Q(s, a)/\alpha)\)다. off-policy actor-critic이다.</p><p><b>장점</b> 연속 행동에서 표본 효율과 안정성이 좋다. <b>단점</b> α 조정이 필요하다(자동 조정판이 흔하다).</p></div>
+<div class="card or"><span class="tag or">행동열을 직접 추론</span><h3>MPPI</h3><p>모델로 행동열 \(U_k\)를 굴려 \(w_k \propto \exp(-J_k/\lambda)\)로 평균한다. 학습이 없다.</p><p><b>장점</b> 비용이 미분 불가여도 된다. <b>단점</b> 모델이 필요하고 매 스텝 계산이 많다.</p></div>
+</div>
+<div class="foot" data-foot><p>[1] Levine, RL and Control as Inference — arXiv:1805.00909 · [2] SAC — arXiv:1801.01290 · [3] MPPI — arXiv:1509.01149</p></div>
+<aside>각 시각에 "이 스텝이 최적이다"라는 이진 변수를 두고 그 확률을 보상의 지수로 정하면, 최적 궤적의 사후분포가 나온다. 이 사후분포를 정책으로 근사하면 엔트로피 보너스가 붙은 최대 엔트로피 RL이 되고, SAC가 그 actor-critic 판이다. 정책을 배우지 않고 매 스텝 행동열을 직접 추론하면 MPPI가 된다. 엔트로피 항은 정책이 너무 일찍 한 행동에 확신하지 않게 해서 탐색을 유지한다.</aside>
+</section>
+<section id="kl" class="t">
+<div class="head"><p class="kicker">4 · 배경지식 · KL 발산</p><h2>KL의 방향이 "모두 덮기"와 "하나 고르기"를 가른다</h2></div>
+<div class="cols">
+<div class="math">$$D_{\mathrm{KL}}(p\,\Vert\,q) = \mathbb E_{x\sim p}\Big[\log \frac{p(x)}{q(x)}\Big]$$</div>
+<div class="stack"><p>항상 0 이상이고, p = q일 때만 0이다.</p><p>대칭이 아니다. \(D(p\Vert q) \ne D(q\Vert p)\).</p></div>
+</div>
+<figure><img src="../../assets/figs/rl_r07_kl.webp" style="height:360px"><figcaption>봉우리 둘인 참 분포 p를 가우시안 q 하나로 근사할 때 (a) 전방 KL은 두 모드를 다 덮는 넓은 q (b) 역방향 KL은 한 모드를 고르는 좁은 q</figcaption></figure>
+<div class="grid2">
+<div class="card bl"><span class="tag bl">전방 KL(p‖q)</span><p>최대 가능도·행동 복제가 이것을 줄인다. 모드 사이 빈 곳에도 확률을 둔다.</p></div>
+<div class="card or"><span class="tag or">역방향 KL(q‖p)</span><p>변분 추론·최대 엔트로피 RL이 이것을 줄인다. 안전하지만 다른 해를 잃는다.</p></div>
+</div>
+<aside>KL 발산은 두 분포가 얼마나 다른지 재는 양이다. 강화학습에서는 정책을 너무 많이 바꾸지 않게 하는 제약으로(TRPO, RLHF), 그리고 목표 분포를 근사하는 기준으로 자주 나온다. 방향에 따라 성격이 다르다. 전방 KL은 p가 확률을 둔 곳에 q가 0이면 무한대가 되므로 q가 모든 모드를 덮으려 한다. 역방향 KL은 q가 확률을 둔 곳에 p가 0이면 무한대가 되므로 q가 한 모드 안에 숨는다. 행동 복제의 평균 문제가 전방 KL의 모습이다.</aside>
+</section>
+<section id="temp" class="t">
+<div class="head"><p class="kicker">4 · 온도</p><h2>온도는 표본 몇 개 분량의 정보를 믿을지 정한다</h2></div>
+<div class="math">$$w_k = \frac{\exp(-J_k/\lambda)}{\sum_j \exp(-J_j/\lambda)}, \qquad N_{\mathrm{eff}} = \frac{1}{\sum_k w_k^2}$$</div>
+<figure><img src="../../assets/figs/rl_r08_mppi_temperature.webp" style="height:340px"><figcaption>넓고 얕은 골짜기, 좁고 깊은 골짜기, 가운데 언덕이 있는 비용. 같은 표본 64개를 세 온도로 가중했다(빨간 선이 가중 평균)</figcaption></figure>
+<div class="grid2">
+<div class="card bl"><span class="tag bl">λ = 0.03 · 낮은 온도</span><p>유효 표본 1.6개. 가장 좋은 표본 하나에 몰린다. 잡음에 휘둘린다.</p></div>
+<div class="card or"><span class="tag or">λ = 3 · 높은 온도</span><p>유효 표본 59.4개. 평균에 가까워져 두 골짜기 사이 언덕으로 갈 수 있다.</p></div>
+</div>
+<aside>온도는 softmax 가중의 날카로움을 정한다. 낮추면 최선의 표본 하나만 쓰는 탐욕 선택이 되고, 높이면 모든 표본의 평균에 가까워진다. 유효 표본 수는 가중이 몇 개의 표본에 퍼져 있는지를 재는 지표다. 같은 온도가 SAC의 α, AWR의 β, 볼츠만 탐색에도 나온다. 주의할 점은 온도가 비용의 크기와 함께 움직인다는 것이다. 비용을 10배로 키우면 온도를 10배로 낮춘 것과 같다.</aside>
+</section>
+<section id="lqr" class="t">
+<div class="head"><p class="kicker">4 · 배경지식 · 최적 제어</p><h2>모델이 선형이고 비용이 이차면 LQR이 최적 제어를 닫힌 꼴로 준다</h2></div>
+<div class="cols">
+<div class="math">$$x_{t+1} = A x_t + B u_t, \qquad \min_u \sum_t x_t^\top Q x_t + u_t^\top R u_t \ \Rightarrow\ u_t = -K x_t$$</div>
+</div>
+<figure><img src="../../assets/figs/rl_r18_lqr.webp" style="height:330px"><figcaption>이중 적분기(위치·속도)의 LQR. Q = diag(1, 0.1)에서 R을 바꾸면, R이 작을수록 입력을 세게 써서 빨리 원점에 간다</figcaption></figure>
+<div class="grid2">
+<div class="card gr"><span class="tag gr">장점</span><p>Riccati 식으로 정확한 최적해를 빠르게 얻는다. 표본이 필요 없다. 비선형 문제도 국소 선형화(iLQR)나 MPC로 넓힌다.</p></div>
+<div class="card or"><span class="tag or">단점</span><p>모델을 알아야 한다. 비용이 이차가 아니거나 접촉·충돌처럼 매끄럽지 않으면 바로 쓰기 어렵다.</p></div>
+</div>
+<aside>LQR은 강화학습이 생기기 전부터 있던 최적 제어의 기준점이다. 동역학이 선형이고 비용이 이차 형식이면, 최적 정책이 상태에 대한 선형 되먹임이라는 것을 증명할 수 있다. 이득 K는 Riccati 식을 거꾸로 풀어 얻는다. Q와 R의 비율이 "상태 오차를 얼마나 싫어하나"와 "입력을 얼마나 아끼나"를 맞바꾼다. 강화학습은 모델을 모르거나, 비용이 이런 매끄러운 꼴이 아닐 때 쓰는 일반화로 볼 수 있다.</aside>
+</section>
+<section id="model-based" class="t">
+<div class="head"><p class="kicker">4 · 모델 기반 RL</p><h2>계획기는 배운 모델이 틀린 곳을 찾아가 이용한다</h2></div>
+<figure><img src="../../assets/figs/rl_r09_model_based.webp" style="height:360px"><figcaption>(a) 자료 밖에서 모델 앙상블이 갈라진다 (b) 모델 하나는 자료 밖 a=−2.50을 골라 실제로 −2.06이 되고, 앙상블 평균−2σ는 참 최적과 같은 값을 낸다 (c) 한 스텝 오차가 작아도 길게 굴리면 쌓인다</figcaption></figure>
+<div class="grid3">
+<div class="card bl"><span class="tag bl">불확실성</span><h3>앙상블로 모르는 곳을 표시</h3><p>PETS</p></div>
+<div class="card bl"><span class="tag bl">짧은 rollout</span><h3>실제 상태에서 몇 스텝만 굴린다</h3><p>MBPO</p></div>
+<div class="card bl"><span class="tag bl">잠재 공간</span><h3>작은 잠재 상태에서 굴린다</h3><p>Dreamer, TD-MPC2</p></div>
+</div>
+<div class="foot" data-foot><p>[1] PETS — arXiv:1805.12114 · [2] MBPO — arXiv:1906.08253 · [3] Dreamer — arXiv:1912.01603 · [4] TD-MPC2 — arXiv:2310.16828</p></div>
+<aside>전이 모델을 배우면 실제 상호작용 없이 머릿속으로 굴려 볼 수 있어 표본 효율이 높다. 대신 계획기나 정책 최적화가 모델이 실제보다 좋게 보는 행동을 골라낸다. 오프라인 RL의 과대평가와 같은 문제다. 대책은 셋이다. 앙상블의 불일치로 모르는 곳을 표시해 비관적으로 평가하고, 오차가 쌓이지 않게 짧게만 굴리고, 관측 대신 작은 잠재 공간에서 굴린다.</aside>
+</section>
+<section id="mb-pc" class="t">
+<div class="head"><p class="kicker">4 · 장단점</p><h2>모델 기반은 표본을 아끼는 대신 모델 오차를 떠안는다</h2></div>
+<table style="font-size:29px">
+<tr><th></th><th>모델 없이(model-free)</th><th>모델 기반(model-based)</th></tr>
+<tr><td>표본 효율</td><td class="bad">낮다. 수백만 스텝이 흔하다</td><td class="good">높다. 상상으로 표본을 늘린다</td></tr>
+<tr><td>최종 성능</td><td class="good">충분히 배우면 높다</td><td class="bad">모델 오차가 상한이 되기 쉽다</td></tr>
+<tr><td>계산</td><td class="good">실행 때 가볍다(정책 한 번)</td><td class="bad">계획하면 매 스텝 무겁다</td></tr>
+<tr><td>새 목표로 옮기기</td><td class="bad">보상이 바뀌면 다시 배운다</td><td class="good">모델은 그대로, 비용만 바꿔 다시 계획한다</td></tr>
+<tr><td>해석·안전</td><td class="bad">정책이 왜 그랬는지 보기 어렵다</td><td class="good">예측 궤적을 보고 제약을 걸 수 있다</td></tr>
+</table>
+<p class="take"><b>실무:</b> 둘을 섞는다. 모델로 계획하고 끝 가치는 학습한 critic으로 채우거나(TD-MPC), 정책을 MPC의 초기 추측으로 쓴다.</p>
+<aside>표의 장단점은 경향이지 법칙이 아니다. 시뮬레이터가 빠르면 모델 없는 방법의 표본 비용은 크게 문제 되지 않는다. 실물 로봇처럼 표본이 비싸면 모델 기반이 유리하다. 모델을 손으로 알고 있는 경우, 예를 들어 바퀴 로봇의 운동학처럼, 계획 기반 제어기가 학습 없이도 잘 동작한다. 최근 방법은 대부분 둘을 섞어 각자의 약점을 메운다.</aside>
+</section>
+<section id="d5" class="t dark divider">
+<p class="kicker">5 · 보상과 생성 정책</p>
+<h2>보상을 어디서 얻고<br>어떤 정책에 넣을 것인가</h2>
+<p class="lead">보상 설계, 실패의 재활용, 시연에서 보상 찾기, 사람 선호, 생성 정책, 그리고 평균이 아닌 꼬리로 보는 안전.</p>
+<aside>다섯째 장은 알고리즘보다 앞에 있는 질문, 즉 보상을 다룬다. 보상을 잘못 설계하면 어떤 알고리즘도 엉뚱한 것을 배운다. 보상이 드물면 실패를 재활용하고, 보상을 쓰기 어려우면 시연이나 사람 선호에서 얻는다. 이어서 diffusion·flow 같은 생성 정책을 강화학습에 넣는 법과, 안전을 평균이 아니라 꼬리로 보는 법을 본다.</aside>
+</section>
+<section id="reward" class="t">
+<div class="head"><p class="kicker">5 · 보상 설계</p><h2>보상을 잘못 주면 에이전트는 의도가 아니라 숫자를 쫓는다</h2></div>
+<div class="grid2">
+<div class="card bl"><span class="tag bl">드문 보상</span><h3>성공하면 +1, 아니면 0</h3><p><b>장점</b> 의도를 정확히 말한다. 속일 틈이 적다.</p><p><b>단점</b> 우연히 성공하기 전까지 배울 신호가 없다.</p></div>
+<div class="card or"><span class="tag or">촘촘한 보상</span><h3>목표까지 거리가 줄면 +</h3><p><b>장점</b> 매 스텝 신호가 있어 빨리 배운다.</p><p><b>단점</b> 지름길을 찾는다(보상 해킹). 예: 제자리를 맴돌며 점수만 쌓기.</p></div>
+</div>
+<div class="math">$$r'(s,a,s') = r(s,a,s') + \gamma\,\Phi(s') - \Phi(s)$$</div>
+<p class="take"><b>안전한 길잡이:</b> 위처럼 잠재 함수 Φ의 차이로 더한 보상(potential-based shaping)은 최적 정책을 바꾸지 않는다.</p>
+<div class="foot" data-foot><p>[1] Ng·Harada·Russell, Policy invariance under reward transformations — ICML 1999</p></div>
+<aside>보상은 설계자가 에이전트에게 목표를 전하는 유일한 통로다. 드문 보상은 정직하지만 학습 신호가 없고, 촘촘한 보상은 학습이 빠르지만 에이전트가 설계자가 예상하지 못한 지름길을 찾는다. 이를 보상 해킹, 또는 명세 게이밍이라 부른다. 잠재 함수 기반 보상 조형은 상태의 함수 Φ의 차이만 더하므로, 한 궤적에서 더해진 값이 시작과 끝의 Φ로만 정해져 최적 정책이 바뀌지 않는다는 것이 증명되어 있다. 보상을 더하고 싶다면 이 꼴을 먼저 생각하자.</aside>
+</section>
+<section id="her" class="t">
+<div class="head"><p class="kicker">5 · Hindsight Experience Replay</p><h2>실패한 궤적도 "실제로 간 곳"을 목표로 붙이면 성공 시연이 된다</h2></div>
+<figure><img src="../../assets/figs/rl_r15_her.webp" style="height:420px"><figcaption>(a) 원래 목표 g에는 실패했지만, 실제로 지난 점 g′을 목표로 다시 붙이면 성공 사례가 된다 (b) 12칸 사슬, 목표 조건 Q-learning, seed 30개: 다시 붙이기가 학습을 앞당긴다</figcaption></figure>
+<div class="grid2">
+<div class="card gr"><span class="tag gr">장점</span><p>드문 보상 문제에서 보상 조형 없이 신호를 만든다. off-policy 방법 어디에나 붙는다.</p></div>
+<div class="card or"><span class="tag or">단점</span><p>목표를 입력으로 받는 정책(목표 조건 RL)이어야 한다. "목표"를 상태로 적을 수 있는 과제에만 맞는다.</p></div>
+</div>
+<div class="foot" data-foot><p>[1] Andrychowicz 외, Hindsight Experience Replay — arXiv:1707.01495</p></div>
+<aside>HER는 드문 보상 문제에 쓰는 간단하고 강력한 요령이다. 물체를 A로 옮기려다 B에 놓았다면, 그 궤적은 "B로 옮기기"의 성공 시연이다. 재생 버퍼에 원래 목표뿐 아니라 나중에 실제로 도달한 상태를 목표로 바꾼 사본을 함께 넣는다. 그러면 처음부터 많은 성공 사례가 생겨 학습이 시작된다. off-policy 학습이어야 목표를 바꾼 자료를 쓸 수 있다.</aside>
+</section>
+<section id="irl" class="t">
+<div class="head"><p class="kicker">5 · 역강화학습</p><h2>역강화학습은 시연을 보고 "무엇을 원했는가"를 거꾸로 찾는다</h2></div>
+<figure><img src="../../assets/figs/rl_r17_irl.webp" style="height:430px"><figcaption>(a) 시연 40개의 칸별 방문 수 (b) 참 보상(시연자만 안다) (c) MaxEnt IRL이 찾은 상태 보상. 목표가 가장 높고, 시연이 피한 쪽이 낮게 나온다</figcaption></figure>
+<div class="grid2">
+<div class="card gr"><span class="tag gr">장점</span><p>보상은 정책보다 짧고 옮기기 쉽다. 환경이 바뀌어도 같은 보상으로 다시 배울 수 있다.</p></div>
+<div class="card or"><span class="tag or">단점</span><p>같은 시연을 설명하는 보상이 여럿이다(모호성). 안쪽 고리에서 RL을 반복해 비싸다.</p></div>
+</div>
+<aside>행동 복제가 "무엇을 했나"를 따라 한다면, 역강화학습은 "왜 그렇게 했나"를 추정한다. 최대 엔트로피 IRL은 시연이 보상의 지수에 비례하는 확률로 나왔다고 보고, 시연의 상태 방문 빈도와 학습한 보상으로 굴린 정책의 방문 빈도가 같아지도록 보상을 고친다. 그림 (c)에서 시연이 한 번도 가지 않은 함정 칸의 값이 정확하지 않은 것이 모호성의 예다. 자료가 없는 곳은 보상도 알 수 없다. GAIL은 같은 생각을 판별기로 구현한 것이다.</aside>
+</section>
+<section id="rlhf" class="t">
+<div class="head"><p class="kicker">5 · RLHF, DPO, GRPO</p><h2>사람의 선호와 그룹 비교만으로도 언어 모델을 강화학습한다</h2></div>
+<div class="cols">
+<div class="math">$$\max_\pi\ \mathbb E \big[ r_\phi(x, y) \big] - \beta\, D_{\mathrm{KL}}\big( \pi \,\Vert\, \pi_{\mathrm{ref}} \big)$$</div>
+<div class="math">$$\hat A_i = \frac{r_i - \operatorname{mean}(r_1, \dots, r_G)}{\operatorname{std}(r_1, \dots, r_G)}$$</div>
+</div>
+<figure><img src="../../assets/figs/rl_r12_rlhf.webp" style="height:320px"><figcaption>(a) Bradley–Terry: 보상 차가 선호 확률이 된다 (b) GRPO: 응답 8개 중 3개가 정답이면 통과 +1.29, 실패 −0.77의 이점 (c) β가 작을수록 최적 정책이 보상 쪽으로 쏠린다</figcaption></figure>
+<div class="grid3">
+<div class="card bl"><span class="tag bl">RLHF</span><p>선호로 보상 모델을 배우고 PPO로 최적화. <b>단점</b> 보상 모델을 해킹한다.</p></div>
+<div class="card gr"><span class="tag gr">DPO</span><p>보상 모델 없이 선호 쌍으로 바로 학습. <b>단점</b> 자료 밖 탐색이 없다.</p></div>
+<div class="card or"><span class="tag or">GRPO</span><p>critic 없이 그룹 평균을 기준선으로. <b>단점</b> 질문마다 여러 응답을 뽑는다.</p></div>
+</div>
+<div class="foot" data-foot><p>[1] RLHF — arXiv:2203.02155 · [2] DPO — arXiv:2305.18290 · [3] GRPO — arXiv:2402.03300</p></div>
+<aside>언어 모델도 토큰을 행동으로 고르는 정책이다. RLHF는 사람이 두 응답 중 나은 쪽을 고른 자료로 보상 모델을 배우고, KL 항으로 원래 모델에서 너무 멀어지지 않게 묶는다. 그 KL 항이 없으면 보상 모델의 약점을 파고드는 응답을 만든다. DPO는 이 문제의 최적해를 닫힌 꼴로 풀어, 보상 모델 없이 선호 쌍에 직접 분류 손실을 건다. GRPO는 같은 질문의 응답 여러 개를 그룹으로 정규화해 이점으로 쓰므로 critic이 필요 없다. 2장의 기준선 빼기와 같은 생각이다.</aside>
+</section>
+<section id="flow" class="t">
+<div class="head"><p class="kicker">5 · 생성 정책의 RL</p><h2>diffusion·flow 정책은 여러 해를 담지만 로그 확률을 구하기 어렵다</h2></div>
+<div class="cols">
+<figure><img src="../../assets/figs/rl_r13_flow_policy.webp" style="height:330px"><figcaption>(a) 잡음에서 시작한 표본이 두 모드로 갈린다 (b) 가우시안 정책은 두 모드의 평균, 곧 장애물 쪽이 가장 짙다 (c) 오른쪽 회피의 보상이 크면 강화학습이 그 모드를 키운다</figcaption></figure>
+</div>
+<table style="font-size:23px">
+<tr><th>우회하는 길</th><th>대표 방법</th><th>생각</th></tr>
+<tr><td>denoising을 MDP로 펼친다</td><td>DPPO</td><td>잡음 제거 스텝마다 가우시안 행동으로 보고 PPO</td></tr>
+<tr><td>손실 차이를 비율로 쓴다</td><td>FPO</td><td>가능도 비율 대신 flow matching 손실의 차이</td></tr>
+<tr><td>잡음을 넣어 가능도를 계산</td><td>ReinFlow</td><td>flow 경로에 학습하는 잡음을 넣어 Markov 과정으로</td></tr>
+<tr><td>critic의 기울기를 따른다</td><td>QSM</td><td>정책의 점수를 Q의 행동 기울기에 맞춘다</td></tr>
+<tr><td>가중 회귀</td><td>AWR식</td><td>flow matching 손실에 exp(A/β)를 곱한다</td></tr>
+</table>
+<div class="foot" data-foot><p>DPPO arXiv:2409.00588 · FPO arXiv:2507.21053 · ReinFlow arXiv:2505.22094 · QSM arXiv:2312.11752</p></div>
+<aside>가우시안 정책은 모드가 하나라서 왼쪽과 오른쪽 두 해가 있는 문제에서 평균을 낸다. diffusion과 flow 정책은 잡음을 여러 스텝에 걸쳐 행동으로 바꾸므로 여러 모드를 자연스럽게 담는다. 문제는 PPO 같은 정책 기울기가 요구하는 로그 확률을 바로 계산하기 어렵다는 것이다. 표의 다섯 길은 이 문제를 각자 다르게 우회한다. 처음 공부할 때는 마지막 줄의 가중 회귀가 가장 이해하기 쉽고, 3장의 AWR과 같은 식이다.</aside>
+</section>
+<section id="safety" class="t">
+<div class="head"><p class="kicker">5 · 안전 강화학습</p><h2>안전은 평균 비용이 아니라 나쁜 꼬리로 본다</h2></div>
+<figure><img src="img/cvar.webp" style="height:330px"><figcaption>평균은 비슷해도 나쁜 5 %의 평균(CVaR)은 크게 다르다. 같은 수치 예를 그대로 계산했다</figcaption></figure>
+<div class="math">$$\max_\pi\ J_r(\pi) \quad \text{s.t.}\quad J_c(\pi) \le d \qquad\qquad \mathrm{CVaR}_\alpha(C) = \mathbb E\big[C \mid C \ge \mathrm{VaR}_\alpha(C)\big]$$</div>
+<div class="grid3">
+<div class="card bl"><span class="tag bl">라그랑주</span><p>제약을 벌점 계수로 바꿔 함께 배운다. <b>단점</b> 평균만 지키고, 학습 중 위반이 생긴다.</p></div>
+<div class="card or"><span class="tag or">CVaR</span><p>최악 α 꼬리의 평균을 줄인다. <b>단점</b> 꼬리 표본이 적어 추정이 흔들린다.</p></div>
+<div class="card gr"><span class="tag gr">안전 필터</span><p>정책 출력을 실행 전에 검사·수정한다(CBF, 도달 가능성). <b>단점</b> 모델이 필요하고 보수적이다.</p></div>
+</div>
+<aside>제약 MDP는 보상과 별도로 비용의 기댓값에 상한을 둔다. 라그랑주 방법은 이 제약을 벌점 계수로 바꾸고 계수도 함께 학습한다. 하지만 기댓값 제약은 드물게 일어나는 큰 사고를 평균 속에 묻는다. 그림의 정책 B처럼 대개는 좋지만 가끔 크게 나쁜 정책을 걸러 내려면 CVaR처럼 꼬리를 보는 척도가 필요하다. 학습만으로는 보장을 얻기 어려우므로, 실물에서는 학습한 정책 뒤에 제어 장벽 함수 같은 안전 필터를 두는 경우가 많다.</aside>
+</section>
+<section id="d6" class="t dark divider">
+<p class="kicker">6 · 정리</p>
+<h2>모든 방법은 표본, 안정성, 가정 사이의<br>맞바꿈이다</h2>
+<p class="lead">한 장짜리 지도와 장단점 표 두 장, 흔한 함정, 그리고 공부 순서.</p>
+<aside>마지막 장은 복습용이다. 지금까지 본 방법을 표본 효율의 축 위에 놓고, 장단점을 한 표에 모은다. 실험할 때 흔히 빠지는 함정과, 이 덱 다음에 무엇을 공부하면 좋은지도 정리한다.</aside>
+</section>
+<section id="efficiency" class="t">
+<div class="head"><p class="kicker">6 · 표본 효율</p><h2>표본을 아낄수록 더 많은 가정과 계산을 떠안는다</h2></div>
+<figure><img src="img/efficiency.webp" style="height:470px"><figcaption>방법 갈래의 대략적인 표본 효율 순서. 오른쪽으로 갈수록 표본은 적게 들지만 재생 버퍼, critic, 모델, 고정된 자료에 대한 가정이 는다</figcaption></figure>
+<div class="grid2">
+<div class="card gr"><span class="tag gr">시뮬레이터가 싸다면</span><p>왼쪽(PPO, ES)이 안정적이고 단순하다. 병렬 환경 수천 개로 표본 비용을 덮는다.</p></div>
+<div class="card or"><span class="tag or">표본이 비싸다면</span><p>오른쪽(SAC, 모델 기반, 오프라인)을 본다. 대신 critic·모델의 오차를 막는 장치를 함께 쓴다.</p></div>
+</div>
+<aside>왼쪽에서 오른쪽으로 갈수록 한 표본에서 뽑아내는 정보가 많아진다. 진화 전략은 에피소드 하나에 숫자 하나만 쓰고, 정책 기울기는 스텝마다 쓰지만 한 번 쓰고 버린다. off-policy는 같은 자료를 여러 번 쓰고, 모델 기반은 자료로 모델을 만들어 무한히 상상한다. 오프라인은 아예 새 표본이 없다. 대가는 가정이다. 재생 자료가 여전히 쓸모 있다는 가정, critic이 맞다는 가정, 모델이 맞다는 가정이 차례로 붙는다.</aside>
+</section>
+<section id="cheat1" class="t">
+<div class="head"><p class="kicker">6 · 장단점 표 1/2</p><h2>모델 없는 방법: 무엇을 배우고 언제 쓰나</h2></div>
+<table style="font-size:26px">
+<tr><th>방법</th><th>배우는 것</th><th>자료</th><th>행동</th><th>장점</th><th>단점</th><th>언제</th></tr>
+<tr><td>REINFORCE</td><td>π</td><td>on</td><td>모두</td><td class="good">단순, 편향 없음</td><td class="bad">분산 큼</td><td>공부·작은 문제</td></tr>
+<tr><td>진화 전략</td><td>π(파라미터)</td><td>on</td><td>모두</td><td class="good">미분 불가 점수, 병렬</td><td class="bad">큰 망에 비효율</td><td>작은 정책, 싼 시뮬</td></tr>
+<tr><td>PPO</td><td>π, V</td><td>on</td><td>모두</td><td class="good">튼튼한 표준</td><td class="bad">표본 많이</td><td>병렬 시뮬, 언어 모델</td></tr>
+<tr><td>DQN</td><td>Q</td><td>off</td><td>이산</td><td class="good">자료 재사용</td><td class="bad">연속 행동 불가</td><td>게임, 이산 선택</td></tr>
+<tr><td>TD3</td><td>Q×2, π</td><td>off</td><td>연속</td><td class="good">과대평가 억제</td><td class="bad">결정적 정책, 탐색 약함</td><td>연속 제어</td></tr>
+<tr><td>SAC</td><td>Q×2, π, α</td><td>off</td><td>연속</td><td class="good">효율·안정, 탐색 유지</td><td class="bad">구성 요소 많음</td><td>연속 제어 기본값</td></tr>
+</table>
+<aside>복습용 표다. 자료 열의 on과 off는 on-policy와 off-policy다. 실무에서 처음 시도한다면 이산 행동은 DQN 계열, 연속 행동은 PPO나 SAC가 흔한 출발점이다. 병렬 시뮬레이터가 있으면 PPO, 표본이 귀하면 SAC를 먼저 본다. 표의 장단점은 경향이며, 같은 알고리즘도 구현 세부와 하이퍼파라미터에 따라 결과가 크게 달라진다.</aside>
+</section>
+<section id="cheat2" class="t">
+<div class="head"><p class="kicker">6 · 장단점 표 2/2</p><h2>모델 기반·자료 기반 방법: 무엇을 가정하고 언제 쓰나</h2></div>
+<table style="font-size:26px">
+<tr><th>방법</th><th>필요한 것</th><th>장점</th><th>단점</th><th>언제</th></tr>
+<tr><td>LQR·MPC</td><td>알려진 모델, 비용</td><td class="good">학습 없음, 제약을 직접 건다</td><td class="bad">모델 오차, 매 스텝 계산</td><td>동역학을 잘 알 때</td></tr>
+<tr><td>MPPI</td><td>모델(굴리기만)</td><td class="good">미분 불가 비용, 병렬</td><td class="bad">표본 수·온도에 민감</td><td>비매끄러운 비용</td></tr>
+<tr><td>MBPO·Dreamer</td><td>환경 상호작용</td><td class="good">표본 효율 최고 수준</td><td class="bad">모델 해킹, 구현 복잡</td><td>표본이 비쌀 때</td></tr>
+<tr><td>BC·DAgger</td><td>시연(+전문가)</td><td class="good">가장 빠른 출발</td><td class="bad">분포 이동, 시연 한계</td><td>좋은 시연이 있을 때</td></tr>
+<tr><td>AWR·IQL·CQL</td><td>고정된 기록</td><td class="good">새 실험 없이 개선</td><td class="bad">자료 범위 밖으로 못 간다</td><td>로그가 많고 실험이 위험할 때</td></tr>
+<tr><td>IRL·RLHF</td><td>시연이나 선호</td><td class="good">보상을 직접 안 써도 된다</td><td class="bad">보상 모호성·해킹</td><td>보상을 적기 어려울 때</td></tr>
+</table>
+<aside>두 번째 표는 모델이나 자료를 쓰는 방법이다. 공통 질문은 "무엇을 가정하나"다. 모델 기반은 모델이 맞다고, 오프라인은 자료가 충분히 넓다고, IRL과 RLHF는 시연이나 선호가 진짜 의도를 담는다고 가정한다. 그 가정이 깨지는 곳이 각 방법의 실패 지점이다.</aside>
+</section>
+<section id="pitfalls" class="t">
+<div class="head"><p class="kicker">6 · 흔한 함정</p><h2>결과 하나로 판단하지 말고 seed 여러 개와 신뢰구간을 본다</h2></div>
+<div class="cols">
+<figure><img src="../../assets/figs/rl_r14_samples.webp" style="height:430px"><figcaption>(a) 성공률 추정의 95 % 신뢰구간 폭은 에피소드 수 n의 제곱근에 반비례한다 (b) 짝 비교에서 차이가 몇 개여야 우연이 아닌가(부호 검정)</figcaption></figure>
+<div class="stack">
+<div class="card or"><h3>seed 하나</h3><p>같은 설정도 seed마다 크게 갈린다. 최소 몇 개를 돌려 평균과 범위를 적는다.</p></div>
+<div class="card or"><h3>보상 크기</h3><p>보상·관측의 스케일이 학습률과 온도를 사실상 바꾼다. 정규화한다.</p></div>
+<div class="card or"><h3>학습 점수 = 성능?</h3><p>탐색 잡음을 끈 별도 평가로 잰다.</p></div>
+</div>
+</div>
+<p class="take"><b>핵심:</b> 성공률 50 % 근처에서 에피소드 12개의 95 % 신뢰구간은 ±28 %p다. 한두 개 차이는 근거가 아니다.</p>
+<aside>강화학습 실험은 분산이 크다. 같은 코드도 seed에 따라 성공과 실패가 갈린다. 그래서 학습 곡선은 여러 seed의 평균과 범위로 그리고, 두 방법을 비교할 때는 같은 조건의 에피소드끼리 짝지어 비교하는 것이 좋다. 그림 (a)는 성공률의 표준 오차가 n의 제곱근으로만 줄어든다는 것을 보여 준다. 성공률 50 % 근처에서 에피소드 12개면 신뢰구간이 매우 넓다. 보상의 크기, 관측 정규화, 평가 방식 같은 사소해 보이는 선택도 결과를 크게 바꾼다.</aside>
+</section>
+<section id="path" class="t">
+<div class="head"><p class="kicker">6 · 공부 순서</p><h2>책으로 기초를, 강의로 심층 RL을, 코드로 감을 잡는다</h2></div>
+<div class="grid3">
+<div class="card gr"><span class="tag gr">1 · 기초</span><h3>Sutton &amp; Barto, Reinforcement Learning: An Introduction (2판)</h3><p>1–6장: MDP, DP, MC, TD. 13장: 정책 기울기.</p></div>
+<div class="card bl"><span class="tag bl">2 · 심층 RL</span><h3>UC Berkeley CS 285 (Sergey Levine)</h3><p>모방 → 정책 기울기 → actor-critic → 가치 기반 → 모델 기반 → 오프라인 → 추론으로서의 제어.</p></div>
+<div class="card or"><span class="tag or">3 · 손으로</span><h3>작은 문제를 직접 구현</h3><p>격자 세계 가치 반복 → 밴딧 → REINFORCE(CartPole) → DQN → PPO·SAC 라이브러리 읽기.</p></div>
+</div>
+<table style="font-size:23px">
+<tr><th>이 덱의 장</th><th>먼저 읽을 것</th><th>스스로 확인할 질문</th></tr>
+<tr><td>1 문제 설정</td><td>S&amp;B 3–4장</td><td>V와 Q, 보상과 수익의 차이를 말할 수 있나?</td></tr>
+<tr><td>2 정책 기울기</td><td>S&amp;B 13장, PPO 논문</td><td>기준선을 빼도 기댓값이 그대로인 이유는?</td></tr>
+<tr><td>3 가치·오프라인</td><td>S&amp;B 6장, DQN·CQL·IQL 논문</td><td>max는 왜 과대평가하나? 오프라인에서는 왜 더 심한가?</td></tr>
+<tr><td>4 추론·모델</td><td>Levine 2018 튜토리얼, MBPO 논문</td><td>온도를 키우면 무엇이 바뀌나? 계획기는 왜 모델 오차를 이용하나?</td></tr>
+</table>
+<aside>순서는 기초 책, 심층 강화학습 강의, 직접 구현이다. 책의 앞 여섯 장이 이 덱 1장의 바탕이고, 강의가 2–4장의 순서와 같다. 이해했는지 확인하는 가장 좋은 방법은 작은 문제를 직접 구현해 보는 것이다. 격자 세계의 가치 반복은 수십 줄이면 되고, REINFORCE는 CartPole에서 한 시간 안에 돌려 볼 수 있다. 표의 질문에 답하지 못하면 해당 장으로 돌아가자.</aside>
+</section>
+<section id="summary" class="t">
+<div class="head"><p class="kicker">정리</p><h2>강화학습은 보상의 합을 키우는 정책을 표본으로 찾는 일이다</h2></div>
+<div class="grid2">
+<div class="card bl"><h3>문제</h3><p>MDP로 적고, 할인된 수익의 기댓값을 키운다. Bellman 식이 가치를 한 스텝씩 쪼갠다.</p></div>
+<div class="card bl"><h3>세 어려움</h3><p>늦은 보상(신용 할당), 모르는 행동(탐색), 바뀌는 자료(분포 이동).</p></div>
+<div class="card gr"><h3>두 갈래</h3><p>정책을 직접 고치거나(PPO), 가치를 배워 고른다(DQN). 둘을 섞으면 actor-critic(SAC)이다.</p></div>
+<div class="card gr"><h3>자료와 모델</h3><p>쌓아 둔 자료를 쓰면 과대평가를, 모델을 쓰면 모델 오차를 막는 장치가 필요하다.</p></div>
+<div class="card or"><h3>맞바꿈</h3><p>편향 ↔ 분산, 표본 ↔ 가정, 탐색 ↔ 활용, 평균 ↔ 꼬리.</p></div>
+<div class="card or"><h3>실험</h3><p>seed 여러 개, 신뢰구간, 별도 평가. 한두 개 차이는 근거가 아니다.</p></div>
+</div>
+<aside>오늘 본 것을 여섯 상자로 줄였다. 강화학습은 MDP를 세우고, 세 가지 어려움을 이런저런 장치로 푸는 일이다. 방법은 무엇을 배우느냐로 나뉘고, 자료와 모델을 얼마나 믿느냐로 다시 나뉜다. 모든 선택은 맞바꿈이며, 그 맞바꿈을 판단하려면 실험을 통계적으로 읽을 줄 알아야 한다.</aside>
+</section>
+<section id="refs-core" class="t">
+<div class="head"><p class="kicker">참고문헌 1/2 · 먼저 읽을 것</p><h2>처음에는 이 다섯 가지만 읽는다</h2></div>
+<table style="font-size:24px">
+<tr><th>순서</th><th>문헌</th><th>왜 먼저 읽나</th></tr>
+<tr><td>★ 1</td><td>Sutton·Barto, Reinforcement Learning: An Introduction (2판, 2018) 3–6장, 13장</td><td>MDP, DP, TD, 정책 기울기의 표준 설명</td></tr>
+<tr><td>★ 2</td><td>UC Berkeley CS 285 강의 (Sergey Levine)</td><td>심층 RL의 순서, 이 덱 2–4장과 같다</td></tr>
+<tr><td>★ 3</td><td>Williams, REINFORCE (Machine Learning 1992)</td><td>정책 기울기의 원 논문</td></tr>
+<tr><td>★ 4</td><td>Mnih 외, DQN 1312.5602</td><td>깊은 가치 기반 RL의 출발점</td></tr>
+<tr><td>★ 5</td><td>Schulman 외, PPO 1707.06347 · Haarnoja 외, SAC 1801.01290</td><td>지금 가장 많이 쓰는 두 기준</td></tr>
+</table>
+<aside>참고문헌을 두 장으로 나눴다. 이 장은 처음 공부할 때 먼저 읽을 다섯 가지이고, 위에서부터 차례로 읽으면 된다. 교과서는 표에 적은 장만 먼저 읽는다. 논문은 서론과 방법 절을 읽고 이 덱의 그림과 대조한다. 다음 장은 덱의 각 장에 나온 원 논문 전체다. 2109.11978처럼 점이 든 숫자는 arXiv 번호다.</aside>
+</section>
+<section id="refs" class="t">
+<div class="head"><p class="kicker">참고문헌 2/2 · 장별</p><h2>책, 강의, 원 논문</h2></div>
+<div class="grid2">
+<div class="stack">
+<p><b>책·강의</b> — Sutton·Barto, Reinforcement Learning: An Introduction (2판, 2018) · UC Berkeley CS 285 (Levine) · Bellman, Dynamic Programming (1957)</p>
+<p><b>모방</b> — DAgger 1011.0686 · HER 1707.01495</p>
+<p><b>정책 기울기</b> — REINFORCE (Williams 1992) · ES 1703.03864 · GAE 1506.02438 · TRPO 1502.05477 · PPO 1707.06347</p>
+<p><b>가치·오프라인</b> — Q-learning (Watkins·Dayan 1992) · DQN 1312.5602 · Double DQN 1509.06461 · TD3 1802.09477 · AWR 1910.00177 · CQL 2006.04779 · IQL 2110.06169</p>
+</div>
+<div class="stack">
+<p><b>추론·모델</b> — Control as Inference 1805.00909 · SAC 1801.01290 · MPPI 1509.01149 · PETS 1805.12114 · MBPO 1906.08253 · Dreamer 1912.01603 · TD-MPC2 2310.16828</p>
+<p><b>보상</b> — Reward shaping (Ng 외, ICML 1999) · RLHF 2203.02155 · DPO 2305.18290 · GRPO 2402.03300</p>
+<p><b>생성 정책</b> — DPPO 2409.00588 · FPO 2507.21053 · ReinFlow 2505.22094 · QSM 2312.11752</p>
+</div>
+</div>
+<aside>덱의 각 장에 나온 문헌을 주제별로 모았다. 숫자만 있는 항목은 arXiv 번호이고, 학회지나 책은 저자와 연도를 적었다. 처음부터 모두 읽을 필요는 없다. 앞 장의 다섯 가지를 먼저 읽고, 이 덱의 장단점 표에서 궁금해진 방법의 원 논문만 골라 읽기를 권한다.</aside>
+</section>
+</div></div>
+<div id="notes"><b>발표자 노트</b><div id="notes-body"></div></div>
+<div id="bar">
+<button id="prev" aria-label="이전">◀</button><span id="count"></span><button id="next" aria-label="다음">▶</button>
+<span id="ttl">강화학습 기초 — 그림과 장단점으로 보는 핵심 개념</span>
+<button id="nb" title="N 키">노트</button><button id="fs" title="F 키">전체 화면</button>
+<a href="study-rl.pptx" download>PPTX</a><a href="./../">목록</a>
+</div>
+<pre id="report" hidden></pre>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script>
+(function () {
+  var slides = Array.prototype.slice.call(document.querySelectorAll('#frame > section'));
+  var frame = document.getElementById('frame'), notes = document.getElementById('notes');
+  var q = new URLSearchParams(location.search), shot = q.has('shot') || q.has('check');
+  if (shot) document.body.classList.add('shot');
+  var i = 0;
+  function fit() {
+    if (shot) return;
+    var st = document.getElementById('stage');
+    var s = Math.min(st.clientWidth / 1920, st.clientHeight / 1080);
+    frame.style.transform = 'scale(' + s + ')';
+  }
+  function show(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach(function (el, k) { el.classList.toggle('on', k === i); });
+    document.getElementById('count').textContent = (i + 1) + ' / ' + slides.length;
+    var a = slides[i].querySelector('aside');
+    document.getElementById('notes-body').textContent = a ? a.textContent : '';
+    if (!shot) history.replaceState(null, '', '#' + (i + 1));
+  }
+  function withAllFonts(fn) {
+    document.body.classList.add('all');
+    void document.body.offsetHeight;
+    requestAnimationFrame(function () {
+      document.fonts.ready.then(function () { document.body.classList.remove('all'); fn(); });
+    });
+  }
+  window.withAllFonts = withAllFonts;
+  // 넘침 검사: 본문 요소가 장 밖으로 나가거나 각주 띠를 덮으면 적는다.
+  function check() {
+    var bad = [];
+    slides.forEach(function (sec, k) {
+      show(k);
+      var box = sec.getBoundingClientRect();
+      Array.prototype.forEach.call(sec.querySelectorAll('.katex-error'), function (el) {
+        bad.push({ slide: k + 1, id: sec.id, tag: 'TeX', text: (el.getAttribute('title') || el.textContent).slice(0, 60), over: 0 });
+      });
+      Array.prototype.forEach.call(sec.querySelectorAll('img'), function (el) {
+        if (!el.complete || !el.naturalWidth) bad.push({ slide: k + 1, id: sec.id, tag: 'IMG', text: el.getAttribute('src'), over: 0 });
+      });
+      var foot = sec.querySelector('[data-foot]');
+      var limit = foot ? foot.getBoundingClientRect().top - 4 : box.bottom - 24;
+      Array.prototype.forEach.call(sec.querySelectorAll('p, h1, h2, h3, img, td, th, li, .katex-display, [data-box]'), function (el) {
+        if (foot && foot.contains(el)) return;
+        if (el.closest('aside')) return;
+        var r = el.getBoundingClientRect();
+        if (r.width === 0 && r.height === 0) return;
+        if (r.bottom > limit + 0.5 || r.right > box.right - 40) {
+          bad.push({ slide: k + 1, id: sec.id, tag: el.tagName, text: (el.textContent || el.alt || '').slice(0, 40), over: Math.round(Math.max(r.bottom - limit, r.right - (box.right - 40))) });
+        }
+      });
+    });
+    var rep = document.getElementById('report');
+    rep.textContent = JSON.stringify(bad);
+    rep.setAttribute('data-done', '1');
+  }
+  function start() {
+    if (window.renderMathInElement) {
+      renderMathInElement(document.getElementById('frame'), {
+        delimiters: [{ left: '$$', right: '$$', display: true }, { left: '\\(', right: '\\)', display: false }],
+        throwOnError: false
+      });
+    }
+    // 한글 웹 글꼴은 글자 묶음마다 따로 받고, 숨은 장의 글자는 받지 않는다. 장을 모두 보여 글꼴을 받은 뒤 잰다.
+    if (q.has('check')) { withAllFonts(check); return; }
+    var s = shot ? parseInt(q.get('shot'), 10) - 1 : parseInt(location.hash.slice(1), 10) - 1;
+    show(isNaN(s) ? 0 : s);
+  }
+  show(0); fit(); window.addEventListener('resize', fit);
+  window.addEventListener('DOMContentLoaded', function () {
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(start); else start();
+  });
+  document.getElementById('prev').onclick = function () { show(i - 1); };
+  document.getElementById('next').onclick = function () { show(i + 1); };
+  document.getElementById('nb').onclick = function () { notes.classList.toggle('show'); };
+  document.getElementById('fs').onclick = function () {
+    if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen();
+  };
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { show(i + 1); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { show(i - 1); e.preventDefault(); }
+    else if (e.key === 'Home') show(0);
+    else if (e.key === 'End') show(slides.length - 1);
+    else if (e.key === 'n' || e.key === 'N') notes.classList.toggle('show');
+    else if (e.key === 'f' || e.key === 'F') document.getElementById('fs').click();
+  });
+  var x0 = null;
+  document.getElementById('stage').addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+  document.getElementById('stage').addEventListener('touchend', function (e) {
+    if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0; x0 = null;
+    if (Math.abs(dx) > 40) show(i + (dx < 0 ? 1 : -1));
+  });
+})();
+</script>
+</body>
+</html>

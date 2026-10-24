@@ -1,0 +1,876 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>로봇 제어 기초 — PID에서 MPPI와 안전 필터까지</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=IBM+Plex+Sans+KR:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<style>
+:root { --bg:#0E1526; --bar:#16213A; --fg:#F4F1EA; --muted:#C9D1E0; --accent:#F59E5B; }
+* { box-sizing:border-box; }
+html, body { margin:0; height:100%; background:var(--bg); color:var(--fg); font-family:'IBM Plex Sans KR', Arial, sans-serif; }
+#stage { position:fixed; inset:0 0 56px 0; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+#frame { width:1920px; height:1080px; flex:none; transform-origin:center center; box-shadow:0 8px 40px rgba(0,0,0,.5); }
+#frame > section:not(.on) { display:none !important; }
+body.all #frame > section:not(.on) { display:block !important; }
+section { position:relative; width:1920px; height:1080px; overflow:hidden; }
+section * { margin:0; }
+section aside { display:none; }
+section table { border-collapse:collapse; }
+section th, section td { padding:10px 16px; vertical-align:top; }
+section tr + tr td { border-top:1px solid rgba(127,140,160,.25); }
+section .katex { font-size:1.05em; }
+section .katex-display { margin:0; text-align:left; }
+section .katex-display > .katex { text-align:left; }
+x-shape { display:block; flex:none; }
+x-shape[kind="arrow-right"] { clip-path:polygon(0 32%,58% 32%,58% 0,100% 50%,58% 100%,58% 68%,0 68%); }
+#bar { position:fixed; left:0; right:0; bottom:0; height:56px; background:var(--bar); display:flex; align-items:center; gap:12px; padding:0 16px; font-size:15px; }
+#bar button, #bar a { background:none; border:1px solid #3A4A6B; color:var(--fg); border-radius:8px; padding:6px 12px; font:inherit; cursor:pointer; text-decoration:none; }
+#bar button:hover, #bar a:hover { border-color:var(--accent); }
+#count { min-width:72px; text-align:center; color:var(--muted); }
+#ttl { flex:1; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; color:var(--muted); }
+#notes { position:fixed; right:16px; bottom:72px; width:min(560px, calc(100% - 32px)); max-height:45vh; overflow:auto; background:#FFFDF8; color:#16213A; border-radius:12px; padding:16px 20px; font-size:16px; line-height:1.6; box-shadow:0 8px 30px rgba(0,0,0,.4); display:none; }
+#notes.show { display:block; }
+#notes b { display:block; margin-bottom:6px; color:#C2410C; font-family:'JetBrains Mono', monospace; font-size:13px; }
+body.shot #bar, body.shot #notes { display:none; }
+body.shot #stage { inset:0; }
+body.shot #frame { box-shadow:none; transform:none !important; }
+@media (max-width:640px) { #ttl { display:none; } }
+</style>
+</head>
+<body>
+<div id="stage"><div id="frame">
+<style>
+/* 챕터 발표 덱(slides_src/talk-*) 공용 스타일. deck.json의 "css": "_talk/talk.css"로 읽는다.
+   PPTX(편집 가능)는 이 스타일이 그린 결과의 좌표·색·글자 크기를 그대로 옮긴다. 규칙은 slides_src/_talk/README.md. */
+section.t { background:#F7F5F0; color:#16213A; font-family:'IBM Plex Sans KR', Arial, sans-serif;
+  padding:80px 112px 120px; display:flex; flex-direction:column; gap:28px; }
+section.t.dark { background:#16213A; color:#F4F1EA; }
+section.t .kicker { font-family:'JetBrains Mono', 'Courier New', monospace; font-size:22px; color:#C2410C; letter-spacing:1px; }
+section.t.dark .kicker { color:#F59E5B; }
+section.t h1 { font-family:'Noto Serif KR', Georgia, serif; font-size:96px; font-weight:700; line-height:1.15; }
+section.t h2 { font-family:'Noto Serif KR', Georgia, serif; font-size:52px; font-weight:700; line-height:1.22; }
+section.t h3 { font-size:30px; font-weight:600; line-height:1.3; }
+section.t p, section.t li { font-size:26px; line-height:1.5; }
+section.t .lead { font-size:34px; line-height:1.45; color:#3D4A63; }
+section.t.dark .lead { color:#C9D1E0; }
+section.t .muted { color:#5A6478; }
+section.t.dark .muted { color:#9AA6BC; }
+section.t .small { font-size:22px; line-height:1.4; }
+section.t b, section.t strong { font-weight:600; }
+section.t .hl { color:#C2410C; font-weight:600; }
+section.t code { font-family:'JetBrains Mono', monospace; font-size:0.86em; color:#7C2D12; }
+section.t ul, section.t ol { padding-left:36px; display:flex; flex-direction:column; gap:10px; }
+section.t .head { display:flex; flex-direction:column; gap:10px; }
+section.t .cols { display:flex; gap:40px; align-items:flex-start; }
+section.t .cols > * { flex:1; min-width:0; }
+section.t .stack { display:flex; flex-direction:column; gap:18px; }
+section.t .grid2, section.t .grid3 { display:grid; gap:24px; }
+section.t .grid2 { grid-template-columns:1fr 1fr; }
+section.t .grid3 { grid-template-columns:1fr 1fr 1fr; }
+section.t .card { background:#FFFDF8; border:1px solid #D9D4C7; border-radius:12px; padding:22px 26px; display:flex; flex-direction:column; gap:12px; }
+section.t .card.or { border-left:8px solid #C2410C; }
+section.t .card.bl { border-left:8px solid #1D4ED8; }
+section.t .card.gr { border-left:8px solid #15803D; }
+section.t .card.gy { border-left:8px solid #9AA6BC; }
+section.t.dark .card { background:#22304F; border-color:#3A4A6B; }
+section.t .card h3 { font-size:28px; }
+section.t .card p, section.t .card li { font-size:24px; line-height:1.45; }
+section.t .tag { align-self:flex-start; font-size:20px; font-weight:600; padding:4px 14px; border-radius:999px; background:#ECE8DF; color:#16213A; }
+section.t .tag.or { background:#FDE7C8; color:#7C2D12; }
+section.t .tag.bl { background:#DBE5FB; color:#1E3A8A; }
+section.t .tag.gr { background:#D7EFDD; color:#14532D; }
+section.t .pills { display:flex; flex-wrap:wrap; gap:16px; }
+section.t .pill { font-size:24px; padding:8px 22px; border-radius:999px; background:#C9D1E0; color:#16213A; }
+section.t .pill.on { background:#F59E5B; }
+section.t .take { background:#16213A; color:#F4F1EA; border-radius:12px; padding:20px 28px; font-size:27px; line-height:1.45; }
+section.t .take b { color:#F59E5B; }
+section.t.dark .take { background:#F59E5B; color:#16213A; }
+section.t .flow { display:flex; align-items:stretch; gap:14px; }
+section.t .flow > .step { flex:1; background:#FFFDF8; border:1px solid #D9D4C7; border-top:6px solid #C2410C; border-radius:10px; padding:16px 18px;
+  display:flex; flex-direction:column; gap:8px; }
+section.t .flow > .step p { font-size:22px; line-height:1.4; }
+section.t .flow > .arrow { flex:none; align-self:center; font-size:36px; color:#C2410C; }
+section.t table { border-collapse:collapse; width:100%; font-size:21px; line-height:1.35; background:#FFFDF8; }
+section.t th { background:#16213A; color:#F4F1EA; text-align:left; font-weight:600; padding:10px 14px; }
+section.t td { padding:9px 14px; border-top:1px solid #D9D4C7; vertical-align:top; }
+section.t tr:nth-child(even) td { background:#F1EDE4; }
+section.t td.good { color:#14532D; font-weight:600; }
+section.t td.bad { color:#9F1239; font-weight:600; }
+section.t figure { margin:0; display:flex; flex-direction:column; gap:10px; }
+section.t figure img { display:block; max-width:100%; object-fit:contain; background:#FFFFFF; border:1px solid #D9D4C7; border-radius:8px; }
+section.t figcaption { font-size:20px; line-height:1.4; color:#5A6478; }
+section.t .math { background:#FFFDF8; border-left:6px solid #C2410C; border-radius:8px; padding:8px 24px; font-size:30px; }
+section.t .math .katex-display { margin:6px 0; }
+section.t .foot { position:absolute; left:112px; right:112px; bottom:32px; border-top:2px solid #D9D4C7; padding-top:10px;
+  display:flex; flex-direction:column; gap:2px; }
+section.t .foot p { font-size:18px; line-height:1.35; color:#5A6478; }
+section.t.dark .foot { border-color:#3A4A6B; }
+section.t.dark .foot p { color:#9AA6BC; }
+section.t .num { position:absolute; right:112px; top:84px; font-family:'JetBrains Mono', monospace; font-size:20px; color:#9AA6BC; }
+section.t.cover { justify-content:space-between; padding:120px 128px; }
+section.t.divider { justify-content:center; gap:36px; padding:120px 128px; }
+section.t.divider h2 { font-size:80px; }
+</style>
+
+<script>
+// ?export=1: 장마다 도형·글상자·표·그림의 좌표와 스타일을 적는다. scripts/slides_editable.py가 읽는다.
+(function () {
+  if (!/[?&]export=/.test(location.search)) return;
+  var INLINE = /^(inline|inline-block|inline-flex|contents)$/;
+  function transparent(c) { return !c || c === 'transparent' || /rgba\(.*,\s*0\)$/.test(c); }
+  function rect(el, base) { var r = el.getBoundingClientRect(); return [r.left - base.left, r.top - base.top, r.width, r.height]; }
+  function style(cs) {
+    return { size: parseFloat(cs.fontSize), bold: parseInt(cs.fontWeight, 10) >= 600, italic: cs.fontStyle === 'italic',
+             color: cs.color, mono: /Mono|Courier|monospace/.test(cs.fontFamily) };
+  }
+  function runs(el) {
+    var out = [];
+    (function rec(node) {
+      Array.prototype.forEach.call(node.childNodes, function (c) {
+        if (c.nodeType === 3) { if (c.textContent) out.push({ s: c.textContent, st: style(getComputedStyle(node)), href: node.closest('a') ? node.closest('a').href : null }); return; }
+        if (c.nodeType !== 1 || c.tagName === 'ASIDE') return;
+        if (c.tagName === 'BR') { out.push({ s: '\n', st: style(getComputedStyle(node)) }); return; }
+        if (c.classList.contains('katex')) {
+          var a = c.querySelector('annotation');
+          out.push({ s: a ? a.textContent : c.textContent, st: style(getComputedStyle(node)), math: true });
+          return;
+        }
+        var cs = getComputedStyle(c);
+        if (cs.display === 'none') return;
+        if (INLINE.test(cs.display) && c.tagName !== 'IMG') rec(c);
+      });
+    })(el);
+    return out;
+  }
+  function hasOwnText(el) {
+    return Array.prototype.some.call(el.childNodes, function (c) {
+      if (c.nodeType === 3) return c.textContent.trim() !== '';
+      if (c.nodeType !== 1 || c.tagName === 'ASIDE') return false;
+      var cs = getComputedStyle(c);
+      return (INLINE.test(cs.display) || c.classList.contains('katex')) && c.tagName !== 'IMG' && c.textContent.trim() !== '';
+    });
+  }
+  function marker(li) {
+    var p = li.parentElement;
+    if (!p || getComputedStyle(li).listStyleType === 'none') return null;
+    if (p.tagName === 'OL') return { n: Array.prototype.indexOf.call(p.children, li) + parseInt(p.getAttribute('start') || '1', 10) };
+    return { n: 0 };
+  }
+  function textItem(el, base, cs) {
+    var r = rect(el, base), pl = parseFloat(cs.paddingLeft), pr = parseFloat(cs.paddingRight), pt = parseFloat(cs.paddingTop),
+        pb = parseFloat(cs.paddingBottom), bl = parseFloat(cs.borderLeftWidth), bt = parseFloat(cs.borderTopWidth);
+    var rr = runs(el), m = el.tagName === 'LI' ? marker(el) : null;
+    if (m) { r[0] -= 30; r[2] += 30; }   // 글머리표 자리. PPTX에서는 내어쓰기 30px의 진짜 글머리표가 된다
+    var lh = parseFloat(cs.lineHeight);
+    return { t: 'text', r: [r[0] + pl + bl, r[1] + pt + bt, r[2] - pl - pr - bl, r[3] - pt - pb - bt], runs: rr, li: m,
+             align: cs.textAlign, lh: isNaN(lh) ? 1.3 : lh / parseFloat(cs.fontSize) };
+  }
+  function boxItem(el, base, cs) {
+    var sides = {};
+    ['Top', 'Right', 'Bottom', 'Left'].forEach(function (s) {
+      var w = parseFloat(cs['border' + s + 'Width']);
+      if (w > 0 && cs['border' + s + 'Style'] !== 'none' && !transparent(cs['border' + s + 'Color'])) sides[s[0]] = [w, cs['border' + s + 'Color']];
+    });
+    var fill = transparent(cs.backgroundColor) ? null : cs.backgroundColor;
+    if (!fill && !Object.keys(sides).length) return null;
+    return { t: 'box', r: rect(el, base), fill: fill, radius: parseFloat(cs.borderTopLeftRadius) || 0, sides: sides };
+  }
+  function tableItem(el, base) {
+    var rows = Array.prototype.map.call(el.rows, function (tr) {
+      return { h: tr.getBoundingClientRect().height, cells: Array.prototype.map.call(tr.cells, function (c) {
+        var cs = getComputedStyle(c), bg = cs.backgroundColor;
+        if (transparent(bg)) bg = getComputedStyle(tr).backgroundColor;
+        if (transparent(bg)) bg = getComputedStyle(el).backgroundColor;
+        return { w: c.getBoundingClientRect().width, span: c.colSpan || 1, fill: transparent(bg) ? null : bg, runs: runs(c),
+                 align: cs.textAlign, size: parseFloat(cs.fontSize) };
+      }) };
+    });
+    return { t: 'table', r: rect(el, base), rows: rows };
+  }
+  function img(el, base) {
+    var r = rect(el, base), nw = el.naturalWidth, nh = el.naturalHeight;
+    if (nw && nh && getComputedStyle(el).objectFit === 'contain') {
+      var s = Math.min(r[2] / nw, r[3] / nh), w = nw * s, h = nh * s;
+      r = [r[0] + (r[2] - w) / 2, r[1] + (r[3] - h) / 2, w, h];
+    }
+    return { t: 'img', r: r, src: el.getAttribute('src') };
+  }
+  function slide(sec) {
+    var base = sec.getBoundingClientRect(), items = [];
+    (function walk(el) {
+      if (el.tagName === 'ASIDE') return;
+      var cs = getComputedStyle(el);
+      if (cs.display === 'none' || cs.visibility === 'hidden') return;
+      if (el !== sec && el.tagName !== 'TABLE') { var b = boxItem(el, base, cs); if (b) items.push(b); }
+      if (el.matches('.katex-display, svg, canvas, x-shape, [data-raster]')) {
+        var k = el.matches('.katex-display') ? (el.querySelector('.katex') || el) : el;
+        items.push({ t: 'raster', r: rect(k, base) }); return;
+      }
+      if (el.tagName === 'IMG') { items.push(img(el, base)); return; }
+      if (el.tagName === 'TABLE') { items.push(tableItem(el, base)); return; }
+      if (el !== sec && hasOwnText(el)) items.push(textItem(el, base, cs));
+      Array.prototype.forEach.call(el.children, function (c) {
+        var d = getComputedStyle(c).display;
+        if (!(INLINE.test(d) && c.tagName !== 'IMG' && !c.querySelector('img, .katex-display'))) walk(c);
+      });
+    })(sec);
+    var a = sec.querySelector('aside');
+    return { bg: getComputedStyle(sec).backgroundColor, items: items, note: a ? a.textContent.trim() : '' };
+  }
+  function run() {
+    var secs = Array.prototype.slice.call(document.querySelectorAll('#frame > section')), out = [];
+    secs.forEach(function (sec) {
+      secs.forEach(function (s) { s.classList.toggle('on', s === sec); });
+      out.push(slide(sec));
+    });
+    var rep = document.getElementById('report'); rep.textContent = JSON.stringify(out); rep.setAttribute('data-done', '1');
+  }
+  window.addEventListener('DOMContentLoaded', function () {
+    // 뷰어의 start()가 수식을 조판한 뒤에 잰다.
+    document.fonts.ready.then(function () { setTimeout(function () { window.withAllFonts(run); }, 300); });
+  });
+})();
+</script>
+<section id="cover" class="t dark cover">
+<p class="kicker">로봇 제어 기초 · 개념 공부 덱</p>
+<div class="stack"><h1>계획한 궤적을<br>실제로 따라가게 한다</h1><p class="lead">PID와 경로 추종에서 LQR·MPC, 표본 기반 MPPI, 모델 오차와 적응, 안전 필터까지 — 그림과 배경지식과 장단점으로 보는 제어</p></div>
+<div class="pills"><p class="pill on">PID · Pure pursuit</p><p class="pill">LQR · MPC</p><p class="pill">MPPI</p><p class="pill">지연 · 학습 동역학 · GP</p><p class="pill">CBF · CVaR · 보정</p></div>
+<aside>이 덱은 로봇 제어를 처음 공부하는 사람을 위한 개념 덱이다. 고전 피드백 제어에서 출발해 최적 제어, 표본 기반 MPC, 모델 오차를 다루는 법, 안전 필터까지 한 줄로 잇는다. 그림 대부분은 작은 시스템을 실제로 시뮬레이션해 그렸다. 논문 그림에는 출처를 달았다.</aside>
+</section>
+<section id="agenda" class="t">
+<div class="head"><p class="kicker">순서</p><h2>되먹임에서 출발해 최적화와 안전으로 넓혀 간다</h2></div>
+<table style="font-size:30px">
+<tr><th>장</th><th>주제</th><th>답하는 질문</th></tr>
+<tr><td>0</td><td>시작</td><td>제어기는 무엇을 받아 무엇을 내나? 되먹임은 왜 필요한가?</td></tr>
+<tr><td>1</td><td>고전 피드백과 경로 추종</td><td>P·I·D는 각각 무엇을 고치나? 경로는 어떻게 따라가나?</td></tr>
+<tr><td>2</td><td>최적 제어와 MPC</td><td>미래를 예측해 제약을 지키며 고르려면?</td></tr>
+<tr><td>3</td><td>표본 기반 MPC: MPPI</td><td>미분 없이, 비매끄러운 비용으로 최적화하려면?</td></tr>
+<tr><td>4</td><td>모델 오차와 적응</td><td>지연·슬립처럼 모델이 틀릴 때는?</td></tr>
+<tr><td>5</td><td>안전</td><td>사람과 장애물 앞에서 명령을 어떻게 지키나?</td></tr>
+<tr><td>6</td><td>정리</td><td>무엇을 언제 쓰고, 무엇부터 공부하나?</td></tr>
+</table>
+<aside>앞의 두 장은 제어 교과서의 내용이다. 3장부터는 로봇 내비게이션에서 많이 쓰는 표본 기반 MPC와, 실제 로봇에서 늘 부딪히는 모델 오차와 안전 문제로 넘어간다. 마지막 장은 복습용 표와 공부 순서다.</aside>
+</section>
+<section id="course" class="t">
+<div class="head"><p class="kicker">0 · 커리큘럼 3/7</p><h2>계획의 경로를 받아 모델 오차 속에서 따라간다</h2></div>
+<figure><img src="img/course.webp" style="height:400px"></figure>
+<div class="grid3">
+<div class="card gr"><span class="tag gr">앞에서 가져올 것</span><p>2 경로 계획의 경로·궤적. 1 인식의 분산 σ와 사람 추적(안전 장). 상태공간 모델의 기초.</p></div><div class="card bl"><span class="tag bl">뒤로 넘기는 것</span><p>2장의 LQR·이동 지평 → 4 비선형 MPC에서 깊게. 4장의 잔차·GP → 4 MPC 3장.</p></div><div class="card or"><span class="tag or">함께 보면 좋은 것</span><p>MPPI의 가중 평균은 5 강화학습 4장의 추론으로서의 제어와 같은 식이다. 지연 → 6 시뮬레이션의 지연 모델.</p></div>
+</div>
+<aside>세 번째 덱이다. 계획 덱의 경로를 받아, 모델이 틀리고 명령이 늦게 닿는 실제 상황에서 따라가는 법을 본다. 인식 덱의 분산과 사람 추적은 5장의 안전에서 쓰인다. 2장의 MPC는 다음 덱인 비선형 MPC에서 문제 세우기와 실시간 풀이까지 깊게 판다. MPPI의 식은 강화학습 덱의 추론으로서의 제어와 같아서, 두 덱을 오가며 보면 서로 이해가 깊어진다. 일곱 덱 전체의 순서와 10주 계획은 로드맵 덱에 있다.</aside>
+</section>
+<section id="prereq" class="t">
+<div class="head"><p class="kicker">0 · 배경지식</p><h2>네 가지 배경지식이면 이 덱을 따라올 수 있다</h2></div>
+<div class="grid2">
+<div class="card bl"><span class="tag bl">상태공간 모델</span><h3>\(x_{t+1} = f(x_t, u_t)\)</h3><p>상태 x(위치, 속도, 방향)와 입력 u(명령)로 다음 상태를 정한다. 선형이면 \(Ax + Bu\).</p></div>
+<div class="card or"><span class="tag or">되먹임</span><h3>잰 상태로 명령을 고친다</h3><p>모델이 틀려도, 외란이 와도 오차를 보고 바로잡는다. 열린 루프는 처음 계획만 믿는다.</p></div>
+<div class="card gr"><span class="tag gr">안정성</span><h3>작은 흔들림이 사라지는가</h3><p>오차가 시간이 지나며 0으로 줄면 안정, 커지면 불안정. 이득이 크거나 지연이 크면 불안정해진다.</p></div>
+<div class="card gy"><span class="tag">이산 시간</span><h3>제어기는 주기마다 한 번 계산한다</h3><p>주기 Δt 동안 명령은 일정하다. 계산 시간과 통신이 지연을 만든다.</p></div>
+</div>
+<aside>제어의 출발점은 모델이다. 로봇이 명령을 받으면 어떻게 움직이는지를 상태공간 모델로 적는다. 되먹임은 그 모델이 완벽하지 않다는 것을 인정하는 장치다. 안정성은 되먹임이 오히려 해가 되지 않는지를 묻는다. 그리고 디지털 제어기는 주기마다 한 번 계산하므로 연속 시간 이론과 달리 계산·통신 지연이 생긴다. 이 네 가지가 이후 모든 장에 나온다.</aside>
+</section>
+<section id="feedback" class="t">
+<div class="head"><p class="kicker">0 · 되먹임 고리</p><h2>제어기는 목표와 잰 상태의 차이로 명령을 낸다</h2></div>
+<figure><img src="img/feedback.webp" style="height:340px"><figcaption>되먹임 제어 고리. 로봇(plant)에는 지연·슬립·한계가 있고, 외란이 들어오고, 상태는 센서로 다시 잰다</figcaption></figure>
+<div class="grid3">
+<div class="card bl"><span class="tag bl">Planner와의 경계</span><p>Planner는 경로·궤적을 내고, 제어기는 그것을 따라가며 짧은 시간의 오차와 외란을 흡수한다.</p></div>
+<div class="card or"><span class="tag or">제어기가 아는 것</span><p>로봇의 모델(얼마나 정확한가), 제약(속도·가속·조향 한계), 비용(무엇을 더 싫어하나).</p></div>
+<div class="card gr"><span class="tag gr">잘 됐는지</span><p>추종 오차, 진동·떨림(jerk), 한계 위반, 계산 시간.</p></div>
+</div>
+<aside>이 덱의 제어기는 Planner의 궤적을 목표로 받는다. 목표와 지금 상태의 차이를 보고 명령을 내며, 로봇은 그 명령을 지연과 슬립을 거쳐 실행한다. 바깥에서는 경사, 바람, 사람 같은 외란이 들어온다. 좋은 제어기는 이 모두를 견디면서 매끄럽게 따라간다. 이후 장의 방법들은 제어기가 로봇과 미래에 대해 얼마나 많이 아느냐로 줄을 세울 수 있다. PID는 거의 모르고, MPC는 모델로 미래를 예측한다.</aside>
+</section>
+<section id="d1" class="t dark divider">
+<p class="kicker">1 · 고전 피드백과 경로 추종</p>
+<h2>모델을 거의 몰라도<br>오차만 보고 고친다</h2>
+<p class="lead">PID는 지금·과거·변화의 오차를 더하고, pure pursuit는 앞의 한 점을 향해 원을 그린다.</p>
+<aside>첫째 장은 모델을 거의 쓰지 않는 고전 제어다. 산업 현장 제어기의 대부분을 차지하는 PID와, 바퀴 로봇의 경로 추종에 가장 많이 쓰는 pure pursuit를 본다. 단순하지만 지금도 많은 로봇이 이것으로 움직인다.</aside>
+</section>
+<section id="pid" class="t">
+<div class="head"><p class="kicker">1 · PID</p><h2>P는 지금의 오차를, I는 쌓인 오차를, D는 오차의 변화를 고친다</h2></div>
+<div class="math">$$u(t) = K_p\, e(t) + K_i \int_0^t e(\tau)\, d\tau + K_d\, \frac{de}{dt}$$</div>
+<figure><img src="img/pid.webp" style="height:400px"><figcaption>질량·감쇠 시스템의 위치 제어. (a) P만 쓰면 출렁이고 D가 진동을 누른다 (b) 일정한 외란이 오면 P·PD는 오차가 남고 I가 그것을 없앤다</figcaption></figure>
+<div class="grid3">
+<div class="card bl"><span class="tag bl">P</span><p>크면 빠르지만 출렁인다. 외란이 있으면 오차가 남는다.</p></div>
+<div class="card gr"><span class="tag gr">I</span><p>남은 오차를 없앤다. 크면 느리게 출렁이고 포화 때 쌓인다(windup).</p></div>
+<div class="card or"><span class="tag or">D</span><p>제동을 건다. 잡음을 키우므로 걸러서 쓴다.</p></div>
+</div>
+<aside>PID는 오차의 현재, 과거, 미래 경향을 각각 비례, 적분, 미분으로 본다. P만 쓰면 이득을 키울수록 빠르지만 출렁이고, 경사 같은 일정한 외란 앞에서는 오차가 남는다. I는 오차를 시간에 걸쳐 더하므로 남은 오차가 0이 될 때까지 명령을 키운다. 대신 모터가 포화되면 적분이 계속 쌓이는 windup이 생겨 클램핑 같은 대책이 필요하다. D는 오차가 줄어드는 속도에 반대로 작용해 제동을 건다. 여기서는 목표가 계단으로 바뀔 때 미분이 튀지 않도록 측정값의 미분을 썼다.</aside>
+</section>
+<section id="purepursuit" class="t">
+<div class="head"><p class="kicker">1 · 경로 추종</p><h2>pure pursuit는 경로 위 앞쪽 한 점을 지나는 원호를 따라간다</h2></div>
+<figure><img src="img/purepursuit.webp" style="height:400px"><figcaption>(a) 전방 주시 거리 L_d가 짧으면 경로에 바짝 붙고, 길면 모서리를 크게 깎는다 (b) 목표점까지의 각 α로 곡률을 정한다</figcaption></figure>
+<div class="grid2">
+<div class="card gr"><span class="tag gr">장점</span><p>식 한 줄, 튜닝 손잡이 하나(L_d). 차·바퀴 로봇에서 튼튼하다. 속도에 비례해 L_d를 키우면 고속에서도 안정적이다.</p></div>
+<div class="card or"><span class="tag or">단점</span><p>모서리를 깎는다. 장애물·제약을 모른다. 짧은 L_d는 고속·지연에서 출렁인다.</p></div>
+</div>
+<div class="foot" data-foot><p>Coulter, Implementation of the Pure Pursuit Path Tracking Algorithm, CMU-RI-TR-92-01 (1992)</p></div>
+<aside>pure pursuit는 사람이 운전할 때 앞을 보는 것과 닮았다. 경로 위에서 로봇으로부터 L_d만큼 떨어진 점을 고르고, 지금 방향을 접선으로 하면서 그 점을 지나는 원을 그린다. 그 원의 곡률이 곧 조향 명령이다. L_d가 짧으면 경로에 바짝 붙지만 출렁이기 쉽고, 길면 매끄럽지만 모서리를 크게 깎는다. 경로를 따라갈 뿐 장애물이나 속도 한계는 모르므로, 회피는 위층 Planner나 MPC에 맡긴다.</aside>
+</section>
+<section id="tracking-pc" class="t">
+<div class="head"><p class="kicker">1 · 장단점</p><h2>고전 추종기는 단순하고 튼튼하지만 제약과 미래를 모른다</h2></div>
+<table style="font-size:27px">
+<tr><th>방법</th><th>보는 것</th><th>장점</th><th>단점</th></tr>
+<tr><td>PID</td><td>한 축의 오차</td><td class="good">모델 불필요, 어디서나</td><td class="bad">다변수·제약을 직접 못 다룬다</td></tr>
+<tr><td>Pure pursuit</td><td>앞쪽 한 점</td><td class="good">기하만으로, 튼튼</td><td class="bad">모서리 깎기, 장애물 모름</td></tr>
+<tr><td>Stanley</td><td>앞바퀴의 횡·방향 오차</td><td class="good">저속에서 정확</td><td class="bad">고속·후진에 약하다</td></tr>
+<tr><td>LQR(2장)</td><td>선형 모델 + 이차 비용</td><td class="good">다변수 최적 이득</td><td class="bad">제약을 못 건다</td></tr>
+<tr><td>MPC(2장)</td><td>모델로 예측한 미래</td><td class="good">제약·미래를 직접</td><td class="bad">계산이 무겁다</td></tr>
+</table>
+<p class="take"><b>핵심:</b> 미래를 내다볼수록, 제약을 직접 걸수록 계산과 모델이 더 든다.</p>
+<aside>고전 추종기는 지금 오차만 보고 반응한다. 그래서 단순하고 튼튼하지만, 곧 다가올 급커브나 속도 한계, 장애물을 미리 반영하지 못한다. 다음 장의 LQR은 모델을 써서 여러 상태를 한꺼번에 최적으로 되먹이고, MPC는 미래를 예측해 제약까지 지킨다. 대가는 모델의 정확도와 계산량이다.</aside>
+</section>
+<section id="d2" class="t dark divider">
+<p class="kicker">2 · 최적 제어와 MPC</p>
+<h2>모델로 미래를 굴려 보고<br>가장 좋은 명령열을 고른다</h2>
+<p class="lead">LQR은 닫힌 꼴의 이득을, MPC는 매 주기 제약 있는 최적화를 푼다.</p>
+<aside>둘째 장은 모델을 쓰는 최적 제어다. 선형 모델과 이차 비용이면 LQR이 최적 이득을 닫힌 꼴로 준다. 제약이 있으면 매 주기 짧은 지평의 최적화를 다시 푸는 MPC를 쓴다. MPC는 로봇 제어에서 가장 넓게 쓰이는 틀이고, 다음 장의 MPPI도 MPC의 한 종류다.</aside>
+</section>
+<section id="lqr" class="t">
+<div class="head"><p class="kicker">2 · LQR</p><h2>선형 모델과 이차 비용이면 최적 제어는 상태의 선형 되먹임이다</h2></div>
+<div class="math">$$\min_{u}\ \sum_{t=0}^{\infty} x_t^\top Q\, x_t + u_t^\top R\, u_t \quad \text{s.t.}\ x_{t+1} = A x_t + B u_t \qquad\Rightarrow\qquad u_t = -K x_t$$</div>
+<figure><img src="../../assets/figs/rl_r18_lqr.webp" style="height:340px"><figcaption>이중 적분기(위치·속도)의 LQR, Q = diag(1, 0.1). R이 작을수록 입력을 세게 써서 빨리 원점에 간다</figcaption></figure>
+<div class="grid2">
+<div class="card gr"><span class="tag gr">장점</span><p>Riccati 식으로 K를 미리 계산하면 실행은 행렬 곱 하나. 다변수를 한꺼번에, 안정성도 보장된다.</p></div>
+<div class="card or"><span class="tag or">단점</span><p>입력 포화·장애물 같은 제약을 못 건다. 비선형 로봇은 기준 궤적 주변에서 선형화해야 한다.</p></div>
+</div>
+<aside>LQR은 상태 오차의 비용 Q와 입력의 비용 R을 맞바꾸는 문제다. 답은 놀랍게도 상태에 이득 행렬을 곱한 선형 되먹임이고, 그 이득은 이산 대수 Riccati 식으로 오프라인에 계산한다. 그래서 실행 비용이 거의 없다. Q와 R의 비율이 성격을 정한다. 그림처럼 R을 줄이면 입력을 아끼지 않고 빨리 수렴한다. 한계는 제약이다. 계산된 명령이 모터 한계를 넘으면 잘라 낼 수밖에 없고, 그러면 최적성이 깨진다. 이것이 MPC로 가는 이유다.</aside>
+</section>
+<section id="mpc" class="t">
+<div class="head"><p class="kicker">2 · 모델 예측 제어</p><h2>MPC는 매 주기 짧은 미래를 최적화하고 첫 명령만 실행한다</h2></div>
+<div class="math">$$\min_{u_{0:N-1}}\ \sum_{k=0}^{N-1} \ell(x_k, u_k) + V_f(x_N) \quad \text{s.t.}\ x_{k+1} = f(x_k, u_k),\ \ u_k \in \mathcal U,\ \ x_k \in \mathcal X$$</div>
+<figure><img src="img/receding.webp" style="height:400px"><figcaption>이동 지평(receding horizon). 점선은 각 시각에 세운 3초 예측, 회색 띠는 실제로 실행된 궤적. 외란으로 어긋나도 다시 풀 때 바로잡는다</figcaption></figure>
+<aside>MPC는 지금 상태에서 N스텝 앞까지 모델로 예측하며, 비용을 최소화하고 제약을 지키는 명령열을 푼다. 그중 첫 명령만 실행하고, 다음 주기에 새 상태에서 다시 푼다. 이것이 이동 지평이다. 매번 다시 풀기 때문에 모델 오차나 외란이 있어도 되먹임이 된다. 지평 끝의 비용 V_f를 잘 고르면 짧은 지평으로도 긴 지평처럼 행동하며, 그림에서는 무한 지평 LQR의 가치를 썼다. 핵심 장점은 제약이다. 속도·가속·조향 한계를 최적화 문제 안에 바로 넣는다.</aside>
+</section>
+<section id="mpc-kinds" class="t">
+<div class="head"><p class="kicker">2 · MPC의 종류</p><h2>모델과 제약의 꼴이 풀이기를 정한다</h2></div>
+<table style="font-size:26px">
+<tr><th>종류</th><th>모델·제약</th><th>풀이</th><th>특징</th></tr>
+<tr><td>선형 MPC</td><td>선형 모델, 볼록 제약</td><td>QP(OSQP, qpOASES)</td><td class="good">전역 최적, 밀리초 이하</td></tr>
+<tr><td>비선형 MPC(NMPC)</td><td>비선형 모델</td><td>SQP·RTI(acados, CasADi)</td><td>국소 최적, 초기값 중요</td></tr>
+<tr><td>튜브·강건 MPC</td><td>외란 집합</td><td>명목 MPC + 보조 되먹임</td><td class="good">외란 아래 제약 보장</td></tr>
+<tr><td>확률 MPC</td><td>불확실한 모델</td><td>확률 제약 \(P(x \in \mathcal X) \ge 1 - \delta\)</td><td>불확실성 추정이 맞아야 한다</td></tr>
+<tr><td>표본 기반(MPPI, CEM)</td><td>아무 모델·비용</td><td>표본을 굴려 가중 평균</td><td>미분 불필요, 3장</td></tr>
+</table>
+<div class="grid2">
+<div class="card bl"><span class="tag bl">hard 제약</span><p>반드시 지킨다. 풀 수 없으면(infeasible) 해가 없다.</p></div>
+<div class="card or"><span class="tag or">soft 제약</span><p>어기면 큰 벌점. 늘 해가 있지만 위반이 가능하다.</p></div>
+</div>
+<aside>MPC는 하나의 알고리즘이라기보다 틀이다. 모델이 선형이고 제약이 볼록이면 이차 계획(QP)이 되어 빠르고 전역 최적이다. 로봇처럼 비선형이면 순차 이차 계획법으로 국소 최적을 찾고, 실시간 반복(RTI)처럼 한 주기에 한 번만 갱신하는 요령으로 시간을 맞춘다. 외란이나 모델 불확실성을 명시적으로 다루려면 튜브 MPC나 확률 MPC를 쓴다. 제약을 hard로 걸지 soft로 걸지도 중요한 설계 선택이다.</aside>
+</section>
+<section id="mpc-pc" class="t">
+<div class="head"><p class="kicker">2 · 장단점</p><h2>MPC는 제약과 미래를 얻는 대신 모델과 계산을 요구한다</h2></div>
+<div class="grid2">
+<div class="card gr"><span class="tag gr">장점</span><ul><li>속도·가속·조향 한계를 문제 안에서 지킨다</li><li>미래를 보고 미리 감속·회전한다</li><li>여러 목표(추종, 매끄러움, 에너지)를 비용으로 섞는다</li><li>이동 지평이라 모델 오차에 되먹임이 된다</li></ul></div>
+<div class="card or"><span class="tag or">단점</span><ul><li>모델이 틀린 만큼 예측이 틀린다</li><li>비선형·비볼록이면 국소 최적, 시간 안에 못 풀 수도</li><li>장애물처럼 비매끄러운 비용은 기울기가 없다</li><li>튜닝 항목(지평, 가중치, 제약)이 많다</li></ul></div>
+</div>
+<p class="take"><b>다음 장:</b> 비용이 매끄럽지 않고 기울기가 없을 때는 표본을 굴리는 MPPI가 대안이 된다.</p>
+<aside>MPC의 장점은 모두 모델과 최적화에서 나오고, 단점도 같은 곳에서 나온다. 특히 내비게이션에서는 장애물 비용이 칸마다 계단처럼 바뀌어 기울기가 거의 0이거나 정의되지 않는다. 기울기 기반 풀이기는 이런 비용에 약하다. 다음 장의 MPPI는 기울기 대신 많은 표본을 굴려 이 문제를 피한다.</aside>
+</section>
+<section id="d3" class="t dark divider">
+<p class="kicker">3 · 표본 기반 MPC: MPPI</p>
+<h2>명령열을 수백 개 굴려 보고<br>비용이 낮을수록 큰 표를 준다</h2>
+<p class="lead">기울기가 필요 없어 장애물처럼 계단 같은 비용도 그대로 쓴다.</p>
+<aside>셋째 장은 MPPI다. 최적화 문제를 미분으로 풀지 않고, 잡음 섞은 명령열을 많이 굴려 비용의 지수 가중으로 평균한다. GPU로 병렬화하기 쉬워 오프로드 차량과 내비게이션에서 널리 쓰인다. 기본 식, 온도와 잡음의 모양, 계보, 학습 prior를 넣는 법, 그리고 기울기 기반 MPC와의 장단점을 본다.</aside>
+</section>
+<section id="mppi-core" class="t">
+<div class="head"><p class="kicker">3 · MPPI</p><h2>비용이 낮은 rollout일수록 지수적으로 큰 표를 받는다</h2></div>
+<div class="cols">
+<div class="stack">
+<div class="math">$$w_k = \frac{\exp(-S_k/\lambda)}{\sum_j \exp(-S_j/\lambda)}, \qquad u_t \leftarrow u_t + \sum_k w_k\, \epsilon_{k,t}$$</div>
+<div class="flow">
+<div class="step"><h3>① 흔들기</h3><p>현재 명령열에 잡음 \(\epsilon_k\)를 K개</p></div><p class="arrow">→</p>
+<div class="step"><h3>② 굴리기</h3><p>모델로 지평 끝까지, 비용 \(S_k\)</p></div><p class="arrow">→</p>
+<div class="step"><h3>③ 평균</h3><p>\(w_k\)로 잡음을 가중 평균</p></div>
+</div>
+<ul><li>K는 보통 수백–수천, GPU에서 한꺼번에 굴린다</li><li>첫 명령을 실행하고 명령열을 한 칸 밀어 다음 주기의 시작값으로</li></ul>
+</div>
+<figure><img src="../../assets/thumbs/7163b7dd77c9.webp" style="height:500px"><figcaption>정보이론적 MPC (Fig. 2): 제어 분포를 최적 분포 쪽으로 민다 — arXiv:1707.02342</figcaption></figure>
+</div>
+<div class="foot" data-foot><p>Williams 외, MPPI arXiv:1509.01149 (2015) · Information-theoretic MPC arXiv:1707.02342, T-RO 2018</p></div>
+<aside>MPPI는 Model Predictive Path Integral의 줄임이다. 경로 적분 제어 이론에서 나왔고, 2017년판은 "비용의 볼츠만 분포에 KL로 가장 가까운 제어 분포"를 찾는 문제로 다시 유도했다. 계산은 단순하다. 현재 명령열 주변에 잡음을 섞은 후보를 많이 만들고, 모델로 굴려 비용을 매기고, 비용의 지수로 가중 평균한다. 비용을 미분하지 않으므로 충돌하면 큰 값, 아니면 0인 계단 비용도 그대로 쓴다. 강화학습 덱에서 본 최대 엔트로피 RL의 표본 판이기도 하다.</aside>
+</section>
+<section id="temp" class="t">
+<div class="head"><p class="kicker">3 · 온도 λ</p><h2>온도는 몇 개의 표본을 믿을지 정한다</h2></div>
+<figure><img src="../../assets/figs/rl_r08_mppi_temperature.webp" style="height:340px"><figcaption>넓고 얕은 골짜기, 좁고 깊은 골짜기, 가운데 언덕이 있는 비용. 같은 표본 64개를 세 온도로 가중했다(빨간 선이 가중 평균)</figcaption></figure>
+<div class="grid2">
+<div class="card bl"><span class="tag bl">λ 작음</span><p>가장 좋은 표본 하나에 몰린다. 빠르게 좋은 곳으로 가지만 잡음에 휘둘려 명령이 튄다.</p></div>
+<div class="card or"><span class="tag or">λ 큼</span><p>모든 표본의 평균에 가깝다. 매끄럽지만 두 골짜기 사이 언덕(장애물)으로 갈 수 있다.</p></div>
+</div>
+<p class="take"><b>주의:</b> 온도는 비용의 크기와 함께 움직인다. 비용 항을 10배로 키우면 온도를 10분의 1로 줄인 것과 같다.</p>
+<aside>온도는 MPPI에서 가장 중요한 손잡이다. 낮추면 탐욕적이 되고, 높이면 평균적이 된다. 실무에서는 유효 표본 수, 즉 가중치가 몇 개의 표본에 퍼져 있는지를 보고 조정한다. 비용 범위로 정규화하지 않는 구현에서는 비용 항을 하나 더하거나 가중치를 바꿀 때마다 사실상 온도도 바뀐다는 점을 기억해야 한다.</aside>
+</section>
+<section id="noise" class="t">
+<div class="head"><p class="kicker">3 · 잡음의 모양</p><h2>잡음을 어디에 넣느냐가 명령의 매끄러움을 정한다</h2></div>
+<figure><img src="img/noise.webp" style="height:380px"><figcaption>지평 4초 동안의 제어 섭동 5개씩. 백색 잡음은 스텝마다 튀고, AR(1)은 이웃 스텝이 닮고, 변화율에 넣고 적분하면(SMPPI) 매끄럽다</figcaption></figure>
+<table style="font-size:25px">
+<tr><th>잡음</th><th>장점</th><th>단점</th></tr>
+<tr><td>백색(독립)</td><td class="good">탐색 범위가 넓다, 유도가 단순</td><td class="bad">평균한 명령도 떨린다(jerk)</td></tr>
+<tr><td>시간 상관(AR(1), 색 잡음)</td><td class="good">후보가 그럴듯한 모양</td><td class="bad">상관 계수 튜닝</td></tr>
+<tr><td>변화율 공간(SMPPI)</td><td class="good">매끄러운 명령, 기계에 무리 없음</td><td class="bad">급한 회피 반응이 느릴 수 있다</td></tr>
+</table>
+<div class="foot" data-foot><p>Kim 외, Smooth Model Predictive Path Integral Control without Smoothing, arXiv:2112.09988, RA-L 2022</p></div>
+<aside>MPPI의 해는 표본의 가중 평균이므로 표본의 모양을 닮는다. 스텝마다 독립인 잡음을 쓰면 평균한 명령도 떨리고, 떨림을 비용으로 벌하면 다른 목표와 싸운다. 잡음을 시간 상관 있게 뽑거나, 한 차수 높은 변화율 공간에서 뽑아 적분하면 처음부터 매끄러운 후보가 나온다. SMPPI는 이렇게 해서 MPPI의 유도를 그대로 지키면서 매끄러움을 얻었다.</aside>
+</section>
+<section id="mppi-lineage" class="t">
+<div class="head"><p class="kicker">3 · 계보</p><h2>십 년 동안 바뀐 것은 가중 평균이 아니라 표본 분포와 구현이다</h2></div>
+<table style="font-size:24px">
+<tr><th>연도</th><th>이름</th><th>바꾼 것</th></tr>
+<tr><td>2015–2018</td><td>MPPI, 정보이론적 MPC</td><td>경로 적분 제어를 GPU 표본 MPC로, KL 유도로 일반화</td></tr>
+<tr><td>2018–2021</td><td>Tube-MPPI, Robust MPPI</td><td>명목 상태와 실제 상태를 나누고 추종 제어기를 더한다</td></tr>
+<tr><td>2022</td><td>log-MPPI</td><td>정규 × 로그정규 분포에서 표본해 실행 가능한 궤적을 늘린다</td></tr>
+<tr><td>2022</td><td>SMPPI</td><td>잡음을 변화율에 넣어 매끄럽게</td></tr>
+<tr><td>2022–2023</td><td>Nav2 MPPI Controller</td><td>ROS 2 표준 스택의 CPU 구현</td></tr>
+<tr><td>2024</td><td>MPPI-Generic</td><td>C++/CUDA 템플릿, 표본 128개에 약 0.15 ms(RTX 3080)</td></tr>
+<tr><td>2024–2025</td><td>DIAL-MPC</td><td>반복마다 잡음을 줄이는 확산식 담금질(4족 관절 토크)</td></tr>
+<tr><td>2025–2026</td><td>Feedback-MPPI, CLIS-MPPI</td><td>rollout에서 되먹임 이득을 얻어 풀이 사이와 지연을 메운다</td></tr>
+</table>
+<div class="foot" data-foot><p>RMPPI arXiv:2102.09027 · log-MPPI arXiv:2203.16599 · MPPI-Generic arXiv:2409.07563 · Feedback-MPPI arXiv:2506.14855 · CLIS-MPPI arXiv:2610.21239</p></div>
+<aside>계보를 보면 MPPI의 가중 평균 자체는 거의 그대로이고, 표본을 어디서 어떻게 뽑느냐와 구현이 바뀌었다. 강건 MPPI는 실제 상태가 위험할 때 명목 상태를 유지해 외란에 버틴다. MPPI-Generic은 같은 알고리즘도 구현에 따라 속도가 수십 배 다르다는 것을 보였다. 최근 연구는 MPPI의 해에 되먹임 이득을 붙여 주기 사이와 지연을 메우는 쪽으로 간다.</aside>
+</section>
+<section id="proxpi" class="t">
+<div class="head"><p class="kicker">3 · 학습 prior 넣기</p><h2>학습한 prior는 표본의 중심이 아니라 비용으로 넣는다</h2></div>
+<div class="cols">
+<div class="stack">
+<div class="math">$$q_w(V) = \mathcal N(U_p, \Sigma) \quad \text{대} \quad S'(V) = S(V) + \alpha \lVert V - U_p \rVert^2$$</div>
+<ul>
+<li><b>워밍스타트</b>(왼쪽)는 매번 표본 중심을 prior로 되돌린다. 최적화기가 쌓은 보정을 버린다.</li>
+<li><b>ProxPI</b>(오른쪽)는 이전 해를 중심으로 표본하고 prior는 근접 비용으로만 둔다.</li>
+<li>prior가 틀려도 다른 비용 항이 해를 바로잡는다.</li>
+</ul>
+</div>
+<figure><img src="../../assets/thumbs/e1a2af497615.webp" style="height:440px"><figcaption>ProxPI (Fig. 2): prior가 틀릴 때 MPPI, 워밍스타트, ProxPI의 행동(5개 로봇) — arXiv:2609.00941</figcaption></figure>
+</div>
+<p class="take"><b>핵심:</b> 학습 Planner나 정책의 출력을 표본 기반 제어기에 넣을 때, "믿는 정도"를 비용 가중치 α로 조절할 수 있다.</p>
+<div class="foot" data-foot><p>ProxPI, arXiv:2609.00941</p></div>
+<aside>학습한 정책이나 Planner가 낸 명령열을 MPPI에 넣는 가장 쉬운 방법은 표본 분포의 평균을 그것으로 옮기는 것이다. 그런데 prior가 틀리면 매번 틀린 곳에서 다시 시작하게 된다. ProxPI는 prior를 "가까울수록 좋다"는 부드러운 비용으로만 넣는다. 그러면 장애물 비용 같은 다른 항이 prior와 다툴 수 있고, 최적화기의 보정이 반복마다 쌓인다. 실무에서는 일부 표본만 prior 근처에서 뽑는 혼합 방식도 쓴다.</aside>
+</section>
+<section id="mppi-pc" class="t">
+<div class="head"><p class="kicker">3 · 장단점</p><h2>MPPI는 미분을 버린 대신 표본 수와 온도에 기댄다</h2></div>
+<table style="font-size:26px">
+<tr><th></th><th>기울기 기반 MPC(NMPC)</th><th>표본 기반 MPC(MPPI)</th></tr>
+<tr><td>비용·모델</td><td class="bad">매끄럽고 미분 가능해야</td><td class="good">아무거나(계단, 충돌 판정, 시뮬레이터)</td></tr>
+<tr><td>제약</td><td class="good">hard 제약을 형식적으로</td><td class="bad">벌점·확률 제약으로 근사</td></tr>
+<tr><td>최적성</td><td>국소 최적(빠르게 수렴)</td><td>표본 범위 안의 근사 최적</td></tr>
+<tr><td>계산</td><td>순차, 작은 문제에 빠름</td><td class="good">완전 병렬, GPU에 잘 맞음</td></tr>
+<tr><td>차원</td><td class="good">긴 지평·많은 입력도</td><td class="bad">입력 차원이 크면 표본이 많이 든다</td></tr>
+<tr><td>튜닝</td><td>가중치, 초기값</td><td>표본 수, 온도, 잡음 공분산</td></tr>
+</table>
+<p class="take"><b>실무:</b> 비용이 비매끄러우면 MPPI, hard 제약과 정밀함이 중요하면 NMPC. 둘을 같은 벤치마크에서 견주는 것이 가장 확실하다.</p>
+<aside>두 방법은 강점이 갈린다. NMPC는 제약을 정확히 지키고 수렴이 빠르지만, 비용과 모델이 매끄러워야 한다. MPPI는 어떤 비용이든 쓸 수 있고 GPU로 병렬화하기 쉽지만, 제약은 벌점으로 근사하고 입력 차원이 커지면 표본이 부족해진다. 어느 쪽이 나은지는 문제에 따라 다르므로, 같은 조건에서 직접 비교하는 것이 좋다.</aside>
+</section>
+<section id="d4" class="t dark divider">
+<p class="kicker">4 · 모델 오차와 적응</p>
+<h2>제어기가 믿는 모델이 틀리면<br>최적화는 엉뚱한 곳을 최적화한다</h2>
+<p class="lead">지연, 슬립, 하중처럼 모델이 놓친 것을 넣고, 배우고, 실시간으로 맞춘다.</p>
+<aside>넷째 장은 모델 기반 제어의 가장 큰 약점, 모델 오차다. 먼저 가장 흔하고 가장 해로운 오차인 지연을 보고, 학습 동역학과 잔차 모델, 불확실성을 함께 내는 GP, 그리고 짧은 이력으로 숨은 조건을 추정하는 적응을 본다.</aside>
+</section>
+<section id="delay" class="t">
+<div class="head"><p class="kicker">4 · 지연</p><h2>지연이 있으면 같은 이득도 출렁이고, 지연을 모델에 넣으면 안정된다</h2></div>
+<figure><img src="img/delay.webp" style="height:400px"><figcaption>위치 PD 제어(Kp = 8, Kd = 3). (a) 0.25초 지연을 모르면 크게 출렁인다 (b) 이미 보낸 명령으로 지연만큼 앞의 상태를 예측해 제어하면 지연 없을 때와 같은 모양이 된다</figcaption></figure>
+<div class="grid3">
+<div class="card bl"><span class="tag bl">어디서</span><p>계산 시간, 통신, 모터 드라이버, 바퀴 조향처럼 1차 지연을 가진 구동기.</p></div>
+<div class="card gr"><span class="tag gr">대책 1</span><p>예측 모델에 지연을 넣는다(이미 보낸 명령으로 앞을 내다본다).</p></div>
+<div class="card or"><span class="tag or">대책 2</span><p>이득을 낮춘다. 안정은 되지만 느려진다.</p></div>
+</div>
+<aside>지연은 제어에서 가장 흔하고 가장 해로운 모델 오차다. 지금 낸 명령이 나중에 걸리므로, 제어기는 이미 지나간 오차에 반응하게 된다. 이득을 낮추면 안정되지만 느려진다. 더 나은 방법은 지연을 모델에 넣는 것이다. 이미 보냈지만 아직 걸리지 않은 명령들로 지연 뒤의 상태를 예측하고, 그 상태를 기준으로 제어한다. Smith 예측기의 생각이며, MPC나 MPPI라면 rollout 모델에 지연을 넣으면 된다.</aside>
+</section>
+<section id="latency" class="t">
+<div class="head"><p class="kicker">4 · 표본 기반 제어의 지연</p><h2>지연은 rollout의 출발점 문제로 바꿀 수 있다</h2></div>
+<div class="cols">
+<div class="stack">
+<div class="card or"><span class="tag or">CLIS-MPPI · CDC 2026</span><p>지연을 초기 상태 분포로 두고 rollout마다 시작점을 섭동한다. 가중 rollout의 회귀로 되먹임 이득을 얻는다. UR5e 실물 5회에서 MPPI는 2번 충돌, CLIS-MPPI는 0번.</p></div>
+<div class="card bl"><span class="tag bl">Feedback-MPPI · RA-L 2026</span><p>rollout을 자동 미분해 국소 이득을 얻는다. 쿼드로터 실물 x RMSE 0.048 m → 0.017 m. 이득 계산이 실행 시간을 40–70% 늘린다.</p></div>
+<div class="card gy"><span class="tag">고르는 법</span><p>비용이 계단 같아 기울기가 거의 없으면 회귀 이득(CLIS), 매끄러우면 미분 이득.</p></div>
+</div>
+<div class="stack"><figure><img src="../../assets/thumbs/0e9d42c3e170.webp" style="height:280px"><figcaption>CLIS-MPPI (Fig. 1): 계획 시작 상태와 제어가 걸리는 상태가 어긋난다</figcaption></figure>
+<figure><img src="../../assets/thumbs/12baf9cabcb8.webp" style="height:240px"><figcaption>CLIS-MPPI (Fig. 2): 초기 상태 표본, 가중 rollout, 회귀 이득</figcaption></figure></div>
+</div>
+<div class="foot" data-foot><p>CLIS-MPPI arXiv:2610.21239, CDC 2026 · Feedback-MPPI arXiv:2506.14855, RA-L 2026</p></div>
+<aside>표본 기반 MPC는 한 번 푸는 데 시간이 걸리고, 그동안 로봇은 계속 움직인다. 두 연구는 MPPI의 해에 되먹임 이득을 붙여 이 공백을 메운다. CLIS-MPPI는 계획 시작 상태를 확률 분포로 보고, 여러 시작점에서 굴린 rollout을 회귀해 이득을 얻는다. Feedback-MPPI는 미분으로 이득을 얻는다. 비용이 매끄럽지 않으면 미분 이득이 의미를 잃는다는 점이 선택 기준이다. CLIS-MPPI의 실물 시행은 5회뿐이라는 점도 함께 기억하자.</aside>
+</section>
+<section id="learned-dyn" class="t">
+<div class="head"><p class="kicker">4 · 학습 동역학</p><h2>제어기 구조는 그대로 두고 rollout 모델만 학습 모델로 바꾼다</h2></div>
+<div class="cols">
+<table style="font-size:23px">
+<tr><th>연도</th><th>이름</th><th>핵심</th></tr>
+<tr><td>2018</td><td>PETS</td><td>확률 신경망 앙상블 동역학 + 궤적 표본 계획. half-cheetah에서 SAC보다 8배 적은 표본</td></tr>
+<tr><td>2021</td><td>IKD</td><td>IMU를 넣은 역운동 모델로 고속 오프로드 추종. 성공률 52.4% → 86.9%</td></tr>
+<tr><td>2021</td><td>RMA</td><td>환경 요인을 잠재 벡터로, 배포 때는 이력에서 추정</td></tr>
+<tr><td>2023</td><td>지형 인지 운동 모델</td><td>6자유도 운동 예측 + MPPI로 위험한 궤적에 벌점</td></tr>
+<tr><td>2023</td><td>TD-MPC2</td><td>디코더 없는 잠재 world model 안에서 MPPI</td></tr>
+</table>
+<figure><img src="../../assets/thumbs/2478ce9a5071.webp" style="height:420px"><figcaption>지형 인지 운동 모델 + MPPI (Fig. 1): 지형이 차량 운동에 주는 영향을 예측해 위험한 궤적에 벌점 — arXiv:2305.00676</figcaption></figure>
+</div>
+<div class="foot" data-foot><p>PETS arXiv:1805.12114 · IKD arXiv:2102.12667 · RMA arXiv:2107.04034 · 지형 인지 arXiv:2305.00676 · TD-MPC2 arXiv:2310.16828</p></div>
+<aside>MPC와 MPPI는 모델을 바꿔 끼울 수 있는 틀이다. 손으로 만든 운동학 모델이 슬립이나 지형 효과를 설명하지 못하면, 그 자리를 데이터로 배운 모델로 바꾼다. PETS는 앙상블로 불확실성을 함께 내고, IKD는 IMU로 지형 효과를 배우고, RMA는 숨은 환경 요인을 짧은 이력에서 추정한다. 학습 모델의 위험은 강화학습 덱에서 본 것과 같다. 계획기는 모델이 틀린 곳을 찾아가 이용한다.</aside>
+</section>
+<section id="residual" class="t">
+<div class="head"><p class="kicker">4 · 잔차와 문맥</p><h2>물리 모델 위에 작은 학습 잔차를 얹고, 짧은 이력으로 조건을 나른다</h2></div>
+<div class="math">$$x_{t+1} = \underbrace{f_{\text{물리}}(x_t, u_t)}_{\text{대부분}} + \underbrace{g_\theta(x_t, u_t, z_t)}_{\text{작은 잔차}}, \qquad z_t = \text{encoder}(x_{t-H:t}, u_{t-H:t})$$</div>
+<div class="cols">
+<div class="stack">
+<div class="card or"><span class="tag or">HDVIO2.0 · T-RO 2025</span><p>강체 물리 + TCN 잔차. 힘 예측 오차 0.982 N → 0.491 N, Jetson TX2에서 약 180 Hz.</p></div>
+<div class="card or"><span class="tag or">Continual VND · 2026</span><p>0.4초 이력의 12차원 잠재로 잔차를 조건화, 재생 버퍼로 기억.</p></div>
+<div class="card bl"><span class="tag bl">OptCar · CoRL 2026</span><p>약 5초 이력을 문맥 토큰 하나로. 6 m/s 추종 오차가 기준 대비 42–57% 작다.</p></div>
+</div>
+<figure><img src="../../assets/thumbs/6a5ca214feed.webp" style="height:400px"><figcaption>OptCar (Fig. 2): 이력을 문맥 벡터 하나로 압축해 rollout을 조건화한다 — arXiv:2607.13319</figcaption></figure>
+</div>
+<div class="foot" data-foot><p>HDVIO2.0 arXiv:2504.00969 · Continual VND arXiv:2606.27353 · OptCar arXiv:2607.13319</p></div>
+<aside>세 연구 모두 큰 블랙박스 동역학을 처음부터 배우지 않는다. 물리 모델이 대부분을 설명하고 신경망은 잔차만 맡으니 작아도 되고 빠르고, 자료가 적어도 된다. 노면 마찰이나 하중처럼 보이지 않는 조건은 최근 몇 초의 상태·명령 이력을 요약한 문맥 벡터로 나른다. 배포 중에 신경망 가중치를 바꾸지 않고도 조건에 적응하는 셈이다.</aside>
+</section>
+<section id="gp" class="t">
+<div class="head"><p class="kicker">4 · 배경지식 · 가우시안 과정</p><h2>GP는 잔차의 평균과 함께 "얼마나 모르는지"를 낸다</h2></div>
+<div class="math">$$\mu(x_*) = k_*^\top (K + \sigma_n^2 I)^{-1} y, \qquad \sigma^2(x_*) = k(x_*, x_*) - k_*^\top (K + \sigma_n^2 I)^{-1} k_*$$</div>
+<figure><img src="img/gp.webp" style="height:370px"><figcaption>잔차 표본 14개로 맞춘 GP와 선형 회귀. GP는 자료 근처에서 비선형을 맞추고 자료 밖에서 σ가 커진다</figcaption></figure>
+<div class="grid2">
+<div class="card gr"><span class="tag gr">장점</span><p>적은 자료로 비선형을 맞춘다. σ를 확률 제약·튜브의 폭으로 쓸 수 있다.</p></div>
+<div class="card or"><span class="tag or">단점</span><p>계산이 자료 수의 세제곱. 커널 선택에 결과가 달렸다. 큰 몫이 선형이면 선형 회귀로 충분하다.</p></div>
+</div>
+<div class="foot" data-foot><p>McKinnon·Schoellig, Learn Fast, Forget Slow, arXiv:1810.06681 — 900 kg 지상 로봇 3 km 실측에서 가중 베이즈 선형회귀가 GP보다 정확했다</p></div>
+<aside>가우시안 과정은 함수 위의 확률 분포다. 커널이 "가까운 입력은 비슷한 출력"을 정하고, 관측을 조건으로 하면 평균과 분산이 닫힌 꼴로 나온다. 제어에서 GP의 진짜 가치는 분산이다. 모델을 얼마나 모르는지를 알면 그만큼 제약을 조이거나 속도를 줄일 수 있다. 다만 바퀴 로봇의 잔차는 상당 부분이 지연처럼 선형이라, 실측 연구에서는 선형 베이즈 회귀가 GP만큼 또는 더 정확했다. 비선형이 남는 채널과 분산이 필요한 곳에만 GP를 쓰는 것이 실용적이다.</aside>
+</section>
+<section id="adapt" class="t">
+<div class="head"><p class="kicker">4 · 적응</p><h2>숨은 조건은 학습 때 특권 정보로 배우고, 배포 때 이력에서 추정한다</h2></div>
+<div class="cols">
+<figure><img src="../../assets/thumbs/950c686e66be.webp" style="height:360px"><figcaption>RMA (Fig. 2): 특권 환경 요인을 잠재로 압축하고, 적응 모듈이 이력으로 추정한다 — arXiv:2107.04034</figcaption></figure>
+<figure><img src="../../assets/figs/bg_011_maml.webp" style="height:300px"><figcaption>메타학습 적응의 장난감: 메타 시작점은 처음부터 새 노면의 오차가 작고, 한두 스텝 적응으로 더 준다</figcaption></figure>
+</div>
+<table style="font-size:24px">
+<tr><th>방식</th><th>배포 때 바뀌는 것</th><th>장점</th><th>단점</th></tr>
+<tr><td>이력 → 잠재(RMA, OptCar)</td><td>잠재 벡터</td><td class="good">빠르고 안정적</td><td class="bad">학습 때 본 조건 범위 안에서만</td></tr>
+<tr><td>온라인 회귀(RLS, FE-RLS)</td><td>몇 개의 계수</td><td class="good">수 초 만에 적응</td><td class="bad">기저가 맞아야 한다</td></tr>
+<tr><td>메타학습(MAML)</td><td>가중치 몇 스텝</td><td class="good">새 조건에 빠르게</td><td class="bad">학습이 까다롭다</td></tr>
+</table>
+<aside>마찰, 하중, 노면처럼 센서로 직접 보이지 않는 조건을 다루는 세 방식이다. RMA는 시뮬레이션에서 정답 조건을 아는 교사를 학습한 뒤, 학생이 최근 이력만 보고 그 잠재를 맞히게 한다. 온라인 회귀는 모델의 몇 계수만 실시간으로 고친다. 메타학습은 몇 스텝의 갱신만으로 새 조건에 맞도록 시작점을 배운다. 공통의 위험은 학습 때 보지 못한 조건이다.</aside>
+</section>
+<section id="dyn-pc" class="t">
+<div class="head"><p class="kicker">4 · 장단점</p><h2>모델 오차를 다루는 법은 "얼마나 배우느냐"의 사다리다</h2></div>
+<table style="font-size:26px">
+<tr><th>방법</th><th>장점</th><th>단점</th></tr>
+<tr><td>물리 모델 + 지연·슬립 계수</td><td class="good">해석 쉽고 자료가 거의 필요 없다</td><td class="bad">식에 없는 효과는 못 잡는다</td></tr>
+<tr><td>온라인 계수 추정(RLS)</td><td class="good">실시간 적응, 가볍다</td><td class="bad">기저 선택에 묶인다</td></tr>
+<tr><td>잔차 학습(신경망)</td><td class="good">비선형 효과를 배운다</td><td class="bad">자료 밖에서 틀린다</td></tr>
+<tr><td>잔차 GP</td><td class="good">σ로 모르는 곳을 표시</td><td class="bad">계산·커널 선택</td></tr>
+<tr><td>전체 학습 모델</td><td class="good">가장 표현력이 크다</td><td class="bad">자료가 많이 들고 계획기가 오차를 이용</td></tr>
+</table>
+<p class="take"><b>원칙:</b> 물리로 설명되는 것은 물리로, 남는 작은 몫만 배우고, 불확실성을 함께 낸다.</p>
+<aside>아래로 갈수록 표현력이 커지고 자료와 위험도 커진다. 가장 먼저 할 일은 지연처럼 큰 오차를 물리 모델에 넣는 것이다. 그것만으로 해결되는 경우가 많다. 그래도 남는 오차는 작은 잔차로 배우고, 가능하면 불확실성을 함께 내서 제어기가 모르는 곳에서 조심하게 한다.</aside>
+</section>
+<section id="d5" class="t dark divider">
+<p class="kicker">5 · 안전</p>
+<h2>비용에 녹일 것인가,<br>뒤에서 거를 것인가</h2>
+<p class="lead">사람과 장애물 앞에서 명령을 지키는 두 구조, 불확실성을 믿을 수 있는지, 그리고 꼬리 위험.</p>
+<aside>다섯째 장은 안전이다. 동적 장애물을 다루는 두 구조, 즉 비용 통합형과 외부 안전 필터형을 비교한다. 외부 필터의 대표인 제어 장벽 함수(CBF), 평균 대신 꼬리를 보는 CVaR, 확률 제약이 기대는 불확실성이 맞는지 재는 보정, 그리고 많은 장애물을 합치는 법과 표본으로 만드는 안전 필터를 본다.</aside>
+</section>
+<section id="two-structures" class="t">
+<div class="head"><p class="kicker">5 · 두 구조</p><h2>비용 통합형은 피하게 유도하고, 안전 필터는 마지막에 명령을 고친다</h2></div>
+<div class="cols">
+<div class="stack">
+<div class="card gr"><span class="tag gr">(1) 비용 통합형</span><p>예측한 장애물 위치 주변에 시간가변 비용을 얹고 최적화가 알아서 피하게 한다.</p><p><b>장점</b> 구현 쉬움, 지연 거의 없음. <b>단점</b> 보장 없음, 가중치에 따라 뚫고 지나갈 수 있다.</p></div>
+<div class="card bl"><span class="tag bl">(2) 외부 안전 필터형</span><p>어떤 명령이 나오든 QP 필터가 안전 조건을 만족하도록 최소한으로 고친다.</p><p><b>장점</b> 제어기와 무관한 보장. <b>단점</b> 모델이 필요하고 보수적, 교착에 빠질 수 있다.</p></div>
+</div>
+<div class="grid2">
+<figure><img src="../../assets/thumbs/688258191ce0.webp" style="height:420px"><figcaption>감지 후 반응(CBF-QP)</figcaption></figure>
+<figure><img src="../../assets/thumbs/4914da90beee.webp" style="height:420px"><figcaption>감지 전 개입(OcclusionCBF): 가려진 곳의 도달 가능 점유를 추정한다</figcaption></figure>
+</div>
+</div>
+<p class="take"><b>실무:</b> 둘을 함께 쓴다. 비용으로 대부분을 피하고, 필터는 드문 위험 순간의 마지막 방어선이 된다.</p>
+<div class="foot" data-foot><p>그림 출처: OcclusionCBF 공개 저장소 데모</p></div>
+<aside>비용 통합형은 장애물을 비용으로 표현해 최적화에 맡긴다. 표본 기반 MPC와 잘 맞고 지연이 없지만, 다른 비용 항과 맞바꿔지므로 반드시 피한다는 보장은 없다. 외부 안전 필터는 제어기의 출력을 받아, 안전 조건을 만족하는 가장 가까운 명령으로 투영한다. 제어기가 무엇이든 같은 보장을 준다. 오른쪽 그림의 OcclusionCBF는 가려진 사각지대에서 사람이 튀어나올 수 있는 영역까지 고려해 보이기 전에 감속한다.</aside>
+</section>
+<section id="cbf" class="t">
+<div class="head"><p class="kicker">5 · 배경지식 · 제어 장벽 함수</p><h2>CBF는 안전 집합의 경계로 다가가는 속도를 제한한다</h2></div>
+<div class="math">$$\mathcal S = \{x : h(x) \ge 0\}, \qquad \min_u \lVert u - u_{\mathrm{nom}} \rVert^2 \ \ \text{s.t.}\ \ \dot h(x, u) \ge -\gamma\, h(x)$$</div>
+<figure><img src="../../assets/figs/bg_04_cbf.webp" style="height:360px"><figcaption>(a) 위에서 본 장면: 원래 명령(1.20, 0.00)이 보행자 쪽이라, 필터가 (0.68, −0.13)으로 고친다 (b) 속도 공간에서 허용 반공간으로 투영한다</figcaption></figure>
+<div class="grid2">
+<div class="card gr"><span class="tag gr">장점</span><p>제어 입력에 선형인 제약 하나라 작은 QP로 밀리초 안에 푼다. 안전 집합의 불변성이 보장된다.</p></div>
+<div class="card or"><span class="tag or">단점</span><p>h를 설계해야 하고 모델이 맞아야 한다. 입력 한계와 충돌하면 해가 없을 수 있다. 장애물이 많으면 합치는 법이 문제다.</p></div>
+</div>
+<aside>안전 집합을 h(x) ≥ 0으로 적는다. 예를 들어 h는 보행자까지 거리에서 안전 반경을 뺀 값이다. CBF 조건은 h가 줄어드는 속도를 h에 비례해 제한한다. 경계에서 멀면 빨리 다가가도 되지만, 가까워질수록 천천히만 다가갈 수 있어 결코 경계를 넘지 않는다. 이 조건은 많은 시스템에서 입력에 선형이라, 원래 명령에 가장 가까운 안전 명령을 작은 QP로 찾는다. 그림 (b)처럼 속도 공간에서 허용 반공간으로 투영하는 것과 같다.</aside>
+</section>
+<section id="cvar" class="t">
+<div class="head"><p class="kicker">5 · 배경지식 · 꼬리 위험</p><h2>평균 비용은 드문 큰 사고를 묻고, CVaR는 나쁜 꼬리를 본다</h2></div>
+<figure><img src="img/cvar.webp" style="height:360px"><figcaption>평균은 비슷해도 나쁜 5 %의 평균(CVaR₀.₉₅)은 크게 다르다. 같은 수치 예를 그대로 계산했다</figcaption></figure>
+<div class="math">$$\mathrm{CVaR}_\alpha(C) = \mathbb E\big[C \mid C \ge \mathrm{VaR}_\alpha(C)\big] = \min_{\nu}\ \Big\{ \nu + \tfrac{1}{1-\alpha}\, \mathbb E\big[(C - \nu)^+\big] \Big\}$$</div>
+<div class="grid3">
+<div class="card bl"><span class="tag bl">기댓값</span><p>평균만 본다. 드문 충돌을 묻는다.</p></div>
+<div class="card or"><span class="tag or">CVaR</span><p>최악 (1−α) 꼬리의 평균. 볼록이라 최적화에 넣기 좋다.</p></div>
+<div class="card gr"><span class="tag gr">최악(robust)</span><p>가장 나쁜 경우. 가장 보수적이라 멈추기 쉽다.</p></div>
+</div>
+<aside>위험 척도는 비용 분포의 어디를 볼지 정한다. 평균은 대부분 좋고 가끔 크게 나쁜 정책을 구별하지 못한다. 최악의 경우만 보면 너무 보수적이 된다. CVaR는 그 사이로, 나쁜 쪽 일부의 평균을 본다. 오른쪽 식처럼 보조 변수 하나로 볼록 최적화가 되므로 MPC나 MPPI의 비용에 넣기 쉽다. MPPI에서는 표본들의 비용 분포에서 바로 꼬리 평균을 계산할 수 있다.</aside>
+</section>
+<section id="calibration" class="t">
+<div class="head"><p class="kicker">5 · 보정</p><h2>불확실성이 틀리면 확률 제약도 틀린다</h2></div>
+<div class="cols">
+<figure><img src="../../assets/figs/bg_013_conformal.webp" style="height:340px"><figcaption>Conformal prediction: 보정 자료 n개의 오차 순위로 반경을 정하면, 분포 가정 없이 포함률 1−α가 보장된다. n이 작으면 실제 포함률이 흔들린다</figcaption></figure>
+<div class="stack">
+<div class="card or"><span class="tag or">DUCCT-MPPI · 2026 · 시뮬</span><p>보행자 9명 성공률: Nav2 MPPI 47.83%, DRA-MPPI 50.38%, DUCCT-MPPI 77.97%. 불확실성을 과소신으로 두면 67.33%로 떨어진다(확률 희석).</p></div>
+<div class="card bl"><span class="tag bl">접촉 최댓값 전파 · 2026</span><p>CVaR 오차를 선형화보다 2.7–3.4배 줄였지만, 지도의 ±1σ 안에 드는 점은 <b>20–21%</b>였다(명목 68%).</p></div>
+</div>
+</div>
+<p class="take"><b>원칙:</b> σ를 제약에 쓰기 전에, σ가 실제 오차를 명목 비율만큼 덮는지부터 잰다.</p>
+<div class="foot" data-foot><p>DUCCT-MPPI arXiv:2605.28330 · 접촉 최댓값 전파 arXiv:2610.06103</p></div>
+<aside>확률 제약은 "충돌 확률이 δ 이하"를 지키려 한다. 그런데 그 확률은 예측기나 지도가 낸 불확실성으로 계산하므로, 불확실성이 틀리면 보장도 틀린다. 과신하면 위험을 과소평가하고, 과소신하면 위험이 넓게 퍼져 오히려 덜 조심하거나 멈춘다. 그래서 먼저 보정을 잰다. 예측한 σ 구간 안에 실제 값이 명목 비율만큼 드는지 보는 것이다. conformal prediction은 보정 자료의 오차 순위만으로 포함률을 보장하는 구간을 만드는 간단한 방법이다.</aside>
+</section>
+<section id="barrier-grid" class="t">
+<div class="head"><p class="kicker">5 · 많은 장애물 합치기</p><h2>장애물마다 barrier를 soft-min으로 합치면 좁은 틈이 닫힌다</h2></div>
+<div class="cols">
+<div class="stack">
+<div class="math">$$-\tfrac{1}{k}\log\sum_i e^{-k h_i} \;\le\; \min_i h_i$$</div>
+<div class="card or"><span class="tag or">문제 · Exact-Safe MPPI, 2026 · 시뮬</span><p>soft-min은 늘 실제 최솟값보다 작아 안전한 상태까지 뺀다. 틈 지표가 ln 2보다 작으면 soft-min 실행 1,050번 중 통과 0번. 정확한 최솟값과 δ-활성 집합의 QP는 4,950번 위반 0, 대신 표본마다 QP를 푼다.</p></div>
+</div>
+<div class="stack">
+<div class="math">$$\Delta h = f \ \ (f < 0), \qquad h\big|_{\partial \mathcal O} = 0$$</div>
+<div class="card bl"><span class="tag bl">대안 · Poisson 안전 함수, 2025</span><p>점유 지도의 장애물 경계를 h = 0으로 두고 Poisson 방정식을 풀어 격자 전체의 매끄러운 h 하나를 얻는다. 120 × 120 격자를 GPU에서 0.2–0.3 ms. Go2·G1 실물.</p></div>
+</div>
+</div>
+<p class="take"><b>핵심:</b> 장애물이 칸 단위로 많을 때는 barrier를 하나씩 합치기보다 지도 전체에서 h 하나를 만드는 편이 틈을 지킨다.</p>
+<div class="foot" data-foot><p>Exact-Safe MPPI arXiv:2610.07369 · Poisson 안전 함수 arXiv:2505.06794</p></div>
+<aside>장애물이 여러 개면 barrier도 여러 개다. 미분 가능하게 합치려고 soft-min을 쓰면, 그 값이 늘 실제 최솟값보다 작아서 안전 집합이 깎인다. 장애물이 많을수록 깎이는 몫이 커져 좁은 통로가 먼저 닫힌다. 정확한 최솟값을 쓰면 틈을 지키지만 계산이 무겁다. Poisson 안전 함수는 지도 전체에서 경계 조건을 만족하는 매끄러운 함수 하나를 풀어 이 문제를 피한다. 다만 실물 실험에서 보행 제어기의 속도 추종 지연 때문에 h가 잠깐 음수가 됐다고 보고했다. 지연은 안전 필터에서도 문제다.</aside>
+</section>
+<section id="sample-filter" class="t">
+<div class="head"><p class="kicker">5 · 표본 안전 필터</p><h2>안전한 표본이 하나도 없을 때만 백업 명령으로 개입한다</h2></div>
+<div class="cols">
+<div class="stack">
+<ul>
+<li>명목 명령을 한 스텝 적용했다고 보고, 그 뒤 명령열을 표본으로 뽑는다</li>
+<li>안전 = 지평 동안 위반 없음 + 끝 상태가 정지 가능한 불변 집합 안</li>
+<li>안전 표본이 없으면 저장한 백업 명령열의 첫 입력을 쓴다</li>
+<li>시나리오 기법으로 "괜히 개입할" 확률에 상한을 건다</li>
+</ul>
+<p>교차로 차량 3·4·5대: 필터 없이 100건 중 4·12·15건 충돌, 필터를 켜면 0건(개입률 0.08·0.21·0.38).</p>
+<div class="card gr"><span class="tag gr">장점</span><p>해석적 모델 없이 표본으로 감시. 명목 제어기를 거의 건드리지 않는다.</p></div>
+</div>
+<figure><img src="../../assets/thumbs/b3c152c2dab1.webp" style="height:520px"><figcaption>표본 안전 필터 (Fig. 1): SV-MPC 필터(a)와 CEM 필터(b). CEM 쪽은 교착에 빠진다 — arXiv:2604.22149</figcaption></figure>
+</div>
+<div class="foot" data-foot><p>표본 안전 필터, arXiv:2604.22149 (2026, 시뮬레이션)</p></div>
+<aside>예측 안전 필터의 생각은 이렇다. 지금 명령을 실행해도 그 뒤에 안전하게 멈출 수 있는 길이 하나라도 있으면 허용하고, 없으면 미리 저장해 둔 안전한 백업으로 바꾼다. 이 연구는 그 "길이 있나"를 표본으로 확인한다. 표본 기반 MPC는 이미 많은 rollout을 굴리므로 같은 감시기를 거의 공짜로 만들 수 있다. 다만 rollout이 정지로 끝나도록 제동 꼬리를 붙여야 하고, 지연이 있으면 제동 거리가 늘어난다는 점을 반영해야 한다.</aside>
+</section>
+<section id="safety-pc" class="t">
+<div class="head"><p class="kicker">5 · 장단점</p><h2>안전 방식은 지연, 보장, 의존성으로 고른다</h2></div>
+<table style="font-size:25px">
+<tr><th>방식</th><th>스텝당 지연</th><th>보장</th><th>장점</th><th>단점</th></tr>
+<tr><td>시간가변 비용</td><td>거의 0</td><td>없음</td><td class="good">가장 쉽다</td><td class="bad">가중치에 따라 뚫는다</td></tr>
+<tr><td>확률 제약 MPPI(RA/DRA-MPPI)</td><td>97–115 ms(RTX 2080)</td><td>확률적</td><td class="good">불확실성을 직접</td><td class="bad">보정에 기댄다, 무겁다</td></tr>
+<tr><td>CBF-QP</td><td>0.6–0.8 ms</td><td>강함(불변 집합)</td><td class="good">가볍고 형식적</td><td class="bad">h 설계, 교착</td></tr>
+<tr><td>CVaR-BF</td><td>미보고</td><td>확률적(CVaR)</td><td class="good">위험 수준을 스스로 조절</td><td class="bad">분포 가정</td></tr>
+<tr><td>최악 경우 MPC</td><td>48–200 ms</td><td>강함(최악)</td><td class="good">가장 안전</td><td class="bad">느리고 보수적</td></tr>
+</table>
+<p class="take"><b>실무 순서:</b> 비용으로 시작 → 보정을 잰 뒤 확률 제약 → 가벼운 CBF 필터를 마지막 방어선으로.</p>
+<div class="foot" data-foot><p>DRA-MPPI arXiv:2506.21205 · RA-MPPI arXiv:2209.12842 · Risk Adaptive CVaR Barrier Functions (IROS 2025)</p></div>
+<aside>표의 수치는 각 논문이 보고한 계산 시간이다. 하드웨어가 다르니 대략의 크기로만 보자. 안전 방식은 셋을 맞바꾼다. 계산 지연, 보장의 강도, 그리고 의존성과 가정이다. 강한 보장일수록 모델과 계산이 많이 들고 보수적이 된다. 그래서 대부분의 시스템은 가벼운 비용 기반 회피로 일상을 처리하고, 드문 위험 순간에만 개입하는 가벼운 필터를 마지막에 둔다.</aside>
+</section>
+<section id="d6" class="t dark divider">
+<p class="kicker">6 · 정리</p>
+<h2>모델을 얼마나 믿고,<br>무엇을 반드시 지킬 것인가</h2>
+<p class="lead">방법별 장단점 표, 고르는 법, 흔한 함정, 공부 순서.</p>
+<aside>마지막 장은 복습용이다. 지금까지 본 제어기를 한 표에 모으고, 상황에 따라 고르는 법과 실제 로봇에서 자주 빠지는 함정, 공부 순서를 정리한다.</aside>
+</section>
+<section id="cheat" class="t">
+<div class="head"><p class="kicker">6 · 장단점 표</p><h2>제어기 가족을 한 표로 본다</h2></div>
+<table style="font-size:24px">
+<tr><th>가족</th><th>모델</th><th>제약</th><th>장점</th><th>단점</th></tr>
+<tr><td>PID</td><td>불필요</td><td>없음(포화만)</td><td class="good">단순, 어디서나</td><td class="bad">다변수·미래를 모름</td></tr>
+<tr><td>Pure pursuit · Stanley</td><td>기하</td><td>없음</td><td class="good">튼튼한 경로 추종</td><td class="bad">장애물·한계 모름</td></tr>
+<tr><td>LQR</td><td>선형</td><td>없음</td><td class="good">최적 이득, 가벼운 실행</td><td class="bad">제약을 못 건다</td></tr>
+<tr><td>선형 MPC</td><td>선형</td><td>볼록 hard</td><td class="good">빠르고 전역 최적</td><td class="bad">선형 근사</td></tr>
+<tr><td>NMPC</td><td>비선형</td><td>hard</td><td class="good">정확한 제약</td><td class="bad">매끄러운 비용, 국소 최적</td></tr>
+<tr><td>MPPI</td><td>아무거나</td><td>벌점·확률</td><td class="good">비매끄러운 비용, GPU</td><td class="bad">표본·온도 민감</td></tr>
+<tr><td>학습 정책(RL)</td><td>시뮬에서</td><td>보상으로</td><td class="good">실행 매우 빠름</td><td class="bad">보장 없음, 분포 밖</td></tr>
+<tr><td>안전 필터(CBF)</td><td>필요</td><td>안전 집합</td><td class="good">제어기 무관 보장</td><td class="bad">보수적, h 설계</td></tr>
+</table>
+<aside>복습용 표다. 위에서 아래로 갈수록 모델에 더 기대고, 더 많은 것을 직접 다룬다. 실제 시스템은 여러 개를 겹쳐 쓴다. 예를 들어 바퀴 모듈은 PID로, 차체 궤적은 MPPI나 NMPC로, 마지막에 CBF 필터를 두는 식이다.</aside>
+</section>
+<section id="choose" class="t">
+<div class="head"><p class="kicker">6 · 고르는 법</p><h2>질문 네 개로 제어기를 고른다</h2></div>
+<div class="grid2">
+<div class="card bl"><span class="tag bl">1</span><h3>모델을 얼마나 아는가?</h3><p>거의 모름 → PID·pure pursuit. 선형으로 충분 → LQR·선형 MPC. 비선형 → NMPC·MPPI. 시뮬만 있음 → RL.</p></div>
+<div class="card or"><span class="tag or">2</span><h3>반드시 지킬 제약이 있는가?</h3><p>속도·조향 한계, 안전 거리 → MPC(hard) 또는 CBF 필터.</p></div>
+<div class="card gr"><span class="tag gr">3</span><h3>비용이 매끄러운가?</h3><p>장애물 격자·충돌 판정처럼 계단이면 MPPI, 매끄러우면 NMPC.</p></div>
+<div class="card gy"><span class="tag">4</span><h3>계산 예산은?</h3><p>임베디드 CPU면 LQR·PID·작은 QP, GPU가 있으면 MPPI, 아주 빠른 루프면 학습 정책.</p></div>
+</div>
+<p class="take"><b>그리고:</b> 지연은 어느 제어기를 고르든 모델에 넣는다.</p>
+<aside>이 네 질문이면 대부분의 선택이 정해진다. 모델 지식이 첫째다. 모델을 거의 모르는데 MPC를 쓰면 틀린 예측을 정밀하게 최적화하게 된다. 둘째는 제약, 셋째는 비용의 꼴, 넷째는 계산 예산이다. 마지막으로 지연은 제어기 종류와 상관없이 늘 확인해야 하는 항목이다.</aside>
+</section>
+<section id="pitfalls" class="t">
+<div class="head"><p class="kicker">6 · 흔한 함정</p><h2>제어가 이상하면 먼저 지연, 포화, 좌표, 주기를 의심한다</h2></div>
+<div class="grid2">
+<div class="card or"><h3>지연을 모른다</h3><p>시뮬에서는 되는데 실물에서 출렁이면 지연부터 잰다. 명령과 실제 반응의 시간차를 로그로 본다.</p></div>
+<div class="card or"><h3>포화와 windup</h3><p>명령이 한계에 붙어 있으면 이득·적분이 의미를 잃는다. 한계에 붙은 시간을 센다.</p></div>
+<div class="card or"><h3>좌표계·부호</h3><p>몸체 좌표와 세계 좌표, 각도 범위(±π 넘김)가 섞이면 엉뚱하게 돈다.</p></div>
+<div class="card or"><h3>주기와 계산 시간</h3><p>계산이 주기를 넘기면 사실상 지연이 된다. 평균이 아니라 최댓값을 본다.</p></div>
+<div class="card gy"><h3>튜닝을 한 장면에서만</h3><p>여러 지형·속도·seed에서 같은 설정으로 잰다.</p></div>
+<div class="card gy"><h3>추종 오차만 본다</h3><p>떨림(jerk), 한계 위반, 안전 여유, 멈춤도 함께 본다.</p></div>
+</div>
+<aside>실제 로봇에서 제어가 이상할 때 원인의 대부분은 알고리즘이 아니라 이런 기본 항목이다. 특히 지연은 시뮬레이션에서 빠뜨리기 쉬워 시뮬과 실물의 차이를 가장 크게 만든다. 계산 시간도 평균이 아니라 최댓값이 중요하다. 한 주기라도 늦으면 그 순간 제어가 비기 때문이다.</aside>
+</section>
+<section id="path" class="t">
+<div class="head"><p class="kicker">6 · 공부 순서</p><h2>고전 제어, 최적 제어, 로봇 제어 순으로 쌓는다</h2></div>
+<div class="grid3">
+<div class="card gr"><span class="tag gr">1 · 고전</span><h3>Åström &amp; Murray, Feedback Systems</h3><p>되먹임, PID, 안정성, 주파수 응답. 저자가 온라인에 공개했다.</p></div>
+<div class="card bl"><span class="tag bl">2 · 최적·MPC</span><h3>Rawlings·Mayne·Diehl, Model Predictive Control</h3><p>LQR에서 MPC, 안정성, 강건·확률 MPC.</p></div>
+<div class="card or"><span class="tag or">3 · 손으로</span><h3>작은 시스템을 직접</h3><p>질량-스프링 PID → 이중 적분기 LQR → 바퀴 로봇 pure pursuit → MPPI(수십 줄) → CBF-QP.</p></div>
+</div>
+<table style="font-size:24px">
+<tr><th>이 덱의 장</th><th>스스로 확인할 질문</th></tr>
+<tr><td>1 고전</td><td>일정한 외란 앞에서 P 제어에 오차가 남는 이유는?</td></tr>
+<tr><td>2 MPC</td><td>이동 지평은 왜 모델 오차에 되먹임이 되나?</td></tr>
+<tr><td>3 MPPI</td><td>온도를 올리면 무엇이 바뀌고, 비용 크기와는 어떤 관계인가?</td></tr>
+<tr><td>4 모델 오차</td><td>지연이 있으면 왜 출렁이고, 어떻게 예측으로 고치나?</td></tr>
+<tr><td>5 안전</td><td>CBF는 왜 경계를 넘지 않나? σ가 틀리면 확률 제약은?</td></tr>
+</table>
+<aside>순서는 고전 제어, 최적 제어와 MPC, 그리고 로봇 응용이다. 첫 책은 되먹임과 안정성의 직관을, 둘째 책은 MPC의 이론을 준다. 그리고 가장 확실한 공부는 구현이다. 이 덱의 그림처럼 작은 시스템을 수십 줄로 시뮬레이션해 보면, 이득과 지연과 제약이 무엇을 하는지 손에 잡힌다.</aside>
+</section>
+<section id="summary" class="t">
+<div class="head"><p class="kicker">정리</p><h2>제어는 미래를 예측하고, 되먹임으로 고치고, 안전은 따로 지킨다</h2></div>
+<div class="grid2">
+<div class="card bl"><h3>되먹임</h3><p>잰 상태로 고친다. PID는 오차의 현재·과거·변화를 본다.</p></div>
+<div class="card bl"><h3>최적 제어</h3><p>LQR은 최적 이득, MPC는 제약을 지키며 매 주기 다시 푼다.</p></div>
+<div class="card gr"><h3>표본 기반</h3><p>MPPI는 미분 없이 비매끄러운 비용을. 온도·잡음이 손잡이.</p></div>
+<div class="card gr"><h3>모델 오차</h3><p>지연을 먼저 넣고, 남는 몫은 작은 잔차로, σ와 함께.</p></div>
+<div class="card or"><h3>안전</h3><p>비용으로 피하고, 필터로 지킨다. σ는 보정부터 잰다.</p></div>
+<div class="card or"><h3>함정</h3><p>지연, 포화, 좌표, 계산 시간의 최댓값.</p></div>
+</div>
+<aside>오늘 본 것을 여섯 상자로 줄였다. 제어기의 종류는 많지만 질문은 같다. 모델을 얼마나 믿고, 무엇을 반드시 지키며, 계산을 얼마나 쓸 수 있는가. 그리고 실제 로봇에서는 그 어떤 알고리즘보다 지연과 포화 같은 기본 항목이 결과를 크게 좌우한다.</aside>
+</section>
+<section id="refs-core" class="t">
+<div class="head"><p class="kicker">참고문헌 1/2 · 먼저 읽을 것</p><h2>처음에는 이 다섯 가지만 읽는다</h2></div>
+<table style="font-size:24px">
+<tr><th>순서</th><th>문헌</th><th>왜 먼저 읽나</th></tr>
+<tr><td>★ 1</td><td>Åström·Murray, Feedback Systems (2판, 2021)</td><td>되먹임, 안정성, PID의 직관</td></tr>
+<tr><td>★ 2</td><td>Rawlings·Mayne·Diehl, Model Predictive Control (2판, 2017) 1–2장</td><td>LQR에서 MPC까지, 안정성</td></tr>
+<tr><td>★ 3</td><td>Coulter, Pure Pursuit (CMU-RI-TR-92-01, 1992)</td><td>기하 추종기의 원형, 짧고 쉽다</td></tr>
+<tr><td>★ 4</td><td>Williams 외, MPPI 1509.01149 · IT-MPC 1707.02342</td><td>표본 기반 MPC의 식과 유도</td></tr>
+<tr><td>★ 5</td><td>Ames 외, CBF: Theory and Applications 1903.11199</td><td>안전 필터의 개관</td></tr>
+</table>
+<aside>참고문헌을 두 장으로 나눴다. 이 장은 처음 공부할 때 먼저 읽을 다섯 가지이고, 위에서부터 차례로 읽으면 된다. 교과서는 표에 적은 장만 먼저 읽는다. 논문은 서론과 방법 절을 읽고 이 덱의 그림과 대조한다. 다음 장은 덱의 각 장에 나온 원 논문 전체다. 2109.11978처럼 점이 든 숫자는 arXiv 번호다.</aside>
+</section>
+<section id="refs" class="t">
+<div class="head"><p class="kicker">참고문헌 2/2 · 장별</p><h2>책과 원 논문</h2></div>
+<div class="grid2">
+<div class="stack">
+<p><b>책</b> — Åström·Murray, Feedback Systems (2판, 2021) · Rawlings·Mayne·Diehl, Model Predictive Control (2판, 2017)</p>
+<p><b>추종</b> — Pure Pursuit (Coulter 1992) · Stanley (Thrun 외 2006)</p>
+<p><b>MPPI</b> — MPPI 1509.01149 · IT-MPC 1707.02342 · RMPPI 2102.09027 · log-MPPI 2203.16599 · SMPPI 2112.09988 · MPPI-Generic 2409.07563 · ProxPI 2609.00941</p>
+<p><b>지연</b> — CLIS-MPPI 2610.21239 · Feedback-MPPI 2506.14855</p>
+</div>
+<div class="stack">
+<p><b>학습 동역학</b> — PETS 1805.12114 · IKD 2102.12667 · RMA 2107.04034 · TD-MPC2 2310.16828 · 지형 인지 운동 모델 2305.00676 · HDVIO2.0 2504.00969 · Continual VND 2606.27353 · OptCar 2607.13319</p>
+<p><b>잔차·GP</b> — Cautious MPC 1705.10702 · McKinnon·Schoellig 1810.06681</p>
+<p><b>안전</b> — CBF 개관 1903.11199 · RA-MPPI 2209.12842 · DRA-MPPI 2506.21205 · DUCCT-MPPI 2605.28330 · 접촉 최댓값 전파 2610.06103 · Poisson 안전 함수 2505.06794 · Exact-Safe MPPI 2610.07369 · 표본 안전 필터 2604.22149</p>
+</div>
+</div>
+<aside>덱의 각 장에 나온 문헌을 주제별로 모았다. 숫자만 있는 항목은 arXiv 번호이고, 학회지나 책은 저자와 연도를 적었다. 처음부터 모두 읽을 필요는 없다. 앞 장의 다섯 가지를 먼저 읽고, 이 덱의 장단점 표에서 궁금해진 방법의 원 논문만 골라 읽기를 권한다.</aside>
+</section>
+</div></div>
+<div id="notes"><b>발표자 노트</b><div id="notes-body"></div></div>
+<div id="bar">
+<button id="prev" aria-label="이전">◀</button><span id="count"></span><button id="next" aria-label="다음">▶</button>
+<span id="ttl">로봇 제어 기초 — PID에서 MPPI와 안전 필터까지</span>
+<button id="nb" title="N 키">노트</button><button id="fs" title="F 키">전체 화면</button>
+<a href="study-controller.pptx" download>PPTX</a><a href="./../">목록</a>
+</div>
+<pre id="report" hidden></pre>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script>
+(function () {
+  var slides = Array.prototype.slice.call(document.querySelectorAll('#frame > section'));
+  var frame = document.getElementById('frame'), notes = document.getElementById('notes');
+  var q = new URLSearchParams(location.search), shot = q.has('shot') || q.has('check');
+  if (shot) document.body.classList.add('shot');
+  var i = 0;
+  function fit() {
+    if (shot) return;
+    var st = document.getElementById('stage');
+    var s = Math.min(st.clientWidth / 1920, st.clientHeight / 1080);
+    frame.style.transform = 'scale(' + s + ')';
+  }
+  function show(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach(function (el, k) { el.classList.toggle('on', k === i); });
+    document.getElementById('count').textContent = (i + 1) + ' / ' + slides.length;
+    var a = slides[i].querySelector('aside');
+    document.getElementById('notes-body').textContent = a ? a.textContent : '';
+    if (!shot) history.replaceState(null, '', '#' + (i + 1));
+  }
+  function withAllFonts(fn) {
+    document.body.classList.add('all');
+    void document.body.offsetHeight;
+    requestAnimationFrame(function () {
+      document.fonts.ready.then(function () { document.body.classList.remove('all'); fn(); });
+    });
+  }
+  window.withAllFonts = withAllFonts;
+  // 넘침 검사: 본문 요소가 장 밖으로 나가거나 각주 띠를 덮으면 적는다.
+  function check() {
+    var bad = [];
+    slides.forEach(function (sec, k) {
+      show(k);
+      var box = sec.getBoundingClientRect();
+      Array.prototype.forEach.call(sec.querySelectorAll('.katex-error'), function (el) {
+        bad.push({ slide: k + 1, id: sec.id, tag: 'TeX', text: (el.getAttribute('title') || el.textContent).slice(0, 60), over: 0 });
+      });
+      Array.prototype.forEach.call(sec.querySelectorAll('img'), function (el) {
+        if (!el.complete || !el.naturalWidth) bad.push({ slide: k + 1, id: sec.id, tag: 'IMG', text: el.getAttribute('src'), over: 0 });
+      });
+      var foot = sec.querySelector('[data-foot]');
+      var limit = foot ? foot.getBoundingClientRect().top - 4 : box.bottom - 24;
+      Array.prototype.forEach.call(sec.querySelectorAll('p, h1, h2, h3, img, td, th, li, .katex-display, [data-box]'), function (el) {
+        if (foot && foot.contains(el)) return;
+        if (el.closest('aside')) return;
+        var r = el.getBoundingClientRect();
+        if (r.width === 0 && r.height === 0) return;
+        if (r.bottom > limit + 0.5 || r.right > box.right - 40) {
+          bad.push({ slide: k + 1, id: sec.id, tag: el.tagName, text: (el.textContent || el.alt || '').slice(0, 40), over: Math.round(Math.max(r.bottom - limit, r.right - (box.right - 40))) });
+        }
+      });
+    });
+    var rep = document.getElementById('report');
+    rep.textContent = JSON.stringify(bad);
+    rep.setAttribute('data-done', '1');
+  }
+  function start() {
+    if (window.renderMathInElement) {
+      renderMathInElement(document.getElementById('frame'), {
+        delimiters: [{ left: '$$', right: '$$', display: true }, { left: '\\(', right: '\\)', display: false }],
+        throwOnError: false
+      });
+    }
+    // 한글 웹 글꼴은 글자 묶음마다 따로 받고, 숨은 장의 글자는 받지 않는다. 장을 모두 보여 글꼴을 받은 뒤 잰다.
+    if (q.has('check')) { withAllFonts(check); return; }
+    var s = shot ? parseInt(q.get('shot'), 10) - 1 : parseInt(location.hash.slice(1), 10) - 1;
+    show(isNaN(s) ? 0 : s);
+  }
+  show(0); fit(); window.addEventListener('resize', fit);
+  window.addEventListener('DOMContentLoaded', function () {
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(start); else start();
+  });
+  document.getElementById('prev').onclick = function () { show(i - 1); };
+  document.getElementById('next').onclick = function () { show(i + 1); };
+  document.getElementById('nb').onclick = function () { notes.classList.toggle('show'); };
+  document.getElementById('fs').onclick = function () {
+    if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen();
+  };
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { show(i + 1); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { show(i - 1); e.preventDefault(); }
+    else if (e.key === 'Home') show(0);
+    else if (e.key === 'End') show(slides.length - 1);
+    else if (e.key === 'n' || e.key === 'N') notes.classList.toggle('show');
+    else if (e.key === 'f' || e.key === 'F') document.getElementById('fs').click();
+  });
+  var x0 = null;
+  document.getElementById('stage').addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+  document.getElementById('stage').addEventListener('touchend', function (e) {
+    if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0; x0 = null;
+    if (Math.abs(dx) > 40) show(i + (dx < 0 ? 1 : -1));
+  });
+})();
+</script>
+</body>
+</html>

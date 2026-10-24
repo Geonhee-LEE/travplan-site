@@ -1,0 +1,740 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>로봇 시뮬레이션 기초 — 물리 엔진에서 sim-to-real까지</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=IBM+Plex+Sans+KR:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<style>
+:root { --bg:#0E1526; --bar:#16213A; --fg:#F4F1EA; --muted:#C9D1E0; --accent:#F59E5B; }
+* { box-sizing:border-box; }
+html, body { margin:0; height:100%; background:var(--bg); color:var(--fg); font-family:'IBM Plex Sans KR', Arial, sans-serif; }
+#stage { position:fixed; inset:0 0 56px 0; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+#frame { width:1920px; height:1080px; flex:none; transform-origin:center center; box-shadow:0 8px 40px rgba(0,0,0,.5); }
+#frame > section:not(.on) { display:none !important; }
+body.all #frame > section:not(.on) { display:block !important; }
+section { position:relative; width:1920px; height:1080px; overflow:hidden; }
+section * { margin:0; }
+section aside { display:none; }
+section table { border-collapse:collapse; }
+section th, section td { padding:10px 16px; vertical-align:top; }
+section tr + tr td { border-top:1px solid rgba(127,140,160,.25); }
+section .katex { font-size:1.05em; }
+section .katex-display { margin:0; text-align:left; }
+section .katex-display > .katex { text-align:left; }
+x-shape { display:block; flex:none; }
+x-shape[kind="arrow-right"] { clip-path:polygon(0 32%,58% 32%,58% 0,100% 50%,58% 100%,58% 68%,0 68%); }
+#bar { position:fixed; left:0; right:0; bottom:0; height:56px; background:var(--bar); display:flex; align-items:center; gap:12px; padding:0 16px; font-size:15px; }
+#bar button, #bar a { background:none; border:1px solid #3A4A6B; color:var(--fg); border-radius:8px; padding:6px 12px; font:inherit; cursor:pointer; text-decoration:none; }
+#bar button:hover, #bar a:hover { border-color:var(--accent); }
+#count { min-width:72px; text-align:center; color:var(--muted); }
+#ttl { flex:1; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; color:var(--muted); }
+#notes { position:fixed; right:16px; bottom:72px; width:min(560px, calc(100% - 32px)); max-height:45vh; overflow:auto; background:#FFFDF8; color:#16213A; border-radius:12px; padding:16px 20px; font-size:16px; line-height:1.6; box-shadow:0 8px 30px rgba(0,0,0,.4); display:none; }
+#notes.show { display:block; }
+#notes b { display:block; margin-bottom:6px; color:#C2410C; font-family:'JetBrains Mono', monospace; font-size:13px; }
+body.shot #bar, body.shot #notes { display:none; }
+body.shot #stage { inset:0; }
+body.shot #frame { box-shadow:none; transform:none !important; }
+@media (max-width:640px) { #ttl { display:none; } }
+</style>
+</head>
+<body>
+<div id="stage"><div id="frame">
+<style>
+/* 챕터 발표 덱(slides_src/talk-*) 공용 스타일. deck.json의 "css": "_talk/talk.css"로 읽는다.
+   PPTX(편집 가능)는 이 스타일이 그린 결과의 좌표·색·글자 크기를 그대로 옮긴다. 규칙은 slides_src/_talk/README.md. */
+section.t { background:#F7F5F0; color:#16213A; font-family:'IBM Plex Sans KR', Arial, sans-serif;
+  padding:80px 112px 120px; display:flex; flex-direction:column; gap:28px; }
+section.t.dark { background:#16213A; color:#F4F1EA; }
+section.t .kicker { font-family:'JetBrains Mono', 'Courier New', monospace; font-size:22px; color:#C2410C; letter-spacing:1px; }
+section.t.dark .kicker { color:#F59E5B; }
+section.t h1 { font-family:'Noto Serif KR', Georgia, serif; font-size:96px; font-weight:700; line-height:1.15; }
+section.t h2 { font-family:'Noto Serif KR', Georgia, serif; font-size:52px; font-weight:700; line-height:1.22; }
+section.t h3 { font-size:30px; font-weight:600; line-height:1.3; }
+section.t p, section.t li { font-size:26px; line-height:1.5; }
+section.t .lead { font-size:34px; line-height:1.45; color:#3D4A63; }
+section.t.dark .lead { color:#C9D1E0; }
+section.t .muted { color:#5A6478; }
+section.t.dark .muted { color:#9AA6BC; }
+section.t .small { font-size:22px; line-height:1.4; }
+section.t b, section.t strong { font-weight:600; }
+section.t .hl { color:#C2410C; font-weight:600; }
+section.t code { font-family:'JetBrains Mono', monospace; font-size:0.86em; color:#7C2D12; }
+section.t ul, section.t ol { padding-left:36px; display:flex; flex-direction:column; gap:10px; }
+section.t .head { display:flex; flex-direction:column; gap:10px; }
+section.t .cols { display:flex; gap:40px; align-items:flex-start; }
+section.t .cols > * { flex:1; min-width:0; }
+section.t .stack { display:flex; flex-direction:column; gap:18px; }
+section.t .grid2, section.t .grid3 { display:grid; gap:24px; }
+section.t .grid2 { grid-template-columns:1fr 1fr; }
+section.t .grid3 { grid-template-columns:1fr 1fr 1fr; }
+section.t .card { background:#FFFDF8; border:1px solid #D9D4C7; border-radius:12px; padding:22px 26px; display:flex; flex-direction:column; gap:12px; }
+section.t .card.or { border-left:8px solid #C2410C; }
+section.t .card.bl { border-left:8px solid #1D4ED8; }
+section.t .card.gr { border-left:8px solid #15803D; }
+section.t .card.gy { border-left:8px solid #9AA6BC; }
+section.t.dark .card { background:#22304F; border-color:#3A4A6B; }
+section.t .card h3 { font-size:28px; }
+section.t .card p, section.t .card li { font-size:24px; line-height:1.45; }
+section.t .tag { align-self:flex-start; font-size:20px; font-weight:600; padding:4px 14px; border-radius:999px; background:#ECE8DF; color:#16213A; }
+section.t .tag.or { background:#FDE7C8; color:#7C2D12; }
+section.t .tag.bl { background:#DBE5FB; color:#1E3A8A; }
+section.t .tag.gr { background:#D7EFDD; color:#14532D; }
+section.t .pills { display:flex; flex-wrap:wrap; gap:16px; }
+section.t .pill { font-size:24px; padding:8px 22px; border-radius:999px; background:#C9D1E0; color:#16213A; }
+section.t .pill.on { background:#F59E5B; }
+section.t .take { background:#16213A; color:#F4F1EA; border-radius:12px; padding:20px 28px; font-size:27px; line-height:1.45; }
+section.t .take b { color:#F59E5B; }
+section.t.dark .take { background:#F59E5B; color:#16213A; }
+section.t .flow { display:flex; align-items:stretch; gap:14px; }
+section.t .flow > .step { flex:1; background:#FFFDF8; border:1px solid #D9D4C7; border-top:6px solid #C2410C; border-radius:10px; padding:16px 18px;
+  display:flex; flex-direction:column; gap:8px; }
+section.t .flow > .step p { font-size:22px; line-height:1.4; }
+section.t .flow > .arrow { flex:none; align-self:center; font-size:36px; color:#C2410C; }
+section.t table { border-collapse:collapse; width:100%; font-size:21px; line-height:1.35; background:#FFFDF8; }
+section.t th { background:#16213A; color:#F4F1EA; text-align:left; font-weight:600; padding:10px 14px; }
+section.t td { padding:9px 14px; border-top:1px solid #D9D4C7; vertical-align:top; }
+section.t tr:nth-child(even) td { background:#F1EDE4; }
+section.t td.good { color:#14532D; font-weight:600; }
+section.t td.bad { color:#9F1239; font-weight:600; }
+section.t figure { margin:0; display:flex; flex-direction:column; gap:10px; }
+section.t figure img { display:block; max-width:100%; object-fit:contain; background:#FFFFFF; border:1px solid #D9D4C7; border-radius:8px; }
+section.t figcaption { font-size:20px; line-height:1.4; color:#5A6478; }
+section.t .math { background:#FFFDF8; border-left:6px solid #C2410C; border-radius:8px; padding:8px 24px; font-size:30px; }
+section.t .math .katex-display { margin:6px 0; }
+section.t .foot { position:absolute; left:112px; right:112px; bottom:32px; border-top:2px solid #D9D4C7; padding-top:10px;
+  display:flex; flex-direction:column; gap:2px; }
+section.t .foot p { font-size:18px; line-height:1.35; color:#5A6478; }
+section.t.dark .foot { border-color:#3A4A6B; }
+section.t.dark .foot p { color:#9AA6BC; }
+section.t .num { position:absolute; right:112px; top:84px; font-family:'JetBrains Mono', monospace; font-size:20px; color:#9AA6BC; }
+section.t.cover { justify-content:space-between; padding:120px 128px; }
+section.t.divider { justify-content:center; gap:36px; padding:120px 128px; }
+section.t.divider h2 { font-size:80px; }
+</style>
+
+<script>
+// ?export=1: 장마다 도형·글상자·표·그림의 좌표와 스타일을 적는다. scripts/slides_editable.py가 읽는다.
+(function () {
+  if (!/[?&]export=/.test(location.search)) return;
+  var INLINE = /^(inline|inline-block|inline-flex|contents)$/;
+  function transparent(c) { return !c || c === 'transparent' || /rgba\(.*,\s*0\)$/.test(c); }
+  function rect(el, base) { var r = el.getBoundingClientRect(); return [r.left - base.left, r.top - base.top, r.width, r.height]; }
+  function style(cs) {
+    return { size: parseFloat(cs.fontSize), bold: parseInt(cs.fontWeight, 10) >= 600, italic: cs.fontStyle === 'italic',
+             color: cs.color, mono: /Mono|Courier|monospace/.test(cs.fontFamily) };
+  }
+  function runs(el) {
+    var out = [];
+    (function rec(node) {
+      Array.prototype.forEach.call(node.childNodes, function (c) {
+        if (c.nodeType === 3) { if (c.textContent) out.push({ s: c.textContent, st: style(getComputedStyle(node)), href: node.closest('a') ? node.closest('a').href : null }); return; }
+        if (c.nodeType !== 1 || c.tagName === 'ASIDE') return;
+        if (c.tagName === 'BR') { out.push({ s: '\n', st: style(getComputedStyle(node)) }); return; }
+        if (c.classList.contains('katex')) {
+          var a = c.querySelector('annotation');
+          out.push({ s: a ? a.textContent : c.textContent, st: style(getComputedStyle(node)), math: true });
+          return;
+        }
+        var cs = getComputedStyle(c);
+        if (cs.display === 'none') return;
+        if (INLINE.test(cs.display) && c.tagName !== 'IMG') rec(c);
+      });
+    })(el);
+    return out;
+  }
+  function hasOwnText(el) {
+    return Array.prototype.some.call(el.childNodes, function (c) {
+      if (c.nodeType === 3) return c.textContent.trim() !== '';
+      if (c.nodeType !== 1 || c.tagName === 'ASIDE') return false;
+      var cs = getComputedStyle(c);
+      return (INLINE.test(cs.display) || c.classList.contains('katex')) && c.tagName !== 'IMG' && c.textContent.trim() !== '';
+    });
+  }
+  function marker(li) {
+    var p = li.parentElement;
+    if (!p || getComputedStyle(li).listStyleType === 'none') return null;
+    if (p.tagName === 'OL') return { n: Array.prototype.indexOf.call(p.children, li) + parseInt(p.getAttribute('start') || '1', 10) };
+    return { n: 0 };
+  }
+  function textItem(el, base, cs) {
+    var r = rect(el, base), pl = parseFloat(cs.paddingLeft), pr = parseFloat(cs.paddingRight), pt = parseFloat(cs.paddingTop),
+        pb = parseFloat(cs.paddingBottom), bl = parseFloat(cs.borderLeftWidth), bt = parseFloat(cs.borderTopWidth);
+    var rr = runs(el), m = el.tagName === 'LI' ? marker(el) : null;
+    if (m) { r[0] -= 30; r[2] += 30; }   // 글머리표 자리. PPTX에서는 내어쓰기 30px의 진짜 글머리표가 된다
+    var lh = parseFloat(cs.lineHeight);
+    return { t: 'text', r: [r[0] + pl + bl, r[1] + pt + bt, r[2] - pl - pr - bl, r[3] - pt - pb - bt], runs: rr, li: m,
+             align: cs.textAlign, lh: isNaN(lh) ? 1.3 : lh / parseFloat(cs.fontSize) };
+  }
+  function boxItem(el, base, cs) {
+    var sides = {};
+    ['Top', 'Right', 'Bottom', 'Left'].forEach(function (s) {
+      var w = parseFloat(cs['border' + s + 'Width']);
+      if (w > 0 && cs['border' + s + 'Style'] !== 'none' && !transparent(cs['border' + s + 'Color'])) sides[s[0]] = [w, cs['border' + s + 'Color']];
+    });
+    var fill = transparent(cs.backgroundColor) ? null : cs.backgroundColor;
+    if (!fill && !Object.keys(sides).length) return null;
+    return { t: 'box', r: rect(el, base), fill: fill, radius: parseFloat(cs.borderTopLeftRadius) || 0, sides: sides };
+  }
+  function tableItem(el, base) {
+    var rows = Array.prototype.map.call(el.rows, function (tr) {
+      return { h: tr.getBoundingClientRect().height, cells: Array.prototype.map.call(tr.cells, function (c) {
+        var cs = getComputedStyle(c), bg = cs.backgroundColor;
+        if (transparent(bg)) bg = getComputedStyle(tr).backgroundColor;
+        if (transparent(bg)) bg = getComputedStyle(el).backgroundColor;
+        return { w: c.getBoundingClientRect().width, span: c.colSpan || 1, fill: transparent(bg) ? null : bg, runs: runs(c),
+                 align: cs.textAlign, size: parseFloat(cs.fontSize) };
+      }) };
+    });
+    return { t: 'table', r: rect(el, base), rows: rows };
+  }
+  function img(el, base) {
+    var r = rect(el, base), nw = el.naturalWidth, nh = el.naturalHeight;
+    if (nw && nh && getComputedStyle(el).objectFit === 'contain') {
+      var s = Math.min(r[2] / nw, r[3] / nh), w = nw * s, h = nh * s;
+      r = [r[0] + (r[2] - w) / 2, r[1] + (r[3] - h) / 2, w, h];
+    }
+    return { t: 'img', r: r, src: el.getAttribute('src') };
+  }
+  function slide(sec) {
+    var base = sec.getBoundingClientRect(), items = [];
+    (function walk(el) {
+      if (el.tagName === 'ASIDE') return;
+      var cs = getComputedStyle(el);
+      if (cs.display === 'none' || cs.visibility === 'hidden') return;
+      if (el !== sec && el.tagName !== 'TABLE') { var b = boxItem(el, base, cs); if (b) items.push(b); }
+      if (el.matches('.katex-display, svg, canvas, x-shape, [data-raster]')) {
+        var k = el.matches('.katex-display') ? (el.querySelector('.katex') || el) : el;
+        items.push({ t: 'raster', r: rect(k, base) }); return;
+      }
+      if (el.tagName === 'IMG') { items.push(img(el, base)); return; }
+      if (el.tagName === 'TABLE') { items.push(tableItem(el, base)); return; }
+      if (el !== sec && hasOwnText(el)) items.push(textItem(el, base, cs));
+      Array.prototype.forEach.call(el.children, function (c) {
+        var d = getComputedStyle(c).display;
+        if (!(INLINE.test(d) && c.tagName !== 'IMG' && !c.querySelector('img, .katex-display'))) walk(c);
+      });
+    })(sec);
+    var a = sec.querySelector('aside');
+    return { bg: getComputedStyle(sec).backgroundColor, items: items, note: a ? a.textContent.trim() : '' };
+  }
+  function run() {
+    var secs = Array.prototype.slice.call(document.querySelectorAll('#frame > section')), out = [];
+    secs.forEach(function (sec) {
+      secs.forEach(function (s) { s.classList.toggle('on', s === sec); });
+      out.push(slide(sec));
+    });
+    var rep = document.getElementById('report'); rep.textContent = JSON.stringify(out); rep.setAttribute('data-done', '1');
+  }
+  window.addEventListener('DOMContentLoaded', function () {
+    // 뷰어의 start()가 수식을 조판한 뒤에 잰다.
+    document.fonts.ready.then(function () { setTimeout(function () { window.withAllFonts(run); }, 300); });
+  });
+})();
+</script>
+<section id="cover" class="t dark cover">
+<p class="kicker">로봇 시뮬레이션 기초 · 개념 공부 덱</p>
+<div class="stack"><h1>현실을 흉내 내되,<br>어디가 다른지 알고 쓴다</h1><p class="lead">물리 엔진의 시간 스텝과 접촉, 절차 생성 장면과 보행자 모델, 센서와 sim-to-real, 평가의 신뢰도까지 — 그림과 배경지식과 장단점으로 보는 로봇 시뮬레이션</p></div>
+<div class="pills"><p class="pill on">충실도 사다리</p><p class="pill">적분 · 접촉</p><p class="pill">엔진 · 재현성</p><p class="pill">장면 · 보행자</p><p class="pill">무작위화 · SRCC</p></div>
+<aside>이 덱은 로봇 시뮬레이션을 처음 공부하는 사람을 위한 개념 덱이다. 시뮬레이터가 무엇을 근사하는지, 그 근사가 어디서 틀리는지, 그리고 시뮬에서 얻은 결과를 얼마나 믿을 수 있는지를 차례로 본다. 그림 대부분은 작은 시스템을 실제로 시뮬레이션해 그렸고, 논문 그림에는 출처를 달았다.</aside>
+</section>
+<section id="agenda" class="t">
+<div class="head"><p class="kicker">순서</p><h2>엔진, 장면, 현실과의 차이, 평가의 순서로 간다</h2></div>
+<table style="font-size:30px">
+<tr><th>장</th><th>주제</th><th>답하는 질문</th></tr>
+<tr><td>0</td><td>시작</td><td>시뮬은 무엇에 쓰고, 충실도는 어떻게 고르나?</td></tr>
+<tr><td>1</td><td>물리 엔진</td><td>시간 스텝과 접촉은 왜 어렵나? 엔진은 어떻게 고르나?</td></tr>
+<tr><td>2</td><td>장면과 보행자</td><td>장면은 어떻게 만들고, 사람은 어떻게 움직이게 하나?</td></tr>
+<tr><td>3</td><td>센서와 sim-to-real</td><td>현실과의 차이는 어디서 오고, 어떻게 줄이고, 어떻게 재나?</td></tr>
+<tr><td>4</td><td>정리</td><td>장단점 표, 흔한 함정, 공부 순서</td></tr>
+</table>
+<aside>시뮬레이션은 하나의 도구가 아니라 충실도와 비용이 다른 여러 도구의 묶음이다. 1장은 물리 엔진의 내부, 2장은 그 위에 놓을 세상과 사람, 3장은 현실과의 차이와 그 측정을 다룬다. 마지막 장은 복습용이다.</aside>
+</section>
+<section id="course" class="t">
+<div class="head"><p class="kicker">0 · 커리큘럼 6/7</p><h2>학습과 평가가 모두 시뮬레이터 위에서 일어난다</h2></div>
+<figure><img src="img/course.webp" style="height:400px"></figure>
+<div class="grid3">
+<div class="card gr"><span class="tag gr">앞에서 가져올 것</span><p>5 강화학습의 PPO와 표본 효율. 3 제어·4 MPC의 상태공간 모델과 적분.</p></div><div class="card bl"><span class="tag bl">뒤로 넘기는 것</span><p>도메인 무작위화·커리큘럼 → 7 다리 로봇의 sim-to-real. 잡음 바닥 → 모든 덱의 비교 실험.</p></div><div class="card or"><span class="tag or">함께 보면 좋은 것</span><p>적분기 → 4 비선형 MPC 1장. 보행자 모델 → 1 인식의 사람 추적, 3 제어의 안전 장.</p></div>
+</div>
+<aside>여섯 번째 덱이다. 강화학습 덱에서 본 PPO는 수천 개의 병렬 시뮬 환경이 있어야 돌고, 앞의 모든 덱의 방법은 결국 시뮬에서 비교된다. 그래서 학습 덱 다음에 두었다. 적분기는 MPC 덱의 이산화와 같은 이야기이고, 보행자 모델은 인식 덱의 사람 추적과 이어진다. 여기서 본 무작위화와 예측력은 다리 로봇 덱에서 실물 이전의 바탕이 된다. 일곱 덱 전체의 순서와 10주 계획은 로드맵 덱에 있다.</aside>
+</section>
+<section id="prereq" class="t">
+<div class="head"><p class="kicker">0 · 배경지식</p><h2>네 가지 배경지식이면 이 덱을 따라올 수 있다</h2></div>
+<div class="grid2">
+<div class="card bl"><span class="tag bl">수치 적분</span><h3>미분 방정식을 작은 시간 스텝으로 푼다</h3><p>\(x_{t+\Delta t} \approx x_t + \Delta t\, f(x_t)\). 스텝이 크면 빠르지만 틀리거나 불안정하다.</p></div>
+<div class="card or"><span class="tag or">강체와 접촉</span><h3>떨어지지 않으려면 힘이 필요하다</h3><p>물체가 겹치지 않게 하는 접촉력과 미끄러짐을 막는 마찰력이 시뮬의 가장 어려운 부분이다.</p></div>
+<div class="card gr"><span class="tag gr">재현성</span><h3>같은 입력이면 같은 출력인가</h3><p>seed가 같아도 병렬 계산 순서·부동소수점 때문에 달라질 수 있다. 비교 실험의 바탕이다.</p></div>
+<div class="card gy"><span class="tag">통계</span><h3>에피소드는 표본이다</h3><p>성공률은 확률의 추정이고 신뢰구간이 있다. 같은 설정 재실행으로 잡음 바닥을 잰다.</p></div>
+</div>
+<aside>시뮬레이터는 물리 법칙을 미분 방정식으로 적고 작은 시간 스텝으로 푸는 프로그램이다. 스텝을 어떻게 나아가느냐가 정확도와 안정성을 정하고, 물체가 맞닿을 때의 처리가 가장 어렵다. 그리고 시뮬로 두 방법을 비교하려면 결과가 재현되어야 하고, 에피소드 결과를 통계로 읽어야 한다. 이 네 가지가 이후 모든 장에 나온다.</aside>
+</section>
+<section id="ladder" class="t">
+<div class="head"><p class="kicker">0 · 충실도 사다리</p><h2>시뮬은 하나가 아니라 충실도와 비용이 다른 여러 층이다</h2></div>
+<figure><img src="img/ladder.webp" style="height:340px"><figcaption>시뮬의 층. 왼쪽은 싸고 빠르고 재현되며, 오른쪽은 현실에 가깝지만 비싸다</figcaption></figure>
+<table style="font-size:25px">
+<tr><th>질문</th><th>맞는 층</th></tr>
+<tr><td>Planner·Controller 조합 중 무엇이 나은가(수천 에피소드)</td><td>운동학 + plant</td></tr>
+<tr><td>정책을 강화학습으로 학습한다</td><td>GPU 물리 엔진(병렬 환경 수천)</td></tr>
+<tr><td>센서 → 지도 → 계획이 실제 신호로 도는가</td><td>사실적 센서 시뮬</td></tr>
+<tr><td>시뮬 순위가 현실 순위를 맞히는가</td><td>실물과 짝 평가</td></tr>
+</table>
+<aside>한 시뮬레이터로 모든 질문에 답하려고 하면 너무 느리거나 너무 거칠다. 질문마다 충분한 가장 싼 층을 고르는 것이 좋다. 스택 비교처럼 통계가 필요한 질문은 빠른 운동학 시뮬에서 수천 에피소드로 답하고, 인식 파이프라인처럼 실제 센서 신호가 중요한 질문은 사실적 센서 시뮬에서 답한다. 마지막으로 실물과 짝 평가해서 아래층의 결론이 현실에서도 맞는지 확인한다.</aside>
+</section>
+<section id="d1" class="t dark divider">
+<p class="kicker">1 · 물리 엔진</p>
+<h2>시간 스텝과 접촉이<br>정확도와 안정성을 정한다</h2>
+<p class="lead">빠르고 재현되는 엔진이 현실에 가깝다는 보장은 없다.</p>
+<aside>첫째 장은 물리 엔진의 내부다. 적분기가 에너지를 어떻게 다루는지, 접촉을 어떻게 근사하는지, 엔진들을 어떻게 비교하는지, 그리고 재현성이 왜 중요한지를 본다.</aside>
+</section>
+<section id="timestep" class="t">
+<div class="head"><p class="kicker">1 · 적분기</p><h2>같은 스텝이어도 적분기에 따라 시뮬이 에너지를 만들어 내기도 한다</h2></div>
+<figure><img src="img/timestep.webp" style="height:400px"><figcaption>마찰 없는 용수철을 Δt = 0.1 s로 40초 굴렸다. 명시적 Euler는 에너지가 계속 늘고, 반암시적(symplectic) Euler와 RK4는 거의 지킨다</figcaption></figure>
+<div class="grid3">
+<div class="card or"><span class="tag or">명시적 Euler</span><p>위치와 속도를 옛 값으로 동시에. 가장 단순하지만 진동계에서 발산한다.</p></div>
+<div class="card gr"><span class="tag gr">반암시적 Euler</span><p>속도를 먼저 갱신하고 새 속도로 위치를. 비용은 같은데 장시간 안정. 게임·로봇 엔진의 기본.</p></div>
+<div class="card bl"><span class="tag bl">암시적 적분</span><p>다음 상태를 방정식으로 푼다. 뻣뻣한 접촉에도 안정하지만 감쇠가 생긴다.</p></div>
+</div>
+<aside>시뮬레이터는 매 스텝 속도와 위치를 갱신한다. 순서 하나로 결과가 크게 달라진다. 명시적 Euler는 진동하는 시스템에서 에너지를 조금씩 만들어 내 결국 발산한다. 속도를 먼저 갱신하고 그 새 속도로 위치를 갱신하는 반암시적 Euler는 계산이 같은데도 에너지가 거의 보존된다. 그래서 대부분의 게임·로봇 물리 엔진이 이 방식을 기본으로 쓴다. 접촉처럼 매우 뻣뻣한 힘은 암시적 방법이나 제약 기반 풀이로 다룬다.</aside>
+</section>
+<section id="contact" class="t">
+<div class="head"><p class="kicker">1 · 접촉</p><h2>벌점 접촉은 강성과 시간 스텝을 맞바꾸고, 제약 기반 접촉은 계산을 더 쓴다</h2></div>
+<figure><img src="img/contact.webp" style="height:380px"><figcaption>(a) 바닥 아래로 들어간 만큼 용수철 힘을 주는 벌점 접촉. 강성이 낮으면 박히고, 높은데 Δt가 크면 튀어 오른다 (b) 침투를 줄이려면 강성을, 안정하려면 작은 Δt를</figcaption></figure>
+<table style="font-size:24px">
+<tr><th>접촉 모델</th><th>장점</th><th>단점</th><th>예</th></tr>
+<tr><td>벌점(용수철·감쇠)</td><td class="good">단순, 미분 가능</td><td class="bad">침투와 스텝 크기를 맞바꾼다</td><td>초기 엔진, 미분 시뮬</td></tr>
+<tr><td>제약 기반(LCP·볼록)</td><td class="good">침투 거의 없음, 큰 스텝</td><td class="bad">풀이 비용, 마찰 근사</td><td>PhysX, MuJoCo(soft 제약)</td></tr>
+<tr><td>변형 지면(입자·MPM·SCM)</td><td class="good">모래·자갈·잔디</td><td class="bad">매우 비싸다</td><td>Chrono, MPM 엔진</td></tr>
+</table>
+<aside>접촉은 시뮬에서 가장 어려운 부분이다. 가장 단순한 방법은 물체가 겹친 깊이만큼 용수철 힘을 주는 벌점 방식인데, 강성이 낮으면 물체가 서로 박히고, 높이면 시간 스텝을 아주 작게 해야 안정하다. 그래서 현대 엔진은 접촉을 제약으로 다뤄 한 스텝 안에서 겹침이 없도록 힘을 푼다. 바퀴처럼 회전하며 닿는 접촉, 모래나 잔디처럼 변형되는 지면은 여전히 어렵고 비싸다. 그래서 많은 바퀴 로봇 연구는 접촉을 정밀하게 풀지 않고 운동학 모델과 무작위화로 대신한다.</aside>
+</section>
+<section id="engines" class="t">
+<div class="head"><p class="kicker">1 · 엔진 고르기</p><h2>엔진은 병렬 학습, 센서, ROS 연동, 접촉 정확도 중 무엇이 필요한지로 고른다</h2></div>
+<table style="font-size:24px">
+<tr><th>엔진</th><th>강점</th><th>GPU 병렬 학습</th><th>ROS 2</th><th>잘 맞는 곳</th></tr>
+<tr><td>Isaac Sim + Isaac Lab</td><td>PhysX·Newton, RTX 센서, 3DGS</td><td>○ 수천 환경</td><td>○ 브릿지</td><td>학습 + 센서 폐루프</td></tr>
+<tr><td>MuJoCo · MJX · Warp</td><td>정확한 접촉, 가볍다</td><td>○</td><td>✕</td><td>제어·보행 연구, 동역학 자료</td></tr>
+<tr><td>Newton</td><td>MuJoCo Warp 기반, 변형 지면</td><td>○</td><td>✕</td><td>변형 지면이 필요할 때</td></tr>
+<tr><td>Genesis</td><td>자체 엔진, 높은 처리량 주장</td><td>○</td><td>✕</td><td>속도 실험</td></tr>
+<tr><td>Gazebo</td><td>ROS 표준, CPU</td><td>✕</td><td>○ 표준</td><td>GPU 없는 통합 시험</td></tr>
+<tr><td>Chrono</td><td>SCM·DEM·SPH 지형</td><td>일부</td><td>일부</td><td>모래·흙</td></tr>
+<tr><td>CARLA</td><td>UE 기반 자동차 도시</td><td>✕</td><td>○</td><td>자율주행</td></tr>
+</table>
+<p class="take"><b>원칙:</b> 장면과 평가를 빌려 올 생태계가 어디에 있는지가 엔진 선택을 크게 좌우한다.</p>
+<div class="foot" data-foot><p>Isaac Lab, NVIDIA — arXiv:2511.04831</p></div>
+<aside>엔진은 무엇이 필요한지로 고른다. 강화학습으로 정책을 학습하려면 GPU에서 수천 개 환경을 병렬로 굴리는 엔진이, 인식 파이프라인을 시험하려면 사실적인 센서 시뮬레이션이, 로봇 소프트웨어 전체를 시험하려면 ROS 연동이 필요하다. 접촉이 중요한 보행·조작 연구는 접촉 정확도를 본다. 그리고 실무에서 큰 요인은 생태계다. 쓰고 싶은 장면, 벤치마크, 로봇 모델이 이미 어느 엔진 위에 있는지가 선택을 정하는 경우가 많다.</aside>
+</section>
+<section id="gpusimbench" class="t">
+<div class="head"><p class="kicker">1 · 엔진 비교</p><h2>빠르고 결정론적인 엔진이 현실에 가깝다는 보장은 없다</h2></div>
+<div class="cols">
+<div class="stack">
+<table style="font-size:23px">
+<tr><th>엔진</th><th>처리량(Franka)</th><th>실물과 거리</th><th>병렬 / 재실행 변동</th></tr>
+<tr><td>Genesis</td><td class="good">1.11×10⁷ FPS</td><td>4.78 cm</td><td>0 / 0</td></tr>
+<tr><td>MuJoCo Warp</td><td>3.54×10⁶ FPS</td><td>—</td><td>있음 / 있음</td></tr>
+<tr><td>Isaac Lab</td><td>1.85×10⁶ FPS</td><td>5.40 cm</td><td>있음 / 0</td></tr>
+<tr><td>ManiSkill</td><td>—</td><td class="good">2.52 cm</td><td>있음 / 0</td></tr>
+</table>
+<div class="card or"><span class="tag or">교훈</span><p>세 축 — 속도, 현실 일치, 재현성 — 은 따로 움직인다. 병렬 환경끼리 결과가 다르면 그것을 "반복"으로 세는 순간 잡음이 섞인다.</p></div>
+<p class="small">GPU 한 장. 현실 일치는 경사 충돌 실험 16회와의 EMD. 조작 장면만 쟀고 바퀴 접촉은 없다.</p>
+</div>
+<figure><img src="../../assets/thumbs/82c500625c29.webp" style="height:460px"><figcaption>GPUSimBench Fig. 3: 정육면체 최종 위치 밀도. 엔진마다, 실물과도 다르다 — arXiv:2607.13059</figcaption></figure>
+</div>
+<div class="foot" data-foot><p>GPUSimBench, IROS 2026 — arXiv:2607.13059</p></div>
+<aside>GPU 시뮬레이터 여러 개를 한 장비에서 같은 장면으로 잰 연구다. 처리량 1위이고 완전히 결정론적인 엔진이 실물 일치에서는 아래쪽이었다. 다른 엔진은 재실행하면 같지만 병렬 환경끼리는 결과가 달랐다. 속도, 현실 일치, 재현성이 서로 다른 축이라는 것이 요점이다. 엔진을 고르거나 옮길 때는 세 축을 각각 재야 하고, 특히 비교 실험의 바탕인 재현성은 같은 설정 재실행으로 먼저 확인한다.</aside>
+</section>
+<section id="determinism" class="t">
+<div class="head"><p class="kicker">1 · 재현성과 잡음 바닥</p><h2>비교하기 전에 같은 설정을 두 번 돌려 무엇이 뒤집히는지 잰다</h2></div>
+<div class="grid2">
+<div class="card bl"><span class="tag bl">재현되는 조건</span><h3>같은 seed → 같은 결과</h3><p>숫자가 하나라도 바뀌면 그것은 변경이 한 일이다. 빠른 1차 관문(스모크)으로 쓴다.</p></div>
+<div class="card or"><span class="tag or">혼돈스러운 조건</span><h3>같은 설정에서도 결과가 뒤집힌다</h3><p>난이도 높은 지형, 반응형 보행자, 지연·잡음. 한 판의 1–2개 차이는 근거가 아니다.</p></div>
+</div>
+<table style="font-size:24px">
+<tr><th>할 일</th><th>이유</th></tr>
+<tr><td>같은 설정 재실행으로 뒤집히는 수(잡음 바닥)를 잰다</td><td>그보다 작은 차이는 우연</td></tr>
+<tr><td>같은 seed·같은 조건끼리 짝지어 비교한다</td><td>장면 난이도 차이를 지운다</td></tr>
+<tr><td>seed와 난수 오프셋을 여러 판 돌린다</td><td>한 판의 운을 평균한다</td></tr>
+<tr><td>안전 실패는 통계와 따로 센다</td><td>치명 실패 하나는 평균으로 지우지 않는다</td></tr>
+</table>
+<aside>시뮬로 두 방법을 비교할 때 가장 흔한 실수는 한 판의 작은 차이를 결론으로 삼는 것이다. 어떤 조건은 완전히 재현되어 숫자 하나의 변화도 의미가 있지만, 어떤 조건은 같은 설정을 다시 돌려도 결과가 여러 개 뒤집힌다. 그래서 비교 전에 같은 설정을 두 번 돌려 잡음 바닥을 재고, 같은 조건끼리 짝지어 비교하고, 그 차이가 잡음 바닥보다 클 때만 결론을 낸다. 충돌 같은 안전 실패는 평균 속에 묻지 않고 따로 센다.</aside>
+</section>
+<section id="d2" class="t dark divider">
+<p class="kicker">2 · 장면과 보행자</p>
+<h2>장면 배치가 현실 분포를 따를 때<br>학습이 일반화된다</h2>
+<p class="lead">절차 생성은 양과 난이도 손잡이를, 실측은 현실 분포를 준다. 사람은 규칙·사건·학습으로 움직인다.</p>
+<aside>둘째 장은 엔진 위에 놓을 세상이다. 지형과 장면을 절차적으로 만드는 법과 커리큘럼, 보도 시뮬레이터의 계보, 장면 분포의 중요성, 보행자 모델의 다섯 갈래, 그리고 평가 지표를 본다.</aside>
+</section>
+<section id="terrains" class="t">
+<div class="head"><p class="kicker">2 · 절차 생성과 커리큘럼</p><h2>지형 생성기에 난이도 손잡이를 두면 실패 경계와 학습 순서가 보인다</h2></div>
+<figure><img src="img/terrains.webp" style="height:500px"><figcaption>계단·경사·요철 생성기의 레벨 0–3(행마다 같은 색 척도). 턱 높이, 경사각, 요철 크기가 레벨에 따라 커진다</figcaption></figure>
+<div class="grid2">
+<div class="card gr"><span class="tag gr">장점</span><p>양이 무한하고, 난이도를 손잡이로 조절한다. 포화된 벤치마크에서 실패가 시작되는 경계를 찾는다.</p></div>
+<div class="card or"><span class="tag or">단점</span><p>현실 분포를 따르지 않는다. 생성기 밖의 지형(이상한 조합)은 나오지 않는다.</p></div>
+</div>
+<div class="foot" data-foot><p>Rudin 외, Learning to Walk in Minutes Using Massively Parallel Deep RL(게임식 커리큘럼) — arXiv:2109.11978</p></div>
+<aside>절차 생성은 규칙과 난수로 지형과 장면을 만든다. 핵심은 난이도 손잡이다. 같은 생성기에서 턱 높이나 경사각을 레벨로 올리면, 학습에서는 커리큘럼을 짤 수 있고 평가에서는 성공률이 떨어지기 시작하는 경계를 찾을 수 있다. 대규모 병렬 보행 학습에서 쓰인 게임식 커리큘럼은 로봇이 지형을 통과하면 다음 레벨로, 절반도 못 가면 이전 레벨로 옮긴다. 대신 절차 생성은 현실의 분포를 따르지 않는다는 한계가 있다.</aside>
+</section>
+<section id="urban" class="t">
+<div class="head"><p class="kicker">2 · 보도·도시 시뮬레이터</p><h2>보도 시뮬레이터는 절차 생성에서 실제 영상 기반 장면으로 옮겨 갔다</h2></div>
+<div class="flow">
+<div class="step"><h3>MetaDrive</h3><p>2021, 자동차</p></div><p class="arrow">→</p>
+<div class="step"><h3>MetaUrban</h3><p>ICLR 2025, 보도 절차 생성</p></div><p class="arrow">→</p>
+<div class="step"><h3>URBAN-SIM</h3><p>CVPR 2025, GPU 병렬</p></div><p class="arrow">→</p>
+<div class="step"><h3>UrbanVerse</h3><p>ICLR 2026, 영상 → 장면</p></div><p class="arrow">→</p>
+<div class="step"><h3>SidewalkBench</h3><p>CoRL 2026, 평가</p></div>
+</div>
+<div class="cols">
+<figure><img src="../../assets/thumbs/069722c607e1.webp" style="height:360px"><figcaption>MetaUrban Fig. 4: 보도를 건물·전면·통행·시설 네 구역으로 나누고 보도 형태 7가지를 템플릿으로 쓴다 — arXiv:2407.08725</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">URBAN-SIM</span><p>칸 단위 지형 잇기(WFC), GPU ORCA 보행자, 환경 256개를 1,800–2,600 fps.</p></div>
+<div class="card or"><span class="tag or">UrbanVerse</span><p>도시 영상 → 장면 그래프 → 에셋 → 장면. 현실 배치는 늘릴수록 성능이 멱법칙으로 오르고, 템플릿 생성은 거의 안 오른다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>MetaUrban arXiv:2407.08725 · URBAN-SIM arXiv:2505.00690 · UrbanVerse arXiv:2510.15018 · SidewalkBench arXiv:2606.16953</p></div>
+<aside>보도 로봇을 위한 시뮬레이터는 자동차 시뮬레이터에서 갈라져 나왔다. 초기에는 보도를 기능 구역으로 나누고 템플릿과 규칙으로 장면을 만들었다. 이후 GPU 병렬로 학습 속도를 올리고, 다시 실제 도시 영상에서 장면 배치를 뽑아 장면을 만드는 쪽으로 갔다. 가장 중요한 결과는 장면 분포다. 현실에서 온 배치는 늘릴수록 학습한 정책이 일반화되지만, 템플릿 생성은 양을 늘려도 거의 효과가 없었다.</aside>
+</section>
+<section id="peds" class="t">
+<div class="head"><p class="kicker">2 · 보행자 모델</p><h2>보행자 모델은 힘·속도·사건·언어·데이터의 다섯 갈래다</h2></div>
+<table style="font-size:24px">
+<tr><th>갈래</th><th>대표</th><th>장점</th><th>단점</th></tr>
+<tr><td>힘 모델</td><td>Social Force</td><td class="good">싸고 자연스러운 흐름</td><td class="bad">튜닝에 민감, 진동</td></tr>
+<tr><td>속도 최적화</td><td>ORCA</td><td class="good">충돌 없는 속도 보장, 빠름</td><td class="bad">모두 협조한다고 가정 → 로봇을 과하게 비켜 줌</td></tr>
+<tr><td>사건 스크립트</td><td>상태 기계</td><td class="good">재현돼 평가에 공정</td><td class="bad">목록 밖 상호작용 없음</td></tr>
+<tr><td>언어로 만든 행동 트리</td><td>LLM + 힘 모델</td><td class="good">다양한 시나리오 생성</td><td class="bad">생성 비용, 검증</td></tr>
+<tr><td>데이터 기반 생성</td><td>궤적 diffusion</td><td class="good">현실 분포</td><td class="bad">GPU 비용, 재현 어려움</td></tr>
+</table>
+<figure><img src="img/socialforce.webp" style="height:280px"><figcaption>Social Force: 목표로 끄는 힘 + 사람·벽이 미는 힘만으로 마주 오는 두 무리가 엇갈린다</figcaption></figure>
+<div class="foot" data-foot><p>Helbing·Molnár, Social Force (1995) · van den Berg 외, ORCA (ISRR 2011) · HuNavSim arXiv:2305.01303</p></div>
+<aside>보행자를 등속 직선으로만 움직이면 로봇이 얼어붙는 문제나 사람이 비켜 주는 상호작용을 잴 수 없다. 반응하는 보행자 모델은 다섯 갈래가 있다. 힘 모델은 목표로 끄는 힘과 서로 미는 힘의 합이라 싸고 자연스럽다. ORCA는 충돌 없는 속도를 최적화하지만 모두가 같은 규칙으로 협조한다고 가정해서, 로봇에게도 과하게 비켜 준다. 그러면 충돌이 줄어든 것이 로봇 덕인지 보행자 덕인지 가려야 한다. 평가에는 같은 사건이 같은 조건에서 일어나는 스크립트 방식이 공정하다.</aside>
+</section>
+<section id="metrics" class="t">
+<div class="head"><p class="kicker">2 · 평가</p><h2>성공률이 포화되면 층을 나누고, 거리로 정규화하고, 비용으로 가른다</h2></div>
+<div class="cols">
+<div class="stack">
+<table style="font-size:23px">
+<tr><th>SidewalkBench 층</th><th>시나리오</th><th>지표</th></tr>
+<tr><td>단위 시험</td><td>330</td><td>경로 완주율</td></tr>
+<tr><td>보행자 반응(사건 8종)</td><td>800</td><td>성공률</td></tr>
+<tr><td>장거리(100 m 이상)</td><td>105</td><td>100 m당 실패</td></tr>
+</table>
+<ul><li>보행자 횡단이 가장 어렵다: 평균 성공 0.01, 충돌 0.68</li><li>절차 생성 장면 성능이 실제 스캔 장면 성능과 강하게 상관</li></ul>
+<div class="card or"><span class="tag or">CostNav</span><p>보행자 상해(충돌 순간 Δv), 파손, 흔들림을 돈으로 환산. 기준선 7개 모두 적자였다.</p></div>
+</div>
+<figure><img src="../../assets/thumbs/461f74ff4d2c.webp" style="height:420px"><figcaption>SidewalkBench Fig. 3: 사건 기반 보행자. 파랑은 사건 뒤 보행자, 빨강은 로봇의 기대 경로 — arXiv:2606.16953</figcaption></figure>
+</div>
+<div class="foot" data-foot><p>SidewalkBench arXiv:2606.16953 · CostNav arXiv:2511.20216</p></div>
+<aside>시뮬 벤치마크의 성공률이 100 %에 가까워지면 다른 축이 필요하다. 한 가지는 평가를 층으로 나누는 것이다. 짧은 단위 시험, 보행자 사건, 장거리 주행은 서로 다른 능력을 잰다. 장거리는 에피소드 성공률 대신 100 m당 실패로 정규화한다. 또 하나는 비용이다. 충돌 순간의 속도, 흔들림, 우회 거리를 돈으로 환산하면 성공률이 같은 스택도 가를 수 있다. 절차 생성 장면의 결과가 실제 스캔 장면과 상관했다는 결과는 싼 시뮬 벤치마크를 쓰는 근거가 된다.</aside>
+</section>
+<section id="scene-pc" class="t">
+<div class="head"><p class="kicker">2 · 장단점</p><h2>장면과 보행자는 양·재현성과 현실성을 맞바꾼다</h2></div>
+<table style="font-size:26px">
+<tr><th>선택</th><th>한쪽</th><th>다른 쪽</th></tr>
+<tr><td>장면 출처</td><td>절차 생성: 양·난이도 손잡이</td><td>실측·영상 기반: 현실 분포, 수백 곳에 그침</td></tr>
+<tr><td>장면 다양성</td><td>템플릿: 많이 만들어도 효과 작음</td><td>현실 배치: 늘릴수록 일반화</td></tr>
+<tr><td>보행자</td><td>사건·규칙: 재현, 평가에 공정</td><td>학습·생성: 다양, 학습에 값짐</td></tr>
+<tr><td>평가 지표</td><td>성공률: 단순, 포화</td><td>거리 정규화·비용: 세밀, 설계 필요</td></tr>
+</table>
+<p class="take"><b>실무:</b> 학습에는 다양하게(현실 배치 + 반응형 보행자), 평가에는 재현되게(고정 장면 + 사건 보행자).</p>
+<aside>학습과 평가는 원하는 것이 다르다. 학습에는 다양성이 중요하므로 현실 분포를 따르는 장면과 반응하는 보행자가 좋다. 평가에는 공정성이 중요하므로 같은 장면, 같은 사건을 모든 방법에 똑같이 주는 것이 좋다. 두 목적을 한 설정으로 해결하려 하지 말고 따로 설계하자.</aside>
+</section>
+<section id="d3" class="t dark divider">
+<p class="kicker">3 · 센서와 sim-to-real</p>
+<h2>시뮬의 허점은<br>학습 정책이 가장 먼저 찾아낸다</h2>
+<p class="lead">차이의 출처를 알고, 넓게 흔들고, 현실에 맞추고, 무엇보다 예측력을 잰다.</p>
+<aside>셋째 장은 시뮬과 현실의 차이다. 센서 시뮬레이션, 실제 장소를 시뮬로 옮기는 3DGS, 차이의 출처, 도메인 무작위화, 그리고 시뮬 결과가 현실 순위를 맞히는지 재는 예측력 측정을 본다.</aside>
+</section>
+<section id="sensors" class="t">
+<div class="head"><p class="kicker">3 · 센서 시뮬레이션</p><h2>센서 시뮬은 기하·잡음·가림 중 무엇을 흉내 내는지 분명히 해야 한다</h2></div>
+<table style="font-size:24px">
+<tr><th>수준</th><th>방법</th><th>장점</th><th>빠뜨리는 것</th></tr>
+<tr><td>정답 지도</td><td>시뮬 지형을 그대로 준다</td><td class="good">가장 빠르다</td><td class="bad">가림, 잡음, 지연 — 너무 낙관적</td></tr>
+<tr><td>가림 모사</td><td>2.5D 시선 검사로 못 보는 칸을 지운다</td><td class="good">싸고 핵심 허점을 막는다</td><td class="bad">반사·잡음 특성</td></tr>
+<tr><td>광선 투사 LiDAR</td><td>빔마다 장면과 교차</td><td class="good">점 분포·그림자가 현실적</td><td class="bad">재질 반사, 비·먼지</td></tr>
+<tr><td>렌더링 카메라</td><td>래스터·레이 트레이싱, 3DGS</td><td class="good">학습 인식 모델 시험</td><td class="bad">조명·노출·모션 블러</td></tr>
+</table>
+<div class="card or"><span class="tag or">흔한 허점</span><p>"센서 반경 안은 다 보인다"는 시뮬은 연석 뒤 구덩이를 미리 안다. 결과가 낙관적이 되고, 학습 정책은 그 허점에 기댄다.</p></div>
+<aside>센서 시뮬레이션은 충실도의 사다리가 따로 있다. 가장 싼 것은 시뮬의 정답 지형을 그대로 주는 것이지만, 실제 센서는 앞의 물체에 가려 뒤를 보지 못하고 잡음과 지연이 있다. 정답 지도를 주는 시뮬은 연석 뒤 구덩이를 미리 알기 때문에 결과가 체계적으로 낙관적이다. 가장 큰 허점인 가림은 시선 검사 하나로 싸게 막을 수 있다. 그 위로 광선 투사 LiDAR와 렌더링 카메라가 있고, 각 수준이 무엇을 빠뜨리는지 알고 써야 한다.</aside>
+</section>
+<section id="gsplat" class="t">
+<div class="head"><p class="kicker">3 · 실제 장소를 시뮬로</p><h2>보이는 것은 3DGS가, 부딪히는 것은 메시가 맡는다</h2></div>
+<div class="cols">
+<div class="stack">
+<div class="card gy"><span class="tag">Vid2Sim · GaussGym</span><p>영상 → 3DGS + 충돌 메시. 메시만 렌더링한 기준선은 실물 과제를 하나도 풀지 못했다. GaussGym은 GPU 한 장에서 4,096 환경.</p></div>
+<div class="card or"><span class="tag or">Wanderland</span><p>LiDAR·RTK·어안 스캔 530곳. 영상만으로 잡은 자세는 축척을 맞춘 뒤에도 0.30 m, 5.0° 어긋났다. 기하가 부정확한 장면은 평가도 미세조정도 흔든다.</p></div>
+<div class="card gr"><span class="tag gr">원칙</span><p>지형·충돌이 중요하면 기하가 먼저(LiDAR 융합), 카메라 정책 시험이면 외형이 먼저(3DGS).</p></div>
+</div>
+<figure><img src="../../assets/thumbs/ad22cf1e80a4.webp" style="height:440px"><figcaption>Wanderland Fig. 7: 같은 모델도 장면 재현이 다르면 평가 결과가 달라진다 — arXiv:2511.20620</figcaption></figure>
+</div>
+<div class="foot" data-foot><p>Vid2Sim, CVPR 2025 — arXiv:2501.06693 · GaussGym arXiv:2510.15352 · Wanderland, CVPR 2026 — arXiv:2511.20620</p></div>
+<aside>3D Gaussian Splatting은 사진 몇 장이나 영상으로 사실적인 장면을 빠르게 렌더링한다. 실제 장소를 시뮬에 넣는 연구들은 공통으로 외형은 3DGS, 충돌은 메시로 나눈다. 3DGS의 기하가 흐리기 때문이다. 영상만으로 만든 장면은 자세와 기하가 어긋날 수 있고, 그런 장면에서는 평가 결과도 달라진다. 그래서 지형과 충돌이 중요한 로봇이라면 LiDAR를 함께 쓴 스캔으로 기하를 먼저 잡는 것이 좋다.</aside>
+</section>
+<section id="gap" class="t">
+<div class="head"><p class="kicker">3 · 차이의 출처</p><h2>sim-to-real 차이는 동역학, 센서, 장면, 사람, 시스템의 다섯 곳에서 온다</h2></div>
+<table style="font-size:25px">
+<tr><th>출처</th><th>시뮬의 가정</th><th>현실</th><th>대책</th></tr>
+<tr><td>동역학</td><td>즉시 반응, 슬립 없음</td><td>구동 지연, 슬립, 하중 변화</td><td>지연·슬립 모델, 무작위화, 실측 보정</td></tr>
+<tr><td>센서</td><td>다 보임, 잡음 없음</td><td>가림, 잡음, 반사 실패</td><td>시선 검사, 잡음 모델, 광선 투사</td></tr>
+<tr><td>장면</td><td>템플릿 배치</td><td>현실 분포, 처음 보는 물체</td><td>실측 장면, 현실 배치</td></tr>
+<tr><td>사람</td><td>등속 또는 협조</td><td>멈춤·돌발·비협조</td><td>사건·학습 보행자</td></tr>
+<tr><td>시스템</td><td>지연 0, 위치 정확</td><td>계산·통신 지연, 위치 표류</td><td>단계별 지연, 위치 잡음</td></tr>
+</table>
+<p class="take"><b>방법:</b> 낙관적 가정을 하나씩 켜서, 각각이 결과를 얼마나 부풀렸는지 잰다.</p>
+<aside>시뮬과 현실의 차이는 한 곳에서 오지 않는다. 표의 다섯 출처는 각각 다른 대책을 요구한다. 실무에서 좋은 방법은 시뮬의 낙관적 가정 목록을 만들고, 하나씩 켜 보며 결과가 얼마나 변하는지 재는 것이다. 그러면 어느 가정이 가장 크게 결과를 부풀렸는지 알 수 있고, 어디에 공을 들일지 정할 수 있다. 하나를 켤 때마다 잡음 바닥과 비교해 판정한다.</aside>
+</section>
+<section id="dr" class="t">
+<div class="head"><p class="kicker">3 · 도메인 무작위화</p><h2>모르는 파라미터는 넓게 흔들어, 현실을 "또 하나의 표본"으로 만든다</h2></div>
+<figure><img src="img/dr.webp" style="height:400px"><figcaption>위치 PD 제어기 둘. 지연 0에서만 튜닝한 쪽은 그 값에서 빠르지만 지연 0.12 s 넘어서 무너지고, 지연 0–0.25 s 무작위화로 튜닝한 쪽은 느리지만 그 범위를 견딘다</figcaption></figure>
+<div class="grid3">
+<div class="card gr"><span class="tag gr">장점</span><p>정확한 모델 없이 견고해진다. 구현이 쉽다.</p></div>
+<div class="card or"><span class="tag or">대가</span><p>범위를 넓힐수록 보수적이 되어 성능이 떨어진다.</p></div>
+<div class="card bl"><span class="tag bl">자동 무작위화(ADR)</span><p>잘할수록 범위를 넓혀 필요한 만큼만 흔든다.</p></div>
+</div>
+<div class="foot" data-foot><p>Tobin 외 arXiv:1703.06907 · Peng 외 arXiv:1710.06537 · OpenAI ADR arXiv:1910.07113</p></div>
+<aside>현실의 마찰, 질량, 지연을 정확히 모른다면, 시뮬에서 그 값들을 넓은 범위로 무작위로 바꿔 가며 학습하거나 튜닝한다. 그러면 현실의 값은 그 범위 안의 또 하나의 표본이 되고, 정책이나 제어기는 그 범위 전체에서 동작하도록 배운다. 그림처럼 한 값에서 최적화한 제어기는 그 값에서는 빠르지만, 값이 조금만 달라도 무너진다. 대가는 보수성이다. 범위가 넓을수록 느리고 조심스러워진다. 그래서 실측으로 범위를 좁히는 보정과 함께 쓴다.</aside>
+</section>
+<section id="srcc" class="t">
+<div class="head"><p class="kicker">3 · 예측력</p><h2>격차를 줄이기 전에, 시뮬 순위가 현실 순위를 맞히는지부터 잰다</h2></div>
+<div class="math">$$\mathrm{SRCC} = \frac{\sum_i (s_i - \bar s)(r_i - \bar r)}{\sqrt{\sum_i (s_i - \bar s)^2}\ \sqrt{\sum_i (r_i - \bar r)^2}} \qquad s_i: \text{방법 } i\text{의 시뮬 성능},\ r_i: \text{실물 성능}$$</div>
+<div class="grid3">
+<div class="card gy"><span class="tag">무작위화</span><p>넓게 흔들어 견고하게. 현실이 범위 안에 있기를 바란다.</p></div>
+<div class="card bl"><span class="tag bl">보정</span><p>실물 기록으로 모델 파라미터나 잔차를 맞춘다(액추에이터 망).</p></div>
+<div class="card or"><span class="tag or">예측력</span><p>시뮬이 현실 순위를 맞히는가. Habitat은 벽 미끄러짐 허점으로 SRCC 0.18, 막자 0.844.</p></div>
+</div>
+<div class="grid2">
+<div class="card gr"><span class="tag gr">왜 먼저인가</span><p>예측력을 모르면 "시뮬에서 12/12"가 현실에서 무엇을 뜻하는지 알 수 없다. 허점 하나가 순위를 뒤집는다.</p></div>
+<div class="card gy"><span class="tag">방법</span><p>방법 여러 개를 같은 코스에서 시뮬과 실물로 돌려 상관을 잰다. 하위 모듈(상태 추정기)의 오차 분포를 비교하는 판정자 방식도 있다.</p></div>
+</div>
+<div class="foot" data-foot><p>Kadian 외, Sim2Real Predictivity, RA-L 2020 — arXiv:1912.06321 · Hwangbo 외 arXiv:1901.08652 · Mahajan 외 arXiv:2403.11000</p></div>
+<aside>sim-to-real의 목표는 격차를 0으로 만드는 것이 아니라, 시뮬에서 내린 결정이 현실에서도 맞게 하는 것이다. 그래서 가장 먼저 잴 것은 예측력이다. 여러 방법을 시뮬과 실물에서 함께 돌려 성능의 상관을 본다. Habitat 연구에서는 충돌하면 벽을 따라 미끄러지는 시뮬의 허점 하나 때문에 상관이 0.18이었고, 그것을 고치자 0.844가 됐다. 허점 하나가 시뮬의 결론 전체를 틀리게 할 수 있다는 뜻이다.</aside>
+</section>
+<section id="wheel" class="t">
+<div class="head"><p class="kicker">3 · 바퀴 로봇</p><h2>바퀴 접촉은 정밀하게 풀지 않고 운동학 모델과 무작위화로 옮긴다</h2></div>
+<div class="cols">
+<div class="stack">
+<table style="font-size:23px">
+<tr><th>연구</th><th>바퀴 로봇을 굴린 방법</th></tr>
+<tr><td>COMPASS (NVIDIA)</td><td>속도로 루트 상태를 직접 옮김</td></tr>
+<tr><td>UrbanVerse</td><td>차동 구동 운동학 + PD</td></tr>
+<tr><td>Vid2Sim</td><td>자전거 모델</td></tr>
+<tr><td>Wheeled Lab</td><td>Isaac Lab RC카 GPU당 64–1,024대</td></tr>
+</table>
+<p class="small">GPU 물리 엔진은 오랫동안 바퀴를 다각형 기둥으로 근사했다.</p>
+</div>
+<div class="card or"><span class="tag or">Sim2Dust</span><h3>입자 없이 자갈을 넘었다</h3>
+<ul><li>단단한 면 + 절차 지형 + 지연·잡음 무작위화</li><li>현무암 자갈 위 rover zero-shot: 25 cm/s에서 3.6 cm, 2.3°</li><li>입자 미세조정은 약 82시간 더 들고 오히려 3.6 → 4.3 cm</li></ul>
+<figure><img src="../../assets/thumbs/59a829492fd1.webp" style="height:220px"><figcaption>Sim2Dust Fig. 3b: 병렬 환경마다 다른 절차 지형 — arXiv:2508.11503</figcaption></figure></div>
+</div>
+<div class="foot" data-foot><p>Wheeled Lab, CoRL 2025 — arXiv:2502.07380 · Sim2Dust arXiv:2508.11503</p></div>
+<aside>바퀴와 지면의 접촉은 시뮬에서 정확히 풀기 어렵다. 그래서 바퀴 로봇 연구 대부분은 접촉을 풀지 않고, 운동학 모델로 굴리거나 단단한 면과 무작위화로 대신한다. 놀랍게도 그렇게 학습한 정책이 실물로 잘 옮겨진 경우가 많다. 자갈 위 rover 연구에서는 비싼 입자 시뮬로 미세조정한 것이 오히려 나빴다. 다만 이 결과들은 느린 속도나 특정 지면에서 나온 것이라, 다른 로봇에 그대로 옮길 수 있는 범위는 따로 확인해야 한다.</aside>
+</section>
+<section id="s2r-pc" class="t">
+<div class="head"><p class="kicker">3 · 장단점</p><h2>sim-to-real 방법은 견고함, 정확함, 비용을 맞바꾼다</h2></div>
+<table style="font-size:26px">
+<tr><th>방법</th><th>장점</th><th>단점</th></tr>
+<tr><td>도메인 무작위화</td><td class="good">모델 없이 견고</td><td class="bad">보수적, 범위 설계</td></tr>
+<tr><td>실측 보정·잔차</td><td class="good">정확, 성능 손해 적음</td><td class="bad">실물 자료 필요</td></tr>
+<tr><td>사실적 렌더링·3DGS</td><td class="good">카메라 정책 시험</td><td class="bad">기하 오차, 비용</td></tr>
+<tr><td>정밀 접촉·변형 지면</td><td class="good">물리적으로 정확</td><td class="bad">매우 비싸고 이득이 불분명할 때가 많다</td></tr>
+<tr><td>예측력(SRCC) 측정</td><td class="good">결론의 신뢰도를 안다</td><td class="bad">실물 실험이 여러 번 필요</td></tr>
+</table>
+<p class="take"><b>순서:</b> 낙관적 가정을 하나씩 켜 재고 → 무작위화로 견고하게 → 실물이 생기면 보정하고 예측력을 잰다.</p>
+<aside>정밀한 물리가 늘 답은 아니다. 많은 경우 단순한 모델과 넓은 무작위화가 비싼 정밀 시뮬보다 나았다. 가장 확실한 투자는 시뮬의 결론이 현실에서도 맞는지 재는 것이다. 그래야 어디에 충실도를 더할지 근거를 가지고 정할 수 있다.</aside>
+</section>
+<section id="d4" class="t dark divider">
+<p class="kicker">4 · 정리</p>
+<h2>가장 싼 층에서 답하고,<br>위층에서 확인한다</h2>
+<p class="lead">장단점 표, 흔한 함정, 공부 순서.</p>
+<aside>마지막 장은 복습용이다. 시뮬레이션 선택을 한 표에 모으고, 흔한 함정과 공부 순서를 정리한다.</aside>
+</section>
+<section id="cheat" class="t">
+<div class="head"><p class="kicker">4 · 장단점 표</p><h2>시뮬레이션 선택을 한 표로 본다</h2></div>
+<table style="font-size:24px">
+<tr><th>선택</th><th>기본</th><th>장점</th><th>한계</th><th>올릴 때</th></tr>
+<tr><td>충실도</td><td>운동학 + plant</td><td class="good">수천 에피소드, 재현</td><td class="bad">접촉·센서 근사</td><td>센서 경로 시험 → 사실적 센서</td></tr>
+<tr><td>적분</td><td>반암시적 Euler</td><td class="good">싸고 안정</td><td class="bad">1차 정확도</td><td>정밀 궤적 → RK4·암시적</td></tr>
+<tr><td>접촉</td><td>제약 기반(엔진 기본)</td><td class="good">큰 스텝</td><td class="bad">마찰·바퀴 근사</td><td>모래·잔디 → 변형 지면</td></tr>
+<tr><td>장면</td><td>절차 생성 + 난이도</td><td class="good">양, 커리큘럼</td><td class="bad">현실 분포 아님</td><td>일반화 → 실측·영상 배치</td></tr>
+<tr><td>보행자</td><td>등속 + 사건</td><td class="good">재현, 공정</td><td class="bad">반응 없음</td><td>상호작용 → 힘 모델·학습</td></tr>
+<tr><td>센서</td><td>가림 모사</td><td class="good">핵심 허점 차단</td><td class="bad">잡음·반사</td><td>인식 시험 → 광선 투사·렌더링</td></tr>
+<tr><td>sim-to-real</td><td>무작위화</td><td class="good">견고</td><td class="bad">보수적</td><td>실물 → 보정·SRCC</td></tr>
+</table>
+<aside>복습용 표다. 기본 열은 빠르게 많이 돌리는 출발점이고, 올릴 때 열은 그 기본의 한계가 실제로 문제가 될 때 갈 곳이다. 모든 것을 처음부터 최고 충실도로 하면 느려서 통계를 낼 수 없다. 질문마다 충분한 가장 싼 설정을 고르자.</aside>
+</section>
+<section id="pitfalls" class="t">
+<div class="head"><p class="kicker">4 · 흔한 함정</p><h2>시뮬 결과가 너무 좋으면 먼저 허점을 의심한다</h2></div>
+<div class="grid2">
+<div class="card or"><h3>정답 정보가 새어 들어감</h3><p>센서가 못 보는 것(가린 구덩이, 참 위치)을 제어기가 쓰고 있지 않은가.</p></div>
+<div class="card or"><h3>모델 = 시뮬</h3><p>제어기의 예측 모델과 시뮬이 같은 식이면 모델 오차가 0이다.</p></div>
+<div class="card or"><h3>한 판의 차이</h3><p>같은 설정 재실행의 잡음 바닥보다 작은 차이를 결론으로 삼는다.</p></div>
+<div class="card or"><h3>병렬 환경 = 반복</h3><p>병렬 환경끼리 결과가 다르면 독립 반복이 아닐 수 있다.</p></div>
+<div class="card gy"><h3>시간 스텝</h3><p>제어 주기와 물리 스텝, 센서 주기가 맞는지. 지연이 0이 아닌지.</p></div>
+<div class="card gy"><h3>보행자가 비켜 줌</h3><p>충돌이 준 것이 로봇 덕인지 협조하는 보행자 덕인지 가린다.</p></div>
+</div>
+<aside>학습 정책과 최적화기는 시뮬의 허점을 사람보다 먼저, 그리고 철저하게 찾아낸다. 그래서 시뮬 결과가 기대보다 좋으면 먼저 의심해야 한다. 가장 흔한 허점은 정답 정보의 누출, 지연 없는 시스템, 그리고 너무 협조적인 환경이다. 통계적인 함정도 많다. 한 판의 차이, 독립이 아닌 반복은 잘못된 결론의 흔한 원인이다.</aside>
+</section>
+<section id="path" class="t">
+<div class="head"><p class="kicker">4 · 공부 순서</p><h2>엔진 문서로 기초를, 작은 시뮬로 감을, 논문으로 sim-to-real을 익힌다</h2></div>
+<div class="grid3">
+<div class="card gr"><span class="tag gr">1 · 기초</span><h3>물리 시뮬의 원리</h3><p>MuJoCo 문서의 Computation 장(접촉·적분), 게임 물리 입문서의 적분기와 충돌 장.</p></div>
+<div class="card bl"><span class="tag bl">2 · 손으로</span><h3>작은 시뮬을 직접</h3><p>용수철 적분기 비교 → 공 튀기기(벌점 접촉) → 2D 운동학 로봇 + 가림 → Social Force 군중.</p></div>
+<div class="card or"><span class="tag or">3 · 논문</span><h3>sim-to-real</h3><p>도메인 무작위화 → 게임식 커리큘럼 → Sim2Real Predictivity(SRCC) → GPUSimBench → 보도 벤치마크.</p></div>
+</div>
+<table style="font-size:24px">
+<tr><th>이 덱의 장</th><th>스스로 확인할 질문</th></tr>
+<tr><td>1 엔진</td><td>명시적 Euler는 왜 에너지를 만드나? 벌점 접촉의 강성과 Δt는 어떤 관계인가?</td></tr>
+<tr><td>2 장면</td><td>템플릿 장면을 많이 만들어도 일반화가 안 오르는 이유는?</td></tr>
+<tr><td>3 sim-to-real</td><td>무작위화의 대가는? 예측력은 왜 격차 줄이기보다 먼저인가?</td></tr>
+</table>
+<aside>시뮬레이션 공부는 엔진의 원리, 직접 만들어 보기, 그리고 sim-to-real 연구의 세 단계로 하면 좋다. 이 덱의 그림처럼 용수철, 튀는 공, 군중은 각각 수십 줄로 만들 수 있고, 그 과정에서 적분기와 접촉이 왜 어려운지 손으로 느낄 수 있다. 그 다음 sim-to-real 논문을 읽으면 각 방법이 어떤 허점을 겨냥하는지 분명해진다.</aside>
+</section>
+<section id="summary" class="t">
+<div class="head"><p class="kicker">정리</p><h2>층을 골라 쓰고, 허점을 하나씩 켜 재고, 예측력을 확인한다</h2></div>
+<div class="grid2">
+<div class="card bl"><h3>층</h3><p>운동학 → plant → 물리 엔진 → 사실적 센서 → 실물. 질문마다 가장 싼 층.</p></div>
+<div class="card bl"><h3>엔진</h3><p>반암시적 적분, 제약 기반 접촉. 속도·현실 일치·재현성은 따로 잰다.</p></div>
+<div class="card gr"><h3>장면</h3><p>절차 생성은 양과 난이도, 현실 배치는 일반화.</p></div>
+<div class="card gr"><h3>보행자</h3><p>평가엔 사건, 학습엔 반응·생성. 협조 가정을 의심한다.</p></div>
+<div class="card or"><h3>현실 차이</h3><p>동역학·센서·장면·사람·시스템. 낙관적 가정을 하나씩 켠다.</p></div>
+<div class="card or"><h3>신뢰</h3><p>잡음 바닥, 짝 비교, 그리고 시뮬–실물 순위 상관.</p></div>
+</div>
+<aside>오늘 본 것을 여섯 상자로 줄였다. 시뮬레이션은 현실을 완벽히 흉내 내는 도구가 아니라, 어디가 다른지 알고 쓰는 도구다. 질문마다 충분한 가장 싼 층에서 답하고, 낙관적 가정을 하나씩 켜 그 영향을 재고, 마지막으로 시뮬의 결론이 현실에서도 맞는지 확인한다.</aside>
+</section>
+<section id="refs-core" class="t">
+<div class="head"><p class="kicker">참고문헌 1/2 · 먼저 읽을 것</p><h2>처음에는 이 다섯 가지만 읽는다</h2></div>
+<table style="font-size:24px">
+<tr><th>순서</th><th>문헌</th><th>왜 먼저 읽나</th></tr>
+<tr><td>★ 1</td><td>MuJoCo 문서의 Computation 장 · Todorov 외, MuJoCo (IROS 2012)</td><td>적분기와 접촉 모델을 가장 정확히 설명</td></tr>
+<tr><td>★ 2</td><td>Rudin 외, Learning to Walk in Minutes 2109.11978</td><td>병렬 시뮬과 게임식 커리큘럼</td></tr>
+<tr><td>★ 3</td><td>Tobin 외 1703.06907 · Peng 외 1710.06537</td><td>시각·동역학 도메인 무작위화</td></tr>
+<tr><td>★ 4</td><td>Kadian 외, Sim2Real Predictivity 1912.06321</td><td>시뮬 성적이 실물을 예측하는지 재는 법</td></tr>
+<tr><td>★ 5</td><td>Helbing·Molnár, Social Force (Phys. Rev. E 1995)</td><td>보행자 시뮬의 원형</td></tr>
+</table>
+<aside>참고문헌을 두 장으로 나눴다. 이 장은 처음 공부할 때 먼저 읽을 다섯 가지이고, 위에서부터 차례로 읽으면 된다. 교과서는 표에 적은 장만 먼저 읽는다. 논문은 서론과 방법 절을 읽고 이 덱의 그림과 대조한다. 다음 장은 덱의 각 장에 나온 원 논문 전체다. 2109.11978처럼 점이 든 숫자는 arXiv 번호다.</aside>
+</section>
+<section id="refs" class="t">
+<div class="head"><p class="kicker">참고문헌 2/2 · 장별</p><h2>엔진 문서와 원 논문</h2></div>
+<div class="grid2">
+<div class="stack">
+<p><b>엔진</b> — MuJoCo 문서(Computation) · MuJoCo (Todorov 외, IROS 2012) · Isaac Lab 2511.04831 · GPUSimBench 2607.13059</p>
+<p><b>장면</b> — MetaUrban 2407.08725 · URBAN-SIM 2505.00690 · UrbanVerse 2510.15018 · 게임식 커리큘럼 2109.11978</p>
+<p><b>보행자</b> — Social Force (Helbing·Molnár 1995) · ORCA (van den Berg 외, ISRR 2011) · HuNavSim 2305.01303</p>
+<p><b>평가</b> — SidewalkBench 2606.16953 · CostNav 2511.20216</p>
+</div>
+<div class="stack">
+<p><b>실제 장소</b> — Vid2Sim 2501.06693 · GaussGym 2510.15352 · Wanderland 2511.20620</p>
+<p><b>sim-to-real</b> — Tobin 외 1703.06907 · Peng 외 1710.06537 · ADR 1910.07113 · Hwangbo 외 1901.08652 · SRCC 1912.06321 · Mahajan 외 2403.11000</p>
+<p><b>바퀴</b> — Wheeled Lab 2502.07380 · Sim2Dust 2508.11503</p>
+</div>
+</div>
+<aside>덱의 각 장에 나온 문헌을 주제별로 모았다. 숫자만 있는 항목은 arXiv 번호이고, 학회지나 책은 저자와 연도를 적었다. 처음부터 모두 읽을 필요는 없다. 앞 장의 다섯 가지를 먼저 읽고, 이 덱의 장단점 표에서 궁금해진 방법의 원 논문만 골라 읽기를 권한다.</aside>
+</section>
+</div></div>
+<div id="notes"><b>발표자 노트</b><div id="notes-body"></div></div>
+<div id="bar">
+<button id="prev" aria-label="이전">◀</button><span id="count"></span><button id="next" aria-label="다음">▶</button>
+<span id="ttl">로봇 시뮬레이션 기초 — 물리 엔진에서 sim-to-real까지</span>
+<button id="nb" title="N 키">노트</button><button id="fs" title="F 키">전체 화면</button>
+<a href="study-simulation.pptx" download>PPTX</a><a href="./../">목록</a>
+</div>
+<pre id="report" hidden></pre>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script>
+(function () {
+  var slides = Array.prototype.slice.call(document.querySelectorAll('#frame > section'));
+  var frame = document.getElementById('frame'), notes = document.getElementById('notes');
+  var q = new URLSearchParams(location.search), shot = q.has('shot') || q.has('check');
+  if (shot) document.body.classList.add('shot');
+  var i = 0;
+  function fit() {
+    if (shot) return;
+    var st = document.getElementById('stage');
+    var s = Math.min(st.clientWidth / 1920, st.clientHeight / 1080);
+    frame.style.transform = 'scale(' + s + ')';
+  }
+  function show(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach(function (el, k) { el.classList.toggle('on', k === i); });
+    document.getElementById('count').textContent = (i + 1) + ' / ' + slides.length;
+    var a = slides[i].querySelector('aside');
+    document.getElementById('notes-body').textContent = a ? a.textContent : '';
+    if (!shot) history.replaceState(null, '', '#' + (i + 1));
+  }
+  function withAllFonts(fn) {
+    document.body.classList.add('all');
+    void document.body.offsetHeight;
+    requestAnimationFrame(function () {
+      document.fonts.ready.then(function () { document.body.classList.remove('all'); fn(); });
+    });
+  }
+  window.withAllFonts = withAllFonts;
+  // 넘침 검사: 본문 요소가 장 밖으로 나가거나 각주 띠를 덮으면 적는다.
+  function check() {
+    var bad = [];
+    slides.forEach(function (sec, k) {
+      show(k);
+      var box = sec.getBoundingClientRect();
+      Array.prototype.forEach.call(sec.querySelectorAll('.katex-error'), function (el) {
+        bad.push({ slide: k + 1, id: sec.id, tag: 'TeX', text: (el.getAttribute('title') || el.textContent).slice(0, 60), over: 0 });
+      });
+      Array.prototype.forEach.call(sec.querySelectorAll('img'), function (el) {
+        if (!el.complete || !el.naturalWidth) bad.push({ slide: k + 1, id: sec.id, tag: 'IMG', text: el.getAttribute('src'), over: 0 });
+      });
+      var foot = sec.querySelector('[data-foot]');
+      var limit = foot ? foot.getBoundingClientRect().top - 4 : box.bottom - 24;
+      Array.prototype.forEach.call(sec.querySelectorAll('p, h1, h2, h3, img, td, th, li, .katex-display, [data-box]'), function (el) {
+        if (foot && foot.contains(el)) return;
+        if (el.closest('aside')) return;
+        var r = el.getBoundingClientRect();
+        if (r.width === 0 && r.height === 0) return;
+        if (r.bottom > limit + 0.5 || r.right > box.right - 40) {
+          bad.push({ slide: k + 1, id: sec.id, tag: el.tagName, text: (el.textContent || el.alt || '').slice(0, 40), over: Math.round(Math.max(r.bottom - limit, r.right - (box.right - 40))) });
+        }
+      });
+    });
+    var rep = document.getElementById('report');
+    rep.textContent = JSON.stringify(bad);
+    rep.setAttribute('data-done', '1');
+  }
+  function start() {
+    if (window.renderMathInElement) {
+      renderMathInElement(document.getElementById('frame'), {
+        delimiters: [{ left: '$$', right: '$$', display: true }, { left: '\\(', right: '\\)', display: false }],
+        throwOnError: false
+      });
+    }
+    // 한글 웹 글꼴은 글자 묶음마다 따로 받고, 숨은 장의 글자는 받지 않는다. 장을 모두 보여 글꼴을 받은 뒤 잰다.
+    if (q.has('check')) { withAllFonts(check); return; }
+    var s = shot ? parseInt(q.get('shot'), 10) - 1 : parseInt(location.hash.slice(1), 10) - 1;
+    show(isNaN(s) ? 0 : s);
+  }
+  show(0); fit(); window.addEventListener('resize', fit);
+  window.addEventListener('DOMContentLoaded', function () {
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(start); else start();
+  });
+  document.getElementById('prev').onclick = function () { show(i - 1); };
+  document.getElementById('next').onclick = function () { show(i + 1); };
+  document.getElementById('nb').onclick = function () { notes.classList.toggle('show'); };
+  document.getElementById('fs').onclick = function () {
+    if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen();
+  };
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { show(i + 1); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { show(i - 1); e.preventDefault(); }
+    else if (e.key === 'Home') show(0);
+    else if (e.key === 'End') show(slides.length - 1);
+    else if (e.key === 'n' || e.key === 'N') notes.classList.toggle('show');
+    else if (e.key === 'f' || e.key === 'F') document.getElementById('fs').click();
+  });
+  var x0 = null;
+  document.getElementById('stage').addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+  document.getElementById('stage').addEventListener('touchend', function (e) {
+    if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0; x0 = null;
+    if (Math.abs(dx) > 40) show(i + (dx < 0 ? 1 : -1));
+  });
+})();
+</script>
+</body>
+</html>

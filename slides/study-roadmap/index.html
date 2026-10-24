@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>로봇 공부 로드맵 — 일곱 개념 덱을 어떤 순서로 볼까</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=IBM+Plex+Sans+KR:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<style>
+:root { --bg:#0E1526; --bar:#16213A; --fg:#F4F1EA; --muted:#C9D1E0; --accent:#F59E5B; }
+* { box-sizing:border-box; }
+html, body { margin:0; height:100%; background:var(--bg); color:var(--fg); font-family:'IBM Plex Sans KR', Arial, sans-serif; }
+#stage { position:fixed; inset:0 0 56px 0; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+#frame { width:1920px; height:1080px; flex:none; transform-origin:center center; box-shadow:0 8px 40px rgba(0,0,0,.5); }
+#frame > section:not(.on) { display:none !important; }
+body.all #frame > section:not(.on) { display:block !important; }
+section { position:relative; width:1920px; height:1080px; overflow:hidden; }
+section * { margin:0; }
+section aside { display:none; }
+section table { border-collapse:collapse; }
+section th, section td { padding:10px 16px; vertical-align:top; }
+section tr + tr td { border-top:1px solid rgba(127,140,160,.25); }
+section .katex { font-size:1.05em; }
+section .katex-display { margin:0; text-align:left; }
+section .katex-display > .katex { text-align:left; }
+x-shape { display:block; flex:none; }
+x-shape[kind="arrow-right"] { clip-path:polygon(0 32%,58% 32%,58% 0,100% 50%,58% 100%,58% 68%,0 68%); }
+#bar { position:fixed; left:0; right:0; bottom:0; height:56px; background:var(--bar); display:flex; align-items:center; gap:12px; padding:0 16px; font-size:15px; }
+#bar button, #bar a { background:none; border:1px solid #3A4A6B; color:var(--fg); border-radius:8px; padding:6px 12px; font:inherit; cursor:pointer; text-decoration:none; }
+#bar button:hover, #bar a:hover { border-color:var(--accent); }
+#count { min-width:72px; text-align:center; color:var(--muted); }
+#ttl { flex:1; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; color:var(--muted); }
+#notes { position:fixed; right:16px; bottom:72px; width:min(560px, calc(100% - 32px)); max-height:45vh; overflow:auto; background:#FFFDF8; color:#16213A; border-radius:12px; padding:16px 20px; font-size:16px; line-height:1.6; box-shadow:0 8px 30px rgba(0,0,0,.4); display:none; }
+#notes.show { display:block; }
+#notes b { display:block; margin-bottom:6px; color:#C2410C; font-family:'JetBrains Mono', monospace; font-size:13px; }
+body.shot #bar, body.shot #notes { display:none; }
+body.shot #stage { inset:0; }
+body.shot #frame { box-shadow:none; transform:none !important; }
+@media (max-width:640px) { #ttl { display:none; } }
+</style>
+</head>
+<body>
+<div id="stage"><div id="frame">
+<style>
+/* 챕터 발표 덱(slides_src/talk-*) 공용 스타일. deck.json의 "css": "_talk/talk.css"로 읽는다.
+   PPTX(편집 가능)는 이 스타일이 그린 결과의 좌표·색·글자 크기를 그대로 옮긴다. 규칙은 slides_src/_talk/README.md. */
+section.t { background:#F7F5F0; color:#16213A; font-family:'IBM Plex Sans KR', Arial, sans-serif;
+  padding:80px 112px 120px; display:flex; flex-direction:column; gap:28px; }
+section.t.dark { background:#16213A; color:#F4F1EA; }
+section.t .kicker { font-family:'JetBrains Mono', 'Courier New', monospace; font-size:22px; color:#C2410C; letter-spacing:1px; }
+section.t.dark .kicker { color:#F59E5B; }
+section.t h1 { font-family:'Noto Serif KR', Georgia, serif; font-size:96px; font-weight:700; line-height:1.15; }
+section.t h2 { font-family:'Noto Serif KR', Georgia, serif; font-size:52px; font-weight:700; line-height:1.22; }
+section.t h3 { font-size:30px; font-weight:600; line-height:1.3; }
+section.t p, section.t li { font-size:26px; line-height:1.5; }
+section.t .lead { font-size:34px; line-height:1.45; color:#3D4A63; }
+section.t.dark .lead { color:#C9D1E0; }
+section.t .muted { color:#5A6478; }
+section.t.dark .muted { color:#9AA6BC; }
+section.t .small { font-size:22px; line-height:1.4; }
+section.t b, section.t strong { font-weight:600; }
+section.t .hl { color:#C2410C; font-weight:600; }
+section.t code { font-family:'JetBrains Mono', monospace; font-size:0.86em; color:#7C2D12; }
+section.t ul, section.t ol { padding-left:36px; display:flex; flex-direction:column; gap:10px; }
+section.t .head { display:flex; flex-direction:column; gap:10px; }
+section.t .cols { display:flex; gap:40px; align-items:flex-start; }
+section.t .cols > * { flex:1; min-width:0; }
+section.t .stack { display:flex; flex-direction:column; gap:18px; }
+section.t .grid2, section.t .grid3 { display:grid; gap:24px; }
+section.t .grid2 { grid-template-columns:1fr 1fr; }
+section.t .grid3 { grid-template-columns:1fr 1fr 1fr; }
+section.t .card { background:#FFFDF8; border:1px solid #D9D4C7; border-radius:12px; padding:22px 26px; display:flex; flex-direction:column; gap:12px; }
+section.t .card.or { border-left:8px solid #C2410C; }
+section.t .card.bl { border-left:8px solid #1D4ED8; }
+section.t .card.gr { border-left:8px solid #15803D; }
+section.t .card.gy { border-left:8px solid #9AA6BC; }
+section.t.dark .card { background:#22304F; border-color:#3A4A6B; }
+section.t .card h3 { font-size:28px; }
+section.t .card p, section.t .card li { font-size:24px; line-height:1.45; }
+section.t .tag { align-self:flex-start; font-size:20px; font-weight:600; padding:4px 14px; border-radius:999px; background:#ECE8DF; color:#16213A; }
+section.t .tag.or { background:#FDE7C8; color:#7C2D12; }
+section.t .tag.bl { background:#DBE5FB; color:#1E3A8A; }
+section.t .tag.gr { background:#D7EFDD; color:#14532D; }
+section.t .pills { display:flex; flex-wrap:wrap; gap:16px; }
+section.t .pill { font-size:24px; padding:8px 22px; border-radius:999px; background:#C9D1E0; color:#16213A; }
+section.t .pill.on { background:#F59E5B; }
+section.t .take { background:#16213A; color:#F4F1EA; border-radius:12px; padding:20px 28px; font-size:27px; line-height:1.45; }
+section.t .take b { color:#F59E5B; }
+section.t.dark .take { background:#F59E5B; color:#16213A; }
+section.t .flow { display:flex; align-items:stretch; gap:14px; }
+section.t .flow > .step { flex:1; background:#FFFDF8; border:1px solid #D9D4C7; border-top:6px solid #C2410C; border-radius:10px; padding:16px 18px;
+  display:flex; flex-direction:column; gap:8px; }
+section.t .flow > .step p { font-size:22px; line-height:1.4; }
+section.t .flow > .arrow { flex:none; align-self:center; font-size:36px; color:#C2410C; }
+section.t table { border-collapse:collapse; width:100%; font-size:21px; line-height:1.35; background:#FFFDF8; }
+section.t th { background:#16213A; color:#F4F1EA; text-align:left; font-weight:600; padding:10px 14px; }
+section.t td { padding:9px 14px; border-top:1px solid #D9D4C7; vertical-align:top; }
+section.t tr:nth-child(even) td { background:#F1EDE4; }
+section.t td.good { color:#14532D; font-weight:600; }
+section.t td.bad { color:#9F1239; font-weight:600; }
+section.t figure { margin:0; display:flex; flex-direction:column; gap:10px; }
+section.t figure img { display:block; max-width:100%; object-fit:contain; background:#FFFFFF; border:1px solid #D9D4C7; border-radius:8px; }
+section.t figcaption { font-size:20px; line-height:1.4; color:#5A6478; }
+section.t .math { background:#FFFDF8; border-left:6px solid #C2410C; border-radius:8px; padding:8px 24px; font-size:30px; }
+section.t .math .katex-display { margin:6px 0; }
+section.t .foot { position:absolute; left:112px; right:112px; bottom:32px; border-top:2px solid #D9D4C7; padding-top:10px;
+  display:flex; flex-direction:column; gap:2px; }
+section.t .foot p { font-size:18px; line-height:1.35; color:#5A6478; }
+section.t.dark .foot { border-color:#3A4A6B; }
+section.t.dark .foot p { color:#9AA6BC; }
+section.t .num { position:absolute; right:112px; top:84px; font-family:'JetBrains Mono', monospace; font-size:20px; color:#9AA6BC; }
+section.t.cover { justify-content:space-between; padding:120px 128px; }
+section.t.divider { justify-content:center; gap:36px; padding:120px 128px; }
+section.t.divider h2 { font-size:80px; }
+</style>
+
+<script>
+// ?export=1: 장마다 도형·글상자·표·그림의 좌표와 스타일을 적는다. scripts/slides_editable.py가 읽는다.
+(function () {
+  if (!/[?&]export=/.test(location.search)) return;
+  var INLINE = /^(inline|inline-block|inline-flex|contents)$/;
+  function transparent(c) { return !c || c === 'transparent' || /rgba\(.*,\s*0\)$/.test(c); }
+  function rect(el, base) { var r = el.getBoundingClientRect(); return [r.left - base.left, r.top - base.top, r.width, r.height]; }
+  function style(cs) {
+    return { size: parseFloat(cs.fontSize), bold: parseInt(cs.fontWeight, 10) >= 600, italic: cs.fontStyle === 'italic',
+             color: cs.color, mono: /Mono|Courier|monospace/.test(cs.fontFamily) };
+  }
+  function runs(el) {
+    var out = [];
+    (function rec(node) {
+      Array.prototype.forEach.call(node.childNodes, function (c) {
+        if (c.nodeType === 3) { if (c.textContent) out.push({ s: c.textContent, st: style(getComputedStyle(node)), href: node.closest('a') ? node.closest('a').href : null }); return; }
+        if (c.nodeType !== 1 || c.tagName === 'ASIDE') return;
+        if (c.tagName === 'BR') { out.push({ s: '\n', st: style(getComputedStyle(node)) }); return; }
+        if (c.classList.contains('katex')) {
+          var a = c.querySelector('annotation');
+          out.push({ s: a ? a.textContent : c.textContent, st: style(getComputedStyle(node)), math: true });
+          return;
+        }
+        var cs = getComputedStyle(c);
+        if (cs.display === 'none') return;
+        if (INLINE.test(cs.display) && c.tagName !== 'IMG') rec(c);
+      });
+    })(el);
+    return out;
+  }
+  function hasOwnText(el) {
+    return Array.prototype.some.call(el.childNodes, function (c) {
+      if (c.nodeType === 3) return c.textContent.trim() !== '';
+      if (c.nodeType !== 1 || c.tagName === 'ASIDE') return false;
+      var cs = getComputedStyle(c);
+      return (INLINE.test(cs.display) || c.classList.contains('katex')) && c.tagName !== 'IMG' && c.textContent.trim() !== '';
+    });
+  }
+  function marker(li) {
+    var p = li.parentElement;
+    if (!p || getComputedStyle(li).listStyleType === 'none') return null;
+    if (p.tagName === 'OL') return { n: Array.prototype.indexOf.call(p.children, li) + parseInt(p.getAttribute('start') || '1', 10) };
+    return { n: 0 };
+  }
+  function textItem(el, base, cs) {
+    var r = rect(el, base), pl = parseFloat(cs.paddingLeft), pr = parseFloat(cs.paddingRight), pt = parseFloat(cs.paddingTop),
+        pb = parseFloat(cs.paddingBottom), bl = parseFloat(cs.borderLeftWidth), bt = parseFloat(cs.borderTopWidth);
+    var rr = runs(el), m = el.tagName === 'LI' ? marker(el) : null;
+    if (m) { r[0] -= 30; r[2] += 30; }   // 글머리표 자리. PPTX에서는 내어쓰기 30px의 진짜 글머리표가 된다
+    var lh = parseFloat(cs.lineHeight);
+    return { t: 'text', r: [r[0] + pl + bl, r[1] + pt + bt, r[2] - pl - pr - bl, r[3] - pt - pb - bt], runs: rr, li: m,
+             align: cs.textAlign, lh: isNaN(lh) ? 1.3 : lh / parseFloat(cs.fontSize) };
+  }
+  function boxItem(el, base, cs) {
+    var sides = {};
+    ['Top', 'Right', 'Bottom', 'Left'].forEach(function (s) {
+      var w = parseFloat(cs['border' + s + 'Width']);
+      if (w > 0 && cs['border' + s + 'Style'] !== 'none' && !transparent(cs['border' + s + 'Color'])) sides[s[0]] = [w, cs['border' + s + 'Color']];
+    });
+    var fill = transparent(cs.backgroundColor) ? null : cs.backgroundColor;
+    if (!fill && !Object.keys(sides).length) return null;
+    return { t: 'box', r: rect(el, base), fill: fill, radius: parseFloat(cs.borderTopLeftRadius) || 0, sides: sides };
+  }
+  function tableItem(el, base) {
+    var rows = Array.prototype.map.call(el.rows, function (tr) {
+      return { h: tr.getBoundingClientRect().height, cells: Array.prototype.map.call(tr.cells, function (c) {
+        var cs = getComputedStyle(c), bg = cs.backgroundColor;
+        if (transparent(bg)) bg = getComputedStyle(tr).backgroundColor;
+        if (transparent(bg)) bg = getComputedStyle(el).backgroundColor;
+        return { w: c.getBoundingClientRect().width, span: c.colSpan || 1, fill: transparent(bg) ? null : bg, runs: runs(c),
+                 align: cs.textAlign, size: parseFloat(cs.fontSize) };
+      }) };
+    });
+    return { t: 'table', r: rect(el, base), rows: rows };
+  }
+  function img(el, base) {
+    var r = rect(el, base), nw = el.naturalWidth, nh = el.naturalHeight;
+    if (nw && nh && getComputedStyle(el).objectFit === 'contain') {
+      var s = Math.min(r[2] / nw, r[3] / nh), w = nw * s, h = nh * s;
+      r = [r[0] + (r[2] - w) / 2, r[1] + (r[3] - h) / 2, w, h];
+    }
+    return { t: 'img', r: r, src: el.getAttribute('src') };
+  }
+  function slide(sec) {
+    var base = sec.getBoundingClientRect(), items = [];
+    (function walk(el) {
+      if (el.tagName === 'ASIDE') return;
+      var cs = getComputedStyle(el);
+      if (cs.display === 'none' || cs.visibility === 'hidden') return;
+      if (el !== sec && el.tagName !== 'TABLE') { var b = boxItem(el, base, cs); if (b) items.push(b); }
+      if (el.matches('.katex-display, svg, canvas, x-shape, [data-raster]')) {
+        var k = el.matches('.katex-display') ? (el.querySelector('.katex') || el) : el;
+        items.push({ t: 'raster', r: rect(k, base) }); return;
+      }
+      if (el.tagName === 'IMG') { items.push(img(el, base)); return; }
+      if (el.tagName === 'TABLE') { items.push(tableItem(el, base)); return; }
+      if (el !== sec && hasOwnText(el)) items.push(textItem(el, base, cs));
+      Array.prototype.forEach.call(el.children, function (c) {
+        var d = getComputedStyle(c).display;
+        if (!(INLINE.test(d) && c.tagName !== 'IMG' && !c.querySelector('img, .katex-display'))) walk(c);
+      });
+    })(sec);
+    var a = sec.querySelector('aside');
+    return { bg: getComputedStyle(sec).backgroundColor, items: items, note: a ? a.textContent.trim() : '' };
+  }
+  function run() {
+    var secs = Array.prototype.slice.call(document.querySelectorAll('#frame > section')), out = [];
+    secs.forEach(function (sec) {
+      secs.forEach(function (s) { s.classList.toggle('on', s === sec); });
+      out.push(slide(sec));
+    });
+    var rep = document.getElementById('report'); rep.textContent = JSON.stringify(out); rep.setAttribute('data-done', '1');
+  }
+  window.addEventListener('DOMContentLoaded', function () {
+    // 뷰어의 start()가 수식을 조판한 뒤에 잰다.
+    document.fonts.ready.then(function () { setTimeout(function () { window.withAllFonts(run); }, 300); });
+  });
+})();
+</script>
+<section id="cover" class="t dark cover">
+<p class="kicker">로봇 공부 로드맵 · 0단계</p>
+<div class="stack"><h1>보고, 길을 찾고, 따라가고,<br>배우는 순서로 쌓는다</h1><p class="lead">인식에서 다리 로봇까지 일곱 개념 덱의 순서, 의존 관계, 10주 계획, 덱마다 교과서와 직접 구현</p></div>
+<div class="pills"><p class="pill">1 인식</p><p class="pill">2 경로 계획</p><p class="pill">3 제어</p><p class="pill">4 비선형 MPC</p><p class="pill">5 강화학습</p><p class="pill">6 시뮬레이션</p><p class="pill">7 다리 로봇</p></div>
+<aside>이 덱은 개념 공부 덱 일곱 개를 어떤 순서로 보면 좋은지 정리한 안내 덱이다. 덱마다 배경지식, 그림, 장단점, 공부 순서, 참고문헌이 있지만, 덱 사이의 관계는 각 덱만 봐서는 잘 보이지 않는다. 여기서는 순서를 정한 원칙, 덱 사이에 무엇이 넘어가는지, 목적에 따라 줄인 경로, 그리고 10주 계획을 본다.</aside>
+</section>
+<section id="why" class="t">
+<div class="head"><p class="kicker">0 · 순서를 정한 원칙</p><h2>세 원칙으로 일곱 덱의 순서를 정했다</h2></div>
+<div class="grid3">
+<div class="card gr"><span class="tag gr">원칙 1</span><h3>파이프라인 순서로</h3><p>로봇은 보고(인식), 길을 찾고(계획), 따라간다(제어). 앞 단계의 출력이 뒤 단계의 입력이라, 이 순서로 보면 "이 값은 어디서 왔나"가 늘 분명하다.</p></div>
+<div class="card bl"><span class="tag bl">원칙 2</span><h3>고전 먼저, 학습 나중</h3><p>탐색·되먹임·최적화의 보장을 알아야 학습 방법이 무엇을 버리고 무엇을 얻는지 판단할 수 있다. 그래서 강화학습은 제어와 MPC 뒤에 둔다.</p></div>
+<div class="card or"><span class="tag or">원칙 3</span><h3>종합은 마지막에</h3><p>다리 로봇 덱은 인식·제어·강화학습·시뮬레이션을 모두 쓴다. 앞의 여섯 덱을 본 뒤에 보면 각 연구가 어느 층을 바꿨는지 읽힌다.</p></div>
+</div>
+<aside>순서는 세 원칙으로 정했다. 첫째, 파이프라인의 흐름을 따른다. 인식의 비용 지도가 계획의 입력이고, 계획의 경로가 제어의 입력이다. 둘째, 고전 방법을 먼저 본다. 고전 방법은 보장과 실패 양상이 분명해서, 학습 방법을 평가하는 기준이 된다. 셋째, 여러 분야를 섞는 다리 로봇은 마지막에 둔다. 다만 이 순서가 유일한 답은 아니며, 목적에 따라 줄인 경로를 뒤에서 따로 제안한다.</aside>
+</section>
+<section id="map" class="t">
+<div class="head"><p class="kicker">0 · 의존 관계</p><h2>위 줄은 파이프라인, 아래 줄은 학습이다</h2></div>
+<figure><img src="img/curriculum.webp" style="height:640px"><figcaption>화살표의 글자는 앞 덱에서 뒤 덱으로 넘어가는 개념이다. 실선은 앞 덱이 필요하고, 점선은 함께 보면 좋다.</figcaption></figure>
+<aside>위 줄의 네 덱은 차례로 이어진다. 인식이 비용 지도를 만들고, 계획이 그 위에서 경로를 찾고, 제어가 경로를 따라가며, 비선형 MPC는 제어 덱 2장의 이동 지평 제어를 깊게 판다. 아래 줄은 학습이다. 강화학습의 PPO가 시뮬레이션의 병렬 학습으로, 무작위화가 다리 로봇의 실물 이전으로 이어진다. 점선 셋은 덱을 가로지르는 연결이다. 경로 계획 덱의 학습·생성 Planner 장은 강화학습 덱의 모방학습과 flow 정책을 알면 훨씬 쉽다. MPPI는 강화학습 덱의 추론으로서의 제어와 같은 식이다. MPC의 제약은 다리 로봇 덱의 투영으로 다시 나온다.</aside>
+</section>
+<section id="decks" class="t">
+<div class="head"><p class="kicker">1 · 일곱 덱 한눈에</p><h2>덱마다 답하는 질문이 하나씩 있다</h2></div>
+<table style="font-size:24px">
+<tr><th>단계</th><th>덱</th><th>답하는 질문</th><th>장 수</th><th>기간</th></tr>
+<tr><td>1</td><td>로봇 인식 기초</td><td>센서 값으로 어디가 갈 만한 땅인지 어떻게 아나?</td><td>38</td><td>1주</td></tr>
+<tr><td>2</td><td>경로 계획 기초</td><td>지도 위에서 갈 길을 어떻게 찾고, 배워서 찾으면 무엇이 다른가?</td><td>47</td><td>1.5주</td></tr>
+<tr><td>3</td><td>로봇 제어 기초</td><td>찾은 길을 모델 오차와 지연 속에서 어떻게 안전하게 따라가나?</td><td>45</td><td>1.5주</td></tr>
+<tr><td>4</td><td>비선형 MPC 구축 기초</td><td>제약 있는 최적 제어를 매 주기 실시간으로 어떻게 푸나?</td><td>38</td><td>1주</td></tr>
+<tr><td>5</td><td>강화학습 기초</td><td>정답 없이 보상만으로 어떻게 행동을 배우나?</td><td>54</td><td>2주</td></tr>
+<tr><td>6</td><td>로봇 시뮬레이션 기초</td><td>시뮬에서 배운 것을 언제 믿고 실물로 옮길 수 있나?</td><td>32</td><td>1주</td></tr>
+<tr><td>7</td><td>다리 로봇 내비게이션 기초</td><td>층을 어디서 나누고, 학습한 보행을 어떻게 안전하게 쓰나?</td><td>37</td><td>1주</td></tr>
+</table>
+<aside>기간은 한 주에 5–6시간을 쓴다고 보고 잡았다. 장 수가 많거나 직접 구현할 것이 많은 덱에 시간을 더 줬다. 강화학습 덱은 장이 가장 많고 수식도 많아서 2주를 잡았다. 각 덱의 질문에 자기 말로 답할 수 있으면 그 덱은 끝난 것이다.</aside>
+</section>
+<section id="math" class="t">
+<div class="head"><p class="kicker">1 · 필요한 수학</p><h2>수학 여섯 가지가 덱 전체에 되풀이된다</h2></div>
+<table style="font-size:24px">
+<tr><th>배경</th><th>핵심만</th><th>많이 쓰는 덱</th></tr>
+<tr><td>선형대수</td><td>행렬 곱, 좌표 변환, 고윳값, 양의 정부호</td><td>1 인식, 3 제어, 4 MPC</td></tr>
+<tr><td>확률·통계</td><td>기댓값, 가우시안, 베이즈 갱신, 신뢰구간</td><td>1 인식, 5 강화학습, 6 시뮬레이션</td></tr>
+<tr><td>최적화</td><td>기울기, 볼록성, KKT, 뉴턴법</td><td>2 경로 계획, 4 MPC, 5 강화학습</td></tr>
+<tr><td>미분방정식</td><td>상태공간 모델, 수치 적분, 안정성</td><td>3 제어, 4 MPC, 6 시뮬레이션</td></tr>
+<tr><td>그래프 알고리즘</td><td>최단 경로, 우선순위 큐, 휴리스틱</td><td>2 경로 계획</td></tr>
+<tr><td>신경망 학습</td><td>회귀·분류 손실, 역전파, 과적합</td><td>2 경로 계획 3–4장, 5 강화학습, 7 다리 로봇</td></tr>
+</table>
+<aside>모든 덱의 첫 장이 그 덱에 필요한 배경지식 네 가지를 짧게 정리한다. 그래도 위 여섯 가지가 낯설면 먼저 채워 두는 것이 좋다. 특히 확률의 기댓값과 가우시안, 최적화의 기울기와 KKT 조건은 거의 모든 덱에 나온다. 선형대수와 확률은 대학 1–2학년 수준이면 충분하다.</aside>
+</section>
+<section id="tracks" class="t">
+<div class="head"><p class="kicker">1 · 목적별 경로</p><h2>목적에 맞춰 세 경로 중 하나를 고른다</h2></div>
+<div class="grid3">
+<div class="card gr"><span class="tag gr">전체 · 10주</span><h3>1 → 2 → 3 → 4 → 5 → 6 → 7</h3><p>처음 공부하거나 로봇 시스템 전체를 보고 싶을 때. 강화학습 뒤에 경로 계획의 학습·생성 장을 다시 본다.</p></div>
+<div class="card or"><span class="tag or">제어·최적화 · 5주</span><h3>3 → 4 → 2(1–2장) → 6(1장)</h3><p>모델 기반 제어기를 만드는 사람. 제어와 MPC를 깊게, 고전 계획과 적분기·접촉만 더한다.</p></div>
+<div class="card bl"><span class="tag bl">학습 · 6주</span><h3>5 → 6 → 2(3–5장) → 7</h3><p>학습 정책을 만드는 사람. 강화학습 덱은 다른 덱 없이 볼 수 있다. 제어 덱의 2–3장(LQR, MPPI)을 곁들이면 좋다.</p></div>
+</div>
+<aside>모든 덱을 볼 시간이 없으면 목적에 맞는 경로를 고른다. 제어·최적화 경로는 제어 덱과 MPC 덱이 중심이고, 계획 덱의 고전 탐색과 시뮬레이션 덱의 적분기 장만 더한다. 학습 경로는 강화학습에서 시작한다. 강화학습 덱은 배경지식 장이 확률과 최적화만 요구해서 다른 덱 없이 읽힌다. 다만 4장의 LQR과 MPPI는 제어 덱을 곁들이면 더 잘 보인다. 어느 경로든 인식 덱은 나중에 돌아와 봐도 된다.</aside>
+</section>
+<section id="weeks" class="t">
+<div class="head"><p class="kicker">1 · 10주 계획</p><h2>한 주에 5–6시간이면 10주에 끝난다</h2></div>
+<figure><img src="img/weeks.webp" style="height:560px"><figcaption>전체 경로의 주별 계획. 마지막 주는 덱 두 개 이상을 엮는 작은 프로젝트로 복습한다.</figcaption></figure>
+<aside>한 주에 5–6시간을 쓴다면, 덱을 읽는 데 절반, 공부 순서 장의 작은 구현에 절반을 쓴다. 강화학습 덱은 두 주를 잡았고, 끝나면 경로 계획 덱의 학습·생성 Planner 장을 다시 본다. 마지막 주의 작은 프로젝트로는, 예를 들어 격자 지도 위에서 A*로 경로를 찾고 pure pursuit나 MPPI로 따라가며, 지도를 log-odds로 갱신하는 2D 시뮬을 만들어 보면 앞의 세 덱이 한 번에 엮인다.</aside>
+</section>
+<section id="how" class="t">
+<div class="head"><p class="kicker">2 · 한 덱을 공부하는 법</p><h2>덱은 모두 같은 틀이라 읽는 법도 같다</h2></div>
+<div class="grid3">
+<div class="card gr"><span class="tag gr">1 · 읽기 전</span><h3>배경지식 장과 순서 장</h3><p>0장의 배경지식 네 가지와 이 덱의 자리(앞 덱에서 가져올 것)를 먼저 본다.</p></div>
+<div class="card bl"><span class="tag bl">2 · 읽으며</span><h3>그림과 장단점 카드</h3><p>장마다 그림이 무엇을 계산했는지 말해 보고, 장점·단점 카드를 자기 말로 바꿔 적는다.</p></div>
+<div class="card or"><span class="tag or">3 · 읽은 뒤</span><h3>질문, 구현, 참고문헌</h3><p>공부 순서 장의 질문에 답하고, 작은 구현을 하나 하고, ★ 표시 문헌부터 읽는다.</p></div>
+</div>
+<table style="font-size:23px">
+<tr><th>덱 안의 장</th><th>무엇에 쓰나</th></tr>
+<tr><td>절 끝의 장단점 표, 덱 끝의 종합표</td><td>복습. 표만 보고 각 칸의 이유를 말할 수 있는지 확인한다</td></tr>
+<tr><td>흔한 함정</td><td>직접 구현할 때 처음 부딪힐 문제의 목록</td></tr>
+<tr><td>발표자 노트(N 키)</td><td>장마다 그림과 수식을 문장으로 풀어 쓴 설명</td></tr>
+</table>
+<aside>일곱 덱은 같은 틀로 만들었다. 0장은 배경지식과 이 덱의 자리, 가운데 장들은 한 개념씩 그림과 장단점, 마지막은 종합 장단점 표, 흔한 함정, 공부 순서, 요약, 참고문헌이다. 슬라이드의 글은 짧게 줄였고, 자세한 설명은 발표자 노트에 있다. 뷰어에서 N 키를 누르면 노트가 열린다. 장단점 표는 복습할 때 가장 쓸모가 있다. 표만 보고 각 칸이 왜 그런지 말할 수 없으면 해당 장으로 돌아간다.</aside>
+</section>
+<section id="books" class="t">
+<div class="head"><p class="kicker">2 · 덱마다 교과서</p><h2>덱마다 교과서 한 권을 곁에 둔다</h2></div>
+<table style="font-size:23px">
+<tr><th>덱</th><th>교과서</th><th>먼저 읽을 곳</th></tr>
+<tr><td>1 인식</td><td>Thrun·Burgard·Fox, Probabilistic Robotics (2005)</td><td>2–3장 베이즈·칼만 필터, 9장 점유 격자</td></tr>
+<tr><td>2 경로 계획</td><td>LaValle, Planning Algorithms (2006, 온라인 공개)</td><td>2장 이산 탐색, 4장 구성 공간, 5장 샘플링</td></tr>
+<tr><td>3 제어</td><td>Åström·Murray, Feedback Systems (2판, 2021, 온라인 공개)</td><td>되먹임·안정성·PID 장</td></tr>
+<tr><td>4 비선형 MPC</td><td>Rawlings·Mayne·Diehl, Model Predictive Control (2판, 2017) · Nocedal·Wright, Numerical Optimization (2판, 2006)</td><td>MPC 책 1–3장, 8장 · 최적화 책 12장 KKT, 18장 SQP</td></tr>
+<tr><td>5 강화학습</td><td>Sutton·Barto, Reinforcement Learning: An Introduction (2판, 2018) · UC Berkeley CS 285 강의</td><td>3–6장, 13장</td></tr>
+<tr><td>6 시뮬레이션</td><td>MuJoCo 문서의 Computation 장</td><td>적분기, 접촉 모델</td></tr>
+<tr><td>7 다리 로봇</td><td>Raibert, Legged Robots That Balance (1986) · Rudin 외, 2109.11978</td><td>균형과 디딤 · 병렬 RL 보행 절차</td></tr>
+</table>
+<aside>덱은 교과서를 대신하지 않는다. 덱은 개념의 지도와 장단점을 주고, 교과서는 유도와 증명을 준다. 덱마다 한 권을 골라 표의 장만 먼저 읽으면 된다. LaValle와 Åström·Murray는 저자가 온라인에 공개했고, Sutton·Barto도 저자 사이트에서 읽을 수 있다. 시뮬레이션은 좋은 교과서보다 엔진 문서가 더 정확하다. 다리 로봇은 고전 교과서 하나와 학습 보행의 표준 절차 논문 하나를 함께 본다. 덱마다 마지막 참고문헌 두 장 가운데 앞 장이 이런 먼저 읽을 문헌이다.</aside>
+</section>
+<section id="practice" class="t">
+<div class="head"><p class="kicker">2 · 덱마다 직접 구현</p><h2>덱마다 수십 줄짜리 구현을 하나씩 한다</h2></div>
+<table style="font-size:23px">
+<tr><th>덱</th><th>작은 구현</th><th>구현하며 확인할 것</th></tr>
+<tr><td>1 인식</td><td>2D 광선 투사 + log-odds 격자</td><td>왜 덧셈이 되나, 구덩이는 왜 안 보이나</td></tr>
+<tr><td>2 경로 계획</td><td>격자 A*, RRT</td><td>휴리스틱 가중치에 따라 확장 칸 수와 경로 길이가 어떻게 바뀌나</td></tr>
+<tr><td>3 제어</td><td>PID, pure pursuit, 수십 줄 MPPI</td><td>이득·지연·온도가 응답을 어떻게 바꾸나</td></tr>
+<tr><td>4 비선형 MPC</td><td>CasADi + IPOPT로 유니사이클 장애물 회피</td><td>초기값과 soft 제약 가중치가 해를 어떻게 바꾸나</td></tr>
+<tr><td>5 강화학습</td><td>격자 세계 가치 반복, CartPole REINFORCE</td><td>기준선이 분산을 얼마나 줄이나</td></tr>
+<tr><td>6 시뮬레이션</td><td>용수철 적분기 비교, 튀는 공</td><td>Euler가 에너지를 만들고, 강성과 Δt가 맞물리는 것</td></tr>
+<tr><td>7 다리 로봇</td><td>Isaac Lab 4족 예제 + 높이 지도 관측</td><td>관측을 바꾸면 학습 곡선과 지형 성공률이 어떻게 바뀌나</td></tr>
+</table>
+<aside>이해했는지 확인하는 가장 좋은 방법은 작게 직접 만들어 보는 것이다. 덱의 계산 그림 대부분이 이 표의 구현과 같은 크기의 장난감 문제를 실제로 계산한 것이라, 같은 그림을 재현하는 것을 목표로 삼아도 된다. 앞의 여섯 개는 CPU 노트북에서 몇 분 안에 돈다. 다리 로봇 예제만 GPU가 필요하다.</aside>
+</section>
+<section id="next" class="t">
+<div class="head"><p class="kicker">2 · 그다음</p><h2>기초 일곱 덱 뒤에는 원 논문과 최근 연구로 간다</h2></div>
+<div class="grid3">
+<div class="card gr"><span class="tag gr">원 논문</span><h3>★ 표시 문헌부터</h3><p>덱마다 참고문헌 앞 장이 먼저 읽을 문헌이다. 서론과 방법 절만 먼저 읽고, 덱의 그림과 대조한다.</p></div>
+<div class="card bl"><span class="tag bl">최근 연구</span><h3>논문 스터디 덱, 리서치 문서 덱</h3><p>같은 갤러리에 있다. 기초 덱의 장단점 표에서 궁금해진 방법을 골라 최근 변형을 본다.</p></div>
+<div class="card or"><span class="tag or">프로젝트</span><h3>두 덱 이상을 엮는다</h3><p>지도 갱신 + 계획 + 추종, 또는 시뮬에서 PPO 정책 학습 + 무작위화. 엮을 때 덱 사이의 화살표가 손에 잡힌다.</p></div>
+</div>
+<aside>기초 덱을 마치면 세 방향으로 나아간다. 첫째, 원 논문이다. 덱의 참고문헌 앞 장에 별을 붙인 문헌이 먼저 읽을 것이다. 둘째, 최근 연구다. 같은 갤러리의 논문 스터디 덱과 리서치 문서 덱은 최근 논문을 더 자세히 다룬다. 셋째, 두 덱 이상을 엮는 작은 프로젝트다. 덱 하나만 구현할 때는 보이지 않던 문제, 예를 들어 지도의 지연이 추종 성능을 망치는 일이 엮을 때 드러난다.</aside>
+</section>
+<section id="summary" class="t">
+<div class="head"><p class="kicker">정리</p><h2>파이프라인을 따라 쌓고, 학습으로 넓히고, 종합한다</h2></div>
+<div class="grid2">
+<div class="card gr"><h3>순서</h3><p>인식 → 경로 계획 → 제어 → 비선형 MPC → 강화학습 → 시뮬레이션 → 다리 로봇.</p></div>
+<div class="card gr"><h3>연결</h3><p>앞 덱의 출력이 뒤 덱의 입력이다. 점선 연결 셋은 덱을 가로질러 다시 본다.</p></div>
+<div class="card bl"><h3>경로</h3><p>전체 10주, 제어·최적화 5주, 학습 6주 가운데 목적에 맞게 고른다.</p></div>
+<div class="card bl"><h3>준비</h3><p>선형대수, 확률, 최적화, 미분방정식, 그래프, 신경망 학습의 기초.</p></div>
+<div class="card or"><h3>방법</h3><p>배경지식 → 그림과 장단점 → 질문 → 작은 구현 → ★ 문헌.</p></div>
+<div class="card or"><h3>점검</h3><p>덱마다 답하는 질문에 자기 말로 답할 수 있으면 다음 덱으로 간다.</p></div>
+</div>
+<aside>로드맵을 여섯 상자로 줄였다. 순서는 파이프라인을 따르고, 고전을 학습보다 먼저 두고, 종합을 마지막에 둔다. 시간이 부족하면 목적별 경로로 줄인다. 각 덱은 같은 틀이라 같은 방법으로 공부하면 되고, 덱마다 답하는 질문 하나가 끝났는지를 가르는 기준이다.</aside>
+</section>
+</div></div>
+<div id="notes"><b>발표자 노트</b><div id="notes-body"></div></div>
+<div id="bar">
+<button id="prev" aria-label="이전">◀</button><span id="count"></span><button id="next" aria-label="다음">▶</button>
+<span id="ttl">로봇 공부 로드맵 — 일곱 개념 덱을 어떤 순서로 볼까</span>
+<button id="nb" title="N 키">노트</button><button id="fs" title="F 키">전체 화면</button>
+<a href="study-roadmap.pptx" download>PPTX</a><a href="./../">목록</a>
+</div>
+<pre id="report" hidden></pre>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script>
+(function () {
+  var slides = Array.prototype.slice.call(document.querySelectorAll('#frame > section'));
+  var frame = document.getElementById('frame'), notes = document.getElementById('notes');
+  var q = new URLSearchParams(location.search), shot = q.has('shot') || q.has('check');
+  if (shot) document.body.classList.add('shot');
+  var i = 0;
+  function fit() {
+    if (shot) return;
+    var st = document.getElementById('stage');
+    var s = Math.min(st.clientWidth / 1920, st.clientHeight / 1080);
+    frame.style.transform = 'scale(' + s + ')';
+  }
+  function show(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach(function (el, k) { el.classList.toggle('on', k === i); });
+    document.getElementById('count').textContent = (i + 1) + ' / ' + slides.length;
+    var a = slides[i].querySelector('aside');
+    document.getElementById('notes-body').textContent = a ? a.textContent : '';
+    if (!shot) history.replaceState(null, '', '#' + (i + 1));
+  }
+  function withAllFonts(fn) {
+    document.body.classList.add('all');
+    void document.body.offsetHeight;
+    requestAnimationFrame(function () {
+      document.fonts.ready.then(function () { document.body.classList.remove('all'); fn(); });
+    });
+  }
+  window.withAllFonts = withAllFonts;
+  // 넘침 검사: 본문 요소가 장 밖으로 나가거나 각주 띠를 덮으면 적는다.
+  function check() {
+    var bad = [];
+    slides.forEach(function (sec, k) {
+      show(k);
+      var box = sec.getBoundingClientRect();
+      Array.prototype.forEach.call(sec.querySelectorAll('.katex-error'), function (el) {
+        bad.push({ slide: k + 1, id: sec.id, tag: 'TeX', text: (el.getAttribute('title') || el.textContent).slice(0, 60), over: 0 });
+      });
+      Array.prototype.forEach.call(sec.querySelectorAll('img'), function (el) {
+        if (!el.complete || !el.naturalWidth) bad.push({ slide: k + 1, id: sec.id, tag: 'IMG', text: el.getAttribute('src'), over: 0 });
+      });
+      var foot = sec.querySelector('[data-foot]');
+      var limit = foot ? foot.getBoundingClientRect().top - 4 : box.bottom - 24;
+      Array.prototype.forEach.call(sec.querySelectorAll('p, h1, h2, h3, img, td, th, li, .katex-display, [data-box]'), function (el) {
+        if (foot && foot.contains(el)) return;
+        if (el.closest('aside')) return;
+        var r = el.getBoundingClientRect();
+        if (r.width === 0 && r.height === 0) return;
+        if (r.bottom > limit + 0.5 || r.right > box.right - 40) {
+          bad.push({ slide: k + 1, id: sec.id, tag: el.tagName, text: (el.textContent || el.alt || '').slice(0, 40), over: Math.round(Math.max(r.bottom - limit, r.right - (box.right - 40))) });
+        }
+      });
+    });
+    var rep = document.getElementById('report');
+    rep.textContent = JSON.stringify(bad);
+    rep.setAttribute('data-done', '1');
+  }
+  function start() {
+    if (window.renderMathInElement) {
+      renderMathInElement(document.getElementById('frame'), {
+        delimiters: [{ left: '$$', right: '$$', display: true }, { left: '\\(', right: '\\)', display: false }],
+        throwOnError: false
+      });
+    }
+    // 한글 웹 글꼴은 글자 묶음마다 따로 받고, 숨은 장의 글자는 받지 않는다. 장을 모두 보여 글꼴을 받은 뒤 잰다.
+    if (q.has('check')) { withAllFonts(check); return; }
+    var s = shot ? parseInt(q.get('shot'), 10) - 1 : parseInt(location.hash.slice(1), 10) - 1;
+    show(isNaN(s) ? 0 : s);
+  }
+  show(0); fit(); window.addEventListener('resize', fit);
+  window.addEventListener('DOMContentLoaded', function () {
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(start); else start();
+  });
+  document.getElementById('prev').onclick = function () { show(i - 1); };
+  document.getElementById('next').onclick = function () { show(i + 1); };
+  document.getElementById('nb').onclick = function () { notes.classList.toggle('show'); };
+  document.getElementById('fs').onclick = function () {
+    if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen();
+  };
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { show(i + 1); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { show(i - 1); e.preventDefault(); }
+    else if (e.key === 'Home') show(0);
+    else if (e.key === 'End') show(slides.length - 1);
+    else if (e.key === 'n' || e.key === 'N') notes.classList.toggle('show');
+    else if (e.key === 'f' || e.key === 'F') document.getElementById('fs').click();
+  });
+  var x0 = null;
+  document.getElementById('stage').addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+  document.getElementById('stage').addEventListener('touchend', function (e) {
+    if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0; x0 = null;
+    if (Math.abs(dx) > 40) show(i + (dx < 0 ? 1 : -1));
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,818 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>비선형 MPC 구축 기초 — 문제 세우기, 실시간 풀이, 모델 오차</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=IBM+Plex+Sans+KR:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<style>
+:root { --bg:#0E1526; --bar:#16213A; --fg:#F4F1EA; --muted:#C9D1E0; --accent:#F59E5B; }
+* { box-sizing:border-box; }
+html, body { margin:0; height:100%; background:var(--bg); color:var(--fg); font-family:'IBM Plex Sans KR', Arial, sans-serif; }
+#stage { position:fixed; inset:0 0 56px 0; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+#frame { width:1920px; height:1080px; flex:none; transform-origin:center center; box-shadow:0 8px 40px rgba(0,0,0,.5); }
+#frame > section:not(.on) { display:none !important; }
+body.all #frame > section:not(.on) { display:block !important; }
+section { position:relative; width:1920px; height:1080px; overflow:hidden; }
+section * { margin:0; }
+section aside { display:none; }
+section table { border-collapse:collapse; }
+section th, section td { padding:10px 16px; vertical-align:top; }
+section tr + tr td { border-top:1px solid rgba(127,140,160,.25); }
+section .katex { font-size:1.05em; }
+section .katex-display { margin:0; text-align:left; }
+section .katex-display > .katex { text-align:left; }
+x-shape { display:block; flex:none; }
+x-shape[kind="arrow-right"] { clip-path:polygon(0 32%,58% 32%,58% 0,100% 50%,58% 100%,58% 68%,0 68%); }
+#bar { position:fixed; left:0; right:0; bottom:0; height:56px; background:var(--bar); display:flex; align-items:center; gap:12px; padding:0 16px; font-size:15px; }
+#bar button, #bar a { background:none; border:1px solid #3A4A6B; color:var(--fg); border-radius:8px; padding:6px 12px; font:inherit; cursor:pointer; text-decoration:none; }
+#bar button:hover, #bar a:hover { border-color:var(--accent); }
+#count { min-width:72px; text-align:center; color:var(--muted); }
+#ttl { flex:1; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; color:var(--muted); }
+#notes { position:fixed; right:16px; bottom:72px; width:min(560px, calc(100% - 32px)); max-height:45vh; overflow:auto; background:#FFFDF8; color:#16213A; border-radius:12px; padding:16px 20px; font-size:16px; line-height:1.6; box-shadow:0 8px 30px rgba(0,0,0,.4); display:none; }
+#notes.show { display:block; }
+#notes b { display:block; margin-bottom:6px; color:#C2410C; font-family:'JetBrains Mono', monospace; font-size:13px; }
+body.shot #bar, body.shot #notes { display:none; }
+body.shot #stage { inset:0; }
+body.shot #frame { box-shadow:none; transform:none !important; }
+@media (max-width:640px) { #ttl { display:none; } }
+</style>
+</head>
+<body>
+<div id="stage"><div id="frame">
+<style>
+/* 챕터 발표 덱(slides_src/talk-*) 공용 스타일. deck.json의 "css": "_talk/talk.css"로 읽는다.
+   PPTX(편집 가능)는 이 스타일이 그린 결과의 좌표·색·글자 크기를 그대로 옮긴다. 규칙은 slides_src/_talk/README.md. */
+section.t { background:#F7F5F0; color:#16213A; font-family:'IBM Plex Sans KR', Arial, sans-serif;
+  padding:80px 112px 120px; display:flex; flex-direction:column; gap:28px; }
+section.t.dark { background:#16213A; color:#F4F1EA; }
+section.t .kicker { font-family:'JetBrains Mono', 'Courier New', monospace; font-size:22px; color:#C2410C; letter-spacing:1px; }
+section.t.dark .kicker { color:#F59E5B; }
+section.t h1 { font-family:'Noto Serif KR', Georgia, serif; font-size:96px; font-weight:700; line-height:1.15; }
+section.t h2 { font-family:'Noto Serif KR', Georgia, serif; font-size:52px; font-weight:700; line-height:1.22; }
+section.t h3 { font-size:30px; font-weight:600; line-height:1.3; }
+section.t p, section.t li { font-size:26px; line-height:1.5; }
+section.t .lead { font-size:34px; line-height:1.45; color:#3D4A63; }
+section.t.dark .lead { color:#C9D1E0; }
+section.t .muted { color:#5A6478; }
+section.t.dark .muted { color:#9AA6BC; }
+section.t .small { font-size:22px; line-height:1.4; }
+section.t b, section.t strong { font-weight:600; }
+section.t .hl { color:#C2410C; font-weight:600; }
+section.t code { font-family:'JetBrains Mono', monospace; font-size:0.86em; color:#7C2D12; }
+section.t ul, section.t ol { padding-left:36px; display:flex; flex-direction:column; gap:10px; }
+section.t .head { display:flex; flex-direction:column; gap:10px; }
+section.t .cols { display:flex; gap:40px; align-items:flex-start; }
+section.t .cols > * { flex:1; min-width:0; }
+section.t .stack { display:flex; flex-direction:column; gap:18px; }
+section.t .grid2, section.t .grid3 { display:grid; gap:24px; }
+section.t .grid2 { grid-template-columns:1fr 1fr; }
+section.t .grid3 { grid-template-columns:1fr 1fr 1fr; }
+section.t .card { background:#FFFDF8; border:1px solid #D9D4C7; border-radius:12px; padding:22px 26px; display:flex; flex-direction:column; gap:12px; }
+section.t .card.or { border-left:8px solid #C2410C; }
+section.t .card.bl { border-left:8px solid #1D4ED8; }
+section.t .card.gr { border-left:8px solid #15803D; }
+section.t .card.gy { border-left:8px solid #9AA6BC; }
+section.t.dark .card { background:#22304F; border-color:#3A4A6B; }
+section.t .card h3 { font-size:28px; }
+section.t .card p, section.t .card li { font-size:24px; line-height:1.45; }
+section.t .tag { align-self:flex-start; font-size:20px; font-weight:600; padding:4px 14px; border-radius:999px; background:#ECE8DF; color:#16213A; }
+section.t .tag.or { background:#FDE7C8; color:#7C2D12; }
+section.t .tag.bl { background:#DBE5FB; color:#1E3A8A; }
+section.t .tag.gr { background:#D7EFDD; color:#14532D; }
+section.t .pills { display:flex; flex-wrap:wrap; gap:16px; }
+section.t .pill { font-size:24px; padding:8px 22px; border-radius:999px; background:#C9D1E0; color:#16213A; }
+section.t .pill.on { background:#F59E5B; }
+section.t .take { background:#16213A; color:#F4F1EA; border-radius:12px; padding:20px 28px; font-size:27px; line-height:1.45; }
+section.t .take b { color:#F59E5B; }
+section.t.dark .take { background:#F59E5B; color:#16213A; }
+section.t .flow { display:flex; align-items:stretch; gap:14px; }
+section.t .flow > .step { flex:1; background:#FFFDF8; border:1px solid #D9D4C7; border-top:6px solid #C2410C; border-radius:10px; padding:16px 18px;
+  display:flex; flex-direction:column; gap:8px; }
+section.t .flow > .step p { font-size:22px; line-height:1.4; }
+section.t .flow > .arrow { flex:none; align-self:center; font-size:36px; color:#C2410C; }
+section.t table { border-collapse:collapse; width:100%; font-size:21px; line-height:1.35; background:#FFFDF8; }
+section.t th { background:#16213A; color:#F4F1EA; text-align:left; font-weight:600; padding:10px 14px; }
+section.t td { padding:9px 14px; border-top:1px solid #D9D4C7; vertical-align:top; }
+section.t tr:nth-child(even) td { background:#F1EDE4; }
+section.t td.good { color:#14532D; font-weight:600; }
+section.t td.bad { color:#9F1239; font-weight:600; }
+section.t figure { margin:0; display:flex; flex-direction:column; gap:10px; }
+section.t figure img { display:block; max-width:100%; object-fit:contain; background:#FFFFFF; border:1px solid #D9D4C7; border-radius:8px; }
+section.t figcaption { font-size:20px; line-height:1.4; color:#5A6478; }
+section.t .math { background:#FFFDF8; border-left:6px solid #C2410C; border-radius:8px; padding:8px 24px; font-size:30px; }
+section.t .math .katex-display { margin:6px 0; }
+section.t .foot { position:absolute; left:112px; right:112px; bottom:32px; border-top:2px solid #D9D4C7; padding-top:10px;
+  display:flex; flex-direction:column; gap:2px; }
+section.t .foot p { font-size:18px; line-height:1.35; color:#5A6478; }
+section.t.dark .foot { border-color:#3A4A6B; }
+section.t.dark .foot p { color:#9AA6BC; }
+section.t .num { position:absolute; right:112px; top:84px; font-family:'JetBrains Mono', monospace; font-size:20px; color:#9AA6BC; }
+section.t.cover { justify-content:space-between; padding:120px 128px; }
+section.t.divider { justify-content:center; gap:36px; padding:120px 128px; }
+section.t.divider h2 { font-size:80px; }
+</style>
+
+<script>
+// ?export=1: 장마다 도형·글상자·표·그림의 좌표와 스타일을 적는다. scripts/slides_editable.py가 읽는다.
+(function () {
+  if (!/[?&]export=/.test(location.search)) return;
+  var INLINE = /^(inline|inline-block|inline-flex|contents)$/;
+  function transparent(c) { return !c || c === 'transparent' || /rgba\(.*,\s*0\)$/.test(c); }
+  function rect(el, base) { var r = el.getBoundingClientRect(); return [r.left - base.left, r.top - base.top, r.width, r.height]; }
+  function style(cs) {
+    return { size: parseFloat(cs.fontSize), bold: parseInt(cs.fontWeight, 10) >= 600, italic: cs.fontStyle === 'italic',
+             color: cs.color, mono: /Mono|Courier|monospace/.test(cs.fontFamily) };
+  }
+  function runs(el) {
+    var out = [];
+    (function rec(node) {
+      Array.prototype.forEach.call(node.childNodes, function (c) {
+        if (c.nodeType === 3) { if (c.textContent) out.push({ s: c.textContent, st: style(getComputedStyle(node)), href: node.closest('a') ? node.closest('a').href : null }); return; }
+        if (c.nodeType !== 1 || c.tagName === 'ASIDE') return;
+        if (c.tagName === 'BR') { out.push({ s: '\n', st: style(getComputedStyle(node)) }); return; }
+        if (c.classList.contains('katex')) {
+          var a = c.querySelector('annotation');
+          out.push({ s: a ? a.textContent : c.textContent, st: style(getComputedStyle(node)), math: true });
+          return;
+        }
+        var cs = getComputedStyle(c);
+        if (cs.display === 'none') return;
+        if (INLINE.test(cs.display) && c.tagName !== 'IMG') rec(c);
+      });
+    })(el);
+    return out;
+  }
+  function hasOwnText(el) {
+    return Array.prototype.some.call(el.childNodes, function (c) {
+      if (c.nodeType === 3) return c.textContent.trim() !== '';
+      if (c.nodeType !== 1 || c.tagName === 'ASIDE') return false;
+      var cs = getComputedStyle(c);
+      return (INLINE.test(cs.display) || c.classList.contains('katex')) && c.tagName !== 'IMG' && c.textContent.trim() !== '';
+    });
+  }
+  function marker(li) {
+    var p = li.parentElement;
+    if (!p || getComputedStyle(li).listStyleType === 'none') return null;
+    if (p.tagName === 'OL') return { n: Array.prototype.indexOf.call(p.children, li) + parseInt(p.getAttribute('start') || '1', 10) };
+    return { n: 0 };
+  }
+  function textItem(el, base, cs) {
+    var r = rect(el, base), pl = parseFloat(cs.paddingLeft), pr = parseFloat(cs.paddingRight), pt = parseFloat(cs.paddingTop),
+        pb = parseFloat(cs.paddingBottom), bl = parseFloat(cs.borderLeftWidth), bt = parseFloat(cs.borderTopWidth);
+    var rr = runs(el), m = el.tagName === 'LI' ? marker(el) : null;
+    if (m) { r[0] -= 30; r[2] += 30; }   // 글머리표 자리. PPTX에서는 내어쓰기 30px의 진짜 글머리표가 된다
+    var lh = parseFloat(cs.lineHeight);
+    return { t: 'text', r: [r[0] + pl + bl, r[1] + pt + bt, r[2] - pl - pr - bl, r[3] - pt - pb - bt], runs: rr, li: m,
+             align: cs.textAlign, lh: isNaN(lh) ? 1.3 : lh / parseFloat(cs.fontSize) };
+  }
+  function boxItem(el, base, cs) {
+    var sides = {};
+    ['Top', 'Right', 'Bottom', 'Left'].forEach(function (s) {
+      var w = parseFloat(cs['border' + s + 'Width']);
+      if (w > 0 && cs['border' + s + 'Style'] !== 'none' && !transparent(cs['border' + s + 'Color'])) sides[s[0]] = [w, cs['border' + s + 'Color']];
+    });
+    var fill = transparent(cs.backgroundColor) ? null : cs.backgroundColor;
+    if (!fill && !Object.keys(sides).length) return null;
+    return { t: 'box', r: rect(el, base), fill: fill, radius: parseFloat(cs.borderTopLeftRadius) || 0, sides: sides };
+  }
+  function tableItem(el, base) {
+    var rows = Array.prototype.map.call(el.rows, function (tr) {
+      return { h: tr.getBoundingClientRect().height, cells: Array.prototype.map.call(tr.cells, function (c) {
+        var cs = getComputedStyle(c), bg = cs.backgroundColor;
+        if (transparent(bg)) bg = getComputedStyle(tr).backgroundColor;
+        if (transparent(bg)) bg = getComputedStyle(el).backgroundColor;
+        return { w: c.getBoundingClientRect().width, span: c.colSpan || 1, fill: transparent(bg) ? null : bg, runs: runs(c),
+                 align: cs.textAlign, size: parseFloat(cs.fontSize) };
+      }) };
+    });
+    return { t: 'table', r: rect(el, base), rows: rows };
+  }
+  function img(el, base) {
+    var r = rect(el, base), nw = el.naturalWidth, nh = el.naturalHeight;
+    if (nw && nh && getComputedStyle(el).objectFit === 'contain') {
+      var s = Math.min(r[2] / nw, r[3] / nh), w = nw * s, h = nh * s;
+      r = [r[0] + (r[2] - w) / 2, r[1] + (r[3] - h) / 2, w, h];
+    }
+    return { t: 'img', r: r, src: el.getAttribute('src') };
+  }
+  function slide(sec) {
+    var base = sec.getBoundingClientRect(), items = [];
+    (function walk(el) {
+      if (el.tagName === 'ASIDE') return;
+      var cs = getComputedStyle(el);
+      if (cs.display === 'none' || cs.visibility === 'hidden') return;
+      if (el !== sec && el.tagName !== 'TABLE') { var b = boxItem(el, base, cs); if (b) items.push(b); }
+      if (el.matches('.katex-display, svg, canvas, x-shape, [data-raster]')) {
+        var k = el.matches('.katex-display') ? (el.querySelector('.katex') || el) : el;
+        items.push({ t: 'raster', r: rect(k, base) }); return;
+      }
+      if (el.tagName === 'IMG') { items.push(img(el, base)); return; }
+      if (el.tagName === 'TABLE') { items.push(tableItem(el, base)); return; }
+      if (el !== sec && hasOwnText(el)) items.push(textItem(el, base, cs));
+      Array.prototype.forEach.call(el.children, function (c) {
+        var d = getComputedStyle(c).display;
+        if (!(INLINE.test(d) && c.tagName !== 'IMG' && !c.querySelector('img, .katex-display'))) walk(c);
+      });
+    })(sec);
+    var a = sec.querySelector('aside');
+    return { bg: getComputedStyle(sec).backgroundColor, items: items, note: a ? a.textContent.trim() : '' };
+  }
+  function run() {
+    var secs = Array.prototype.slice.call(document.querySelectorAll('#frame > section')), out = [];
+    secs.forEach(function (sec) {
+      secs.forEach(function (s) { s.classList.toggle('on', s === sec); });
+      out.push(slide(sec));
+    });
+    var rep = document.getElementById('report'); rep.textContent = JSON.stringify(out); rep.setAttribute('data-done', '1');
+  }
+  window.addEventListener('DOMContentLoaded', function () {
+    // 뷰어의 start()가 수식을 조판한 뒤에 잰다.
+    document.fonts.ready.then(function () { setTimeout(function () { window.withAllFonts(run); }, 300); });
+  });
+})();
+</script>
+<section id="cover" class="t dark cover">
+<p class="kicker">비선형 MPC 구축 기초 · 개념 공부 덱</p>
+<div class="stack"><h1>최적 제어 문제를 세우고<br>제어 주기 안에 푼다</h1><p class="lead">모델·비용·제약으로 OCP를 세우는 법, SQP·RTI로 실시간에 푸는 법, 학습 잔차·튜브로 모델 오차를 다루는 법 — 그림과 배경지식과 장단점으로</p></div>
+<div class="pills"><p class="pill on">OCP</p><p class="pill">적분기 · 제약 · soft</p><p class="pill">SQP · RTI · 솔버</p><p class="pill">GP 잔차 · 희소 GP</p><p class="pill">튜브 · 확률 제약</p></div>
+<aside>이 덱은 비선형 MPC를 직접 만들어 보려는 사람을 위한 개념 덱이다. 제어 기초 덱이 MPC가 무엇인지를 다뤘다면, 이 덱은 그것을 어떻게 세우고 어떻게 시간 안에 푸는지에 집중한다. 그림은 작은 문제를 실제로 계산해 그렸고, 논문 그림에는 출처를 달았다.</aside>
+</section>
+<section id="agenda" class="t">
+<div class="head"><p class="kicker">순서</p><h2>문제 세우기, 풀기, 모델 오차 다루기의 세 단계로 간다</h2></div>
+<table style="font-size:30px">
+<tr><th>장</th><th>주제</th><th>답하는 질문</th></tr>
+<tr><td>0</td><td>시작</td><td>어떤 최적화 배경이 필요하고, 언제 NMPC를 쓰나?</td></tr>
+<tr><td>1</td><td>OCP 세우기</td><td>모델·적분기·비용·제약을 어떻게 고르나? 매끄럽지 않은 것은?</td></tr>
+<tr><td>2</td><td>실시간으로 풀기</td><td>SQP·RTI는 무엇이고, 어떤 솔버를 쓰나? 국소해는?</td></tr>
+<tr><td>3</td><td>모델 오차와 불확실성</td><td>학습 잔차는 어떻게 넣고, 제약은 얼마나 조이나?</td></tr>
+<tr><td>4</td><td>최근 흐름</td><td>2025–2026 연구는 무엇을 함께 하고 어디서 갈리나?</td></tr>
+<tr><td>5</td><td>정리</td><td>장단점 표, 흔한 함정, 공부 순서</td></tr>
+</table>
+<aside>NMPC를 실제로 돌리려면 세 가지를 해야 한다. 문제를 풀 수 있는 꼴로 세우고, 제어 주기 안에 풀고, 모델이 틀린 만큼을 다룬다. 이 덱은 그 순서를 따른다. 4장은 최근 연구가 이 세 단계 중 어디를 고치는지 정리한다.</aside>
+</section>
+<section id="course" class="t">
+<div class="head"><p class="kicker">0 · 커리큘럼 4/7</p><h2>제어 덱의 MPC를 직접 세우고 실시간으로 푼다</h2></div>
+<figure><img src="img/course.webp" style="height:400px"></figure>
+<div class="grid3">
+<div class="card gr"><span class="tag gr">앞에서 가져올 것</span><p>3 제어의 2장(LQR, 이동 지평)과 4장(잔차·GP). 볼록성·KKT·뉴턴법(0장에서 정리).</p></div><div class="card bl"><span class="tag bl">뒤로 넘기는 것</span><p>제약과 튜브 → 7 다리 로봇의 투영·안전. 모델 기반 계획 → 5 강화학습 4장과 비교.</p></div><div class="card or"><span class="tag or">함께 보면 좋은 것</span><p>2 경로 계획의 궤적 최적화(CHOMP·TEB)는 같은 최적화를 계획 쪽에서 본 것이다. 적분기 → 6 시뮬레이션 1장.</p></div>
+</div>
+<aside>네 번째 덱이다. 제어 덱 2장에서 개념으로 본 MPC를 실제로 세우고 푸는 덱이다. 제어 덱의 LQR과 이동 지평, 그리고 잔차와 GP를 알고 있으면 바로 들어갈 수 있다. 최적화 배경은 이 덱 0장에서 정리한다. 여기서 본 제약과 튜브는 다리 로봇 덱의 투영과 안전으로 다시 나오고, 모델 기반 계획은 강화학습 덱의 모델 기반 RL과 비교해 볼 만하다. 일곱 덱 전체의 순서와 10주 계획은 로드맵 덱에 있다.</aside>
+</section>
+<section id="prereq" class="t">
+<div class="head"><p class="kicker">0 · 배경지식</p><h2>네 가지 최적화 배경지식이면 이 덱을 따라올 수 있다</h2></div>
+<div class="grid2">
+<div class="card bl"><span class="tag bl">볼록성</span><h3>볼록이면 국소해 = 전역해</h3><p>선형 모델 + 이차 비용 + 볼록 제약은 QP라 빠르고 유일하다. 비선형 모델이나 장애물은 비볼록이라 국소해가 여럿이다.</p></div>
+<div class="card or"><span class="tag or">KKT 조건</span><h3>제약 최적해의 필요조건</h3><p>\(\nabla f + \sum \lambda_i \nabla g_i = 0,\ \lambda_i \ge 0,\ \lambda_i g_i = 0\). 승수 λ는 "제약을 조금 풀면 비용이 얼마나 주나"다.</p></div>
+<div class="card gr"><span class="tag gr">뉴턴법</span><h3>국소 이차 근사를 반복해 푼다</h3><p>해 근처에서 매우 빠르게(이차 수렴) 수렴한다. 초기값이 멀면 엉뚱한 곳으로 간다.</p></div>
+<div class="card gy"><span class="tag">이산화</span><h3>연속 시간 모델을 스텝으로</h3><p>\(\dot x = f(x,u)\)를 적분기로 \(x_{k+1} = F(x_k, u_k)\)로 바꾼다. 적분기 선택이 정확도와 계산을 정한다.</p></div>
+</div>
+<aside>NMPC는 매 주기 비선형 제약 최적화를 푼다. 그래서 최적화 교과서의 몇 가지 개념이 필요하다. 볼록성은 문제가 쉬운지 어려운지를 가른다. KKT 조건은 제약이 있는 최적해의 모양이고, 그 승수는 뒤의 soft 제약 가중치를 고를 때 쓰인다. 뉴턴법은 SQP의 바탕이고, 이산화는 연속 모델을 컴퓨터가 다룰 수 있게 바꾼다.</aside>
+</section>
+<section id="why" class="t">
+<div class="head"><p class="kicker">0 · 언제 NMPC인가</p><h2>표본 기반 MPC는 비매끄러운 비용을, NMPC는 제약을 잘 다룬다</h2></div>
+<div class="cols">
+<div class="card bl"><span class="tag bl">표본 기반 (MPPI)</span><h3>표본으로 절벽 같은 비용을 넘는다</h3><ul><li>격자 장애물·이진 충돌을 그대로</li><li>Jacobian 불필요, GPU 병렬</li><li>제약은 벌점·확률로 근사</li></ul></div>
+<div class="card or"><span class="tag or">기울기 기반 (NMPC)</span><h3>제약을 조일 자리가 있다</h3><ul><li>hard 제약과 slack을 명시적으로</li><li>튜브·확률 제약으로 제약을 조인다</li><li>학습 잔차를 모델에 넣는다</li></ul></div>
+</div>
+<table style="font-size:25px">
+<tr><th>상황</th><th>더 맞는 쪽</th></tr>
+<tr><td>비용이 격자·충돌 판정처럼 계단이다</td><td>MPPI</td></tr>
+<tr><td>속도·가속·자세 한계를 반드시 지켜야 한다</td><td>NMPC</td></tr>
+<tr><td>모델 불확실성으로 제약을 조이고 싶다</td><td>NMPC(튜브), MPPI(확률 제약)</td></tr>
+<tr><td>CPU만 있고 상태·입력 차원이 작다</td><td>NMPC</td></tr>
+</table>
+<aside>두 방법은 경쟁 관계라기보다 강점이 갈린다. MPPI는 미분이 없어 계단 같은 비용을 그대로 다루고, NMPC는 제약을 명시적으로 두므로 불확실성에 따라 조일 자리가 있다. 같은 문제에 둘을 모두 세워 같은 조건에서 비교하는 것이 가장 확실하다. 이 덱은 NMPC 쪽을 직접 만드는 데 집중한다.</aside>
+</section>
+<section id="anatomy" class="t">
+<div class="head"><p class="kicker">0 · OCP의 구성</p><h2>최적 제어 문제는 여섯 부품으로 이루어진다</h2></div>
+<div class="math">$$\min_{x_{0:N},\,u_{0:N-1}}\ \sum_{k=0}^{N-1} \ell(x_k, u_k) + V_f(x_N) \quad \text{s.t.}\ \ x_0 = \hat x,\ \ x_{k+1} = F(x_k, u_k),\ \ g(x_k, u_k) \le 0,\ \ x_N \in \mathcal X_f$$</div>
+<div class="grid3">
+<div class="card bl"><span class="tag bl">1 · 상태·입력</span><p>무엇을 예측하고 무엇을 고르나. 입력을 변화율로 두면 가속 한계를 상자로 건다.</p></div>
+<div class="card bl"><span class="tag bl">2 · 모델·적분기</span><p>\(F\): 연속 모델 + 적분기(Euler, RK4).</p></div>
+<div class="card bl"><span class="tag bl">3 · 지평·간격</span><p>N × Δt. 길면 멀리 보지만 무겁다.</p></div>
+<div class="card or"><span class="tag or">4 · 단계 비용</span><p>추종 오차, 입력 크기, 매끄러움.</p></div>
+<div class="card or"><span class="tag or">5 · 제약</span><p>입력·상태 상자, 장애물, 자세.</p></div>
+<div class="card or"><span class="tag or">6 · 종단</span><p>\(V_f\), \(\mathcal X_f\): 지평 너머를 대신한다.</p></div>
+</div>
+<aside>OCP를 세운다는 것은 이 여섯 부품을 고르는 일이다. 상태와 입력의 선택이 어떤 제약을 쉽게 걸 수 있는지를 정하고, 모델과 적분기가 예측의 정확도를 정한다. 지평은 MPC가 얼마나 멀리 보는지를, 비용과 제약은 무엇을 원하고 무엇을 금지하는지를 정한다. 종단 비용과 종단 집합은 짧은 지평의 근시안을 메운다. 다음 장에서 하나씩 본다.</aside>
+</section>
+<section id="d1" class="t dark divider">
+<p class="kicker">1 · OCP 세우기</p>
+<h2>풀 수 있는 꼴로 세우는 것이<br>푸는 것보다 먼저다</h2>
+<p class="lead">매끄러운 것은 비용으로, 끊기는 것은 제약으로, 비볼록한 것은 노드마다 선형으로.</p>
+<aside>첫째 장은 문제를 세우는 법이다. 모델과 상태 선택, 적분기, 추종 비용, 제약을 어떻게 거는지, 특히 장애물 같은 비볼록 제약을 노드마다 선형화하는 법과, 풀리지 않는 문제를 피하는 soft 제약을 본다.</aside>
+</section>
+<section id="model" class="t">
+<div class="head"><p class="kicker">1 · 모델과 상태 선택</p><h2>속도를 상태에 넣으면 가속 한계를 단순한 상자 제약으로 건다</h2></div>
+<div class="cols">
+<div class="math">$$\begin{aligned}\dot x &= v_x\cos\theta - v_y\sin\theta\\ \dot y &= v_x\sin\theta + v_y\cos\theta\\ \dot\theta &= \omega\\ \dot v &= u\ \ (+\ d)\end{aligned}$$</div>
+<table style="font-size:24px">
+<tr><th>항목</th><th>예(전방향 이동 로봇)</th></tr>
+<tr><td>상태</td><td>\((x, y, \theta, v_x, v_y, \omega)\)</td></tr>
+<tr><td>입력</td><td>\(u = (a_x, a_y, \alpha_z)\): 속도의 변화율</td></tr>
+<tr><td>제약</td><td>\(|v| \le v_{\max}\), \(|u| \le a_{\max}\) — 둘 다 상자</td></tr>
+<tr><td>d</td><td>모델 오차(뒤의 학습 잔차 자리)</td></tr>
+</table>
+</div>
+<div class="grid3">
+<div class="card gr"><span class="tag gr">장점</span><p>가속·저크 한계가 상자 제약이 되고, 명령이 매끄럽다.</p></div>
+<div class="card or"><span class="tag or">대가</span><p>상태가 늘어 문제가 커진다. 실제 구동 지연은 여전히 모델 밖이다.</p></div>
+<div class="card gy"><span class="tag">비매끄러운 하위 모델</span><p>바퀴 역기구학처럼 atan2·반전이 있는 식은 넣지 않고, 차체 수준 제약으로 번역한다.</p></div>
+</div>
+<aside>모델을 고를 때 가장 먼저 정할 것은 무엇을 상태로, 무엇을 입력으로 두느냐다. 속도를 입력으로 두면 가속 한계를 걸려면 이웃 스텝의 차이를 제약해야 하지만, 속도를 상태로 두고 그 변화율을 입력으로 두면 가속 한계가 단순한 상자 제약이 된다. 바퀴 하나하나의 역기구학처럼 미분이 불연속인 식은 SQP를 망가뜨리므로 넣지 않고, 그 효과를 차체 수준의 보수적 제약이나 학습 잔차로 흡수한다.</aside>
+</section>
+<section id="integrators" class="t">
+<div class="head"><p class="kicker">1 · 적분기</p><h2>같은 간격이면 RK4가 Euler보다 훨씬 정확하고, 계산은 네 배다</h2></div>
+<figure><img src="img/integrators.webp" style="height:400px"><figcaption>반지름 1 m 원을 도는 유니사이클을 두 적분기로 굴렸다. (a) Δt = 0.4 s에서 Euler는 바깥으로 샌다 (b) Δt를 반으로 줄이면 Euler 오차는 약 1/2, RK4는 약 1/16로 준다</figcaption></figure>
+<div class="grid2">
+<div class="card bl"><span class="tag bl">Euler(1차)</span><p>모델 평가 1회. 오차 \(O(\Delta t)\). 간격이 작을 때나 빠른 시험용.</p></div>
+<div class="card gr"><span class="tag gr">RK4(4차)</span><p>모델 평가 4회. 오차 \(O(\Delta t^4)\). 같은 정확도를 훨씬 큰 간격으로 — 노드 수를 줄인다.</p></div>
+</div>
+<aside>OCP의 모델 제약은 적분기로 이산화한 식이다. 적분기의 오차는 예측 오차가 되고, 예측 오차는 제약 위반이 된다. Euler는 싸지만 1차라 간격을 줄여도 오차가 천천히 준다. RK4는 모델을 네 번 평가하지만 4차라 같은 정확도를 훨씬 긴 간격으로 얻는다. 지평 길이가 정해져 있다면 간격을 키워 노드 수를 줄이는 편이 전체 계산에 유리한 경우가 많다. acados 같은 도구는 명시적 RK 적분기와 그 민감도를 자동으로 만들어 준다.</aside>
+</section>
+<section id="cost" class="t">
+<div class="head"><p class="kicker">1 · 비용</p><h2>추종 비용은 선형 최소제곱으로 두고, 종단 비용이 진행을 맡는다</h2></div>
+<div class="math">$$\ell(x_k, u_k) = \big\lVert y(x_k, u_k) - y_k^{\text{ref}} \big\rVert_W^2, \qquad V_f(x_N) = \big\lVert p_N - p_N^{\text{ref}} \big\rVert_{W_e}^2$$</div>
+<div class="grid3">
+<div class="card bl"><span class="tag bl">선형 최소제곱</span><p>y가 상태·입력의 선형 함수면 Gauss-Newton Hessian이 정확하다. 풀이가 빠르고 안정적이다.</p></div>
+<div class="card or"><span class="tag or">가중치 W</span><p>위치는 크게, 옆걸음·회전·가속은 작게. 단위가 다르면 크기를 맞춰 정규화한다.</p></div>
+<div class="card gr"><span class="tag gr">종단 W<sub>e</sub></span><p>지평 끝에서 목표 쪽으로 끌어당긴다. 크면 진행이 강하고, 작으면 지평이 짧을 때 멈춘다.</p></div>
+</div>
+<div class="grid2">
+<div class="card gy"><span class="tag">참조 만들기</span><p>경로만 있으면 원하는 속도로 시간을 매겨 시간 인덱스 참조로 만든다. 시간 붙은 궤적이면 그대로 쓴다.</p></div>
+<div class="card gy"><span class="tag">비용에 남기는 것</span><p>매끄럽고 미분 가능한 것만: 추종, 입력 크기, 매끄러움, 완만한 지형 비용.</p></div>
+</div>
+<aside>NMPC의 비용은 대부분 참조와의 차이를 벌하는 이차식이다. 출력 y가 상태와 입력의 선형 함수이면 선형 최소제곱 꼴이 되어, Gauss-Newton 근사가 정확한 Hessian을 준다. 그래서 풀이가 빠르고 안정적이다. 가중치는 단위가 다른 항을 섞으므로 크기를 맞춰야 하며, 종단 비용은 짧은 지평의 끝에서 목표 쪽으로 진행하게 하는 역할을 한다. 장애물처럼 계단 같은 항은 비용에 넣지 않고 다음 장의 제약으로 보낸다.</aside>
+</section>
+<section id="halfplanes" class="t">
+<div class="head"><p class="kicker">1 · 장애물 제약</p><h2>비볼록한 장애물은 노드마다 가장 가까운 점의 접평면 하나로 바꾼다</h2></div>
+<figure><img src="img/halfplanes.webp" style="height:400px"><figcaption>예측 노드마다 가장 가까운 장애물 점을 거리 변환으로 찾고, 그 점의 접평면을 선형 제약 \(n_k^\top p_k \ge b_k\)로 넘긴다</figcaption></figure>
+<table style="font-size:24px">
+<tr><th>장애물 넣는 법</th><th>장점</th><th>단점</th></tr>
+<tr><td>노드별 접평면(파라미터)</td><td class="good">선형 제약, 좁은 틈도, 재생성 불필요</td><td class="bad">해가 움직이면 다시 계산(반복 필요)</td></tr>
+<tr><td>원·타원 거리 제약</td><td class="good">매끄럽다, 장애물이 적을 때 간단</td><td class="bad">벽·연석 같은 긴 모양에 약하다</td></tr>
+<tr><td>매끄러운 비용장 근사(RBF·다항식)</td><td class="good">한 식으로 지도 전체</td><td class="bad">근사 오차, 날카로운 경계 흐림</td></tr>
+</table>
+<aside>격자 지도의 장애물은 계단 함수라 미분이 없고, 기호 계산 도구는 격자를 기호 위치로 읽지 못한다. 실무 해법은 장애물을 매 주기 수치로 처리해 단순한 제약으로 넘기는 것이다. 노드마다 가장 가까운 장애물 점을 거리 변환으로 찾고, 그 점에서 장애물 바깥을 향하는 법선으로 반평면을 만든다. 제약은 선형이고 값만 파라미터로 바뀌므로 코드를 다시 생성할 필요가 없다. 다만 접평면은 지금의 해에 매달려 있으므로, 해가 움직이면 다시 계산해야 한다.</aside>
+</section>
+<section id="soft" class="t">
+<div class="head"><p class="kicker">1 · soft 제약</p><h2>L1 벌점은 가중치가 충분히 크면 hard 제약과 같은 해를 주고, 늘 풀린다</h2></div>
+<div class="math">$$g(x_k) \le s_k,\quad s_k \ge 0,\qquad \text{비용에 } +\ \rho\, s_k \ \ (\text{L1}) \ \ \text{또는}\ \ +\ \rho\, s_k^2\ \ (\text{이차})$$</div>
+<figure><img src="img/penalty.webp" style="height:360px"><figcaption>(a) L1 벌점은 ρ가 라그랑주 승수(여기서는 2)보다 크면 해가 제약 경계에 정확히 선다. 이차 벌점은 ρ를 아무리 키워도 조금 넘는다 (b) L1 벌점은 경계에서 꺾여 있다</figcaption></figure>
+<div class="grid2">
+<div class="card gr"><span class="tag gr">왜 soft인가</span><p>나쁜 초기해나 외란으로 hard 제약을 만족할 수 없으면 QP가 실패한다. 풀리지 않는 문제는 안전이 아니라 무작위다.</p></div>
+<div class="card or"><span class="tag or">고르는 법</span><p>안전 제약은 L1 + 큰 ρ(정확한 벌점), 이차 항을 조금 더해 수치를 안정시킨다. 위반량은 따로 기록한다.</p></div>
+</div>
+<aside>hard 제약은 반드시 지켜지지만, 지킬 수 없는 상황에서는 해가 없다. 실제 로봇에서는 외란이나 나쁜 초기해 때문에 그런 순간이 온다. 그래서 제약마다 slack 변수를 두고 그 크기를 비용으로 벌한다. 벌점의 꼴이 중요하다. L1 벌점은 가중치가 그 제약의 라그랑주 승수보다 크기만 하면 hard 제약과 똑같은 해를 준다. 정확한 벌점이라 부른다. 이차 벌점은 매끄럽지만 가중치를 아무리 키워도 조금씩 넘는다. 실무에서는 둘을 함께 쓴다.</aside>
+</section>
+<section id="nonsmooth" class="t">
+<div class="head"><p class="kicker">1 · 무엇을 어디에</p><h2>매끄러운 것은 비용으로, 끊기는 것은 제약으로, 목표는 종단으로 보낸다</h2></div>
+<table style="font-size:26px">
+<tr><th>원하는 것</th><th>OCP에서</th><th>이유</th></tr>
+<tr><td>참조를 따라간다</td><td>단계 비용(선형 최소제곱)</td><td>매끄럽고 이차</td></tr>
+<tr><td>목표 쪽으로 진행한다</td><td>종단 비용</td><td>짧은 지평의 근시안 보완</td></tr>
+<tr><td>명령을 아낀다, 매끄럽게</td><td>입력·변화율 이차 비용</td><td>매끄럽다</td></tr>
+<tr><td>완만한 경사·거칠기를 피한다</td><td>보간한 지형 비용</td><td>보간이 매끄러워야 한다</td></tr>
+<tr><td>치명 영역에 들어가지 않는다</td><td>노드별 반평면 제약(soft L1)</td><td>계단이라 기울기 없음</td></tr>
+<tr><td>사람과 거리를 둔다</td><td>시간가변 반평면·거리 제약</td><td>예측 위치가 시각마다 다르다</td></tr>
+<tr><td>속도·가속·자세 한계</td><td>상자 제약</td><td>반드시 지킨다</td></tr>
+</table>
+<p class="take"><b>핵심:</b> 불확실성으로 조일 것은 제약으로 둬야 한다. 비용에 녹아 있으면 튜브·확률 제약이 붙을 자리가 없다.</p>
+<aside>표본 기반 MPC에서 비용 항 하나로 처리하던 것들을 기울기 기반 MPC로 옮기면 세 갈래로 나뉜다. 매끄러운 것은 비용으로 남고, 계단 같은 것은 제약으로 가고, 목표 쪽은 종단 비용이 된다. 특히 안전에 관한 것을 제약으로 두는 것이 중요하다. 그래야 3장에서 볼 튜브나 확률 제약이 그 제약의 여유를 조일 수 있다.</aside>
+</section>
+<section id="ocp-pc" class="t">
+<div class="head"><p class="kicker">1 · 장단점</p><h2>OCP 설계의 선택은 정확도, 풀이 속도, 견고함을 맞바꾼다</h2></div>
+<table style="font-size:26px">
+<tr><th>선택</th><th>한쪽</th><th>다른 쪽</th></tr>
+<tr><td>지평</td><td>길게: 멀리 보지만 무겁다</td><td>짧게: 빠르지만 근시안(종단 비용으로 보완)</td></tr>
+<tr><td>적분기</td><td>Euler: 싸지만 부정확</td><td>RK4: 정확, 큰 간격 가능</td></tr>
+<tr><td>모델</td><td>기구학: 단순, 지연·슬립 모름</td><td>동역학: 정확, 파라미터·계산 증가</td></tr>
+<tr><td>장애물</td><td>노드별 반평면: 정확, 반복 필요</td><td>매끄러운 근사: 한 식, 경계 흐림</td></tr>
+<tr><td>제약</td><td>hard: 보장, 불능 위험</td><td>soft L1: 늘 풀림, 큰 ρ면 같은 해</td></tr>
+</table>
+<p class="take"><b>출발점:</b> 기구학 모델 + RK4 + 선형 최소제곱 비용 + soft L1 제약. 문제가 보이는 곳만 하나씩 바꾼다.</p>
+<aside>한꺼번에 모든 것을 정교하게 만들면 무엇이 효과였는지 알 수 없다. 가장 단순한 판으로 시작해 폐루프 실험에서 문제가 드러나는 곳만 바꾸는 것이 좋다. 예를 들어 지연 때문에 출렁이면 모델에 지연을 넣고, 좁은 틈에서 실패하면 장애물 제약을 고친다.</aside>
+</section>
+<section id="d2" class="t dark divider">
+<p class="kicker">2 · 실시간으로 풀기</p>
+<h2>매 주기 완벽히 풀지 않고,<br>한 걸음씩 꾸준히 고친다</h2>
+<p class="lead">SQP는 비선형 문제를 QP의 연속으로, RTI는 그 한 걸음을 주기마다 한 번.</p>
+<aside>둘째 장은 세운 문제를 제어 주기 안에 푸는 법이다. 순차 이차 계획법(SQP)의 원리, 주기마다 한 걸음만 가는 실시간 반복(RTI), 대표 솔버, 그리고 국소해와 초기값 문제를 본다.</aside>
+</section>
+<section id="sqp" class="t">
+<div class="head"><p class="kicker">2 · SQP</p><h2>SQP는 비선형 문제를 지금 해 근처의 QP로 근사해 반복해서 푼다</h2></div>
+<div class="flow">
+<div class="step"><h3>① 선형화</h3><p>지금 해 \((\bar x, \bar u)\)에서 모델·제약의 Jacobian</p></div><p class="arrow">→</p>
+<div class="step"><h3>② 이차 근사</h3><p>비용의 Hessian(Gauss-Newton: \(J^\top W J\))</p></div><p class="arrow">→</p>
+<div class="step"><h3>③ QP 풀기</h3><p>희소 구조를 쓰는 QP 솔버(HPIPM 등)</p></div><p class="arrow">→</p>
+<div class="step"><h3>④ 갱신</h3><p>\((\bar x, \bar u) \leftarrow (\bar x, \bar u) + \alpha\,\Delta\)</p></div>
+</div>
+<div class="math">$$\min_{\Delta}\ \tfrac12 \Delta^\top H \Delta + \nabla \ell^\top \Delta \quad \text{s.t.}\ \ \Delta x_{k+1} = A_k \Delta x_k + B_k \Delta u_k + r_k,\ \ C_k \Delta \le -g_k$$</div>
+<div class="grid3">
+<div class="card bl"><span class="tag bl">Gauss-Newton</span><p>최소제곱 비용이면 2차 미분 없이 Hessian을 근사. 늘 양반정치라 안정적.</p></div>
+<div class="card bl"><span class="tag bl">희소 구조</span><p>시간 단계마다 이웃만 묶이는 띠 구조. 리카티식 풀이로 지평에 선형인 계산.</p></div>
+<div class="card or"><span class="tag or">수렴</span><p>해 근처에서 빠르다. 멀면 선 탐색·신뢰 영역이 필요하다.</p></div>
+</div>
+<aside>SQP는 뉴턴법을 제약 최적화로 넓힌 것이다. 지금의 추정 해에서 모델과 제약을 선형화하고 비용을 이차로 근사하면 QP가 된다. 그 QP의 해만큼 추정 해를 옮기고 다시 반복한다. MPC의 QP는 특별한 구조를 가진다. 시간 단계마다 이웃 단계와만 묶여 있어서, 이 띠 구조를 쓰는 솔버는 지평 길이에 선형인 시간으로 푼다. 비용이 최소제곱이면 Gauss-Newton 근사로 Hessian을 2차 미분 없이 얻는다.</aside>
+</section>
+<section id="rti" class="t">
+<div class="head"><p class="kicker">2 · 실시간 반복</p><h2>RTI는 주기마다 SQP 한 걸음만 가고, 준비 단계를 측정 전에 미리 한다</h2></div>
+<div class="flow">
+<div class="step"><h3>준비 단계</h3><p>측정이 오기 전: 이전 해를 한 칸 밀고, 선형화와 QP 행렬 준비</p></div><p class="arrow">→</p>
+<div class="step"><h3>측정 도착</h3><p>\(x_0 = \hat x\)</p></div><p class="arrow">→</p>
+<div class="step"><h3>피드백 단계</h3><p>QP 한 번만 풀어 첫 입력을 바로 낸다</p></div><p class="arrow">→</p>
+<div class="step"><h3>다음 주기</h3><p>문제가 조금만 바뀌므로 한 걸음씩 수렴을 따라간다</p></div>
+</div>
+<div class="grid2">
+<div class="card gr"><span class="tag gr">장점</span><p>측정에서 명령까지 지연이 QP 한 번뿐이다. 주기가 짧으면 해가 연속적으로 따라간다.</p></div>
+<div class="card or"><span class="tag or">주의</span><p>해가 크게 움직이면(새 장애물, 큰 외란) 한 걸음으로 부족하다. 리셋 직후·제약이 해에 매달려 있으면 반복을 늘린다.</p></div>
+</div>
+<div class="card gy"><span class="tag">경험칙</span><p>제약이 지금 해에 의존해 다시 계산되는 경우(노드별 접평면), 한 주기에 RTI를 몇 번 반복하고 soft 제약의 벌점을 충분히 크게 해야 해와 제약이 만난다. 둘 중 하나만 바꾸면 부족한 경우가 많다.</div>
+<div class="foot" data-foot><p>Diehl 외, Real-Time Iteration Scheme for Nonlinear Optimization in Optimal Feedback Control, SIAM J. Control Optim. 2005</p></div>
+<aside>매 주기 SQP를 끝까지 수렴시키면 시간이 모자란다. RTI는 이 문제를 두 가지 관찰로 푼다. 첫째, 주기가 짧으면 이웃한 두 주기의 문제는 거의 같으므로, 이전 해를 한 칸 밀어 시작하면 한 걸음만으로도 충분히 가깝다. 둘째, 선형화와 행렬 준비는 측정과 무관하므로 측정이 오기 전에 해 두고, 측정이 오면 QP 하나만 푼다. 이렇게 하면 측정에서 명령까지의 지연이 크게 준다. 다만 해가 크게 바뀌는 순간에는 반복을 늘려야 한다.</aside>
+</section>
+<section id="solvers" class="t">
+<div class="head"><p class="kicker">2 · 도구</p><h2>모델링 도구, NLP 풀이기, QP 풀이기를 구별해 고른다</h2></div>
+<table style="font-size:25px">
+<tr><th>도구</th><th>역할</th><th>장점</th><th>단점</th></tr>
+<tr><td>CasADi</td><td>기호 모델링·자동 미분</td><td class="good">유연, 여러 풀이기 연결</td><td class="bad">그 자체로 실시간 MPC 전용은 아님</td></tr>
+<tr><td>IPOPT</td><td>내점법 NLP 풀이기</td><td class="good">견고, 오프라인 최적 해</td><td class="bad">매 주기 실시간엔 무겁다</td></tr>
+<tr><td>acados</td><td>MPC 전용 SQP·RTI + C 코드 생성</td><td class="good">빠르다, 임베디드</td><td class="bad">설정 항목이 많다</td></tr>
+<tr><td>HPIPM</td><td>MPC 구조 QP(내점법)</td><td class="good">띠 구조 활용, 빠름</td><td class="bad">QP 전용</td></tr>
+<tr><td>qpOASES</td><td>활성 집합 QP</td><td class="good">따뜻한 시작에 강함</td><td class="bad">큰 문제에 느림</td></tr>
+<tr><td>OSQP</td><td>ADMM QP</td><td class="good">단순, 큰 희소 문제</td><td class="bad">정밀도가 낮을 수 있다</td></tr>
+</table>
+<p class="take"><b>흔한 조합:</b> CasADi로 모델을 쓰고, acados가 RK 적분기·SQP-RTI·HPIPM을 묶은 C 코드를 생성한다.</p>
+<aside>MPC를 만들 때 쓰는 도구는 층이 다르다. CasADi는 모델과 비용을 기호로 적고 미분을 자동으로 만드는 모델링 도구다. IPOPT는 일반 비선형 문제를 견고하게 풀지만 실시간 MPC에는 무겁다. acados는 MPC 전용으로, 적분기와 그 민감도, SQP-RTI, 구조를 쓰는 QP 풀이기를 묶어 C 코드로 생성한다. QP 풀이기는 문제의 크기와 따뜻한 시작 여부에 따라 고른다. 파라미터로 바뀌는 값(참조, 장애물 접평면)은 코드 재생성 없이 매 주기 넘길 수 있다.</aside>
+</section>
+<section id="warmstart" class="t">
+<div class="head"><p class="kicker">2 · 국소해와 초기값</p><h2>비볼록 문제는 초기값이 어느 쪽에 있느냐로 해가 정해진다</h2></div>
+<figure><img src="img/trajopt.webp" style="height:360px"><figcaption>장애물을 뚫는 곧은 초기 경로(반복 0)를 기울기로 고치면, 작은 비대칭이 위·아래 중 한쪽을 정한다. 그 쪽이 좋은지는 기울기가 모른다</figcaption></figure>
+<div class="grid3">
+<div class="card bl"><span class="tag bl">이전 해 밀기</span><p>가장 흔한 따뜻한 시작. 상황이 크게 바뀌면 낡은 위상에 갇힌다.</p></div>
+<div class="card gr"><span class="tag gr">위층 경로로</span><p>전역 계획기나 학습 Planner의 궤적을 초기값으로. 위상을 위에서 정한다.</p></div>
+<div class="card or"><span class="tag or">여러 초기값</span><p>후보 여럿을 병렬로 풀고 가장 좋은 것을. 계산이 배로 든다.</p></div>
+</div>
+<aside>기울기 기반 최적화는 시작점 근처의 국소해를 찾는다. 장애물 왼쪽으로 갈지 오른쪽으로 갈지 같은 위상 선택은 기울기가 할 수 없는 일이다. 그래서 MPC의 초기값을 무엇으로 주느냐가 결과를 크게 바꾼다. 가장 흔한 방법은 이전 주기의 해를 한 칸 밀어 쓰는 것이지만, 새 장애물이 나타나면 낡은 위상에 갇힌다. 최근 연구는 학습한 Planner나 RL 정책이 초기값을 주고 MPC가 제약을 지키며 다듬는 분업을 많이 쓴다.</aside>
+</section>
+<section id="solve-pc" class="t">
+<div class="head"><p class="kicker">2 · 장단점</p><h2>풀이 방식은 정확도와 지연을 맞바꾼다</h2></div>
+<table style="font-size:26px">
+<tr><th>방식</th><th>장점</th><th>단점</th></tr>
+<tr><td>수렴까지 SQP</td><td class="good">정확한 국소 최적</td><td class="bad">시간이 들쭉날쭉, 주기를 넘길 수 있다</td></tr>
+<tr><td>RTI(주기당 1회)</td><td class="good">지연이 짧고 일정</td><td class="bad">해가 크게 바뀌면 따라가지 못한다</td></tr>
+<tr><td>RTI 여러 회</td><td>중간</td><td>시간 예산 안에서 반복 수를 정해야</td></tr>
+<tr><td>내점법 NLP</td><td class="good">견고, 나쁜 초기값에 강함</td><td class="bad">실시간에 무겁다</td></tr>
+<tr><td>학습 초기값 + SQP</td><td class="good">위상 선택을 학습에 맡긴다</td><td class="bad">학습이 틀리면 나쁜 위상에서 시작</td></tr>
+</table>
+<p class="take"><b>원칙:</b> 평균이 아니라 최악의 풀이 시간을 재고, 실패(불능·최대 반복)를 기록한다.</p>
+<aside>실시간 MPC에서 가장 중요한 것은 풀이 시간의 최댓값이다. 평균이 빨라도 가끔 주기를 넘기면 그 순간 제어가 빈다. 그래서 반복 수에 상한을 두고, 풀이가 실패하거나 최대 반복에 걸린 횟수를 함께 기록한다. 실패 시 무엇을 낼지(이전 해의 다음 입력, 감속)도 미리 정해 둬야 한다.</aside>
+</section>
+<section id="d3" class="t dark divider">
+<p class="kicker">3 · 모델 오차와 불확실성</p>
+<h2>명목 모델에 잔차를 더하고,<br>그 불확실성만큼 제약을 조인다</h2>
+<p class="lead">학습 잔차는 파라미터로 넣고, 튜브와 확률 제약이 여유를 정한다.</p>
+<aside>셋째 장은 모델 오차를 다루는 법이다. 명목 모델에 학습 잔차를 더하는 법, 가우시안 과정을 실시간에 쓰기 위한 희소 근사, 그리고 불확실성만큼 제약을 조이는 튜브 MPC와 확률 제약을 본다. 마지막으로 예측 모델을 층으로 쌓는 생각과, 검증용 시뮬레이터의 원칙을 본다.</aside>
+</section>
+<section id="residual" class="t">
+<div class="head"><p class="kicker">3 · 학습 잔차</p><h2>잔차의 평균을 노드별 파라미터로 넣으면 0차 근사가 저절로 선다</h2></div>
+<div class="cols">
+<div class="stack">
+<div class="math">$$x_{k+1} = F_{\text{명목}}(x_k, u_k) + d_k,\qquad d_k = \mu_d(\bar x_k, \bar u_k)$$</div>
+<ul>
+<li>잔차를 이전 해의 예측 노드에서 계산해 상수로 넘긴다</li>
+<li>풀이기는 \(\partial d / \partial x = 0\)으로 본다 — 이것이 <b>0차 근사</b></li>
+<li>탐색 방향은 명목 모델의 미분, 예측에는 잔차가 들어간다</li>
+<li>코드 재생성이 필요 없고 계산이 거의 늘지 않는다</li>
+</ul>
+</div>
+<figure><img src="img/gp.webp" style="height:340px"><figcaption>잔차 표본 14개로 맞춘 GP와 선형 회귀. 자료 밖에서 σ가 커진다</figcaption></figure>
+</div>
+<div class="grid2">
+<div class="card gr"><span class="tag gr">장점</span><p>명목 모델의 구조와 풀이기를 그대로 두고 예측만 고친다.</p></div>
+<div class="card or"><span class="tag or">함정</span><p>예측 분산에 관측 잡음을 빼먹으면 과신한다. 자료 밖에서 학습 잔차가 튀면 MPC가 그것을 이용한다.</p></div>
+</div>
+<div class="foot" data-foot><p>L4acados (IEEE TCST) — acados에 Python 학습 잔차를 붙이는 틀, 0차 GP-MPC</p></div>
+<aside>모델 오차를 다루는 가장 실용적인 방법은 명목 모델을 그대로 두고, 남는 오차만 배워 더하는 것이다. 잔차를 학습 모델의 기호식으로 넣으면 미분까지 계산해야 해서 무겁다. 대신 이전 해의 예측 노드에서 잔차를 계산해 상수 파라미터로 넘기면, 풀이기는 그것을 상수로 보고 미분은 명목 모델로만 한다. 이것이 0차 근사이며, 계산은 거의 늘지 않는다. 주의할 점은 학습 잔차가 자료 밖에서 엉뚱한 값을 낼 때다. 최적화는 그 오류를 찾아가 이용한다.</aside>
+</section>
+<section id="sparsegp" class="t">
+<div class="head"><p class="kicker">3 · 희소 GP</p><h2>정확 GP는 자료가 늘면 주기를 넘기고, 유도점으로 요약하면 실시간에 든다</h2></div>
+<figure><img src="img/sparsegp.webp" style="height:360px"><figcaption>자료 300점을 유도점 6개와 16개로 요약한 희소 GP(DTC). 유도점이 적으면 굴곡을 놓치고, 자료 밖에서는 prior로 돌아간다</figcaption></figure>
+<table style="font-size:24px">
+<tr><th>근사</th><th>학습 계산</th><th>예측(점당)</th><th>장점</th><th>단점</th></tr>
+<tr><td>정확 GP</td><td>O(n³)</td><td>O(n)</td><td class="good">가장 정확</td><td class="bad">n이 크면 주기를 넘긴다</td></tr>
+<tr><td>희소 GP(SGPR, 유도점 m)</td><td>O(n m²)</td><td>O(m)</td><td class="good">자료를 다 쓰고 빠름, 보수적</td><td class="bad">m이 작으면 굴곡을 놓침</td></tr>
+<tr><td>무작위 특징(RFF)</td><td>O(n D²)</td><td>O(D)</td><td class="good">가장 빠름</td><td class="bad">자료 밖에서 튈 수 있다</td></tr>
+</table>
+<aside>가우시안 과정을 제어 루프에서 쓰려면 계산이 걸림돌이다. 정확 GP는 자료 수의 세제곱이라 자료가 수천 개면 갱신 한 번이 제어 주기를 넘긴다. 희소 GP는 자료를 소수의 유도점으로 요약해 계산을 크게 줄인다. 무작위 특징 근사는 더 빠르지만, 자료에서 먼 곳에서 prior로 돌아가지 않고 튀는 값을 낼 수 있다. MPC는 그런 값을 이용하므로, 근사를 고를 때는 정확도와 속도뿐 아니라 자료 밖에서의 거동과 불확실성 보정도 함께 재야 한다.</aside>
+</section>
+<section id="tube" class="t">
+<div class="head"><p class="kicker">3 · 튜브 MPC</p><h2>튜브는 외란이 오차를 얼마나 키울 수 있는지만큼 제약을 조인다</h2></div>
+<figure><img src="img/tube.webp" style="height:380px"><figcaption>유계 외란 |w| ≤ 0.03과 보조 되먹임(오차 수축률 0.85) 아래, 오차가 머무는 튜브의 폭 ρ_k만큼 명목 궤적의 제약을 조이면 실제 궤적은 원래 제약을 지킨다</figcaption></figure>
+<div class="math">$$u = \bar u + K(x - \bar x),\qquad e_{k+1} = (A + BK)\,e_k + w_k,\qquad \text{명목에 } g(\bar x_k) \le -\rho_k$$</div>
+<div class="grid2">
+<div class="card gr"><span class="tag gr">장점</span><p>외란 집합 안에서 제약 만족이 보장된다. 명목 문제는 원래와 같은 꼴이라 빠르다.</p></div>
+<div class="card or"><span class="tag or">단점</span><p>외란 상한을 크게 잡으면 보수적이 되어 좁은 틈을 못 지난다. 상한이 틀리면 보장도 틀린다.</p></div>
+</div>
+<aside>튜브 MPC는 실제 궤적이 명목 궤적 주변의 관(튜브) 안에 머문다는 것을 이용한다. 명목 궤적은 MPC가 계획하고, 실제 상태와의 오차는 보조 되먹임이 줄인다. 외란이 유계라면 오차가 커질 수 있는 최대 폭을 시간마다 계산할 수 있고, 그만큼 명목 궤적의 제약을 조이면 실제 궤적은 원래 제약을 지킨다. 핵심은 조임 폭 ρ_k 하나다. 이 폭을 외란 상한에서 정하면 튜브 MPC, 확률 분포의 분위수에서 정하면 확률 제약이 된다.</aside>
+</section>
+<section id="cc" class="t">
+<div class="head"><p class="kicker">3 · 확률 제약</p><h2>확률 제약은 조임 폭을 예측 분산의 분위수로 정한다</h2></div>
+<div class="math">$$P\big(h^\top x_k \le b\big) \ge 1 - \epsilon \quad\Longleftarrow\quad h^\top \bar x_k \le b - \underbrace{\Phi^{-1}(1-\epsilon)\sqrt{h^\top \Sigma_k h}}_{\rho_k}$$</div>
+<div class="grid3">
+<div class="card bl"><span class="tag bl">분산을 어디서</span><p>GP 잔차의 분산을 지평을 따라 전파한다(선형화·무향 변환).</p></div>
+<div class="card or"><span class="tag or">ε의 뜻</span><p>노드별 위반 확률. 지평 전체 보장에는 노드 수만큼 나눠야 한다.</p></div>
+<div class="card gr"><span class="tag gr">다리 놓기</span><p>GP의 β-신뢰 타원체를 외란 집합으로 쓰면 튜브 MPC와 이어진다.</p></div>
+</div>
+<table style="font-size:24px">
+<tr><th></th><th>튜브(유계 외란)</th><th>확률 제약(분포)</th></tr>
+<tr><td>가정</td><td>외란 상한을 안다</td><td>분포(대개 가우시안)를 안다</td></tr>
+<tr><td>보장</td><td class="good">집합 안에서 반드시</td><td>확률 1−ε로</td></tr>
+<tr><td>보수성</td><td class="bad">크다</td><td>ε로 조절</td></tr>
+<tr><td>실패 원인</td><td>상한이 틀림</td><td>분산이 과신·과소신(보정 문제)</td></tr>
+</table>
+<aside>확률 제약은 "위반 확률이 ε 이하"를 요구한다. 상태 분포가 가우시안이면 이 조건은 평균에 대한 결정적 제약으로 바뀌고, 조임 폭은 표준 정규 분위수와 예측 표준편차의 곱이다. 이 조임 폭이 튜브의 ρ_k와 같은 자리에 들어간다. 확률 제약의 약점은 분산 추정에 기댄다는 것이다. 분산이 실제 오차를 명목 비율만큼 덮지 못하면 보장도 깨진다. 그래서 분산을 제약에 쓰기 전에 보정을 재야 한다.</aside>
+</section>
+<section id="layers" class="t">
+<div class="head"><p class="kicker">3 · 예측 모델의 층</p><h2>예측 모델은 기구학 → 동역학 → 학습의 세 층으로 쌓는다</h2></div>
+<table style="font-size:25px">
+<tr><th>층</th><th>담는 것</th><th>장점</th><th>단점</th></tr>
+<tr><td>기구학</td><td>속도 적분 + 상자·가속 한계</td><td class="good">단순, 매끄럽다</td><td class="bad">지연·슬립·접촉 모름</td></tr>
+<tr><td>동역학</td><td>구동기 지연, 슬립, 질량·관성</td><td class="good">물리적 의미, 적은 자료</td><td class="bad">파라미터 식별, 계산 증가</td></tr>
+<tr><td>학습</td><td>GP·신경망 잔차, 전체 forward 모델</td><td class="good">식에 없는 효과</td><td class="bad">자료 밖, 이용당함</td></tr>
+</table>
+<div class="cols">
+<div class="stack">
+<p>잘 아는 것은 식으로 두고, 식이 못 담는 것만 배운다.</p>
+<p class="small">선례: 로봇 몸을 지형 위에서 굴린 forward 모델 + 표본 MPC는 6초 궤적 1,500개를 3 ms에 굴린다(Kim 외, RSS 2022). 액추에이터 망(Hwangbo 외, 2019)은 구동기 동역학을 학습한다.</p>
+</div>
+<figure><img src="../../assets/thumbs/b75e146329bb.webp" style="height:240px"><figcaption>FDM 기반 안전 내비게이션: 표본기 → forward 모델 예측 → 보상 가중 평균 — arXiv:2204.08647</figcaption></figure>
+</div>
+<div class="foot" data-foot><p>Kim·Kim·Hwangbo, RSS 2022 — arXiv:2204.08647 · Hwangbo 외, Science Robotics 2019 — arXiv:1901.08652</p></div>
+<aside>모델을 한 번에 정교하게 만들 필요는 없다. 기구학 모델에서 시작해, 폐루프 실험에서 문제가 되는 효과를 동역학 층에 식으로 넣고, 그래도 남는 오차를 학습 층이 맡는다. 특히 구동기 지연은 동역학 층에서 간단히 넣을 수 있는데 효과가 크다. 학습 층은 식으로 쓰기 어려운 접촉과 지형 효과를 담는다. 층마다 같은 인터페이스로 묶어 두면 MPC와 표본 기반 MPC가 같은 예측 모델을 공유할 수 있다.</aside>
+</section>
+<section id="simrig" class="t">
+<div class="head"><p class="kicker">3 · 검증 리그</p><h2>시뮬레이터가 MPC 모델과 같으면 아무것도 검증되지 않는다</h2></div>
+<div class="grid2">
+<div class="card or"><span class="tag or">함정</span><h3>"모델 = 시뮬레이터"</h3><p>MPC가 자기 모델로 자기를 예측하면 모델 오차가 0이다. 잔차·튜브·확률 제약의 효과를 잴 수 없다.</p></div>
+<div class="card gr"><span class="tag gr">원칙</span><h3>명목과 다른 plant로 잰다</h3><p>지연, 슬립, 하위 제어기, 조향 한계를 가진 plant. 정확한 실물이 아니어도 "다르기만" 하면 된다.</p></div>
+</div>
+<table style="font-size:24px">
+<tr><th>층</th><th>도구</th><th>쓰임</th></tr>
+<tr><td>1</td><td>운동학 시뮬 + plant 모델</td><td>빠른 반복, 수천 에피소드 통계</td></tr>
+<tr><td>2</td><td>MuJoCo(CPU) · MuJoCo Warp(GPU)</td><td>접촉·마찰, 잔차 자료 대량 수집</td></tr>
+<tr><td>3</td><td>Isaac Sim 같은 고충실 시뮬</td><td>센서·인식까지 폐루프</td></tr>
+<tr><td>4</td><td>실물</td><td>최종 확인, 잔차 재학습</td></tr>
+</table>
+<aside>모델 오차를 다루는 기법을 시험하려면 모델과 다른 plant가 있어야 한다. 시뮬레이터가 MPC의 모델과 같은 식을 쓰면 예측이 늘 맞으므로, 잔차 학습이나 튜브가 효과가 있는지 알 수 없다. 실물만큼 정확할 필요는 없다. 지연, 슬립, 하위 제어기, 조향 한계처럼 명목 모델에 없는 것이 들어 있기만 하면 된다. 그 위에서 통계를 낸 뒤, 더 높은 충실도의 시뮬레이터와 실물로 올라간다.</aside>
+</section>
+<section id="unc-pc" class="t">
+<div class="head"><p class="kicker">3 · 장단점</p><h2>모델 오차를 다루는 장치는 정확도, 보장, 계산을 맞바꾼다</h2></div>
+<table style="font-size:25px">
+<tr><th>장치</th><th>장점</th><th>단점</th></tr>
+<tr><td>동역학 층(지연·슬립 식)</td><td class="good">적은 자료, 큰 효과</td><td class="bad">식에 있는 효과만</td></tr>
+<tr><td>0차 학습 잔차</td><td class="good">계산 거의 그대로</td><td class="bad">잔차의 미분을 무시, 자료 밖 위험</td></tr>
+<tr><td>희소 GP 잔차</td><td class="good">분산까지, 실시간</td><td class="bad">근사·커널 선택</td></tr>
+<tr><td>튜브 MPC</td><td class="good">유계 외란에 보장</td><td class="bad">보수적, 상한이 틀리면 무의미</td></tr>
+<tr><td>확률 제약</td><td class="good">ε로 보수성 조절</td><td class="bad">분산 보정에 기댄다</td></tr>
+</table>
+<p class="take"><b>순서:</b> 지연을 모델에 → 잔차 평균 → 분산 보정을 잰 뒤 조임. 조임은 효과를 짝 비교로 확인하고 켠다.</p>
+<aside>조임 장치를 켜면 안전 여유는 늘지만 보수적이 되어 성공률이 떨어질 수 있다. 그래서 효과가 실제로 있는지를 같은 조건의 짝 비교로 확인한 뒤에만 기본값으로 켜는 것이 좋다. 분산의 보정이 맞아도 조임이 성공률을 올리지 못하는 경우가 있고, 그 반대도 있다. 가장 효과가 큰 것은 대개 지연처럼 큰 체계적 오차를 모델에 넣는 첫 단계다.</aside>
+</section>
+<section id="d4" class="t dark divider">
+<p class="kicker">4 · 최근 흐름 (2025–2026)</p>
+<h2>모델을 더 맞게,<br>초기해를 더 좋게</h2>
+<p class="lead">명목 모델 + 학습 잔차, 불확실성으로 조이기, 학습 모델이 주는 출발점, 지형을 모델과 제약에.</p>
+<aside>넷째 장은 최근 MPC 연구의 흐름을 한 장씩 정리한다. 개별 논문보다 무엇을 함께 하고 어느 축에서 갈리는지를 본다.</aside>
+</section>
+<section id="recent" class="t">
+<div class="head"><p class="kicker">4 · 연구 예</p><h2>최근 연구는 OCP의 모델, 제약, 초기해 중 하나를 고친다</h2></div>
+<table style="font-size:22px">
+<tr><th>연구 (연·발표)</th><th>고친 곳</th><th>방법의 핵심</th><th>실험</th></tr>
+<tr><td>확산 초기해 MPC (RA-L 2026)</td><td>초기해</td><td>확산 초안을 SDF hard 제약 OCP가 다듬는다</td><td>Franka 실물</td></tr>
+<tr><td>RL 유도 PAC-NMPC (2026)</td><td>초기해·종단</td><td>RL 정책 → 초기해, 가치 → 종단 비용</td><td>1/10 랠리카 실물</td></tr>
+<tr><td>강건·적응 GP-MPC (Automatica 2026)</td><td>제약</td><td>수축 계량 위 스칼라 튜브로 GP 오차 전파</td><td>쿼드로터 시뮬</td></tr>
+<tr><td>데이터에서 강건 MPC까지 (2025)</td><td>제약</td><td>기록에서 외란 상자, SDP로 튜브</td><td>쿼드로터 시뮬</td></tr>
+<tr><td>고속 전지형 자율주행 (2026)</td><td>모델·제약</td><td>3차원 강체 모델 + 에너지 안정 여유, GPU 표본</td><td>실차 48회</td></tr>
+<tr><td>비평면 재귀 희소 GP (IV 2026)</td><td>모델</td><td>roll·pitch 입력 GP 잔차, 온라인 갱신</td><td>Isaac Sim</td></tr>
+<tr><td>에너지 정규화 NN 잔차 (2026)</td><td>모델</td><td>잔차에 에너지 증가 벌점 — 비물리적 가속 방지</td><td>틸트 쿼드로터</td></tr>
+<tr><td>L4acados (IEEE TCST)</td><td>모델</td><td>acados에 Python 잔차, 0차 GP-MPC</td><td>경주차·실차</td></tr>
+</table>
+<div class="foot" data-foot><p>Haffemayer 외, RA-L 2026 · Dubied 외 arXiv:2507.02098 · L4acados (IEEE TCST)</p></div>
+<aside>표의 연구들을 고친 곳으로 묶었다. 초기해 쪽은 학습한 생성 모델이나 RL 정책이 출발점을 주고 OCP가 제약을 지키며 다듬는다. 확산 초기해 연구에서는 OCP 단독 성공률이 10 % 아래였다가 초기해를 받자 80 % 안팎이 됐다. 제약 쪽은 GP 오차나 기록된 외란으로 튜브를 만든다. 모델 쪽은 지형의 기울기를 입력으로 넣거나, 학습 잔차가 물리적으로 말이 안 되는 가속을 내지 않게 벌한다.</aside>
+</section>
+<section id="trends" class="t">
+<div class="head"><p class="kicker">4 · 공통점과 차이점</p><h2>네 가지를 함께 하고, 네 축에서 갈린다</h2></div>
+<div class="grid2">
+<div class="card or"><span class="tag or">공통 1</span><h3>명목 모델 + 학습 잔차</h3><p>식으로 아는 부분은 남기고 남는 오차만 배운다.</p></div>
+<div class="card or"><span class="tag or">공통 2</span><h3>불확실성으로 제약을 조인다</h3><p>GP 오차 상한, 외란 상자, 오차 불변 집합 — 모두 ρ_k의 자리.</p></div>
+<div class="card bl"><span class="tag bl">공통 3</span><h3>학습 모델이 출발점을 준다</h3><p>확산 궤적, RL 정책, 전역 경로가 위상 선택을 맡는다.</p></div>
+<div class="card bl"><span class="tag bl">공통 4</span><h3>지형은 모델과 제약으로</h3><p>비용 한 항이 아니라 GP 입력, 3차원 모델, 전복 제약.</p></div>
+</div>
+<table style="font-size:23px">
+<tr><th>축</th><th>한쪽</th><th>다른 쪽</th></tr>
+<tr><td>잔차를 언제 배우나</td><td>오프라인 고정</td><td>온라인 갱신</td></tr>
+<tr><td>불확실성 표현</td><td>확률(신뢰도 선택)</td><td>상자(단순, 크기를 자료로)</td></tr>
+<tr><td>최적화</td><td>기울기(매끄러운 모델)</td><td>표본(접촉·이탈을 그대로)</td></tr>
+<tr><td>구동 한계</td><td>상자 근사</td><td>정확한 비볼록 집합</td></tr>
+</table>
+<aside>공통점은 넷이다. 처음 둘은 3장에서 본 구조이고, 셋째는 2장의 국소해 문제를 학습으로 푸는 것이고, 넷째는 1장의 "끊기는 것은 제약으로"를 지형까지 넓힌 것이다. 차이는 네 축으로 정리된다. 논문을 읽을 때 각 축에서 어느 쪽을 골랐는지 확인하면 비교가 쉬워진다.</aside>
+</section>
+<section id="d5" class="t dark divider">
+<p class="kicker">5 · 정리</p>
+<h2>세우고, 풀고, 모델 오차를 다룬다</h2>
+<p class="lead">장단점 표, 흔한 함정, 공부 순서.</p>
+<aside>마지막 장은 복습용이다. NMPC를 만드는 선택을 한 표에 모으고, 처음 만들 때 자주 빠지는 함정과 공부 순서를 정리한다.</aside>
+</section>
+<section id="cheat" class="t">
+<div class="head"><p class="kicker">5 · 장단점 표</p><h2>NMPC를 만드는 선택을 한 표로 본다</h2></div>
+<table style="font-size:24px">
+<tr><th>단계</th><th>기본 선택</th><th>장점</th><th>바꿀 때</th></tr>
+<tr><td>상태·입력</td><td>속도를 상태, 변화율을 입력</td><td class="good">가속 한계가 상자</td><td>저크까지 필요하면 한 차수 더</td></tr>
+<tr><td>적분기</td><td>RK4</td><td class="good">큰 간격에서도 정확</td><td>강성 시스템이면 암시적 적분기</td></tr>
+<tr><td>비용</td><td>선형 최소제곱 + 종단</td><td class="good">Gauss-Newton 정확</td><td>경제적 비용이면 일반 비용</td></tr>
+<tr><td>장애물</td><td>노드별 반평면(soft L1)</td><td class="good">선형, 늘 풀림</td><td>장애물이 적으면 원 거리 제약</td></tr>
+<tr><td>풀이</td><td>SQP-RTI + 구조 QP</td><td class="good">짧고 일정한 지연</td><td>해가 크게 바뀌면 반복 늘림</td></tr>
+<tr><td>초기값</td><td>이전 해 밀기</td><td class="good">공짜</td><td>위상 선택은 위층·학습에</td></tr>
+<tr><td>모델 오차</td><td>지연 식 + 0차 잔차</td><td class="good">계산 거의 그대로</td><td>보장이 필요하면 튜브·확률 제약</td></tr>
+</table>
+<aside>복습용 표다. 기본 선택 열은 처음 만들 때 권하는 출발점이고, 바꿀 때 열은 그 선택의 약점이 실제로 문제가 될 때 갈 곳이다. 처음부터 모든 것을 정교하게 하지 않는 것이 중요하다.</aside>
+</section>
+<section id="pitfalls" class="t">
+<div class="head"><p class="kicker">5 · 흔한 함정</p><h2>NMPC가 이상하면 먼저 스케일링, 불능, 시간, 명령 경로를 의심한다</h2></div>
+<div class="grid2">
+<div class="card or"><h3>스케일링</h3><p>미터와 라디안, 큰 가중치와 작은 가중치가 섞이면 QP가 수치적으로 나빠진다. 변수를 비슷한 크기로 맞춘다.</p></div>
+<div class="card or"><h3>불능(infeasible)</h3><p>hard 제약이 많으면 외란 하나에 해가 없다. soft L1로 두고 위반량을 기록한다.</p></div>
+<div class="card or"><h3>시간</h3><p>평균이 아니라 최악의 풀이 시간을 본다. 실패 시 낼 명령을 미리 정한다.</p></div>
+<div class="card or"><h3>명령 경로</h3><p>계획한 입력과 실제로 로봇에 들어간 입력을 비교한다. 단위·좌표·변환에서 절반만 나가는 일이 흔하다.</p></div>
+<div class="card gy"><h3>모델 = 시뮬</h3><p>검증 plant가 명목 모델과 같으면 견고성을 잴 수 없다.</p></div>
+<div class="card gy"><h3>학습 잔차의 자료 밖</h3><p>잔차가 자료 밖에서 튀면 MPC가 이용한다. 자료 범위와 예측을 함께 기록한다.</p></div>
+</div>
+<aside>처음 NMPC를 만들면 알고리즘보다 이런 기본 항목에서 대부분의 문제가 나온다. 특히 명령 경로를 확인하는 습관이 중요하다. MPC가 계획한 가속과 로봇에 실제로 들어간 명령을 같은 그래프에 그려 보면, 단위 변환이나 적분 방식 차이로 계획의 일부만 실행되고 있는 경우를 찾을 수 있다. 이런 버그는 성공률만 봐서는 드러나지 않는다.</aside>
+</section>
+<section id="path" class="t">
+<div class="head"><p class="kicker">5 · 공부 순서</p><h2>MPC 교과서와 최적화 교과서를 함께 읽고, 작은 OCP를 직접 푼다</h2></div>
+<div class="grid3">
+<div class="card gr"><span class="tag gr">1 · MPC</span><h3>Rawlings·Mayne·Diehl, Model Predictive Control</h3><p>OCP, 안정성, 강건·확률 MPC, 수치 풀이.</p></div>
+<div class="card bl"><span class="tag bl">2 · 최적화</span><h3>Nocedal·Wright, Numerical Optimization</h3><p>뉴턴, 선 탐색, KKT, SQP, 내점법.</p></div>
+<div class="card or"><span class="tag or">3 · 손으로</span><h3>작은 OCP를 직접</h3><p>CasADi + IPOPT로 이중 적분기 → 유니사이클 장애물 회피 → acados RTI로 같은 문제 → 잔차 하나 더하기.</p></div>
+</div>
+<table style="font-size:24px">
+<tr><th>이 덱의 장</th><th>스스로 확인할 질문</th></tr>
+<tr><td>1 세우기</td><td>속도를 상태로 두면 왜 가속 한계가 쉬워지나? L1 벌점은 언제 hard와 같아지나?</td></tr>
+<tr><td>2 풀기</td><td>RTI는 왜 한 걸음으로 충분한가? 언제 부족한가?</td></tr>
+<tr><td>3 오차</td><td>0차 근사는 무엇을 무시하나? 튜브의 ρ_k는 무엇으로 정하나?</td></tr>
+</table>
+<aside>MPC 교과서는 문제 설정과 이론을, 수치 최적화 교과서는 그것을 푸는 기계를 준다. 둘을 함께 읽는 것이 좋다. 그리고 작은 OCP를 CasADi와 IPOPT로 먼저 풀어 보고, 같은 문제를 acados의 RTI로 옮기면 실시간 풀이의 감각이 생긴다. 마지막으로 명목 모델과 다른 plant를 하나 만들어 잔차를 더해 보면 3장의 내용이 손에 잡힌다.</aside>
+</section>
+<section id="summary" class="t">
+<div class="head"><p class="kicker">정리</p><h2>풀 수 있게 세우고, 시간 안에 풀고, 틀린 만큼 조인다</h2></div>
+<div class="grid2">
+<div class="card bl"><h3>세우기</h3><p>속도를 상태로, RK4, 선형 최소제곱 비용, 종단으로 진행.</p></div>
+<div class="card bl"><h3>제약</h3><p>끊기는 것은 제약으로, 비볼록은 노드별 반평면, soft L1.</p></div>
+<div class="card gr"><h3>풀기</h3><p>SQP-RTI, 구조 QP. 최악 시간과 실패를 기록한다.</p></div>
+<div class="card gr"><h3>초기값</h3><p>위상 선택은 기울기가 못 한다. 위층·학습이 준다.</p></div>
+<div class="card or"><h3>모델 오차</h3><p>지연 식 → 0차 잔차 → 희소 GP 분산.</p></div>
+<div class="card or"><h3>조이기</h3><p>튜브와 확률 제약은 같은 ρ_k. 보정을 잰 뒤 짝 비교로 켠다.</p></div>
+</div>
+<aside>오늘 본 것을 여섯 상자로 줄였다. NMPC의 실력은 알고리즘보다 문제를 얼마나 잘 세우느냐에서 나온다. 매끄러운 것과 끊기는 것을 나누고, 제약을 늘 풀리게 두고, 모델 오차는 큰 것부터 식으로 넣는다. 그리고 그 모든 효과는 명목과 다른 plant에서, 같은 조건의 비교로 확인한다.</aside>
+</section>
+<section id="refs-core" class="t">
+<div class="head"><p class="kicker">참고문헌 1/2 · 먼저 읽을 것</p><h2>처음에는 이 다섯 가지만 읽는다</h2></div>
+<table style="font-size:24px">
+<tr><th>순서</th><th>문헌</th><th>왜 먼저 읽나</th></tr>
+<tr><td>★ 1</td><td>Rawlings·Mayne·Diehl, Model Predictive Control (2판, 2017) 1–3장, 8장</td><td>OCP, 안정성, 강건·확률 MPC, 수치 풀이</td></tr>
+<tr><td>★ 2</td><td>Nocedal·Wright, Numerical Optimization (2판, 2006) 12장, 18장</td><td>KKT 조건과 SQP</td></tr>
+<tr><td>★ 3</td><td>Diehl 외, Real-Time Iteration (SIAM J. Control Optim. 2005)</td><td>한 주기에 SQP 한 걸음이 충분한 이유</td></tr>
+<tr><td>★ 4</td><td>Verschueren 외, acados 1910.13753</td><td>실습에 쓸 솔버 틀의 구조</td></tr>
+<tr><td>★ 5</td><td>Hewing 외, Cautious MPC 1705.10702</td><td>명목 모델 + GP 잔차와 제약 조이기</td></tr>
+</table>
+<aside>참고문헌을 두 장으로 나눴다. 이 장은 처음 공부할 때 먼저 읽을 다섯 가지이고, 위에서부터 차례로 읽으면 된다. 교과서는 표에 적은 장만 먼저 읽는다. 논문은 서론과 방법 절을 읽고 이 덱의 그림과 대조한다. 다음 장은 덱의 각 장에 나온 원 논문 전체다. 2109.11978처럼 점이 든 숫자는 arXiv 번호다.</aside>
+</section>
+<section id="refs" class="t">
+<div class="head"><p class="kicker">참고문헌 2/2 · 장별</p><h2>책, 도구, 원 논문</h2></div>
+<div class="grid2">
+<div class="stack">
+<p><b>책</b> — Rawlings·Mayne·Diehl, Model Predictive Control (2판, 2017) · Nocedal·Wright, Numerical Optimization (2판, 2006)</p>
+<p><b>풀이</b> — Real-Time Iteration (Diehl 외, SIAM J. Control Optim. 2005) · acados 1910.13753 · CasADi (Andersson 외, Math. Prog. Comp. 2019) · HPIPM 2003.02547</p>
+<p><b>학습 잔차</b> — L4acados 2411.19258 · Cautious MPC 1705.10702 · Kim 외 FDM 2204.08647 · Hwangbo 외 1901.08652</p>
+</div>
+<div class="stack">
+<p><b>튜브·확률</b> — Mayne 외, Robust MPC (Automatica 2005) · Koller 외 1803.08287 · Dubied 외 2507.02098</p>
+<p><b>최근 흐름</b> — 확산 초기해 MPC 2601.02873 · RL 유도 PAC-NMPC 2609.39854 · 비평면 재귀 희소 GP 2602.16206 · 에너지 정규화 NN 잔차 2604.14678 · 고속 전지형 자율주행 2603.20525</p>
+</div>
+</div>
+<aside>덱의 각 장에 나온 문헌을 주제별로 모았다. 숫자만 있는 항목은 arXiv 번호이고, 학회지나 책은 저자와 연도를 적었다. 처음부터 모두 읽을 필요는 없다. 앞 장의 다섯 가지를 먼저 읽고, 이 덱의 장단점 표에서 궁금해진 방법의 원 논문만 골라 읽기를 권한다. Diehl의 RTI 논문과 acados 논문은 실습 전에 읽어 두면 솔버 옵션이 왜 그런지 보인다.</aside>
+</section>
+</div></div>
+<div id="notes"><b>발표자 노트</b><div id="notes-body"></div></div>
+<div id="bar">
+<button id="prev" aria-label="이전">◀</button><span id="count"></span><button id="next" aria-label="다음">▶</button>
+<span id="ttl">비선형 MPC 구축 기초 — 문제 세우기, 실시간 풀이, 모델 오차</span>
+<button id="nb" title="N 키">노트</button><button id="fs" title="F 키">전체 화면</button>
+<a href="study-mpc.pptx" download>PPTX</a><a href="./../">목록</a>
+</div>
+<pre id="report" hidden></pre>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script>
+(function () {
+  var slides = Array.prototype.slice.call(document.querySelectorAll('#frame > section'));
+  var frame = document.getElementById('frame'), notes = document.getElementById('notes');
+  var q = new URLSearchParams(location.search), shot = q.has('shot') || q.has('check');
+  if (shot) document.body.classList.add('shot');
+  var i = 0;
+  function fit() {
+    if (shot) return;
+    var st = document.getElementById('stage');
+    var s = Math.min(st.clientWidth / 1920, st.clientHeight / 1080);
+    frame.style.transform = 'scale(' + s + ')';
+  }
+  function show(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach(function (el, k) { el.classList.toggle('on', k === i); });
+    document.getElementById('count').textContent = (i + 1) + ' / ' + slides.length;
+    var a = slides[i].querySelector('aside');
+    document.getElementById('notes-body').textContent = a ? a.textContent : '';
+    if (!shot) history.replaceState(null, '', '#' + (i + 1));
+  }
+  function withAllFonts(fn) {
+    document.body.classList.add('all');
+    void document.body.offsetHeight;
+    requestAnimationFrame(function () {
+      document.fonts.ready.then(function () { document.body.classList.remove('all'); fn(); });
+    });
+  }
+  window.withAllFonts = withAllFonts;
+  // 넘침 검사: 본문 요소가 장 밖으로 나가거나 각주 띠를 덮으면 적는다.
+  function check() {
+    var bad = [];
+    slides.forEach(function (sec, k) {
+      show(k);
+      var box = sec.getBoundingClientRect();
+      Array.prototype.forEach.call(sec.querySelectorAll('.katex-error'), function (el) {
+        bad.push({ slide: k + 1, id: sec.id, tag: 'TeX', text: (el.getAttribute('title') || el.textContent).slice(0, 60), over: 0 });
+      });
+      Array.prototype.forEach.call(sec.querySelectorAll('img'), function (el) {
+        if (!el.complete || !el.naturalWidth) bad.push({ slide: k + 1, id: sec.id, tag: 'IMG', text: el.getAttribute('src'), over: 0 });
+      });
+      var foot = sec.querySelector('[data-foot]');
+      var limit = foot ? foot.getBoundingClientRect().top - 4 : box.bottom - 24;
+      Array.prototype.forEach.call(sec.querySelectorAll('p, h1, h2, h3, img, td, th, li, .katex-display, [data-box]'), function (el) {
+        if (foot && foot.contains(el)) return;
+        if (el.closest('aside')) return;
+        var r = el.getBoundingClientRect();
+        if (r.width === 0 && r.height === 0) return;
+        if (r.bottom > limit + 0.5 || r.right > box.right - 40) {
+          bad.push({ slide: k + 1, id: sec.id, tag: el.tagName, text: (el.textContent || el.alt || '').slice(0, 40), over: Math.round(Math.max(r.bottom - limit, r.right - (box.right - 40))) });
+        }
+      });
+    });
+    var rep = document.getElementById('report');
+    rep.textContent = JSON.stringify(bad);
+    rep.setAttribute('data-done', '1');
+  }
+  function start() {
+    if (window.renderMathInElement) {
+      renderMathInElement(document.getElementById('frame'), {
+        delimiters: [{ left: '$$', right: '$$', display: true }, { left: '\\(', right: '\\)', display: false }],
+        throwOnError: false
+      });
+    }
+    // 한글 웹 글꼴은 글자 묶음마다 따로 받고, 숨은 장의 글자는 받지 않는다. 장을 모두 보여 글꼴을 받은 뒤 잰다.
+    if (q.has('check')) { withAllFonts(check); return; }
+    var s = shot ? parseInt(q.get('shot'), 10) - 1 : parseInt(location.hash.slice(1), 10) - 1;
+    show(isNaN(s) ? 0 : s);
+  }
+  show(0); fit(); window.addEventListener('resize', fit);
+  window.addEventListener('DOMContentLoaded', function () {
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(start); else start();
+  });
+  document.getElementById('prev').onclick = function () { show(i - 1); };
+  document.getElementById('next').onclick = function () { show(i + 1); };
+  document.getElementById('nb').onclick = function () { notes.classList.toggle('show'); };
+  document.getElementById('fs').onclick = function () {
+    if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen();
+  };
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { show(i + 1); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { show(i - 1); e.preventDefault(); }
+    else if (e.key === 'Home') show(0);
+    else if (e.key === 'End') show(slides.length - 1);
+    else if (e.key === 'n' || e.key === 'N') notes.classList.toggle('show');
+    else if (e.key === 'f' || e.key === 'F') document.getElementById('fs').click();
+  });
+  var x0 = null;
+  document.getElementById('stage').addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+  document.getElementById('stage').addEventListener('touchend', function (e) {
+    if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0; x0 = null;
+    if (Math.abs(dx) > 40) show(i + (dx < 0 ? 1 : -1));
+  });
+})();
+</script>
+</body>
+</html>

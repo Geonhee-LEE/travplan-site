@@ -1,0 +1,846 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>로봇 인식 기초 — 지형 지도에서 사람 추적까지</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=IBM+Plex+Sans+KR:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<style>
+:root { --bg:#0E1526; --bar:#16213A; --fg:#F4F1EA; --muted:#C9D1E0; --accent:#F59E5B; }
+* { box-sizing:border-box; }
+html, body { margin:0; height:100%; background:var(--bg); color:var(--fg); font-family:'IBM Plex Sans KR', Arial, sans-serif; }
+#stage { position:fixed; inset:0 0 56px 0; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+#frame { width:1920px; height:1080px; flex:none; transform-origin:center center; box-shadow:0 8px 40px rgba(0,0,0,.5); }
+#frame > section:not(.on) { display:none !important; }
+body.all #frame > section:not(.on) { display:block !important; }
+section { position:relative; width:1920px; height:1080px; overflow:hidden; }
+section * { margin:0; }
+section aside { display:none; }
+section table { border-collapse:collapse; }
+section th, section td { padding:10px 16px; vertical-align:top; }
+section tr + tr td { border-top:1px solid rgba(127,140,160,.25); }
+section .katex { font-size:1.05em; }
+section .katex-display { margin:0; text-align:left; }
+section .katex-display > .katex { text-align:left; }
+x-shape { display:block; flex:none; }
+x-shape[kind="arrow-right"] { clip-path:polygon(0 32%,58% 32%,58% 0,100% 50%,58% 100%,58% 68%,0 68%); }
+#bar { position:fixed; left:0; right:0; bottom:0; height:56px; background:var(--bar); display:flex; align-items:center; gap:12px; padding:0 16px; font-size:15px; }
+#bar button, #bar a { background:none; border:1px solid #3A4A6B; color:var(--fg); border-radius:8px; padding:6px 12px; font:inherit; cursor:pointer; text-decoration:none; }
+#bar button:hover, #bar a:hover { border-color:var(--accent); }
+#count { min-width:72px; text-align:center; color:var(--muted); }
+#ttl { flex:1; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; color:var(--muted); }
+#notes { position:fixed; right:16px; bottom:72px; width:min(560px, calc(100% - 32px)); max-height:45vh; overflow:auto; background:#FFFDF8; color:#16213A; border-radius:12px; padding:16px 20px; font-size:16px; line-height:1.6; box-shadow:0 8px 30px rgba(0,0,0,.4); display:none; }
+#notes.show { display:block; }
+#notes b { display:block; margin-bottom:6px; color:#C2410C; font-family:'JetBrains Mono', monospace; font-size:13px; }
+body.shot #bar, body.shot #notes { display:none; }
+body.shot #stage { inset:0; }
+body.shot #frame { box-shadow:none; transform:none !important; }
+@media (max-width:640px) { #ttl { display:none; } }
+</style>
+</head>
+<body>
+<div id="stage"><div id="frame">
+<style>
+/* 챕터 발표 덱(slides_src/talk-*) 공용 스타일. deck.json의 "css": "_talk/talk.css"로 읽는다.
+   PPTX(편집 가능)는 이 스타일이 그린 결과의 좌표·색·글자 크기를 그대로 옮긴다. 규칙은 slides_src/_talk/README.md. */
+section.t { background:#F7F5F0; color:#16213A; font-family:'IBM Plex Sans KR', Arial, sans-serif;
+  padding:80px 112px 120px; display:flex; flex-direction:column; gap:28px; }
+section.t.dark { background:#16213A; color:#F4F1EA; }
+section.t .kicker { font-family:'JetBrains Mono', 'Courier New', monospace; font-size:22px; color:#C2410C; letter-spacing:1px; }
+section.t.dark .kicker { color:#F59E5B; }
+section.t h1 { font-family:'Noto Serif KR', Georgia, serif; font-size:96px; font-weight:700; line-height:1.15; }
+section.t h2 { font-family:'Noto Serif KR', Georgia, serif; font-size:52px; font-weight:700; line-height:1.22; }
+section.t h3 { font-size:30px; font-weight:600; line-height:1.3; }
+section.t p, section.t li { font-size:26px; line-height:1.5; }
+section.t .lead { font-size:34px; line-height:1.45; color:#3D4A63; }
+section.t.dark .lead { color:#C9D1E0; }
+section.t .muted { color:#5A6478; }
+section.t.dark .muted { color:#9AA6BC; }
+section.t .small { font-size:22px; line-height:1.4; }
+section.t b, section.t strong { font-weight:600; }
+section.t .hl { color:#C2410C; font-weight:600; }
+section.t code { font-family:'JetBrains Mono', monospace; font-size:0.86em; color:#7C2D12; }
+section.t ul, section.t ol { padding-left:36px; display:flex; flex-direction:column; gap:10px; }
+section.t .head { display:flex; flex-direction:column; gap:10px; }
+section.t .cols { display:flex; gap:40px; align-items:flex-start; }
+section.t .cols > * { flex:1; min-width:0; }
+section.t .stack { display:flex; flex-direction:column; gap:18px; }
+section.t .grid2, section.t .grid3 { display:grid; gap:24px; }
+section.t .grid2 { grid-template-columns:1fr 1fr; }
+section.t .grid3 { grid-template-columns:1fr 1fr 1fr; }
+section.t .card { background:#FFFDF8; border:1px solid #D9D4C7; border-radius:12px; padding:22px 26px; display:flex; flex-direction:column; gap:12px; }
+section.t .card.or { border-left:8px solid #C2410C; }
+section.t .card.bl { border-left:8px solid #1D4ED8; }
+section.t .card.gr { border-left:8px solid #15803D; }
+section.t .card.gy { border-left:8px solid #9AA6BC; }
+section.t.dark .card { background:#22304F; border-color:#3A4A6B; }
+section.t .card h3 { font-size:28px; }
+section.t .card p, section.t .card li { font-size:24px; line-height:1.45; }
+section.t .tag { align-self:flex-start; font-size:20px; font-weight:600; padding:4px 14px; border-radius:999px; background:#ECE8DF; color:#16213A; }
+section.t .tag.or { background:#FDE7C8; color:#7C2D12; }
+section.t .tag.bl { background:#DBE5FB; color:#1E3A8A; }
+section.t .tag.gr { background:#D7EFDD; color:#14532D; }
+section.t .pills { display:flex; flex-wrap:wrap; gap:16px; }
+section.t .pill { font-size:24px; padding:8px 22px; border-radius:999px; background:#C9D1E0; color:#16213A; }
+section.t .pill.on { background:#F59E5B; }
+section.t .take { background:#16213A; color:#F4F1EA; border-radius:12px; padding:20px 28px; font-size:27px; line-height:1.45; }
+section.t .take b { color:#F59E5B; }
+section.t.dark .take { background:#F59E5B; color:#16213A; }
+section.t .flow { display:flex; align-items:stretch; gap:14px; }
+section.t .flow > .step { flex:1; background:#FFFDF8; border:1px solid #D9D4C7; border-top:6px solid #C2410C; border-radius:10px; padding:16px 18px;
+  display:flex; flex-direction:column; gap:8px; }
+section.t .flow > .step p { font-size:22px; line-height:1.4; }
+section.t .flow > .arrow { flex:none; align-self:center; font-size:36px; color:#C2410C; }
+section.t table { border-collapse:collapse; width:100%; font-size:21px; line-height:1.35; background:#FFFDF8; }
+section.t th { background:#16213A; color:#F4F1EA; text-align:left; font-weight:600; padding:10px 14px; }
+section.t td { padding:9px 14px; border-top:1px solid #D9D4C7; vertical-align:top; }
+section.t tr:nth-child(even) td { background:#F1EDE4; }
+section.t td.good { color:#14532D; font-weight:600; }
+section.t td.bad { color:#9F1239; font-weight:600; }
+section.t figure { margin:0; display:flex; flex-direction:column; gap:10px; }
+section.t figure img { display:block; max-width:100%; object-fit:contain; background:#FFFFFF; border:1px solid #D9D4C7; border-radius:8px; }
+section.t figcaption { font-size:20px; line-height:1.4; color:#5A6478; }
+section.t .math { background:#FFFDF8; border-left:6px solid #C2410C; border-radius:8px; padding:8px 24px; font-size:30px; }
+section.t .math .katex-display { margin:6px 0; }
+section.t .foot { position:absolute; left:112px; right:112px; bottom:32px; border-top:2px solid #D9D4C7; padding-top:10px;
+  display:flex; flex-direction:column; gap:2px; }
+section.t .foot p { font-size:18px; line-height:1.35; color:#5A6478; }
+section.t.dark .foot { border-color:#3A4A6B; }
+section.t.dark .foot p { color:#9AA6BC; }
+section.t .num { position:absolute; right:112px; top:84px; font-family:'JetBrains Mono', monospace; font-size:20px; color:#9AA6BC; }
+section.t.cover { justify-content:space-between; padding:120px 128px; }
+section.t.divider { justify-content:center; gap:36px; padding:120px 128px; }
+section.t.divider h2 { font-size:80px; }
+</style>
+
+<script>
+// ?export=1: 장마다 도형·글상자·표·그림의 좌표와 스타일을 적는다. scripts/slides_editable.py가 읽는다.
+(function () {
+  if (!/[?&]export=/.test(location.search)) return;
+  var INLINE = /^(inline|inline-block|inline-flex|contents)$/;
+  function transparent(c) { return !c || c === 'transparent' || /rgba\(.*,\s*0\)$/.test(c); }
+  function rect(el, base) { var r = el.getBoundingClientRect(); return [r.left - base.left, r.top - base.top, r.width, r.height]; }
+  function style(cs) {
+    return { size: parseFloat(cs.fontSize), bold: parseInt(cs.fontWeight, 10) >= 600, italic: cs.fontStyle === 'italic',
+             color: cs.color, mono: /Mono|Courier|monospace/.test(cs.fontFamily) };
+  }
+  function runs(el) {
+    var out = [];
+    (function rec(node) {
+      Array.prototype.forEach.call(node.childNodes, function (c) {
+        if (c.nodeType === 3) { if (c.textContent) out.push({ s: c.textContent, st: style(getComputedStyle(node)), href: node.closest('a') ? node.closest('a').href : null }); return; }
+        if (c.nodeType !== 1 || c.tagName === 'ASIDE') return;
+        if (c.tagName === 'BR') { out.push({ s: '\n', st: style(getComputedStyle(node)) }); return; }
+        if (c.classList.contains('katex')) {
+          var a = c.querySelector('annotation');
+          out.push({ s: a ? a.textContent : c.textContent, st: style(getComputedStyle(node)), math: true });
+          return;
+        }
+        var cs = getComputedStyle(c);
+        if (cs.display === 'none') return;
+        if (INLINE.test(cs.display) && c.tagName !== 'IMG') rec(c);
+      });
+    })(el);
+    return out;
+  }
+  function hasOwnText(el) {
+    return Array.prototype.some.call(el.childNodes, function (c) {
+      if (c.nodeType === 3) return c.textContent.trim() !== '';
+      if (c.nodeType !== 1 || c.tagName === 'ASIDE') return false;
+      var cs = getComputedStyle(c);
+      return (INLINE.test(cs.display) || c.classList.contains('katex')) && c.tagName !== 'IMG' && c.textContent.trim() !== '';
+    });
+  }
+  function marker(li) {
+    var p = li.parentElement;
+    if (!p || getComputedStyle(li).listStyleType === 'none') return null;
+    if (p.tagName === 'OL') return { n: Array.prototype.indexOf.call(p.children, li) + parseInt(p.getAttribute('start') || '1', 10) };
+    return { n: 0 };
+  }
+  function textItem(el, base, cs) {
+    var r = rect(el, base), pl = parseFloat(cs.paddingLeft), pr = parseFloat(cs.paddingRight), pt = parseFloat(cs.paddingTop),
+        pb = parseFloat(cs.paddingBottom), bl = parseFloat(cs.borderLeftWidth), bt = parseFloat(cs.borderTopWidth);
+    var rr = runs(el), m = el.tagName === 'LI' ? marker(el) : null;
+    if (m) { r[0] -= 30; r[2] += 30; }   // 글머리표 자리. PPTX에서는 내어쓰기 30px의 진짜 글머리표가 된다
+    var lh = parseFloat(cs.lineHeight);
+    return { t: 'text', r: [r[0] + pl + bl, r[1] + pt + bt, r[2] - pl - pr - bl, r[3] - pt - pb - bt], runs: rr, li: m,
+             align: cs.textAlign, lh: isNaN(lh) ? 1.3 : lh / parseFloat(cs.fontSize) };
+  }
+  function boxItem(el, base, cs) {
+    var sides = {};
+    ['Top', 'Right', 'Bottom', 'Left'].forEach(function (s) {
+      var w = parseFloat(cs['border' + s + 'Width']);
+      if (w > 0 && cs['border' + s + 'Style'] !== 'none' && !transparent(cs['border' + s + 'Color'])) sides[s[0]] = [w, cs['border' + s + 'Color']];
+    });
+    var fill = transparent(cs.backgroundColor) ? null : cs.backgroundColor;
+    if (!fill && !Object.keys(sides).length) return null;
+    return { t: 'box', r: rect(el, base), fill: fill, radius: parseFloat(cs.borderTopLeftRadius) || 0, sides: sides };
+  }
+  function tableItem(el, base) {
+    var rows = Array.prototype.map.call(el.rows, function (tr) {
+      return { h: tr.getBoundingClientRect().height, cells: Array.prototype.map.call(tr.cells, function (c) {
+        var cs = getComputedStyle(c), bg = cs.backgroundColor;
+        if (transparent(bg)) bg = getComputedStyle(tr).backgroundColor;
+        if (transparent(bg)) bg = getComputedStyle(el).backgroundColor;
+        return { w: c.getBoundingClientRect().width, span: c.colSpan || 1, fill: transparent(bg) ? null : bg, runs: runs(c),
+                 align: cs.textAlign, size: parseFloat(cs.fontSize) };
+      }) };
+    });
+    return { t: 'table', r: rect(el, base), rows: rows };
+  }
+  function img(el, base) {
+    var r = rect(el, base), nw = el.naturalWidth, nh = el.naturalHeight;
+    if (nw && nh && getComputedStyle(el).objectFit === 'contain') {
+      var s = Math.min(r[2] / nw, r[3] / nh), w = nw * s, h = nh * s;
+      r = [r[0] + (r[2] - w) / 2, r[1] + (r[3] - h) / 2, w, h];
+    }
+    return { t: 'img', r: r, src: el.getAttribute('src') };
+  }
+  function slide(sec) {
+    var base = sec.getBoundingClientRect(), items = [];
+    (function walk(el) {
+      if (el.tagName === 'ASIDE') return;
+      var cs = getComputedStyle(el);
+      if (cs.display === 'none' || cs.visibility === 'hidden') return;
+      if (el !== sec && el.tagName !== 'TABLE') { var b = boxItem(el, base, cs); if (b) items.push(b); }
+      if (el.matches('.katex-display, svg, canvas, x-shape, [data-raster]')) {
+        var k = el.matches('.katex-display') ? (el.querySelector('.katex') || el) : el;
+        items.push({ t: 'raster', r: rect(k, base) }); return;
+      }
+      if (el.tagName === 'IMG') { items.push(img(el, base)); return; }
+      if (el.tagName === 'TABLE') { items.push(tableItem(el, base)); return; }
+      if (el !== sec && hasOwnText(el)) items.push(textItem(el, base, cs));
+      Array.prototype.forEach.call(el.children, function (c) {
+        var d = getComputedStyle(c).display;
+        if (!(INLINE.test(d) && c.tagName !== 'IMG' && !c.querySelector('img, .katex-display'))) walk(c);
+      });
+    })(sec);
+    var a = sec.querySelector('aside');
+    return { bg: getComputedStyle(sec).backgroundColor, items: items, note: a ? a.textContent.trim() : '' };
+  }
+  function run() {
+    var secs = Array.prototype.slice.call(document.querySelectorAll('#frame > section')), out = [];
+    secs.forEach(function (sec) {
+      secs.forEach(function (s) { s.classList.toggle('on', s === sec); });
+      out.push(slide(sec));
+    });
+    var rep = document.getElementById('report'); rep.textContent = JSON.stringify(out); rep.setAttribute('data-done', '1');
+  }
+  window.addEventListener('DOMContentLoaded', function () {
+    // 뷰어의 start()가 수식을 조판한 뒤에 잰다.
+    document.fonts.ready.then(function () { setTimeout(function () { window.withAllFonts(run); }, 300); });
+  });
+})();
+</script>
+<section id="cover" class="t dark cover">
+<p class="kicker">로봇 인식 기초 · 개념 공부 덱</p>
+<div class="stack"><h1>센서 관측을<br>움직일 수 있는 지도로</h1><p class="lead">점유 격자와 높이 지도, 음의 장애물과 못 본 칸, traversability 자기지도, 시각 기반 모델, 사람 검출·추적·예측까지 — 그림과 배경지식과 장단점으로 보는 내비게이션 인식</p></div>
+<div class="pills"><p class="pill on">점유 격자 · 높이 지도</p><p class="pill">못 본 칸</p><p class="pill">Traversability</p><p class="pill">시각 기반 모델</p><p class="pill">추적 · 예측 · 보정</p></div>
+<aside>이 덱은 로봇 내비게이션의 인식을 처음 공부하는 사람을 위한 개념 덱이다. 센서 점군과 영상을 계획기가 읽을 수 있는 지도와 장애물 목록으로 바꾸는 과정을 따라간다. 그림 대부분은 작은 장면을 실제로 계산해 그렸고, 논문 그림에는 출처를 달았다.</aside>
+</section>
+<section id="agenda" class="t">
+<div class="head"><p class="kicker">순서</p><h2>지도, 비용, 사람의 세 갈래로 간다</h2></div>
+<table style="font-size:30px">
+<tr><th>장</th><th>주제</th><th>답하는 질문</th></tr>
+<tr><td>0</td><td>시작</td><td>인식은 무엇을 받아 무엇을 내나? 센서마다 무엇이 다른가?</td></tr>
+<tr><td>1</td><td>지형 지도</td><td>관측을 어떻게 격자에 쌓나? 구덩이와 못 본 칸은?</td></tr>
+<tr><td>2</td><td>Traversability</td><td>"지나갈 수 있나"를 어떻게 숫자로, 라벨 없이 배우나?</td></tr>
+<tr><td>3</td><td>시각 기반 모델과 동적 장애물</td><td>큰 모델은 어디에 쓰나? 사람은 어떻게 따라가고 예측하나?</td></tr>
+<tr><td>4</td><td>정리</td><td>지연·속도, 방법별 장단점, 흔한 함정, 공부 순서</td></tr>
+</table>
+<aside>인식의 결과물은 크게 둘이다. 정적인 지형을 담은 지도와, 움직이는 사람·차를 담은 동적 장애물 목록이다. 1장과 2장은 지도를, 3장은 동적 장애물을 다룬다. 마지막 장은 인식의 지연이 로봇의 최고 속도를 어떻게 정하는지와 복습용 표다.</aside>
+</section>
+<section id="course" class="t">
+<div class="head"><p class="kicker">0 · 커리큘럼 1/7</p><h2>첫 덱이다: 지도가 뒤의 모든 덱의 입력이 된다</h2></div>
+<figure><img src="img/course.webp" style="height:400px"></figure>
+<div class="grid3">
+<div class="card gr"><span class="tag gr">앞에서 가져올 것</span><p>없다. 확률(기댓값, 가우시안, 베이즈 규칙)과 행렬 곱이면 시작할 수 있다.</p></div><div class="card bl"><span class="tag bl">뒤로 넘기는 것</span><p>비용 지도 → 2 경로 계획. 지도의 분산 σ와 사람 추적 → 3 제어의 위험·안전 장.</p></div><div class="card or"><span class="tag or">함께 보면 좋은 것</span><p>높이 지도 관측 → 7 다리 로봇의 지형 보행. 지연과 속도 → 3 제어의 지연 장.</p></div>
+</div>
+<aside>일곱 덱 가운데 첫 덱이다. 인식은 센서 값을 지형 지도와 비용과 불확실성으로 바꾸고, 이 출력이 뒤의 경로 계획과 제어의 입력이 된다. 앞 덱이 없으므로 확률과 선형대수의 기초만 있으면 된다. 여기서 만든 분산 σ는 제어 덱의 확률 제약과 CVaR에서, 사람 추적은 제어 덱의 안전 장에서 다시 쓰인다. 일곱 덱 전체의 순서와 10주 계획은 로드맵 덱에 있다.</aside>
+</section>
+<section id="prereq" class="t">
+<div class="head"><p class="kicker">0 · 배경지식</p><h2>네 가지 배경지식이면 이 덱을 따라올 수 있다</h2></div>
+<div class="grid2">
+<div class="card bl"><span class="tag bl">좌표 변환</span><h3>센서 → 로봇 → 지도 좌표</h3><p>점 하나를 \(p_{\text{map}} = T_{\text{map}\leftarrow\text{base}}\, T_{\text{base}\leftarrow\text{sensor}}\, p\)로 옮긴다. 자세 추정이 틀리면 지도가 번진다.</p></div>
+<div class="card or"><span class="tag or">베이즈 갱신</span><h3>믿음 × 새 증거</h3><p>\(p(m \mid z_{1:t}) \propto p(z_t \mid m)\, p(m \mid z_{1:t-1})\). 지도는 관측을 하나씩 더해 가는 믿음이다.</p></div>
+<div class="card gr"><span class="tag gr">센서 잡음</span><h3>멀수록, 비스듬할수록 크다</h3><p>깊이 오차는 거리에 따라 커진다(스테레오는 거리의 제곱). 측정마다 분산을 붙여 합친다.</p></div>
+<div class="card gy"><span class="tag">격자</span><h3>공간을 칸으로 나눈다</h3><p>칸 크기(해상도)가 작은 턱을 볼 수 있는지와 계산량을 함께 정한다.</p></div>
+</div>
+<aside>인식은 결국 여러 시각의 잡음 섞인 관측을 하나의 일관된 그림으로 합치는 일이다. 그러려면 관측을 같은 좌표계로 옮겨야 하고, 각 관측을 얼마나 믿을지 정해야 하며, 결과를 담을 그릇이 필요하다. 좌표 변환, 베이즈 갱신, 센서 잡음 모델, 격자가 그 네 요소다. 자세 추정의 오차가 지도 품질을 크게 좌우한다는 점도 기억해 두자.</aside>
+</section>
+<section id="pipeline" class="t">
+<div class="head"><p class="kicker">0 · 인식의 일</p><h2>인식은 센서 관측을 지형 지도와 동적 장애물 목록으로 바꾼다</h2></div>
+<div class="flow">
+<div class="step"><h3>센서</h3><p>LiDAR, 스테레오·깊이 카메라, 단안 카메라, IMU</p></div><p class="arrow">→</p>
+<div class="step"><h3>지형 지도</h3><p>높이·경사·턱·거칠기·불확실성 격자</p></div><p class="arrow">→</p>
+<div class="step"><h3>비용</h3><p>지나갈 수 있는 정도(traversability)</p></div><p class="arrow">→</p>
+<div class="step"><h3>계획·제어</h3><p>경로, 궤적, 명령</p></div>
+</div>
+<div class="flow">
+<div class="step"><h3>영상</h3><p>사람·차·킥보드</p></div><p class="arrow">→</p>
+<div class="step"><h3>검출</h3><p>상자·마스크</p></div><p class="arrow">→</p>
+<div class="step"><h3>추적</h3><p>ID를 이어 속도 추정</p></div><p class="arrow">→</p>
+<div class="step"><h3>예측</h3><p>몇 초 뒤 위치와 불확실성</p></div>
+</div>
+<table style="font-size:24px">
+<tr><th>지도 표현</th><th>담는 것</th><th>장점</th><th>단점</th></tr>
+<tr><td>2D 점유 격자</td><td>칸마다 점유 확률</td><td class="good">단순, 실내 표준</td><td class="bad">경사·턱·구덩이를 못 담는다</td></tr>
+<tr><td>2.5D 높이 지도</td><td>칸마다 높이(+분산)</td><td class="good">실외 지형, 가볍다</td><td class="bad">오버행(다리 밑, 나뭇가지) 표현 못 함</td></tr>
+<tr><td>3D voxel·ESDF</td><td>칸마다 점유·거리</td><td class="good">오버행, 3D 거리</td><td class="bad">메모리·계산이 크다</td></tr>
+</table>
+<aside>인식의 출력은 두 갈래다. 위 줄은 정적인 지형으로, 점군을 격자 지도로 쌓고 거기서 비용을 계산한다. 아래 줄은 움직이는 것으로, 영상에서 검출하고 시간에 걸쳐 추적하고 미래를 예측한다. 지도 표현은 무엇을 담을지와 얼마나 무거운지를 맞바꾼다. 실외 바퀴 로봇과 보행 로봇에서는 2.5D 높이 지도가 가장 흔한 절충이다.</aside>
+</section>
+<section id="sensors" class="t">
+<div class="head"><p class="kicker">0 · 센서</p><h2>센서는 거리 정확도, 해상도, 가격, 날씨에 따라 고른다</h2></div>
+<table style="font-size:25px">
+<tr><th>센서</th><th>주는 것</th><th>장점</th><th>단점</th></tr>
+<tr><td>LiDAR</td><td>정확한 3D 점(수십 m)</td><td class="good">거리 정확, 조명 무관</td><td class="bad">비싸고 성기다, 검은·젖은 면에 약함</td></tr>
+<tr><td>스테레오 카메라</td><td>조밀한 깊이(수 m)</td><td class="good">싸고 조밀, 색도 함께</td><td class="bad">거리 제곱으로 오차, 무늬 없는 면에 약함</td></tr>
+<tr><td>단안 카메라</td><td>영상(+학습 깊이)</td><td class="good">가장 싸고 의미가 풍부</td><td class="bad">축척을 모른다, 조명·날씨</td></tr>
+<tr><td>레이더</td><td>거리·속도(성긴 점)</td><td class="good">비·안개에 강함, 속도 직접</td><td class="bad">해상도 낮음, 지형에 약함</td></tr>
+<tr><td>IMU·바퀴 오도메트리</td><td>자기 운동</td><td class="good">빠르고 늘 있다</td><td class="bad">시간에 따라 표류</td></tr>
+</table>
+<p class="take"><b>실무:</b> 거리는 LiDAR나 스테레오가, 의미(사람·킥보드)는 카메라가 맡고, 둘을 시간·좌표로 맞춘다.</p>
+<aside>센서 하나로 모든 것을 할 수는 없다. LiDAR는 정확한 거리를 주지만 성기고 비싸며, 카메라는 의미를 풍부하게 주지만 거리가 약하다. 그래서 대부분 둘을 섞는다. 이때 중요한 것은 시간 동기와 좌표 보정이다. 1 m/s로 움직일 때 50 ms 어긋나면 5 cm가 틀린다. 센서 배치에 따라 사각이 생기므로, 옆과 뒤, 발밑을 무엇이 보는지도 함께 설계해야 한다.</aside>
+</section>
+<section id="d1" class="t dark divider">
+<p class="kicker">1 · 지형 지도</p>
+<h2>잡음 섞인 관측을<br>칸마다 확률로 쌓는다</h2>
+<p class="lead">점유는 log-odds로, 높이는 분산 가중 평균으로. 위험한 것은 아예 관측되지 않는 칸이다.</p>
+<aside>첫째 장은 지도를 만드는 법이다. 2D 점유 격자의 log-odds 갱신, 2.5D 높이 지도의 칼만 융합, 실제 구현인 elevation mapping, 그리고 보도에서 가장 위험한 음의 장애물과 못 본 칸을 다룬다.</aside>
+</section>
+<section id="logodds" class="t">
+<div class="head"><p class="kicker">1 · 점유 격자</p><h2>점유 격자는 관측마다 log-odds를 더해 확률을 쌓는다</h2></div>
+<div class="math">$$l_t(m) = l_{t-1}(m) + \log\frac{p(m \mid z_t)}{1 - p(m \mid z_t)} - l_0, \qquad p(m) = 1 - \frac{1}{1 + e^{l(m)}}$$</div>
+<figure><img src="img/logodds.webp" style="height:400px"><figcaption>로봇(주황)이 움직이며 광선을 쏜다. 광선이 지나간 칸은 비었다는 증거를, 끝점은 점유 증거를 더한다. 10 % 놓침과 3 % 헛반사가 있어도 관측이 쌓이면 벽이 드러난다</figcaption></figure>
+<div class="grid2">
+<div class="card gr"><span class="tag gr">장점</span><p>덧셈 하나라 빠르고, 잡음을 자연스럽게 평균한다. 상한·하한을 두면 변하는 환경에도 반응한다.</p></div>
+<div class="card or"><span class="tag or">단점</span><p>칸이 서로 독립이라고 가정한다. 높이·경사를 담지 못한다. 자세가 틀리면 벽이 두꺼워진다.</p></div>
+</div>
+<aside>점유 확률을 그대로 곱하면 계산이 번거롭다. log-odds, 즉 확률 비의 로그로 바꾸면 베이즈 갱신이 덧셈이 된다. 광선이 지나간 칸에는 비었다는 증거로 음수를, 광선이 끝난 칸에는 점유 증거로 양수를 더한다. 값을 상한과 하한으로 자르면 오래된 증거에 갇히지 않아 문이 열리고 닫히는 변화도 따라간다. 실내 2D 내비게이션의 표준이지만, 실외의 경사와 턱은 담지 못한다.</aside>
+</section>
+<section id="heightfusion" class="t">
+<div class="head"><p class="kicker">1 · 높이 지도</p><h2>높이 지도는 칸마다 높이와 분산을 칼만 갱신으로 합친다</h2></div>
+<div class="math">$$h \leftarrow \frac{\sigma_m^2\, h + \sigma_p^2\, z}{\sigma_p^2 + \sigma_m^2},\qquad \sigma_p^2 \leftarrow \frac{\sigma_p^2\, \sigma_m^2}{\sigma_p^2 + \sigma_m^2},\qquad \sigma_m^2 = \alpha\, d^2$$</div>
+<figure><img src="img/heightfusion.webp" style="height:400px"><figcaption>로봇이 8 m에서 1.5 m까지 다가오며 같은 칸을 7번 잰다. 측정 분산은 거리의 제곱에 비례한다. 멀 때의 측정은 거의 무시되고, 가까운 측정이 추정을 참값으로 끌어온다</figcaption></figure>
+<div class="grid2">
+<div class="card gr"><span class="tag gr">장점</span><p>칸마다 1차원 칼만이라 GPU로 수만 칸을 실시간에. 분산이 "얼마나 믿을 만한가"를 함께 준다.</p></div>
+<div class="card or"><span class="tag or">단점</span><p>칸에 높이 하나뿐이라 오버행을 못 담는다. 움직이는 물체가 지나가면 흔적이 남는다.</p></div>
+</div>
+<aside>2.5D 높이 지도는 칸마다 높이와 분산을 저장한다. 새 점이 칸에 떨어지면, 기존 추정과 새 측정을 각각의 분산으로 가중 평균한다. 1차원 칼만 필터와 같다. 센서 잡음은 거리에 따라 커지므로 멀리서 본 측정은 약하게, 가까이서 본 측정은 강하게 반영된다. 이렇게 얻은 분산은 계획에서 "모르는 곳은 조심한다"의 재료가 된다. 다만 분산이 실제 오차를 정말 덮는지는 따로 재야 한다.</aside>
+</section>
+<section id="emap" class="t">
+<div class="head"><p class="kicker">1 · 실제 구현</p><h2>elevation mapping은 높이 융합에 가시성 정리와 상한 층을 더했다</h2></div>
+<div class="cols">
+<div class="stack">
+<ul>
+<li>로봇 중심 2.5D 격자, 칸마다 1차원 칼만 갱신</li>
+<li><b>GPU 판(elevation_mapping_cupy)</b>: CUDA 커널, 학습 traversability 필터</li>
+<li><b>가시성 정리</b>: 광선이 지나간 자리에 남은 옛 높이(지나간 사람 등)를 지운다</li>
+<li><b>상한 층</b>: 광선이 지나간 칸의 지면은 광선보다 높을 수 없다</li>
+<li>Orin Nano에서 0.025 m, 200×200칸 지도를 30 Hz로 돌린 보고</li>
+</ul>
+<div class="card bl"><span class="tag bl">계보</span><p>4족 보행 로봇(ANYmal)에서 시작해 휴머노이드·바퀴 로봇까지 같은 스택이 쓰인다.</p></div>
+</div>
+<figure><img src="../../assets/thumbs/8561a22bdbc1.webp" style="height:560px"><figcaption>elevation_mapping_cupy (Fig. 1): GPU 파이프라인 — arXiv:2204.12876</figcaption></figure>
+</div>
+<div class="foot" data-foot><p>Fankhauser 외, Probabilistic Terrain Mapping (CLAWAR 2014, RA-L 2018) · Miki 외, Elevation Mapping for Locomotion and Navigation using GPU, IROS 2022 — arXiv:2204.12876</p></div>
+<aside>ETH의 elevation mapping은 이 분야의 표준 구현이다. 높이 융합 외에 두 가지가 실전에서 중요하다. 첫째, 움직이는 물체가 지나간 자리에는 높은 흔적이 남는데, 광선이 그 자리를 다시 관통하면 지운다. 둘째, 상한 층이다. 관측되지 않은 칸이라도 광선이 그 위를 지나갔다면, 그 칸의 지면은 광선보다 높을 수 없다는 것을 안다. 이 상한이 다음 장의 구덩이 탐지에 쓰인다.</aside>
+</section>
+<section id="shadow" class="t">
+<div class="head"><p class="kicker">1 · 음의 장애물</p><h2>구덩이는 관측되지 않고 그림자로만 남는다</h2></div>
+<figure><img src="img/shadow.webp" style="height:380px"><figcaption>(a) 앞 모서리가 광선을 가려 구덩이 바닥에 점이 떨어지지 않는다 (b) 센서 높이 0.6 m, 깊이 0.25 m에서 보이는 바닥의 비율. 폭 1 m 구덩이도 2.4 m 밖에서는 바닥이 통째로 가려진다</figcaption></figure>
+<div class="grid3">
+<div class="card or"><span class="tag or">상한</span><p>광선 높이를 칸 높이의 상한으로 둔다(elevation mapping).</p></div>
+<div class="card bl"><span class="tag bl">경사 외삽</span><p>주변 지면을 외삽한 기대 높이와 관측의 차를 본다(G-VOM).</p></div>
+<div class="card gr"><span class="tag gr">최소 고도 퍼뜨리기</span><p>그림자에 이웃 최소 고도를 채워 인공 단차를 만든다.</p></div>
+</div>
+<div class="foot" data-foot><p>G-VOM, IEEE IV 2022 — arXiv:2109.13176 · Mozzarelli 외(보도 배달로봇) — arXiv:2403.13431</p></div>
+<aside>턱이나 벽 같은 양의 장애물은 센서에 크게 보이지만, 구덩이나 내림 턱 같은 음의 장애물은 직접 보이지 않는다. 센서가 낮을수록, 멀수록 앞 모서리가 바닥을 가린다. 그림 (b)처럼 생각보다 훨씬 가까이 가야 바닥이 보인다. 그래서 "점이 없다"는 사실 자체를 신호로 써야 한다. 그림자의 위치와 크기, 광선이 지나간 높이, 주변 지면에서 외삽한 기대 높이가 그 신호다. 보수적으로 다루면 오탐으로 멈추고, 느슨하면 빠진다.</aside>
+</section>
+<section id="unobs" class="t">
+<div class="head"><p class="kicker">1 · 못 본 칸</p><h2>못 본 칸은 불확실성으로 전파하거나 생성 모델로 채운다</h2></div>
+<div class="grid3">
+<div class="card bl"><span class="tag bl">Occlusion-Aware</span><h3>가림을 자세 분산으로</h3><p>지형 불확실성을 차체 pitch·roll 분산으로 전파한다. 실패율 18.9%, 기준선 46.1%·41.7%.</p></div>
+<div class="card bl"><span class="tag bl">ProTerrain</span><h3>공간 상관 분산</h3><p>칸이 독립이 아니라 이웃과 상관된 공분산. 궤적 오차(ATE) 2.4277 → 0.6588.</p></div>
+<div class="card or"><span class="tag or">SceneSense</span><h3>확산 모델로 채움</h3><p>못 본 voxel만 생성 확률로 갱신. 추론 0.44 s. 못 본 구덩이를 평평하게 덮을 위험.</p></div>
+</div>
+<div class="grid3">
+<figure><img src="../../assets/thumbs/5beab714ad46.webp" style="height:260px"><figcaption>가려진 언덕 뒤가 고분산 — arXiv:2609.39105</figcaption></figure>
+<figure><img src="../../assets/thumbs/008cc8216312.webp" style="height:260px"><figcaption>상관 모델 대 칸 독립 궤적 표본 — arXiv:2510.19364</figcaption></figure>
+<figure><img src="../../assets/thumbs/6fb83fe7978e.webp" style="height:260px"><figcaption>로봇 아래 빈 구멍을 생성이 채움 — arXiv:2506.20049</figcaption></figure>
+</div>
+<p class="take"><b>원칙:</b> 안전에 쓰는 비용은 보수적으로(모르면 위험), 생성 채움은 탐색과 경로 후보에만.</p>
+<aside>못 본 칸을 다루는 두 방향이 있다. 하나는 불확실성을 계획까지 그대로 전파하는 것이다. 높이 분산을 차체 자세의 분산으로 바꾸면 바퀴 하나가 빠질 위험을 직접 볼 수 있다. 다른 하나는 생성 모델로 그럴듯하게 채우는 것이다. 탐사나 경로 후보에는 유용하지만, 안 보이는 구덩이를 평평하게 그릴 수 있어 안전 비용에 그대로 쓰면 위험하다.</aside>
+</section>
+<section id="bev" class="t">
+<div class="head"><p class="kicker">1 · 학습 기반 지도</p><h2>자동차는 카메라에서 바로 BEV·occupancy를 추론한다</h2></div>
+<div class="grid3">
+<div class="card gy"><span class="tag">2020 · BEV</span><h3>Lift-Splat-Shoot</h3><p>픽셀별 깊이 분포로 특징을 들어 위에서 본 격자에 뿌린다</p></div>
+<div class="card gy"><span class="tag">2022 · BEV</span><h3>BEVFormer</h3><p>격자 query가 attention으로 여러 카메라 특징을 모은다</p></div>
+<div class="card gy"><span class="tag">2023 · occupancy</span><h3>Occ3D, FlashOcc</h3><p>3D 점유 격자를 예측. FlashOcc는 2D 합성곱만 써 배포 친화</p></div>
+</div>
+<div class="cols">
+<figure><img src="../../assets/thumbs/92320a9079e8.webp" style="width:1050px"><figcaption>Lift-Splat-Shoot (Fig. 1): 여러 카메라 영상에서 BEV 의미 지도를 바로 추론한다 — arXiv:2008.05711</figcaption></figure>
+<div class="stack">
+<div class="card gr"><span class="tag gr">장점</span><p>카메라만으로, 의미까지 한 번에.</p></div>
+<div class="card or"><span class="tag or">단점</span><p>차를 둘러싼 멀티카메라 리그와 큰 GPU를 전제. 정답 만들기가 비싸다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>Lift-Splat-Shoot, ECCV 2020 — arXiv:2008.05711 · BEVFormer, ECCV 2022 — arXiv:2203.17270</p></div>
+<aside>자동차는 기하 지도 대신 학습 모델이 카메라 영상에서 위에서 본 격자를 바로 추론하는 쪽으로 갔다. 깊이를 확률 분포로 예측해 특징을 3D로 들어 올리는 것이 핵심 아이디어다. 작은 로봇에 그대로 가져오기는 어렵다. 차량을 둘러싼 여러 카메라와 데스크톱급 GPU를 전제하기 때문이다. 대신 격자 밀도, 높이 축, 가려진 칸의 정답을 어떻게 만드느냐 같은 표현 설계의 교훈은 로봇 지도에도 그대로 쓰인다.</aside>
+</section>
+<section id="map-pc" class="t">
+<div class="head"><p class="kicker">1 · 장단점</p><h2>지도 만드는 법은 정확함, 표현력, 계산을 맞바꾼다</h2></div>
+<table style="font-size:26px">
+<tr><th>방법</th><th>장점</th><th>단점</th><th>잘 맞는 곳</th></tr>
+<tr><td>2D 점유 격자(log-odds)</td><td class="good">단순, 빠름, 잡음에 강함</td><td class="bad">높이 정보 없음</td><td>실내, 평평한 바닥</td></tr>
+<tr><td>2.5D 높이 지도(칼만)</td><td class="good">지형·분산, GPU 실시간</td><td class="bad">오버행, 움직이는 물체 흔적</td><td>실외 바퀴·보행 로봇</td></tr>
+<tr><td>3D voxel·ESDF</td><td class="good">오버행, 거리장</td><td class="bad">메모리·계산</td><td>드론, 팔, 복잡한 3D</td></tr>
+<tr><td>학습 BEV·occupancy</td><td class="good">카메라만, 의미 포함</td><td class="bad">큰 GPU, 정답 비용, 분포 밖</td><td>자동차</td></tr>
+<tr><td>생성 채움</td><td class="good">못 본 곳도 그럴듯하게</td><td class="bad">위험을 덮을 수 있다</td><td>탐사, 후보 생성</td></tr>
+</table>
+<p class="take"><b>핵심:</b> 표현을 고른 다음에는 "모르는 칸을 어떻게 다루나"가 안전을 정한다.</p>
+<aside>대부분의 실외 지상 로봇은 2.5D 높이 지도를 쓴다. 상용 4족 로봇의 인터페이스도 2.5D다. 오버행이 문제가 되는 곳에서는 높이 지도에 "머리 위 여유" 같은 층을 하나 더하는 식으로 절충한다. 어떤 표현을 고르든, 관측되지 않은 칸을 위험으로 볼지 평평하게 볼지가 실제 사고를 가른다.</aside>
+</section>
+<section id="d2" class="t dark divider">
+<p class="kicker">2 · Traversability</p>
+<h2>"이 땅을 지나갈 수 있는가"를<br>숫자로 만들고, 경험으로 고친다</h2>
+<p class="lead">기하 규칙에서 출발해, 로봇이 실제로 겪은 사건으로 사람 라벨 없이 배운다.</p>
+<aside>둘째 장은 지도를 비용으로 바꾸는 traversability다. 기하 특징으로 만드는 규칙 비용, 사람 라벨에서 로봇 경험으로 옮겨 간 계보, 그리고 자기지도 학습의 핵심 난제인 PU 문제, 듬성한 라벨을 채우는 공간 보간, VLM의 역할을 본다.</aside>
+</section>
+<section id="travfeat" class="t">
+<div class="head"><p class="kicker">2 · 기하 비용</p><h2>높이 지도에서 경사·턱·거칠기를 계산해 비용으로 합친다</h2></div>
+<figure><img src="img/travfeat.webp" style="height:330px"><figcaption>완만한 경사, 0.15 m 연석, 구덩이, 거친 자갈이 있는 높이 지도. 경사는 기울기, 턱은 작은 창 안의 최고−최저, 거칠기는 창 안의 표준편차다</figcaption></figure>
+<div class="math">$$c = \min\Big(1,\ w_s\, \tfrac{\text{slope}}{s_{\max}} + w_t\, \tfrac{\text{step}}{t_{\max}} + w_r\, \tfrac{\text{rough}}{r_{\max}}\Big), \qquad c \ge c_{\text{lethal}} \Rightarrow \text{치명(통과 금지)}$$</div>
+<div class="grid2">
+<div class="card gr"><span class="tag gr">장점</span><p>해석이 쉽고 학습이 필요 없다. 로봇의 한계(오를 수 있는 턱, 경사)를 바로 반영한다.</p></div>
+<div class="card or"><span class="tag or">단점</span><p>키 큰 풀은 벽으로, 미끄러운 타일은 평지로 본다. 기하가 같아도 재질에 따라 다른 것을 모른다.</p></div>
+</div>
+<aside>가장 단순한 traversability는 기하 규칙이다. 높이 지도에서 경사, 턱, 거칠기를 계산하고, 로봇이 견딜 수 있는 한계로 정규화해 가중합한다. 한계를 넘는 칸은 치명으로 두고 그래프에서 뺀다. 창 크기가 로봇 바퀴나 발 크기와 맞아야 하고, 가중치는 손으로 맞춘다. 이 방법의 한계는 기하만 본다는 것이다. 풀밭과 벽, 젖은 타일과 마른 보도를 구별하려면 영상과 경험이 필요하다.</aside>
+</section>
+<section id="trav-lineage" class="t">
+<div class="head"><p class="kicker">2 · 계보</p><h2>라벨의 출처가 사람에서 로봇이 겪은 사건으로 바뀌었다</h2></div>
+<div class="cols">
+<table style="font-size:24px">
+<tr><th>연도</th><th>이름</th><th>라벨 출처</th></tr>
+<tr><td>2020</td><td>RELLIS-3D</td><td>사람 라벨(20클래스)</td></tr>
+<tr><td>2020</td><td>BADGR</td><td>충돌·충격 사건</td></tr>
+<tr><td>2022</td><td>TerraPN</td><td>IMU 진동·주행거리 오차</td></tr>
+<tr><td>2022</td><td>How Does It Feel?</td><td>고유 감각(proprioception) 비용</td></tr>
+<tr><td>2023</td><td>WVN, STERLING</td><td>주행 자국 + 고정 DINO 특징</td></tr>
+<tr><td>2024</td><td>V-STRONG, RoadRunner</td><td>주행 궤적, 기존 스택 사후 추정</td></tr>
+<tr><td>2026</td><td>SyNeT, GSAT, PIVOT</td><td>주행 자국 양성 + PU, VLM</td></tr>
+</table>
+<div class="stack">
+<figure><img src="../../assets/thumbs/90e565b9f2ae.webp" style="width:780px"><figcaption>BADGR (Fig. 5): 영상과 행동 열로 미래 사건을 예측한다 — arXiv:2002.05700</figcaption></figure>
+<div class="card gr"><span class="tag gr">장점</span><p>사람 라벨이 필요 없고, 그 로봇의 실제 능력을 배운다.</p></div>
+<div class="card or"><span class="tag or">단점</span><p>가 본 곳만 안다. 위험한 사건은 일부러 모으기 어렵다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>RELLIS-3D arXiv:2011.12954 · BADGR arXiv:2002.05700, RA-L 2021</p></div>
+<aside>traversability 라벨은 사람이 단 의미 라벨에서 로봇이 실제로 겪은 사건으로 옮겨 왔다. 사람 라벨은 비싸고, 도시용 분할 모델은 오프로드에서 무너진다. 사건 라벨은 다르다. 충돌, 덜컹거림, 미끄러짐을 센서로 재서 그 직전에 본 영상과 짝짓는다. 그러면 기하만 보는 로봇이 벽으로 보던 키 큰 풀밭도 실제로는 지나갈 수 있다는 것을 배운다. BADGR는 사건 예측과 표본 기반 계획을 결합한 원형이다.</aside>
+</section>
+<section id="pu" class="t">
+<div class="head"><p class="kicker">2 · PU 문제</p><h2>지나간 곳은 양성이지만, 안 간 곳은 음성이 아니라 "모름"이다</h2></div>
+<div class="grid3">
+<div class="card or"><span class="tag or">음성 합성</span><h3>SyNeT</h3><p>확산 inpainting으로 지나갈 수 없는 물체를 영상에 넣는다. AUROC 0.935 → 0.979, Orin INT8 11.6 FPS.</p></div>
+<div class="card bl"><span class="tag bl">이상 탐지</span><h3>GSAT</h3><p>양성 잠재 둘레 초구 밖을 이상으로 본다. LiDAR 기하만. Gazebo 10/10, 기하 규칙 4/10.</p></div>
+<div class="card gr"><span class="tag gr">손실 보정</span><h3>nnPU</h3><p>양성과 라벨 없는 자료만으로 분류 위험을 편향 없이 추정한다. 개입 14회 → 2회(LHT).</p></div>
+</div>
+<div class="cols">
+<figure><img src="../../assets/thumbs/c759b3a7c4e8.webp" style="width:820px"><figcaption>SyNeT (Fig. 2): 위치·크기를 고르고, inpainting으로 물체를 넣고, 음성 마스크를 얻는다 — arXiv:2602.00814</figcaption></figure>
+<figure><img src="../../assets/thumbs/9f5863739d52.webp" style="height:300px"><figcaption>GSAT (Fig. 1): 궤적 양성과 잠재 초구로 정상·이상을 나눈다 — arXiv:2603.07480</figcaption></figure>
+</div>
+<div class="foot" data-foot><p>SyNeT arXiv:2602.00814 · GSAT arXiv:2603.07480, ICRA 2026 · Long-Horizon Traversability arXiv:2607.23743</p></div>
+<aside>자기지도 traversability의 근본 문제는 음성 라벨이 없다는 것이다. 로봇은 위험한 곳을 피해 다니므로, 지나간 곳은 확실히 갈 수 있는 곳이지만, 안 간 곳이 못 가는 곳이라는 뜻은 아니다. 이것을 양성-무라벨, PU 학습이라 한다. 안 간 곳을 모두 음성으로 두면 가 보지 않은 좋은 길까지 위험으로 배운다. 세 가지 해법이 있다. 음성을 합성하거나, 양성 분포 밖을 이상으로 보거나, 손실을 PU에 맞게 보정한다. 가장 단순한 방법은 라벨 없는 칸을 손실에서 아예 빼는 것이다.</aside>
+</section>
+<section id="bki" class="t">
+<div class="head"><p class="kicker">2 · 배경지식 · 공간 보간</p><h2>듬성한 라벨은 거리 가중으로 퍼뜨리고, 먼 곳은 불확실하게 둔다</h2></div>
+<figure><img src="../../assets/figs/bg_010_bki.webp" style="height:380px"><figcaption>(A) 가까운 관측일수록 크게 세는 희소 커널 k(d) (B) 베이즈 커널 추론(BKI): 관측이 없는 구간에서 σ가 커진다</figcaption></figure>
+<div class="math">$$\hat c(x) = \frac{\alpha_0 c_0 + \sum_i k(x, x_i)\, c_i}{\alpha_0 + \sum_i k(x, x_i)}, \qquad \text{신뢰도} \propto \alpha_0 + \sum_i k(x, x_i)$$</div>
+<div class="grid2">
+<div class="card gr"><span class="tag gr">장점</span><p>GP와 비슷한 매끄러움과 불확실성을, 희소 커널로 빠르게. 칸마다 증분 갱신.</p></div>
+<div class="card or"><span class="tag or">단점</span><p>커널 반경이 경계(턱, 구덩이 가장자리)를 흐린다. 반경 밖은 사전값으로 돌아간다.</p></div>
+</div>
+<aside>로봇이 지나간 자국이나 측정한 진동은 지도 전체에서 보면 아주 듬성하다. 이것을 주변 칸으로 퍼뜨려야 계획에 쓸 수 있다. 베이즈 커널 추론은 각 관측을 거리에 따라 줄어드는 가중치로 더한 뒤, 가중치의 합을 증거의 양으로 본다. 관측이 많으면 확신하고, 없으면 사전값과 큰 불확실성으로 돌아간다. 가우시안 과정과 비슷한 결과를 훨씬 싸게 얻는다. 다만 커널이 날카로운 경계를 흐리므로, 턱처럼 급변하는 곳은 기하 규칙이 맡는 것이 좋다.</aside>
+</section>
+<section id="vlm" class="t">
+<div class="head"><p class="kicker">2 · VLM의 자리</p><h2>VLM은 기본 비용이 아니라 막혔을 때의 보조 판단으로 쓴다</h2></div>
+<div class="grid3">
+<div class="card bl"><span class="tag bl">PIVOT</span><p>기하 계획이 막힐 때만 VLM 재계획. 자율 비율 59.6% → 97.0%, 개입 11 → 3회.</p></div>
+<div class="card bl"><span class="tag bl">CATNAV</span><p>비슷한 장면은 이전 위험 평가를 재사용. VLM 호출 85.7% 감소.</p></div>
+<div class="card gy"><span class="tag">ViTA</span><p>SAM2에 traversability prompt를 넣고 기하 지식을 증류한다.</p></div>
+</div>
+<figure><img src="../../assets/thumbs/723fd5f099f1.webp" style="height:400px"><figcaption>PIVOT (Fig. 2): 기하 계획이 기본이고, 실패할 때만 VLM 의미 계획으로 넘어간다 — arXiv:2609.20983</figcaption></figure>
+<p class="take"><b>핵심:</b> 느리고 비싼 모델은 드문 상황에만, 그리고 결과를 캐시해서 쓴다.</p>
+<div class="foot" data-foot><p>PIVOT arXiv:2609.20983 · CATNAV arXiv:2603.22800</p></div>
+<aside>VLM은 "물웅덩이는 얕아 보인다", "풀은 지나갈 수 있다" 같은 상식을 준다. 그런데 한 번 묻는 데 수 초가 걸려 매 주기 비용으로 쓰기는 어렵다. PIVOT은 평소에는 기하 계획을 쓰고, 경로를 못 찾을 때만 VLM에 묻는다. 그리고 VLM의 비용을 실제 에너지·진동·슬립과의 상관으로 가중해 믿을 만한 정도를 정한다. CATNAV는 비슷한 장면의 답을 재사용해 호출을 줄인다. 계획 덱의 느린 판정자와 같은 원칙이다.</aside>
+</section>
+<section id="trav-pc" class="t">
+<div class="head"><p class="kicker">2 · 장단점</p><h2>비용을 만드는 법은 라벨의 출처로 갈린다</h2></div>
+<table style="font-size:26px">
+<tr><th>방법</th><th>라벨</th><th>장점</th><th>단점</th></tr>
+<tr><td>기하 규칙</td><td>없음(한계값)</td><td class="good">해석 쉬움, 학습 불필요</td><td class="bad">재질·의미를 모른다</td></tr>
+<tr><td>의미 분할</td><td>사람 라벨</td><td class="good">풀·물·계단을 구별</td><td class="bad">비싸고 도메인 밖에서 무너짐</td></tr>
+<tr><td>자기지도(경험)</td><td>주행 자국, 진동, 충돌</td><td class="good">그 로봇의 실제 능력</td><td class="bad">PU 문제, 가 본 곳만</td></tr>
+<tr><td>기반 모델 특징 + 적응</td><td>소량 경험</td><td class="good">빠른 적응(분 단위)</td><td class="bad">큰 백본, 실시간 부담</td></tr>
+<tr><td>VLM 보조</td><td>상식</td><td class="good">드문 상황 판단</td><td class="bad">느림, 근거 확인 필요</td></tr>
+</table>
+<p class="take"><b>실무 순서:</b> 기하 규칙으로 안전 바닥을 깔고, 경험으로 고치고, VLM은 막혔을 때만.</p>
+<aside>대부분의 시스템은 이 표를 위에서 아래로 쌓는다. 기하 규칙이 절대 넘으면 안 되는 한계를 지키고, 자기지도 학습이 재질과 로봇 능력을 반영해 비용을 고치고, VLM은 드문 상황의 의미 판단을 맡는다. 학습한 비용이 기하 규칙의 치명 판정을 덮어쓰지 않게 하는 것이 안전의 핵심이다.</aside>
+</section>
+<section id="d3" class="t dark divider">
+<p class="kicker">3 · 시각 기반 모델과 동적 장애물</p>
+<h2>큰 모델은 교사로 쓰고,<br>사람은 검출·추적·예측으로 따라간다</h2>
+<p class="lead">완벽한 예측도 얼어붙기를 풀지 못하고, 예측의 오차 폭은 따로 맞춰야 한다.</p>
+<aside>셋째 장은 영상 쪽이다. 시각 기반 모델을 어디에 쓰는지, 단안 깊이의 한계, 그리고 사람 같은 동적 장애물을 검출하고 추적하고 예측하는 흐름을 본다. 마지막으로 예측이 완벽해도 로봇이 얼어붙는 문제와, 예측의 불확실성을 보정하는 법을 본다.</aside>
+</section>
+<section id="vfm" class="t">
+<div class="head"><p class="kicker">3 · 시각 기반 모델</p><h2>시각 기반 모델은 로봇에서 돌리기 전에 라벨 교사로 먼저 쓴다</h2></div>
+<div class="cols">
+<table style="font-size:24px">
+<tr><th>이름</th><th>내는 것</th></tr>
+<tr><td>DINOv2 · DINOv3</td><td>범용 영상 특징(패치 단위)</td></tr>
+<tr><td>Depth Anything V2 · 3</td><td>단안 깊이</td></tr>
+<tr><td>SAM 2 · SAM 3</td><td>영상 분할(지정·명사구)</td></tr>
+<tr><td>Grounding DINO</td><td>글로 지정한 물체 상자</td></tr>
+</table>
+<figure><img src="../../assets/thumbs/7cd9298505cb.webp" style="width:740px"><figcaption>DINOv2 (Fig. 1): 패치 특징 PCA. 같은 부위가 같은 색으로 묶인다 — arXiv:2304.07193</figcaption></figure>
+</div>
+<div class="grid3">
+<div class="card bl"><span class="tag bl">특징 백본</span><p>고정 특징 위에 작은 머리만 학습해 몇 분 만에 적응(WVN).</p></div>
+<div class="card bl"><span class="tag bl">가짜 라벨</span><p>마스크·깊이를 오프라인으로 만들어 작은 실시간 모델로 증류.</p></div>
+<div class="card bl"><span class="tag bl">open-set</span><p>킥보드·볼라드처럼 학습 클래스 밖의 물체를 글로 지정.</p></div>
+</div>
+<div class="foot" data-foot><p>DINOv2 arXiv:2304.07193 · DINOv3 arXiv:2508.10104 · Depth Anything V2 arXiv:2406.09414 · SAM 2 arXiv:2408.00714 · Grounding DINO arXiv:2303.05499 · 가중치 라이선스는 모델마다 다르니 확인 후 사용</p></div>
+<aside>2023년 이후 로봇 인식의 출발점은 과제별 모델이 아니라 시각 기반 모델이다. 그러나 임베디드 GPU에서 큰 백본을 매 프레임 돌리기는 아직 부담이다. 그래서 흔한 사용법은 교사다. 오프라인에서 큰 모델로 마스크, 상자, 깊이 같은 가짜 라벨을 만들고, 그것으로 작은 실시간 모델을 학습한다. 고정 특징 위에 작은 머리만 온라인으로 학습하는 방법도 있다. 제품에 쓸 때는 가중치 라이선스를 반드시 확인해야 한다.</aside>
+</section>
+<section id="depth" class="t">
+<div class="head"><p class="kicker">3 · 단안 깊이</p><h2>단안 깊이는 모양을 주지만 축척은 따로 맞춰야 한다</h2></div>
+<div class="grid2">
+<div class="card bl"><span class="tag bl">상대 깊이</span><h3>"어느 쪽이 더 먼가"</h3><p>축척과 이동을 모른다. \(d_{\text{참}} \approx s\, d_{\text{예측}} + t\)의 s, t를 LiDAR 점 몇 개나 지면 평면으로 맞춘다.</p></div>
+<div class="card gr"><span class="tag gr">미터 깊이</span><h3>카메라 내부 파라미터로 바로 미터</h3><p>학습 분포의 카메라와 비슷할 때만 믿을 만하다. 처음 보는 렌즈·높이에서 축척이 틀린다.</p></div>
+</div>
+<table style="font-size:25px">
+<tr><th></th><th>LiDAR·스테레오</th><th>학습 단안 깊이</th></tr>
+<tr><td>거리 정확도</td><td class="good">센티미터 수준</td><td class="bad">거리에 비례한 상대 오차</td></tr>
+<tr><td>조밀함</td><td>성기다(LiDAR)</td><td class="good">픽셀마다</td></tr>
+<tr><td>실패 방식</td><td>반사·무늬 없는 면</td><td class="bad">그럴듯하지만 틀린 값(조용히 틀린다)</td></tr>
+<tr><td>잘 맞는 쓰임</td><td>안전 거리, 높이 지도</td><td>빈 곳 채우기, 가짜 라벨, 근거리 보조</td></tr>
+</table>
+<aside>학습 단안 깊이 모델은 놀라울 만큼 그럴듯한 깊이를 낸다. 하지만 한 장의 영상에는 절대 거리 정보가 없어서, 상대 깊이 모델은 축척을 모르고 미터 깊이 모델도 학습 분포 밖의 카메라에서 축척이 틀린다. 더 큰 문제는 틀릴 때 조용히 틀린다는 것이다. 그래서 안전 거리는 LiDAR나 스테레오가 맡고, 단안 깊이는 성긴 점 사이를 채우거나 라벨을 만드는 보조로 쓰는 것이 안전하다.</aside>
+</section>
+<section id="detect" class="t">
+<div class="head"><p class="kicker">3 · 검출 · 거리 · 추적 · 예측</p><h2>사람은 영상에서 찾고, 거리는 깊이로 재고, 추적은 지도 좌표에서 한다</h2></div>
+<div class="flow">
+<div class="step"><h3>검출</h3><p>실시간 검출기(YOLO 계열, RT-DETR, D-FINE, RF-DETR)</p></div><p class="arrow">→</p>
+<div class="step"><h3>거리</h3><p>상자에 투영되는 LiDAR 점·깊이로 3D 중심</p></div><p class="arrow">→</p>
+<div class="step"><h3>추적</h3><p>지도 좌표의 칼만 필터 + 헝가리안 매칭</p></div><p class="arrow">→</p>
+<div class="step"><h3>예측</h3><p>등속 모델이 기준선, 시간에 따라 커지는 원판</p></div>
+</div>
+<table style="font-size:24px">
+<tr><th>검출기</th><th>COCO 성능(논문 보고, T4)</th><th>코드 라이선스</th></tr>
+<tr><td>RT-DETR</td><td>R50 53.1 AP, 108 FPS</td><td>Apache-2.0</td></tr>
+<tr><td>D-FINE</td><td>L 54.0 AP, 124 FPS</td><td>Apache-2.0</td></tr>
+<tr><td>RF-DETR</td><td>2x-large가 실시간 첫 60 AP</td><td>Apache-2.0</td></tr>
+<tr><td>Ultralytics YOLO</td><td>모델마다 다름</td><td>AGPL-3.0(상용은 별도 라이선스)</td></tr>
+</table>
+<div class="foot" data-foot><p>RT-DETR (CVPR 2024) · D-FINE (ICLR 2025) · RF-DETR (ICLR 2026) · ByteTrack (ECCV 2022) · BoT-SORT</p></div>
+<aside>동적 장애물 파이프라인은 네 단계다. 영상에서 사람을 상자로 찾고, LiDAR 점이나 깊이로 3D 위치를 정하고, 프레임 사이에 같은 사람을 이어 속도를 추정하고, 몇 초 뒤를 예측한다. 추적을 영상 평면에서 하면 로봇이 회전할 때 매칭이 깨지므로 지도 좌표에서 하는 편이 낫다. 검출기를 고를 때는 정확도와 속도뿐 아니라 라이선스도 본다. 제품에 넣을 코드라면 특히 중요하다.</aside>
+</section>
+<section id="kftrack" class="t">
+<div class="head"><p class="kicker">3 · 추적과 예측</p><h2>등속 칼만 필터는 잡음을 걸러 속도를 주고, 가려지면 불확실성을 키운다</h2></div>
+<figure><img src="img/kftrack.webp" style="height:430px"><figcaption>잡음 섞인 검출(×)을 등속 칼만 필터가 매끄럽게 따라간다. 30스텝 뒤 가려지면 예측만 남고 2σ 타원이 커진다. 사람이 방향을 바꾸면 잠시 늦게 따라간다</figcaption></figure>
+<div class="grid2">
+<div class="card gr"><span class="tag gr">등속 모델의 장점</span><p>싸고 강하다. 보행자 예측에서 신경망 모델과 비슷하거나 나은 경우가 많다. 불확실성이 시간에 따라 커지는 원판으로 안전 여유를 준다.</p></div>
+<div class="card or"><span class="tag or">한계</span><p>방향 전환·멈춤·상호작용을 모른다. 생성 예측(Trajectron++, MoFlow)은 상호작용이 문제일 때 본다.</p></div>
+</div>
+<div class="foot" data-foot><p>Schöller 외, What the Constant Velocity Model Can Teach Us About Pedestrian Motion Prediction, RA-L 2020 — arXiv:1903.07933</p></div>
+<aside>칼만 필터는 예측과 갱신을 번갈아 한다. 상태는 위치와 속도이고, 예측 단계에서 등속으로 앞으로 옮기며 불확실성을 키우고, 검출이 오면 그 잡음과 비교해 상태를 고친다. 검출이 끊기면 예측만 남아 불확실성이 계속 커진다. 이것이 그대로 안전 여유가 된다. 보행자 예측 연구에서 가장 단순한 등속 모델이 놀라울 만큼 강하다는 결과가 있다. 다만 평균 변위 오차가 작다고 내비게이션이 좋아지는 것은 아니므로, 예측기는 폐루프 충돌 지표로 평가한다.</aside>
+</section>
+<section id="frp" class="t">
+<div class="head"><p class="kicker">3 · 얼어붙는 로봇</p><h2>개별 예측이 완벽해도 사람들 사이에서 로봇은 얼어붙을 수 있다</h2></div>
+<div class="cols">
+<div class="stack">
+<div class="card or"><p>"even under perfect <b>individual</b> prediction … the FRP still occurs if the crowd adopts <b>specific configurations</b>."</p><p class="muted">Trautman 외, IJRR 2015</p></div>
+<p>원인은 정확도가 아니라 구조다. 예측이 로봇의 행동과 무관하게 한 번 계산되면, 나란히 걷는 사람들 앞에서 "모든 길이 막혔다"가 된다.</p>
+<figure><img src="../../assets/thumbs/94ead83ed620.webp" style="width:780px"><figcaption>Mavrogiannis 외 (Fig. 1): 예측과 계획을 분리하는 쪽에서 결합하는 쪽으로 — arXiv:2103.05668</figcaption></figure>
+</div>
+<div class="stack">
+<p class="small"><b>PGIF-MPPI</b> 복도 300 시나리오(시뮬)</p>
+<table style="font-size:23px">
+<tr><th></th><th>희박</th><th>중간</th><th>조밀</th></tr>
+<tr><td>기준선 성공</td><td>78.0 %</td><td>29.0 %</td><td>18.0 %</td></tr>
+<tr><td>　충돌</td><td>22.0 %</td><td>71.0 %</td><td class="bad">82.0 %</td></tr>
+<tr><td>PGIF 성공</td><td>93.0 %</td><td>78.0 %</td><td>41.0 %</td></tr>
+<tr><td>　충돌</td><td class="good">0.0 %</td><td class="good">0.0 %</td><td class="good">0.0 %</td></tr>
+<tr><td>　타임아웃</td><td>7.0 %</td><td>22.0 %</td><td class="bad">59.0 %</td></tr>
+</table>
+<p>충돌이 사라진 자리를 타임아웃이 채운다.</p>
+</div>
+</div>
+<div class="foot" data-foot><p>Trautman 외, IJRR 2015 (원 논문 IROS 2010) · PGIF-MPPI arXiv:2608.08323 · Mavrogiannis 외 arXiv:2103.05668</p></div>
+<aside>이 장에서 하나만 기억한다면 이것이다. 예측을 아무리 잘해도, 예측이 로봇의 행동에 반응하지 않는다고 가정하면 조밀한 군중 앞에서 로봇은 얼어붙는다. 사람은 실제로 로봇에게 길을 비켜 주기 때문이다. 해법은 예측과 계획을 결합해, 로봇이 움직이면 사람도 반응한다는 상호작용을 모델에 넣는 것이다. 표는 안전만 키우면 충돌이 타임아웃으로 바뀐다는 것을 숫자로 보여 준다. 안전 비용과 함께 살아 움직이게 하는 장치가 필요하다.</aside>
+</section>
+<section id="conformal" class="t">
+<div class="head"><p class="kicker">3 · 예측 보정</p><h2>예측 오차의 폭은 학습 때 맞추거나 배포 중에 conformal로 맞춘다</h2></div>
+<div class="cols">
+<figure><img src="../../assets/figs/bg_013_conformal.webp" style="height:340px"><figcaption>Conformal prediction: 보정 자료 n개의 오차를 순서대로 놓고 ⌈(n+1)(1−α)⌉번째를 반경으로 쓰면 분포 가정 없이 포함률 1−α를 보장한다. n이 작으면 실제 포함률이 흔들린다</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">학습 때</span><p>정답의 Mahalanobis 거리가 카이제곱 분포를 따르도록 손실을 준다(Calibrated Gaussian Predictors).</p></div>
+<div class="card or"><span class="tag or">배포 중</span><p>지평별 conformal 문턱을 온라인으로 맞추고 MPC 해를 그 범위로 검사한다. 12명 정면 흐름 성공 100 %, 충돌 0 %(CoCoNav).</p></div>
+</div>
+</div>
+<figure><img src="../../assets/thumbs/cefadd570374.webp" style="height:300px"><figcaption>CoCoNav (Fig. 2): 보정한 오차 범위로 MPC 해와 비상 정지 후보를 검사한다 — arXiv:2608.07751</figcaption></figure>
+<div class="foot" data-foot><p>Calibrated Gaussian Predictors arXiv:2603.10407 · CoCoNav arXiv:2608.07751</p></div>
+<aside>예측기가 내는 불확실성이 틀리면, 그것을 쓰는 안전 장치도 틀린다. 보정은 두 시점에서 할 수 있다. 학습 때는 예측 분포가 실제 오차의 분포와 맞도록 손실을 주고, 배포 중에는 최근 오차의 순위로 반경을 계속 맞춘다. conformal prediction은 보정 자료의 오차만 있으면 분포 가정 없이 포함률을 보장하는 간단하고 강력한 방법이다. 다만 자료가 적으면 실제 포함률이 크게 흔들린다.</aside>
+</section>
+<section id="dyn-pc" class="t">
+<div class="head"><p class="kicker">3 · 장단점</p><h2>동적 장애물 처리는 단순한 기준선에서 시작해 필요한 만큼만 키운다</h2></div>
+<table style="font-size:26px">
+<tr><th>단계</th><th>선택지</th><th>장점</th><th>단점</th></tr>
+<tr><td>검출</td><td>실시간 검출기 vs 기반 모델</td><td class="good">빠름 vs open-set</td><td class="bad">클래스 한정 vs 무거움</td></tr>
+<tr><td>거리</td><td>LiDAR 투영 vs 단안 깊이</td><td class="good">정확 vs 조밀</td><td class="bad">성김 vs 축척</td></tr>
+<tr><td>추적</td><td>영상 평면 vs 지도 좌표</td><td>구현 쉬움 vs 회전에 강함</td><td>로봇 회전에 약함 vs 자세 의존</td></tr>
+<tr><td>예측</td><td>등속 vs 학습·생성</td><td class="good">싸고 강함 vs 상호작용</td><td class="bad">반응 모름 vs 무겁고 검증 어려움</td></tr>
+<tr><td>불확실성</td><td>고정 여유 vs 보정</td><td>단순 vs 근거 있는 폭</td><td>과신·과소신 vs 보정 자료 필요</td></tr>
+</table>
+<p class="take"><b>평가:</b> 예측 정확도(ADE)보다 폐루프 지표 — 충돌 수, 최소 여유 거리, 멈춤 시간 — 로 판단한다.</p>
+<aside>각 단계에서 단순한 쪽이 기준선이다. 실시간 검출기, LiDAR 거리, 지도 좌표 칼만 추적, 등속 예측, 시간에 비례한 여유. 이 기준선으로 폐루프 실험을 돌려 실제로 무엇이 문제인지 확인한 다음에, 그 단계만 키우는 것이 좋다. 예측 정확도 지표가 좋아져도 충돌이나 멈춤이 줄지 않는 경우가 많기 때문이다.</aside>
+</section>
+<section id="d4" class="t dark divider">
+<p class="kicker">4 · 정리</p>
+<h2>인식의 지연과 탐지 거리가<br>로봇의 최고 속도를 정한다</h2>
+<p class="lead">지연·속도 예산, 다른 로봇의 인식, 장단점 표, 흔한 함정, 공부 순서.</p>
+<aside>마지막 장은 인식이 시스템 전체에 주는 제약과 복습이다. 센서에서 바퀴까지의 지연과 탐지 거리가 최고 속도를 어떻게 묶는지 보고, 로봇 형태에 따라 인식 설계가 어떻게 달라지는지, 그리고 복습용 표와 공부 순서를 정리한다.</aside>
+</section>
+<section id="latency" class="t">
+<div class="head"><p class="kicker">4 · 지연과 속도</p><h2>지연 동안 가는 거리와 제동 거리가 탐지 거리 안에 들어와야 한다</h2></div>
+<div class="cols">
+<figure><img src="img/latency_speed.webp" style="height:400px"><figcaption>감속 1.5 m/s², 여유 0.2 m에서 멈출 수 있는 최고 속도. 탐지 거리가 짧을수록 지연의 몫이 커진다</figcaption></figure>
+<div class="stack">
+<table style="font-size:23px">
+<tr><th>층</th><th>흔한 주기</th></tr>
+<tr><td>LiDAR·높이 지도</td><td>10 Hz</td></tr>
+<tr><td>IMU</td><td>200 Hz 이상</td></tr>
+<tr><td>계획</td><td>5–10 Hz</td></tr>
+<tr><td>제어</td><td>10–50 Hz</td></tr>
+<tr><td>구동기</td><td>100 Hz 이상</td></tr>
+</table>
+<div class="card or"><span class="tag or">지연의 합</span><p>센서 노출 + 전송 + 지도 갱신 + 계획 + 제어 한 주기. 평균이 아니라 최악을 더한다.</p></div>
+</div>
+</div>
+<aside>인식은 시스템의 속도 상한을 정한다. 장애물을 보고 나서 바퀴가 반응하기까지의 지연 동안 로봇은 그대로 달리고, 그 뒤에 제동 거리가 더해진다. 이 둘의 합이 탐지 거리보다 작아야 한다. 구덩이처럼 가까이 가야 보이는 장애물은 탐지 거리가 짧으므로 속도가 크게 묶인다. 그래프처럼 탐지 거리가 1.5 m면 지연을 0.3초에서 0.6초로 늘릴 때 최고 속도가 눈에 띄게 준다. 시뮬레이션에 지연을 넣지 않으면 이 제약을 놓친다.</aside>
+</section>
+<section id="formfactor" class="t">
+<div class="head"><p class="kicker">4 · 다른 로봇에서</p><h2>몸이 지형과 닿는 방식이 인식 설계를 정한다</h2></div>
+<table style="font-size:25px">
+<tr><th>로봇</th><th>지배적 제약</th><th>대표 접근</th></tr>
+<tr><td>자동차</td><td>고속, 멀리 보기, 차선·신호</td><td>멀티카메라 BEV·occupancy, world model</td></tr>
+<tr><td>4족 보행</td><td>미리 보지 않으면 큰 장애물을 못 넘음</td><td>elevation map + 자기지도 traversability</td></tr>
+<tr><td>휴머노이드</td><td>두 점 지지, 자기 몸 가림</td><td>발밑 복원, 전신 occupancy</td></tr>
+<tr><td>바퀴 지상 로봇</td><td>턱·구덩이, 근거리 사람, 차체 사각</td><td>높이 지도 + 그림자 처리 + 카메라 검출</td></tr>
+<tr><td>드론</td><td>3D 자유 공간, 무게·전력</td><td>voxel·ESDF, 가벼운 깊이 센서</td></tr>
+</table>
+<div class="grid2">
+<div class="card gy"><span class="tag">world model</span><p>자동차 world model은 대부분 데스크톱 GPU급이다. "위험할 때만 다시 계획" 같은 설계 아이디어를 가져온다.</p></div>
+<div class="card bl"><span class="tag bl">공통 교훈</span><p>지형을 완벽히 재구성하지 않아도, 얼마나 믿을 만한지를 함께 알면 된다.</p></div>
+</div>
+<aside>같은 인식 기술도 로봇의 몸에 따라 무게중심이 다르다. 자동차는 멀리 빨리 봐야 하고, 보행 로봇은 발 디딜 곳을 정확히 봐야 하고, 바퀴 로봇은 낮은 턱과 구덩이, 가까운 사람이 문제다. 4족 보행 분야가 키운 elevation mapping 스택이 휴머노이드와 바퀴 로봇에서 재사용되는 것은 문제 설정이 닮았기 때문이다. 여러 분야를 가로지르는 교훈은 하나다. 불확실성을 함께 다루면 완벽한 재구성이 없어도 된다.</aside>
+</section>
+<section id="cheat" class="t">
+<div class="head"><p class="kicker">4 · 장단점 표</p><h2>인식 구성 요소를 한 표로 본다</h2></div>
+<table style="font-size:24px">
+<tr><th>구성 요소</th><th>기본 선택</th><th>장점</th><th>단점</th><th>다음 단계</th></tr>
+<tr><td>지도</td><td>2.5D 높이 지도</td><td class="good">실외, GPU 실시간</td><td class="bad">오버행</td><td>여유 높이 층, 3D voxel</td></tr>
+<tr><td>못 본 칸</td><td>보수적(상한, 위험)</td><td class="good">안전</td><td class="bad">오탐으로 멈춤</td><td>불확실성 전파</td></tr>
+<tr><td>비용</td><td>기하 규칙</td><td class="good">해석 쉬움</td><td class="bad">재질 모름</td><td>자기지도로 보정</td></tr>
+<tr><td>라벨</td><td>주행 경험</td><td class="good">사람 라벨 불필요</td><td class="bad">PU 문제</td><td>음성 합성, nnPU</td></tr>
+<tr><td>영상 이해</td><td>기반 모델을 교사로</td><td class="good">open-set, 적은 라벨</td><td class="bad">무겁다</td><td>증류한 작은 모델</td></tr>
+<tr><td>사람</td><td>검출 + 칼만 + 등속</td><td class="good">싸고 강함</td><td class="bad">상호작용 모름</td><td>상호작용 예측</td></tr>
+<tr><td>불확실성</td><td>분산·원판</td><td class="good">안전 여유</td><td class="bad">과신 가능</td><td>보정(conformal)</td></tr>
+</table>
+<aside>복습용 표다. 기본 선택 열은 많은 실외 지상 로봇이 출발점으로 삼는 구성이고, 다음 단계 열은 그 기본 선택의 약점이 실제로 문제가 될 때 갈 곳이다. 순서가 중요하다. 기본 구성으로 폐루프 실험을 돌려 어디서 실패하는지 본 다음에 그 칸만 바꾼다.</aside>
+</section>
+<section id="pitfalls" class="t">
+<div class="head"><p class="kicker">4 · 흔한 함정</p><h2>지도가 이상하면 먼저 자세, 시간 동기, 칸 정렬을 의심한다</h2></div>
+<div class="grid2">
+<div class="card or"><h3>자세 추정 오차</h3><p>지도가 번지거나 벽이 두꺼워지면 위치·자세 추정부터 본다.</p></div>
+<div class="card or"><h3>시간 동기</h3><p>센서와 자세의 타임스탬프가 어긋나면 회전할 때 지도가 휜다.</p></div>
+<div class="card or"><h3>칸 정렬</h3><p>지도 칸과 다른 모듈의 칸이 반 칸만 어긋나도 가장자리 판정이 틀린다.</p></div>
+<div class="card or"><h3>"점이 없음"을 평지로</h3><p>관측이 없는 칸을 0 높이로 채우면 구덩이가 사라진다.</p></div>
+<div class="card gy"><h3>σ를 그대로 믿기</h3><p>분산이 실제 오차를 명목 비율만큼 덮는지 따로 잰다.</p></div>
+<div class="card gy"><h3>프레임 지표만 보기</h3><p>IoU·ADE보다 폐루프의 충돌·멈춤·치명 실패로 평가한다.</p></div>
+</div>
+<aside>인식 문제의 대부분은 알고리즘보다 이런 기본 항목에서 나온다. 자세 추정과 시간 동기는 지도 품질을 결정하고, 서로 다른 모듈 사이의 좌표나 칸 정렬은 조용히 틀린 판정을 만든다. 관측이 없는 칸을 기본값 0으로 채우는 실수는 구덩이를 평지로 만드는 가장 흔한 원인이다. 그리고 인식의 성능은 결국 로봇이 안전하게 갔는지로 재야 한다.</aside>
+</section>
+<section id="path" class="t">
+<div class="head"><p class="kicker">4 · 공부 순서</p><h2>확률 로봇공학으로 기초를, 구현으로 감을, 논문으로 학습 인식을 익힌다</h2></div>
+<div class="grid3">
+<div class="card gr"><span class="tag gr">1 · 기초</span><h3>Thrun·Burgard·Fox, Probabilistic Robotics</h3><p>베이즈 필터, 칼만 필터, 점유 격자(9장), 센서 모델.</p></div>
+<div class="card bl"><span class="tag bl">2 · 손으로</span><h3>작은 문제를 직접</h3><p>2D 광선 투사 + log-odds 격자 → 높이 칼만 융합 → 경사·턱 비용 → 등속 칼만 추적.</p></div>
+<div class="card or"><span class="tag or">3 · 학습 인식</span><h3>논문 순서</h3><p>elevation mapping → BADGR → WVN → DINOv2 → 검출기 하나 → 등속 예측 논문 → conformal.</p></div>
+</div>
+<table style="font-size:24px">
+<tr><th>이 덱의 장</th><th>스스로 확인할 질문</th></tr>
+<tr><td>1 지도</td><td>log-odds로 바꾸면 왜 덧셈이 되나? 구덩이는 왜 안 보이나?</td></tr>
+<tr><td>2 Traversability</td><td>자기지도에서 "안 간 곳"을 음성으로 두면 무엇이 틀리나?</td></tr>
+<tr><td>3 동적 장애물</td><td>예측이 완벽해도 로봇이 얼어붙는 이유는?</td></tr>
+<tr><td>4 정리</td><td>지연이 두 배가 되면 최고 속도는 어떻게 되나?</td></tr>
+</table>
+<aside>순서는 확률적 기초, 직접 구현, 학습 인식이다. 확률 로봇공학 교과서의 베이즈 필터와 점유 격자 장이 이 덱 1장의 바탕이다. 이 덱의 그림처럼 광선 투사와 log-odds 격자, 칼만 추적은 각각 수십 줄로 구현할 수 있다. 그 다음에 학습 기반 traversability와 시각 기반 모델 논문을 읽으면 무엇이 새로운지 분명히 보인다.</aside>
+</section>
+<section id="summary" class="t">
+<div class="head"><p class="kicker">정리</p><h2>인식은 관측을 쌓고, 비용으로 바꾸고, 모르는 것을 함께 알려 준다</h2></div>
+<div class="grid2">
+<div class="card bl"><h3>지도</h3><p>점유는 log-odds, 높이는 분산 가중 평균. 실외는 2.5D가 표준.</p></div>
+<div class="card bl"><h3>못 본 칸</h3><p>구덩이는 그림자로만 남는다. 안전 비용에서는 보수적으로.</p></div>
+<div class="card gr"><h3>비용</h3><p>기하 규칙으로 바닥을 깔고, 경험으로 고친다. PU 문제를 기억한다.</p></div>
+<div class="card gr"><h3>큰 모델</h3><p>교사로 먼저. VLM은 막혔을 때만.</p></div>
+<div class="card or"><h3>사람</h3><p>검출 → 지도 좌표 추적 → 등속 예측. 얼어붙기와 보정을 함께 본다.</p></div>
+<div class="card or"><h3>시스템</h3><p>지연과 탐지 거리가 최고 속도를 정한다.</p></div>
+</div>
+<aside>오늘 본 것을 여섯 상자로 줄였다. 인식의 목표는 완벽한 3D 재구성이 아니라, 계획기가 안전하게 결정할 수 있을 만큼의 지도와 그 지도의 신뢰도를 주는 것이다. 모르는 곳을 모른다고 알려 주는 것, 그리고 그 불확실성이 실제로 맞는지 재는 것이 안전의 핵심이다.</aside>
+</section>
+<section id="refs-core" class="t">
+<div class="head"><p class="kicker">참고문헌 1/2 · 먼저 읽을 것</p><h2>처음에는 이 다섯 가지만 읽는다</h2></div>
+<table style="font-size:24px">
+<tr><th>순서</th><th>문헌</th><th>왜 먼저 읽나</th></tr>
+<tr><td>★ 1</td><td>Thrun·Burgard·Fox, Probabilistic Robotics (MIT Press 2005) 2–3장, 9장</td><td>베이즈 필터, 칼만 필터, 점유 격자의 표준 설명</td></tr>
+<tr><td>★ 2</td><td>Elfes, Using occupancy grids for mobile robot perception and navigation (IEEE Computer 1989)</td><td>점유 격자와 확률 갱신의 원 논문</td></tr>
+<tr><td>★ 3</td><td>Fankhauser 외, Probabilistic terrain mapping (RA-L 2018)</td><td>칸마다 높이와 분산을 칼만으로 합치는 높이 지도</td></tr>
+<tr><td>★ 4</td><td>Kahn 외, BADGR 2002.05700</td><td>주행 경험을 라벨로 쓰는 자기지도 traversability</td></tr>
+<tr><td>★ 5</td><td>Schöller 외, 등속 모델 1903.07933 · Trautman 외 (IJRR 2015)</td><td>예측의 기준선과, 예측이 좋아도 얼어붙는 이유</td></tr>
+</table>
+<aside>참고문헌을 두 장으로 나눴다. 이 장은 처음 공부할 때 먼저 읽을 다섯 가지이고, 위에서부터 차례로 읽으면 된다. 교과서는 표에 적은 장만 먼저 읽는다. 논문은 서론과 방법 절을 읽고 이 덱의 그림과 대조한다. 다음 장은 덱의 각 장에 나온 원 논문 전체다. 2109.11978처럼 점이 든 숫자는 arXiv 번호다.</aside>
+</section>
+<section id="refs" class="t">
+<div class="head"><p class="kicker">참고문헌 2/2 · 장별</p><h2>책과 원 논문</h2></div>
+<div class="grid2">
+<div class="stack">
+<p><b>책·고전</b> — Thrun·Burgard·Fox, Probabilistic Robotics (2005) · Elfes (IEEE Computer 1989) · Kalman (J. Basic Eng. 1960)</p>
+<p><b>지도</b> — Fankhauser 외 (RA-L 2018) · Miki 외 2204.12876 · G-VOM 2109.13176 · Mozzarelli 외 2403.13431 · Lift-Splat-Shoot 2008.05711 · BEVFormer 2203.17270</p>
+<p><b>못 본 칸</b> — Occlusion-Aware 2609.39105 · ProTerrain 2510.19364 · SceneSense 2506.20049</p>
+<p><b>Traversability</b> — RELLIS-3D 2011.12954 · BADGR 2002.05700 · SyNeT 2602.00814 · GSAT 2603.07480 · LHT 2607.23743 · PIVOT 2609.20983 · CATNAV 2603.22800</p>
+</div>
+<div class="stack">
+<p><b>기반 모델</b> — DINOv2 2304.07193 · DINOv3 2508.10104 · Depth Anything V2 2406.09414 · SAM 2 2408.00714 · Grounding DINO 2303.05499</p>
+<p><b>검출·추적</b> — RT-DETR 2304.08069 · D-FINE 2410.13842 · RF-DETR 2511.09554 · ByteTrack 2110.06864</p>
+<p><b>예측·얼어붙기</b> — 등속 모델 1903.07933 · Trautman 외 (IJRR 2015) · Mavrogiannis 외 2103.05668 · PGIF-MPPI 2608.08323</p>
+<p><b>보정</b> — Calibrated Gaussian Predictors 2603.10407 · CoCoNav 2608.07751</p>
+</div>
+</div>
+<aside>덱의 각 장에 나온 문헌을 주제별로 모았다. 숫자만 있는 항목은 arXiv 번호이고, 학회지나 책은 저자와 연도를 적었다. 처음부터 모두 읽을 필요는 없다. 앞 장의 다섯 가지를 먼저 읽고, 이 덱의 장단점 표에서 궁금해진 방법의 원 논문만 골라 읽기를 권한다.</aside>
+</section>
+</div></div>
+<div id="notes"><b>발표자 노트</b><div id="notes-body"></div></div>
+<div id="bar">
+<button id="prev" aria-label="이전">◀</button><span id="count"></span><button id="next" aria-label="다음">▶</button>
+<span id="ttl">로봇 인식 기초 — 지형 지도에서 사람 추적까지</span>
+<button id="nb" title="N 키">노트</button><button id="fs" title="F 키">전체 화면</button>
+<a href="study-perception.pptx" download>PPTX</a><a href="./../">목록</a>
+</div>
+<pre id="report" hidden></pre>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script>
+(function () {
+  var slides = Array.prototype.slice.call(document.querySelectorAll('#frame > section'));
+  var frame = document.getElementById('frame'), notes = document.getElementById('notes');
+  var q = new URLSearchParams(location.search), shot = q.has('shot') || q.has('check');
+  if (shot) document.body.classList.add('shot');
+  var i = 0;
+  function fit() {
+    if (shot) return;
+    var st = document.getElementById('stage');
+    var s = Math.min(st.clientWidth / 1920, st.clientHeight / 1080);
+    frame.style.transform = 'scale(' + s + ')';
+  }
+  function show(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach(function (el, k) { el.classList.toggle('on', k === i); });
+    document.getElementById('count').textContent = (i + 1) + ' / ' + slides.length;
+    var a = slides[i].querySelector('aside');
+    document.getElementById('notes-body').textContent = a ? a.textContent : '';
+    if (!shot) history.replaceState(null, '', '#' + (i + 1));
+  }
+  function withAllFonts(fn) {
+    document.body.classList.add('all');
+    void document.body.offsetHeight;
+    requestAnimationFrame(function () {
+      document.fonts.ready.then(function () { document.body.classList.remove('all'); fn(); });
+    });
+  }
+  window.withAllFonts = withAllFonts;
+  // 넘침 검사: 본문 요소가 장 밖으로 나가거나 각주 띠를 덮으면 적는다.
+  function check() {
+    var bad = [];
+    slides.forEach(function (sec, k) {
+      show(k);
+      var box = sec.getBoundingClientRect();
+      Array.prototype.forEach.call(sec.querySelectorAll('.katex-error'), function (el) {
+        bad.push({ slide: k + 1, id: sec.id, tag: 'TeX', text: (el.getAttribute('title') || el.textContent).slice(0, 60), over: 0 });
+      });
+      Array.prototype.forEach.call(sec.querySelectorAll('img'), function (el) {
+        if (!el.complete || !el.naturalWidth) bad.push({ slide: k + 1, id: sec.id, tag: 'IMG', text: el.getAttribute('src'), over: 0 });
+      });
+      var foot = sec.querySelector('[data-foot]');
+      var limit = foot ? foot.getBoundingClientRect().top - 4 : box.bottom - 24;
+      Array.prototype.forEach.call(sec.querySelectorAll('p, h1, h2, h3, img, td, th, li, .katex-display, [data-box]'), function (el) {
+        if (foot && foot.contains(el)) return;
+        if (el.closest('aside')) return;
+        var r = el.getBoundingClientRect();
+        if (r.width === 0 && r.height === 0) return;
+        if (r.bottom > limit + 0.5 || r.right > box.right - 40) {
+          bad.push({ slide: k + 1, id: sec.id, tag: el.tagName, text: (el.textContent || el.alt || '').slice(0, 40), over: Math.round(Math.max(r.bottom - limit, r.right - (box.right - 40))) });
+        }
+      });
+    });
+    var rep = document.getElementById('report');
+    rep.textContent = JSON.stringify(bad);
+    rep.setAttribute('data-done', '1');
+  }
+  function start() {
+    if (window.renderMathInElement) {
+      renderMathInElement(document.getElementById('frame'), {
+        delimiters: [{ left: '$$', right: '$$', display: true }, { left: '\\(', right: '\\)', display: false }],
+        throwOnError: false
+      });
+    }
+    // 한글 웹 글꼴은 글자 묶음마다 따로 받고, 숨은 장의 글자는 받지 않는다. 장을 모두 보여 글꼴을 받은 뒤 잰다.
+    if (q.has('check')) { withAllFonts(check); return; }
+    var s = shot ? parseInt(q.get('shot'), 10) - 1 : parseInt(location.hash.slice(1), 10) - 1;
+    show(isNaN(s) ? 0 : s);
+  }
+  show(0); fit(); window.addEventListener('resize', fit);
+  window.addEventListener('DOMContentLoaded', function () {
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(start); else start();
+  });
+  document.getElementById('prev').onclick = function () { show(i - 1); };
+  document.getElementById('next').onclick = function () { show(i + 1); };
+  document.getElementById('nb').onclick = function () { notes.classList.toggle('show'); };
+  document.getElementById('fs').onclick = function () {
+    if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen();
+  };
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { show(i + 1); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { show(i - 1); e.preventDefault(); }
+    else if (e.key === 'Home') show(0);
+    else if (e.key === 'End') show(slides.length - 1);
+    else if (e.key === 'n' || e.key === 'N') notes.classList.toggle('show');
+    else if (e.key === 'f' || e.key === 'F') document.getElementById('fs').click();
+  });
+  var x0 = null;
+  document.getElementById('stage').addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+  document.getElementById('stage').addEventListener('touchend', function (e) {
+    if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0; x0 = null;
+    if (Math.abs(dx) > 40) show(i + (dx < 0 ? 1 : -1));
+  });
+})();
+</script>
+</body>
+</html>
