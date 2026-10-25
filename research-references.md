@@ -899,7 +899,7 @@ Athena-WBC([arXiv:2607.04837](https://arxiv.org/abs/2607.04837))는 저자가 �
 | ViBe | 2026.09 · arXiv | 고정한 SONIC에 시각 인코더와 LoRA 어댑터만 RL로 붙여 장면을 보게 함 | I.12 | [논문](https://arxiv.org/abs/2609.09918) · [코드](https://github.com/lok-i/vibe) |
 | PLAT | 2026.09 · arXiv | 드문드문한 시각 지정 키프레임으로 추종기를 부름 | I.13 | [논문](https://arxiv.org/abs/2609.25754) |
 | GAE (지연 조건 원격조종) | 2026.09 · arXiv | 원격조종 지연을 조건으로 받는 추종기 | I.13 | [논문](https://arxiv.org/abs/2609.34233) |
-| NEXUS | 2026.09 · arXiv | 평지 동작을 지형 위 동작으로 바꾼 짝 데이터 약 1,000시간과 깊이 영상을 보는 지형 적응 원격조종 전신 추종기 | I.12, B.16.6 | [논문](https://arxiv.org/abs/2609.39000) · [코드](https://github.com/Gamma-Robot/NEXUS) |
+| NEXUS | 2026.09 · arXiv | 평지 동작을 지형 위 동작으로 바꾼 짝 데이터 약 1,000시간과 깊이 영상을 보는 지형 적응 원격조종 전신 추종기 | I.12, B.16.6, B.16.8 | [논문](https://arxiv.org/abs/2609.39000) · [프로젝트](https://nexus-humanoid.github.io/) · [코드](https://github.com/Gamma-Robot/NEXUS) |
 | CoFiT | 2026.10 · arXiv | 안전 필터를 아는 추종기 미세 조정, 제약 위반 시간 SONIC −21 % | I.12 | [논문](https://arxiv.org/abs/2610.02341) |
 | Beyond Retargeting | 2026.10 · arXiv | 리타기팅 없이 동작 기본 단위 코드북으로 원격조종 | I.13 | [논문](https://arxiv.org/abs/2610.07891) |
 | TTCO (Test-Time Compute for Humanoid BFMs) | 2026.10 · arXiv | 고정 추종기의 명령을 폐루프 시뮬레이션 표본으로 최적화 | I.12, I.13 | [논문](https://arxiv.org/abs/2610.14896) |

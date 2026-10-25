@@ -294,7 +294,7 @@ section.t.divider h2 { font-size:80px; }
 <section id="d2" class="t dark divider">
 <p class="kicker">2 · 내비 층이 넘기는 것 · B.16.8, B.4</p>
 <h2>경계를 어디에 두느냐가<br>연구마다 다르다</h2>
-<p class="lead">CMU 스택은 속도를, LP-NavOA는 방향을, FocusNav는 waypoint를 넘기고, GLAD는 경계를 없앴다.</p>
+<p class="lead">CMU 스택은 속도를, LP-NavOA는 방향을, FocusNav는 waypoint를 넘기고, GLAD는 경계를 없앴다. NEXUS는 사람의 전신 동작을 넘긴다.</p>
 <aside>두 번째 장은 위 층과 아래 층의 경계다. 같은 G1 로봇을 써도 연구마다 넘기는 것이 다르다. travplan과 가장 가까운 것은 CMU 스택이고, 가장 먼 것은 경계를 없앤 종단간 정책이다.</aside>
 </section>
 <section id="boundary" class="t">
@@ -306,9 +306,10 @@ section.t.divider h2 { font-size:80px; }
 <tr><td>중간</td><td>LP-NavOA</td><td>진행 방향 하나</td><td>얼린 보행 정책과 안전 필터</td></tr>
 <tr><td>아래</td><td>FocusNav</td><td>정책 안에서 예측한 waypoint</td><td>같은 정책(waypoint 둘레 BEV만 본다)</td></tr>
 <tr><td>없음</td><td>GLAD, End-to-End</td><td>전진 명령 하나, 또는 점군에서 바로 관절</td><td>정책 하나</td></tr>
+<tr><td>다른 축</td><td>NEXUS(원격조종, 4장)</td><td>사람의 평지 전신 동작 13프레임. 지형 정보는 없다</td><td>깊이 영상을 보는 전신 추종 정책</td></tr>
 </table>
 <p class="take"><b>travplan:</b> LP-NavOA의 "아래 층은 얼리고 위 층은 명령의 일부만 덮어쓴다"는 Guidance 폴백(TP-0078)의 반대 방향이다. 폴백은 Planner 전체를 바꿔 끼운다.</p>
-<aside>표는 B.16.8의 네 연구를 경계가 높은 순서로 놓았다. CMU 스택은 몸체가 달라도 차체 속도와 yaw rate만 넘긴다. LP-NavOA는 얼린 보행 정책의 진행 방향 명령 하나만 덮어쓴다. FocusNav는 waypoint를 정책 안에서 예측하고 그 둘레만 본다. GLAD와 End-to-End는 경계를 없앴다. travplan은 4초 궤적을 넘기므로 표의 맨 위다. LP-NavOA식으로 하면 Planner D의 궤적은 두고 진행 방향만 Guidance 쪽으로 돌리는 판이 가능하다. 아직 시험하지 않았다.</aside>
+<aside>표는 B.16.8의 연구를 경계가 높은 순서로 놓았다. CMU 스택은 몸체가 달라도 차체 속도와 yaw rate만 넘긴다. LP-NavOA는 얼린 보행 정책의 진행 방향 명령 하나만 덮어쓴다. FocusNav는 waypoint를 정책 안에서 예측하고 그 둘레만 본다. GLAD와 End-to-End는 경계를 없앴다. 맨 아래 NEXUS는 축이 다르다. 위 층인 사람이 전신 동작을 통째로 넘기지만 지형 정보는 없고, 지형은 아래 층의 깊이 영상만 본다. travplan은 4초 궤적을 넘기므로 표의 맨 위다. LP-NavOA식으로 하면 Planner D의 궤적은 두고 진행 방향만 Guidance 쪽으로 돌리는 판이 가능하다. 아직 시험하지 않았다.</aside>
 </section>
 <section id="cmu" class="t">
 <div class="head"><p class="kicker">B.16.8 · CMU 자율 스택</p><h2>몸체가 달라도 아래 층에 넘기는 것은 속도와 yaw rate뿐이다</h2></div>
@@ -475,6 +476,19 @@ section.t.divider h2 { font-size:80px; }
 <div class="card or"><span class="tag or">읽는 법</span><p>MPKPE는 실패 전 구간만 평균해서 일찍 실패한 추종기가 유리하다. 오차는 성공률과 함께 읽는다. 위가 덮인 지형은 다루지 않는다.</p></div>
 </div>
 <aside>그림 4의 가운데가 지형 적응이다. 평지에서는 90.0 %와 88.33 %로 SONIC과 비슷하지만, 어려운 지형에서는 51.9 %와 31.76 %로 벌어진다. 오른쪽 아래의 몸체 위치 오차는 NEXUS가 가장 크다. 저자는 이 값이 실패 전까지만 평균한 것이라 일찍 넘어진 추종기가 유리해진다고 설명한다. 절제에서 교사–학생은 성공률보다 추종 정확도를 올렸다. 뿌리 위치 오차가 19.60 cm 대 31.95 cm였다. travplan으로 가져올 것은 정답 지도를 보는 교사와 belief 지도를 보는 학생의 구성, 그리고 실패율이 높은 구간을 더 뽑는 표집이다. 코드는 CC BY-NC라 상업 로봇에는 쓸 수 없다.</aside>
+</section>
+<section id="nexus-real" class="t">
+<div class="head"><p class="kicker">B.16.8 · NEXUS 실물 배포</p><h2>학습 지형보다 높은 계단과 가파른 경사를 미세 조정 없이 지났다</h2></div>
+<div class="cols">
+<figure><img src="../../assets/thumbs/ad79bc06c6f0.webp" style="height:360px"><figcaption>NEXUS 실물 배포(논문 Fig. 1): 운영자는 평지에서 움직이고, G1은 계단·60 cm 대·풀밭 경사 위에서 같은 동작을 한다 — nexus-humanoid.github.io</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">학습 → 실물</span><p>학습 지형은 10 cm 계단과 약 16.7° 경사뿐이었다. 실물에서는 15 cm 계단을 이어 오르고, 약 30° 풀밭 경사를 지나고, 60 cm 대에서 내려왔다. 60 cm 대와 옆돌기의 일부 시도에서 넘어졌다.</p></div>
+<div class="card or"><span class="tag or">넘기는 것</span><p>별도 PC가 사람 자세를 GMR로 리타기팅해 ZeroMQ로 보낸다. 정책은 평지 동작 13프레임과 깊이 32 × 18을 받아 Orin NX에서 50 Hz로 돈다. 명령에 지형 정보는 없다.</p></div>
+</div>
+</div>
+<p class="take"><b>travplan:</b> 어디로 갈지는 아직 사람이 정한다. 저자가 꼽은 다음 과제, 곧 원격조종 기록을 자율의 시연으로 쓰는 길은 배달로봇 로그로 배운 MIMIC(B.6d)과 같다.</p>
+<div class="foot" data-foot><p>[1] NEXUS 프로젝트 nexus-humanoid.github.io · arXiv:2609.39000(2026-09-30)</p></div>
+<aside>프로젝트 페이지의 실물 배포다. 사람은 늘 평지에 서 있고, 로봇만 계단과 대 위에 있다. 학습 지형은 10 cm 계단과 약 16.7도 경사뿐이었는데, 실물에서는 그보다 높은 15 cm 계단과 30도 가까운 풀밭 경사를 미세 조정 없이 지났다. 넘어진 것은 60 cm 대에서 내려오거나 옆돌기를 하는 일부 시도이고, 시도 횟수는 밝히지 않았다. 주행 관점에서 중요한 점은 위 층이 사람이라는 것이다. 어디로 갈지는 사람이 정하고, 정책은 그 동작을 지형에 맞출 뿐이다. 저자는 이 추종기를 과제 수준 Planner에 잇는 것을 다음 과제로 꼽고, 지형에 맞춘 원격조종 기록을 자율 행동의 시연으로 쓸 수 있다고 적었다. travplan에서는 실물 시험에서 사람이 원격으로 몬 구간을 Planner D의 DAgger 시연에 더하는 판이 같은 자리다. 실물 시험 전이라 아직 기록은 없다.</aside>
 </section>
 <section id="projection" class="t">
 <div class="head"><p class="kicker">B.16.8 · 셋째 갈래</p><h2>학습 정책의 출력은 실행 전에 맞는 집합으로 투영한다</h2></div>
