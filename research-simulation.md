@@ -1065,6 +1065,14 @@ $v^{\text{real}} = (1 - s)\, v^{\text{cmd}}$로 줄이는 것만으로 Controlle
 ![Sim2Dust Fig. 9b](https://arxiv.org/html/2508.11503v2/graphics/depth_real.png)
 *그림 — Sim2Dust (Fig. 9b): 현무암 자갈 위 실물 깊이 영상. 시뮬 깊이와 달리 잡음과 빈 칸이 많아 깊이 입력 정책의 오차가 커졌다. 출처: [arXiv:2508.11503](https://arxiv.org/abs/2508.11503)*
 
+#### GM-Loco — 강체 접촉으로 배운 휴머노이드는 무른 지면에서 0 %였다
+
+**Georgia Tech의 GM-Loco([arXiv:2609.10286](https://arxiv.org/abs/2609.10286), 2026-09)는 Sim2Dust와 반대로 보이는 결과를 냈다.** 강체 접촉으로 배운 G1 정책은(무작위화 범위는 본문에 없다) MPM으로 푼 모래와 양귀비씨 위에서 성공률 0 %였다.
+3D RFT로 접선력까지 푼 알갱이 접촉 모델로 배운 정책은 같은 조건에서 100 %였다. 학습은 Isaac Lab에서 Warp로 짠 RFT 모델로 하고, 평가는 Newton의 MPM으로 했다(S.1.2).
+두 결과의 차이는 속도와 접촉 형태로 읽는다. Sim2Dust는 5–25 cm/s로 구르는 바퀴였고, GM-Loco는 발이 박히는 이족 보행에 1.0–2.5 m/s 명령이었다(MPM 평가, 실물 시험은 0.5–2.5 m/s). 방법과 수치는 Planner 문서 B.16.6의 GM-Loco 카드에 있다.
+
+**travplan에 주는 의미.** "변형 지면 전에 미끄럼 무작위화로 충분하다"는 판단은 단단한 보도에서만 성립한다. 잔디·흙길이 요구 사항이 되면, 먼저 변형 지면 시뮬레이션 한 판으로 무작위화한 정책이 버티는지 본다.
+
 #### Chrono::CRM — GPU SPH로 푸는 연속체 지형역학
 
 **Chrono::CRM은 Chrono의 SPH(smoothed particle hydrodynamics) 틀 위에 지은 연속체 지형역학 모델이다**([arXiv:2507.05643](https://arxiv.org/abs/2507.05643),

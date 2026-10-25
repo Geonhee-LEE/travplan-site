@@ -197,9 +197,9 @@ footer { max-width: 1000px; margin: 0 auto; padding: 0 16px 40px; color: var(--m
   nav.subtabs button { min-height: 32px; }
 }
 </style>
-<header data-generated="2026-10-24 23:38 KST">
+<header data-generated="2026-10-25 02:27 KST">
   <h1>travplan 대시보드</h1>
-  <div class="meta" data-site-meta><a href="index.html">← travplan 홈</a> · 갱신 2026-10-24 23:38 KST</div>
+  <div class="meta" data-site-meta><a href="index.html">← travplan 홈</a> · 갱신 2026-10-25 02:27 KST</div>
 </header>
 <nav class="tabs" role="tablist" aria-label="대시보드 탭"><button role="tab" id="tabbtn-state" aria-controls="tab-state" aria-selected="true" tabindex="0" data-tab="state" class="active">진행 현황</button><button role="tab" id="tabbtn-todo" aria-controls="tab-todo" aria-selected="false" tabindex="-1" data-tab="todo">TODO</button><button role="tab" id="tabbtn-prd" aria-controls="tab-prd" aria-selected="false" tabindex="-1" data-tab="prd">PRD</button><button role="tab" id="tabbtn-arch" aria-controls="tab-arch" aria-selected="false" tabindex="-1" data-tab="arch">아키텍처 · 기능 설명</button><button role="tab" id="tabbtn-research" aria-controls="tab-research" aria-selected="false" tabindex="-1" data-tab="research">리서치</button><button role="tab" id="tabbtn-design" aria-controls="tab-design" aria-selected="false" tabindex="-1" data-tab="design">설계 · PoC</button><button role="tab" id="tabbtn-sim" aria-controls="tab-sim" aria-selected="false" tabindex="-1" data-tab="sim">시뮬레이션 ▶</button></nav>
 <main>
@@ -208,8 +208,8 @@ footer { max-width: 1000px; margin: 0 auto; padding: 0 16px 40px; color: var(--m
 <div class="kpi"><div class="kpi-label">TODO 완료</div><div class="kpi-val">20/80</div><div class="progress-bar"><div class="progress-fill" style="width:25%"></div></div></div>
 <div class="kpi"><div class="kpi-label">진행 중·오늘</div><div class="kpi-val">0</div></div>
 <div class="kpi"><div class="kpi-label">사용자 실행 대기</div><div class="kpi-val">8</div></div>
-<div class="kpi"><div class="kpi-label">열린 PR</div><div class="kpi-val">6</div></div>
-<div class="kpi"><div class="kpi-label">최근 7일 merge</div><div class="kpi-val">24</div></div>
+<div class="kpi"><div class="kpi-label">열린 PR</div><div class="kpi-val">8</div></div>
+<div class="kpi"><div class="kpi-label">최근 7일 merge</div><div class="kpi-val">25</div></div>
 </div>
 <div class="card md"><h2>현재 병목</h2><p><mark>스워브 plant에서 치명은 거의 사라졌지만(4/360), 레벨 3의 3분의 1이 시간 초과로 끝난다. 특히 레벨 3 경사로는 거의 지나가지 못한다.</mark></p>
 <ul>
@@ -1541,7 +1541,7 @@ LiDAR 링 사이가 비어 로봇 주변 3 m 안의 10–12%가 미관측으로 
 <td>스모크 끝, 짝 비교는 <a class="tp tp-backlog" href="#todo" data-tp="TP-0169" title="백로그 · TP-0032 후속: 지연·드리프트 치명 실패의 짝 비교 — 4 시나리오 × seed 0–9 × 오프셋 3으로 --latency 2 2 3, --pose-drift 0.05 ...">TP-0169</a>와 함께(사용자 실행)</td>
 </tr>
 </tbody>
-</table><h3>열린 PR</h3><ul class='prs'><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #258</span> [auto] TP-0157 배경 0.6b·0.7b 자체 측정 재현 — n=4는 95%가 아니라 80% <a class="tp tp-done" href="#todo" data-tp="TP-0157" title="완료 · 배경 0.6b·0.7b의 자체 측정 둘에 재현 절차를 붙인다: (1) scripts/train_planner_d.py 교사 라벨의 제어 변화율 표준편차가 0.5 근처라는 것(... · PR #258(열림)">✓ TP-0157</a> </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #253</span> [auto] TP-0091 소셜 내비 지표 정지 시간·PSC <a class="tp tp-done" href="#todo" data-tp="TP-0091" title="완료 · 기록에서 복원 · 이슈 #252(열림) · PR #253(열림)">✓ TP-0091</a> </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #249</span> [auto] TP-0168 반응형 보행자 ORCA 지평 τ를 --ped-horizon으로 노출 <a class="tp tp-done" href="#todo" data-tp="TP-0168" title="완료 · TP-0036 후속: 반응형 보행자의 반응 지평 τ(SHARE보다 센 손잡이)를 --ped-horizon으로 노출하고 τ 0.5·2·4 s에서 충돌·도달 민감도 · 이슈 #248(열림) · PR #249(열림)">✓ TP-0168</a> </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #247</span> [auto] TP-0170 지연을 아는 MPPI(mppi_delay) <a class="tp tp-done" href="#todo" data-tp="TP-0170" title="완료 · TP-0032 후속: 지연을 아는 Controller — 제어 지연 스텝을 MPPI rollout에 넣는다(mppi_plant_lag처럼). 지연만 켠 치명 3/12가 줄는지 · 이슈 #246(열림) · PR #247(열림)">✓ TP-0170</a> </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #227</span> Planner B.6b TacitVLA(추론 문장을 행동에서 가린 추론 VLA) 정독  </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #224</span> Planner B.6b Pi API 베타(Physical Intelligence)와 π 계열 연표  </li></ul><h3>최근 merge된 PR</h3><ul class='prs'><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #266</span> 개념 공부용 슬라이드 덱 7개 (study-*)  <span class="date">2026-10-24</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #264</span> 휴머노이드·4족 보행 내비게이션 정리 — 챕터 발표 덱(37장)·NEXUS·Flexion Reflect v1.0·LocoFormer 계보, 관련 PR 6건과 #263을 합친다  <span class="date">2026-10-23</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #263</span> 강화학습 발표 덱: AWR·CQL·IQL 풀이 — 15장 카드를 풀고 CQL·IQL·비교 세 장 추가(40 → 43장)  <span class="date">2026-10-23</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #262</span> 도움말 검토 반영 — 사실 오류 8곳, 빠진 내용 3가지, 정리 5가지  <span class="date">2026-10-23</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #261</span> 도움말을 주제 다섯의 허브로 — 사용법·코드 실행·페이지 생성·웹 통신·용어 사전 (help_src/*.md → build_help.py)  <span class="date">2026-10-23</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #260</span> 첫 화면에 도움말 단추와 슬라이드 갤러리(챕터 발표 덱·스터디 슬라이드)  <span class="date">2026-10-23</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #259</span> README 실행법 + 도움말 페이지(로컬 서버·TCP·HTTP·curl·외부 서버의 원리와 문제 해결)  <span class="date">2026-10-23</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #257</span> Planner B.18 로봇 분야별 계획·제어 지형 — 레이싱카·모바일·도로·사족·휴머노이드  <span class="date">2026-10-23</span></li></ul><p class="note">GitHub 인덱스 갱신: 2026-10-24 23:38 · <code>python3 automation/gh_index.py</code></p></div>
+</table><h3>열린 PR</h3><ul class='prs'><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #272</span> help: 질문으로 찾기(관련 절 검색)와 Claude 답변 게시본  </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #270</span> automation: merge 전 전문가 검토를 훅으로 강제  </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #258</span> [auto] TP-0157 배경 0.6b·0.7b 자체 측정 재현 — n=4는 95%가 아니라 80% <a class="tp tp-done" href="#todo" data-tp="TP-0157" title="완료 · 배경 0.6b·0.7b의 자체 측정 둘에 재현 절차를 붙인다: (1) scripts/train_planner_d.py 교사 라벨의 제어 변화율 표준편차가 0.5 근처라는 것(... · PR #258(열림)">✓ TP-0157</a> </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #253</span> [auto] TP-0091 소셜 내비 지표 정지 시간·PSC <a class="tp tp-done" href="#todo" data-tp="TP-0091" title="완료 · 기록에서 복원 · 이슈 #252(열림) · PR #253(열림)">✓ TP-0091</a> </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #249</span> [auto] TP-0168 반응형 보행자 ORCA 지평 τ를 --ped-horizon으로 노출 <a class="tp tp-done" href="#todo" data-tp="TP-0168" title="완료 · TP-0036 후속: 반응형 보행자의 반응 지평 τ(SHARE보다 센 손잡이)를 --ped-horizon으로 노출하고 τ 0.5·2·4 s에서 충돌·도달 민감도 · 이슈 #248(열림) · PR #249(열림)">✓ TP-0168</a> </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #247</span> [auto] TP-0170 지연을 아는 MPPI(mppi_delay) <a class="tp tp-done" href="#todo" data-tp="TP-0170" title="완료 · TP-0032 후속: 지연을 아는 Controller — 제어 지연 스텝을 MPPI rollout에 넣는다(mppi_plant_lag처럼). 지연만 켠 치명 3/12가 줄는지 · 이슈 #246(열림) · PR #247(열림)">✓ TP-0170</a> </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #227</span> Planner B.6b TacitVLA(추론 문장을 행동에서 가린 추론 VLA) 정독  </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #224</span> Planner B.6b Pi API 베타(Physical Intelligence)와 π 계열 연표  </li></ul><h3>최근 merge된 PR</h3><ul class='prs'><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #268</span> docs: GM-Loco(알갱이 지면 휴머노이드 보행) 리서치 정리  <span class="date">2026-10-25</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #266</span> 개념 공부용 슬라이드 덱 7개 (study-*)  <span class="date">2026-10-24</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #264</span> 휴머노이드·4족 보행 내비게이션 정리 — 챕터 발표 덱(37장)·NEXUS·Flexion Reflect v1.0·LocoFormer 계보, 관련 PR 6건과 #263을 합친다  <span class="date">2026-10-23</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #263</span> 강화학습 발표 덱: AWR·CQL·IQL 풀이 — 15장 카드를 풀고 CQL·IQL·비교 세 장 추가(40 → 43장)  <span class="date">2026-10-23</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #262</span> 도움말 검토 반영 — 사실 오류 8곳, 빠진 내용 3가지, 정리 5가지  <span class="date">2026-10-23</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #261</span> 도움말을 주제 다섯의 허브로 — 사용법·코드 실행·페이지 생성·웹 통신·용어 사전 (help_src/*.md → build_help.py)  <span class="date">2026-10-23</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #260</span> 첫 화면에 도움말 단추와 슬라이드 갤러리(챕터 발표 덱·스터디 슬라이드)  <span class="date">2026-10-23</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #259</span> README 실행법 + 도움말 페이지(로컬 서버·TCP·HTTP·curl·외부 서버의 원리와 문제 해결)  <span class="date">2026-10-23</span></li></ul><p class="note">GitHub 인덱스 갱신: 2026-10-25 02:26 · <code>python3 automation/gh_index.py</code></p></div>
 <div class="card md"><h2>작업 환경</h2><details><summary>체크포인트, 가상환경, 그림·인덱스 재생성</summary><ul>
 <li><strong>브랜치.</strong> 두 PC 모두 main에서 이어간다.</li>
 <li><strong>체크포인트.</strong> <code>checkpoints/</code>는 git에 없다. 릴리스에서 받는다.
@@ -2730,7 +2730,7 @@ python3 scripts/build_study_slides.py --check            # 헤드리스 Chrome�
 python3 scripts/build_study_slides.py study-papers --pptx  # PPTX도 다시 만든다(python-pptx, Pillow 필요)
 python3 scripts/build_study_slides.py --covers           # 덱마다 첫 장을 찍어 갤러리 표지를 만든다(첫 장을 바꿨거나 덱을 더했을 때, Pillow 필요)
 </code></pre>
-<p><strong>리서치 문서 덱</strong>(<code>docs/slides/research-&lt;문서&gt;/</code>)은 대시보드 리서치 탭의 문서마다 한 덱이다(12덱, 2026-10-23 기준 1,776장).
+<p><strong>리서치 문서 덱</strong>(<code>docs/slides/research-&lt;문서&gt;/</code>)은 대시보드 리서치 탭의 문서마다 한 덱이다(12덱, 2026-10-25 기준 1,801장).
 원본은 <code>docs/research-*.md</code> 그대로이고, 대시보드와 같은 변환으로 본문·표·그림·수식을 모두 옮긴다. h2·h3마다 새 장을 열고,
 넘치면 다음 장으로 잇는다(표·목록은 행·항목 단위). 논문 상세 토글은 토글마다 한 장으로 줄이고 나머지는 대시보드 토글을 가리킨다.
 PPTX는 편집 가능한 판이다. 글자·표는 PowerPoint 텍스트이고, 그림은 원본 이미지, 별행 수식만 KaTeX로 조판한 그림이다.
@@ -14269,7 +14269,7 @@ $v t + v^2 / (2a) + m \le d_{\text{det}}$에서 $t$ = 0.3 s로 두면, 음의 �
 <p><strong>시간 동기화.</strong> 센서 여섯 개(LiDAR 1, 카메라 5)와 IMU를 PTP나 하드웨어 트리거로 맞춘다. 1 m/s로 움직일 때 50 ms 어긋나면 5 cm가 틀리고,
 회전 중이면 먼 곳일수록 더 틀린다. 스테레오 두 대는 반드시 같은 트리거로 찍는다.</p>
 <p><strong>travplan 시뮬과의 차이.</strong> 운동학 시뮬은 모든 층이 10 Hz(dt 0.1 s)로 같은 순간에 돌고 지연이 없다. 지연·위치 잡음 무작위화(TP-0032)를
-켜면 위 지연 예산을 시뮬에서 시험할 수 있다.</p></div></div><div class="docpanel subpanel" id="sub-research-d-3" role="tabpanel" aria-labelledby="subbtn-research-d-3"><p class="note">▶ 이 문서를 슬라이드로: <a href="slides/research-planner/">슬라이드 보기</a> (516장) · <a href="slides/research-planner/research-planner.pptx" download>PPTX 내려받기</a>(글자·표 편집 가능) · 발표 덱: <a href="slides/talk-legged/">travplan 챕터 발표 — 휴머노이드·4족 보행 내비게이션</a> (37장, <a href="slides/talk-legged/talk-legged.pptx" download>PPTX</a>) · 발표 덱: <a href="slides/talk-planner/">travplan 챕터 발표 — Planner</a> (40장, <a href="slides/talk-planner/talk-planner.pptx" download>PPTX</a>)</p>
+켜면 위 지연 예산을 시뮬에서 시험할 수 있다.</p></div></div><div class="docpanel subpanel" id="sub-research-d-3" role="tabpanel" aria-labelledby="subbtn-research-d-3"><p class="note">▶ 이 문서를 슬라이드로: <a href="slides/research-planner/">슬라이드 보기</a> (520장) · <a href="slides/research-planner/research-planner.pptx" download>PPTX 내려받기</a>(글자·표 편집 가능) · 발표 덱: <a href="slides/talk-legged/">travplan 챕터 발표 — 휴머노이드·4족 보행 내비게이션</a> (37장, <a href="slides/talk-legged/talk-legged.pptx" download>PPTX</a>) · 발표 덱: <a href="slides/talk-planner/">travplan 챕터 발표 — Planner</a> (40장, <a href="slides/talk-planner/talk-planner.pptx" download>PPTX</a>)</p>
 <nav class="subtabs" role="tablist" data-group="research-d3"><button role="tab" id="subbtn-research-d3-0" aria-controls="sub-research-d3-0" aria-selected="true" tabindex="0" data-sub="research-d3-0" class="active">개요</button><button role="tab" id="subbtn-research-d3-1" aria-controls="sub-research-d3-1" aria-selected="false" tabindex="-1" data-sub="research-d3-1">travplan과 고전 기준선</button><button role="tab" id="subbtn-research-d3-2" aria-controls="sub-research-d3-2" aria-selected="false" tabindex="-1" data-sub="research-d3-2">학습 로컬 Planner</button><button role="tab" id="subbtn-research-d3-3" aria-controls="sub-research-d3-3" aria-selected="false" tabindex="-1" data-sub="research-d3-3">생성형 궤적</button><button role="tab" id="subbtn-research-d3-4" aria-controls="sub-research-d3-4" aria-selected="false" tabindex="-1" data-sub="research-d3-4">Foundation·VLA·언어</button><button role="tab" id="subbtn-research-d3-5" aria-controls="sub-research-d3-5" aria-selected="false" tabindex="-1" data-sub="research-d3-5">위험 인지·로컬 내비</button><button role="tab" id="subbtn-research-d3-6" aria-controls="sub-research-d3-6" aria-selected="false" tabindex="-1" data-sub="research-d3-6">자율주행 자동차</button><button role="tab" id="subbtn-research-d3-7" aria-controls="sub-research-d3-7" aria-selected="false" tabindex="-1" data-sub="research-d3-7">다리·바퀴 로봇과 계보</button><button role="tab" id="subbtn-research-d3-8" aria-controls="sub-research-d3-8" aria-selected="false" tabindex="-1" data-sub="research-d3-8">분야별 지형</button><button role="tab" id="subbtn-research-d3-9" aria-controls="sub-research-d3-9" aria-selected="false" tabindex="-1" data-sub="research-d3-9">최근 연구 비교</button><button role="tab" id="subbtn-research-d3-10" aria-controls="sub-research-d3-10" aria-selected="false" tabindex="-1" data-sub="research-d3-10">작업 기록</button></nav><div class="card md subpanel active" id="sub-research-d3-0" role="tabpanel" aria-labelledby="subbtn-research-d3-0"><!-- doc: Planner | 2 -->
 <h1>Planner — 경로·궤적을 만드는 쪽 (§B)</h1>
 <p><strong>Planner는 로봇 상태, TravMap, 목표를 받아 경로나 시간 인덱스 궤적을 낸다.</strong> 제어 명령은 내지 않는다.
@@ -17415,7 +17415,7 @@ nuPlan 폐루프 평가 설계다(B.12.1).</p>
 <li><strong>평가는 폐루프로 한다.</strong> travplan 벤치마크는 이미 폐루프다. 여기에 NAVSIM v2처럼 "조금 어긋난 시작 상태"에서의 회복력을 더하면 좋다.</li>
 <li><strong>데이터를 키울 때는 모델도 키운다.</strong> 시연 3만 2,768개로 학습한 Planner D는 작다. 스케일링 법칙은 데이터와 모델을 함께 키우라고 한다.</li>
 <li><strong>추론 VLA는 당장 필요하지 않다.</strong> NoRD의 결과처럼 추론 없이도 성능이 나고, travplan의 계산 예산(Orin, 리서치 H.4)에는 무겁다.</li>
-</ol></div><div class="card md subpanel" id="sub-research-d3-7" role="tabpanel" aria-labelledby="subbtn-research-d3-7" data-math="616"><h3>B.12 로봇별 오픈소스 Planner: 자율주행 자동차, 사족보행, 휴머노이드, 바퀴 로봇</h3>
+</ol></div><div class="card md subpanel" id="sub-research-d3-7" role="tabpanel" aria-labelledby="subbtn-research-d3-7" data-math="641"><h3>B.12 로봇별 오픈소스 Planner: 자율주행 자동차, 사족보행, 휴머노이드, 바퀴 로봇</h3>
 <p><strong>네 종류 로봇의 오픈소스 Planner는 모두 "전역 경로, 로컬 계획, 추종 제어"의 세 층이다.</strong> 로봇마다 다른 것은 로컬 계획이 무엇을 지키느냐다.
 자동차는 교통 규칙과 차량 기구학을, 사족보행은 발 디딜 곳과 몸통 충돌을, 휴머노이드는 발자국 순서와 전신 균형을, 바퀴 로봇은 비용 지도와
 구동 방식(차동, 전방향, 스워브)을 지킨다. travplan의 스워브 보도 로봇은 바퀴 로봇 층위에 있다. 그래도 2.5D 지형 비용은 다리 로봇 스택에서,
@@ -25112,7 +25112,7 @@ travplan의 운행 영역은 대부분 포장 보도라, 이 계열이 직접 �
 </ul>
 <p><strong>이어진 연구.</strong> 같은 연구실은 라이보2로 마라톤을 완주했다(이 소절의 라이보2 카드).
 Georgia Tech의 Kamohara 외(<a href="https://arxiv.org/abs/2609.10286">arXiv:2609.10286</a>, 2026-09, 휴머노이드)는 이 계열이 수직력만 입자 물리로 두고 접선력은 쿨롱 마찰 같은 휴리스틱으로 채운다고 지적했다.
-그 대안으로 3D RFT(resistive force theory)에서 접선력까지 유도한 모델을 Isaac Lab에 넣고, Newton의 MPM(material point method) 시뮬레이션으로 평가했다(시뮬레이션 문서 S.1.2).</p>
+그 대안으로 3D RFT(resistive force theory)에서 접선력까지 유도한 모델을 Isaac Lab에 넣고, Newton의 MPM(material point method) 시뮬레이션으로 평가했다(시뮬레이션 문서 S.1.2). 방법과 결과는 B.16.6의 GM-Loco 카드에 있다.</p>
 <p><strong>한계.</strong> 저자가 밝힌 한계는 본문이 유료라 확인하지 못했다.</p>
 <p>우리가 보기에:</p>
 <ul>
@@ -25336,7 +25336,7 @@ Go2-W는 로봇 설정과 배포 코드만 있고 학습 과제 목록에는 없
 <h4>B.16.6 다른 연구실의 휴머노이드: transformer 정책, 동작 추종, 행동 잔차</h4>
 <p><strong>B.14와 B.16.1–B.16.4에서 다룬 연구실 밖의 휴머노이드 연구에서 travplan이 옮길 것은 정책 자체가 아니라 학습 절차, sim-to-real 보정, 층 사이의 인터페이스다.</strong>
 이 연구들은 세 갈래로 자랐다. 첫째는 고유감각만 보는 이족 보행 RL이다.
-UC Berkeley의 Malik·Darrell·Sreenath는 Digit에서 이력을 보는 transformer로 실외 보행을 보였다. Sreenath 연구실은 Cassie에서 입출력 이력을 보는 정책으로 달리기와 뛰기를 보였다.
+UC Berkeley의 Malik·Darrell·Sreenath는 Digit에서 이력을 보는 transformer로 실외 보행을 보였다. Sreenath 연구실은 Cassie에서 입출력 이력을 보는 정책으로 달리기와 뛰기를 보였다. Georgia Tech의 GM-Loco는 알갱이 접촉 모델로 학습한 G1을 실제 모래 위에서 걷게 했다.
 둘째는 사람 동작 추종이다. CMU LeCAR Lab(Guanya Shi)은 원격조종(H2O·OmniH2O)에서 시작해, 실물 기록으로 시뮬레이터를 고치는 ASAP으로 갔다.
 Stanford(HumanPlus)와 UC San Diego(ExBody)는 사람 동작 데이터로 Unitree H1을 움직였다. HKUST의 HumanX는 영상 한 편에서 물체 상호작용까지 합성해 G1이 공을 다루게 했다.
 셋째는 지형이나 과제 비용을 보는 정책이다. Humanoid Parkour와 Amazon FAR의 PHP는 깊이 영상을, VideoMimic은 몸통 둘레의 높이 지도를 본다.
@@ -25345,7 +25345,7 @@ BeyondMimic(Sreenath 연구실과 Stanford의 C. Karen Liu)은 생성 중에 과
 높이 지도를 보는 휴머노이드 보행 정책(PIM·BeamDojo·HPC)은 인식 문서 A.8에, LiDAR 복셀을 보는 Gallant는 B.12.3에 있다.
 H2O·OmniH2O의 1저자가 NVIDIA GEAR와 함께 만든 HOVER는 B.16.1에, Boston Dynamics·RAI Institute의 Atlas RL(ZEST)은 B.16.4에 있다.</p>
 <details>
-<summary>자세히: 이 소절의 연구 목록(표 25행)</summary>
+<summary>자세히: 이 소절의 연구 목록(표 27행)</summary>
 <table>
 <thead>
 <tr>
@@ -25509,6 +25509,13 @@ H2O·OmniH2O의 1저자가 NVIDIA GEAR와 함께 만든 HOVER는 B.16.1에, Bost
 <td>Perceptive Humanoid Parkour(PHP, RSS 2026)</td>
 <td>G1</td>
 <td>motion matching으로 기술을 이은 기준 궤적, 깊이 학생을 DAgger + RL로 증류</td>
+<td>이 소절</td>
+</tr>
+<tr>
+<td>2026</td>
+<td>GM-Loco(arXiv)</td>
+<td>G1</td>
+<td>접선력까지 3D RFT로 푼 알갱이 접촉 모델로 학습, VAE 교사–학생이 지면 세기를 추정해 실제 모래 위를 걸음</td>
 <td>이 소절</td>
 </tr>
 <tr>
@@ -25702,7 +25709,132 @@ OSU의 Siekmann 외(Fern·Hurst 공저)는 힘과 속도에 거는 확률적 주
 그래서 Agility는 '이 점으로 가라'는 위치 목표를 택했다. travplan의 Planner도 경로나 시간 인덱스 궤적(<code>PlanResult</code>)을 넘기고, Controller가 그 위치 오차를 고쳐 body twist를 낸다.
 시뮬레이션의 접촉 모델을 6개월 동안 고친 경험은, 보상 항을 늘리기 전에 시뮬레이터가 틀린 이유를 먼저 찾으라는 교훈이다. travplan에서는 스워브 바퀴의 미끄럼(TP-0033)이 같은 자리다.</p>
 <div class="fig-grid"><figure class="fig"><a class="thumb" href="https://cdn.prod.website-files.com/6980c63561bbbeb67b4b7ab5/698e3705e1e54075f906b6ce_698e0486313a2eb0bcd08c61_6849e0909c34fef34c98a1fe_Charting-RL-Performance.png" title="원본 보기"><img alt="Agility RL step recovery" src="assets/thumbs/74de36fdbd72.webp" loading="lazy"></a><figcaption>그림 — Digit 발 디딤 회복 (블로그 그림): Digit에 앞뒤(세로축)와 좌우(가로축) 충격량(N·s)을 준 시험의 결과다. 시뮬레이션인지 실물인지는 글에 적혀 있지 않다. 초록은 회복, 붉은색은 넘어짐, 파랑은 걸음 없이 버틴 경우다. 왼쪽 모델 기반 제어기보다 오른쪽 RL 제어기의 초록 영역이 넓다(그림 제목은 둘 다 2024-08-15). 출처: <a href="https://www.agilityrobotics.com/content/crossing-sim2real-gap-with-isaaclab">Agility Robotics 2024-10-31</a></figcaption></figure>
-</div><p><strong>둘째 갈래(사람 동작 추종).</strong> 이 갈래는 사람 동작을 따라 하는 전신 정책이고, 공통 문제는 로봇이 할 수 없는 동작을 거르고 시뮬레이터의 오차를 고치는 일이다. H2O는 시뮬레이션 실행 가능성으로, ExBody2는 기본 정책의 추종 오차로 데이터를 걸렀다.
+</div><p><strong>GM-Loco — 접선력까지 3D RFT로 푼 알갱이 접촉 모델로 학습해, G1이 실제 모래 위를 2.5 m/s 명령까지 걸었다</strong>(<a href="https://arxiv.org/abs/2609.10286">arXiv:2609.10286</a>, Kamohara·Wu·Zong·Goldman·Nakka·Hutchinson·Zhao, Georgia Tech·Northeastern, arXiv 2026-09-14(v2), 학회 게재는 확인하지 못했다; <a href="https://humanoid-gm-locomotion.github.io/HUMANOID-GM/">프로젝트</a>, 공개 코드는 찾지 못했다(2026-10-25)).
+<mark>강체 접촉으로 학습한 정책은 시뮬레이션의 모래와 양귀비씨 위에서 한 번도 성공하지 못했고, 알갱이 접촉으로 학습한 정책은 모두 성공했다.</mark>
+저자들은 알갱이 지면 위의 민첩한(agile) 휴머노이드 보행을 실물에서 처음 보였다고 주장한다.
+B.16.5의 변형 지형 보행(KAIST, 사족)은 수직력만 입자 물리로 두고 수평력은 쿨롱 마찰로 채웠다. GM-Loco는 이 원뿔 계열이 접선력을 휴리스틱으로 채운다고 지적하고, 수직력과 접선력을 한 식에서 낸다.</p>
+<p><strong>접촉 모델.</strong> 3D RFT(resistive force theory)는 지면에 박힌 발 표면의 각 조각이 깊이에 비례하는 저항을 받는다고 본다.
+발마다 충돌 점 격자를 두고, 지면 아래로 들어간 점의 힘을 더해 발목 기준 렌치 하나로 전신 동역학에 넣는다. MILD처럼 점마다 접촉 야코비안을 두지 않고 발마다 렌치 하나로 합쳐 계산이 싸다.
+저자들은 NVIDIA Warp로 짠 이 모델이 RTX 4090 한 장에서 초당 수십만 프레임을 낸다고 적는다. 학습은 Isaac Lab에서 환경 4,096개로 했다.
+평가에는 이 모델을 쓰지 않고 Newton의 MPM(연속체 입자)으로 알갱이를, MuJoCo Warp로 로봇의 강체 접촉을 푼다(시뮬레이션 문서 S.1.2).</p>
+<p><strong>접촉 모델 비교(Fig. 4–5).</strong> 35 kg 상자를 지면 0.1 m 위에서 1.0 m/s로 던져 MPM과 비교하면, 3D RFT의 이동 거리와 침하가 MPM에 가장 가까웠다.
+2D RFT에 쿨롱 마찰을 더한 Heuristic-RFT는 옆 방향 힘을 내지 못했다. 원뿔 모델을 한 점에 거는 Cone-RFT-Single은 큰 발에서 지나치게 미끄러져 정책 비교에서 뺐다.</p>
+<p><strong>정책.</strong> 교사는 특권 관측과 고유감각 이력을 VAE 인코더로 잠재 $z$에 담고, PPO로 배운다(비대칭 actor–critic).
+디코더는 지면 세기 하나만 복원한다. 그래서 잠재가 지형 재질에 집중한다.
+학생은 고유감각 이력만 TCN으로 읽어 교사의 잠재와 행동을 따라 한다(DAgger식 증류). 정책은 50 Hz로 관절 위치 오프셋 29개를 내고, PD와 물리는 200 Hz다.
+학습 중에는 단단한 바닥을 점점 낮춰, 로봇이 단단한 지면에서 먼저 걷고 나중에 무른 지면을 겪게 한다.</p>
+<p><strong>결과(MPM 시뮬레이션, 표 I–II).</strong></p>
+<ul>
+<li>현무암·모래·양귀비씨 세 지형에서 이 정책의 성공률은 모두 100 %였다. 강체 접촉으로 학습한 PPO는 현무암에서 98 %, 모래와 양귀비씨에서 0 %였다.</li>
+<li>같은 3D RFT로 학습한 PPO(교사–학생 없음)도 100 %였다. 차이는 추종 오차에 있다. 현무암에서 방향 오차가 0.93° 대 2.71°였다.</li>
+<li>깊은 모래 걷기의 성공률은 3D RFT 85 %, Heuristic-RFT 3 %, Cone-RFT-Multi 8 %였다. 경로 오차(DTW)도 3D RFT가 0.133 m로 가장 작았다(Heuristic-RFT 0.492 m, Cone-RFT-Multi 0.353 m). 세 과제 모두 3D RFT가 가장 좋았다.</li>
+<li>지면이 단단한 층에서 무른 층으로 바뀌면, 추정한 지면 세기가 떨어지고 발 들기 높이가 약 9 cm에서 약 16 cm로 오른다(Fig. 9).</li>
+</ul>
+<p><strong>결과(실물 G1).</strong> 현무암, 비치발리볼 코트 모래, 해변에서 시험했다. 명령 속도는 0.5–2.5 m/s다.</p>
+<ul>
+<li>강체 접촉 정책은 마른 모래에서 1.0 m/s까지 따라갔고, 1.5 m/s를 넘으면 실패했다. 현무암에서는 모든 속도에서 실패했다.</li>
+<li>3D RFT로 학습한 두 정책은 전 구간을 걸었고, 현무암에서는 교사–학생 정책의 속도 추종이 모든 속도에서 더 좋았다. 마른 모래에서는 1.0 m/s까지 셋이 비슷했고, 빠른 속도에서 교사–학생 정책이 가장 좋았다. 수치는 그림에만 있다.</li>
+<li>마른 모래 1.5 m/s에서 이 정책의 발목 pitch 최대 토크가 두 기준선보다 낮았다. 무른 모래 더미를 지날 때 PPO는 발을 끌며 토크가 튀었고, 이 정책은 발 들기 높이를 양수로 지켰다(Fig. 10).</li>
+</ul>
+<p><strong>한계.</strong> 저자들은 경사·물결 지형과 모래 위의 에너지 효율 걸음을 다음 일로 든다.
+우리가 보기에:</p>
+<ul>
+<li>기여 목록은 점프를 시뮬레이션과 실물에서 보였다고 적지만, 본문의 점프 결과는 시뮬레이션(Fig. 6)뿐이다.</li>
+<li>접촉 모델의 기준은 MPM이다. MPM도 연속체 근사이고, 실제 모래와의 비교는 실물 보행 결과뿐이다.</li>
+<li>실물 결과는 로봇 한 대와 지형 세 곳이다. 시도 횟수와 실물 성공률은 적혀 있지 않다.</li>
+<li>도메인 무작위화 범위와 보상은 프로젝트 페이지에 있다고 적었지만, 본문에는 없다.</li>
+</ul>
+<div class="fig-grid"><figure class="fig"><a class="thumb" href="https://arxiv.org/html/2609.10286v2/rft_overview.png" title="원본 보기"><img alt="GM-Loco Fig. 2" src="assets/thumbs/9ea7ac062b74.webp" loading="lazy"></a><figcaption>그림 — GM-Loco (Fig. 2): 알갱이 접촉 모델. 발이 박힌 깊이, 속도 방향의 각, 발의 자세로 발의 접촉 힘 F와 모멘트 M을 낸다. 출처: <a href="https://arxiv.org/abs/2609.10286">arXiv:2609.10286</a></figcaption></figure>
+<figure class="fig"><a class="thumb" href="https://arxiv.org/html/2609.10286v2/system_diagram.png" title="원본 보기"><img alt="GM-Loco Fig. 3" src="assets/thumbs/000e2ed9bdaf.webp" loading="lazy"></a><figcaption>그림 — GM-Loco (Fig. 3): 두 단계 학습. 먼저 VAE 지형 인코더와 MLP 정책으로 된 특권 교사를 배우고, 그다음 배포용 학생에 증류한다. 출처: <a href="https://arxiv.org/abs/2609.10286">arXiv:2609.10286</a></figcaption></figure>
+</div><details>
+<summary>자세히: GM-Loco의 접촉 모델·학습 식과 접촉 모델 비교</summary>
+<p><strong>힘.</strong> 발 표면 $S$에서 지면 아래로 들어간 부분($z &lt; 0$)만 깊이 $\lvert z \rvert$에 비례하는 저항 $\boldsymbol\alpha$를 받는다.</p>
+<p>$$ \mathbf F = \int_S \boldsymbol\alpha\, \lvert z \rvert\, \mathbb 1(z &lt; 0)\, dS, \qquad \boldsymbol\alpha = \rho_c\, g\, f(\tilde\mu)\, \mathbf G(\mathbf e_n, \mathbf e_v, \mathbf e_g) $$</p>
+<p>$\mathbf G = c_1 \mathbf e_n + c_2 \mathbf e_v + c_3 \mathbf e_g$는 면의 법선, 속도 방향, 중력 방향의 조합이다. 계수 $c_1, c_2, c_3$는 MPM 판 관입 자료에 맞춘 다항식이다.
+$f(\tilde\mu) = 894\tilde\mu^3 - 386\tilde\mu^2 + 89\tilde\mu$는 내부 마찰 $\tilde\mu$에 따른 세기 배율이다.</p>
+<p><strong>마찰 원뿔.</strong> 접선 성분이 표면 마찰 $\mu$의 원뿔을 넘지 않게 자른다. 접선력이 같은 식에서 나오므로 따로 쿨롱 항을 두지 않는다.</p>
+<p>$$ \boldsymbol\alpha = \rho_c\, g\, f(\tilde\mu) \Big[ \mathbf G_n + \min\!\Big(1, \frac{\mu \lVert \mathbf G_n \rVert_2}{\lVert \mathbf G_t \rVert_2}\Big) \mathbf G_t \Big] $$</p>
+<p><strong>발 렌치.</strong> 충돌 점 $i$의 힘을 더하고, 발목 $\mathbf p_b$ 기준 모멘트를 구한다.</p>
+<p>$$ \mathbf F_c = \sum_i \mathbf F_{c,i}, \qquad \mathbf M_c = \sum_i (\mathbf p_i - \mathbf p_b) \times \mathbf F_{c,i} $$</p>
+<p><strong>지면 세기.</strong> $\xi = \rho_c g f(\tilde\mu)$가 매질의 관입 세기다. 디코더가 복원하는 값은 이것을 최댓값으로 나눈 $\eta = \xi / \xi_{\max}$ 하나다. $\xi_{\max} = \rho_{\max} g f(\tilde\mu_{\max})$이고 그 수치는 본문에 없다. 복원값은 $\hat\eta = \psi(\hat z_t)$다.</p>
+<p><strong>손실.</strong> 교사는 PPO 손실에 VAE 손실을 더한다. 학생은 행동 증류와 잠재·$\eta$ 맞추기를 더하고, 가중치는 학습 중에 바꾼다. $\beta$와 가중치의 값은 본문에 없다.</p>
+<p>$$ \mathcal L_{\mathrm{VAE}} = (\eta - \hat\eta)^2 + \beta\, D_{\mathrm{KL}}\big(p(z_t \mid s_t, o_{t-N:t}) \,\Vert\, \mathcal N(0, I)\big) $$</p>
+<p>$$ \mathcal L_{\mathrm{student}} = w_{\mathrm{PPO}} \mathcal L_{\mathrm{PPO}} + w_{\mathrm{dist}} \lVert a_t - \hat a_t \rVert_2^2 + \lVert z_t - \hat z_t \rVert_2^2 + \big(\psi(z_t) - \psi(\hat z_t)\big)^2 $$</p>
+<p><strong>관측과 망.</strong> 고유감각은 각속도, 관절 위치·속도, 명령 속도, IMU로 구한 중력 방향, 이전 행동이다. 특권 관측은 몸통 선속도, 발 높이, 발 접촉 상태와 힘, 발을 든 뒤 흐른 시간, $\eta$다.
+actor와 critic은 따로 MLP(512, 256, 128, ELU)이고, 교사 인코더는 MLP(256, 128, 64)다. 교사와 학생은 각각 20,000회 반복으로 배웠다.</p>
+<p><strong>정책 비교(표 I, MPM 양귀비씨, 성공률 %와 DTW m).</strong></p>
+<table>
+<thead>
+<tr>
+<th>과제</th>
+<th>3D RFT</th>
+<th>Heuristic-RFT</th>
+<th>Cone-RFT-Multi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>원 걷기, 평지</td>
+<td>100 · 0.106</td>
+<td>100 · 0.142</td>
+<td>100 · 0.173</td>
+</tr>
+<tr>
+<td>원 걷기, 거친 지면</td>
+<td>100 · 0.141</td>
+<td>100 · 0.216</td>
+<td>100 · 0.455</td>
+</tr>
+<tr>
+<td>깊은 모래 걷기</td>
+<td>85 · 0.133</td>
+<td>3 · 0.492</td>
+<td>8 · 0.353</td>
+</tr>
+</tbody>
+</table>
+<p><strong>지형별 비교(표 II, MPM, 성공률 %, 속도 오차 m/s, 방향 오차 °).</strong></p>
+<table>
+<thead>
+<tr>
+<th>지형</th>
+<th>이 정책(3D RFT)</th>
+<th>PPO(3D RFT)</th>
+<th>PPO(강체)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>현무암</td>
+<td>100 · 0.29 · 0.93</td>
+<td>100 · 0.35 · 2.71</td>
+<td>98 · 0.35 · 1.55</td>
+</tr>
+<tr>
+<td>모래</td>
+<td>100 · 0.33 · 1.86</td>
+<td>100 · 0.35 · 2.14</td>
+<td>0</td>
+</tr>
+<tr>
+<td>양귀비씨</td>
+<td>100 · 0.35 · 2.07</td>
+<td>100 · 0.36 · 1.77</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>점프(시뮬레이션만).</strong> 모방 RL에 ZEST식 보조 렌치(B.16.4)를 더해 배웠다. 강체 접촉 정책은 도약 전 미끄럼을 메우지 못해 실패했고, 3D RFT 정책은 뛰어올랐다.</p>
+</details>
+<p><strong>travplan에 주는 의미.</strong> 스워브 바퀴는 발과 접촉이 다르지만, 두 가지는 그대로 옮긴다.</p>
+<ul>
+<li>지면 무작위화만으로는 부족한 경우가 있다. 강체 접촉으로 학습한 정책은(무작위화 범위는 본문에 없다) MPM의 모래·양귀비씨에서 0 %였다. S.5.4의 Sim2Dust는 단단한 지면과 무작위화로 자갈을 넘었지만 5–25 cm/s의 rover였다.
+  잔디·흙길이 요구 사항이 되면, L0 미끄럼 무작위화로 충분한지는 변형 지면 시뮬레이션 한 판으로 먼저 확인한다(S.5.4).</li>
+<li>잠재에는 물리량 하나만 복원하게 한다. GM-Loco는 디코더가 지면 세기 $\eta$ 하나만 맞추게 해 잠재를 재질에 묶었다.
+  travplan에서 노면 잠재를 GP 잔차(TP-0068)의 입력에 더할 때도, 바퀴 미끄럼비처럼 잴 수 있는 한 값을 복원 목표로 두면 잠재가 무엇을 담는지 확인할 수 있다(B.16.5 변형 지형 보행 카드의 '노면 잠재').</li>
+<li>모델 비교의 기준은 더 비싼 시뮬레이터다. 싼 접촉 모델로 배우고 MPM으로 평가한 구성은, L0로 배우고 Isaac으로 재현하는 P1 계획과 같은 모양이다.</li>
+</ul>
+<p><strong>둘째 갈래(사람 동작 추종).</strong> 이 갈래는 사람 동작을 따라 하는 전신 정책이고, 공통 문제는 로봇이 할 수 없는 동작을 거르고 시뮬레이터의 오차를 고치는 일이다. H2O는 시뮬레이션 실행 가능성으로, ExBody2는 기본 정책의 추종 오차로 데이터를 걸렀다.
 이 갈래의 데이터·리타기팅·동작 추종과 2026년의 범용 추종기(SONIC, SuperMimic)는 모방 문서(§I)에 한 흐름으로 모았다. 아래 카드는 그대로 두고, 표 하나로 비교한 것은 I.8에 있다.
 ASAP은 실물 기록으로 시뮬레이터 쪽을 고쳤다. 로봇은 대부분 Unitree H1과 G1이다.</p>
 <p><strong>ExBody — 상체만 사람 동작을 따라 하고 하체는 몸통 속도 목표만 지키게 해, H1이 실외에서 춤추고 걸었다</strong>(<a href="https://arxiv.org/abs/2402.16796">arXiv:2402.16796</a>, Cheng·Ji·Chen·Yang·Yang·Wang, RSS 2024, <a href="https://expressive-humanoid.github.io">프로젝트</a>, <a href="https://github.com/chengxuxin/expressive-humanoid">코드</a> Apache-2.0).
@@ -34243,7 +34375,7 @@ PYTHONPATH=. python scripts/run_benchmark.py --stacks guidance+tiny guidance+mpp
 pytest -q tests/test_tiny_policy.py
 </code></pre>
 <p>커밋된 것은 스윕 표 <code>results/p2-playground-policy.tsv</code>와 가중치 <code>travplan/control/policies/*.json</code>이다
-(세대별 <code>--log</code> 기록은 <code>results/</code>가 <code>.gitignore</code>라 남지 않는다).</p></div></div><div class="docpanel subpanel" id="sub-research-d-5" role="tabpanel" aria-labelledby="subbtn-research-d-5"><p class="note">▶ 이 문서를 슬라이드로: <a href="slides/research-simulation/">슬라이드 보기</a> (83장) · <a href="slides/research-simulation/research-simulation.pptx" download>PPTX 내려받기</a>(글자·표 편집 가능) · 발표 덱: <a href="slides/talk-simulation/">travplan 챕터 발표 — 시뮬레이션</a> (35장, <a href="slides/talk-simulation/talk-simulation.pptx" download>PPTX</a>)</p>
+(세대별 <code>--log</code> 기록은 <code>results/</code>가 <code>.gitignore</code>라 남지 않는다).</p></div></div><div class="docpanel subpanel" id="sub-research-d-5" role="tabpanel" aria-labelledby="subbtn-research-d-5"><p class="note">▶ 이 문서를 슬라이드로: <a href="slides/research-simulation/">슬라이드 보기</a> (104장) · <a href="slides/research-simulation/research-simulation.pptx" download>PPTX 내려받기</a>(글자·표 편집 가능) · 발표 덱: <a href="slides/talk-simulation/">travplan 챕터 발표 — 시뮬레이션</a> (35장, <a href="slides/talk-simulation/talk-simulation.pptx" download>PPTX</a>)</p>
 <nav class="subtabs" role="tablist" data-group="research-d5"><button role="tab" id="subbtn-research-d5-0" aria-controls="sub-research-d5-0" aria-selected="true" tabindex="0" data-sub="research-d5-0" class="active">개요</button><button role="tab" id="subbtn-research-d5-1" aria-controls="sub-research-d5-1" aria-selected="false" tabindex="-1" data-sub="research-d5-1">물리 엔진</button><button role="tab" id="subbtn-research-d5-2" aria-controls="sub-research-d5-2" aria-selected="false" tabindex="-1" data-sub="research-d5-2">보도·도시</button><button role="tab" id="subbtn-research-d5-3" aria-controls="sub-research-d5-3" aria-selected="false" tabindex="-1" data-sub="research-d5-3">보행자</button><button role="tab" id="subbtn-research-d5-4" aria-controls="sub-research-d5-4" aria-selected="false" tabindex="-1" data-sub="research-d5-4">센서·렌더링</button><button role="tab" id="subbtn-research-d5-5" aria-controls="sub-research-d5-5" aria-selected="false" tabindex="-1" data-sub="research-d5-5">지형·바퀴</button><button role="tab" id="subbtn-research-d5-6" aria-controls="sub-research-d5-6" aria-selected="false" tabindex="-1" data-sub="research-d5-6">sim-to-real</button><button role="tab" id="subbtn-research-d5-7" aria-controls="sub-research-d5-7" aria-selected="false" tabindex="-1" data-sub="research-d5-7">로봇 리그</button><button role="tab" id="subbtn-research-d5-8" aria-controls="sub-research-d5-8" aria-selected="false" tabindex="-1" data-sub="research-d5-8">최근 연구 비교</button><button role="tab" id="subbtn-research-d5-9" aria-controls="sub-research-d5-9" aria-selected="false" tabindex="-1" data-sub="research-d5-9">travplan 권고</button></nav><div class="card md subpanel active" id="sub-research-d5-0" role="tabpanel" aria-labelledby="subbtn-research-d5-0"><!-- doc: 시뮬레이션 | 4 -->
 <h1>리서치 레퍼런스: 시뮬레이션 (2026-09)</h1>
 <p><strong>travplan에 필요한 시뮬레이션은 하나가 아니라 네 층이다.</strong> 빠른 운동학 시뮬로 Planner를 학습하고 스택을 비교한다. Isaac Sim으로
@@ -35301,7 +35433,12 @@ $v^{\text{real}} = (1 - s)\, v^{\text{cmd}}$로 줄이는 것만으로 Controlle
 여기서의 지연 무작위화는 정책을 지연에 강하게 만드는 일이다. travplan의 <code>mppi_plant_lag</code>(TP-0150)는 지연을 rollout 모델 안에 넣어 예측하는 일이라 성격이 다르다. 둘을 함께 쓸 수는 있다. 예측 모델의 지연 값을 무작위화해 Controller가 지연 추정 오차에 버티는지 볼 수 있다.</p>
 <div class="fig-grid"><figure class="fig"><a class="thumb" href="https://arxiv.org/html/2508.11503v2/graphics/sim_diverse.png" title="원본 보기"><img alt="Sim2Dust Fig. 3b" src="assets/thumbs/59a829492fd1.webp" loading="lazy"></a><figcaption>그림 — Sim2Dust (Fig. 3b): 병렬 환경마다 다른 절차 생성 지형을 주는 학습 방식. 출처: <a href="https://arxiv.org/abs/2508.11503">arXiv:2508.11503</a></figcaption></figure>
 <figure class="fig"><a class="thumb" href="https://arxiv.org/html/2508.11503v2/graphics/depth_real.png" title="원본 보기"><img alt="Sim2Dust Fig. 9b" src="assets/thumbs/c744ebee5d59.webp" loading="lazy"></a><figcaption>그림 — Sim2Dust (Fig. 9b): 현무암 자갈 위 실물 깊이 영상. 시뮬 깊이와 달리 잡음과 빈 칸이 많아 깊이 입력 정책의 오차가 커졌다. 출처: <a href="https://arxiv.org/abs/2508.11503">arXiv:2508.11503</a></figcaption></figure>
-</div><h4>Chrono::CRM — GPU SPH로 푸는 연속체 지형역학</h4>
+</div><h4>GM-Loco — 강체 접촉으로 배운 휴머노이드는 무른 지면에서 0 %였다</h4>
+<p><strong>Georgia Tech의 GM-Loco(<a href="https://arxiv.org/abs/2609.10286">arXiv:2609.10286</a>, 2026-09)는 Sim2Dust와 반대로 보이는 결과를 냈다.</strong> 강체 접촉으로 배운 G1 정책은(무작위화 범위는 본문에 없다) MPM으로 푼 모래와 양귀비씨 위에서 성공률 0 %였다.
+3D RFT로 접선력까지 푼 알갱이 접촉 모델로 배운 정책은 같은 조건에서 100 %였다. 학습은 Isaac Lab에서 Warp로 짠 RFT 모델로 하고, 평가는 Newton의 MPM으로 했다(S.1.2).
+두 결과의 차이는 속도와 접촉 형태로 읽는다. Sim2Dust는 5–25 cm/s로 구르는 바퀴였고, GM-Loco는 발이 박히는 이족 보행에 1.0–2.5 m/s 명령이었다(MPM 평가, 실물 시험은 0.5–2.5 m/s). 방법과 수치는 Planner 문서 B.16.6의 GM-Loco 카드에 있다.</p>
+<p><strong>travplan에 주는 의미.</strong> "변형 지면 전에 미끄럼 무작위화로 충분하다"는 판단은 단단한 보도에서만 성립한다. 잔디·흙길이 요구 사항이 되면, 먼저 변형 지면 시뮬레이션 한 판으로 무작위화한 정책이 버티는지 본다.</p>
+<h4>Chrono::CRM — GPU SPH로 푸는 연속체 지형역학</h4>
 <p><strong>Chrono::CRM은 Chrono의 SPH(smoothed particle hydrodynamics) 틀 위에 지은 연속체 지형역학 모델이다</strong>(<a href="https://arxiv.org/abs/2507.05643">arXiv:2507.05643</a>,
 2025-07, UW-Madison Negrut 연구실, Journal of Terramechanics 투고, Chrono 패키지 안 BSD-3). 위에서 말한 "연속체 입자(중간 비용)" 갈래의 대표이고, Bekker-Wong 같은 준경험식을 물리 모델로 대신하려 한다.</p>
 <p><strong>동작 방식.</strong> 흙을 SPH 입자로 풀고, 단단하거나 휘는 바퀴와 도구를 Chrono 다물체 엔진과 짝지어 계산한다. 파기, 고르기, 변형 바퀴, 그라우저(바퀴 돌기)를 다룬다.
@@ -50747,8 +50884,8 @@ TP-0036에 바로 들어간다)다.</p>
 <tr>
 <td>GM-Loco</td>
 <td>2026.09 · arXiv</td>
-<td>알갱이 지면 위 지형 적응 휴머노이드 보행(Georgia Tech). 기존 지형 모델이 수직력만 입자 물리로 두고 접선력은 휴리스틱으로 채운다고 지적한다</td>
-<td>B.16.5</td>
+<td>알갱이 지면 위 지형 적응 휴머노이드 보행(Georgia Tech). 기존 지형 모델이 수직력만 입자 물리로 두고 접선력은 휴리스틱으로 채운다고 지적하고, 3D RFT 접촉 모델과 VAE 교사–학생으로 G1이 실제 모래 위를 걷는다</td>
+<td>B.16.5, B.16.6, S.5.4</td>
 <td><a href="https://arxiv.org/abs/2609.10286">논문</a></td>
 </tr>
 <tr>

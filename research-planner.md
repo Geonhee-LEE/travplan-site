@@ -7519,7 +7519,7 @@ travplan의 운행 영역은 대부분 포장 보도라, 이 계열이 직접 �
 
 **이어진 연구.** 같은 연구실은 라이보2로 마라톤을 완주했다(이 소절의 라이보2 카드).
 Georgia Tech의 Kamohara 외([arXiv:2609.10286](https://arxiv.org/abs/2609.10286), 2026-09, 휴머노이드)는 이 계열이 수직력만 입자 물리로 두고 접선력은 쿨롱 마찰 같은 휴리스틱으로 채운다고 지적했다.
-그 대안으로 3D RFT(resistive force theory)에서 접선력까지 유도한 모델을 Isaac Lab에 넣고, Newton의 MPM(material point method) 시뮬레이션으로 평가했다(시뮬레이션 문서 S.1.2).
+그 대안으로 3D RFT(resistive force theory)에서 접선력까지 유도한 모델을 Isaac Lab에 넣고, Newton의 MPM(material point method) 시뮬레이션으로 평가했다(시뮬레이션 문서 S.1.2). 방법과 결과는 B.16.6의 GM-Loco 카드에 있다.
 
 **한계.** 저자가 밝힌 한계는 본문이 유료라 확인하지 못했다.
 
@@ -7695,7 +7695,7 @@ Go2-W는 로봇 설정과 배포 코드만 있고 학습 과제 목록에는 없
 
 **B.14와 B.16.1–B.16.4에서 다룬 연구실 밖의 휴머노이드 연구에서 travplan이 옮길 것은 정책 자체가 아니라 학습 절차, sim-to-real 보정, 층 사이의 인터페이스다.**
 이 연구들은 세 갈래로 자랐다. 첫째는 고유감각만 보는 이족 보행 RL이다.
-UC Berkeley의 Malik·Darrell·Sreenath는 Digit에서 이력을 보는 transformer로 실외 보행을 보였다. Sreenath 연구실은 Cassie에서 입출력 이력을 보는 정책으로 달리기와 뛰기를 보였다.
+UC Berkeley의 Malik·Darrell·Sreenath는 Digit에서 이력을 보는 transformer로 실외 보행을 보였다. Sreenath 연구실은 Cassie에서 입출력 이력을 보는 정책으로 달리기와 뛰기를 보였다. Georgia Tech의 GM-Loco는 알갱이 접촉 모델로 학습한 G1을 실제 모래 위에서 걷게 했다.
 둘째는 사람 동작 추종이다. CMU LeCAR Lab(Guanya Shi)은 원격조종(H2O·OmniH2O)에서 시작해, 실물 기록으로 시뮬레이터를 고치는 ASAP으로 갔다.
 Stanford(HumanPlus)와 UC San Diego(ExBody)는 사람 동작 데이터로 Unitree H1을 움직였다. HKUST의 HumanX는 영상 한 편에서 물체 상호작용까지 합성해 G1이 공을 다루게 했다.
 셋째는 지형이나 과제 비용을 보는 정책이다. Humanoid Parkour와 Amazon FAR의 PHP는 깊이 영상을, VideoMimic은 몸통 둘레의 높이 지도를 본다.
@@ -7705,7 +7705,7 @@ BeyondMimic(Sreenath 연구실과 Stanford의 C. Karen Liu)은 생성 중에 과
 H2O·OmniH2O의 1저자가 NVIDIA GEAR와 함께 만든 HOVER는 B.16.1에, Boston Dynamics·RAI Institute의 Atlas RL(ZEST)은 B.16.4에 있다.
 
 <details markdown="1">
-<summary>자세히: 이 소절의 연구 목록(표 25행)</summary>
+<summary>자세히: 이 소절의 연구 목록(표 27행)</summary>
 
 | 연도 | 연구 | 로봇 | 핵심 | 다룬 곳 |
 |---|---|---|---|---|
@@ -7731,6 +7731,7 @@ H2O·OmniH2O의 1저자가 NVIDIA GEAR와 함께 만든 HOVER는 B.16.1에, Bost
 | 2025 | BeyondMimic(Science Robotics 2026) | G1 | 한 설정의 동작 추종, 잠재 상태–행동 diffusion과 비용 유도 | 이 소절(토글) |
 | 2026 | HumanX(CoRL 2026) | G1 | 영상 한 편에서 물리 규칙으로 로봇–물체 상호작용 합성·증강, 상호작용 종료, 교사–학생 | 이 소절 |
 | 2026 | Perceptive Humanoid Parkour(PHP, RSS 2026) | G1 | motion matching으로 기술을 이은 기준 궤적, 깊이 학생을 DAgger + RL로 증류 | 이 소절 |
+| 2026 | GM-Loco(arXiv) | G1 | 접선력까지 3D RFT로 푼 알갱이 접촉 모델로 학습, VAE 교사–학생이 지면 세기를 추정해 실제 모래 위를 걸음 | 이 소절 |
 | 2026 | ZEST(Science Robotics 2026) | Atlas, G1, Spot | 이력 없는 잔차 추종 RL, 전신 MPC와 비교 | B.16.4 |
 | 2026 | PASSAGE(arXiv) | G1 | 장면과 맞춘 사람 동작 100시간, 3층 높이 지도를 보는 flow 계획기와 범용 추종기, 계획기 RTC·RL 후학습 | 이 소절(토글) |
 | 2026 | NEXUS(arXiv) | G1 | 평지 동작을 지형 위 동작으로 바꾼 짝 데이터 약 1,000시간, 깊이 영상을 보는 원격조종 전신 추종기 | 이 소절 |
@@ -7930,6 +7931,104 @@ OSU의 Siekmann 외(Fern·Hurst 공저)는 힘과 속도에 거는 확률적 주
 
 ![Agility RL step recovery](https://cdn.prod.website-files.com/6980c63561bbbeb67b4b7ab5/698e3705e1e54075f906b6ce_698e0486313a2eb0bcd08c61_6849e0909c34fef34c98a1fe_Charting-RL-Performance.png)
 *그림 — Digit 발 디딤 회복 (블로그 그림): Digit에 앞뒤(세로축)와 좌우(가로축) 충격량(N·s)을 준 시험의 결과다. 시뮬레이션인지 실물인지는 글에 적혀 있지 않다. 초록은 회복, 붉은색은 넘어짐, 파랑은 걸음 없이 버틴 경우다. 왼쪽 모델 기반 제어기보다 오른쪽 RL 제어기의 초록 영역이 넓다(그림 제목은 둘 다 2024-08-15). 출처: [Agility Robotics 2024-10-31](https://www.agilityrobotics.com/content/crossing-sim2real-gap-with-isaaclab)*
+
+**GM-Loco — 접선력까지 3D RFT로 푼 알갱이 접촉 모델로 학습해, G1이 실제 모래 위를 2.5 m/s 명령까지 걸었다**([arXiv:2609.10286](https://arxiv.org/abs/2609.10286), Kamohara·Wu·Zong·Goldman·Nakka·Hutchinson·Zhao, Georgia Tech·Northeastern, arXiv 2026-09-14(v2), 학회 게재는 확인하지 못했다; [프로젝트](https://humanoid-gm-locomotion.github.io/HUMANOID-GM/), 공개 코드는 찾지 못했다(2026-10-25)).
+==강체 접촉으로 학습한 정책은 시뮬레이션의 모래와 양귀비씨 위에서 한 번도 성공하지 못했고, 알갱이 접촉으로 학습한 정책은 모두 성공했다.==
+저자들은 알갱이 지면 위의 민첩한(agile) 휴머노이드 보행을 실물에서 처음 보였다고 주장한다.
+B.16.5의 변형 지형 보행(KAIST, 사족)은 수직력만 입자 물리로 두고 수평력은 쿨롱 마찰로 채웠다. GM-Loco는 이 원뿔 계열이 접선력을 휴리스틱으로 채운다고 지적하고, 수직력과 접선력을 한 식에서 낸다.
+
+**접촉 모델.** 3D RFT(resistive force theory)는 지면에 박힌 발 표면의 각 조각이 깊이에 비례하는 저항을 받는다고 본다.
+발마다 충돌 점 격자를 두고, 지면 아래로 들어간 점의 힘을 더해 발목 기준 렌치 하나로 전신 동역학에 넣는다. MILD처럼 점마다 접촉 야코비안을 두지 않고 발마다 렌치 하나로 합쳐 계산이 싸다.
+저자들은 NVIDIA Warp로 짠 이 모델이 RTX 4090 한 장에서 초당 수십만 프레임을 낸다고 적는다. 학습은 Isaac Lab에서 환경 4,096개로 했다.
+평가에는 이 모델을 쓰지 않고 Newton의 MPM(연속체 입자)으로 알갱이를, MuJoCo Warp로 로봇의 강체 접촉을 푼다(시뮬레이션 문서 S.1.2).
+
+**접촉 모델 비교(Fig. 4–5).** 35 kg 상자를 지면 0.1 m 위에서 1.0 m/s로 던져 MPM과 비교하면, 3D RFT의 이동 거리와 침하가 MPM에 가장 가까웠다.
+2D RFT에 쿨롱 마찰을 더한 Heuristic-RFT는 옆 방향 힘을 내지 못했다. 원뿔 모델을 한 점에 거는 Cone-RFT-Single은 큰 발에서 지나치게 미끄러져 정책 비교에서 뺐다.
+
+**정책.** 교사는 특권 관측과 고유감각 이력을 VAE 인코더로 잠재 $z$에 담고, PPO로 배운다(비대칭 actor–critic).
+디코더는 지면 세기 하나만 복원한다. 그래서 잠재가 지형 재질에 집중한다.
+학생은 고유감각 이력만 TCN으로 읽어 교사의 잠재와 행동을 따라 한다(DAgger식 증류). 정책은 50 Hz로 관절 위치 오프셋 29개를 내고, PD와 물리는 200 Hz다.
+학습 중에는 단단한 바닥을 점점 낮춰, 로봇이 단단한 지면에서 먼저 걷고 나중에 무른 지면을 겪게 한다.
+
+**결과(MPM 시뮬레이션, 표 I–II).**
+- 현무암·모래·양귀비씨 세 지형에서 이 정책의 성공률은 모두 100 %였다. 강체 접촉으로 학습한 PPO는 현무암에서 98 %, 모래와 양귀비씨에서 0 %였다.
+- 같은 3D RFT로 학습한 PPO(교사–학생 없음)도 100 %였다. 차이는 추종 오차에 있다. 현무암에서 방향 오차가 0.93° 대 2.71°였다.
+- 깊은 모래 걷기의 성공률은 3D RFT 85 %, Heuristic-RFT 3 %, Cone-RFT-Multi 8 %였다. 경로 오차(DTW)도 3D RFT가 0.133 m로 가장 작았다(Heuristic-RFT 0.492 m, Cone-RFT-Multi 0.353 m). 세 과제 모두 3D RFT가 가장 좋았다.
+- 지면이 단단한 층에서 무른 층으로 바뀌면, 추정한 지면 세기가 떨어지고 발 들기 높이가 약 9 cm에서 약 16 cm로 오른다(Fig. 9).
+
+**결과(실물 G1).** 현무암, 비치발리볼 코트 모래, 해변에서 시험했다. 명령 속도는 0.5–2.5 m/s다.
+- 강체 접촉 정책은 마른 모래에서 1.0 m/s까지 따라갔고, 1.5 m/s를 넘으면 실패했다. 현무암에서는 모든 속도에서 실패했다.
+- 3D RFT로 학습한 두 정책은 전 구간을 걸었고, 현무암에서는 교사–학생 정책의 속도 추종이 모든 속도에서 더 좋았다. 마른 모래에서는 1.0 m/s까지 셋이 비슷했고, 빠른 속도에서 교사–학생 정책이 가장 좋았다. 수치는 그림에만 있다.
+- 마른 모래 1.5 m/s에서 이 정책의 발목 pitch 최대 토크가 두 기준선보다 낮았다. 무른 모래 더미를 지날 때 PPO는 발을 끌며 토크가 튀었고, 이 정책은 발 들기 높이를 양수로 지켰다(Fig. 10).
+
+**한계.** 저자들은 경사·물결 지형과 모래 위의 에너지 효율 걸음을 다음 일로 든다.
+우리가 보기에:
+- 기여 목록은 점프를 시뮬레이션과 실물에서 보였다고 적지만, 본문의 점프 결과는 시뮬레이션(Fig. 6)뿐이다.
+- 접촉 모델의 기준은 MPM이다. MPM도 연속체 근사이고, 실제 모래와의 비교는 실물 보행 결과뿐이다.
+- 실물 결과는 로봇 한 대와 지형 세 곳이다. 시도 횟수와 실물 성공률은 적혀 있지 않다.
+- 도메인 무작위화 범위와 보상은 프로젝트 페이지에 있다고 적었지만, 본문에는 없다.
+
+![GM-Loco Fig. 2](https://arxiv.org/html/2609.10286v2/rft_overview.png)
+*그림 — GM-Loco (Fig. 2): 알갱이 접촉 모델. 발이 박힌 깊이, 속도 방향의 각, 발의 자세로 발의 접촉 힘 F와 모멘트 M을 낸다. 출처: [arXiv:2609.10286](https://arxiv.org/abs/2609.10286)*
+
+![GM-Loco Fig. 3](https://arxiv.org/html/2609.10286v2/system_diagram.png)
+*그림 — GM-Loco (Fig. 3): 두 단계 학습. 먼저 VAE 지형 인코더와 MLP 정책으로 된 특권 교사를 배우고, 그다음 배포용 학생에 증류한다. 출처: [arXiv:2609.10286](https://arxiv.org/abs/2609.10286)*
+
+<details markdown="1">
+<summary>자세히: GM-Loco의 접촉 모델·학습 식과 접촉 모델 비교</summary>
+
+**힘.** 발 표면 $S$에서 지면 아래로 들어간 부분($z < 0$)만 깊이 $\lvert z \rvert$에 비례하는 저항 $\boldsymbol\alpha$를 받는다.
+
+$$ \mathbf F = \int_S \boldsymbol\alpha\, \lvert z \rvert\, \mathbb 1(z < 0)\, dS, \qquad \boldsymbol\alpha = \rho_c\, g\, f(\tilde\mu)\, \mathbf G(\mathbf e_n, \mathbf e_v, \mathbf e_g) $$
+
+$\mathbf G = c_1 \mathbf e_n + c_2 \mathbf e_v + c_3 \mathbf e_g$는 면의 법선, 속도 방향, 중력 방향의 조합이다. 계수 $c_1, c_2, c_3$는 MPM 판 관입 자료에 맞춘 다항식이다.
+$f(\tilde\mu) = 894\tilde\mu^3 - 386\tilde\mu^2 + 89\tilde\mu$는 내부 마찰 $\tilde\mu$에 따른 세기 배율이다.
+
+**마찰 원뿔.** 접선 성분이 표면 마찰 $\mu$의 원뿔을 넘지 않게 자른다. 접선력이 같은 식에서 나오므로 따로 쿨롱 항을 두지 않는다.
+
+$$ \boldsymbol\alpha = \rho_c\, g\, f(\tilde\mu) \Big[ \mathbf G_n + \min\!\Big(1, \frac{\mu \lVert \mathbf G_n \rVert_2}{\lVert \mathbf G_t \rVert_2}\Big) \mathbf G_t \Big] $$
+
+**발 렌치.** 충돌 점 $i$의 힘을 더하고, 발목 $\mathbf p_b$ 기준 모멘트를 구한다.
+
+$$ \mathbf F_c = \sum_i \mathbf F_{c,i}, \qquad \mathbf M_c = \sum_i (\mathbf p_i - \mathbf p_b) \times \mathbf F_{c,i} $$
+
+**지면 세기.** $\xi = \rho_c g f(\tilde\mu)$가 매질의 관입 세기다. 디코더가 복원하는 값은 이것을 최댓값으로 나눈 $\eta = \xi / \xi_{\max}$ 하나다. $\xi_{\max} = \rho_{\max} g f(\tilde\mu_{\max})$이고 그 수치는 본문에 없다. 복원값은 $\hat\eta = \psi(\hat z_t)$다.
+
+**손실.** 교사는 PPO 손실에 VAE 손실을 더한다. 학생은 행동 증류와 잠재·$\eta$ 맞추기를 더하고, 가중치는 학습 중에 바꾼다. $\beta$와 가중치의 값은 본문에 없다.
+
+$$ \mathcal L_{\mathrm{VAE}} = (\eta - \hat\eta)^2 + \beta\, D_{\mathrm{KL}}\big(p(z_t \mid s_t, o_{t-N:t}) \,\Vert\, \mathcal N(0, I)\big) $$
+
+$$ \mathcal L_{\mathrm{student}} = w_{\mathrm{PPO}} \mathcal L_{\mathrm{PPO}} + w_{\mathrm{dist}} \lVert a_t - \hat a_t \rVert_2^2 + \lVert z_t - \hat z_t \rVert_2^2 + \big(\psi(z_t) - \psi(\hat z_t)\big)^2 $$
+
+**관측과 망.** 고유감각은 각속도, 관절 위치·속도, 명령 속도, IMU로 구한 중력 방향, 이전 행동이다. 특권 관측은 몸통 선속도, 발 높이, 발 접촉 상태와 힘, 발을 든 뒤 흐른 시간, $\eta$다.
+actor와 critic은 따로 MLP(512, 256, 128, ELU)이고, 교사 인코더는 MLP(256, 128, 64)다. 교사와 학생은 각각 20,000회 반복으로 배웠다.
+
+**정책 비교(표 I, MPM 양귀비씨, 성공률 %와 DTW m).**
+
+| 과제 | 3D RFT | Heuristic-RFT | Cone-RFT-Multi |
+|---|---|---|---|
+| 원 걷기, 평지 | 100 · 0.106 | 100 · 0.142 | 100 · 0.173 |
+| 원 걷기, 거친 지면 | 100 · 0.141 | 100 · 0.216 | 100 · 0.455 |
+| 깊은 모래 걷기 | 85 · 0.133 | 3 · 0.492 | 8 · 0.353 |
+
+**지형별 비교(표 II, MPM, 성공률 %, 속도 오차 m/s, 방향 오차 °).**
+
+| 지형 | 이 정책(3D RFT) | PPO(3D RFT) | PPO(강체) |
+|---|---|---|---|
+| 현무암 | 100 · 0.29 · 0.93 | 100 · 0.35 · 2.71 | 98 · 0.35 · 1.55 |
+| 모래 | 100 · 0.33 · 1.86 | 100 · 0.35 · 2.14 | 0 |
+| 양귀비씨 | 100 · 0.35 · 2.07 | 100 · 0.36 · 1.77 | 0 |
+
+**점프(시뮬레이션만).** 모방 RL에 ZEST식 보조 렌치(B.16.4)를 더해 배웠다. 강체 접촉 정책은 도약 전 미끄럼을 메우지 못해 실패했고, 3D RFT 정책은 뛰어올랐다.
+
+</details>
+
+**travplan에 주는 의미.** 스워브 바퀴는 발과 접촉이 다르지만, 두 가지는 그대로 옮긴다.
+- 지면 무작위화만으로는 부족한 경우가 있다. 강체 접촉으로 학습한 정책은(무작위화 범위는 본문에 없다) MPM의 모래·양귀비씨에서 0 %였다. S.5.4의 Sim2Dust는 단단한 지면과 무작위화로 자갈을 넘었지만 5–25 cm/s의 rover였다.
+  잔디·흙길이 요구 사항이 되면, L0 미끄럼 무작위화로 충분한지는 변형 지면 시뮬레이션 한 판으로 먼저 확인한다(S.5.4).
+- 잠재에는 물리량 하나만 복원하게 한다. GM-Loco는 디코더가 지면 세기 $\eta$ 하나만 맞추게 해 잠재를 재질에 묶었다.
+  travplan에서 노면 잠재를 GP 잔차(TP-0068)의 입력에 더할 때도, 바퀴 미끄럼비처럼 잴 수 있는 한 값을 복원 목표로 두면 잠재가 무엇을 담는지 확인할 수 있다(B.16.5 변형 지형 보행 카드의 '노면 잠재').
+- 모델 비교의 기준은 더 비싼 시뮬레이터다. 싼 접촉 모델로 배우고 MPM으로 평가한 구성은, L0로 배우고 Isaac으로 재현하는 P1 계획과 같은 모양이다.
 
 **둘째 갈래(사람 동작 추종).** 이 갈래는 사람 동작을 따라 하는 전신 정책이고, 공통 문제는 로봇이 할 수 없는 동작을 거르고 시뮬레이터의 오차를 고치는 일이다. H2O는 시뮬레이션 실행 가능성으로, ExBody2는 기본 정책의 추종 오차로 데이터를 걸렀다.
 이 갈래의 데이터·리타기팅·동작 추종과 2026년의 범용 추종기(SONIC, SuperMimic)는 모방 문서(§I)에 한 흐름으로 모았다. 아래 카드는 그대로 두고, 표 하나로 비교한 것은 I.8에 있다.
