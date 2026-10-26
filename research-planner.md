@@ -9135,7 +9135,7 @@ PADP식으로 옮기면, MPPI가 고른 twist를 모듈 수준의 실행 가능 
 
 <!-- tab: 분야별 지형 -->
 
-**읽는 법.** 분야 × 방식 표는 B.18.1에, 분야를 가로지르는 일곱 흐름은 B.18.3에 있다. travplan의 두 층이 어느 분야의 대세를 따르는지는 B.18.6이고, 근거 123건은 B.18 끝 토글에 있다.
+**읽는 법.** 분야 × 방식 표는 B.18.1에, 층별 그림과 분야마다의 원문 그림은 B.18.2에, 분야를 가로지르는 여덟 흐름은 B.18.3에 있다. travplan의 두 층이 어느 분야의 대세를 따르는지는 B.18.6이고, 근거 123건은 B.18 끝 토글에 있다.
 
 ### B.18 로봇 분야별 계획·제어: 레이싱카, 모바일 로봇, 도로 자율주행, 사족보행, 휴머노이드
 
@@ -9171,57 +9171,156 @@ PADP식으로 옮기면, MPPI가 고른 twist를 모듈 수준의 실행 가능 
 
 #### B.18.2 분야별: 쓰는 방식, 대세, 다음
 
+**분야마다 같은 세 층(상위, 계획, 실행)에 다른 방식이 앉아 있다.** 아래 그림이 그 배치다. 레이싱카는 세 층이 모두 최적화·샘플링·모델 기반 제어이고,
+사족보행과 휴머노이드는 실행 층이 강화학습이다. 도로 자율주행은 위 두 층이 학습 모델이고, 모바일 로봇은 계획과 실행을 로컬 컨트롤러 하나(Nav2 기본값은 MPPI)가 맡는다.
+==궤적 최적화(주황)가 맨 위 층을 차지한 분야는 레이싱카뿐이고, 사족보행에서는 발 디딤 참조로 내려왔으며, 나머지 분야에서는 한 층을 맡지 못한다.==
+B.18.1 표의 "정착" 칸이 그 자리다. 도로에서는 후처리·검증, 휴머노이드에서는 보상·참조·데이터 생성으로 남았다.
+
+![다섯 분야와 travplan의 층별 방식](assets/figs/domain_stacks.webp)
+*그림 — 층마다 무엇이 있나: B.18.1 표와 이 절의 서술을 상위·계획·실행 층으로 다시 놓았다. 색은 B.18.1의 방식 계열이고, 아래 줄은 분야마다의 "다음"이다. 칸은 공개 자료로 본 대표 구성이라 회사마다 다르다. travplan 열은 B.18.6의 대응을 옮긴 것이다. 출처: travplan(`scripts/make_doc_figures.py --domains`)*
+
+분야마다 **쓰는 방식**, **대세와 근거**, **다음**을 차례로 적고, 단락 뒤에 그 내용을 보여 주는 원문 그림을 붙였다.
+마지막 **travplan과 닿는 곳**은 한두 문장이고, 자세한 대응은 B.18.6에 있다.
+
 **자율주행 레이싱카 — 궤적 최적화가 아직 스택의 중심이다**(IAC, A2RL, F1TENTH, Formula Student).
-쓰는 방식. 트랙을 미리 알기 때문에 가장 무거운 최적화를 오프라인으로 뺀다. 최소곡률 QP나 최소시간 최적 제어(직접 콜로케이션과 IPOPT)로 레이스라인을 만든다.
+
+**쓰는 방식.** 트랙을 미리 알기 때문에 가장 무거운 최적화를 오프라인으로 뺀다. 최소곡률 QP나 최소시간 최적 제어(직접 콜로케이션과 IPOPT)로 레이스라인을 만든다.
 주행 중에는 Frenet 좌표에서 다항식 후보를 샘플링해 타당성 검사로 고르고, Tube·LPV-MPC, LQR, Pure Pursuit로 따라간다. 상태 추정은 다중 센서 EKF다 [R12](https://arxiv.org/abs/2202.07008).
-대세와 근거. 스택을 공개한 상위 팀은 모두 같은 모듈형이다. TUM(A2RL 2024 우승 스택) [R1](https://arxiv.org/abs/2602.08571), TII Unimore [R2](https://arxiv.org/abs/2310.18112), KAIST [R10](https://arxiv.org/abs/2303.09463), ForzaETH(F1TENTH 우승) [R4](https://arxiv.org/abs/2403.11784)가 그렇다.
+
+![TUM A2RL 레이스라인](https://arxiv.org/html/2602.08571v1/rl_t6_t7.png)
+*그림 — TUM A2RL 스택의 레이스라인 (Fig. 5): Yas Marina 6–7번 코너를 지나는 최소시간 레이스라인(굵은 검은 선)이다. 회색 격자는 최적화와 주행 중 계획이 함께 쓰는 위치별 가속 한계(GripMap)이고, 점선은 제어기가 만든 횡 오차를 두 배로 키워 그린 것이다. 출처: [arXiv:2602.08571](https://arxiv.org/abs/2602.08571)*
+
+![TUM A2RL 로컬 샘플링](https://arxiv.org/html/2602.08571v1/sampling_t5.png)
+*그림 — TUM A2RL 스택의 로컬 샘플링 (Fig. 7): 주행 중 로컬 플래너가 만든 궤적 후보다. 회색 점선은 타당성 검사에서 떨어진 후보이고, 파란 선은 남은 후보를 시연용 비용으로 칠한 것이다. 결승에서 우승을 가른 5번 코너 추월을 다시 그렸다. 출처: [arXiv:2602.08571](https://arxiv.org/abs/2602.08571)*
+
+**대세와 근거.** 스택을 공개한 상위 팀은 모두 같은 모듈형이다. TUM(A2RL 2024 우승 스택) [R1](https://arxiv.org/abs/2602.08571), TII Unimore [R2](https://arxiv.org/abs/2310.18112), KAIST [R10](https://arxiv.org/abs/2303.09463), ForzaETH(F1TENTH 우승) [R4](https://arxiv.org/abs/2403.11784)가 그렇다.
 F1TENTH 벤치마크도 최적화와 추종이 가장 빠르다고 정리한다 [R5](https://arxiv.org/abs/2402.18558). 다만 IAC 최다 우승 팀 PoliMOVE와 Cavalier는 스택을 공개하지 않아서, 이길수록 MPC라고는 말할 수 없다.
 RL이 제품에 들어간 공개 사례로는 심 레이싱의 GT Sophy(GT7, 2023)가 대표적이다 [R7](https://www.nature.com/articles/s41586-021-04357-7).
-다음. 단독 주행에서 4대(CES 2025), 6대 동시 결승(A2RL 2025) [R11](https://www.tii.ae/news/world-first-autonomous-racing-leaps-forward-abu-dhabi-a2rl-season-2-showcases-record-speed)으로 바뀌면서 게임이론 요소가 샘플링 플래너의 비용과 가이던스로 들어오고 있다. 아직 시뮬레이션 단계다 [R8](https://arxiv.org/abs/2607.25388).
+
+![ForzaETH 레이스 스택](https://arxiv.org/html/2403.11784v2/sys_arch_with_sim.png)
+*그림 — ForzaETH 레이스 스택 (Fig. 3): See–Think–Act 순서의 모듈형 구조다. 인식은 상태 추정(지도, 주행거리 필터, 위치 추정)과 상대 차량 추정(검출, 추적)이고, 계획은 전역 플래너·로컬 플래너·상태 기계, 제어는 종·횡 제어다. 같은 스택이 실차와 시뮬레이터를 오간다. 출처: [arXiv:2403.11784](https://arxiv.org/abs/2403.11784)*
+
+**다음.** 단독 주행에서 4대(CES 2025), 6대 동시 결승(A2RL 2025) [R11](https://www.tii.ae/news/world-first-autonomous-racing-leaps-forward-abu-dhabi-a2rl-season-2-showcases-record-speed)으로 바뀌면서 게임이론 요소가 샘플링 플래너의 비용과 가이던스로 들어오고 있다. 아직 시뮬레이션 단계다 [R8](https://arxiv.org/abs/2607.25388).
 잔차 RL [R6](https://arxiv.org/abs/2501.17311)과 학습 동역학은 MPC를 보정하는 형태다. 월드 모델 에이전트는 실차 256 km/h 시험까지 나왔지만 대회에서 쓴 것은 확인되지 않았다 [R9](https://arxiv.org/abs/2608.10618). IU 팀은 제어기를 PP, 선형 MPC, MPPI 순으로 바꿔 왔다 [R3](https://arxiv.org/abs/2512.06892).
 
+![SGTP 다중 차량 레이싱](https://arxiv.org/html/2607.25388v1/teaser.png)
+*그림 — SGTP (Fig. 1): GPU로 뿌린 궤적 후보를 게임을 아는 비용으로 줄 세우고, 타당한 것 가운데 비용이 가장 낮은 궤적을 고른다. 상대의 반응은 10 Hz 반복 최선 응답으로 풀어, 바퀴를 맞댄 경합·기회 추월·수비 차단을 오간다(아래 줄). 시뮬레이션 결과다. 출처: [arXiv:2607.25388](https://arxiv.org/abs/2607.25388)*
+
+**travplan과 닿는 곳.** 레이싱카의 실행 층(모델 기반 MPC)은 travplan의 NMPC 갈래와 같은 자리다. 모델이 맞을 때 강하고, 모델이 실행 지연을 모르면 약하다. travplan의 NMPC가 스워브 plant 조건에서 MPPI보다 치명이 많았던 것(TP-0152)이 그 예다. IU 팀이 PP, 선형 MPC, MPPI로 옮겨 간 길은 travplan이 MPPI를 주력 Controller로 둔 방향과 같다.
+
 **모바일 로봇 — 궤적 최적화는 학계에 머물고, 산업의 상대는 샘플링 MPC다**(Nav2, 창고 AMR, BARN, 오프로드).
-쓰는 방식. 위치 추정(SLAM·AMCL, 창고는 바닥 마커를 섞는다), 레이어드 코스트맵, 그래프 탐색 전역 계획(NavFn, Smac Hybrid-A*·State Lattice [N2](https://arxiv.org/abs/2401.13078)), 20–50 Hz 로컬 컨트롤러(MPPI, RPP, DWB, Graceful) 순으로 쌓는다.
+
+**쓰는 방식.** 위치 추정(SLAM·AMCL, 창고는 바닥 마커를 섞는다), 레이어드 코스트맵, 그래프 탐색 전역 계획(NavFn, Smac Hybrid-A*·State Lattice [N2](https://arxiv.org/abs/2401.13078)), 20–50 Hz 로컬 컨트롤러(MPPI, RPP, DWB, Graceful) 순으로 쌓는다.
 창고에서는 로봇 한 대보다 플릿 교통 관리(Lifelong MAPF와 중앙 배차)가 처리량을 좌우한다.
-대세와 근거. ROS 2 Nav2의 기본 로컬 컨트롤러가 Humble의 DWB에서 Jazzy 이후 MPPI로 바뀌었다 [N1](https://github.com/ros-navigation/navigation2/blob/main/nav2_bringup/params/nav2_params.yaml). 예제 기본값이 곧 양산 채택은 아니고, 벤더 알고리즘은 대부분 비공개다.
+
+![Smac State Lattice 제어 집합](https://arxiv.org/html/2401.13078v2/figs/all_trajectories_grid.png)
+*그림 — Smac State Lattice의 제어 집합 (Fig. 4): 칸 5 cm, 회전 반경 1 m, 방향 16개로 만든 운동 원시다. 방향마다 원시가 3–5개이고, 전역 계획은 이 원시를 이어 기구학적으로 갈 수 있는 경로를 찾는다. 출처: [arXiv:2401.13078](https://arxiv.org/abs/2401.13078)*
+
+**대세와 근거.** ROS 2 Nav2의 기본 로컬 컨트롤러가 Humble의 DWB에서 Jazzy 이후 MPPI로 바뀌었다 [N1](https://github.com/ros-navigation/navigation2/blob/main/nav2_bringup/params/nav2_params.yaml). 예제 기본값이 곧 양산 채택은 아니고, 벤더 알고리즘은 대부분 비공개다.
 창고 MAPF 대회의 우승 해법과 기본 계획기는 모두 탐색 기반(PIBT·LNS 계열)이다 [N8](https://arxiv.org/abs/2404.16162) [N9](https://github.com/MAPF-Competition/Start-Kit).
 BARN에서는 2024년 행동복제 팀이 처음 실물 우승했지만, 상위 팀 모두 규칙 기반 상태 기계를 섞었다 [N3](https://arxiv.org/abs/2407.01862). 2025년에는 학습형 팀이 결선 우승을 잇지 못했다 [N13](https://people.cs.gmu.edu/~xiao/Research/BARN_Challenge/BARN_Challenge25.html).
-다음. 계층형 스택은 유지되고 MPPI의 궤적 검증·운동 모델 같은 기능이 강해질 것이다. 학습·VLM 모듈은 코스트맵 층이나 critic으로 흡수될 가능성이 크다.
+
+![Smac Planner Fig. 1](https://arxiv.org/html/2401.13078v2/FrontFig.png)
+*그림 — Smac Planner (Fig. 1): Smac Planner로 Nav2를 쓰는 산업용·수상 로봇들. 원형이 아닌 큰 몸체와 기구학 제약이 있는 로봇에 맞춘 계획기다. 출처: [arXiv:2401.13078](https://arxiv.org/abs/2401.13078)*
+
+![BARN 환경](https://arxiv.org/html/2407.01862v1/content/figures/barn_worlds.png)
+*그림 — BARN 환경 (Fig. 1): Gazebo의 BARN 세계 넷이고, 왼쪽에서 오른쪽으로 갈수록 어렵다. 2024년 대회는 시뮬레이션 예선 뒤 실물 결선을 치렀고, 행동복제 팀이 처음 실물 우승했다. 출처: [arXiv:2407.01862](https://arxiv.org/abs/2407.01862)*
+
+**다음.** 계층형 스택은 유지되고 MPPI의 궤적 검증·운동 모델 같은 기능이 강해질 것이다. 학습·VLM 모듈은 코스트맵 층이나 critic으로 흡수될 가능성이 크다.
 플릿은 탐색 코어에 학습 유도와 할당을 얹는 그림(1만 대 규모 [N7](https://arxiv.org/abs/2410.21415))이 가장 방어하기 쉽다. 내비 파운데이션 모델(NoMaD [N5](https://arxiv.org/abs/2310.07896), NavDP [N4](https://arxiv.org/abs/2505.08712), NaVILA [N6](https://arxiv.org/abs/2412.04453))은 대부분 프리프린트와 시뮬레이션 평가다.
 Amazon DeepFleet의 이동 시간 10% 개선은 회사 주장이다 [N10](https://arxiv.org/abs/2508.08574). 오프로드(DARPA RACER)는 스핀오프로 상용화 중이지만 계획·제어 층을 공개하지 않았다 [N11](https://www.darpa.mil/news/2026/racer-finish-line).
 
+![1만 대 플릿의 처리량과 계획 시간](https://arxiv.org/html/2410.21415v2/figures/exp/horizontal_bars2.png)
+*그림 — 1만 대 플릿의 처리량과 계획 시간 (SILLM Fig. 1): 지도 6개, 로봇 1만 대에서 평균 처리량과 스텝당 계획 시간을 비교한다. (L)은 학습 기반, (S)는 탐색 기반이다. 모방학습 해법 SILLM이 처리량 40.98로 가장 높고, 탐색 기반 WPPL은 37.15에 스텝당 4.1 s가 걸린다. PIBT는 스텝당 0.014 s로 가장 빠르다. 출처: [arXiv:2410.21415](https://arxiv.org/abs/2410.21415)*
+
+![NoMaD Fig. 4](https://arxiv.org/html/2310.07896v1/qualitative_rollout.png)
+*그림 — NoMaD (Fig. 4): 실내·실외 탐색 주행. 한 시점에서 여러 방향의 미래 행동 샘플을 그린다(목표 마스킹 diffusion). 출처: [arXiv:2310.07896](https://arxiv.org/abs/2310.07896)*
+
+**travplan과 닿는 곳.** travplan의 아래 층(MPPI)은 이 분야의 대세를 그대로 따른다. 치명 셀 같은 비미분 비용을 그대로 쓴다는 동인도 같다(B.18.6, Controller 문서 E.10). Planner D는 NoMaD·NavDP와 같은 "연구 단계" 칸에 있어, 배치 근거는 Guidance 폴백을 켠 스택(`planner_df+mppi`)으로 쌓는다.
+
 **도로 자율주행 — 궤적 최적화는 검증과 후처리로 물러났다**(로보택시, 양산 ADAS, NAVSIM, Autoware).
-쓰는 방식. 오픈소스 기준선은 규칙 기반 결정에 Frenet DP·QP(Apollo)나 MPT(Autoware)를 붙이고 MPC·PP로 추종한다.
+
+**쓰는 방식.** 오픈소스 기준선은 규칙 기반 결정에 Frenet DP·QP(Apollo)나 MPT(Autoware)를 붙이고 MPC·PP로 추종한다.
 학계는 nuPlan에서 규칙 기반 PDM-Closed가 우승한 뒤(2023) [A1](https://arxiv.org/abs/2306.07962) 학습 플래너, 쿼리 기반 종단간(UniAD·VAD·SparseDrive), 여러 후보를 만들어 점수로 고르는 구조(DiffusionDrive [A3](https://arxiv.org/abs/2411.15139), GTRS [A2](https://arxiv.org/abs/2506.06664)) 순으로 옮겨 갔다. B.12.1이 이 흐름을 깊게 다룬다.
-대세와 근거. 학계에서는 NAVSIM 공식 챌린지 3회가 모두 후보 생성과 스코어링 계열의 우승이었다. 양산 ADAS는 단일 종단간 네트워크를 내세운다(Tesla FSD v12, XPeng VLA 2.0 [A13](https://www.xpeng.com/news/019a56f54fe99a2a0a8d8a0282e402b7)).
+
+![PDM Fig. 1](https://arxiv.org/html/2306.07962v2/fig_1_v9.png)
+*그림 — PDM (Fig. 1): 규칙 기반 IDM은 사람과 다른 차선을 골라 열린 루프 점수는 낮지만 도로에 머문다. 학습한 PDM-Open은 사람의 차선을 따라가다 0.5초 시뮬레이션 뒤부터 자기 오차를 키워 도로를 벗어난다. 출처: [arXiv:2306.07962](https://arxiv.org/abs/2306.07962)*
+
+![DiffusionDrive Fig. 1](https://arxiv.org/html/2411.15139v3/paradigm_comp.png)
+*그림 — DiffusionDrive (Fig. 1): E2E 패러다임 비교: 단일 회귀 / 어휘 샘플링 / 일반 diffusion / anchor truncated diffusion(제안). 출처: [arXiv:2411.15139](https://arxiv.org/abs/2411.15139)*
+
+**대세와 근거.** 학계에서는 NAVSIM 공식 챌린지 3회가 모두 후보 생성과 스코어링 계열의 우승이었다. 양산 ADAS는 단일 종단간 네트워크를 내세운다(Tesla FSD v12, XPeng VLA 2.0 [A13](https://www.xpeng.com/news/019a56f54fe99a2a0a8d8a0282e402b7)).
 로보택시는 대형 학습 모델에 명시적 검증층을 붙인다. Waymo는 교사 파운데이션 모델을 증류한 온보드 모델의 궤적을 독립 검증층이 물리 hard 제약과 교통 법규로 점검한다고 밝혔다 [A6](https://waymo.com/blog/2025/12/demonstrably-safe-ai-for-autonomous-driving/) [A7](https://waymo.com/blog/2026/08/10ailessons).
 Mercedes CLA의 NVIDIA DRIVE AV는 종단간 모델과 병렬 고전 안전 스택의 조합이다 [A8](https://blogs.nvidia.com/blog/drive-av-mercedes-benz-cla/). Autoware도 Diffusion Planner 노드를 규칙 기반 구성 요소와 나란히 둔다 [A9](https://github.com/autowarefoundation/autoware_universe/tree/main/planning/autoware_diffusion_planner).
-다음. VLM·VLA와 RL 후학습(2025 Waymo 종단간 챌린지 1위 [A4](https://arxiv.org/abs/2506.11234)), 대규모 closed-loop RL [A5](https://proceedings.mlr.press/v305/jaeger25a.html)이 넓어진다. 추론 시점의 언어 단계를 없애는 흐름도 있다 [A13](https://www.xpeng.com/news/019a56f54fe99a2a0a8d8a0282e402b7).
+
+![GTRS 추론](https://arxiv.org/html/2506.06664v1/inference_.png)
+*그림 — GTRS의 추론 (Fig. 2): 궤적 생성기가 낸 후보와 미리 만든 궤적 어휘를 합친 뒤, 두 채점기(GTRS-Dense, GTRS-Aug)가 센서 입력으로 점수를 매긴다. 두 점수의 평균이 가장 큰 궤적을 고른다. B.18.3이 NAVSIM 우승 스코어러로 드는 "후보 생성 + 채점" 구조다. 출처: [arXiv:2506.06664](https://arxiv.org/abs/2506.06664)*
+
+**다음.** VLM·VLA와 RL 후학습(2025 Waymo 종단간 챌린지 1위 [A4](https://arxiv.org/abs/2506.11234)), 대규모 closed-loop RL [A5](https://proceedings.mlr.press/v305/jaeger25a.html)이 넓어진다. 추론 시점의 언어 단계를 없애는 흐름도 있다 [A13](https://www.xpeng.com/news/019a56f54fe99a2a0a8d8a0282e402b7).
 평가 자체가 쟁점이다. NAVSIM 점수 산정 결함과 closed-loop 순위 역전이 보고됐다 [A10](https://arxiv.org/abs/2608.04896). 궤적 최적화와 MPC는 주 플래너보다 실현 가능성 투영, 제약 검증, 추종으로 남을 가능성이 크다.
 
+**travplan과 닿는 곳.** Planner D가 후보 궤적 16개를 만들고 비학습 선택기로 하나를 고르는 구조는 이 분야의 "후보 생성 + 채점"과 같은 꼴이다. 다른 점은 독립 검증층이다. 로보택시는 학습 출력을 물리 제약과 법규로 따로 점검하고, travplan은 그 자리를 Guidance 폴백과 치명 셀 규칙이 나눠 맡는다(B.18.6).
+
 **사족보행 — 궤적 최적화는 발 디딤, 참조, 교사 데이터로 남았다**(ANYmal, Spot, Unitree, Raibo, HOUND).
-쓰는 방식. 2018–2022년에는 단일 강체 모델 convex MPC와 전신 제어(MIT Cheetah), 지각 NMPC [Q8](https://arxiv.org/abs/2208.08373), TAMOLS 같은 모델 기반 최적 제어가 보행 제어기 그 자체였다.
+
+**쓰는 방식.** 2018–2022년에는 단일 강체 모델 convex MPC와 전신 제어(MIT Cheetah), 지각 NMPC [Q8](https://arxiv.org/abs/2208.08373), TAMOLS 같은 모델 기반 최적 제어가 보행 제어기 그 자체였다.
 2019년 이후에는 GPU 병렬 시뮬레이션에서 PPO, 도메인 무작위화, 교사–학생 증류로 학습한 sim-to-real RL이 표준이 됐다 [Q1](https://arxiv.org/abs/1901.08652) [Q2](https://proceedings.mlr.press/v164/rudin22a.html). B.14.1이 이 전환을 RSL 계보로 읽는다.
-대세와 근거. ANYbotics는 2023년 RL 보행을 운용 중인 로봇 전부에 배포했다고 밝혔다(자사 발표) [Q3](https://www.anybotics.com/news/superior-robot-mobility-where-ai-meets-the-real-world/).
+
+![혼합 시뮬레이터로 정책 만들기](https://arxiv.org/html/1901.08652v1/img/Fig1.png)
+*그림 — 정책을 만드는 단계 (Fig. 1): 물리 파라미터 식별, 액추에이터 네트워크 학습, 혼합 시뮬레이터에서 정책 학습, 실물 배치. 출처: [Hwangbo 외, Science Robotics 2019](https://arxiv.org/abs/1901.08652)*
+
+**대세와 근거.** ANYbotics는 2023년 RL 보행을 운용 중인 로봇 전부에 배포했다고 밝혔다(자사 발표) [Q3](https://www.anybotics.com/news/superior-robot-mobility-where-ai-meets-the-real-world/).
 Boston Dynamics는 Spot에서 여러 MPC 예측 지평을 병렬로 평가하던 부분을 RL 정책으로 대신하고 MPC는 유지하는 업데이트를 배포했다 [Q4](https://bostondynamics.com/blog/starting-on-the-right-foot-with-reinforcement-learning/). 이 구조는 B.16.4가 다룬다. DARPA SubT 우승 팀의 ANYmal도 학습 기반 보행이었다.
 공개된 산업 구조는 RL 보행, 선택적인 모델 기반 층, 기하·의미 내비게이션을 쌓은 것이다.
-다음. 하이브리드가 가장 근거가 강하다. TO가 발 디딤 참조를 만들고 RL이 추종하는 DTC [Q5](B.14.2), 샘플링 발 디딤 플래너와 RL 추종기의 KAIST Raibo [Q6](B.16.5)가 그렇다.
+
+![Spot의 이전 보행 제어](https://bostondynamics.com/wp-content/uploads/2024/03/legacy-locomotion-1024x325.png)
+*그림 — Spot의 이전 보행 제어 (BD 블로그): 지형을 아는 경로 계획기가 궤적을 내면, 걸음새마다 하나씩 있는 보행 제어기 N개가 함께 풀고 선택기가 점수가 가장 높은 출력을 고른다. BD는 이 구조로 넘어짐 사이 평균 시간 수백 시간을 얻었지만, MPC 여러 개를 병렬로 평가하느라 온보드 연산과 에너지가 많이 든다고 적는다. 출처: [Boston Dynamics](https://bostondynamics.com/blog/starting-on-the-right-foot-with-reinforcement-learning/)*
+
+![RL 정책을 넣은 Spot 보행 제어](https://bostondynamics.com/wp-content/uploads/2024/03/locomotion-with-rl-1024x131.png)
+*그림 — RL 정책을 넣은 Spot 보행 제어 (BD 블로그): RL 정책이 경로 계획기의 궤적과 상태·지도를 받아 궤적과 걸음새를 내고, 보행 제어기 하나가 그것을 실행한다. 병렬 평가와 선택을 RL이 대신하고, 모델 기반 보행 제어기는 남았다. 출처: [Boston Dynamics](https://bostondynamics.com/blog/starting-on-the-right-foot-with-reinforcement-learning/)*
+
+**다음.** 하이브리드가 가장 근거가 강하다. TO가 발 디딤 참조를 만들고 RL이 추종하는 DTC [Q5](B.14.2), 샘플링 발 디딤 플래너와 RL 추종기의 KAIST Raibo [Q6](B.16.5)가 그렇다.
 TO 궤적 18만 개로 사전 학습한 뒤 RL로 다듬은 KAIST APT-RL [K4](https://arxiv.org/abs/2607.13579), 바퀴·다리 로봇의 계층형 RL 내비 [Q9](B.14.4)도 같은 흐름이다.
 시뮬레이터 rollout 기반 샘플링 MPC(DIAL-MPC [Q7](https://arxiv.org/abs/2409.15610))는 학습 없는 대안이지만 실기 검증이 적은 신흥 단계다. 파운데이션 모델은 보행보다 상위 내비게이션과 점검에 먼저 들어왔다 [Q10](https://bostondynamics.com/blog/put-it-in-context-with-visual-foundation-models/).
 
+![DTC Fig. 1](https://arxiv.org/html/2309.15462v2/intro.png)
+*그림 — DTC (Fig. 1): 실내외에서 걷는 ANYmal이다. 왼쪽 아래 주황 테두리(Precision)는 나무 상자 징검돌과 좁은 다리처럼 디딜 곳이 드문 곳이고, 오른쪽 위 주황 테두리(Robustness)는 미끄러운 판, 기울어지는 덮개판, 매트로 덮은 구멍처럼 불확실성이 큰 곳이다. 콘크리트 잔해·계단·모래 비탈도 지난다. 출처: [arXiv:2309.15462](https://arxiv.org/abs/2309.15462)*
+
+![DIAL-MPC](https://arxiv.org/html/2409.15610v1/images/sync_async.png)
+*그림 — DIAL-MPC (Fig. 1): 확산 모델의 담금질(annealing)을 본뜬 두 겹의 샘플링 MPC다. 궤적 단위로는 샘플링 분산을 바꿔 가며 넓게 찾고, 행동 단위로는 지평 안의 위치마다 다른 분산을 쓴다. 학습 없이 실물 Go2의 속도 추종과 7 kg 짐을 진 점프, 시뮬레이션의 상자 오르기와 휴머노이드 달리기를 해낸다. 출처: [arXiv:2409.15610](https://arxiv.org/abs/2409.15610)*
+
+**travplan과 닿는 곳.** 이 분야의 대세인 RL 실행 층은 travplan에서 `TinyPolicy`(TP-0128)뿐이고, 벤치마크 스택에는 아직 들어가지 않았다. Spot처럼 모델 기반 제어기는 남기고 그 앞의 선택만 학습에 맡기는 구조는, travplan이 학습 Planner 아래에 MPPI를 두는 분리와 닮았다(B.18.6).
+
 **휴머노이드 — 궤적 최적화는 보상, 참조, 데이터 생성기다**(Atlas, Figure, Digit, Unitree G1, GR00T).
-쓰는 방식. 고전 스택은 ZMP·LIPM·DCM 발자국 계획, centroidal·전신 MPC, 1 kHz QP 전신 제어였다. 2023–24년에 GPU 병렬 PPO sim-to-real이 기본값이 됐다 [H1](https://arxiv.org/abs/2303.03381).
+
+**쓰는 방식.** 고전 스택은 ZMP·LIPM·DCM 발자국 계획, centroidal·전신 MPC, 1 kHz QP 전신 제어였다. 2023–24년에 GPU 병렬 PPO sim-to-real이 기본값이 됐다 [H1](https://arxiv.org/abs/2303.03381).
 2024–25년에는 사람 모캡을 리타기팅해 따라가는 전신 제어(ASAP [H6](https://arxiv.org/abs/2502.01143) 등)가 가장 활발한 주제가 됐다. 2025–26년에는 이것을 키운 행동 파운데이션 모델(SONIC [H5](https://arxiv.org/abs/2511.07820)), 지각 기반 전신 파쿠르 [H10](https://arxiv.org/abs/2601.07718), System 2·1·0 VLA 계층이 부상했다. 모방 문서 §I와 B.16.1·B.16.6이 이 줄기를 다룬다.
-대세와 근거. 공개 기술 발표가 있는 회사는 모두 보행 저수준을 시뮬레이션 RL로 옮겼다. Figure는 Helix 02의 System 0이 손으로 짠 C++ 109,504줄을 대체했다고 밝혔다 [H2](https://www.figure.ai/news/helix-02) [H11](https://www.figure.ai/news/reinforcement-learning-walking).
+
+![Real-World Humanoid Locomotion Fig. 1](https://arxiv.org/html/2303.03381v2/cover_fig_outdoor_v5.png)
+*그림 — Real-World Humanoid Locomotion (Fig. 1): 캠퍼스 광장, 나무다리, 주차된 차 옆 보도, 경기장 잔디와 트랙, 건물 앞 길, 차도의 횡단보도, 교내 문(Sather Gate), 정지 표지판이 선 보도에서 걷는 Digit이다. 원문은 콘크리트·고무·잔디 같은 재질과 맑은 오후·젖은 아침 같은 상태가 학습에 없던 것이라고 적는다. 출처: [arXiv:2303.03381](https://arxiv.org/abs/2303.03381)*
+
+![SONIC 방법 개요](https://arxiv.org/html/2511.07820v4/fig6_method_overview.png)
+*그림 — SONIC (방법 개요): 게임패드·VR·영상·글 명령을 운동학 Planner, PICO VR 도구, GEM 사람 동작 생성기가 동작으로 바꾼다. 로봇·혼합·사람 인코더가 그 동작을 양자화한 범용 토큰으로 만들고, 제어 디코더가 로봇 관절 명령을 낸다. 출처: [arXiv:2511.07820](https://arxiv.org/abs/2511.07820)*
+
+**대세와 근거.** 공개 기술 발표가 있는 회사는 모두 보행 저수준을 시뮬레이션 RL로 옮겼다. Figure는 Helix 02의 System 0이 손으로 짠 C++ 109,504줄을 대체했다고 밝혔다 [H2](https://www.figure.ai/news/helix-02) [H11](https://www.figure.ai/news/reinforcement-learning-walking).
 Agility는 작은 LSTM이 IK·ID 기반 제어를 대체했고 [H3](https://www.agilityrobotics.com/content/training-a-whole-body-control-foundation-model), NVIDIA GR00T는 하체 RL과 상체 IK를 쓴다 [H12](https://developer.nvidia.com/blog/building-generalist-humanoid-capabilities-with-nvidia-isaac-gr00t-n1-6-using-a-sim-to-real-workflow/). 예외는 BD로, 450M 파라미터 LBM이 BD의 MPC 기반 인터페이스 위에서 30 Hz로 돈다 [H4](https://bostondynamics.com/blog/large-behavior-models-atlas-find-new-footing/).
 Tesla·1X·Apptronik·UBTech은 보행 알고리즘을 공개하지 않았고, 학계 신규 논문 대다수는 Unitree G1에서 검증한다.
-다음. 모션 추적을 키운 범용 저수준 제어기가 속도 명령 보행을 흡수할 가능성이 높다. VLA와 전신 제어기 사이의 인터페이스(기저 속도, 발·손 자세, 모션 토큰)가 경쟁 지점이 된다.
+
+![Atlas LBM 정책 구조](https://bostondynamics.com/wp-content/uploads/2025/08/Atlas-TRI-Blog-Post-Policy-Architecture-Diagram-v2e-1024x372.png)
+*그림 — Atlas LBM의 정책 구조 (BD·TRI 블로그): 영상, 고유 감각, 언어 지시를 받아 확산 transformer가 flow matching 손실로 행동 묶음을 내고, 전신 Atlas를 30 Hz로 움직인다. 행동은 손·발·몸통 자세와 그리퍼 같은 목표이고, 그 아래는 BD의 MPC 기반 제어가 맡는다. 출처: [Boston Dynamics](https://bostondynamics.com/blog/large-behavior-models-atlas-find-new-footing/)*
+
+**다음.** 모션 추적을 키운 범용 저수준 제어기가 속도 명령 보행을 흡수할 가능성이 높다. VLA와 전신 제어기 사이의 인터페이스(기저 속도, 발·손 자세, 모션 토큰)가 경쟁 지점이 된다.
 MPC와 TO는 온라인 루프 대신 보상·참조·데이터 생성(AMO [H8](https://arxiv.org/abs/2505.03738), MPC 가이드 RL [H9](https://arxiv.org/abs/2606.05687))과 상위 계획 쪽으로 가고, 저차 모델 MPC 연구도 이어진다 [H7](https://arxiv.org/abs/2509.04722).
 대회는 원격 조종에 감점을 주고 완전 자율을 요구하는 쪽으로 바뀌고 있다 [H13](https://en.wikipedia.org/wiki/Beijing_E-Town_Half-Marathon) [H14](https://en.wikipedia.org/wiki/World_Humanoid_Robot_Games).
 
+![AMO 시스템 개요](https://arxiv.org/html/2505.03738v1/main.png)
+*그림 — AMO (Fig. 2): 네 단계다. (1) 모캡과 몸통 명령에서 궤적 최적화로 AMO 데이터셋을 만들어 AMO 망을 지도학습한다. (2) 그 망을 넣어 시뮬레이션에서 RL 교사를 학습하고 학생 정책으로 증류한다. (3) 실물은 IK와 리타기팅으로 원격조종한다. (4) 그 기록으로 transformer 자율 정책을 모방학습한다. 궤적 최적화가 온라인 루프가 아니라 데이터 생성기로 쓰인 예다. 출처: [arXiv:2505.03738](https://arxiv.org/abs/2505.03738)*
+
+**travplan과 닿는 곳.** 휴머노이드에서 경쟁 지점이 된 "위층과 전신 제어기 사이의 인터페이스"는 travplan에서 Planner가 넘기는 시간 인덱스 궤적(4 s, 40스텝)이다. 파운데이션 모델이 들어온다면 그 위에 경유점·서브골로 얹힌다(B.18.6). 사람 동작 모방의 학습 절차는 모방 문서 I.14가 travplan에 잇는다.
+
 #### B.18.3 분야를 가로지르는 흐름
 
-**일곱 흐름이 여러 분야에 함께 나타난다.** 가장 큰 둘은 저수준 제어의 RL 전환과 궤적 최적화의 자리 이동이다.
+**여덟 흐름이 여러 분야에 함께 나타난다.** 가장 큰 둘은 저수준 제어의 RL 전환과 궤적 최적화의 자리 이동이다.
 
 | 흐름 | 무슨 일이 일어나나 | 분야 |
 |---|---|---|
