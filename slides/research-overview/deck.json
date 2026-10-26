@@ -1,9 +1,10 @@
 {
  "title": "travplan 리서치 — 개요",
  "label": "개요",
- "n": 12,
+ "n": 37,
  "tabs": [
-  "개요"
+  "개요",
+  "학회 수확 (IROS 2026)"
  ],
  "order": 0,
  "source": "docs/research-overview.md"

@@ -7888,16 +7888,16 @@ TP-0036에 바로 들어간다)다.</p></div><div class="foot" data-foot><span>t
 <tbody>
 <tr>
 <td>TNT (508)</td>
-<td>Pan, Datar, Xiao 등</td>
-<td>못 갈 것 같은 지형을 과거 차량–지형 상호작용으로 가른다. 계획 성능 50% 개선</td>
-<td>개요, A.10</td>
+<td>Pan, Datar, Xiao 등 (GMU)</td>
+<td>못 갈 것 같은 바위 지형을 지난 주행의 기울기·속도 어긋남·자세 예측 오차로 다시 매긴다. 한 코스 10회에서 성공 9/10(TNT 없는 MPPI 6/10), 코드 없음</td>
+<td>개요</td>
 <td><a href="https://arxiv.org/abs/2409.17479">논문</a></td>
 </tr>
 <tr>
 <td>Remember Your Driving Feel (1304)</td>
-<td>Xie 등</td>
-<td>proprioception 기반 온라인 traversability 학습</td>
-<td>개요, A.10</td>
+<td>Xie 등 (NUDT)</td>
+<td>POLT. 고유 감각으로 traversability를 주행 중에 배우고, 동적 메모리로 오프라인 물리 prior와 합친다. 2026-10-26 현재 본문 미공개(초록만)</td>
+<td>개요</td>
 <td><a href="https://2026.ieee-iros.org/program/paper-index/">색인</a></td>
 </tr>
 <tr>
@@ -7909,17 +7909,17 @@ TP-0036에 바로 들어간다)다.</p></div><div class="foot" data-foot><span>t
 </tr>
 <tr>
 <td>Observation-Conditioned Rollout Allocation (3312)</td>
-<td>Diaz Pichardo, Mandow, Vazquez-Martin</td>
-<td>근시안 고도지도에서 관측에 따라 MPC rollout 예산 배분</td>
-<td>개요, E.1</td>
-<td><a href="https://2026.ieee-iros.org/program/paper-index/">색인</a></td>
+<td>Diaz-Pichardo, Mandow, Vázquez-Martín (말라가 대학)</td>
+<td>OCRA. 좁은 고도 지도에서 학습한 정책이 진행 방향 seed 사이에 rollout 192개를 나눈다. 균일 배분보다 주행 거리 12–16 %, 위반 20–49 % 감소</td>
+<td>개요</td>
+<td><a href="https://hdl.handle.net/10630/48147">원고</a></td>
 </tr>
 <tr>
 <td>MSC (3480)</td>
-<td>Park 등 (KAIST)</td>
-<td>caster를 아는 다단계 제어, 불확실성 NMPC + RL 실행 층</td>
-<td>개요, B.12.4</td>
-<td><a href="https://2026.ieee-iros.org/program/paper-index/">색인</a></td>
+<td>Park, Lee, Lim, Choi, Kim (KAIST)</td>
+<td>수동 캐스터를 단 차동구동 AMR의 두 층 제어. RL 실행 층이 캐스터 상태와 분산을 예측하고, NMPC가 그 분산으로 비용 가중치를 바꾼다</td>
+<td>개요</td>
+<td><a href="https://arxiv.org/abs/2610.16199">논문</a></td>
 </tr>
 <tr>
 <td>RayOcc (1720)</td>
@@ -7937,17 +7937,17 @@ TP-0036에 바로 들어간다)다.</p></div><div class="foot" data-foot><span>t
 </tr>
 <tr>
 <td>Streaming Gaussian Encoding (2962)</td>
-<td>Luz, Valada 등</td>
-<td>4D panoptic occupancy 추적, Best Paper 후보</td>
-<td>개요, A.2</td>
-<td><a href="https://2026.ieee-iros.org/program/paper-index/">색인</a></td>
+<td>Luz, Nürnberg, Miron, Valada (Freiburg, Bosch)</td>
+<td>SGE. 가우시안 8,192개의 장면 상태에 관측 신뢰도를 쌓아 가려진 정적 구조를 유지하는 4D panoptic occupancy 추적. Best Paper·Best Student Paper 결선</td>
+<td>개요</td>
+<td><a href="https://arxiv.org/abs/2606.30754">논문</a> · <a href="https://github.com/robot-learning-freiburg/LaGS">코드</a></td>
 </tr>
 <tr>
 <td>OccTrack360 (1298)</td>
-<td>Lin, Yang 등</td>
-<td>어안 서라운드 뷰 4D panoptic occupancy 추적 벤치마크, 가림·시야 마스크</td>
-<td>개요, A.2</td>
-<td><a href="https://arxiv.org/abs/2603.08521">논문</a></td>
+<td>Lin, Luo, Yang 등 (후난 대학)</td>
+<td>KITTI-360 측면 어안 2대의 4D panoptic occupancy 추적 벤치마크. 가림 마스크와 어안 시야 마스크 밖의 칸을 학습과 평가에서 뺀다</td>
+<td>개요</td>
+<td><a href="https://arxiv.org/abs/2603.08521">논문</a> · <a href="https://github.com/YouthZest-Lin/OccTrack360">코드</a></td>
 </tr>
 <tr>
 <td>PA-MPPI (68)</td>

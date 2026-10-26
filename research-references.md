@@ -1369,15 +1369,15 @@ TP-0036에 바로 들어간다)다.
 
 | 이름 | 저자 | 요약 | 본문 | 링크 |
 |---|---|---|---|---|
-| TNT (508) | Pan, Datar, Xiao 등 | 못 갈 것 같은 지형을 과거 차량–지형 상호작용으로 가른다. 계획 성능 50% 개선 | 개요, A.10 | [논문](https://arxiv.org/abs/2409.17479) |
-| Remember Your Driving Feel (1304) | Xie 등 | proprioception 기반 온라인 traversability 학습 | 개요, A.10 | [색인](https://2026.ieee-iros.org/program/paper-index/) |
+| TNT (508) | Pan, Datar, Xiao 등 (GMU) | 못 갈 것 같은 바위 지형을 지난 주행의 기울기·속도 어긋남·자세 예측 오차로 다시 매긴다. 한 코스 10회에서 성공 9/10(TNT 없는 MPPI 6/10), 코드 없음 | 개요 | [논문](https://arxiv.org/abs/2409.17479) |
+| Remember Your Driving Feel (1304) | Xie 등 (NUDT) | POLT. 고유 감각으로 traversability를 주행 중에 배우고, 동적 메모리로 오프라인 물리 prior와 합친다. 2026-10-26 현재 본문 미공개(초록만) | 개요 | [색인](https://2026.ieee-iros.org/program/paper-index/) |
 | TravKAN (2427) | Fusaro, Mosco, Li, Pretto | Kolmogorov–Arnold 망으로 빠르고 해석 가능한 traversability | 개요, A.10 | [색인](https://2026.ieee-iros.org/program/paper-index/) |
-| Observation-Conditioned Rollout Allocation (3312) | Diaz Pichardo, Mandow, Vazquez-Martin | 근시안 고도지도에서 관측에 따라 MPC rollout 예산 배분 | 개요, E.1 | [색인](https://2026.ieee-iros.org/program/paper-index/) |
-| MSC (3480) | Park 등 (KAIST) | caster를 아는 다단계 제어, 불확실성 NMPC + RL 실행 층 | 개요, B.12.4 | [색인](https://2026.ieee-iros.org/program/paper-index/) |
+| Observation-Conditioned Rollout Allocation (3312) | Diaz-Pichardo, Mandow, Vázquez-Martín (말라가 대학) | OCRA. 좁은 고도 지도에서 학습한 정책이 진행 방향 seed 사이에 rollout 192개를 나눈다. 균일 배분보다 주행 거리 12–16 %, 위반 20–49 % 감소 | 개요 | [원고](https://hdl.handle.net/10630/48147) |
+| MSC (3480) | Park, Lee, Lim, Choi, Kim (KAIST) | 수동 캐스터를 단 차동구동 AMR의 두 층 제어. RL 실행 층이 캐스터 상태와 분산을 예측하고, NMPC가 그 분산으로 비용 가중치를 바꾼다 | 개요 | [논문](https://arxiv.org/abs/2610.16199) |
 | RayOcc (1720) | Kim, Lee | 가우시안 혼합 세기로 가림 인지 ray occupancy 추정 | 개요, A.5 | [색인](https://2026.ieee-iros.org/program/paper-index/) |
 | OGM-CBF (3618) | Raja 등 | 시야 밖 장애물을 기억하는 점유 격자 기반 CBF | 개요, C | [색인](https://2026.ieee-iros.org/program/paper-index/) |
-| Streaming Gaussian Encoding (2962) | Luz, Valada 등 | 4D panoptic occupancy 추적, Best Paper 후보 | 개요, A.2 | [색인](https://2026.ieee-iros.org/program/paper-index/) |
-| OccTrack360 (1298) | Lin, Yang 등 | 어안 서라운드 뷰 4D panoptic occupancy 추적 벤치마크, 가림·시야 마스크 | 개요, A.2 | [논문](https://arxiv.org/abs/2603.08521) |
+| Streaming Gaussian Encoding (2962) | Luz, Nürnberg, Miron, Valada (Freiburg, Bosch) | SGE. 가우시안 8,192개의 장면 상태에 관측 신뢰도를 쌓아 가려진 정적 구조를 유지하는 4D panoptic occupancy 추적. Best Paper·Best Student Paper 결선 | 개요 | [논문](https://arxiv.org/abs/2606.30754) · [코드](https://github.com/robot-learning-freiburg/LaGS) |
+| OccTrack360 (1298) | Lin, Luo, Yang 등 (후난 대학) | KITTI-360 측면 어안 2대의 4D panoptic occupancy 추적 벤치마크. 가림 마스크와 어안 시야 마스크 밖의 칸을 학습과 평가에서 뺀다 | 개요 | [논문](https://arxiv.org/abs/2603.08521) · [코드](https://github.com/YouthZest-Lin/OccTrack360) |
 | PA-MPPI (68) | Zhai, Reiter, Scaramuzza | 인식을 아는 MPPI, 미지 환경 쿼드로터 | 개요, E.1 | [색인](https://2026.ieee-iros.org/program/paper-index/) |
 
 ### D.11 기타
