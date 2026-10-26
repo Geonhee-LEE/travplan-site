@@ -1,15 +1,19 @@
 {
  "title": "travplan 리서치 — Planner",
  "label": "Planner",
- "n": 522,
+ "n": 540,
  "tabs": [
+  "개요",
   "travplan과 고전 기준선",
   "학습 로컬 Planner",
   "생성형 궤적",
   "Foundation·VLA·언어",
   "위험 인지·로컬 내비",
   "자율주행 자동차",
-  "다리·바퀴 로봇과 계보",
+  "로봇별 공개 스택",
+  "ETH RSL 계보",
+  "NVIDIA·DeepMind·취리히·RAI",
+  "다른 연구실·휴머노이드 주행",
   "분야별 지형",
   "최근 연구 비교",
   "작업 기록"

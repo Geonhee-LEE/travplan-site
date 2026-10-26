@@ -106,7 +106,7 @@ Controller·안전, 시뮬레이션이고, 보조 문서는 여러 논문이 함
  └──────────────────┘
           시뮬레이션 (§S): 운동학 시뮬 · Isaac Sim · 보도 장면 · sim-to-real 로 위 전체를 검증
 </code></pre><p><strong>문서 지도.</strong> 문서마다 첫 탭이 개요(분야 계보, 공개 코드·모델 현황, travplan의 위치)이고, 그 뒤가 주제별 탭이다. 절 번호는 문서를 옮겨도
-그대로 둔다(인식 A, Planner B, Controller E와 안전 필터 C, 시뮬레이션 S, 배경 0, 강화학습 R, 딥러닝 L, 모방 I, 참고문헌 D).</p><table style="table-layout:fixed"><colgroup><col style="width:132.6px"><col style="width:648.8px"><col style="width:593.1px"><col style="width:352.5px"></colgroup><thead>
+그대로 둔다(인식 A, Planner B, Controller E와 안전 필터 C, 시뮬레이션 S, 배경 0, 강화학습 R, 딥러닝 L, 모방 I, 참고문헌 D).</p><table style="table-layout:fixed"><colgroup><col style="width:126.9px"><col style="width:784.0px"><col style="width:504.7px"><col style="width:311.4px"></colgroup><thead>
 <tr>
 <th>문서</th>
 <th>탭과 절</th>
@@ -120,16 +120,11 @@ Controller·안전, 시뮬레이션이고, 보조 문서는 여러 논문이 함
 <td>elevation mapping(P2.1), TravNet(TP-0010), 검출·추적 PoC(TP-0011)</td>
 </tr><tr>
 <td>Planner (§B)</td>
-<td><strong>방법</strong> — travplan과 고전 기준선(B.1, B.10), 학습 로컬 Planner(B.2–B.4, B.4b, B.7), 생성형 궤적(B.8.0, B.8), Foundation·VLA·언어(B.6, B.6b–B.6d), 위험 인지·로컬 내비(B.9). <strong>현황</strong> — 자율주행 자동차(B.12.1, B.11, B.13), 다리·바퀴 로봇과 계보(B.12, B.14, B.16)</td>
+<td><strong>방법</strong> — travplan과 고전 기준선(B.1, B.10), 학습 로컬 Planner(B.2–B.4, B.4b, B.7), 생성형 궤적(B.8.0, B.8), Foundation·VLA·언어(B.6, B.6b–B.6d), 위험 인지·로컬 내비(B.9). <strong>현황</strong> — 자율주행 자동차(B.12.1, B.11, B.13), 로봇별 공개 스택(B.12), ETH RSL 계보(B.14), NVIDIA·DeepMind·취리히·RAI(B.16, B.16.1–B.16.4), 다른 연구실·휴머노이드 주행(B.16.5–B.16.8). <strong>종합</strong> — 분야별 지형(B.18), 최근 연구 비교(B.17)</td>
 <td>경로와 시간 인덱스 궤적 생성</td>
 <td>GuidancePlanner, LearnedPlanner, Planner D</td>
-</tr><tr>
-<td>Controller·안전 (§E, §C)</td>
-<td>MPPI 계열(E.1, B.5), 학습 동역학·적응(E, E.2), 안전 필터(C.1–C.4)</td>
-<td>궤적 추종과 안전</td>
-<td>MPPIController(유지보수), 시간가변 비용 레이어, CVaR-BF 후보</td>
 </tr></tbody></table></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>2 / 12</span></div><aside>docs/research-overview.md 머리말</aside></section>
-<section class="r content"><div class="kicker">개요 · 개요</div><h2 class="ttl">리서치 개요 (2026-09)<small>2/3</small></h2><div class="body"><table style="table-layout:fixed"><colgroup><col style="width:132.6px"><col style="width:648.8px"><col style="width:593.1px"><col style="width:352.5px"></colgroup><thead>
+<section class="r content"><div class="kicker">개요 · 개요</div><h2 class="ttl">리서치 개요 (2026-09)<small>2/3</small></h2><div class="body"><table style="table-layout:fixed"><colgroup><col style="width:126.9px"><col style="width:784.0px"><col style="width:504.7px"><col style="width:311.4px"></colgroup><thead>
 <tr>
 <th>문서</th>
 <th>탭과 절</th>
@@ -137,6 +132,11 @@ Controller·안전, 시뮬레이션이고, 보조 문서는 여러 논문이 함
 <th>travplan에서</th>
 </tr>
 </thead><tbody><tr>
+<td>Controller·안전 (§E, §C)</td>
+<td>MPPI 계열(E.1, B.5), 학습 동역학·적응(E, E.2), 안전 필터(C.1–C.4)</td>
+<td>궤적 추종과 안전</td>
+<td>MPPIController(유지보수), 시간가변 비용 레이어, CVaR-BF 후보</td>
+</tr><tr>
 <td>시뮬레이션 (§S)</td>
 <td>물리 엔진(S.1), 보도·도시(S.2), 보행자(S.3), 센서·렌더링(S.4), 지형·바퀴(S.5), sim-to-real(S.6), travplan 권고(S.7)</td>
 <td>검증 환경의 네 층(L0–L3)</td>
@@ -182,12 +182,6 @@ Controller·안전, 시뮬레이션이고, 보조 문서는 여러 논문이 함
 <td>Dijkstra, A*, DWA</td>
 <td>—</td>
 <td>—</td>
-</tr><tr>
-<td>2008–2014</td>
-<td>Robot-centric elevation mapping</td>
-<td>Hybrid A*, TEB</td>
-<td>—</td>
-<td>—</td>
 </tr></tbody></table></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>3 / 12</span></div><aside>docs/research-overview.md 머리말</aside></section>
 <section class="r content"><div class="kicker">개요 · 개요</div><h2 class="ttl">리서치 개요 (2026-09)<small>3/3</small></h2><div class="body"><table style="table-layout:fixed"><colgroup><col style="width:95.1px"><col style="width:432.0px"><col style="width:444.8px"><col style="width:388.1px"><col style="width:367.0px"></colgroup><thead>
 <tr>
@@ -198,6 +192,12 @@ Controller·안전, 시뮬레이션이고, 보조 문서는 여러 논문이 함
 <th>시뮬레이션</th>
 </tr>
 </thead><tbody><tr>
+<td>2008–2014</td>
+<td>Robot-centric elevation mapping</td>
+<td>Hybrid A*, TEB</td>
+<td>—</td>
+<td>—</td>
+</tr><tr>
 <td>2015–2018</td>
 <td>Social GAN</td>
 <td>Apollo EM planner</td>

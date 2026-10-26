@@ -2,27 +2,65 @@
 # Planner — 경로·궤적을 만드는 쪽 (§B)
 
 **Planner는 로봇 상태, TravMap, 목표를 받아 경로나 시간 인덱스 궤적을 낸다.** 제어 명령은 내지 않는다.
-탭은 **두 묶음**이다. ==앞의 다섯은 **방법**(어떻게 계획하나), 뒤의 둘은 **현황**(누가 무엇을 내놨나)이다.==
-2026-10-01에 이렇게 다시 묶었다 — 그 전에는 방법·도메인·관심사·계보 네 축이 섞여 있어서
-자율주행 내용만 세 탭(E2E 주행 · 역사·상용화 · 로봇별 오픈소스)에 흩어져 있었다.
+탭은 **네 묶음**이다. ==방법(어떻게 계획하나) 다섯, 현황(누가 무엇을 내놨나) 다섯, 종합 둘, 작업 기록 하나다.==
+
+2026-10-01에 방법과 현황으로 처음 묶었다. 그 전에는 방법·도메인·관심사·계보 네 축이 섞여 있어서 자율주행 내용만 세 탭(E2E 주행 · 역사·상용화 · 로봇별 오픈소스)에 흩어져 있었다.
+2026-10-26에는 문서의 약 70 %가 몰려 있던 「다리·바퀴 로봇과 계보」 탭을 넷으로 나누고, 분야 비교와 최근 연구 비교를 종합으로 묶었다. 절 번호는 그대로다.
+
+탭마다 맨 위에 **읽는 법**(한눈에 볼 표, travplan에 주는 의미가 있는 곳)을 둔다. 첫 절의 첫 문장이 탭 전체의 결론이 아니면, 그 앞에 탭의 결론을 한 문장으로 둔다.
+표의 '출처 확인일'은 본문에 적힌 확인 날짜다. '표기 없음'인 탭은 출처를 다시 확인할 차례가 먼저 온다.
 
 **■ 방법 — 어떻게 계획하나**
 
-| 탭 | 다루는 것 | 절 | travplan과의 관계 |
-|---|---|---|---|
-| travplan과 고전 기준선 | travplan Planner의 현재 구조, 그리고 그래프 탐색·로컬 플래너·궤적 최적화 | B.1, B.10 | `GuidancePlanner`(Dijkstra)가 기준선이자 subgoal 공급원 |
-| 학습 로컬 Planner | 로봇 주변만 보고 가까운 경로를 내는 학습 모듈(waypoint 회귀, diffusion 궤적, RL 직접 매핑, 비용 지도로 학습) | B.2–B.4, B.4b, B.7 | `LearnedPlanner`(Planner B)의 계보 |
-| 생성형 궤적 | 시간 인덱스 궤적 여러 개를 생성 모델에서 샘플한다(Diffuser에서 Diffusion Planner까지, 후속 연구, Planner D) | B.8.0, B.8 | **Planner D**(flow matching)의 직계 설계 |
-| Foundation·VLA·언어 | 시각 내비 기반 모델, VLA, 도시 보행 내비, 시연 로그 학습 | B.6, B.6b–B.6d | Planner 위의 **목표 선택 층** |
-| 위험 인지·로컬 내비 | 지형 위험 그래프, 보이지 않는 지형 상상, CVaR 여유 | B.9 | 위험 비용 설계 |
-| 최근 연구 비교 | 2025–2026 학습 로컬 Planner·생성형 궤적·위험 인지 계획의 비교표, 공통점과 차이점 | B.17 | Planner D 다음 시도 순서 |
+| 탭 | 다루는 것 | 절 | travplan과의 관계 | 출처 확인일 |
+|---|---|---|---|---|
+| travplan과 고전 기준선 | travplan Planner의 현재 구조, 그리고 그래프 탐색·로컬 플래너·궤적 최적화 | B.1, B.10 | `GuidancePlanner`(Dijkstra)가 기준선이자 subgoal 공급원 | 표기 없음 |
+| 학습 로컬 Planner | 로봇 주변만 보고 가까운 경로를 내는 학습 모듈(waypoint 회귀, diffusion 궤적, RL 직접 매핑, 비용 지도로 학습) | B.2–B.4, B.4b, B.7 | `LearnedPlanner`(Planner B)의 계보 | TAME-Nav만(2026-10-13) |
+| 생성형 궤적 | 시간 인덱스 궤적 여러 개를 생성 모델에서 샘플한다(Diffuser에서 Diffusion Planner까지, 후속 연구, Planner D) | B.8.0, B.8 | **Planner D**(flow matching)의 직계 설계 | 표기 없음 |
+| Foundation·VLA·언어 | 시각 내비 기반 모델, VLA, 도시 보행 내비, 시연 로그 학습 | B.6, B.6b–B.6d | Planner 위의 **목표 선택 층** | 표기 없음 |
+| 위험 인지·로컬 내비 | 지형 위험 그래프, 보이지 않는 지형 상상, CVaR 여유 | B.9 | 위험 비용 설계 | 표기 없음 |
 
 **■ 현황 — 누가 무엇을 내놨나**
 
-| 탭 | 다루는 것 | 절 | travplan과의 관계 |
-|---|---|---|---|
-| 자율주행 자동차 | ==한자리에 모았다== — 공개 스택(Autoware·Apollo), 종단간(E2E), 연구 역사와 2026 상용화 | B.12.1, B.11, B.13 | 후보 생성·검증·선택 구조, 폐루프 평가 지표, 규칙 안전 층 |
-| 다리·바퀴 로봇과 계보 | 사족·휴머노이드·바퀴 로봇의 공개 Planner, ETH RSL 한 연구실의 층별 계보, NVIDIA·Google DeepMind·취리히·RAI Institute와 다른 연구실의 사족·휴머노이드 계보 | B.12, B.14, B.16 | 스워브 모듈 모델, ROS 2 통합, 인식 도구의 출처, 학습 절차와 plant 보정 |
+| 탭 | 다루는 것 | 절 | travplan과의 관계 | 출처 확인일 |
+|---|---|---|---|---|
+| 자율주행 자동차 | ==한자리에 모았다== — 공개 스택(Autoware·Apollo), 종단간(E2E), 연구 역사와 2026 상용화 | B.12.1, B.11, B.13 | 후보 생성·검증·선택 구조, 폐루프 평가 지표, 규칙 안전 층 | 상용화만(2026-09) |
+| 로봇별 공개 스택 | 사족·휴머노이드·바퀴 로봇의 공개 Planner와, 네 로봇에서 가져올 것 | B.12, B.12.2–B.12.5 | 스워브 모듈 모델, ROS 2 통합 | 별 수·라이선스(2026-09) |
+| ETH RSL 계보 | 높이 지도에서 계단을 오르는 배달로봇(RIVR)까지, 한 연구실을 travplan의 층별로 | B.14 | 인식 도구의 출처, Planner D 선택기의 실패 확률 머리, 진행 방향 step 비용 | 2026-10-06 |
+| NVIDIA·DeepMind·취리히·RAI | B.16 머리말(조직 표, 계보 그림, 연표)과 네 조직의 사족·휴머노이드 계보 | B.16, B.16.1–B.16.4 | 학습 절차, plant 보정, 두 층 구조 | 2026-10-07 |
+| 다른 연구실·휴머노이드 주행 | 다른 연구실의 사족·휴머노이드, B.16 전체에서 가져올 순서, 휴머노이드 주행(내비 층이 넘기는 것, 출력의 투영) | B.16.5–B.16.8 | 학습 절차, Planner→Controller 경계 | 2026-10-07, B.16.8은 2026-10-21–26 |
+
+**■ 종합과 작업 기록**
+
+| 탭 | 다루는 것 | 절 | travplan과의 관계 | 출처 확인일 |
+|---|---|---|---|---|
+| 분야별 지형 | 레이싱카·모바일 로봇·도로 자율주행·사족·휴머노이드에서 쓰는 방식과 대세, 인증·원격 지원, 한국 | B.18 | travplan의 두 층이 어느 분야의 대세를 따르나 | 표기 없음 |
+| 최근 연구 비교 | 2025–2026 학습 로컬 Planner·생성형 궤적·위험 인지 계획의 비교표, 공통점과 차이점 | B.17 | Planner D 다음 시도 순서 | 표기 없음 |
+| 작업 기록 | travplan이 고치고 잰 Planner 결과(TP-0137, 0078, 0066, 0039·0074, 0138, 0143) | B.15 | — | — |
+
+<details markdown="1">
+<summary>자세히: 절 번호로 탭 찾기(표 14행)</summary>
+
+절 번호는 탭 순서와 다르다. 다른 문서가 번호로 가리키므로 번호는 바꾸지 않는다(WRITING.md §4).
+
+| 절 | 탭 |
+|---|---|
+| B.1, B.10 | travplan과 고전 기준선 |
+| B.2–B.4, B.4b, B.7 | 학습 로컬 Planner |
+| B.5 | Controller·안전 문서의 MPPI 탭 |
+| B.6, B.6b–B.6d | Foundation·VLA·언어 |
+| B.8.0–B.8.3 | 생성형 궤적 |
+| B.9 | 위험 인지·로컬 내비 |
+| B.11, B.12.1, B.13 | 자율주행 자동차 |
+| B.12, B.12.2–B.12.5 | 로봇별 공개 스택 |
+| B.14 | ETH RSL 계보 |
+| B.15 | 작업 기록 |
+| B.16, B.16.1–B.16.4 | NVIDIA·DeepMind·취리히·RAI |
+| B.16.5–B.16.8 | 다른 연구실·휴머노이드 주행 |
+| B.17 | 최근 연구 비교 |
+| B.18 | 분야별 지형 |
+
+</details>
 
 **계보 한눈에 보기.** 각 이름의 설명은 해당 탭에 있다.
 
@@ -34,17 +72,17 @@
 | 2023 | — | PDM-Closed, ArtPlanner, DRL-VO | iPlanner | Diffusion Policy, MPD | ViNT, NoMaD | UniAD, VAD |
 | 2024 | Smac Planner | X-Mobility, HOVER | ViPlanner | π0, DiffusionDrive | OpenVLA, NaVILA, Uni-NaVid, CityWalker | SparseDrive, NAVSIM, Hydra-MDP, DriveVLM, EMMA |
 | 2025 | — | CaRL, Alpamayo, COMPASS, ASAP, Gallant, HEAD | NavDP, Skill-Nav, S2E, LoGoPlanner, LogoNav, CARE | Diffusion Planner, GoalFlow, ReinFlow | UrbanVLA | — |
-| 2026 | Occlusion-Aware Stability-Oriented Planning | Click-and-Traverse, Alpamayo 1.5 | AgniNav, CORE, MILER, X-NavDP, Beyond Imitation | PC-Diffuser, FeaXDrive, MISTY, JPPD, GRACE | Can VFMs Navigate?, Slow Brain Fast Planner | — |
+| 2026 | Occlusion-Aware Stability-Oriented Planning | Click-and-Traverse, Alpamayo 1.5 | AgniNav, CORE, MILER, X-NavDP, Beyond Imitation, TAME-Nav, FocusNav, LP-NavOA | PC-Diffuser, FeaXDrive, MISTY, JPPD, GRACE, FIBER | Can VFMs Navigate?, Slow Brain Fast Planner | — |
 
-**공개 코드와 모델.** GitHub 별 순이다(2026-09). HF 다운로드는 대표 가중치의 최근 30일 값이다.
+**공개 코드와 모델.** GitHub 별 순이다(2026-10-26). HF 다운로드는 대표 가중치의 최근 30일 값이다(2026-10-26).
 
 | 분야 | 이름 | 코드(★) | HF 다운로드 | 라이선스 | travplan에서 |
 |---|---|---|---|---|---|
-| VLA | [openpi (π0)](https://github.com/Physical-Intelligence/openpi) | 14.0k | 0.04M (pi0_base) | 코드 Apache-2.0, 가중치 Gemma 약관 | flow matching 규칙이 Planner D와 같다 |
-| VLA | [OpenVLA](https://github.com/openvla/openvla) | 7.1k | 0.44M (7B) | MIT | 참고 |
+| VLA | [openpi (π0)](https://github.com/Physical-Intelligence/openpi) | 14.4k | 0.01M (pi0_base) | 코드 Apache-2.0, 가중치 Gemma 약관 | flow matching 규칙이 Planner D와 같다 |
+| VLA | [OpenVLA](https://github.com/openvla/openvla) | 7.2k | 0.15M (7B) | MIT | 참고 |
+| 스택 | [Nav2](https://github.com/ros-navigation/navigation2) | 4.9k | — | 패키지별 혼합 | ROS 2 통합 시 기준 스택 |
 | E2E | [UniAD](https://github.com/OpenDriveLab/UniAD) | 4.8k | — | Apache-2.0 | 참고 |
-| 스택 | [Nav2](https://github.com/ros-navigation/navigation2) | 4.7k | — | 패키지별 혼합 | ROS 2 통합 시 기준 스택 |
-| 생성형 | [Diffusion Policy](https://github.com/real-stanford/diffusion_policy) | 4.6k | — | MIT | 행동 열 생성의 원형 |
+| 생성형 | [Diffusion Policy](https://github.com/real-stanford/diffusion_policy) | 4.7k | — | MIT | 행동 열 생성의 원형 |
 | 생성형 | [DiffusionDrive](https://github.com/hustvl/DiffusionDrive) | 1.5k | — | MIT | anchor 시작 아이디어(B.8.2) |
 | E2E | [VAD](https://github.com/hustvl/VAD) | 1.4k | — | Apache-2.0 | 참고 |
 | 로컬 | [TEB](https://github.com/rst-tu-dortmund/teb_local_planner) | 1.4k | — | BSD-3-Clause | 고전 비교 대상 |
@@ -63,7 +101,7 @@
 | 생성형 | [MPD](https://github.com/joaoamcarvalho/mpd-public) | 0.3k | — | MIT | 비용 guidance 참고 |
 | 도시 내비 | [CityWalker](https://github.com/ai4ce/CityWalker) | 0.2k | — | Apache-2.0 | 보도 영상 라벨링 참고 |
 
-로봇 종류별 공개 스택(Autoware, Apollo, openpilot, OCS2, Nav2, Choreo 등)의 별 수와 라이선스는 B.12에 따로 모았다.
+로봇 종류별 공개 스택(Autoware, Apollo, openpilot, OCS2, Nav2, Choreo 등)의 별 수와 라이선스는 B.12(「로봇별 공개 스택」 탭, 2026-09 기준)에 따로 모았다.
 
 **travplan의 위치.** ==travplan Planner는 "고전 전역 경로 + 학습 로컬 궤적 생성 + 규칙 점수 선택"의 세 층이다.== GuidancePlanner가 TravMap
 위 Dijkstra로 subgoal과 cost-to-go를 주고(B.10), Planner D가 flow matching으로 후보 궤적을 만들고(B.8.3), 규칙 점수가 하나를 고른다.
@@ -75,6 +113,10 @@ LearnedPlanner는 iPlanner 계열의 자기지도 손실로 학습한 waypoint P
 ---
 
 <!-- tab: travplan과 고전 기준선 -->
+
+**이 탭은 travplan Planner의 지금 구조(B.1)와, 학습 Planner를 잴 고전 기준선(B.10)이다.** 기준선의 중심은 GuidancePlanner(TravMap 위 Dijkstra)다.
+
+**읽는 법.** 고전 계획 일곱 가지는 B.10 첫 표에 있다. 궤적 다발 최적화 MPOT를 Planner D의 교사로 쓰는 판은 B.10.1이다.
 
 ### B.1 travplan의 현재 구조
 
@@ -211,6 +253,10 @@ Sinkhorn Step을 **Planner 자리**에 놓고 probe 비용을 TravMap 칸 가중
 ---
 
 <!-- tab: 학습 로컬 Planner -->
+
+**이 탭은 로봇 주변만 보고 가까운 경로를 내는 학습 Planner의 네 계열이다.** travplan에 바로 이어지는 것은 비용 지도 자기지도(LearnedPlanner 손실의 원형)와, diffusion 궤적과 그 폐루프 RL 후학습(Planner D와 TP-0066)이다.
+
+**읽는 법.** B.2는 waypoint 회귀, B.3은 diffusion 궤적과 RL 후학습, B.4는 인식에서 속도 명령까지 가는 RL, B.4b는 비용 지도 자기지도다. B.7은 이 계열들과 Controller 쪽 참고 연구를 한 표(12행)로 비교하고, 마지막 열에 travplan에서의 위치를 적었다.
 
 ### B.2 waypoint를 직접 회귀하는 방식
 
@@ -793,6 +839,10 @@ $$ \mathcal L = 3\,\overline{c}_{\text{blur}} + 12\,\overline{\mathrm{relu}(c - 
 
 <!-- tab: 생성형 궤적 -->
 
+**이 탭은 궤적 전체를 생성 모델에서 샘플하는 계열이고, travplan의 Planner D(B.8.3)가 여기에 속한다.**
+
+**읽는 법.** B.8.0은 Diffuser에서 GoalFlow까지의 계보이고, 첫 표(8행)에 한눈에 있다. B.8–B.8.2는 Diffusion Planner와, 기구학·안전·속도를 보강한 후속 연구(B.8.2 표, 11행)다. travplan에 주는 의미는 B.8.3에 모았다.
+
 ### B.8.0 생성형 궤적의 계보: Diffuser에서 GoalFlow까지
 
 **"계획을 생성 모델에서 샘플한다"는 발상은 2022년 Diffuser에서 시작해 로봇 정책, 운동 계획, 자율주행으로 퍼졌다.** 공통점은 셋이다.
@@ -1302,6 +1352,11 @@ jerk가 2.0에서 3.9로 오른 것은 이제 요철 띠를 실제로 건너기 
 
 <!-- tab: Foundation·VLA·언어 -->
 
+**이 탭은 Planner 위에서 목표와 중간 행동을 정하는 층이다.** 시각 내비 기반 모델과 VLA는 Planner를 대체하지 않고 그 위에 얹는다(B.6b).
+
+**읽는 법.** B.6은 시각 내비 기반 모델(ViNT·NoMaD·GNM), B.6b는 VLA와 도시 보행 내비, B.6c는 시연 투어와 위상 그래프다. B.6d는 보도 원격조종 로그로 배우는 MIMIC과, 그 뒤에 더한 카드 셋(S2E, Slow Brain Fast Planner, LogoNav)이다.
+VLA 여덟 편은 B.6b 첫 표에 있다. 문제 설정이 travplan과 가장 가까운 것은 B.6d의 MIMIC이다.
+
 ### B.6 foundation model과 의미 기반 내비게이션
 
 **ViNT / NoMaD / GNM**([ViNT arXiv:2306.14846](https://arxiv.org/abs/2306.14846), [NoMaD arXiv:2310.07896](https://arxiv.org/abs/2310.07896),
@@ -1693,6 +1748,10 @@ travplan이 실물 배달 로그를 Planner D 학습에 쓸 때는 사람 조종
 
 <!-- tab: 위험 인지·로컬 내비 -->
 
+**이 탭은 학습 Planner를 키울 때 비교 기준으로 삼거나 기법을 빌려 올 위험 인지 계획이다.** 전역 그래프, 보이지 않는 지형 상상, 정책 전환 감시, CVaR 위험처럼 층위가 서로 다르다.
+
+**읽는 법.** B.9 첫 도식이 연구의 층위를 잡는다. 열한 편의 층위와 travplan 적용은 B.9 끝 표에 있다.
+
 ### B.9 위험 인지 경로 계획과 로컬 내비게이션
 
 이 절은 학습 Planner를 키울 때 **비교 기준으로 삼거나 기법을 빌려 올** 연구를 모았다. 층위가 서로 다르므로 먼저 위치를 잡는다.
@@ -2053,9 +2112,14 @@ RGB만 쓰는 사전학습 내비 정책에 재학습 없이 붙이는 충돌 �
 
 <!-- tab: 자율주행 자동차 -->
 
+**자동차 Planner는 규칙 풀스택에서 "후보 생성, 검증, 선택"으로 모였다.** travplan의 Planner D가 후보를 내고 점수가 고르는 구조와 같은 방향이다.
+
+**읽는 법.** B.12.1은 공개 스택, B.11은 E2E 주행, B.13은 연구 역사와 2026 상용화다. 한눈에 볼 표는 B.12.1 첫 표(공개 스택 14개), B.11 표(E2E 7편), B.13.1 표(연구 역사)다.
+B.12.1은 번호로는 B.12(「로봇별 공개 스택」 탭)에 속하지만, 자동차 내용을 한자리에 모으려고 이 탭에 둔다.
+
 ### B.12.1 자율주행 자동차: 규칙 스택에서 "후보 생성, 검증, 선택"으로
 
-> 네 로봇을 가로질러 비교한 표는 「다리·바퀴 로봇과 계보」 탭의 **B.12** 머리말에 있다.
+> 네 로봇을 가로질러 비교한 표는 「로봇별 공개 스택」 탭의 **B.12** 머리말에 있다.
 
 **자동차 오픈소스는 규칙 기반 풀스택(Autoware, Apollo)에서, 벤치마크 위의 학습 Planner(nuPlan, CARLA)로, 다시 둘을 섞는 구조로 왔다.**
 지금의 Autoware는 생성형 Planner와 규칙 기반 Planner가 함께 후보 궤적을 내고, 규칙 검증기와 순위기가 하나를 고르는 새 계획 구조를 넣고 있다.
@@ -2491,7 +2555,10 @@ nuPlan 폐루프 평가 설계다(B.12.1).
 
 ---
 
-<!-- tab: 다리·바퀴 로봇과 계보 -->
+<!-- tab: 로봇별 공개 스택 -->
+
+**읽는 법.** 네 로봇을 층별로 비교한 표는 B.12 머리말에 있다. 자동차(B.12.1)는 「자율주행 자동차」 탭에 있다.
+사족(B.12.2), 휴머노이드(B.12.3), 바퀴 로봇(B.12.4)은 첫머리마다 공개 스택 표가 있다. 스워브 보도 로봇인 travplan과 가장 가까운 것은 B.12.4이고, travplan이 가져올 것은 B.12.5 표(10행)에 모았다.
 
 ### B.12 로봇별 오픈소스 Planner: 자율주행 자동차, 사족보행, 휴머노이드, 바퀴 로봇
 
@@ -2959,6 +3026,11 @@ ROS 2 통합(P1) 때는 travplan Planner를 Nav2의 계획기 플러그인 경�
 보도 배달로봇 전용으로 널리 쓰이는 오픈소스 스택은 없다(2026-09, GitHub 별 50개 이상 기준). 그래서 travplan은 위 네 계열에서 부품을 가져와
 조합하는 쪽이 현실적이다. 라이선스가 표기되지 않은 저장소(PlanTF, PLUTO, CMU의 Go2 스택, humanoid-gym, Gallant, HEAD)는 코드를 읽고 설계를
 참고하는 데까지만 쓴다.
+
+<!-- tab: ETH RSL 계보 -->
+
+**읽는 법.** RSL 연구를 travplan의 층(인식·Planner·Controller·시뮬레이션)에 맞춘 표(17행)는 B.14 머리말에, 연표는 그 아래 토글에 있다.
+travplan이 가져올 순서 일곱은 B.14.6이다. RSL 밖의 사족·휴머노이드 계보(B.16)는 다음 두 탭에 있다.
 
 ### B.14 ETH RSL(Marco Hutter)의 계보: 높이 지도에서 배달로봇까지
 
@@ -4809,6 +4881,11 @@ travplan은 emap 코어를 벤더링해 쓰므로 상류가 멈춰도 L1 인식 
 ==Zeilinger 그룹은 불확실성을 σ로 재서 제약을 조이고, RSL은 실패를 직접 예측해 비용에 넣는다.==
 travplan의 TP-0068·TP-0069는 앞쪽이고, Planner D 선택기의 실패 확률은 뒤쪽이다. 둘은 배타적이지 않다. 가림으로 못 본 칸(TP-0047)은 σ의 몫이고, 본 포트홀 가장자리는 실패 확률의 몫이다.
 
+<!-- tab: NVIDIA·DeepMind·취리히·RAI -->
+
+**읽는 법.** B.16은 두 탭에 걸친다. 이 탭은 B.16 머리말(조직 표, 계보 그림 두 장, 연표, 자주 나오는 TP 표)과 네 조직(B.16.1 NVIDIA, B.16.2 Google DeepMind, B.16.3 취리히, B.16.4 RAI Institute와 Boston Dynamics)이다.
+그 밖 연구실의 사족·휴머노이드, B.16 전체에서 travplan이 가져올 순서(B.16.7), 휴머노이드 주행(B.16.8)은 다음 탭 「다른 연구실·휴머노이드 주행」에 있다. 소절마다 첫 문단 아래 토글에 그 소절의 연구 목록 표가 있다.
+
 ### B.16 사족보행·휴머노이드 연구실별 계보: NVIDIA, Google DeepMind, 취리히, RAI Institute와 다른 연구실
 
 **사족보행과 휴머노이드의 학습 연구는 몇 조직이 도구와 사람을 주고받으며 끌어 왔다.**
@@ -4825,7 +4902,7 @@ B.16은 RSL 밖의 연구실과 회사를 조직별로 묶는다. B.14가 다룬
 GR00T 분리형 전신 제어기(WBC, whole-body control)는 F.8에 있다. 휴머노이드 회사의 인식·내비게이션 스택(Figure·LimX·Flexion 등)은 인식 문서 A.8.1에 있다. 이 절은 그 절들을 가리키기만 한다.
 
 **읽는 법.** 아래 표는 조직마다 무엇에 걸었고 travplan의 어디에 닿는지를 한 줄로 준다. 계보 그림 두 장은 사족·바퀴 다리와 휴머노이드로 나눠, 뒤 연구가 앞 연구를 직접 쓴 관계를 잇는다.
-연표는 그림 아래 토글에 있다. B.16.1–B.16.4는 네 조직이고, B.16.5와 B.16.6은 그 밖 연구실의 사족과 휴머노이드다.
+연표는 그림 아래 토글에 있다. B.16.1–B.16.4는 네 조직이고, B.16.5와 B.16.6은 그 밖 연구실의 사족과 휴머노이드다(B.16.5부터는 다음 탭).
 소절마다 첫 문단 아래 토글에 그 소절에서 다룬 연구의 목록 표가 있다. 표의 '다룬 곳'에서 '이 소절'은 그 소절에 카드나 문단이 있다는 뜻이고, 괄호 안은 그 자리(다른 카드나 문단, 갈래 소개, 토글)다.
 '표만'은 그 표에만 있다는 뜻이다. B.16.7은 travplan이 가져올 순서다. 소속과 공개 코드는 2026-10-07에 확인했다.
 B.16.8은 그 뒤에 더한 휴머노이드 주행 소절이다. 몸체를 가리지 않는 내비 스택(CMU)과, 학습 정책의 출력을 실행 가능한 집합으로 투영하는 연구(PADP·CMP·FIBER)를 다룬다(2026-10-21 확인).
@@ -6978,6 +7055,12 @@ travplan과의 관련은 간접적이다. 스워브 보도 로봇에는 이런 �
 
 RAI Institute의 CTO Al Rizzi와 연구 부사장 Jessica Hodgins는 둘 다 ZEST 공저자다(RAI Institute 리더십 페이지). Hodgins는 Spot 탁구 MPC, Rizzi는 UMV 설계 논문에도 이름이 있다.
 
+<!-- tab: 다른 연구실·휴머노이드 주행 -->
+
+**읽는 법.** B.16의 뒤쪽이다. B.16 머리말(조직 표, 계보 그림, 연표, 자주 나오는 TP 표)은 앞 탭 「NVIDIA·DeepMind·취리히·RAI」에 있다.
+B.16.5는 다른 연구실의 사족보행, B.16.6은 휴머노이드다. B.16.7은 B.16 전체에서 travplan이 가져올 순서 열이고, B.16.8은 휴머노이드 주행(내비 층이 넘기는 것, 학습 정책 출력의 투영)이다.
+소절마다 첫 문단 아래 토글에 그 소절의 연구 목록 표가 있다.
+
 #### B.16.5 다른 연구실의 사족보행: 적응, 안전, 무른 지면, 시각
 
 **ETH·Google·NVIDIA 밖의 사족보행 연구는 시뮬레이션에서만 배운 정책을 그대로 실물에 옮기는 길을 넓혔고, 연구실마다 건 곳이 다르다.**
@@ -9052,6 +9135,8 @@ PADP식으로 옮기면, MPPI가 고른 twist를 모듈 수준의 실행 가능 
 
 <!-- tab: 분야별 지형 -->
 
+**읽는 법.** 분야 × 방식 표는 B.18.1에, 분야를 가로지르는 일곱 흐름은 B.18.3에 있다. travplan의 두 층이 어느 분야의 대세를 따르는지는 B.18.6이고, 근거 123건은 B.18 끝 토글에 있다.
+
 ### B.18 로봇 분야별 계획·제어: 레이싱카, 모바일 로봇, 도로 자율주행, 사족보행, 휴머노이드
 
 **다섯 분야에 같은 질문(무엇을 쓰고, 무엇이 대세이고, 어디로 가는가)을 던지면 답이 크게 갈린다.** 레이싱카만 아직 최적화와 MPC가 스택의 중심이다.
@@ -9392,6 +9477,9 @@ Figure·BD·NVIDIA·Waymo·Amazon·EACON의 수치는 회사 발표이고, 2026�
 
 <!-- tab: 최근 연구 비교 -->
 
+**읽는 법.** 2025–2026의 학습 로컬 Planner·생성형 궤적·위험 인지 계획 열여섯 편을 한 표로 비교하고, 그 아래에 공통점, 차이점, travplan에 주는 의미를 둔다.
+사족·휴머노이드 쪽에서 가져올 순서는 B.16.7에, 분야 단위 비교는 B.18에 있다.
+
 ## B.17 최근 연구 비교 (2025–2026)
 
 2025–2026의 학습 로컬 Planner는 거의 모두 "사전학습한 생성 Planner가 후보 여럿을 내고, 다른 무엇이 고르거나 다듬는다"로 수렴했다.
@@ -9462,7 +9550,9 @@ TravMap을 명시적 표현으로 두는 것이 치명 셀 검사, Guidance 폴�
 
 ## B.15 작업 기록
 
-연구 절(B.1–B.14, B.16)은 "남이 무엇을 했나"이고, 이 탭은 travplan이 고치고 잰 결과다(CLAUDE.md의 분리 규칙).
+연구 절(B.1–B.14, B.16–B.18)은 "남이 무엇을 했나"이고, 이 탭은 travplan이 고치고 잰 결과다(CLAUDE.md의 분리 규칙).
+
+**읽는 법.** 판정 절차(잡음 바닥, 짝 비교)는 B.15.2에 처음 나온다. RL 후학습 1단계(B.15.3)를 넘으려던 학습 시도 넷은 B.15.5와 B.15.6이다.
 
 ### B.15.1 Planner D를 브라우저에서, 같은 망의 diffusion 샘플러 (TP-0137)
 
