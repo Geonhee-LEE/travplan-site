@@ -861,6 +861,7 @@ $$ \mathcal L = 3\,\overline{c}_{\text{blur}} + 12\,\overline{\mathrm{relu}(c - 
 | 2025 | Diffusion Planner | 자율주행 | 예측과 계획을 함께 생성, 재학습 없는 guidance(B.8) | [ZhengYinan-AIR/Diffusion-Planner](https://github.com/ZhengYinan-AIR/Diffusion-Planner) 1.1k |
 | 2025 | GoalFlow | E2E 주행 | 목표점을 먼저 고르고 flow matching 한 스텝 | [YvanYin/GoalFlow](https://github.com/YvanYin/GoalFlow) 0.4k |
 | 2025 | **Flow Planner** | 자율주행(nuPlan) | 궤적을 잘게 토큰화하고 시공간 융합 + CFG. ==nuPlan Val14 **90.43**(refinement 없이)== | [DiffusionAD/Flow-Planner](https://github.com/DiffusionAD/Flow-Planner) 0.3k, **MIT** |
+| 2026 | Diffusion ReRoll | 계획·조작·실물 내비 | 지평 일부를 다시 잡음으로 되돌려 앞뒤가 서로 고친다. LIBERO-10에서 Diffusion Policy보다 상대 56.5 % 높다 | 공개 코드 확인 못 함([프로젝트](https://seonsoo-p1.github.io/DiffusionReRoll/)) |
 
 **학습 로컬 Planner 탭과 무엇이 다른가.** 두 탭은 기준이 다르다. 학습 로컬 Planner는 **역할**(로봇 주변만 보고 가까운 경로를 내는 학습 모듈)로
 묶었고, 생성형 궤적은 **방법**(생성 모델에서 궤적을 샘플한다)으로 묶었다. 그래서 로컬 내비에 diffusion을 쓴 연구는 학습 로컬 Planner 탭에 있고,
@@ -899,6 +900,22 @@ $$ \mathcal L = 3\,\overline{c}_{\text{blur}} + 12\,\overline{\mathrm{relu}(c - 
 ![Diffusion Policy Fig. 2](https://arxiv.org/html/2303.04137v5/policy_input_output.png)
 *그림 — Diffusion Policy (Fig. 2): 최근 관측 몇 스텝을 받아 행동 열을 낸다. CNN 판은 관측 특징을 FiLM으로 모든 합성곱 층에 넣고, 잡음에서 시작해 예측한 잡음을 여러 번 빼서 행동 열을 얻는다. 출처: [arXiv:2303.04137](https://arxiv.org/abs/2303.04137)*
 
+**Diffusion ReRoll — 이미 다듬은 구간을 다시 잡음으로 되돌린다**([arXiv:2607.19919](https://arxiv.org/abs/2607.19919), CoRL 2026 Spotlight,
+국방과학연구소, [프로젝트](https://seonsoo-p1.github.io/DiffusionReRoll/)). Diffuser와 Diffusion Policy는 지평 전체를 같은 잡음 수준에서 한 방향으로만
+다듬는다. 그래서 초반 스텝에서 정한 큰 모양이 틀려도 끝까지 간다. 앞에서부터 차례로 다듬는 인과 방식(Diffusion Forcing 계열)은 앞 구간을 먼저
+확정하므로, 틀린 앞 구간을 뒤 구간이 고칠 수 없다. ReRoll은 토큰마다 잡음 수준을 따로 두고 비스듬한 "파도"로 다듬는다. 한 구간이 정해 둔
+수준(약 0.5 K)까지 내려오면 그 구간만 최대 잡음으로 되돌리고(ReRoll 사건), 나머지 지평을 문맥으로 다시 다듬는다. 이렇게 앞뒤 구간이 서로를 고친다.
+잡음 제거기는 전체 attention Transformer다.
+
+==같은 샘플러가 계획, 정책, 영상-행동 예측에 모두 듣는다.== OGBench 미로의 guidance 재계획에서 Diffusion Forcing보다 평균 성공률이 상대 21 % 높았고(AntMaze Giant는 49.1 → 86.4 %),
+목표 inpainting에서 Diffuser보다 상대 23 % 높았다(AntMaze Giant는 33.2 → 80.9 %). LIBERO-10 공식 리셋 규약에서는 관측·예측·실행 길이 다섯 조합
+평균이 Diffusion Policy 40.1 %, ReRoll 62.7 %였다. 실물에서는 Clearpath Jackal이 RGB 한 장(320×240)으로 장애물 코스를 돈다. 시연은 40분이고,
+5 Hz로 waypoint 16개를 내고, 학습한 역동역학 MLP가 앞 8개를 선속도·각속도 명령으로 바꾼다. 처음 보는 물체·바닥·조명을 섞은 평가 코스에서 두 방향 평균 성공률이 Diffusion Policy 0 %,
+Diffusion Forcing 22.2 %, ReRoll 72.2 %였다(프로젝트 페이지, 방법당 seed 3). 추론은 로봇 위 RTX 3060이다.
+
+![Diffusion ReRoll Fig. 1](https://arxiv.org/html/2607.19919v2/Fig1_0529_Sequence.png)
+*그림 — Diffusion ReRoll (Fig. 1): 위는 잡음 제거 스텝(세로)과 시퀀스 시각(가로)별 잡음 수준이다. 전체 시퀀스 확산은 초반 오류를 그대로 가져가고, 인과 방식은 틀린 앞 구간을 잠근다. ReRoll은 구간 일부를 다시 잡음으로 돌려(흰 상자) 계획을 고칠 여지를 남긴다. 출처: [arXiv:2607.19919](https://arxiv.org/abs/2607.19919)*
+
 **MPD — 확산 prior에 비용을 곱해 사후 분포에서 샘플한다**([arXiv:2308.01557](https://arxiv.org/abs/2308.01557), 2023, TU Darmstadt,
 [코드](https://github.com/joaoamcarvalho/mpd-public)).
 운동 계획을 추론 문제로 본다. 성공한 과거 계획들로 궤적의 확산 prior를 학습하고, 새 문제의 충돌·매끄러움 비용을 likelihood로 곱한
@@ -930,6 +947,24 @@ $$ p(\boldsymbol\tau \mid \mathcal O) \propto p(\mathcal O \mid \boldsymbol\tau)
 놓았을 때 네 모서리가 모두 주행 가능 영역 안인지(0 또는 1)를 예측한다. 두 점수의 가중 로그 합이 가장 큰 목표점을 쓴다.
 
 $$ \delta^{\text{dis}}_i = \frac{\exp(-\lVert g_i - g^{\text{gt}} \rVert_2)}{\sum_j \exp(-\lVert g_j - g^{\text{gt}} \rVert_2)}, \qquad \hat\delta^{\text{final}}_i = w_1 \log \hat\delta^{\text{dis}}_i + w_2 \log \hat\delta^{\text{dac}}_i $$
+
+**Diffusion ReRoll의 다시 잡음 넣기.** 토큰 $t$의 잡음 수준 $k_t$는 일정표 행렬 $S \in \{0,\dots,K\}^{M\times T}$의 $m$번째 행이 정한다.
+$K$는 최대 잡음 수준, $M$은 잡음 제거 행(갱신) 수, $T$는 지평의 토큰 수다.
+아래로 내려갈 때는 DDIM($\eta = 0$)으로, 위로 되돌릴 때는 지금 상태 $x^k$에 새 잡음을 섞는다. $\bar\alpha_k$는 누적 잡음 일정이다.
+학습은 토큰마다 무작위로 기운 잡음 수준(linear chunk)을 주고 Min-SNR 가중($\gamma = 2.5$)으로 한다.
+아래 왼쪽 식은 위로 되돌리는 다시 잡음 넣기($\ell > k$)이고, 오른쪽 식은 학습 때 쓰는 chunk의 잡음 수준이다.
+$j$는 chunk 안 토큰 번호, $s_c$는 chunk $c$의 시작 수준, $\alpha_c$는 기울기로 $U(0.5\,s_{\text{dns}}, 2.5\,s_{\text{dns}})$에서 뽑는다. $s_{\text{dns}} = T / n_{\text{dns}}$는 토큰 하나가 $K$에서 0까지 $n_{\text{dns}}$번에 내려가는 파도의 기울기다.
+
+$$ x^{\ell} = \sqrt{\bar\alpha_\ell / \bar\alpha_k}\; x^{k} + \sqrt{1 - \bar\alpha_\ell / \bar\alpha_k}\; \epsilon \quad (\ell > k), \qquad k_j = \mathrm{clip}_{[0,K]}\big(\lfloor s_c + \alpha_c\, j \rfloor\big) $$
+
+계산량은 기준 방법과 비슷하게 맞췄다. LIBERO 관측 2·예측 32·실행 16에서 ReRoll 사건 여섯 번은 순차 갱신 53번이고, Diffusion Policy는 DDIM 50번이다(A5000 지연 약 225 ms 대 204 ms).
+여기에 인과 파이프라인을 쓰면 38번, 사건을 세 번으로 줄이면 23번, 창 재사용까지 더하면 11번으로 준다. 실물 내비는 사건이 세 번이고 갱신은 20번으로 Diffusion Policy와 같았다.
+저자들도 과제마다 학습 잡음 분포와 배포 일정표를 맞춰야 하고, 언제 고치기가 듣는지에 대한 이론은 없다고 적었다.
+
+**travplan에서 ReRoll은.** 우리가 보기에 ReRoll이 겨냥한 실패는 Planner D에도 생길 수 있다. 4초 궤적의 앞부분이 한쪽 갈림길로 정해지면 뒷부분이 막다른 곳이어도
+한 샘플 안에서는 고치지 못한다. 다만 Planner D는 후보 16개를 뽑아 비용으로 고르므로, 이 문제를 "한 샘플 안에서 고치기"보다 "여러 샘플 중 고르기"로 다룬다.
+ReRoll을 쓰려면 제어 변화율 열 40스텝에 토큰별 잡음 수준과 Transformer 잡음 제거기가 필요하고, flow matching 10스텝(`FlowPolicy`)보다
+갱신이 늘어 계획 시간 목표(10 ms)를 넘기 쉽다. 그래서 바로 가져올 것은 아니고, 후보를 늘려도 갈림길 실패가 남을 때 시험할 후보다.
 
 **travplan에 주는 것.** Planner D는 GoalFlow와 구조가 같다. 목표점은 GuidancePlanner 경로 위 4 m 앞의 subgoal이고(B.10), flow matching이
 후보 16개를 내고, 점수기는 TravMap 비용 적분, 치명 셀 벌점, 끝점의 cost-to-go로 하나를 고른다(B.8.3). 차이는 목표점을 고정 규칙으로

@@ -349,6 +349,7 @@ arXiv가 없어 DOI로 링크했다.
 | InternNav | GitHub | 내비 기반 모델을 만드는 공개 플랫폼 | B.0 | [코드](https://github.com/InternRobotics/InternNav) |
 | Diffuser | 2022.05 · ICML 2022 | 궤적 전체를 확산으로 생성하는 계획 | B.8.0 | [논문](https://arxiv.org/abs/2205.09991) · [코드](https://github.com/jannerm/diffuser) |
 | Diffusion Policy | 2023.03 · RSS 2023 | 관측 조건 행동 열 확산, receding horizon | B.8.0 | [논문](https://arxiv.org/abs/2303.04137) · [코드](https://github.com/real-stanford/diffusion_policy) |
+| Diffusion ReRoll | 2026.07 · CoRL 2026 | 다듬던 구간 일부를 다시 잡음으로 되돌려 앞뒤가 서로 고치는 확산 샘플러. LIBERO-10 Diffusion Policy 대비 상대 +56.5 %, Jackal 시각 내비 | B.8.0 | [논문](https://arxiv.org/abs/2607.19919) · [프로젝트](https://seonsoo-p1.github.io/DiffusionReRoll/) |
 | MPD | 2023.08 | 확산 prior와 비용 likelihood의 사후 분포 샘플 | B.8.0 | [논문](https://arxiv.org/abs/2308.01557) · [코드](https://github.com/joaoamcarvalho/mpd-public) |
 | GoalFlow | 2025.03 · CVPR 2025 | 목표점 선택 + flow matching 한 스텝, NAVSIM PDMS 90.3 | B.8.0 | [논문](https://arxiv.org/abs/2503.05689) · [코드](https://github.com/YvanYin/GoalFlow) |
 | **Flow Planner** | 2025.10 · **NeurIPS 2025** | 궤적을 잘게 토큰화하고 시공간 융합 + classifier-free guidance. nuPlan Val14 **90.43**(refinement 없이), InterPlan 61.82 | B.8.0, B.8.2 | [논문](https://arxiv.org/abs/2510.11083) · [코드](https://github.com/DiffusionAD/Flow-Planner) ★0.3k **MIT** |
