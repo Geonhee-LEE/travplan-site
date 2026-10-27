@@ -66,7 +66,7 @@ body.shot #frame { box-shadow:none; transform:none !important; }
 <div style="flex:1;display:flex;flex-direction:column;gap:14px;background:#FFFDF8;border:2px solid #D9D4C7;border-radius:16px;padding:32px">
 <p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C">1 · 인식 §A</p>
 <h3 style="font-size:36px;font-weight:600;color:#16213A">점군 → 지도</h3>
-<p style="font-size:26px;line-height:1.5;color:#3D4A63">Kalman 높이 갱신<br>기하 비용 + 이분산 손실<br>BKI 빈 칸 채우기</p>
+<p style="font-size:26px;line-height:1.5;color:#3D4A63">Kalman 높이 갱신<br>기하 비용 + 이분산 손실<br>BKI 빈 셀 채우기</p>
 </div>
 <x-shape kind="arrow-right" style="width:48px;height:28px;background:#C2410C;align-self:center"></x-shape>
 <div style="flex:1;display:flex;flex-direction:column;gap:14px;background:#16213A;border-radius:16px;padding:32px">
@@ -121,26 +121,26 @@ body.shot #frame { box-shadow:none; transform:none !important; }
 <div data-foot style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:14px 0 0 0;display:flex;flex-direction:column;gap:2px">
 <p style="font-size:24px;line-height:1.35;color:#5A6478">[1] Nav2 Issue #1278, “Redesign Environmental Representation”, ros-navigation/navigation2 (2019, open) · travplan 문서 개요 “ROS/ROS2 costmap의 한계”</p>
 </div>
-<aside>travplan이 costmap을 버린 게 아니라 공통 표현만 바꾼 것이다. Nav2의 행동 트리, 복구 행동, 전역 플래너는 그대로 쓴다. 핵심은 음의 장애물: 포트홀은 반사가 돌아오지 않아 costmap에서 미관측이 되고, 미관측은 보통 자유공간처럼 지나간다. TP-0031, 0044, 0047, 0067이 전부 이 한 칸을 메우는 작업이었다. SIGMA 채널이 불확실성을 담는 자리다.</aside>
+<aside>travplan이 costmap을 버린 게 아니라 공통 표현만 바꾼 것이다. Nav2의 행동 트리, 복구 행동, 전역 플래너는 그대로 쓴다. 핵심은 음의 장애물: 포트홀은 반사가 돌아오지 않아 costmap에서 미관측이 되고, 미관측은 보통 자유공간처럼 지나간다. TP-0031, 0044, 0047, 0067이 전부 이 빈틈 하나를 메우는 작업이었다. SIGMA 채널이 불확실성을 담는 자리다.</aside>
 </section>
 <section id="sec-perception" data-transition="fade" style="background:#16213A;color:#F4F1EA;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;justify-content:center;gap:32px">
 <p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:32px;color:#F59E5B;letter-spacing:2px">PART 1 · 인식 §A</p>
 <h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:96px;font-weight:700;line-height:1.15;color:#F4F1EA">점군을 높이·비용·<br>불확실성 지도로</h2>
-<p style="font-size:36px;line-height:1.5;color:#C9D1E0;width:1300px">세 가지 추정 문제: 칸의 높이를 어떻게 합치나, 높이로 비용을 어떻게 매기나, 관측이 없는 칸을 어떻게 채우나.</p>
-<aside>인식 문서(§A)는 8,000줄이 넘는다. 여기서는 TravMap의 ELEV, COST, SIGMA 세 채널을 만드는 식만 본다.</aside>
+<p style="font-size:36px;line-height:1.5;color:#C9D1E0;width:1300px">세 가지 추정 문제: 셀의 높이를 어떻게 합치나, 높이로 비용을 어떻게 매기나, 관측이 없는 셀을 어떻게 채우나.</p>
+<aside>인식 문서(§A)는 8,000줄이 넘는다. 여기서는 TravMap의 ELEV, COST, SIGMA 세 채널을 만드는 식만 다룬다.</aside>
 </section>
 <section id="elevation" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 200px;display:flex;flex-direction:column;gap:36px">
 <div style="display:flex;flex-direction:column;gap:12px">
 <p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">§A.1 · ELEVATION MAPPING</p>
-<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:64px;font-weight:700;line-height:1.2;color:#16213A">칸 높이는 1차원 Kalman 필터다</h2>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:64px;font-weight:700;line-height:1.2;color:#16213A">셀 높이는 1차원 Kalman 필터다</h2>
 </div>
 <div style="display:flex;gap:48px">
 <div style="flex:1;display:flex;flex-direction:column;gap:24px">
-<p style="font-size:30px;line-height:1.5;color:#3D4A63">점 높이 측정의 분산 σₚ²는 센서 거리 <i>d</i>의 제곱에 비례한다. 칸의 추정 <i>h</i>(분산 σₘ²)와 정밀도 가중 평균을 한다 <span style="color:#C2410C">[2]</span>.</p>
+<p style="font-size:30px;line-height:1.5;color:#3D4A63">점 높이 측정의 분산 σₚ²는 센서 거리 <i>d</i>의 제곱에 비례한다. 셀의 추정 <i>h</i>(분산 σₘ²)와 정밀도 가중 평균으로 합친다 <span style="color:#C2410C">[2]</span>.</p>
 <div style="background:#FFFDF8;border-left:6px solid #C2410C;border-radius:8px;padding:24px 28px">
 <img src="img/3ce111084f209afd2e91b96fa80f63b3.png" alt="Kalman 높이 갱신: h ← (σp² h + σm² pz)/(σm²+σp²), σm² ← σm²σp²/(σm²+σp²), σp² = αd d²" style="width:900px;height:99px;object-fit:contain">
 </div>
-<p style="font-size:28px;line-height:1.55;color:#3D4A63"><b>시간 감쇠</b> — 갱신 없는 칸은 분산 σₜ²를 더한다<br><b>가시성 정리</b> — 광선이 뚫고 간 칸의 높이를 지운다<br><b>상한 층</b> — 못 본 칸의 지면 ≤ 지나간 광선 높이 <span style="color:#C2410C">[3]</span></p>
+<p style="font-size:28px;line-height:1.55;color:#3D4A63"><b>시간 감쇠</b> — 갱신 없는 셀은 분산 σₜ²를 더한다<br><b>가시성 정리</b> — 광선이 지나간 셀의 높이를 지운다<br><b>상한 층</b> — 못 본 셀의 지면 ≤ 지나간 광선 높이 <span style="color:#C2410C">[3]</span></p>
 <p style="font-size:28px;line-height:1.5;color:#16213A;background:#FBE7D9;padding:20px 24px;border-radius:12px">상한 기울기 작음 → 가려진 구멍, 큼 → 위험한 낙차. 포트홀을 가르는 travplan 그림자 상한(TP-0044)의 근거.</p>
 </div>
 <div style="width:560px;display:flex;flex-direction:column;gap:12px">
@@ -152,7 +152,7 @@ body.shot #frame { box-shadow:none; transform:none !important; }
 <p style="font-size:24px;line-height:1.35;color:#5A6478">[2] Fankhauser et al., “Robot-Centric Elevation Mapping with Uncertainty Estimates”, CLAWAR 2014</p>
 <p style="font-size:24px;line-height:1.35;color:#5A6478">[3] Miki et al., “Elevation Mapping for Locomotion and Navigation using GPU”, IROS 2022 — arXiv:2204.12876</p>
 </div>
-<aside>분산이 작은 쪽을 더 믿는 정밀도 가중 평균이다. 측정 분산이 거리 제곱에 비례하므로 먼 점은 적게 반영된다. 이상치는 Mahalanobis 거리로 버린다. 상한 층이 핵심: 광선이 관측되지 않은 칸 위를 지나가면 그 칸의 지면은 광선 높이보다 낮다. travplan L1(--perception l1)은 이 코드의 코어를 쓰고, TP-0146에서 매퍼 칸이 반 칸 어긋난 래퍼 버그를 고쳤다.</aside>
+<aside>분산이 작은 쪽을 더 믿는 정밀도 가중 평균이다. 측정 분산이 거리 제곱에 비례하므로 먼 점은 적게 반영된다. 이상치는 Mahalanobis 거리로 버린다. 상한 층이 핵심: 광선이 관측되지 않은 셀 위를 지나가면 그 셀의 지면은 광선 높이보다 낮다. travplan L1(--perception l1)은 이 코드의 코어를 쓰고, TP-0146에서 매퍼 격자가 반 셀 어긋난 래퍼 버그를 고쳤다.</aside>
 </section>
 <section id="travcost" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 200px;display:flex;flex-direction:column;gap:36px">
 <div style="display:flex;flex-direction:column;gap:12px">
@@ -169,10 +169,10 @@ body.shot #frame { box-shadow:none; transform:none !important; }
 <div style="background:#FFFDF8;border-left:6px solid #1D4ED8;border-radius:8px;padding:22px 28px">
 <img src="img/309d75ac0b4d04cdb29d52ad51bcc880.png" alt="이분산 손실: L = ½ e^(−log σ²)(ĉ − c)² + ½ log σ²" style="width:611px;height:78px;object-fit:contain">
 </div>
-<p style="font-size:28px;line-height:1.5;color:#3D4A63">최소점은 <b>σ = |오차|</b>. 단, 평균 기울기에 1/σ²가 곱해져 어려운 칸을 덜 배운다 → β-NLL은 1/σ로 완화한다.</p>
+<p style="font-size:28px;line-height:1.5;color:#3D4A63">최소점은 <b>σ = |오차|</b>. 단, 평균 기울기에 1/σ²가 곱해져 어려운 셀을 덜 배운다 → β-NLL은 1/σ로 완화한다.</p>
 </div>
 <div style="width:600px;display:flex;flex-direction:column;gap:12px">
-<img src="img/2620efdb851038761e6b46aa1414b68e.webp" alt="오차가 고정된 칸의 손실을 log σ²에 대해 그린 곡선과, 평균 기울기 가중치 NLL 1/σ² 대 β-NLL 1/σ" style="width:600px;height:247px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<img src="img/2620efdb851038761e6b46aa1414b68e.webp" alt="오차가 고정된 셀의 손실을 log σ²에 대해 그린 곡선과, 평균 기울기 가중치 NLL 1/σ² 대 β-NLL 1/σ" style="width:600px;height:247px;object-fit:contain;background:#FFFFFF;border-radius:12px">
 <p style="font-size:24px;line-height:1.4;color:#5A6478">(A) s = log σ²에 대한 손실, 최소점 σ = |오차| (B) 평균 기울기 가중치 — travplan 작도</p>
 <p style="font-size:26px;line-height:1.5;color:#16213A;background:#E3E9F7;padding:20px 24px;border-radius:12px">코드: <span style="font-family:'JetBrains Mono', 'Courier New', monospace">GeometricTraversability</span>, <span style="font-family:'JetBrains Mono', 'Courier New', monospace">heteroscedastic_loss</span> — representation/traversability.py</p>
 </div>
@@ -180,7 +180,7 @@ body.shot #frame { box-shadow:none; transform:none !important; }
 <div data-foot style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:14px 0 0 0;display:flex;flex-direction:column;gap:2px">
 <p style="font-size:24px;line-height:1.35;color:#5A6478">[4] Kendall &amp; Gal, “What Uncertainties Do We Need in Bayesian Deep Learning for Computer Vision?”, NeurIPS 2017 — arXiv:1703.04977</p>
 </div>
-<aside>기본 한계는 경사 0.26 rad(약 15도), 턱 0.08 m, 거칠기 0.04 m이고, 한계의 30% 아래는 비용 0이다. 미관측 칸은 비용 0.5, sigma 1이다. 최댓값 규칙은 해석 가능하고 안전 쪽이지만, 0.07 m 턱을 막는 오탐의 뿌리이기도 하다(TP-0048, TP-0067). TravNet은 aleatoric 불확실성을 log 분산으로 배운다. 손실의 첫 항은 오차를 분산으로 나눈 것, 둘째 항은 분산을 무한히 키우지 못하게 막는 벌점이다.</aside>
+<aside>기본 한계는 경사 0.26 rad(약 15도), 턱 0.08 m, 거칠기 0.04 m이고, 한계의 30% 아래는 비용 0이다. 미관측 셀은 비용 0.5, sigma 1이다. 최댓값 규칙은 해석이 쉽고 보수적이지만, 0.07 m 턱을 막는 오탐의 뿌리이기도 하다(TP-0048, TP-0067). TravNet은 aleatoric 불확실성을 log 분산으로 배운다. 손실의 첫 항은 오차를 분산으로 나눈 것, 둘째 항은 분산을 무한히 키우지 못하게 막는 페널티다.</aside>
 </section>
 <section id="bki" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 200px;display:flex;flex-direction:column;gap:36px">
 <div style="display:flex;flex-direction:column;gap:12px">
@@ -190,7 +190,7 @@ body.shot #frame { box-shadow:none; transform:none !important; }
 <div style="display:flex;flex-direction:column;gap:28px">
 <div style="display:flex;gap:48px;align-items:center">
 <div style="flex:1;display:flex;flex-direction:column;gap:22px">
-<p style="font-size:30px;line-height:1.5;color:#3D4A63">LiDAR 점은 멀수록 성기고 연석 뒤엔 그림자가 진다. BKI는 관측 <i>i</i>를 “관측 <i>k</i>(x*, xᵢ)개”로 세어 칸마다 사후분포를 만든다 <span style="color:#C2410C">[5][6]</span>.</p>
+<p style="font-size:30px;line-height:1.5;color:#3D4A63">LiDAR 점은 멀수록 성기고 연석 뒤엔 그림자가 진다. BKI는 관측 <i>i</i>를 “관측 <i>k</i>(x*, xᵢ)개”로 세어 셀마다 사후분포를 만든다 <span style="color:#C2410C">[5][6]</span>.</p>
 <div style="background:#FFFDF8;border-left:6px solid #C2410C;border-radius:8px;padding:22px 28px">
 <img src="img/a70a1d28af7a5524fc727db74c4f5980.png" alt="BKI 사후: p(θ* | x*, D) ∝ [∏ p(yᵢ | θ*)^k(x*, xᵢ)] p(θ*)" style="width:885px;height:141px;object-fit:contain">
 </div>
@@ -234,7 +234,7 @@ body.shot #frame { box-shadow:none; transform:none !important; }
 </div>
 <div style="display:flex;gap:48px">
 <div style="width:620px;display:flex;flex-direction:column;gap:20px">
-<p style="font-size:28px;line-height:1.5;color:#3D4A63"><b>순방향</b>은 닫힌 식이다 — 어느 시각 <i>t</i>든 한 번에 샘플한다 <span style="color:#C2410C">[7]</span>.</p>
+<p style="font-size:28px;line-height:1.5;color:#3D4A63"><b>순방향</b>은 닫힌 식이다 — 어느 시각 <i>t</i>든 한 번에 샘플링한다 <span style="color:#C2410C">[7]</span>.</p>
 <p style="font-size:28px;line-height:1.5;color:#3D4A63"><b>학습</b>은 섞인 노이즈 ε를 맞히는 회귀 하나뿐이다.</p>
 <p style="font-size:28px;line-height:1.5;color:#3D4A63"><b>노이즈 예측 = score</b> — 역방향 SDE·ODE는 이 score만으로 데이터로 돌아간다 <span style="color:#C2410C">[8]</span>.</p>
 </div>
@@ -282,12 +282,12 @@ body.shot #frame { box-shadow:none; transform:none !important; }
 <p style="font-size:24px;line-height:1.35;color:#5A6478">[9] Janner et al., “Planning with Diffusion for Flexible Behavior Synthesis”, ICML 2022 — arXiv:2205.09991  ·  [10] Ho &amp; Salimans, “Classifier-Free Diffusion Guidance”, 2022 — arXiv:2207.12598</p>
 <p style="font-size:24px;line-height:1.35;color:#5A6478">[11] Chung et al., “Diffusion Posterior Sampling for General Noisy Inverse Problems”, ICLR 2023 — arXiv:2209.14687</p>
 </div>
-<aside>guidance는 사후분포 p0 ∝ q0 · exp(−E)에서 샘플하려는 것이다. 정확한 기울기는 x_t에서 E를 재야 하지만 알 수 없으므로, 한 스텝 denoise한 x̂0에서 E를 재고 연쇄 법칙으로 x_t까지 기울기를 보낸다(DPS). CFG의 w가 크면 조건을 더 강하게 따르지만 다양성이 준다. travplan 문서 §B.8.2의 GRACE는 이 역방향 한 스텝을 MPPI 가중평균으로 추정한다.</aside>
+<aside>guidance는 사후분포 p0 ∝ q0 · exp(−E)에서 샘플링하려는 것이다. 정확한 기울기는 x_t에서 E를 재야 하지만 알 수 없으므로, 한 스텝 denoise한 x̂0에서 E를 재고 연쇄 법칙으로 x_t까지 기울기를 보낸다(DPS). CFG의 w가 크면 조건을 더 강하게 따르지만 다양성이 준다. travplan 문서 §B.8.2의 GRACE는 이 역방향 한 스텝을 MPPI 가중평균으로 추정한다.</aside>
 </section>
 <section id="flow" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 200px;display:flex;flex-direction:column;gap:32px">
 <div style="display:flex;flex-direction:column;gap:12px">
 <p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">§0.6 · FLOW MATCHING · RECTIFIED FLOW</p>
-<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:64px;font-weight:700;line-height:1.2;color:#16213A">노이즈와 데이터를 자로 잇고, 속도를 배운다</h2>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:64px;font-weight:700;line-height:1.2;color:#16213A">노이즈와 데이터를 직선으로 잇고, 속도를 배운다</h2>
 </div>
 <div style="display:flex;gap:48px">
 <div style="flex:1;display:flex;flex-direction:column;gap:20px">
@@ -297,7 +297,7 @@ body.shot #frame { box-shadow:none; transform:none !important; }
 <img src="img/7f7864e9a4211120b3461f4b93c5bfa2.png" alt="샘플링 Euler: x_(t+1/n) = x_t + (1/n) v_θ(x_t, t, c)" style="width:518px;height:70px;object-fit:contain">
 </div>
 <p style="font-size:28px;line-height:1.5;color:#3D4A63"><b>조건부 → 주변</b>: 짝지은 직선의 회귀만으로 전체 흐름 uₜ(x) = E[x₁ − x₀ | xₜ = x]를 배운다(기울기가 같다) <span style="color:#C2410C">[12]</span>.</p>
-<p style="font-size:28px;line-height:1.5;color:#3D4A63"><b>주의</b>: 짝 직선은 서로 교차하지만 평균 속도장은 교차하지 않는다. Euler 1스텝이면 모든 표본이 평균(기둥)으로 간다 <span style="color:#C2410C">[13]</span>.</p>
+<p style="font-size:28px;line-height:1.5;color:#3D4A63"><b>주의</b>: 짝 직선은 서로 교차하지만 평균 속도장은 교차하지 않는다. Euler 1스텝이면 모든 샘플이 평균(기둥)으로 간다 <span style="color:#C2410C">[13]</span>.</p>
 </div>
 <div style="width:600px;display:flex;flex-direction:column;gap:12px">
 <div style="display:flex;gap:16px">
@@ -341,24 +341,24 @@ body.shot #frame { box-shadow:none; transform:none !important; }
 </div>
 <div style="flex:1;background:#FFFDF8;border:2px solid #D3D9E3;border-radius:16px;padding:24px 28px;display:flex;flex-direction:column;gap:8px">
 <h3 style="font-size:28px;font-weight:600;color:#16213A">“1스텝 = 평균”은 83%</h3>
-<p style="font-size:24px;line-height:1.45;color:#3D4A63">학습된 망에서는 이론만큼 뭉개지지 않는다. 남은 잡음이 두 번 적분돼 끝점이 ~1 m 흩어진다</p>
+<p style="font-size:24px;line-height:1.45;color:#3D4A63">학습된 네트워크에서는 이론만큼 뭉개지지 않는다. 남은 잡음이 두 번 적분돼 끝점이 ~1 m 흩어진다</p>
 </div>
 </div>
 <div data-foot style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D3D9E3;padding:14px 0 0 0;display:flex;flex-direction:column;gap:2px">
 <p style="font-size:24px;line-height:1.35;color:#5A6478">출처: travplan Planner 문서 §B.15.1(TP-0137), 배경 §0.6 · 코드 planners/learned/flow_model.py · 벤치마크 results/tp0025_v2 (planner_d+mppi 12/12)</p>
 </div>
-<aside>Planner D는 flow matching 정책이다. 파라미터는 약 149만 개. 같은 속도망을 diffusion(선형 일정 DDPM 조상 샘플링)으로도 샘플할 수 있고, 두 샘플러 모두 4 지형 × 3 seed에서 12/12다. 데이터가 궤적 좌표가 아니라 제어 변화율이라는 점이 핵심이다: 생성된 열을 적분해 제어를 만들고 스워브 모델로 굴리므로, 어떤 샘플이든 동역학적으로 실현 가능하다. guidance의 J는 TravMap cost의 시간 적분, 0.5를 넘는 cost에 대한 이차 벌점, 남은 거리다.</aside>
+<aside>Planner D는 flow matching 정책이다. 파라미터는 약 149만 개. 같은 속도 네트워크를 diffusion(선형 일정 DDPM 조상 샘플링)으로도 샘플할 수 있고, 두 샘플러 모두 4 지형 × 3 seed에서 12/12다. 데이터가 궤적 좌표가 아니라 제어 변화율이라는 점이 핵심이다: 생성된 변화율 열을 적분해 제어를 만들고 스워브 모델로 rollout하므로, 어떤 샘플이든 동역학적으로 실현 가능하다. guidance의 J는 TravMap cost의 시간 적분, 0.5를 넘는 cost에 대한 이차 페널티, 남은 거리다.</aside>
 </section>
 <section id="sec-control" data-transition="fade" style="background:#16213A;color:#F4F1EA;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;justify-content:center;gap:32px">
 <p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:32px;color:#F59E5B;letter-spacing:2px">PART 3 · CONTROLLER §E</p>
-<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:96px;font-weight:700;line-height:1.15;color:#F4F1EA">굴려 보고 가중하거나,<br>미분해서 푼다</h2>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:96px;font-weight:700;line-height:1.15;color:#F4F1EA">샘플링해 가중하거나,<br>미분해서 푼다</h2>
 <p style="font-size:36px;line-height:1.5;color:#C9D1E0;width:1300px">MPPI는 계단 모양 비용(치명 셀)을 그대로 쓴다. NMPC는 hard 제약과 튜브를 품는다. travplan은 두 갈래를 같은 벤치마크에서 비교한다.</p>
 <aside>2026-09-30 사용자 결정으로 MPPI와 NMPC 두 갈래를 함께 개발한다. 둘은 같은 Controller 프로토콜 구현체이고, 잔차 GP를 공유한다. 이 파트는 배경 §0.2와 MPC 문서 §M을 따른다.</aside>
 </section>
 <section id="mppi" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 200px;display:flex;flex-direction:column;gap:32px">
 <div style="display:flex;flex-direction:column;gap:12px">
 <p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">§0.2 · §E.1 · MPPI</p>
-<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:64px;font-weight:700;line-height:1.2;color:#16213A">비용이 낮을수록 지수적으로 큰 표를 준다</h2>
+<h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:64px;font-weight:700;line-height:1.2;color:#16213A">비용이 낮을수록 지수적으로 큰 가중치를 준다</h2>
 </div>
 <div style="display:flex;gap:48px">
 <div style="flex:1;display:flex;flex-direction:column;gap:20px">
@@ -367,15 +367,15 @@ body.shot #frame { box-shadow:none; transform:none !important; }
 <img src="img/3510c491ac09bd1f390e52dc9e81962d.png" alt="가중치: w_k = exp(−(S_k−ρ)/λ) / Σ exp(−(S_j−ρ)/λ), U ← Σ w_k V^(k)" style="width:822px;height:127px;object-fit:contain">
 <img src="img/2d8e50cb641a5e5d7705a4506e1caf18.png" alt="AR(1) 노이즈: ε_t = a ε_(t−1) + √(1−a²) ξ_t, a = 0.7" style="width:900px;height:73px;object-fit:contain">
 </div>
-<p style="font-size:28px;line-height:1.5;color:#3D4A63"><b>λ = 너그러움</b>. 비용이 λ만큼 오를 때마다 표가 1/e로 준다. S = (10, 11, 13, 20), λ = 0.5 → w = (0.879, 0.119, 0.002, 0.000) <span style="color:#C2410C">[14]</span></p>
+<p style="font-size:28px;line-height:1.5;color:#3D4A63"><b>λ = 너그러움</b>. 비용이 λ만큼 오를 때마다 가중치가 1/e로 준다. S = (10, 11, 13, 20), λ = 0.5 → w = (0.879, 0.119, 0.002, 0.000) <span style="color:#C2410C">[14]</span></p>
 </div>
 <div style="width:580px;display:flex;flex-direction:column;gap:12px">
-<img src="img/073086cf2e10a46d043dfb7f8dac9dca.webp" alt="(a) 네 후보에 온도 λ를 바꾼 가중치와 ESS (b) AR(1) 노이즈와 적분 노이즈(SMPPI) 표본" style="width:580px;height:226px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<img src="img/073086cf2e10a46d043dfb7f8dac9dca.webp" alt="(a) 네 후보에 온도 λ를 바꾼 가중치와 ESS (b) AR(1) 노이즈와 적분 노이즈(SMPPI) 샘플" style="width:580px;height:226px;object-fit:contain;background:#FFFFFF;border-radius:12px">
 <p style="font-size:24px;line-height:1.4;color:#5A6478">(a) λ별 가중치·ESS (b) AR(1) vs 적분 노이즈(SMPPI <span style="color:#C2410C">[15]</span>) — travplan 작도</p>
 <table style="width:580px;font-size:24px;color:#16213A;padding:10px 14px">
 <tr style="background:#16213A"><th style="width:55%;color:#F4F1EA;text-align:left">MPPIConfig</th><th style="width:45%;color:#F4F1EA;text-align:left">기본값</th></tr>
 <tr><td>후보 K</td><td>768</td></tr>
-<tr style="background:#EFEBE2"><td>지평 T × dt</td><td>40 × 0.1 s</td></tr>
+<tr style="background:#EFEBE2"><td>horizon T × dt</td><td>40 × 0.1 s</td></tr>
 <tr><td>온도 λ</td><td>0.5</td></tr>
 <tr style="background:#EFEBE2"><td>경로 추종 후보</td><td>30 %</td></tr>
 </table>
@@ -385,7 +385,7 @@ body.shot #frame { box-shadow:none; transform:none !important; }
 <p style="font-size:24px;line-height:1.35;color:#5A6478">[14] Williams et al., “Information Theoretic Model Predictive Control: Theory and Applications to Autonomous Driving”, IEEE T-RO 2018 — arXiv:1707.02342</p>
 <p style="font-size:24px;line-height:1.35;color:#5A6478">[15] Kim et al., “Smooth Model Predictive Path Integral Control without Smoothing”, IEEE RA-L 2022 — arXiv:2112.09988</p>
 </div>
-<aside>한 주기는 다섯 단계다: 지난 해를 한 칸 당겨 warm start, 노이즈를 더해 K개 후보, 후보마다 굴려 비용 S_k, 지수 가중치, 가중평균의 첫 제어만 실행. 최솟값 ρ를 빼지 않으면 모든 후보가 치명 벌점(1000)을 받을 때 0/0이 된다. 함정: λ는 비용 절대 크기에 묶여 있고, 후보가 모두 나쁜 곳에 있으면 평균도 나쁘며, 두 무리 사이로 평균이 떨어질 수 있다. 유효 샘플 수 1/Σw²는 λ = 0.5에서 1.27, λ = 2에서 2.38이다. 코드: control/mppi/mppi.py, smooth.py.</aside>
+<aside>한 주기는 다섯 단계다: 지난 해를 한 스텝 당겨 warm start, 노이즈를 더해 K개 후보, 후보마다 rollout해 비용 S_k, 지수 가중치, 가중평균의 첫 제어만 실행. 최솟값 ρ를 빼지 않으면 모든 후보가 치명 페널티(1000)를 받을 때 0/0이 된다. 함정: λ는 비용의 절대 크기에 따라 달라지고, 후보가 모두 나쁜 곳에 있으면 평균도 나쁘며, 두 무리 사이로 평균이 떨어질 수 있다. 유효 샘플 수 1/Σw²는 λ = 0.5에서 1.27, λ = 2에서 2.38이다. 코드: control/mppi/mppi.py, smooth.py.</aside>
 </section>
 <section id="mppi-kl" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 200px;display:flex;flex-direction:column;gap:32px">
 <div style="display:flex;flex-direction:column;gap:12px">
@@ -402,18 +402,18 @@ body.shot #frame { box-shadow:none; transform:none !important; }
 <div style="background:#FFFDF8;border-left:6px solid #1D4ED8;border-radius:8px;padding:22px 28px">
 <img src="img/9b98add3bd28a7a4644f9cde481503b2.png" alt="최적 분포 q*(V) = e^(−S/λ) p(V)/η, U* = argmin KL(q*‖q_U) = E_q*[V]" style="width:940px;height:55px;object-fit:contain">
 </div>
-<p style="font-size:28px;line-height:1.5;color:#3D4A63"><b>③</b> q*에서는 못 뽑으니 p에서 뽑고 중요도 가중 → wₖ ∝ exp(−Sₖ/λ). 강화학습의 “추론으로서의 제어”(§R.7)와 같은 식이다.</p>
+<p style="font-size:28px;line-height:1.5;color:#3D4A63"><b>③</b> q*에서는 직접 샘플링할 수 없으니 p에서 샘플링하고 중요도 가중 → wₖ ∝ exp(−Sₖ/λ). 강화학습의 “추론으로서의 제어”(§R.7)와 같은 식이다.</p>
 </div>
 <div style="width:520px;display:flex;flex-direction:column;gap:12px">
 <img src="img/201535a6a8f2985d50d3316477ce18ff.webp" alt="정보이론적 MPC: 지금의 제어 분포(아래)를 비용이 정한 최적 분포(위) 쪽으로 KL을 줄이며 밀어 올린다" style="width:520px;height:341px;object-fit:contain;background:#FFFFFF;border-radius:12px">
 <p style="font-size:24px;line-height:1.4;color:#5A6478">Information-theoretic MPC (Fig. 2) <span style="color:#C2410C">[14]</span> — 가중평균 한 번 = 이 밀기의 한 걸음</p>
-<p style="font-size:26px;line-height:1.5;color:#16213A;background:#FBE7D9;padding:20px 24px;border-radius:12px">travplan은 제어 비용 항을 뺐다 → KL이 “이전 해에서 벗어남”을 벌한다. 그래서 KL 해석은 근사로만 맞다.</p>
+<p style="font-size:26px;line-height:1.5;color:#16213A;background:#FBE7D9;padding:20px 24px;border-radius:12px">travplan은 제어 비용 항을 뺐다 → KL이 “이전 해에서 벗어남”에 페널티를 준다. 그래서 KL 해석은 근사로만 맞다.</p>
 </div>
 </div>
 <div data-foot style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:14px 0 0 0;display:flex;flex-direction:column;gap:2px">
 <p style="font-size:24px;line-height:1.35;color:#5A6478">[14] Williams et al., IEEE T-RO 2018 — arXiv:1707.02342 · 관련: travplan 강화학습 문서 §R.7–R.8(Levine, CS 285 “Control as Inference”)</p>
 </div>
-<aside>원 논문의 가중치에는 제어 비용 항 λ Σ uᵀ Σ⁻¹ ε가 들어간다. travplan은 이 항을 빼서 기준 분포를 현재 제어열 주변에 둔 것과 같다. 또 경로 추종 후보 30%를 섞으면서 중요도 가중치를 그 제안 분포에 맞게 고치지 않는다. 같은 볼츠만 가중치를 섞기에 쓰면 MPPI, 고르기에 쓰면 정책 전환이 된다(§A.8).</aside>
+<aside>원 논문의 가중치에는 제어 비용 항 λ Σ uᵀ Σ⁻¹ ε가 들어간다. travplan은 이 항을 빼서 기준 분포를 현재 제어열 주변에 둔 것과 같다. 또 경로 추종 후보 30%를 섞으면서 중요도 가중치를 그 제안 분포에 맞게 고치지 않는다. 같은 볼츠만 가중치를 평균에 쓰면 MPPI, 선택에 쓰면 정책 전환이 된다(§A.8).</aside>
 </section>
 <section id="nmpc-gp" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 200px;display:flex;flex-direction:column;gap:32px">
 <div style="display:flex;flex-direction:column;gap:12px">
@@ -434,7 +434,7 @@ body.shot #frame { box-shadow:none; transform:none !important; }
 <p style="font-size:28px;line-height:1.5;color:#3D4A63"><b>③</b> 여유 ρₖ는 고정 inflation이 아니라 <b>예측 불확실성이 정한다</b> — costmap 한계 ④에 대한 답.</p>
 </div>
 <div style="width:580px;display:flex;flex-direction:column;gap:12px">
-<img src="img/064a1470f7648c9a26c2c94954272501.webp" alt="TP-0070: 네 시나리오에서 MPC(노란 선)와 MPPI(파란 선) 궤적. 빨간 칸이 치명, X가 실패 지점" style="width:580px;height:318px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<img src="img/064a1470f7648c9a26c2c94954272501.webp" alt="TP-0070: 네 시나리오에서 MPC(노란 선)와 MPPI(파란 선) 궤적. 빨간 셀이 치명, X가 실패 지점" style="width:580px;height:318px;object-fit:contain;background:#FFFFFF;border-radius:12px">
 <p style="font-size:24px;line-height:1.4;color:#5A6478">TP-0070 0단계(지형 항 없음): 노랑 MPC, 파랑 MPPI, X = 실패</p>
 <table style="width:580px;font-size:24px;color:#16213A;padding:10px 14px">
 <tr style="background:#16213A"><th style="width:58%;color:#F4F1EA;text-align:left">plant L1 레벨 3</th><th style="width:42%;color:#F4F1EA;text-align:left">도달 (치명)</th></tr>
@@ -453,7 +453,7 @@ body.shot #frame { box-shadow:none; transform:none !important; }
 <section id="sec-safety" data-transition="fade" style="background:#16213A;color:#F4F1EA;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;justify-content:center;gap:32px">
 <p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:32px;color:#F59E5B;letter-spacing:2px">PART 4 · 안전 §C</p>
 <h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:96px;font-weight:700;line-height:1.15;color:#F4F1EA">평균이 아니라<br>나쁜 꼬리를 본다</h2>
-<p style="font-size:36px;line-height:1.5;color:#C9D1E0;width:1300px">보도 로봇의 실패는 평균에서 오지 않는다. 연석 모서리 한 번, 포트홀 한 번, 보행자 접촉 한 번이 실패다. 벌점은 피하게 할 뿐 보장하지 않는다.</p>
+<p style="font-size:36px;line-height:1.5;color:#C9D1E0;width:1300px">보도 로봇의 실패는 평균에서 오지 않는다. 연석 모서리 한 번, 포트홀 한 번, 보행자 접촉 한 번이 실패다. 페널티는 피하게 할 뿐 보장하지 않는다.</p>
 <aside>이 파트의 네 도구: CVaR는 위험을 재고, CBF는 명령을 최소한으로 고쳐 안전 집합에 남기고, CVaR-BF는 둘을 합치고, conformal prediction은 예측 영역에 분포 가정 없는 보장을 준다. travplan의 치명 실패 규칙(기준 대비 하나라도 늘면 채택하지 않음)과 같은 정신이다.</aside>
 </section>
 <section id="cvar" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 200px;display:flex;flex-direction:column;gap:32px">
@@ -467,7 +467,7 @@ body.shot #frame { box-shadow:none; transform:none !important; }
 <img src="img/c25fdd2e882b2b1f1261f6c686fb3e25.png" alt="VaR_α(Z) = min{z : P(Z > z) ≤ α}" style="width:707px;height:73px;object-fit:contain">
 <img src="img/70de19da680f0760e909a34eac46058d.png" alt="CVaR_α(Z) = E[Z | Z ≥ VaR_α(Z)] = min_ν {ν + (1/α) E[(Z−ν)+]}" style="width:960px;height:60px;object-fit:contain">
 </div>
-<p style="font-size:28px;line-height:1.5;color:#3D4A63">뒤의 최소화 꼴(Rockafellar–Uryasev) 덕분에 CVaR는 <b>볼록</b>하고 최적화에 바로 넣을 수 있다 <span style="color:#C2410C">[18]</span>. CVaR ≤ z이면 P(Z &gt; z) ≤ α도 따른다 — 확률 제약의 보수적 대리.</p>
+<p style="font-size:28px;line-height:1.5;color:#3D4A63">뒤의 최소화 꼴(Rockafellar–Uryasev) 덕분에 CVaR는 <b>볼록</b>하고 최적화에 바로 넣을 수 있다 <span style="color:#C2410C">[18]</span>. CVaR ≤ z이면 P(Z &gt; z) ≤ α도 따른다 — 확률 제약의 보수적 surrogate다.</p>
 <p style="font-size:28px;line-height:1.5;color:#3D4A63"><b>travplan RiskCost</b> — 스텝 위험 = cost + β·σ + γ·동적 장애물, 그 상위 ⌈αT⌉ 스텝의 평균:</p>
 <div style="background:#FFFDF8;border-left:6px solid #1D4ED8;border-radius:8px;padding:22px 28px">
 <img src="img/3f8ba0dbb1f5f33a68c80c81f4ffc50d.png" alt="r_t = c_t + β σ_t + γ dyn_t, RiskCost = w/⌈αT⌉ Σ_(top ⌈αT⌉) r_t" style="width:900px;height:101px;object-fit:contain">
@@ -484,7 +484,7 @@ body.shot #frame { box-shadow:none; transform:none !important; }
 <p style="font-size:24px;line-height:1.35;color:#5A6478">[18] Rockafellar &amp; Uryasev, “Optimization of Conditional Value-at-Risk”, Journal of Risk 2(3), 2000 — doi:10.21314/JOR.2000.038</p>
 <p style="font-size:24px;line-height:1.35;color:#5A6478">[19] Majumdar &amp; Pavone, “How Should a Robot Assess Risk? Towards an Axiomatic Theory of Risk in Robotics”, ISRR 2017 — arXiv:1710.11040</p>
 </div>
-<aside>CVaR는 분포를 안다고 가정하고 그 안의 꼬리를 재는 척도다. 분포 추정 자체가 틀렸을 때를 다루는 Wasserstein 공(분포적 강건)과는 다르다(§0.2b). 가우시안이면 VaR = μ + σΦ⁻¹(1−α), CVaR = μ + σ φ(Φ⁻¹(1−α))/α로 닫힌 식이다. RiskCost에는 동적 장애물 겹침에 대한 큰 벌점 P도 더해진다. 인식 문서 A.7, Planner B.9, Controller C.2(RA-MPPI, DRA-MPPI)가 같은 척도를 쓴다.</aside>
+<aside>CVaR는 분포를 안다고 가정하고 그 안의 꼬리를 재는 척도다. 분포 추정 자체가 틀렸을 때를 다루는 Wasserstein ball(분포 강건 최적화)과는 다르다(§0.2b). 가우시안이면 VaR = μ + σΦ⁻¹(1−α), CVaR = μ + σ φ(Φ⁻¹(1−α))/α로 닫힌 식이다. RiskCost에는 동적 장애물 겹침에 대한 큰 페널티 P도 더해진다. 인식 문서 A.7, Planner B.9, Controller C.2(RA-MPPI, DRA-MPPI)가 같은 척도를 쓴다.</aside>
 </section>
 <section id="cbf" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 200px;display:flex;flex-direction:column;gap:32px">
 <div style="display:flex;flex-direction:column;gap:12px">
@@ -507,14 +507,14 @@ body.shot #frame { box-shadow:none; transform:none !important; }
 <img src="img/124d1cdc6ffaf2328eccae4a40d66b8c.webp" alt="(a) 멈춘 보행자 앞의 원래 명령과 필터 후 명령 (b) 속도 공간에서 허용 반공간으로의 수직 투영" style="width:560px;height:233px;object-fit:contain;background:#FFFFFF;border-radius:12px">
 <p style="font-size:24px;line-height:1.4;color:#5A6478">(a) 멈춘 보행자 앞 명령 (b) 허용 반공간으로의 투영 — travplan 작도</p>
 <p style="font-size:26px;line-height:1.5;color:#16213A;background:#FBE7D9;padding:20px 24px;border-radius:12px">예: u_nom = (1.2, 0) m/s → u* = (0.68, −0.13). 속도를 줄이고 옆으로 살짝 비킨다.</p>
-<p style="font-size:26px;line-height:1.5;color:#3D4A63">MPPI 벌점은 “대개” 피한다. CBF는 매 스텝 <b>불변성</b>을 준다 — 단, 모델이 맞을 때 <span style="color:#C2410C">[21]</span>.</p>
+<p style="font-size:26px;line-height:1.5;color:#3D4A63">MPPI의 페널티는 “대개” 피하게 할 뿐이다. CBF는 매 스텝 <b>불변성</b>을 준다 — 단, 모델이 맞을 때 <span style="color:#C2410C">[21]</span>.</p>
 </div>
 </div>
 <div data-foot style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:14px 0 0 0;display:flex;flex-direction:column;gap:2px">
 <p style="font-size:24px;line-height:1.35;color:#5A6478">[20] Ames et al., “Control Barrier Function Based Quadratic Programs for Safety Critical Systems”, IEEE TAC 2017 — arXiv:1609.06408</p>
 <p style="font-size:24px;line-height:1.35;color:#5A6478">[21] Ames et al., “Control Barrier Functions: Theory and Applications”, ECC 2019 — arXiv:1903.11199</p>
 </div>
-<aside>travplan 스워브를 몸체 좌표에서 속도 명령 u = (vx, vy)로 움직이는 점으로 보면 g는 단위 행렬이고, 제약은 속도 공간의 반공간 하나다. 이미 허용 영역 안이면 u_nom을 그대로 둔다(max(0, ·)). 이산 시간 MPC에서는 h_(k+1) ≥ (1−γ) h_k 꼴로 쓰고, γ가 작을수록 일찍 넓게 돈다(Zeng et al., ACC 2021). 함정: h가 상대 차수 1이어야 하고, 여러 제약이 충돌하면 QP가 불능이 된다.</aside>
+<aside>travplan 스워브를 몸체 좌표에서 속도 명령 u = (vx, vy)로 움직이는 점으로 보면 g는 단위 행렬이고, 제약은 속도 공간의 반공간 하나다. 이미 허용 영역 안이면 u_nom을 그대로 둔다(max(0, ·)). 이산 시간 MPC에서는 h_(k+1) ≥ (1−γ) h_k 꼴로 쓰고, γ가 작을수록 일찍 넓게 돈다(Zeng et al., ACC 2021). 함정: h가 상대 차수 1이어야 하고, 여러 제약이 충돌하면 QP가 infeasible이 된다.</aside>
 </section>
 <section id="cvarbf" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 200px;display:flex;flex-direction:column;gap:32px">
 <div style="display:flex;flex-direction:column;gap:12px">
@@ -552,7 +552,7 @@ body.shot #frame { box-shadow:none; transform:none !important; }
 <p style="font-size:24px;line-height:1.35;color:#5A6478">[22] Ahmadi et al., “Risk-Averse Control via CVaR Barrier Functions: Application to Bipedal Robot Locomotion”, IEEE L-CSS 2022 — arXiv:2011.01578</p>
 <p style="font-size:24px;line-height:1.35;color:#5A6478">[23] Wang et al., “Safe Navigation in Uncertain Crowded Environments Using Risk Adaptive CVaR Barrier Functions”, IROS 2025 — arXiv:2504.06513</p>
 </div>
-<aside>CVaR는 볼록이라 h가 아핀이고 표본이 유한하면 제약을 선형 계획/QP로 풀 수 있다. Adaptive CVaR-BF는 CasADi 구현이 공개돼 있어 travplan의 acados 트랙과도 맞는다. 위험 중립 barrier는 기대값 E[h] ≥ (1−γ)h만 지키므로 실제 표본의 일부는 h &lt; 0으로 떨어진다. 그것이 그림 (b)다.</aside>
+<aside>CVaR는 볼록이라 h가 아핀이고 샘플이 유한하면 제약을 선형 계획/QP로 풀 수 있다. Adaptive CVaR-BF는 CasADi 구현이 공개돼 있어 travplan의 acados 트랙과도 맞는다. 위험 중립 barrier는 기대값 E[h] ≥ (1−γ)h만 지키므로 실제 샘플의 일부는 h &lt; 0으로 떨어진다. 그것이 그림 (b)다.</aside>
 </section>
 <section id="conformal" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 200px;display:flex;flex-direction:column;gap:32px">
 <div style="display:flex;flex-direction:column;gap:12px">
@@ -566,7 +566,7 @@ body.shot #frame { box-shadow:none; transform:none !important; }
 <img src="img/f43d310c41211d1f8e9b3709899a1872.png" alt="q̂ = Quantile({r_i}; ⌈(n+1)(1−α)⌉/n), C(x) = {y : ‖ŷ(x) − y‖ ≤ q̂}" style="width:960px;height:55px;object-fit:contain">
 <img src="img/000a84f57e0c7265ab30a3779203b193.png" alt="보장: P(r_(n+1) ≤ r_(k)) ≥ k/(n+1) ≥ 1−α, k = ⌈(n+1)(1−α)⌉" style="width:920px;height:57px;object-fit:contain">
 </div>
-<p style="font-size:28px;line-height:1.5;color:#3D4A63">보장의 근거는 <b>교환 가능성</b> 하나 — 새 오차가 보정 오차들 사이 어느 순위에 올지 균등하다.</p>
+<p style="font-size:28px;line-height:1.5;color:#3D4A63">보장의 근거는 <b>교환 가능성(exchangeability)</b> 하나 — 새 오차가 보정 오차들 사이 어느 순위에 올지 균등하다.</p>
 <p style="font-size:28px;line-height:1.5;color:#16213A;background:#FBE7D9;padding:20px 24px;border-radius:12px">예: 보행자 9명, α = 0.2 → k = ⌈10 × 0.8⌉ = 8 → 반경 0.52 m</p>
 <p style="font-size:28px;line-height:1.5;color:#3D4A63">MPC 제약에 넣을 때는 시점 T개를 동시에 보장하도록 δ/T로 나눈다 <span style="color:#C2410C">[25]</span>.</p>
 </div>
@@ -579,7 +579,7 @@ body.shot #frame { box-shadow:none; transform:none !important; }
 <p style="font-size:24px;line-height:1.35;color:#5A6478">[24] Angelopoulos &amp; Bates, “A Gentle Introduction to Conformal Prediction and Distribution-Free Uncertainty Quantification”, 2021 — arXiv:2107.07511</p>
 <p style="font-size:24px;line-height:1.35;color:#5A6478">[25] Lindemann et al., “Safe Planning in Dynamic Environments using Conformal Prediction”, IEEE RA-L 2023 — arXiv:2210.10254</p>
 </div>
-<aside>함정: 보장은 보정 집합 전체에 대한 평균 포함률이다. 한 번 뽑은 보정 집합으로 정한 반경의 실제 포함률은 Beta(n+1−l, l) 분포를 따르고, n = 9면 표준편차가 0.12나 된다. 분포가 바뀌면(배포 환경에 보행자가 다르게 움직이면) 교환 가능성이 깨진다. 그때는 적응형 conformal(ACI)이 온라인으로 α를 고친다. 이 반경은 CBF나 MPC 거리 제약의 여유로 바로 쓸 수 있다.</aside>
+<aside>함정: 보장은 보정 집합 전체에 대한 평균 포함률(coverage)이다. 한 번 뽑은 보정 집합으로 정한 반경의 실제 포함률은 Beta(n+1−l, l) 분포를 따르고, n = 9면 표준편차가 0.12나 된다. 분포가 바뀌면(배포 환경에 보행자가 다르게 움직이면) 교환 가능성이 깨진다. 그때는 적응형 conformal(ACI)이 온라인으로 α를 고친다. 이 반경은 CBF나 MPC 거리 제약의 여유로 바로 쓸 수 있다.</aside>
 </section>
 <section id="results" data-transition="fade" style="background:#EEF1F5;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 160px;display:flex;flex-direction:column;gap:32px">
 <div style="display:flex;flex-direction:column;gap:12px">

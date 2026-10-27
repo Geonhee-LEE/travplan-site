@@ -237,8 +237,8 @@ section.t.divider h2 { font-size:80px; }
 </script>
 <section id="cover" class="t dark cover">
 <p class="kicker">다리 로봇 내비게이션 기초 · 개념 공부 덱</p>
-<div class="stack"><h1>위 층은 무엇을 넘기고,<br>아래 층은 해낼 수 있는가</h1><p class="lead">층 사이의 경계, 지형을 보는 보행, 교사–학생 증류, 사람 동작에서 전신 제어, 출력 투영, 긴 작업의 신뢰도 — 휴머노이드·4족 내비게이션을 그림과 장단점으로</p></div>
-<div class="pills"><p class="pill on">층과 경계</p><p class="pill">지형 인식 보행</p><p class="pill">교사–학생</p><p class="pill">전신 제어</p><p class="pill">투영 · 신뢰도</p></div>
+<div class="stack"><h1>위 층은 무엇을 넘기고,<br>아래 층은 해낼 수 있는가</h1><p class="lead">층 사이의 경계, 지형을 보는 보행, teacher–student 증류, 사람 동작에서 전신 제어, 출력 투영, 긴 작업의 신뢰도 — 휴머노이드·4족 내비게이션을 그림과 장단점으로</p></div>
+<div class="pills"><p class="pill on">층과 경계</p><p class="pill">지형 인식 보행</p><p class="pill">teacher–student</p><p class="pill">전신 제어</p><p class="pill">투영 · 신뢰도</p></div>
 <aside>이 덱은 휴머노이드와 4족 로봇의 내비게이션을 처음 공부하는 사람을 위한 개념 덱이다. 다리 로봇은 바퀴 로봇보다 아래 층이 훨씬 복잡해서, "위 층이 무엇을 넘기고 아래 층이 그것을 해낼 수 있는가"라는 질문이 분명하게 드러난다. 2025–2026 연구들을 이 두 질문으로 정리한다.</aside>
 </section>
 <section id="agenda" class="t">
@@ -247,7 +247,7 @@ section.t.divider h2 { font-size:80px; }
 <tr><th>장</th><th>주제</th><th>답하는 질문</th></tr>
 <tr><td>0</td><td>시작</td><td>보행의 기초는? 분야마다 어떤 방식이 대세인가?</td></tr>
 <tr><td>1</td><td>층 사이의 경계</td><td>내비 층은 보행 층에 무엇을 넘기나? 경계를 내리면?</td></tr>
-<tr><td>2</td><td>지형을 보는 보행</td><td>어디를 볼지는 어떻게 정하나? 교사–학생 증류란?</td></tr>
+<tr><td>2</td><td>지형을 보는 보행</td><td>어디를 볼지는 어떻게 정하나? teacher–student 증류란?</td></tr>
 <tr><td>3</td><td>전신 제어와 투영</td><td>사람 동작을 어떻게 로봇에, 지형에 맞추나? 출력은 어떻게 고치나?</td></tr>
 <tr><td>4</td><td>장시간 자율</td><td>긴 작업은 왜 어렵고, 층을 어떻게 쌓나?</td></tr>
 <tr><td>5</td><td>정리</td><td>비교표, 공통점, 장단점, 공부 순서</td></tr>
@@ -258,29 +258,29 @@ section.t.divider h2 { font-size:80px; }
 <div class="head"><p class="kicker">0 · 커리큘럼 7/7</p><h2>마지막 덱: 앞의 여섯 덱을 한 로봇에 모은다</h2></div>
 <figure><img src="img/course.webp" style="height:400px"></figure>
 <div class="grid3">
-<div class="card gr"><span class="tag gr">앞에서 가져올 것</span><p>5 강화학습의 PPO, 6 시뮬레이션의 무작위화, 1 인식의 높이 지도, 3 제어의 층 구조.</p></div><div class="card bl"><span class="tag bl">뒤로 넘기는 것</span><p>덱 전체를 '층을 어디서 나누나'로 다시 본다. 다음은 원 논문과 작은 프로젝트.</p></div><div class="card or"><span class="tag or">함께 보면 좋은 것</span><p>4 비선형 MPC의 제약 → 3장의 투영. 2 경로 계획의 위층 → 1장의 경계.</p></div>
+<div class="card gr"><span class="tag gr">앞에서 가져올 것</span><p>5 강화학습의 PPO, 6 시뮬레이션의 도메인 랜덤화, 1 인식의 높이 지도, 3 제어의 층 구조.</p></div><div class="card bl"><span class="tag bl">뒤로 넘기는 것</span><p>덱 전체를 '층을 어디서 나누나'로 다시 본다. 다음은 원 논문과 작은 프로젝트.</p></div><div class="card or"><span class="tag or">함께 보면 좋은 것</span><p>4 비선형 MPC의 제약 → 3장의 투영. 2 경로 계획의 위층 → 1장의 경계.</p></div>
 </div>
-<aside>마지막 덱이다. 다리 로봇은 인식의 높이 지도, 제어의 층 구조, 강화학습의 PPO와 증류, 시뮬레이션의 무작위화를 모두 쓴다. 그래서 앞의 여섯 덱을 본 뒤에 보면 각 연구가 어느 층을 바꿨는지 쉽게 읽힌다. 이 덱의 질문, 즉 층을 어디서 나누고 학습한 출력을 어떻게 실행 가능하게 만드느냐는 앞의 덱 전체를 다시 보는 틀이 되기도 한다. 일곱 덱 전체의 순서와 10주 계획은 로드맵 덱에 있다.</aside>
+<aside>마지막 덱이다. 다리 로봇은 인식의 높이 지도, 제어의 층 구조, 강화학습의 PPO와 증류, 시뮬레이션의 도메인 랜덤화를 모두 쓴다. 그래서 앞의 여섯 덱을 본 뒤에 보면 각 연구가 어느 층을 바꿨는지 쉽게 읽힌다. 이 덱의 질문, 즉 층을 어디서 나누고 학습한 출력을 어떻게 실행 가능하게 만드느냐는 앞의 덱 전체를 다시 보는 틀이 되기도 한다. 일곱 덱 전체의 순서와 10주 계획은 로드맵 덱에 있다.</aside>
 </section>
 <section id="prereq" class="t">
-<div class="head"><p class="kicker">0 · 배경지식</p><h2>지지 영역, 고유감각, 강화학습, 모방이면 이 덱을 따라올 수 있다</h2></div>
-<figure><img src="img/support.webp" style="height:300px"><figcaption>위에서 본 발과 지지 영역(초록), 무게중심의 투영(빨강 ×). 지지 영역이 좁을수록 움직임으로 균형을 잡아야 한다</figcaption></figure>
+<div class="head"><p class="kicker">0 · 배경지식</p><h2>지지 영역, proprioception, 강화학습, 모방이면 이 덱을 따라올 수 있다</h2></div>
+<figure><img src="img/support.webp" style="height:300px"><figcaption>위에서 본 발과 지지 영역(support polygon, 초록), 무게중심의 투영(빨강 ×). 지지 영역이 좁을수록 움직임으로 균형을 잡아야 한다</figcaption></figure>
 <div class="grid2">
-<div class="card bl"><span class="tag bl">고유감각 vs 외수용</span><p>관절각·IMU(몸 안)는 늘 믿을 만하고, 깊이·LiDAR(몸 밖)는 가려지고 잡음이 있다. 보행 정책은 둘을 섞는다.</p></div>
-<div class="card or"><span class="tag or">학습 보행</span><p>시뮬레이터 수천 개 병렬 환경에서 PPO로 관절 목표를 배우고, 무작위화로 실물에 옮긴다.</p></div>
+<div class="card bl"><span class="tag bl">proprioception vs exteroception</span><p>관절각·IMU(몸 안)는 늘 믿을 만하고, 깊이·LiDAR(몸 밖)는 가려지고 잡음이 있다. 보행 정책은 둘을 섞는다.</p></div>
+<div class="card or"><span class="tag or">학습 보행</span><p>시뮬레이터 수천 개 병렬 환경에서 PPO로 관절 목표를 배우고, 도메인 랜덤화로 실물에 옮긴다.</p></div>
 </div>
-<aside>다리 로봇은 땅에 닿은 발이 만드는 지지 영역 안에 무게중심을 두거나, 그렇지 못하면 다음 발을 제때 놓아 균형을 잡는다. 4족의 걷기는 다리 셋이 땅에 있어 멈춰도 서 있지만, 속보나 이족 보행은 지지 영역이 선분이나 발 하나라 움직임으로 균형을 잡는다. 그래서 다리 로봇의 아래 층은 바퀴보다 훨씬 복잡하고, 지금은 대부분 시뮬레이터에서 강화학습으로 배운다. 몸 안의 감각과 몸 밖의 감각을 어떻게 섞을지도 핵심 설계다.</aside>
+<aside>다리 로봇은 땅에 닿은 발이 만드는 지지 영역 안에 무게중심을 두거나, 그렇지 못하면 다음 발을 제때 놓아 균형을 잡는다. 4족의 걷기(walk)는 다리 셋이 땅에 있어 멈춰도 서 있지만, trot이나 이족 보행은 지지 영역이 선분이나 발 하나라 움직임으로 균형을 잡는다. 그래서 다리 로봇의 아래 층은 바퀴보다 훨씬 복잡하고, 지금은 대부분 시뮬레이터에서 강화학습으로 배운다. 몸 안의 감각과 몸 밖의 감각을 어떻게 섞을지도 핵심 설계다.</aside>
 </section>
 <section id="domains" class="t">
 <div class="head"><p class="kicker">0 · 분야별 대세</p><h2>4족과 휴머노이드는 RL이 대세, 바퀴 모바일 로봇은 고전 계획이 대세다</h2></div>
 <table style="font-size:24px">
 <tr><th>방식</th><th>바퀴 모바일 로봇</th><th>4족 보행</th><th>휴머노이드</th></tr>
 <tr><td>모델 기반 제어</td><td><b>대세</b> 경로 추종기</td><td><b>축소</b> MPC + RL 혼합</td><td><b>정착</b> MPC 위 학습 정책</td></tr>
-<tr><td>탐색·샘플링 계획</td><td><b>대세</b> 전역 A*·Smac</td><td><b>정착</b> 전역 내비, 발 디딤</td><td><b>축소</b> 고전 발자국 계획</td></tr>
+<tr><td>탐색·샘플링 계획</td><td><b>대세</b> 전역 A*·Smac</td><td><b>정착</b> 전역 내비, foothold 계획</td><td><b>축소</b> 고전 footstep 계획</td></tr>
 <tr><td>샘플링 MPC</td><td><b>정착</b> Nav2 기본값</td><td><b>소수</b> DIAL-MPC</td><td><b>부상</b> 학계 한정</td></tr>
 <tr><td>RL sim-to-real</td><td><b>부상</b> 소셜·오프로드</td><td><b>대세</b> 산업 표준</td><td><b>대세</b> 산업 표준</td></tr>
 <tr><td>모방·모션 트래킹</td><td><b>부상</b></td><td><b>소수</b></td><td><b>대세</b> 모캡 기반 전신 제어</td></tr>
-<tr><td>종단간 학습 플래너</td><td><b>부상</b> NoMaD·NavDP</td><td><b>부상</b> 계층형 RL 내비</td><td><b>부상</b> 학습형 내비</td></tr>
+<tr><td>end-to-end 학습 플래너</td><td><b>부상</b> NoMaD·NavDP</td><td><b>부상</b> 계층형 RL 내비</td><td><b>부상</b> 학습형 내비</td></tr>
 <tr><td>기반 모델·VLA</td><td><b>부상</b> NaVILA·OmniVLA</td><td><b>부상</b> 상위 내비·점검</td><td><b>부상</b> 대형 행동 모델</td></tr>
 </table>
 <p class="take"><b>읽는 법:</b> 대세 = 배치와 기본값에서 주류, 정착 = 널리 쓰이나 중심은 아님, 부상 = 증거가 빠르게 느는 중.</p>
@@ -290,7 +290,7 @@ section.t.divider h2 { font-size:80px; }
 <p class="kicker">1 · 층 사이의 경계</p>
 <h2>경계를 어디에 두느냐가<br>연구마다 다르다</h2>
 <p class="lead">궤적, 속도, 방향, waypoint, 또는 경계 없음. 경계를 내릴수록 아래 층이 더 많이 정한다.</p>
-<aside>첫째 장은 위 층과 아래 층 사이의 계약이다. 가장 흔한 계약인 몸체 속도부터, 경계를 보행 정책 쪽으로 내린 연구, 아예 하나의 정책으로 합친 연구까지 본다.</aside>
+<aside>첫째 장은 위 층과 아래 층 사이의 계약이다. 가장 흔한 계약인 몸체 속도부터, 경계를 보행 정책 쪽으로 내린 연구, 아예 하나의 정책으로 합친 연구까지 다룬다.</aside>
 </section>
 <section id="boundary" class="t">
 <div class="head"><p class="kicker">1 · 경계의 사다리</p><h2>경계를 내릴수록 위 층이 정하는 것이 줄고 아래 층이 정하는 것이 는다</h2></div>
@@ -305,33 +305,33 @@ section.t.divider h2 { font-size:80px; }
 <div class="head"><p class="kicker">1 · 속도 계약</p><h2>몸체가 달라도 아래 층에 넘기는 것은 속도와 yaw rate뿐이다</h2></div>
 <div class="cols">
 <div class="stack">
-<div class="card bl"><span class="tag bl">CMU 자율 스택</span><h3>메카넘 바퀴, Go2, 바퀴 다리 로봇</h3><p>SLAM, 경로 계획(FAR), 탐사(TARE), 기본 자율(지형 분석, 충돌 회피, waypoint 추종)의 같은 층을 세 몸체에 쓴다. 바뀌는 것은 장애물 높이 문턱, 로봇 치수 같은 설정값뿐이다.</p></div>
+<div class="card bl"><span class="tag bl">CMU 자율 스택</span><h3>메카넘 바퀴, Go2, 바퀴 다리 로봇</h3><p>SLAM, 경로 계획(FAR), 탐사(TARE), 기본 자율(지형 분석, 충돌 회피, waypoint 추종)의 같은 층을 세 몸체에 쓴다. 바뀌는 것은 장애물 높이 임계값, 로봇 치수 같은 설정값뿐이다.</p></div>
 <div class="card gr"><span class="tag gr">장점</span><p>내비 층이 몸을 몰라도 된다. 몸체를 바꿔도 같은 스택.</p></div>
 <div class="card or"><span class="tag or">단점</span><p>아래 층이 명령을 얼마나 따르는지 묻지 않는다. 보행 정책의 지연·추종 오차가 크면 예측이 틀린다.</p></div>
 </div>
 <figure><img src="../../assets/thumbs/5eb5e20d1d1d.webp" style="height:440px"><figcaption>바퀴 다리 로봇판: 자세 균형 로봇에 LiDAR를 얹었다 — CMU 자율 스택 공개 저장소</figcaption></figure>
 </div>
 <p class="take"><b>핵심:</b> 속도 계약을 쓰면 아래 층의 명령 추종 응답(지연, 오차)을 재서 위 층의 예측 모델에 넣어야 한다.</p>
-<aside>CMU가 공개한 자율 스택은 "내비 층은 몸체를 몰라도 된다"는 설계의 좋은 예다. 바퀴든 다리든, 내비 층은 몸체 속도와 회전 속도만 넘기고 걸음새는 아래 층이 알아서 한다. 이 계약은 단순하고 바꿔 끼우기 쉽지만, 아래 층이 명령을 늦게, 혹은 일부만 따른다는 사실을 무시한다. 학습한 보행 정책은 명령을 그대로 따르지 않는 경우가 많아서, 그 응답을 재서 위 층의 예측 모델에 넣는 단계가 필요하다.</aside>
+<aside>CMU가 공개한 자율 스택은 "내비 층은 몸체를 몰라도 된다"는 설계의 좋은 예다. 바퀴든 다리든, 내비 층은 몸체 속도와 회전 속도만 넘기고 gait는 아래 층이 알아서 한다. 이 계약은 단순하고 바꿔 끼우기 쉽지만, 아래 층이 명령을 늦게, 혹은 일부만 따른다는 사실을 무시한다. 학습한 보행 정책은 명령을 그대로 따르지 않는 경우가 많아서, 그 응답을 재서 위 층의 예측 모델에 넣는 단계가 필요하다.</aside>
 </section>
 <section id="lower" class="t">
-<div class="head"><p class="kicker">1 · 경계 내리기</p><h2>아래 층을 얼리고 위 층이 명령의 일부만 덮어쓰거나, 볼 곳까지 정한다</h2></div>
+<div class="head"><p class="kicker">1 · 경계 내리기</p><h2>아래 층을 고정하고 위 층이 명령의 일부만 덮어쓰거나, 볼 곳까지 정한다</h2></div>
 <div class="cols">
 <div class="stack">
-<div class="card bl"><span class="tag bl">LP-NavOA · 진행 방향만</span><h3>얼린 보행 정책 위의 순환 Planner</h3><p>원형 명령으로 배운 보행은 3.0 m/s까지 따랐다(고정 순서 명령 1.44 m/s). 광선 8 × 8과 목표 방향만 보고 지도는 없다. 시뮬 제시간 도달 38.3·40.3 % → 85.1·88.0 %.</p></div>
+<div class="card bl"><span class="tag bl">LP-NavOA · 진행 방향만</span><h3>고정한(frozen) 보행 정책 위의 recurrent Planner</h3><p>원형 명령으로 배운 보행은 3.0 m/s까지 따랐다(고정 순서 명령 1.44 m/s). 광선 8 × 8과 목표 방향만 보고 지도는 없다. 시뮬 제시간 도달 38.3·40.3 % → 85.1·88.0 %.</p></div>
 <div class="card or"><span class="tag or">FocusNav · 정책 안의 waypoint</span><h3>waypoint를 예측하고 그 둘레만 본다</h3><p>자세가 불안정하면 게이트가 먼 waypoint를 끊고 발 앞만 본다. 성공률 87.02 %(Gallant 50.32 %).</p></div>
 </div>
-<figure><img src="../../assets/thumbs/575c2cc4835b.webp" style="height:400px"><figcaption>LP-NavOA (Fig. 1): 순환 Planner가 얼린 보행 정책의 진행 방향 명령만 덮어쓴다 — arXiv:2606.23249</figcaption></figure>
+<figure><img src="../../assets/thumbs/575c2cc4835b.webp" style="height:400px"><figcaption>LP-NavOA (Fig. 1): recurrent Planner가 고정한 보행 정책의 진행 방향 명령만 덮어쓴다 — arXiv:2606.23249</figcaption></figure>
 </div>
 <p class="take"><b>읽을 때 주의:</b> 수치가 시뮬인지 실물 반복 시험인지, 실물은 "할 수 있다"는 확인에 그쳤는지 구별한다.</p>
 <div class="foot" data-foot><p>LP-NavOA arXiv:2606.23249 · FocusNav arXiv:2601.12790 · GLAD arXiv:2606.00637</p></div>
-<aside>두 연구는 경계를 속도 계약보다 아래로 내렸다. LP-NavOA는 보행 정책을 먼저 학습해 얼린 뒤, 그 위의 작은 순환 Planner가 진행 방향 명령만 덮어쓴다. 아래 층의 능력을 해치지 않으면서 위 층을 학습할 수 있다. FocusNav는 waypoint를 정책 안에서 예측하고 그 둘레의 지도만 본다. 경계가 정책 안으로 들어간 것이다. 같은 연구진의 GLAD는 명시적 Planner 없이 전진 명령만으로 좁은 길을 따라갔다고 보고한다.</aside>
+<aside>두 연구는 경계를 속도 계약보다 아래로 내렸다. LP-NavOA는 보행 정책을 먼저 학습해 고정한 뒤, 그 위의 작은 recurrent Planner가 진행 방향 명령만 덮어쓴다. 아래 층의 능력을 해치지 않으면서 위 층을 학습할 수 있다. FocusNav는 waypoint를 정책 안에서 예측하고 그 둘레의 지도만 본다. 경계가 정책 안으로 들어간 것이다. 같은 연구진의 GLAD는 명시적 Planner 없이 전진 명령만으로 좁은 길을 따라갔다고 보고한다.</aside>
 </section>
 <section id="tame" class="t">
 <div class="head"><p class="kicker">1 · 학습한 로컬 내비</p><h2>2D LiDAR와 목표만 보는 RL 정책 하나가 회피, 통로, 함정 탈출을 다 한다</h2></div>
 <div class="cols">
 <div class="stack">
-<div class="card bl"><span class="tag bl">구조</span><h3>특권 교사 → Soft-MoE 학생</h3><p>교사는 깨끗한 이력과 동적 장애물 궤적을 본다. 학생은 지연·잡음을 넣은 LiDAR 41빔 10프레임을 1D CNN, GRU, 전문가 8개 Soft-MoE로 받는다. 미분 가능한 LiDAR CBF가 몸체 속도를 고친다.</p></div>
+<div class="card bl"><span class="tag bl">구조</span><h3>privileged 교사 → Soft-MoE 학생</h3><p>교사는 깨끗한 이력과 동적 장애물 궤적을 본다. 학생은 지연·잡음을 넣은 LiDAR 41빔 10프레임을 1D CNN, GRU, 전문가 8개 Soft-MoE로 받는다. 미분 가능한 LiDAR CBF가 몸체 속도를 고친다.</p></div>
 <div class="card or"><span class="tag or">결과</span><h3>처음 보는 지도 600개에서 78.2 %</h3><p>같은 지도로 다시 학습한 기준선 52.6 %. Go2 실물은 함정 탈출과 좁은 통로를 10회씩 모두 성공.</p></div>
 <div class="card gy"><span class="tag">학습 환경</span><p>관절 동역학 없이 명령→응답 모델로 움직이는 GPU 2D 시뮬. 실물에서는 따로 학습한 보행 제어기가 같은 속도 명령을 따른다.</p></div>
 </div>
@@ -341,12 +341,12 @@ section.t.divider h2 { font-size:80px; }
 <aside>TAME-Nav는 4족 로봇의 로컬 내비 정책이다. 경계로 보면 속도 계약과 같은 자리다. 2D LiDAR와 목표만 보고 몸체 속도를 낸다. 흥미로운 점은 학습 환경이다. 관절과 접촉을 시뮬레이션하지 않고, 명령을 넣으면 몸체가 어떻게 움직이는지만 흉내 내는 빠른 2D 시뮬에서 학습했다. 경계를 속도로 두면 위 층은 아래 층의 복잡함 없이 학습할 수 있다는 예다. 안전은 학습 뒤에 미분 가능한 CBF 필터로 한 번 더 지킨다.</aside>
 </section>
 <section id="boundary-pc" class="t">
-<div class="head"><p class="kicker">1 · 장단점</p><h2>경계를 고르는 것은 모듈성과 몸의 능력을 맞바꾸는 일이다</h2></div>
+<div class="head"><p class="kicker">1 · 장단점</p><h2>경계 선택은 모듈성과 몸의 능력 사이의 트레이드오프다</h2></div>
 <table style="font-size:26px">
 <tr><th>경계</th><th>장점</th><th>단점</th></tr>
 <tr><td>시간 붙은 궤적</td><td class="good">위 층이 많이 정하고 해석이 쉽다</td><td class="bad">아래 층이 해낼 수 있는지 따로 확인</td></tr>
 <tr><td>몸체 속도</td><td class="good">몸을 몰라도 된다, 바꿔 끼우기</td><td class="bad">아래 층 응답(지연·오차)을 모른다</td></tr>
-<tr><td>진행 방향(아래 층 얼림)</td><td class="good">보행 능력을 해치지 않는다</td><td class="bad">위 층이 할 수 있는 일이 좁다</td></tr>
+<tr><td>진행 방향(아래 층 고정)</td><td class="good">보행 능력을 해치지 않는다</td><td class="bad">위 층이 할 수 있는 일이 좁다</td></tr>
 <tr><td>정책 안의 waypoint</td><td class="good">볼 곳을 스스로 고른다</td><td class="bad">고장 원인 가르기 어렵다</td></tr>
 <tr><td>경계 없음</td><td class="good">몸의 능력을 끝까지</td><td class="bad">학습 비용, 검증 어려움</td></tr>
 </table>
@@ -357,48 +357,48 @@ section.t.divider h2 { font-size:80px; }
 <p class="kicker">2 · 지형을 보는 보행</p>
 <h2>어디를 보느냐가<br>얼마나 보느냐보다 중요하다</h2>
 <p class="lead">교사는 많이 보고, 학생은 배포 때 볼 수 있는 것만 본다.</p>
-<aside>둘째 장은 지형을 보며 걷는 정책이다. 먼저 이 분야의 기본 학습 절차인 교사–학생 증류를 보고, 볼 곳을 고르는 연구, 머리의 LiDAR 하나로 걷는 연구, 깊이 영상으로 파쿠르를 하는 연구, 처음 보는 몸에 적응하는 연구를 본다.</aside>
+<aside>둘째 장은 지형을 보며 걷는 정책이다. 먼저 이 분야의 기본 학습 절차인 teacher–student 증류를 보고, 볼 곳을 고르는 연구, 머리의 LiDAR 하나로 걷는 연구, 깊이 영상으로 파쿠르를 하는 연구, 처음 보는 몸에 적응하는 연구를 살펴본다.</aside>
 </section>
 <section id="distill" class="t">
-<div class="head"><p class="kicker">2 · 배경지식 · 교사–학생 증류</p><h2>교사는 정답을 보고 RL로 배우고, 학생은 센서만 보고 교사를 따라 한다</h2></div>
-<figure><img src="img/distill.webp" style="height:340px"><figcaption>특권 정보 학습. 시뮬은 정답(참 지형, 마찰, 다른 물체의 미래)을 아니까, 그것을 보는 교사를 먼저 RL로 배우고 배포 관측만 보는 학생에게 옮긴다</figcaption></figure>
+<div class="head"><p class="kicker">2 · 배경지식 · teacher–student 증류</p><h2>교사는 정답을 보고 RL로 배우고, 학생은 센서만 보고 교사를 따라 한다</h2></div>
+<figure><img src="img/distill.webp" style="height:340px"><figcaption>privileged 정보 학습. 시뮬은 정답(참 지형, 마찰, 다른 물체의 미래)을 아니까, 그것을 보는 교사를 먼저 RL로 배우고 배포 관측만 보는 학생에게 옮긴다</figcaption></figure>
 <div class="grid3">
 <div class="card gr"><span class="tag gr">장점</span><p>RL은 쉬운 문제(완전 관측)로 풀고, 어려운 부분(부분 관측)은 지도학습으로 푼다.</p></div>
 <div class="card or"><span class="tag or">단점</span><p>교사가 본 정보를 학생이 끝내 추론하지 못하면 격차가 남는다. 교사의 행동이 학생에게 불가능할 수 있다.</p></div>
-<div class="card bl"><span class="tag bl">요령</span><p>DAgger로 학생 분포에서 라벨을 받고, 증류 손실과 RL 손실을 섞어 쓴다. 증류 가중은 천천히 줄인다.</p></div>
+<div class="card bl"><span class="tag bl">요령</span><p>DAgger로 학생 분포에서 라벨을 받고, 증류 손실과 RL 손실을 섞어 쓴다. 증류 손실 가중치는 천천히 줄인다.</p></div>
 </div>
-<aside>다리 로봇의 지형 인식 보행은 거의 모두 이 절차를 쓴다. 센서가 잡음 섞인 높이 지도나 깊이 영상만 볼 때 처음부터 RL로 배우기는 어렵다. 그래서 먼저 시뮬의 정답 지형을 보는 교사를 배운다. 이것은 완전 관측 문제라 RL이 잘 푼다. 그다음 학생이 실제 센서 관측과 이력만 보고 교사의 행동을 따라 하게 한다. 학생이 굴린 상태에서 교사에게 라벨을 받는 DAgger가 분포 이동을 막는다. 증류 가중을 너무 빨리 끄면 학생 행동이 떨리는 경우가 보고됐다.</aside>
+<aside>다리 로봇의 지형 인식 보행은 거의 모두 이 절차를 쓴다. 센서가 잡음 섞인 높이 지도나 깊이 영상만 볼 때 처음부터 RL로 배우기는 어렵다. 그래서 먼저 시뮬의 정답 지형을 보는 교사를 배운다. 이것은 완전 관측 문제라 RL이 잘 푼다. 그다음 학생이 실제 센서 관측과 이력만 보고 교사의 행동을 따라 하게 한다. 학생이 rollout한 상태에서 교사에게 라벨을 받는 DAgger가 분포 이동을 막는다. 증류 손실을 너무 빨리 끄면 학생 행동이 떨리는 경우가 보고됐다.</aside>
 </section>
 <section id="wys" class="t">
-<div class="head"><p class="kicker">2 · 볼 곳 고르기</p><h2>다음 발 디딤 둘을 먼저 예측하고, 정책은 그 두 곳의 지형만 본다</h2></div>
+<div class="head"><p class="kicker">2 · 볼 곳 고르기</p><h2>다음 foothold 둘을 먼저 예측하고, 정책은 그 두 곳의 지형만 본다</h2></div>
 <div class="cols">
 <div class="stack">
-<div class="card bl"><span class="tag bl">발 디딤 예측기</span><h3>고유감각 70차원 → 다음 발 디딤 둘</h3><p>은닉층 둘의 작은 MLP. 지도를 보지 않는다. 정책을 굴려 실제 착지 위치로 주기적으로 처음부터 다시 맞춘다.</p></div>
+<div class="card bl"><span class="tag bl">foothold 예측기</span><h3>proprioception 70차원 → 다음 foothold 둘</h3><p>은닉층 둘의 작은 MLP. 지도를 보지 않는다. 정책을 rollout해 얻은 실제 착지 위치로 주기적으로 처음부터 다시 학습한다.</p></div>
 <div class="card or"><span class="tag or">정책</span><h3>두 곳의 7 × 7 조각만</h3><p>전체 지도 693칸이 102값으로 준다. 전체 지도는 학습 때 critic만 본다.</p></div>
 <table style="font-size:22px">
-<tr><th>지표</th><th>볼 곳 선택</th><th>주의 인코더</th><th>전체 지도</th></tr>
+<tr><th>지표</th><th>볼 곳 선택</th><th>attention 인코더</th><th>전체 지도</th></tr>
 <tr><td>레벨 5 도달(iteration)</td><td class="good">7.5k</td><td>20.0k</td><td>26.1k</td></tr>
-<tr><td>드문 디딤 지형 성공</td><td class="good">74.2 %</td><td>71.7 %</td><td>42.7 %</td></tr>
+<tr><td>foothold 드문 지형 성공</td><td class="good">74.2 %</td><td>71.7 %</td><td>42.7 %</td></tr>
 </table>
 </div>
-<figure><img src="../../assets/thumbs/3b829fa8d7d7.webp" style="height:460px"><figcaption>Watch Your Step (Fig. 2): 예측한 발 디딤 둘레로 거른 높이 지도를 정책이 본다 — arXiv:2610.29612</figcaption></figure>
+<figure><img src="../../assets/thumbs/3b829fa8d7d7.webp" style="height:460px"><figcaption>Watch Your Step (Fig. 2): 예측한 foothold 둘레로 거른 높이 지도를 정책이 본다 — arXiv:2610.29612</figcaption></figure>
 </div>
 <p class="take"><b>핵심:</b> 같은 수의 높이를 명령 방향 앞 고정 격자에서 뽑은 기준선은 전체 지도보다도 나빴다. 성능을 가른 것은 양이 아니라 위치다.</p>
 <div class="foot" data-foot><p>Watch Your Step — ETH RSL, arXiv:2610.29612</p></div>
-<aside>이 연구는 정책이 볼 지형을 크게 줄였다. 작은 예측기가 몸의 감각만으로 다음 두 발이 어디 닿을지 예측하고, 정책은 그 두 곳 둘레의 작은 조각만 본다. 학습이 몇 배 빨랐고 디딜 곳이 드문 지형에서 강했다. 중요한 대조는 같은 수의 높이를 로봇 앞 고정 격자에서 뽑으면 오히려 나빠졌다는 것이다. 바퀴 로봇이라면 곧 지날 바닥이 발 디딤에 해당한다. 다만 볼 곳을 좁히면 옆에서 오는 장애물을 늦게 보므로, 동적 장애물은 넓은 시야로 따로 받아야 한다.</aside>
+<aside>이 연구는 정책이 볼 지형을 크게 줄였다. 작은 예측기가 몸의 감각만으로 다음 두 발이 어디 닿을지 예측하고, 정책은 그 두 곳 둘레의 작은 조각만 본다. 학습이 몇 배 빨랐고 디딜 곳이 드문 지형에서 강했다. 중요한 대조는 같은 수의 높이를 로봇 앞 고정 격자에서 뽑으면 오히려 나빠졌다는 것이다. 바퀴 로봇이라면 곧 지날 바닥이 foothold에 해당한다. 다만 볼 곳을 좁히면 옆에서 오는 장애물을 늦게 보므로, 동적 장애물은 넓은 시야로 따로 받아야 한다.</aside>
 </section>
 <section id="sparse" class="t">
 <div class="head"><p class="kicker">2 · 성긴 센서로 걷기</p><h2>머리에 단 LiDAR 한 대로도 계단과 실외를 걷는다</h2></div>
 <table style="font-size:25px">
 <tr><th>연구</th><th>센서</th><th>지도</th><th>정책</th><th>결과</th></tr>
-<tr><td>전방향 계단 보행</td><td>머리 LiDAR(Mid-360)</td><td>신뢰도가 시간·거리로 주는 누적 점군 지도, U-Net으로 정제</td><td>단일 단계 RL, 조밀한 "위험 디딤" 벌점</td><td>시뮬 안전 디딤 거의 100 %, 실외 장거리</td></tr>
-<tr><td>PolygMap</td><td>LiDAR + RGB-D + IMU</td><td>계단 평면을 다각형 의미 지도로</td><td>다각형 위 발 디딤 계획, 20–30 Hz</td><td>실내외 계단</td></tr>
-<tr><td>지각 보행 + world model</td><td>높이 지도</td><td>정보 병목 world model이 잡음을 거른다</td><td>교사–학생 모방</td><td>도시·오프로드 2 km 무개입</td></tr>
+<tr><td>전방향 계단 보행</td><td>머리 LiDAR(Mid-360)</td><td>신뢰도가 시간·거리에 따라 줄어드는 누적 점군 지도, U-Net으로 정제</td><td>단일 단계 RL, 조밀한 "위험 foothold" 페널티</td><td>시뮬 안전 foothold 거의 100 %, 실외 장거리</td></tr>
+<tr><td>PolygMap</td><td>LiDAR + RGB-D + IMU</td><td>계단 평면을 다각형 의미 지도로</td><td>다각형 위 foothold 계획, 20–30 Hz</td><td>실내외 계단</td></tr>
+<tr><td>지형 인식 보행 + world model</td><td>높이 지도</td><td>정보 병목 world model이 잡음을 거른다</td><td>teacher–student 모방</td><td>도시·오프로드 2 km 개입 없이</td></tr>
 </table>
 <div class="grid3">
-<div class="card bl"><span class="tag bl">학습으로 채우기</span><p>빈 곳을 망이 채운다. 그럴듯하지만 틀릴 수 있다.</p></div>
+<div class="card bl"><span class="tag bl">학습으로 채우기</span><p>빈 곳을 네트워크가 채운다. 그럴듯하지만 틀릴 수 있다.</p></div>
 <div class="card gr"><span class="tag gr">기하로 만들기</span><p>평면을 맞춰 다각형으로. 계단에 강하고 해석 쉽다.</p></div>
-<div class="card or"><span class="tag or">잡음 거르기</span><p>잠재 공간에서 센서 잡음을 거른다. 무엇을 거르는지 보기 어렵다.</p></div>
+<div class="card or"><span class="tag or">잡음 거르기</span><p>latent 공간에서 센서 잡음을 거른다. 무엇을 거르는지 보기 어렵다.</p></div>
 </div>
 <aside>초기의 지형 인식 보행은 아래를 보는 깊이 카메라로 발밑을 복원했다. 최근에는 머리에 단 LiDAR 한 대로 걷는 연구가 늘었다. 공통 과제는 성긴 점에서 믿을 만한 발밑 지도를 만드는 것이다. 빈 곳을 학습으로 채우거나, 평면을 맞춰 다각형으로 만들거나, world model로 잡음을 거른다. 인식 덱에서 본 못 본 칸 문제가 여기서도 핵심이다.</aside>
 </section>
@@ -408,31 +408,31 @@ section.t.divider h2 { font-size:80px; }
 <div class="stack">
 <div class="card bl"><span class="tag bl">세 단계</span><h3>motion matching → 기술 교사 → 깊이 학생</h3><p>사람 파쿠르 동작을 로봇에 옮기고 motion matching으로 "보행, 기술, 보행"을 잇는다. 기술마다 높이 스캔을 보는 교사를 배우고, 깊이 영상만 보는 학생 하나로 DAgger + PPO 증류한다.</p></div>
 <div class="card or"><span class="tag or">실물 G1</span><h3>벽 1.25 m(키의 96 %)를 3.63 s에</h3><p>0.4 m 장애물을 0.8 s 안에, 장애물 여럿을 이어 넘었다. 학습 데이터에는 장애물이 하나인 궤적만 있었다.</p></div>
-<div class="card gy"><span class="tag">증류 요령</span><p>DAgger 가중을 앞 절반에 1에서 0.1로 내리고 끝까지 남긴다. 빼면 떨리는 행동이 생겼다.</p></div>
+<div class="card gy"><span class="tag">증류 요령</span><p>DAgger 손실 가중치를 학습 앞 절반 동안 1에서 0.1로 내리고, 끝까지 작게 남긴다. 아예 빼면 떨리는 행동이 생겼다.</p></div>
 </div>
 <figure><img src="../../assets/thumbs/89c509e22712.webp" style="height:440px"><figcaption>PHP (Fig. 2): 사람 동작 리타기팅과 motion matching, 기술별 교사, 깊이 학생 증류 — arXiv:2602.15827</figcaption></figure>
 </div>
 <div class="foot" data-foot><p>Perceptive Humanoid Parkour — RSS 2026, arXiv:2602.15827</p></div>
-<aside>이 연구는 사람의 파쿠르를 휴머노이드로 옮겼다. 핵심은 데이터다. 게임 애니메이션에서 쓰는 motion matching으로 기술 사이를 보행으로 이어 긴 학습 궤적을 만든다. 배포 정책은 고유감각, 깊이 영상, 이산 2D 속도 명령만 본다. 경계로 보면 속도 계약이지만, 아래 층이 매우 강력해서 벽 오르기까지 스스로 판단한다. 교사–학생 증류의 실무 요령도 하나 보여 준다. 증류 손실을 완전히 끄지 말고 작게 남겨야 한다.</aside>
+<aside>이 연구는 사람의 파쿠르를 휴머노이드로 옮겼다. 핵심은 데이터다. 게임 애니메이션에서 쓰는 motion matching으로 기술 사이를 보행으로 이어 긴 학습 궤적을 만든다. 배포 정책은 proprioception, 깊이 영상, 이산 2D 속도 명령만 본다. 경계로 보면 속도 계약이지만, 아래 층이 매우 강력해서 벽 오르기까지 스스로 판단한다. teacher–student 증류의 실무 요령도 하나 보여 준다. 증류 손실을 완전히 끄지 말고 작게 남겨야 한다.</aside>
 </section>
 <section id="loco" class="t">
 <div class="head"><p class="kicker">2 · 처음 보는 몸</p><h2>로봇 10만 대로 배운 정책 하나가 처음 보는 몸에 몇 초 만에 적응한다</h2></div>
 <div class="cols">
 <figure><img src="../../assets/figs/locoformer_fig1.webp" style="height:430px"><figcaption>LocoFormer (Fig. 1): 위 두 줄은 학습에 없던 실물, 아래 줄은 절차 생성 로봇 — arXiv:2509.23745</figcaption></figure>
 <div class="stack">
-<div class="card bl"><span class="tag bl">비결</span><h3>과제 공간과 맥락을 넓힌다</h3><p>이족·4족과 바퀴형을 절차 생성하고 관성·이득·관절 한계를 크게 무작위화. 맥락을 수십 초로 늘리고 시도 사이에 기억을 넘긴다(메타 RL).</p></div>
+<div class="card bl"><span class="tag bl">비결</span><h3>과제 공간과 컨텍스트를 넓힌다</h3><p>이족·4족과 바퀴형을 절차 생성하고 관성·게인·관절 한계를 크게 랜덤화. 컨텍스트를 수십 초로 늘리고 시도 사이에 기억을 넘긴다(메타 RL).</p></div>
 <div class="card or"><span class="tag or">결과</span><h3>처음 보는 10종에서 0.96</h3><p>로봇마다 따로 배운 전문가 0.99. 실물에서 무릎 고정, 바퀴 잠금, 종아리 절단에도 몇 초–수십 초 안에 다시 걸었다.</p></div>
 </div>
 </div>
 <p class="take"><b>배경:</b> 적응은 "환경을 이력에서 추정"(RMA)에서 "몸 자체를 이력에서 추정"으로 넓어졌다.</p>
 <div class="foot" data-foot><p>LocoFormer — Skild AI, CoRL 2025, arXiv:2509.23745</p></div>
-<aside>LocoFormer는 몸 정보를 입력으로 받지 않는다. 관절 수, 길이, 질량을 모르고, 몇 초의 경험으로 몸을 알아낸다. 그러려면 학습 때 정말 다양한 몸을 봐야 한다. 무작위로 만든 로봇 10만 대가 그 역할을 한다. 또 한 에피소드 안에서 여러 번 시도하게 하고 기억을 시도 사이에 넘기므로, 넘어진 시도를 기억해 다음 시도를 고친다. 제어 덱에서 본 RMA의 "이력에서 숨은 조건 추정"을 몸 전체로 넓힌 것이다.</aside>
+<aside>LocoFormer는 몸(embodiment) 정보를 입력으로 받지 않는다. 관절 수, 길이, 질량을 모르고, 몇 초의 경험으로 몸을 알아낸다. 그러려면 학습 때 정말 다양한 몸을 봐야 한다. 무작위로 만든 로봇 10만 대가 그 역할을 한다. 또 한 에피소드 안에서 여러 번 시도하게 하고 기억을 시도 사이에 넘기므로, 넘어진 시도를 기억해 다음 시도를 고친다. 제어 덱에서 본 RMA의 "이력에서 숨은 조건 추정"을 몸 전체로 넓힌 것이다.</aside>
 </section>
 <section id="loco-line" class="t">
 <div class="head"><p class="kicker">2 · 두 갈래</p><h2>처음 보는 몸은 설명으로 줄 것인가, 이력에서 읽을 것인가</h2></div>
 <table style="font-size:23px">
 <tr><th>갈래</th><th>연구</th><th>핵심(조건)</th></tr>
-<tr><td>이력에서 읽는다</td><td>GenLoco (CoRL 2022)</td><td>이력 15스텝 + 형태 무작위화, 실물 Mini Cheetah</td></tr>
+<tr><td>이력에서 읽는다</td><td>GenLoco (CoRL 2022)</td><td>이력 15스텝 + 형태 랜덤화, 실물 Mini Cheetah</td></tr>
 <tr><td>이력에서 읽는다</td><td>AdA (DeepMind 2023)</td><td>Transformer-XL + 여러 시도로 새 과제에 적응</td></tr>
 <tr><td>이력에서 읽는다</td><td>AnyCar (ICRA 2025)</td><td>이력 transformer 순동역학 + MPPI, 처음 보는 차량 추종</td></tr>
 <tr><td>몸 설명을 준다</td><td>URMA, Embodiment Scaling Laws</td><td>관절 설명 attention, 1,012대 전문가 증류</td></tr>
@@ -450,8 +450,8 @@ section.t.divider h2 { font-size:80px; }
 <section id="d3" class="t dark divider">
 <p class="kicker">3 · 전신 제어와 투영</p>
 <h2>사람 동작을 지형에 맞추고,<br>출력은 해낼 수 있는 집합으로 옮긴다</h2>
-<p class="lead">모방은 출발점이고, 로봇의 실제 실행과의 틈은 계획기·추종기·투영 중 한 곳에서 메운다.</p>
-<aside>셋째 장은 휴머노이드의 전신 제어다. 사람 동작 데이터를 로봇에 옮기는 리타기팅, 장면에 맞춘 사람 동작으로 계획기를 배우는 연구, 평지 동작을 지형에 맞추는 원격조종 연구, 그리고 학습 정책의 출력을 실행 가능한 집합으로 투영하는 연구를 본다.</aside>
+<p class="lead">모방은 출발점이고, 로봇의 실제 실행과의 틈은 플래너·추종기·투영 중 한 곳에서 메운다.</p>
+<aside>셋째 장은 휴머노이드의 전신 제어다. 사람 동작 데이터를 로봇에 옮기는 리타기팅, 장면에 맞춘 사람 동작으로 플래너를 배우는 연구, 평지 동작을 지형에 맞추는 원격조종 연구, 그리고 학습 정책의 출력을 실행 가능한 집합으로 투영하는 연구를 다룬다.</aside>
 </section>
 <section id="retarget" class="t">
 <div class="head"><p class="kicker">3 · 배경지식 · 리타기팅</p><h2>사람 동작을 로봇 몸에 옮기는 리타기팅이 모방의 첫 단계다</h2></div>
@@ -464,88 +464,88 @@ section.t.divider h2 { font-size:80px; }
 <aside>휴머노이드 전신 제어는 대부분 사람 동작 데이터에서 시작한다. 모션 캡처나 영상에서 얻은 사람 동작을 로봇 몸에 옮기는 것이 리타기팅이다. 관절각을 그대로 복사하면 몸의 비율이 달라 발이 미끄러지거나 땅을 뚫는다. 그래서 손발 위치와 접촉을 맞추는 역기구학이나 최적화를 쓰고, 마지막으로 시뮬레이터에서 물리적으로 따라갈 수 있는지 확인한다. 모방 덱에서 더 자세히 다룬다.</aside>
 </section>
 <section id="passage" class="t">
-<div class="head"><p class="kicker">3 · 계획기에서 메우기</p><h2>사람 동작으로 flow 계획기를 배우고, 범용 추종기가 실행한다</h2></div>
+<div class="head"><p class="kicker">3 · 플래너에서 메우기</p><h2>사람 동작으로 flow 플래너를 배우고, 범용 추종기가 실행한다</h2></div>
 <div class="cols">
 <div class="stack">
-<div class="card bl"><span class="tag bl">데이터와 두 층</span><h3>VR로 장애물 장면을 지나간 100시간</h3><p>장면 1,500개, 증강해 약 1,000시간. flow 계획기가 6.25 Hz로 0.5 s 앞 전신 기준 동작을 내고, 지형을 보는 추종기가 50 Hz로 관절 29개를 낸다.</p></div>
+<div class="card bl"><span class="tag bl">데이터와 두 층</span><h3>VR로 장애물 장면을 지나간 100시간</h3><p>장면 1,500개, 증강해 약 1,000시간. flow 플래너가 6.25 Hz로 0.5 s 앞 전신 기준 동작을 내고, 지형을 보는 추종기가 50 Hz로 관절 29개를 낸다.</p></div>
 <div class="card or"><span class="tag or">결과</span><h3>시뮬 98.7 %, 실물 50/50</h3><p>처음 보는 장면 150개 성공 98.7 %, 무접촉 70.3 %. 실물은 Orin 하나로 50/50 도달, 45/50 무접촉.</p></div>
-<div class="card gy"><span class="tag">빼기 실험</span><p>실시간 청킹(RTC), RL 후학습, 퍼텐셜장 손실을 각각 빼면 무접촉 성공이 20–26 %로 무너졌다.</p></div>
+<div class="card gy"><span class="tag">ablation</span><p>실시간 청킹(RTC), RL post-training, 퍼텐셜장 손실을 각각 빼면 무접촉 성공이 20–26 %로 무너졌다.</p></div>
 </div>
-<figure><img src="../../assets/thumbs/f668f1217b7e.webp" style="height:440px"><figcaption>PASSAGE (Fig. 2): VR 데이터, 높이 지도, 사전학습·RTC·RL 세 단계의 flow 계획기, 지형을 보는 추종기 — arXiv:2609.18732</figcaption></figure>
+<figure><img src="../../assets/thumbs/f668f1217b7e.webp" style="height:440px"><figcaption>PASSAGE (Fig. 2): VR 데이터, 높이 지도, 사전학습·RTC·RL 세 단계의 flow 플래너, 지형을 보는 추종기 — arXiv:2609.18732</figcaption></figure>
 </div>
 <div class="foot" data-foot><p>PASSAGE — arXiv:2609.18732</p></div>
-<aside>이 연구는 보상을 손으로 짜는 대신, 사람이 VR 안에서 장애물을 지나간 동작을 모았다. 위 층은 flow matching 계획기로 짧은 미래의 전신 기준 동작을 생성하고, 아래 층의 범용 추종기가 그것을 관절 명령으로 바꾼다. 경계는 "기준 동작"이다. 계획 덱에서 본 생성형 Planner와 같은 구조를 휴머노이드 규모로 키운 셈이다. 빼기 실험은 생성 계획기를 실제로 쓸 때 무엇이 빠지면 안 되는지 알려 준다.</aside>
+<aside>이 연구는 보상을 손으로 설계하는 대신, 사람이 VR 안에서 장애물을 지나간 동작을 모았다. 위 층은 flow matching 플래너로 짧은 미래의 전신 기준 동작을 생성하고, 아래 층의 범용 추종기가 그것을 관절 명령으로 바꾼다. 경계는 "기준 동작"이다. 계획 덱에서 본 생성형 Planner와 같은 구조를 휴머노이드 규모로 키운 셈이다. ablation은 생성 플래너를 실제로 쓸 때 무엇이 빠지면 안 되는지 알려 준다.</aside>
 </section>
 <section id="nexus" class="t">
 <div class="head"><p class="kicker">3 · 추종기에서 메우기</p><h2>운영자는 평지에서 움직이고, 로봇은 깊이 영상으로 동작을 지형에 맞춘다</h2></div>
 <div class="cols">
 <div class="stack">
-<div class="card bl"><span class="tag bl">짝 데이터</span><h3>평지 동작 → 지형 위 동작 자동 변환</h3><p>손발 접촉을 판정하고 지형 높이로 골반을 옮긴 뒤 IK와 관통 보정, 시간 보간. 공개 동작 데이터 넷으로 약 1,000시간.</p></div>
-<div class="card or"><span class="tag or">교사–학생</span><h3>높이 지도 교사 → 깊이 32 × 18 학생</h3><p>교사는 높이 지도를 보고 PPO로, 학생은 평지 기준 동작 창, 고유감각, 깊이 한 장만 보고 DAgger로.</p></div>
+<div class="card bl"><span class="tag bl">쌍(paired) 데이터</span><h3>평지 동작 → 지형 위 동작 자동 변환</h3><p>손발 접촉을 판정하고 지형 높이로 골반을 옮긴 뒤 IK와 관통 보정, 시간 보간. 공개 동작 데이터 넷으로 약 1,000시간.</p></div>
+<div class="card or"><span class="tag or">teacher–student</span><h3>높이 지도 교사 → 깊이 32 × 18 학생</h3><p>교사는 높이 지도를 보고 PPO로, 학생은 평지 기준 동작 창, proprioception, 깊이 한 장만 보고 DAgger로.</p></div>
 <div class="card gr"><span class="tag gr">계약</span><p>위 층(운영자)은 지형을 모르는 명령을 내고, 아래 층이 국소 인식으로 맞춘다.</p></div>
 </div>
-<figure><img src="../../assets/thumbs/6e6230efd0b0.webp" style="height:440px"><figcaption>NEXUS (Fig. 2): (a) 접촉 기반 동작 적응 (b) 특권 PPO 교사와 DAgger 학생 (c) 깊이 영상 원격조종 배포 — arXiv:2609.39000</figcaption></figure>
+<figure><img src="../../assets/thumbs/6e6230efd0b0.webp" style="height:440px"><figcaption>NEXUS (Fig. 2): (a) 접촉 기반 동작 적응 (b) privileged PPO 교사와 DAgger 학생 (c) 깊이 영상 원격조종 배포 — arXiv:2609.39000</figcaption></figure>
 </div>
 <div class="foot" data-foot><p>NEXUS — arXiv:2609.39000</p></div>
-<aside>NEXUS는 원격조종용 전신 추종기다. 운영자가 평지에서 움직이면 로봇은 계단과 경사 위에서 같은 동작을 한다. 핵심은 짝 데이터를 자동으로 만드는 방법이다. 평지에서 잡은 동작에서 손발이 닿는 순간을 찾아, 그 자리의 지형 높이에 맞게 골반과 팔다리를 고친다. 그 데이터로 높이 지도를 보는 교사를 배우고 깊이 영상만 보는 학생에게 옮긴다. 위 층은 지형을 몰라도 되고, 아래 층이 국소 인식으로 맞춘다는 점에서 내비게이션의 Planner–Controller 분리와 같은 계약이다.</aside>
+<aside>NEXUS는 원격조종용 전신 추종기다. 운영자가 평지에서 움직이면 로봇은 계단과 경사 위에서 같은 동작을 한다. 핵심은 쌍 데이터를 자동으로 만드는 방법이다. 평지에서 잡은 동작에서 손발이 닿는 순간을 찾아, 그 자리의 지형 높이에 맞게 골반과 팔다리를 고친다. 그 데이터로 높이 지도를 보는 교사를 배우고 깊이 영상만 보는 학생에게 옮긴다. 위 층은 지형을 몰라도 되고, 아래 층이 국소 인식으로 맞춘다는 점에서 내비게이션의 Planner–Controller 분리와 같은 계약이다.</aside>
 </section>
 <section id="projection" class="t">
 <div class="head"><p class="kicker">3 · 투영에서 메우기</p><h2>학습 정책의 출력은 실행 전에 해낼 수 있는 집합으로 투영한다</h2></div>
-<figure><img src="img/projection.webp" style="height:370px"><figcaption>(a) 잠재 명령의 크기만 안전 구 안으로 줄인다(방향은 둔다) (b) 조향 한계처럼 비볼록한 실행 가능 집합은 지금 근처에서 선형화해 QP로 가장 가까운 점을 찾는다</figcaption></figure>
+<figure><img src="img/projection.webp" style="height:370px"><figcaption>(a) latent 명령의 크기만 안전 구 안으로 줄인다(방향은 둔다) (b) 조향 한계처럼 비볼록한 실행 가능 집합은 지금 근처에서 선형화해 QP로 가장 가까운 점을 찾는다</figcaption></figure>
 <table style="font-size:23px">
 <tr><th>투영하는 곳</th><th>연구</th><th>방법</th><th>결과</th></tr>
 <tr><td>동역학 변수</td><td>PADP (RA-L 2026)</td><td>관절 행동을 동역학·접촉을 지키는 전신 변수로 + 전신 QP</td><td>4족 조작기 두 몸체</td></tr>
-<tr><td>숙련 영역</td><td>CMP (CoRL 2026)</td><td>잠재 명령 크기를 안전 구 안으로</td><td>실물 분포 밖 86.7 %(Neural CBF 40 %)</td></tr>
-<tr><td>공통 잠재</td><td>FIBER</td><td>기술 정책들을 공통 잠재 명령으로 + flow Planner</td><td>시뮬 42.0 %(운동학 계획 3.5 %)</td></tr>
+<tr><td>숙련 영역</td><td>CMP (CoRL 2026)</td><td>latent 명령 크기를 안전 구 안으로</td><td>실물 분포 밖 86.7 %(Neural CBF 40 %)</td></tr>
+<tr><td>공통 latent</td><td>FIBER</td><td>기술 정책들을 공통 latent 명령으로 + flow Planner</td><td>시뮬 42.0 %(운동학 계획 3.5 %)</td></tr>
 </table>
-<aside>학습한 정책이 낸 명령을 그대로 실행하면 동역학, 접촉, 학습 분포 가운데 하나를 어길 수 있다. 최근 연구는 실행 직전에 출력을 해낼 수 있는 집합으로 옮긴다. 투영하는 공간이 연구마다 다르다. 동역학이 맞는 변수로 옮기거나, 정책이 숙련된 잠재 영역 안으로 줄이거나, 여러 기술을 공통 잠재로 옮긴다. 바퀴 로봇에서도 같은 문제가 있다. 예를 들어 조향 각도에 한계가 있는 바퀴는 낼 수 있는 속도 방향이 원뿔 모양으로 제한되고, 그 밖의 명령은 가장 가까운 실행 가능한 명령으로 투영해야 한다.</aside>
+<aside>학습한 정책이 낸 명령을 그대로 실행하면 동역학, 접촉, 학습 분포 가운데 하나를 어길 수 있다. 최근 연구는 실행 직전에 출력을 해낼 수 있는 집합으로 옮긴다. 투영하는 공간이 연구마다 다르다. 동역학이 맞는 변수로 옮기거나, 정책이 숙련된 latent 영역 안으로 줄이거나, 여러 기술을 공통 latent로 옮긴다. 바퀴 로봇에서도 같은 문제가 있다. 예를 들어 조향 각도에 한계가 있는 바퀴는 낼 수 있는 속도 방향이 원뿔 모양으로 제한되고, 그 밖의 명령은 가장 가까운 실행 가능한 명령으로 투영해야 한다.</aside>
 </section>
 <section id="body-pc" class="t">
 <div class="head"><p class="kicker">3 · 장단점</p><h2>사람 데이터와 로봇 실행 사이의 틈을 어디서 메우느냐가 갈린다</h2></div>
 <table style="font-size:26px">
 <tr><th>메우는 곳</th><th>예</th><th>장점</th><th>단점</th></tr>
-<tr><td>계획기</td><td>PASSAGE</td><td class="good">장면에 맞는 동작을 생성</td><td class="bad">장면 데이터 수집이 비싸다</td></tr>
+<tr><td>플래너</td><td>PASSAGE</td><td class="good">장면에 맞는 동작을 생성</td><td class="bad">장면 데이터 수집이 비싸다</td></tr>
 <tr><td>추종기</td><td>NEXUS</td><td class="good">위 층은 지형을 몰라도 된다</td><td class="bad">추종기가 못 맞추면 끝</td></tr>
 <tr><td>투영</td><td>PADP, CMP</td><td class="good">재학습 없이 안전하게</td><td class="bad">목표를 덜 이룬다, 비볼록 집합</td></tr>
-<tr><td>층마다 RL</td><td>Flexion, Dyna</td><td class="good">층 사이 오차까지 다듬는다</td><td class="bad">학습 비용, 검증 어려움</td></tr>
+<tr><td>층마다 RL</td><td>Flexion, Dyna</td><td class="good">층 사이 오차까지 학습으로 줄인다</td><td class="bad">학습 비용, 검증 어려움</td></tr>
 </table>
-<p class="take"><b>공통:</b> 사람 동작·영상으로 시작하고, 시뮬 RL과 교사–학생으로 로봇의 실제 실행에 맞춘다.</p>
-<aside>전신 제어 연구는 대부분 사람 데이터에서 출발한다. 사람의 동작은 자연스럽고 다양하지만 로봇이 그대로 해낼 수는 없다. 그 틈을 계획기가 장면에 맞게 생성하며 메우거나, 추종기가 국소 인식으로 메우거나, 실행 직전에 투영으로 메우거나, 층마다 RL로 메운다. 각 방법은 데이터 비용, 위 층의 부담, 안전 보장에서 맞바꾼다.</aside>
+<p class="take"><b>공통:</b> 사람 동작·영상으로 시작하고, 시뮬 RL과 teacher–student로 로봇의 실제 실행에 맞춘다.</p>
+<aside>전신 제어 연구는 대부분 사람 데이터에서 출발한다. 사람의 동작은 자연스럽고 다양하지만 로봇이 그대로 해낼 수는 없다. 그 틈을 플래너가 장면에 맞게 생성하며 메우거나, 추종기가 국소 인식으로 메우거나, 실행 직전에 투영으로 메우거나, 층마다 RL로 메운다. 각 방법은 데이터 비용, 위 층의 부담, 안전 보장 사이에 트레이드오프가 있다.</aside>
 </section>
 <section id="d4" class="t dark divider">
 <p class="kicker">4 · 장시간 자율</p>
 <h2>단계마다 거의 1의 신뢰도가<br>있어야 긴 작업이 끝난다</h2>
 <p class="lead">임무 모델, 운동 층, 전신 제어의 세 층을 쌓고, 실패는 층마다 복구한다.</p>
-<aside>넷째 장은 몇 분에서 한 시간짜리 긴 작업이다. 왜 긴 작업은 단계 신뢰도에 극도로 민감한지 보고, 두 회사의 세 층 구조를 본다. 두 사례 모두 논문이 아닌 회사 발표라는 점을 함께 기억하자.</aside>
+<aside>넷째 장은 몇 분에서 한 시간짜리 긴 작업이다. 왜 긴 작업은 단계 신뢰도에 극도로 민감한지 보고, 두 회사의 세 층 구조를 살펴본다. 두 사례 모두 논문이 아닌 회사 발표라는 점을 함께 기억하자.</aside>
 </section>
 <section id="reliability" class="t">
 <div class="head"><p class="kicker">4 · 단계 신뢰도</p><h2>긴 작업의 완주 확률은 단계 신뢰도의 n제곱으로 떨어진다</h2></div>
 <figure><img src="img/reliability.webp" style="height:400px"><figcaption>단계가 독립이라 가정할 때 끝까지 성공할 확률 p<sup>n</sup>. 79단계 작업은 단계마다 95 %면 약 1.7 %, 99.9 %여야 약 92 %다</figcaption></figure>
 <div class="grid3">
 <div class="card bl"><span class="tag bl">복구</span><p>실패한 단계를 다시 하면 그 단계의 실효 신뢰도가 오른다.</p></div>
-<div class="card or"><span class="tag or">층마다 받기</span><p>운동 층이 먼저 다시 하고, 안 되면 임무 층이 다시 계획한다.</p></div>
+<div class="card or"><span class="tag or">층마다 복구</span><p>운동 층이 먼저 다시 하고, 안 되면 임무 층이 다시 계획한다.</p></div>
 <div class="card gr"><span class="tag gr">확인</span><p>다음 단계로 가기 전에 앞 단계가 끝났는지 눈으로 확인한다.</p></div>
 </div>
 <aside>긴 작업은 짧은 단계의 연쇄다. 단계가 독립이라 보면 끝까지 성공할 확률은 단계 신뢰도의 단계 수 제곱이다. 95 %는 높아 보이지만 79단계면 2 %도 안 된다. 그래서 긴 작업을 끝내려면 단계마다 신뢰도가 거의 1이어야 하고, 그것을 학습만으로 얻기는 어렵다. 실제 시스템은 실패를 감지해 다시 하는 복구로 실효 신뢰도를 끌어올린다. 배달 경로의 연석, 횡단보도, 문도 같은 계산이 적용된다.</aside>
 </section>
 <section id="reflect" class="t">
-<div class="head"><p class="kicker">4 · 세 층 구조 1</p><h2>임무 VLM, 운동 층, 전신 제어기의 세 층을 RL로 다듬는다</h2></div>
+<div class="head"><p class="kicker">4 · 세 층 구조 1</p><h2>임무 VLM, 운동 층, 전신 제어기의 세 층을 RL로 fine-tuning한다</h2></div>
 <div class="cols">
 <div class="stack">
 <div class="card bl"><span class="tag bl">임무 VLM</span><h3>1인칭 영상을 보며 도구를 하나씩 부른다</h3><p>전역 이동, 물체로 이동 같은 도구를 부르고, 의미 지도에 문장으로 장소를 묻는다.</p></div>
-<div class="card or"><span class="tag or">운동 층</span><h3>VLA와 RL 기술이 짧은 궤적을 낸다</h3><p>RL 기술은 대부분 시뮬에서 표적 무작위화로 배웠다.</p></div>
-<div class="card gr"><span class="tag gr">전신 제어기</span><h3>궤적을 모터 명령으로</h3><p>힘을 아는 전신 제어기. 구조는 공개되지 않았다.</p></div>
+<div class="card or"><span class="tag or">운동 층</span><h3>VLA와 RL 기술이 짧은 궤적을 낸다</h3><p>RL 기술은 대부분 시뮬에서 타깃 랜덤화로 배웠다.</p></div>
+<div class="card gr"><span class="tag gr">전신 제어기</span><h3>궤적을 모터 명령으로</h3><p>힘을 고려하는 전신 제어기. 구조는 공개되지 않았다.</p></div>
 <p class="small">회사 발표: 16단계 임무를 실수 없이 끝까지 간 비율 SFT 38 % → SFT+RL 90 %. 논문·코드 없음.</p>
 </div>
 <figure><img src="../../assets/thumbs/4f31ba06151a.webp" style="height:450px"><figcaption>Flexion Reflect v1.0 구조도: Agent가 임무를 하위 과제로 바꾸고 의미 지도를 도구로 부른다 — flexion.ai(회사 블로그)</figcaption></figure>
 </div>
 <div class="foot" data-foot><p>Flexion Reflect v1.0 — flexion.ai 회사 블로그(2026-06), 논문·코드 없음</p></div>
-<aside>이 사례의 새로운 점은 강화학습을 운동 기술에만 쓰지 않고 맨 위 임무 언어 모델까지 넓혔다는 것이다. 기성 언어 모델은 앞 도구 호출이 정말 끝났는지 확인하지 않고 그럴듯한 다음 호출을 내는 버릇이 있는데, 이를 RL로 고쳤다고 한다. 실패는 두 단에서 받는다. 운동 층이 배운 복구 동작으로 먼저 다시 하고, 안 되면 언어 모델이 다시 계획한다. 회사 발표 수치라 독립 검증은 없다.</aside>
+<aside>이 사례의 새로운 점은 강화학습을 운동 기술에만 쓰지 않고 맨 위 임무 언어 모델까지 넓혔다는 것이다. 기성 언어 모델은 앞 도구 호출이 정말 끝났는지 확인하지 않고 그럴듯한 다음 호출을 내는 버릇이 있는데, 이를 RL로 고쳤다고 한다. 실패는 두 층에서 처리한다. 운동 층이 배운 복구 동작으로 먼저 다시 하고, 안 되면 언어 모델이 다시 계획한다. 회사 발표 수치라 독립 검증은 없다.</aside>
 </section>
 <section id="dyna" class="t">
-<div class="head"><p class="kicker">4 · 세 층 구조 2</p><h2>조향 바퀴 네 개 바닥의 반휴머노이드가 한 시간짜리 작업을 끊지 않는다</h2></div>
+<div class="head"><p class="kicker">4 · 세 층 구조 2</p><h2>조향 바퀴 네 개 베이스 위의 반휴머노이드가 한 시간짜리 작업을 끊지 않는다</h2></div>
 <div class="grid3">
-<div class="card bl"><span class="tag bl">몸</span><h3>바퀴 바닥 + 사람 모양 상체</h3><p>접히는 하체 아래에 조향 바퀴 네 개 바닥, 7자유도 팔 둘.</p></div>
+<div class="card bl"><span class="tag bl">몸</span><h3>바퀴 베이스 + 사람 모양 상체</h3><p>접히는 하체 아래에 조향 바퀴 네 개 베이스, 7자유도 팔 둘.</p></div>
 <div class="card or"><span class="tag or">세 층</span><h3>VL 오케스트레이터 → 행동 모델 → 전신 제어</h3><p>행동 모델(약 5 Hz)이 작업 공간 궤적을, 시뮬 RL 전신 제어기(100 Hz)가 따른다. 층 사이는 손목·팔꿈치·가슴·발자국 자세 표현으로 잇는다.</p></div>
 <div class="card gr"><span class="tag gr">수치(회사 발표)</span><h3>고객 인수 시험 87 %</h3><p>사람 영상 100만 시간 사전학습, 처음 보는 현장 zero-shot 87 %(이전 판 46 %). 호텔 세탁 한 시간을 끊지 않았다.</p></div>
 </div>
@@ -554,7 +554,7 @@ section.t.divider h2 { font-size:80px; }
 <div class="card gy"><span class="tag">읽을 때 주의</span><p>회사 블로그 발표이고 논문이 없다. 조건과 반복 수를 확인할 수 없다.</p></div>
 </div>
 <div class="foot" data-foot><p>Dyna Robotics DYNA-2.1 — dyna.co 기술 블로그(2026-09), 논문 없음</p></div>
-<aside>이 사례는 휴머노이드는 아니지만, 바퀴 바닥 위에 상체를 얹은 로봇이 실제 작업까지 간 예다. 층 나누기는 앞 사례와 비슷하다. 맨 위가 작업 흐름을 정하고, 가운데 행동 모델이 궤적을 내고, 맨 아래 전신 제어기가 따른다. 층 사이를 잇는 표현을 몸의 주요 지점 자세로 명시적으로 정한 것이 눈에 띈다. 그래야 층마다 따로 학습하고 바꿀 수 있다. 수치는 회사 발표라 같은 무게로 읽지 않는다.</aside>
+<aside>이 사례는 휴머노이드는 아니지만, 바퀴 베이스 위에 상체를 얹은 로봇이 실제 작업까지 간 예다. 층 나누기는 앞 사례와 비슷하다. 맨 위가 작업 흐름을 정하고, 가운데 행동 모델이 궤적을 내고, 맨 아래 전신 제어기가 따른다. 층 사이를 잇는 표현을 몸의 주요 지점 자세로 명시적으로 정한 것이 눈에 띈다. 그래야 층마다 따로 학습하고 바꿀 수 있다. 수치는 회사 발표라 같은 무게로 읽지 않는다.</aside>
 </section>
 <section id="d5" class="t dark divider">
 <p class="kicker">5 · 정리</p>
@@ -569,11 +569,11 @@ section.t.divider h2 { font-size:80px; }
 <tr><td>TAME-Nav</td><td>Go2</td><td>2D LiDAR 41빔</td><td>몸체 twist</td><td>처음 보는 지도 78.2 %</td></tr>
 <tr><td>LP-NavOA</td><td>G1</td><td>광선 8 × 8</td><td>진행 방향</td><td>제시간 도달 85–88 %(시뮬)</td></tr>
 <tr><td>FocusNav</td><td>G1</td><td>LiDAR + 깊이 BEV</td><td>정책 안 waypoint</td><td>성공 87.02 %</td></tr>
-<tr><td>Watch Your Step</td><td>G1</td><td>발 디딤 둘레 102값</td><td>속도 명령</td><td>드문 디딤 74.2 %</td></tr>
+<tr><td>Watch Your Step</td><td>G1</td><td>foothold 둘레 102값</td><td>속도 명령</td><td>foothold 드문 지형 74.2 %</td></tr>
 <tr><td>PHP</td><td>G1</td><td>깊이 영상</td><td>이산 2D 속도</td><td>1.25 m 벽 3.63 s</td></tr>
 <tr><td>PASSAGE</td><td>G1</td><td>높이 지도</td><td>전신 기준 동작</td><td>시뮬 98.7 %, 실물 50/50</td></tr>
 <tr><td>NEXUS</td><td>G1</td><td>깊이 32 × 18</td><td>평지 기준 동작</td><td>어려운 지형 51.9 %</td></tr>
-<tr><td>LocoFormer</td><td>여러 몸</td><td>고유감각</td><td>속도 명령</td><td>처음 보는 10종 0.96</td></tr>
+<tr><td>LocoFormer</td><td>여러 몸</td><td>proprioception</td><td>속도 명령</td><td>처음 보는 10종 0.96</td></tr>
 </table>
 <aside>복습용 비교표다. 수치는 각 논문이 고른 조건의 것이라 서로 직접 견줄 수 없다. 대신 열을 따라 읽으면 흐름이 보인다. 지형 입력은 LiDAR, 높이 지도, 깊이 영상으로 갈리고, 위 층이 넘기는 것은 대부분 속도 쪽이며, 전신 제어 연구는 기준 동작을 넘긴다.</aside>
 </section>
@@ -581,8 +581,8 @@ section.t.divider h2 { font-size:80px; }
 <div class="head"><p class="kicker">5 · 공통점과 차이점</p><h2>증류와 층 나누기를 함께 하고, 경계와 검증 깊이에서 갈린다</h2></div>
 <div class="grid2">
 <div class="stack">
-<div class="card gr"><span class="tag gr">공통 1</span><h3>특권 교사 → 배포 관측 학생</h3><p>정답 상태를 보는 교사를 센서만 보는 학생으로 증류한다.</p></div>
-<div class="card gr"><span class="tag gr">공통 2</span><h3>층을 나누고 사이를 맞춘다</h3><p>계획기와 추종기를 서로에게 맞춰 학습하거나, 출력을 투영한다.</p></div>
+<div class="card gr"><span class="tag gr">공통 1</span><h3>privileged 교사 → 배포 관측 학생</h3><p>정답 상태를 보는 교사를 센서만 보는 학생으로 증류한다.</p></div>
+<div class="card gr"><span class="tag gr">공통 2</span><h3>층을 나누고 사이를 맞춘다</h3><p>플래너와 추종기를 서로에게 맞춰 학습하거나, 출력을 투영한다.</p></div>
 </div>
 <div class="stack">
 <div class="card or"><span class="tag or">차이 1</span><h3>경계의 높이</h3><p>궤적, 속도, 방향, waypoint, 기준 동작, 경계 없음.</p></div>
@@ -593,17 +593,17 @@ section.t.divider h2 { font-size:80px; }
 <aside>이 분야의 공통점은 둘이다. 정답을 보는 교사를 배포 관측만 보는 학생으로 옮기는 증류, 그리고 층을 나눈 뒤 그 사이를 맞추는 일이다. 차이도 둘이다. 경계를 어디에 두느냐와, 결과를 얼마나 깊이 검증했느냐다. 특히 검증 깊이를 구별하는 습관이 중요하다. 같은 "실물 성공"이라도 50번 반복한 것과 한 번 보여 준 것은 전혀 다른 증거다.</aside>
 </section>
 <section id="cheat" class="t">
-<div class="head"><p class="kicker">5 · 장단점 표</p><h2>다리 로봇 내비게이션의 설계 선택을 한 표로 본다</h2></div>
+<div class="head"><p class="kicker">5 · 장단점 표</p><h2>다리 로봇 내비게이션의 설계 선택을 한 표로 정리한다</h2></div>
 <table style="font-size:24px">
 <tr><th>선택</th><th>한쪽</th><th>다른 쪽</th></tr>
 <tr><td>경계</td><td>높게(궤적·속도): 모듈성, 해석</td><td>낮게(waypoint·없음): 몸의 능력, 학습 비용</td></tr>
 <tr><td>지형 입력</td><td>높이 지도: 기하 명확, 지도 품질에 의존</td><td>깊이·LiDAR 직접: 지연 짧음, 학습이 해석을 맡음</td></tr>
-<tr><td>볼 곳</td><td>넓게: 옆 장애물까지</td><td>골라서(발 디딤 둘레): 빠른 학습, 옆을 늦게 봄</td></tr>
-<tr><td>학습 절차</td><td>RL 단독: 단순</td><td>교사–학생: 부분 관측에 강함, 두 단계</td></tr>
+<tr><td>볼 곳</td><td>넓게: 옆 장애물까지</td><td>골라서(foothold 둘레): 빠른 학습, 옆을 늦게 봄</td></tr>
+<tr><td>학습 절차</td><td>RL 단독: 단순</td><td>teacher–student: 부분 관측에 강함, 두 단계</td></tr>
 <tr><td>몸 적응</td><td>이력에서 읽기: 고장에도 적응</td><td>명시적 식별·설명: 읽고 검증 가능</td></tr>
 <tr><td>실행 가능성</td><td>학습에 맡김: 단순</td><td>투영·필터: 보장, 목표를 덜 이룸</td></tr>
 </table>
-<aside>복습용 표다. 각 줄의 양쪽은 맞바꿈이고, 문제와 검증 요구에 따라 고른다. 공통으로 권할 만한 것은 셋이다. 교사–학생 증류로 학습 절차를 안정시키고, 아래 층의 명령 추종 응답을 재서 위 층에 알려 주고, 실행 직전 투영이나 필터로 안전을 지키는 것이다.</aside>
+<aside>복습용 표다. 각 줄의 양쪽은 트레이드오프이고, 문제와 검증 요구에 따라 고른다. 공통으로 권할 만한 것은 셋이다. teacher–student 증류로 학습 절차를 안정시키고, 아래 층의 명령 추종 응답을 재서 위 층에 알려 주고, 실행 직전 투영이나 필터로 안전을 지키는 것이다.</aside>
 </section>
 <section id="pitfalls" class="t">
 <div class="head"><p class="kicker">5 · 흔한 함정</p><h2>위 층의 명령을 아래 층이 해낼 수 있는지부터 확인한다</h2></div>
@@ -613,48 +613,48 @@ section.t.divider h2 { font-size:80px; }
 <div class="card or"><h3>볼 곳을 너무 좁힘</h3><p>발밑만 보면 옆에서 오는 사람을 늦게 본다. 동적 장애물은 따로.</p></div>
 <div class="card or"><h3>단계 신뢰도 과신</h3><p>95 % 단계를 쌓으면 긴 작업은 거의 실패한다. 복구를 설계한다.</p></div>
 <div class="card gy"><h3>검증 깊이 혼동</h3><p>한 번의 시연을 반복 시험처럼 읽는다.</p></div>
-<div class="card gy"><h3>비볼록 실행 집합</h3><p>조향 한계 같은 제약을 상자로 근사하면 못 하는 명령을 낸다.</p></div>
+<div class="card gy"><h3>비볼록 실행 집합</h3><p>조향 한계 같은 제약을 박스 제약으로 근사하면 못 하는 명령을 낸다.</p></div>
 </div>
 <aside>다리 로봇 연구에서 배우는 가장 실용적인 교훈은 층 사이의 계약을 확인하는 것이다. 위 층이 낸 명령을 아래 층이 정말 해낼 수 있는지, 얼마나 늦게 얼마나 정확히 따르는지 재지 않으면, 위 층은 아래 층이 못 하는 일을 계속 시킨다. 이것은 바퀴 로봇에서도 그대로 성립한다.</aside>
 </section>
 <section id="path" class="t">
 <div class="head"><p class="kicker">5 · 공부 순서</p><h2>보행 RL의 기본 절차를 먼저 익히고, 층과 경계로 논문을 읽는다</h2></div>
 <div class="grid3">
-<div class="card gr"><span class="tag gr">1 · 기초</span><h3>보행 RL의 표준 절차</h3><p>대규모 병렬 학습(Rudin 외 2021) → RMA(이력에서 적응) → 교사–학생 지형 보행(Miki 외 2022).</p></div>
-<div class="card bl"><span class="tag bl">2 · 손으로</span><h3>공개 코드로 직접</h3><p>Isaac Lab·legged_gym의 4족 예제 → 높이 지도 관측 추가 → 교사–학생 증류 한 번.</p></div>
+<div class="card gr"><span class="tag gr">1 · 기초</span><h3>보행 RL의 표준 절차</h3><p>대규모 병렬 학습(Rudin 외 2021) → RMA(이력에서 적응) → teacher–student 지형 보행(Miki 외 2022).</p></div>
+<div class="card bl"><span class="tag bl">2 · 손으로</span><h3>공개 코드로 직접</h3><p>Isaac Lab·legged_gym의 4족 예제 → 높이 지도 관측 추가 → teacher–student 증류 한 번.</p></div>
 <div class="card or"><span class="tag or">3 · 논문</span><h3>층과 경계로 읽기</h3><p>CMU 스택 → TAME-Nav → Watch Your Step → PHP → PASSAGE·NEXUS → LocoFormer.</p></div>
 </div>
 <table style="font-size:24px">
 <tr><th>이 덱의 장</th><th>스스로 확인할 질문</th></tr>
 <tr><td>1 경계</td><td>경계를 내리면 무엇을 얻고 잃나? 속도 계약의 숨은 가정은?</td></tr>
-<tr><td>2 지형</td><td>교사–학생은 왜 RL 단독보다 쉬운가? 볼 곳을 고르면 왜 빨라지나?</td></tr>
+<tr><td>2 지형</td><td>teacher–student는 왜 RL 단독보다 쉬운가? 볼 곳을 고르면 왜 빨라지나?</td></tr>
 <tr><td>3 전신</td><td>사람 동작과 로봇 실행의 틈을 메우는 네 자리는?</td></tr>
 <tr><td>4 장시간</td><td>79단계 작업을 끝내려면 단계 신뢰도가 얼마여야 하나?</td></tr>
 </table>
 <div class="foot" data-foot><p>Rudin 외 arXiv:2109.11978 · Kumar 외, RMA arXiv:2107.04034 · Miki 외, Learning robust perceptive locomotion, Science Robotics 2022</p></div>
-<aside>다리 로봇 연구는 대부분 공통의 학습 절차 위에 서 있다. 대규모 병렬 시뮬에서 PPO로 배우고, 무작위화와 이력으로 적응하고, 교사–학생으로 지형 인식을 더한다. 이 세 논문을 먼저 읽고 공개 코드로 한 번 돌려 보면, 이후 논문들이 이 절차의 어디를 바꿨는지 쉽게 보인다. 그다음 이 덱의 두 질문, 경계와 실행 가능성으로 읽으면 된다.</aside>
+<aside>다리 로봇 연구는 대부분 공통의 학습 절차 위에 서 있다. 대규모 병렬 시뮬에서 PPO로 배우고, 랜덤화와 이력으로 적응하고, teacher–student로 지형 인식을 더한다. 이 세 논문을 먼저 읽고 공개 코드로 한 번 돌려 보면, 이후 논문들이 이 절차의 어디를 바꿨는지 쉽게 보인다. 그다음 이 덱의 두 질문, 경계와 실행 가능성으로 읽으면 된다.</aside>
 </section>
 <section id="summary" class="t">
 <div class="head"><p class="kicker">정리</p><h2>경계를 정하고, 실행 가능성을 맞추고, 볼 곳을 고른다</h2></div>
 <div class="grid2">
 <div class="card bl"><h3>경계</h3><p>궤적·속도·방향·waypoint·없음. 높을수록 모듈성, 낮을수록 몸의 능력.</p></div>
 <div class="card bl"><h3>계약 확인</h3><p>아래 층의 명령 추종 응답을 재서 위 층의 예측에.</p></div>
-<div class="card gr"><h3>학습 절차</h3><p>특권 교사 → 배포 관측 학생, DAgger, 증류 가중은 천천히.</p></div>
+<div class="card gr"><h3>학습 절차</h3><p>privileged 교사 → 배포 관측 학생, DAgger, 증류 손실 가중치는 천천히.</p></div>
 <div class="card gr"><h3>볼 곳</h3><p>양보다 위치. 곧 밟을 곳을 고르고, 옆의 사람은 따로.</p></div>
-<div class="card or"><h3>실행 가능성</h3><p>사람 데이터와 로봇 실행의 틈은 계획기·추종기·투영 중 하나에서.</p></div>
+<div class="card or"><h3>실행 가능성</h3><p>사람 데이터와 로봇 실행의 틈은 플래너·추종기·투영 중 하나에서.</p></div>
 <div class="card or"><h3>긴 작업</h3><p>pⁿ으로 떨어진다. 복구와 확인을 층마다.</p></div>
 </div>
-<aside>오늘 본 것을 여섯 상자로 줄였다. 다리 로봇 내비게이션 연구는 두 질문으로 정리된다. 위 층은 무엇을 넘기는가, 아래 층은 그것을 해낼 수 있는가. 이 두 질문은 바퀴 로봇을 포함한 모든 계층형 로봇 시스템에 그대로 적용된다.</aside>
+<aside>오늘 본 것을 여섯 카드로 줄였다. 다리 로봇 내비게이션 연구는 두 질문으로 정리된다. 위 층은 무엇을 넘기는가, 아래 층은 그것을 해낼 수 있는가. 이 두 질문은 바퀴 로봇을 포함한 모든 계층형 로봇 시스템에 그대로 적용된다.</aside>
 </section>
 <section id="refs-core" class="t">
 <div class="head"><p class="kicker">참고문헌 1/2 · 먼저 읽을 것</p><h2>처음에는 이 다섯 가지만 읽는다</h2></div>
 <table style="font-size:24px">
 <tr><th>순서</th><th>문헌</th><th>왜 먼저 읽나</th></tr>
-<tr><td>★ 1</td><td>Raibert, Legged Robots That Balance (MIT Press 1986)</td><td>균형과 디딤의 고전</td></tr>
+<tr><td>★ 1</td><td>Raibert, Legged Robots That Balance (MIT Press 1986)</td><td>균형과 보행의 고전</td></tr>
 <tr><td>★ 2</td><td>Rudin 외, Learning to Walk in Minutes 2109.11978</td><td>병렬 RL 보행의 표준 절차</td></tr>
 <tr><td>★ 3</td><td>Kumar 외, RMA 2107.04034</td><td>이력에서 환경을 추정하는 적응</td></tr>
-<tr><td>★ 4</td><td>Miki 외, Learning robust perceptive locomotion 2201.08117</td><td>교사–학생 지형 보행</td></tr>
-<tr><td>★ 5</td><td>Hwangbo 외, Learning agile and dynamic motor skills 1901.08652</td><td>구동기 망으로 sim-to-real</td></tr>
+<tr><td>★ 4</td><td>Miki 외, Learning robust perceptive locomotion 2201.08117</td><td>teacher–student 지형 보행</td></tr>
+<tr><td>★ 5</td><td>Hwangbo 외, Learning agile and dynamic motor skills 1901.08652</td><td>actuator network로 sim-to-real</td></tr>
 </table>
 <aside>참고문헌을 두 장으로 나눴다. 이 장은 처음 공부할 때 먼저 읽을 다섯 가지이고, 위에서부터 차례로 읽으면 된다. 교과서는 표에 적은 장만 먼저 읽는다. 논문은 서론과 방법 절을 읽고 이 덱의 그림과 대조한다. 다음 장은 덱의 각 장에 나온 원 논문 전체다. 2109.11978처럼 점이 든 숫자는 arXiv 번호다.</aside>
 </section>

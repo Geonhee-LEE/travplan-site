@@ -239,13 +239,13 @@ section.t.divider h2 { font-size:80px; }
 <p class="kicker">경로 계획 기초 · 개념 공부 덱</p>
 <div class="stack"><h1>어디로, 어떻게 갈지<br>미리 정한다</h1><p class="lead">그래프 탐색에서 샘플링, 궤적 최적화, 학습·생성형 Planner, VLA까지 — 그림과 배경지식과 장단점으로 보는 로봇 경로 계획</p></div>
 <div class="pills"><p class="pill on">A* · Dijkstra</p><p class="pill">RRT · PRM</p><p class="pill">DWA · 궤적 최적화</p><p class="pill">학습 Planner</p><p class="pill">Diffusion · Flow</p><p class="pill">VLA · 위험</p></div>
-<aside>이 덱은 로봇의 경로 계획을 처음 공부하는 사람을 위한 개념 덱이다. 고전 알고리즘에서 출발해 학습 기반 Planner와 생성 모델 Planner까지 한 줄로 잇는다. 장마다 개념 하나와 그 장단점을 본다. 그림 가운데 탐색·샘플링·DWA·궤적 최적화·비용 지도는 작은 문제를 실제로 계산해 그린 것이고, 논문 그림은 출처를 달았다.</aside>
+<aside>이 덱은 로봇의 경로 계획을 처음 공부하는 사람을 위한 개념 덱이다. 고전 알고리즘에서 출발해 학습 기반 Planner와 생성형 Planner까지 한 흐름으로 잇는다. 장마다 개념 하나와 그 장단점을 다룬다. 그림 가운데 탐색·샘플링·DWA·궤적 최적화·costmap은 작은 문제를 실제로 계산해 그린 것이고, 논문 그림은 출처를 달았다.</aside>
 </section>
 <section id="agenda" class="t">
 <div class="head"><p class="kicker">순서</p><h2>고전 계획에서 생성형 Planner까지 여섯 갈래로 간다</h2></div>
 <table style="font-size:30px">
 <tr><th>장</th><th>주제</th><th>답하는 질문</th></tr>
-<tr><td>0</td><td>시작</td><td>계획은 어느 층에서 무엇을 내나? 구성 공간과 비용 지도는?</td></tr>
+<tr><td>0</td><td>시작</td><td>계획은 어느 층에서 무엇을 내나? 구성 공간과 costmap은?</td></tr>
 <tr><td>1</td><td>그래프 탐색과 샘플링</td><td>A*는 왜 빠르고 언제 최적인가? 고차원에서는?</td></tr>
 <tr><td>2</td><td>로컬 계획과 궤적 최적화</td><td>움직이는 로봇의 한계를 어떻게 넣나?</td></tr>
 <tr><td>3</td><td>학습 Planner</td><td>왜 배우고, 회귀는 어디서 실패하나?</td></tr>
@@ -253,20 +253,20 @@ section.t.divider h2 { font-size:80px; }
 <tr><td>5</td><td>위층과 위험</td><td>VLA와 규칙, 위험은 어디에 두나?</td></tr>
 <tr><td>6</td><td>정리</td><td>방법을 한 표로, 어떻게 평가하고 무엇부터 공부하나?</td></tr>
 </table>
-<aside>앞의 두 장은 교과서에 있는 고전 계획이다. 3–5장은 2023–2026년 연구 흐름으로, 학습 Planner가 어떻게 "한 답 회귀"에서 "여러 후보 생성 후 선택"으로 옮겨 갔는지 본다. 마지막 장은 복습용 장단점 표와 평가 방법이다.</aside>
+<aside>앞의 두 장은 교과서에 있는 고전 계획이다. 3–5장은 2023–2026년 연구 흐름으로, 학습 Planner가 어떻게 "한 답 회귀"에서 "여러 후보 생성 후 선택"으로 옮겨 갔는지 살펴본다. 마지막 장은 복습용 장단점 표와 평가 방법이다.</aside>
 </section>
 <section id="course" class="t">
-<div class="head"><p class="kicker">0 · 커리큘럼 2/7</p><h2>인식의 비용 지도를 받아 제어에 경로를 넘긴다</h2></div>
+<div class="head"><p class="kicker">0 · 커리큘럼 2/7</p><h2>인식의 costmap을 받아 제어에 경로를 넘긴다</h2></div>
 <figure><img src="img/course.webp" style="height:400px"></figure>
 <div class="grid3">
-<div class="card gr"><span class="tag gr">앞에서 가져올 것</span><p>1 인식의 비용 지도와 못 본 칸. 그래프와 최단 경로의 기초.</p></div><div class="card bl"><span class="tag bl">뒤로 넘기는 것</span><p>경로·시간 궤적 → 3 제어가 추종한다. 궤적 최적화 → 4 비선형 MPC의 OCP.</p></div><div class="card or"><span class="tag or">함께 보면 좋은 것</span><p>3–4장(학습·생성 Planner)은 5 강화학습의 행동 복제·DAgger(1장)와 flow 정책(5장)을 본 뒤 다시 보면 쉽다.</p></div>
+<div class="card gr"><span class="tag gr">앞에서 가져올 것</span><p>1 인식의 costmap과 못 본 칸. 그래프와 최단 경로의 기초.</p></div><div class="card bl"><span class="tag bl">뒤로 넘기는 것</span><p>경로·시간 궤적 → 3 제어가 추종한다. 궤적 최적화 → 4 비선형 MPC의 OCP.</p></div><div class="card or"><span class="tag or">함께 보면 좋은 것</span><p>3–4장(학습·생성 Planner)은 5 강화학습의 행동 복제·DAgger(1장)와 flow 정책(5장)을 배운 뒤 다시 보면 쉽다.</p></div>
 </div>
-<aside>두 번째 덱이다. 인식 덱이 만든 비용 지도 위에서 길을 찾고, 그 결과를 제어 덱이 따라간다. 1–2장의 고전 탐색과 샘플링, 궤적 최적화는 앞 덱만으로 충분하다. 3–4장의 학습·생성 Planner는 강화학습 덱의 모방학습과 flow 정책을 알면 훨씬 쉽기 때문에, 처음에는 흐름만 보고 강화학습 덱 뒤에 다시 보기를 권한다. 일곱 덱 전체의 순서와 10주 계획은 로드맵 덱에 있다.</aside>
+<aside>두 번째 덱이다. 인식 덱이 만든 costmap 위에서 경로를 찾고, 그 결과를 제어 덱이 따라간다. 1–2장의 고전 탐색과 샘플링, 궤적 최적화는 앞 덱만으로 충분하다. 3–4장의 학습·생성 Planner는 강화학습 덱의 모방학습과 flow 정책을 알면 훨씬 쉽기 때문에, 처음에는 흐름만 보고 강화학습 덱 뒤에 다시 보기를 권한다. 일곱 덱 전체의 순서와 10주 계획은 로드맵 덱에 있다.</aside>
 </section>
 <section id="prereq" class="t">
 <div class="head"><p class="kicker">0 · 배경지식</p><h2>네 가지 배경지식이면 이 덱을 따라올 수 있다</h2></div>
 <div class="grid2">
-<div class="card bl"><span class="tag bl">그래프</span><h3>노드와 간선, 간선마다 비용</h3><p>격자의 칸, 샘플한 점, 로봇 자세가 노드가 된다. 경로 = 노드 열, 경로 비용 = 간선 비용의 합.</p></div>
+<div class="card bl"><span class="tag bl">그래프</span><h3>노드와 간선, 간선마다 비용</h3><p>격자의 칸, 샘플링한 점, 로봇 자세가 노드가 된다. 경로 = 노드 열, 경로 비용 = 간선 비용의 합.</p></div>
 <div class="card or"><span class="tag or">비용 함수</span><h3>"좋은 경로"를 숫자 하나로</h3><p>\(J = \sum (\text{길이} + w_1\,\text{위험} + w_2\,\text{불편함})\). 가중치가 성격을 정한다.</p></div>
 <div class="card gr"><span class="tag gr">구성 공간</span><h3>로봇 자세 전체가 한 점</h3><p>바퀴 로봇은 \((x, y, \theta)\), 팔은 관절각 벡터. 장애물은 "로봇이 겹치는 자세"의 집합이 된다.</p></div>
 <div class="card gy"><span class="tag">기구학 제약</span><h3>모든 경로를 따라갈 수는 없다</h3><p>차는 옆으로 못 가고(비홀로노믹), 속도·가속·곡률에 한계가 있다.</p></div>
@@ -281,35 +281,35 @@ section.t.divider h2 { font-size:80px; }
 <div class="card or"><span class="tag or">로컬</span><p>센서 범위 안에서 수 초 궤적을 낸다. 새 장애물에 반응하지만 막다른 곳에 갇힐 수 있다.</p></div>
 <div class="card gr"><span class="tag gr">제어</span><p>궤적을 따라가는 명령을 낸다. 계획이 틀려도 짧은 시간의 오차를 흡수한다.</p></div>
 </div>
-<aside>한 알고리즘이 모든 것을 할 수 없으므로 층을 나눈다. 위층은 큰 그림을 보고 느리게 바뀌며, 아래층은 빠른 피드백으로 위층의 근사를 메운다. 경계를 어디에 두느냐가 설계의 핵심이다. 예를 들어 학습 Planner는 보통 로컬 층에 들어가고, 언어 모델은 임무 층에 들어간다. 층 사이의 약속, 즉 무엇을 주고받느냐(경로, 시간 붙은 궤적, 목표점)를 분명히 해 두면 층마다 따로 바꿔 끼울 수 있다.</aside>
+<aside>한 알고리즘이 모든 것을 할 수 없으므로 층을 나눈다. 위층은 큰 그림을 보고 느리게 바뀌며, 아래층은 빠른 피드백으로 위층의 근사를 메운다. 경계를 어디에 두느냐가 설계의 핵심이다. 예를 들어 학습 Planner는 보통 로컬 층에 들어가고, 언어 모델은 임무 층에 들어간다. 층 사이의 인터페이스, 즉 무엇을 주고받느냐(경로, 시간 붙은 궤적, 목표점)를 분명히 해 두면 층마다 따로 바꿔 끼울 수 있다.</aside>
 </section>
 <section id="cspace" class="t">
-<div class="head"><p class="kicker">0 · 구성 공간과 비용 지도</p><h2>장애물을 로봇 크기만큼 부풀리면 로봇을 점으로 다룰 수 있다</h2></div>
-<figure><img src="img/costmap.webp" style="height:430px"><figcaption>(a) 점유 격자 (b) 원형 로봇의 반지름만큼 부풀린 구성 공간 (c) 장애물 근처에 비용을 더하면 같은 탐색이 여유를 둔 경로를 낸다</figcaption></figure>
+<div class="head"><p class="kicker">0 · 구성 공간과 costmap</p><h2>장애물을 로봇 크기만큼 부풀리면 로봇을 점으로 다룰 수 있다</h2></div>
+<figure><img src="img/costmap.webp" style="height:430px"><figcaption>(a) occupancy grid (b) 원형 로봇의 반지름만큼 부풀린 구성 공간 (c) 장애물 근처에 비용을 더하면 같은 탐색이 여유를 둔 경로를 낸다</figcaption></figure>
 <div class="grid2">
-<div class="card gr"><span class="tag gr">장점</span><p>탐색 알고리즘이 로봇 모양을 몰라도 된다. 비용 층(점유, 경사, 거칠기, 불확실성)을 더해 성격을 바꾸기 쉽다.</p></div>
+<div class="card gr"><span class="tag gr">장점</span><p>탐색 알고리즘이 로봇 모양을 몰라도 된다. 비용 층(occupancy, 경사, 거칠기, 불확실성)을 더해 성격을 바꾸기 쉽다.</p></div>
 <div class="card or"><span class="tag or">단점</span><p>원이 아닌 로봇은 방향마다 부풀림이 달라 \(\theta\)까지 다뤄야 한다. 가중치를 손으로 맞춰야 한다.</p></div>
 </div>
-<aside>점유 격자는 칸마다 막혔는지만 적는다. 로봇이 원이면 장애물을 반지름만큼 부풀린 뒤 로봇을 점으로 보고 탐색하면 된다. 이것이 구성 공간의 가장 쉬운 예다. 실제 내비게이션 스택은 여기에 거리 기반 비용을 더한 비용 지도를 쓴다. 장애물에 닿지는 않지만 가까운 곳을 비싸게 하면, 같은 최단 경로 탐색이 자동으로 여유를 둔 경로를 낸다. 실외 로봇은 높이·경사·거칠기 같은 지형 정보를 층으로 쌓아 통과 비용(traversability)을 만든다.</aside>
+<aside>occupancy grid는 칸마다 막혔는지만 적는다. 로봇이 원이면 장애물을 반지름만큼 부풀린 뒤 로봇을 점으로 보고 탐색하면 된다. 이것이 구성 공간의 가장 쉬운 예다. 실제 내비게이션 스택은 여기에 거리 기반 비용을 더한 costmap을 쓴다. 장애물에 닿지는 않지만 가까운 곳을 비싸게 하면, 같은 최단 경로 탐색이 자동으로 여유를 둔 경로를 낸다. 실외 로봇은 높이·경사·거칠기 같은 지형 정보를 층으로 쌓아 traversability 비용을 만든다.</aside>
 </section>
 <section id="d1" class="t dark divider">
 <p class="kicker">1 · 그래프 탐색과 샘플링</p>
 <h2>칸을 나눠 찾거나,<br>점을 뿌려 찾는다</h2>
 <p class="lead">저차원에서는 격자 탐색이 정확하고, 고차원에서는 샘플링이 빠르다.</p>
-<aside>첫째 장은 전역 계획의 두 축이다. 공간을 격자나 격자 위 자세로 나누고 그래프 탐색을 하는 방법, 그리고 연속 공간에 점을 뿌려 그래프나 나무를 키우는 샘플링 방법이다. 각 방법이 무엇을 보장하고 어디서 약한지 본다.</aside>
+<aside>첫째 장은 전역 계획의 두 축이다. 공간을 격자나 격자 위 자세로 나누고 그래프 탐색을 하는 방법, 그리고 연속 공간에 점을 뿌려 그래프나 나무를 키우는 샘플링 방법이다. 각 방법이 무엇을 보장하고 어디서 약한지 살펴본다.</aside>
 </section>
 <section id="search" class="t">
 <div class="head"><p class="kicker">1 · Dijkstra와 A*</p><h2>A*는 "남은 거리 추정"으로 탐색을 목표 쪽으로 몬다</h2></div>
 <div class="math">$$f(n) = g(n) + w\,h(n) \qquad g:\ \text{시작부터 실제 비용},\quad h:\ \text{목표까지 추정 비용}$$</div>
 <figure><img src="img/search.webp" style="height:420px"><figcaption>같은 8-연결 격자에서 세 탐색. 모두 같은 길이의 경로를 찾았지만 확장한 칸은 1,425개, 639개, 46개다</figcaption></figure>
-<aside>Dijkstra는 시작에서 가까운 칸부터 차례로 확정한다. 휴리스틱이 없으므로 모든 방향으로 고르게 퍼진다. A*는 확정 순서를 g + h로 정해 목표 쪽 칸을 먼저 본다. h가 실제 남은 비용을 넘지 않으면(허용적) A*는 최적 경로를 보장한다. 가중 A*는 h에 1보다 큰 w를 곱해 훨씬 적게 확장하지만, 경로 비용이 최적의 w배 이내라는 약한 보장만 남는다. 이 그림에서는 운 좋게 같은 길이가 나왔다. Dijkstra의 장점도 있다. 한 번 돌리면 모든 칸에서 시작까지의 비용이 나오므로, 목표를 시작으로 두고 돌리면 모든 칸의 cost-to-go 지도가 생긴다.</aside>
+<aside>Dijkstra는 시작에서 가까운 칸부터 차례로 확정한다. 휴리스틱이 없으므로 모든 방향으로 고르게 퍼진다. A*는 확정 순서를 g + h로 정해 목표 쪽 칸을 먼저 확장한다. h가 실제 남은 비용을 넘지 않으면(admissible) A*는 최적 경로를 보장한다. 가중 A*는 h에 1보다 큰 w를 곱해 훨씬 적게 확장하지만, 경로 비용이 최적의 w배 이내라는 약한 보장만 남는다. 이 그림에서는 운 좋게 같은 길이가 나왔다. Dijkstra의 장점도 있다. 한 번 돌리면 모든 칸에서 시작까지의 비용이 나오므로, 목표를 시작으로 두고 돌리면 모든 칸의 cost-to-go 지도가 생긴다.</aside>
 </section>
 <section id="search-pc" class="t">
 <div class="head"><p class="kicker">1 · 장단점</p><h2>격자 탐색은 보장이 강하지만 차원이 늘면 칸 수가 폭발한다</h2></div>
 <table style="font-size:27px">
 <tr><th>방법</th><th>보장</th><th>장점</th><th>단점</th></tr>
 <tr><td>Dijkstra</td><td>최적</td><td class="good">모든 칸의 cost-to-go를 한 번에</td><td class="bad">목표 방향을 모르고 넓게 퍼진다</td></tr>
-<tr><td>A*</td><td>허용적 h면 최적</td><td class="good">적게 확장, 구현 쉬움</td><td class="bad">h가 나쁘면 Dijkstra와 같아진다</td></tr>
+<tr><td>A*</td><td>admissible h면 최적</td><td class="good">적게 확장, 구현 쉬움</td><td class="bad">h가 나쁘면 Dijkstra와 같아진다</td></tr>
 <tr><td>가중 A*</td><td>최적의 w배 이내</td><td class="good">훨씬 빠르다</td><td class="bad">최적성을 잃는다</td></tr>
 <tr><td>D* Lite</td><td>최적(재계획)</td><td class="good">지도가 바뀐 부분만 다시 계산</td><td class="bad">구현이 복잡하다</td></tr>
 </table>
@@ -323,22 +323,22 @@ section.t.divider h2 { font-size:80px; }
 <div class="head"><p class="kicker">1 · 기구학을 넣은 탐색</p><h2>Hybrid A*와 상태 격자는 "로봇이 실제로 그릴 수 있는 곡선"으로 탐색한다</h2></div>
 <div class="grid2">
 <div class="card bl"><span class="tag bl">Hybrid A*</span><h3>칸마다 연속 자세 \((x, y, \theta)\)를 붙인다</h3><p>최소 회전 반경의 호로 다음 자세를 만들고, 칸 단위로 중복을 지운다. 끝은 Reeds–Shepp 곡선으로 붙인다.</p><p><b>장점</b> 차처럼 옆으로 못 가는 로봇의 주차·후진. <b>단점</b> 최적성 보장이 약하다.</p></div>
-<div class="card or"><span class="tag or">상태 격자(State lattice)</span><h3>미리 계산한 움직임 조각(motion primitive)을 잇는다</h3><p>정해진 자세 집합 사이를 잇는 실행 가능한 곡선을 오프라인으로 만들어 둔다.</p><p><b>장점</b> 결과가 바로 실행 가능. <b>단점</b> 조각 집합 설계에 결과가 묶인다.</p></div>
+<div class="card or"><span class="tag or">상태 격자(State lattice)</span><h3>미리 계산한 motion primitive를 잇는다</h3><p>정해진 자세 집합 사이를 잇는 실행 가능한 곡선을 오프라인으로 만들어 둔다.</p><p><b>장점</b> 결과가 바로 실행 가능. <b>단점</b> 결과가 primitive 집합의 설계에 의존한다.</p></div>
 </div>
-<figure><img src="../../assets/thumbs/07b6296b9d02.webp" style="height:300px"><figcaption>Nav2 Smac Planner(Fig. 1): Hybrid A*·상태 격자를 담은 오픈소스 계획기를 쓰는 산업용·수상 로봇들 — arXiv:2401.13078</figcaption></figure>
+<figure><img src="../../assets/thumbs/07b6296b9d02.webp" style="height:300px"><figcaption>Nav2 Smac Planner(Fig. 1): Hybrid A*·상태 격자를 담은 오픈소스 Planner를 쓰는 산업용·수상 로봇들 — arXiv:2401.13078</figcaption></figure>
 <div class="foot" data-foot><p>Dolgov 외, Hybrid A* (2008–10) · Pivtoraiko·Kelly, State lattice (2009) · Macenski 외, Smac Planner arXiv:2401.13078</p></div>
-<aside>격자 A*의 경로는 꺾인 선이라 차 같은 로봇은 그대로 따라가지 못한다. Hybrid A*는 DARPA Urban Challenge에서 쓰인 방법으로, 이산 칸으로 중복을 지우면서도 각 노드에 연속 자세를 붙여 실행 가능한 호로 확장한다. 상태 격자는 실행 가능한 움직임 조각을 미리 만들어 그래프의 간선으로 쓴다. 둘 다 탐색 결과를 후처리 없이 바로 따라갈 수 있다는 것이 장점이다. ROS 2의 Nav2 Smac Planner가 두 방법을 모두 제공한다.</aside>
+<aside>격자 A*의 경로는 꺾인 선이라 차 같은 로봇은 그대로 따라가지 못한다. Hybrid A*는 DARPA Urban Challenge에서 쓰인 방법으로, 이산 칸으로 중복을 지우면서도 각 노드에 연속 자세를 붙여 실행 가능한 호로 확장한다. 상태 격자는 실행 가능한 motion primitive를 미리 만들어 그래프의 간선으로 쓴다. 둘 다 탐색 결과를 후처리 없이 바로 따라갈 수 있다는 것이 장점이다. ROS 2의 Nav2 Smac Planner가 두 방법을 모두 제공한다.</aside>
 </section>
 <section id="sampling" class="t">
-<div class="head"><p class="kicker">1 · 샘플링 기반 계획</p><h2>RRT는 나무를 키우고, PRM은 지도를 미리 만든다</h2></div>
-<figure><img src="img/sampling.webp" style="height:430px"><figcaption>같은 두 벽 사이를 (a) RRT는 시작에서 나무를 키워, (b) PRM은 무작위 점을 이은 지도 위 최단 경로로 푼다</figcaption></figure>
+<div class="head"><p class="kicker">1 · 샘플링 기반 계획</p><h2>RRT는 트리를 키우고, PRM은 roadmap을 미리 만든다</h2></div>
+<figure><img src="img/sampling.webp" style="height:430px"><figcaption>같은 두 벽 사이를 (a) RRT는 시작에서 트리를 키워, (b) PRM은 무작위 점을 이은 roadmap 위의 최단 경로로 푼다</figcaption></figure>
 <div class="grid3">
 <div class="card bl"><span class="tag bl">RRT</span><p>한 번의 질의에 빠르다. 확률적 완전(시간이 충분하면 찾는다). 경로가 구불구불하다.</p></div>
 <div class="card gr"><span class="tag gr">RRT*</span><p>새 점을 이을 때 이웃을 다시 연결해 비용을 줄인다. 점근적 최적(점이 무한하면 최적).</p></div>
-<div class="card or"><span class="tag or">PRM</span><p>지도를 한 번 만들면 여러 질의에 다시 쓴다. 환경이 바뀌면 다시 만든다.</p></div>
+<div class="card or"><span class="tag or">PRM</span><p>roadmap을 한 번 만들면 여러 질의에 다시 쓴다. 환경이 바뀌면 다시 만든다.</p></div>
 </div>
 <div class="foot" data-foot><p>LaValle, RRT (1998) · Kavraki 외, PRM (1996) · Karaman·Frazzoli, RRT*·PRM* (IJRR 2011)</p></div>
-<aside>샘플링 방법은 공간을 칸으로 나누지 않는다. 무작위 자세를 뽑고, 충돌이 없으면 기존 나무나 지도에 잇는다. 필요한 연산은 "이 자세가 충돌하나"와 "두 자세 사이 직선이 충돌하나" 두 가지뿐이라 고차원 로봇 팔에서 표준이 됐다. 대가는 결과의 품질이다. 기본 RRT는 처음 찾은 경로를 내므로 매끄럽지 않고, 그래서 지름길 잇기 같은 후처리를 한다. RRT*는 이웃을 다시 연결하는 단계로 점근적 최적성을 얻는다. 좁은 통로는 샘플이 떨어질 확률이 작아 여전히 어렵다.</aside>
+<aside>샘플링 방법은 공간을 칸으로 나누지 않는다. 무작위 자세를 샘플링하고, 충돌이 없으면 기존 트리나 roadmap에 잇는다. 필요한 연산은 "이 자세가 충돌하나"와 "두 자세 사이 직선이 충돌하나" 두 가지뿐이라 고차원 로봇 팔에서 표준이 됐다. 대가는 결과의 품질이다. 기본 RRT는 처음 찾은 경로를 내므로 매끄럽지 않고, 그래서 shortcut 같은 후처리를 한다. RRT*는 이웃을 다시 연결하는 단계로 점근적 최적성을 얻는다. 좁은 통로는 샘플이 떨어질 확률이 작아 여전히 어렵다.</aside>
 </section>
 <section id="classic-pc" class="t">
 <div class="head"><p class="kicker">1 · 장단점</p><h2>탐색은 정확하고, 샘플링은 고차원에 강하고, 최적화는 매끄럽다</h2></div>
@@ -350,46 +350,46 @@ section.t.divider h2 { font-size:80px; }
 <tr><td>속도</td><td>칸 수에 비례</td><td>좁은 통로에서 느림</td><td class="good">반복 몇 번이면 수렴</td></tr>
 <tr><td>흔한 쓰임</td><td>바퀴 로봇 전역 경로</td><td>팔·다관절 운동 계획</td><td>로컬 궤적, 후처리</td></tr>
 </table>
-<p class="take"><b>실무:</b> 탐색이나 샘플링으로 대략의 길을 찾고, 최적화로 다듬고, 제어기가 따라간다.</p>
-<aside>세 가족은 서로 경쟁하기보다 함께 쓰인다. 전역 탐색이 위상, 즉 장애물의 어느 쪽으로 갈지를 정하고, 최적화가 그 안에서 매끄럽고 실행 가능한 궤적을 만든다. 최적화만 쓰면 초기값이 어느 쪽에 있느냐에 따라 국소 최적에 갇힌다. 이 "위상 선택"이 바로 나중에 생성형 Planner가 여러 후보를 내는 이유와 같다.</aside>
+<p class="take"><b>실무:</b> 탐색이나 샘플링으로 대략의 경로를 찾고, 최적화로 매끄럽게 만들고, 제어기가 따라간다.</p>
+<aside>세 계열은 서로 경쟁하기보다 함께 쓰인다. 전역 탐색이 위상(topology), 즉 장애물의 어느 쪽으로 갈지를 정하고, 최적화가 그 안에서 매끄럽고 실행 가능한 궤적을 만든다. 최적화만 쓰면 초기값이 어느 쪽에 있느냐에 따라 국소 최적에 갇힌다. 이 "위상 선택"이 바로 나중에 생성형 Planner가 여러 후보를 내는 이유와 같다.</aside>
 </section>
 <section id="d2" class="t dark divider">
 <p class="kicker">2 · 로컬 계획과 궤적 최적화</p>
-<h2>가까운 몇 초를<br>로봇이 실제로 갈 수 있게 짠다</h2>
-<p class="lead">속도 후보를 굴려 고르거나, 궤적 전체를 비용의 기울기로 다듬는다.</p>
-<aside>둘째 장은 로컬 층이다. 전역 경로를 받아, 센서로 본 주변 장애물과 로봇의 속도·가속 한계를 지키는 몇 초짜리 궤적을 만든다. 표본을 굴려 고르는 DWA, 궤적을 최적화하는 CHOMP·TEB, 그리고 두 생각을 잇는 MPC를 본다.</aside>
+<h2>앞으로 몇 초의 궤적을<br>로봇이 실제로 따라갈 수 있게 만든다</h2>
+<p class="lead">속도 후보를 시뮬레이션해 고르거나, 궤적 전체를 비용의 gradient로 최적화한다.</p>
+<aside>둘째 장은 로컬 층이다. 전역 경로를 받아, 센서로 본 주변 장애물과 로봇의 속도·가속 한계를 지키는 몇 초짜리 궤적을 만든다. 샘플을 시뮬레이션해 고르는 DWA, 궤적을 최적화하는 CHOMP·TEB, 그리고 두 접근을 잇는 MPC를 다룬다.</aside>
 </section>
 <section id="dwa" class="t">
-<div class="head"><p class="kicker">2 · Dynamic Window Approach</p><h2>DWA는 지금 닿을 수 있는 속도만 굴려 보고 점수로 고른다</h2></div>
-<figure><img src="img/dwa.webp" style="height:430px"><figcaption>(a) 동적 창 안의 (v, ω)마다 일정 속도로 2.5초를 굴린 궤적 (b) 가속 한계 밖의 속도는 아예 보지 않는다</figcaption></figure>
+<div class="head"><p class="kicker">2 · Dynamic Window Approach</p><h2>DWA는 지금 닿을 수 있는 속도 후보만 시뮬레이션해 점수로 고른다</h2></div>
+<figure><img src="img/dwa.webp" style="height:430px"><figcaption>(a) 동적 창 안의 (v, ω)마다 일정 속도로 2.5초 동안 시뮬레이션한 궤적 (b) 가속 한계 밖의 속도는 아예 보지 않는다</figcaption></figure>
 <div class="grid2">
 <div class="card gr"><span class="tag gr">장점</span><p>가속 한계를 구조로 지킨다. 계산이 가볍고 이해하기 쉽다. 새 장애물에 즉시 반응한다.</p></div>
-<div class="card or"><span class="tag or">단점</span><p>"일정 속도로 굴린 호"만 보므로 멀리 보지 못한다. U자 막다른 곳에 갇힌다. 점수 가중치 조정이 필요하다.</p></div>
+<div class="card or"><span class="tag or">단점</span><p>후보가 "일정 속도의 호"뿐이라 멀리 보지 못한다. U자 막다른 곳에 갇힌다. 점수 가중치 조정이 필요하다.</p></div>
 </div>
 <div class="foot" data-foot><p>Fox·Burgard·Thrun, The Dynamic Window Approach to Collision Avoidance, IEEE RAM 1997</p></div>
-<aside>DWA는 행동 공간에서 표본을 뽑는 가장 단순한 로컬 계획기다. 현재 속도에서 한 주기 동안 가속 한계로 닿을 수 있는 속도 범위, 즉 동적 창 안에서만 후보를 고른다. 후보마다 같은 속도를 유지한다고 보고 몇 초를 굴려, 충돌하면 버리고 나머지는 목표 방향, 장애물 여유, 속도의 가중합으로 채점한다. 4장의 "후보를 내고 고른다"와 같은 구조이며, 다른 점은 후보가 단순한 호라는 것이다. 후보를 시간에 따라 변하는 명령열로 넓히고 확률적으로 가중하면 MPPI가 된다.</aside>
+<aside>DWA는 행동 공간을 샘플링하는 가장 단순한 로컬 Planner다. 현재 속도에서 한 주기 동안 가속 한계로 닿을 수 있는 속도 범위, 즉 동적 창 안에서만 후보를 고른다. 후보마다 같은 속도를 유지한다고 가정하고 몇 초를 시뮬레이션해, 충돌하면 버리고 나머지는 목표 방향, 장애물 여유, 속도의 가중합으로 채점한다. 4장의 "후보를 내고 고른다"와 같은 구조이며, 다른 점은 후보가 단순한 호라는 것이다. 후보를 시간에 따라 변하는 명령열로 넓히고 확률적으로 가중하면 MPPI가 된다.</aside>
 </section>
 <section id="trajopt" class="t">
-<div class="head"><p class="kicker">2 · 궤적 최적화</p><h2>궤적 최적화는 경로 전체를 비용의 기울기로 밀고 편다</h2></div>
+<div class="head"><p class="kicker">2 · 궤적 최적화</p><h2>궤적 최적화는 경로 전체를 비용의 gradient로 밀어내고 편다</h2></div>
 <div class="math">$$\min_{\xi}\ \underbrace{\sum_t \lVert \xi_{t+1} - \xi_t \rVert^2}_{\text{매끄러움}} + \lambda \underbrace{\sum_t c_{\mathrm{obs}}(\xi_t)}_{\text{장애물}} \quad \text{s.t. 속도, 가속 한계}$$</div>
 <figure><img src="img/trajopt.webp" style="height:340px"><figcaption>장애물을 뚫는 곧은 초기 경로를 경사 하강으로 고친다. 반복할수록 장애물 밖으로 밀리고 굽이가 펴진다</figcaption></figure>
 <div class="grid3">
-<div class="card bl"><span class="tag bl">CHOMP · 2009</span><p>거리장의 기울기로 궤적 전체를 공변 경사 하강</p></div>
+<div class="card bl"><span class="tag bl">CHOMP · 2009</span><p>거리장의 gradient로 궤적 전체를 공변 경사 하강</p></div>
 <div class="card bl"><span class="tag bl">TrajOpt · 2013</span><p>충돌을 부호 거리 제약으로 두고 순차 볼록 최적화</p></div>
 <div class="card bl"><span class="tag bl">TEB · 2012–17</span><p>시간 간격까지 변수로 둔 희소 최적화(로컬 계획)</p></div>
 </div>
 <div class="foot" data-foot><p>Ratliff 외, CHOMP (ICRA 2009) · Schulman 외, TrajOpt (RSS 2013) · Rösmann 외, TEB (RAS 2017)</p></div>
-<aside>궤적 최적화는 경로를 점들의 벡터로 놓고 비용을 직접 줄인다. 장애물 비용은 거리장에서 읽으므로 기울기를 계산할 수 있다. 결과는 매끄럽고, 시간 간격을 변수로 넣으면 속도 계획까지 한 번에 된다. 약점은 국소 최적이다. 그림처럼 초기 경로가 장애물 한가운데를 지나면 위로 갈지 아래로 갈지는 작은 비대칭이 정한다. 그래서 TEB는 여러 위상의 후보를 동시에 최적화하는 판을 두고, 실무에서는 전역 탐색 결과를 초기값으로 준다.</aside>
+<aside>궤적 최적화는 경로를 점들의 벡터로 놓고 비용을 직접 줄인다. 장애물 비용은 거리장에서 읽으므로 gradient를 계산할 수 있다. 결과는 매끄럽고, 시간 간격을 변수로 넣으면 속도 계획까지 한 번에 된다. 약점은 국소 최적이다. 그림처럼 초기 경로가 장애물 한가운데를 지나면 위로 갈지 아래로 갈지는 작은 비대칭이 정한다. 그래서 TEB는 여러 위상의 후보를 동시에 최적화하는 변형을 두고, 실무에서는 전역 탐색 결과를 초기값으로 준다.</aside>
 </section>
 <section id="local-pc" class="t">
-<div class="head"><p class="kicker">2 · 장단점</p><h2>로컬 계획기는 "얼마나 멀리, 얼마나 정확히"를 계산량과 맞바꾼다</h2></div>
+<div class="head"><p class="kicker">2 · 장단점</p><h2>로컬 Planner는 "얼마나 멀리, 얼마나 정확히"를 계산량과 맞바꾼다</h2></div>
 <table style="font-size:27px">
 <tr><th>방법</th><th>후보</th><th>장점</th><th>단점</th></tr>
 <tr><td>DWA</td><td>일정 속도 호</td><td class="good">가볍고 가속 한계를 지킨다</td><td class="bad">근시안, 막다른 곳</td></tr>
 <tr><td>TEB</td><td>시간 간격 궤적 최적화</td><td class="good">매끄럽고 후진·회전도 계획</td><td class="bad">파라미터 많고 국소 최적</td></tr>
 <tr><td>MPC</td><td>모델 위 최적 제어열</td><td class="good">제약을 정확히 건다</td><td class="bad">비볼록 장애물에서 느리고 국소 최적</td></tr>
-<tr><td>MPPI</td><td>무작위 제어열 수백 개</td><td class="good">미분 불가 비용도, 병렬</td><td class="bad">표본 수·온도에 민감</td></tr>
-<tr><td>학습 Planner</td><td>망이 내는 궤적</td><td class="good">센서에서 바로, 빠르다</td><td class="bad">분포 밖에서 보장 없음</td></tr>
+<tr><td>MPPI</td><td>무작위 제어열 수백 개</td><td class="good">미분 불가 비용도, 병렬</td><td class="bad">샘플 수·온도에 민감</td></tr>
+<tr><td>학습 Planner</td><td>네트워크가 내는 궤적</td><td class="good">센서에서 바로, 빠르다</td><td class="bad">분포 밖에서 보장 없음</td></tr>
 </table>
 <p class="take"><b>표준 조합:</b> 전역 A* + 로컬 DWA/TEB/MPPI(ROS 2 Nav2의 기본 구성과 같다).</p>
 <aside>로컬 계획과 제어의 경계는 흐리다. MPC와 MPPI는 계획이자 제어이며, 학습 Planner가 계획만 내면 그 아래에서 MPC나 MPPI가 추종과 회피를 맡기도 한다. 표의 마지막 줄이 다음 장의 주제다. 학습 Planner는 빠르고 센서 입력을 직접 쓰지만, 학습 분포 밖에서는 보장이 없어 고전 방법을 폴백이나 안전 층으로 함께 둔다.</aside>
@@ -398,33 +398,33 @@ section.t.divider h2 { font-size:80px; }
 <p class="kicker">3 · 학습 Planner</p>
 <h2>한 답을 회귀하던 Planner가<br>후보를 내고 고르는 쪽으로 옮겨 갔다</h2>
 <p class="lead">회귀는 빠르지만, 갈림길에서 두 답의 평균이 장애물로 들어간다.</p>
-<aside>셋째 장은 학습 Planner다. 왜 계획을 배우려 하는지, 시연을 따라 하거나 비용 지도로 직접 배우는 방법, 그리고 회귀가 갈림길에서 실패하는 다봉 문제를 본다. 그 해법으로 후보를 생성하고 critic이 고르는 NavDP와, 그것을 폐루프 강화학습으로 다듬는 X-NavDP를 본다.</aside>
+<aside>셋째 장은 학습 Planner다. 왜 계획을 배우려 하는지, 시연을 따라 하거나 costmap으로 직접 배우는 방법, 그리고 회귀가 갈림길에서 실패하는 다봉 문제를 다룬다. 그 해법으로 후보를 생성하고 critic이 고르는 NavDP와, 그것을 폐루프 강화학습으로 fine-tuning하는 X-NavDP를 살펴본다.</aside>
 </section>
 <section id="why-learn" class="t">
 <div class="head"><p class="kicker">3 · 왜 배우나</p><h2>학습 Planner는 지도 만들기와 비용 설계를 데이터로 대신한다</h2></div>
 <div class="grid2">
-<div class="card gr"><span class="tag gr">얻는 것</span><ul><li><b>센서에서 바로</b> — 깊이·영상에서 궤적까지, 손으로 만든 지도 단계를 줄인다</li><li><b>빠르다</b> — 망 한 번의 추론, 탐색이 필요 없다</li><li><b>의미</b> — 풀밭·보도·계단처럼 기하로 안 보이는 것을 배운다</li></ul></div>
+<div class="card gr"><span class="tag gr">얻는 것</span><ul><li><b>센서에서 바로</b> — 깊이·영상에서 궤적까지, 손으로 만든 지도 단계를 줄인다</li><li><b>빠르다</b> — 네트워크 한 번의 추론, 탐색이 필요 없다</li><li><b>의미</b> — 풀밭·보도·계단처럼 기하로 안 보이는 것을 배운다</li></ul></div>
 <div class="card or"><span class="tag or">잃는 것</span><ul><li><b>보장</b> — 충돌이 없다거나 최적이라는 증명이 없다</li><li><b>분포 밖</b> — 처음 보는 장면에서 조용히 틀린다</li><li><b>데이터</b> — 시연·시뮬·라벨을 모으는 비용</li></ul></div>
 </div>
 <table style="font-size:26px">
 <tr><th>학습 신호</th><th>예</th><th>특징</th></tr>
 <tr><td>시연 모방</td><td>사람 원격조종, 고전 Planner 출력</td><td>쉽지만 시연자 한계, 분포 이동</td></tr>
-<tr><td>비용 지도 자기지도</td><td>iPlanner, ViPlanner</td><td>라벨 없이 비용 기울기로</td></tr>
-<tr><td>폐루프 강화학습</td><td>X-NavDP, S2E</td><td>시뮬에서 실제 결과로 다듬는다</td></tr>
+<tr><td>costmap 자기지도</td><td>iPlanner, ViPlanner</td><td>라벨 없이 비용 gradient로</td></tr>
+<tr><td>폐루프 강화학습</td><td>X-NavDP, S2E</td><td>시뮬의 폐루프 결과로 fine-tuning한다</td></tr>
 </table>
-<aside>학습 Planner를 쓰는 이유는 크게 셋이다. 지도를 만들고 비용을 설계하는 긴 파이프라인을 줄이고, 탐색 없이 빠르게 답을 내고, 기하로는 보이지 않는 의미를 배운다. 대가는 보장과 일반화다. 그래서 실제 시스템은 학습 Planner 뒤에 안전 검사나 고전 폴백을 둔다. 학습 신호는 시연, 비용 지도, 폐루프 보상 세 가지가 있고, 최근 연구는 셋을 차례로 쓴다.</aside>
+<aside>학습 Planner를 쓰는 이유는 크게 셋이다. 지도를 만들고 비용을 설계하는 긴 파이프라인을 줄이고, 탐색 없이 빠르게 답을 내고, 기하로는 보이지 않는 의미를 배운다. 대가는 보장과 일반화다. 그래서 실제 시스템은 학습 Planner 뒤에 안전 검사나 고전 폴백을 둔다. 학습 신호는 시연, costmap, 폐루프 보상 세 가지가 있고, 최근 연구는 셋을 차례로 쓴다.</aside>
 </section>
 <section id="imitation" class="t">
 <div class="head"><p class="kicker">3 · 시연으로 배우기</p><h2>고전 Planner를 교사로 쓰면 시연은 공짜지만, 학생은 가 본 상태만 안다</h2></div>
-<figure><img src="../../assets/figs/bg_012_dagger.webp" style="height:400px"><figcaption>(왼쪽) 행동 복제 학생은 시연 띠를 벗어나면 돌아오지 못하고, DAgger 학생은 벗어난 상태에서 교사 라벨을 받아 돌아온다 (오른쪽) 결정당 실수 확률 ε = 0.001일 때 누적 실수: 행동 복제는 T², DAgger는 T에 비례</figcaption></figure>
+<figure><img src="../../assets/figs/bg_012_dagger.webp" style="height:400px"><figcaption>(왼쪽) 행동 복제 학생은 시연 분포를 벗어나면 돌아오지 못하고, DAgger 학생은 벗어난 상태에서 교사 라벨을 받아 돌아온다 (오른쪽) 결정당 실수 확률 ε = 0.001일 때 누적 실수: 행동 복제는 T², DAgger는 T에 비례</figcaption></figure>
 <div class="grid2">
 <div class="card gr"><span class="tag gr">장점</span><p>교사(A*, MPPI 등)를 시뮬에서 돌리면 시연이 무한히 나온다. 지도학습이라 안정적이다.</p></div>
 <div class="card or"><span class="tag or">단점</span><p>교사보다 나아질 수 없다. 교사가 상태마다 답 하나만 주면 갈림길의 다른 답을 배우지 못한다.</p></div>
 </div>
-<aside>시뮬레이터 안에서는 고전 Planner가 정답 지도를 보고 좋은 경로를 낼 수 있다. 그 경로를 센서 입력과 짝지어 학습하면 시연을 무한히 만들 수 있다. 이른바 특권 교사, 특권 정보 학습이다. 두 함정이 있다. 첫째는 분포 이동으로, DAgger처럼 학생이 굴린 상태에서 교사 라벨을 다시 받아 줄인다. 둘째는 교사가 한 답만 준다는 점이다. 왼쪽과 오른쪽 둘 다 좋은 갈림길에서 교사가 매번 하나만 고르면, 학생은 다른 해가 있다는 것을 배울 기회가 없다.</aside>
+<aside>시뮬레이터 안에서는 고전 Planner가 정답 지도를 보고 좋은 경로를 낼 수 있다. 그 경로를 센서 입력과 짝지어 학습하면 시연을 무한히 만들 수 있다. 이른바 privileged 교사, privileged 정보 학습이다. 두 함정이 있다. 첫째는 분포 이동으로, DAgger처럼 학생이 실제로 간 상태에서 교사 라벨을 다시 받아 줄인다. 둘째는 교사가 한 답만 준다는 점이다. 왼쪽과 오른쪽 둘 다 좋은 갈림길에서 교사가 매번 하나만 고르면, 학생은 다른 해가 있다는 것을 배울 기회가 없다.</aside>
 </section>
 <section id="iplanner" class="t">
-<div class="head"><p class="kicker">3 · 비용 지도 자기지도</p><h2>라벨 없이 비용 지도의 기울기만으로 경로를 배울 수 있다</h2></div>
+<div class="head"><p class="kicker">3 · costmap 자기지도</p><h2>라벨 없이 costmap의 gradient만으로 경로를 배울 수 있다</h2></div>
 <figure><img src="../../assets/thumbs/dc9244052a6b.webp" style="height:330px"><figcaption>iPlanner (Fig. 2): 깊이와 목표로 key point 경로와 충돌 확률을 예측하고, 궤적 비용과 fear loss를 역전파한다 — arXiv:2302.11434</figcaption></figure>
 <div class="cols">
 <div class="stack">
@@ -432,25 +432,25 @@ section.t.divider h2 { font-size:80px; }
 <div class="card bl"><span class="tag bl">ViPlanner · ICRA 2024</span><p>의미 클래스 30개의 비용을 더했다. traversability 비용 38.02% 감소</p></div>
 </div>
 <div class="stack">
-<div class="card gr"><span class="tag gr">장점</span><p>시연이 필요 없다. 비용 지도를 바꾸면 성격이 바뀐다.</p></div>
-<div class="card or"><span class="tag or">단점</span><p>비용 지도의 국소 기울기만 보므로 국소 최적에 빠진다. 답이 하나라 갈림길에 약하다.</p></div>
+<div class="card gr"><span class="tag gr">장점</span><p>시연이 필요 없다. costmap을 바꾸면 성격이 바뀐다.</p></div>
+<div class="card or"><span class="tag or">단점</span><p>costmap의 국소 gradient만 보므로 국소 최적에 빠진다. 답이 하나라 갈림길에 약하다.</p></div>
 </div>
 </div>
 <div class="foot" data-foot><p>iPlanner arXiv:2302.11434, RSS 2023 · ViPlanner arXiv:2310.00982, ICRA 2024 (ETH RSL)</p></div>
-<aside>ETH RSL이 명령형 학습(imperative learning)이라 부른 방식이다. 망이 경로점을 내면, 그 점에서 비용 지도를 미분 가능하게 읽어 평균 비용을 손실로 쓴다. 그러면 비용의 기울기가 망의 파라미터까지 흐른다. 망 안에 궤적 최적화를 넣어 학습하는 것과 같다. 라벨이 필요 없다는 큰 장점이 있지만, 2장의 궤적 최적화처럼 국소 최적에 빠질 수 있고 답이 하나라 다봉 문제를 풀지 못한다.</aside>
+<aside>ETH RSL이 명령형 학습(imperative learning)이라 부른 방식이다. 네트워크가 경로점을 내면, 그 점에서 costmap을 미분 가능하게 읽어 평균 비용을 손실로 쓴다. 그러면 비용의 gradient가 네트워크의 파라미터까지 흐른다. 네트워크 안에 궤적 최적화를 넣어 학습하는 것과 같다. 라벨이 필요 없다는 큰 장점이 있지만, 2장의 궤적 최적화처럼 국소 최적에 빠질 수 있고 답이 하나라 다봉 문제를 풀지 못한다.</aside>
 </section>
 <section id="multimodal" class="t">
-<div class="head"><p class="kicker">3 · 다봉 문제</p><h2>왼쪽과 오른쪽이 모두 정답이면, 회귀는 그 평균인 장애물 한가운데를 낸다</h2></div>
-<figure><img src="../../assets/figs/rl_r13_flow_policy.webp" style="height:380px"><figcaption>(a) 잡음에서 시작한 flow 정책 표본은 두 모드로 갈린다 (b) 같은 시연으로 배운 가우시안(평균 제곱 오차) 정책은 두 모드의 평균, 곧 장애물 쪽이 가장 짙다 (c) 강화학습으로 한쪽 모드를 키울 수도 있다</figcaption></figure>
+<div class="head"><p class="kicker">3 · 다봉(multimodal) 문제</p><h2>왼쪽과 오른쪽이 모두 정답이면, 회귀는 그 평균인 장애물 한가운데를 낸다</h2></div>
+<figure><img src="../../assets/figs/rl_r13_flow_policy.webp" style="height:380px"><figcaption>(a) 잡음에서 시작한 flow 정책 샘플은 두 모드로 갈린다 (b) 같은 시연으로 배운 가우시안(평균 제곱 오차) 정책은 두 모드의 평균, 곧 장애물 쪽이 가장 짙다 (c) 강화학습으로 한쪽 모드를 키울 수도 있다</figcaption></figure>
 <div class="grid3">
 <div class="card or"><span class="tag or">회귀(MSE)</span><p>조건부 평균을 배운다. 모드가 둘이면 틀린다.</p></div>
-<div class="card bl"><span class="tag bl">분류·혼합</span><p>앵커 궤적 K개 중 고르거나 가우시안 혼합. 모드 수를 미리 정한다.</p></div>
-<div class="card gr"><span class="tag gr">생성 모델</span><p>diffusion·flow는 분포 전체를 배워 표본을 여럿 낸다.</p></div>
+<div class="card bl"><span class="tag bl">분류·혼합</span><p>anchor 궤적 K개 중 고르거나 가우시안 혼합. 모드 수를 미리 정한다.</p></div>
+<div class="card gr"><span class="tag gr">생성 모델</span><p>diffusion·flow는 분포 전체를 배워 샘플을 여럿 낸다.</p></div>
 </div>
-<aside>평균 제곱 오차로 회귀하면 망은 같은 입력에 대한 정답들의 평균을 배운다. 정답이 하나뿐이면 문제가 없지만, 장애물을 왼쪽으로 피한 시연과 오른쪽으로 피한 시연이 섞여 있으면 평균은 장애물 한가운데다. 이것이 학습 Planner가 회귀에서 생성 모델로 옮겨 간 가장 큰 이유다. 앵커 궤적 몇 개를 두고 분류하는 방법도 있지만, 모드의 수와 모양을 미리 정해야 한다. diffusion과 flow matching은 분포 전체를 배우므로 그런 가정이 필요 없다.</aside>
+<aside>평균 제곱 오차로 회귀하면 네트워크는 같은 입력에 대한 정답들의 평균을 배운다. 정답이 하나뿐이면 문제가 없지만, 장애물을 왼쪽으로 피한 시연과 오른쪽으로 피한 시연이 섞여 있으면 평균은 장애물 한가운데다. 이것이 학습 Planner가 회귀에서 생성 모델로 옮겨 간 가장 큰 이유다. anchor 궤적 몇 개를 두고 분류하는 방법도 있지만, 모드의 수와 모양을 미리 정해야 한다. diffusion과 flow matching은 분포 전체를 배우므로 그런 가정이 필요 없다.</aside>
 </section>
 <section id="navdp" class="t">
-<div class="head"><p class="kicker">3 · 생성 + critic</p><h2>NavDP는 확산으로 후보를 내고, 특권 정보로 배운 critic이 고른다</h2></div>
+<div class="head"><p class="kicker">3 · 생성 + critic</p><h2>NavDP는 diffusion으로 후보를 내고, privileged 정보로 배운 critic이 고른다</h2></div>
 <div class="cols">
 <div class="stack">
 <ul>
@@ -469,7 +469,7 @@ section.t.divider h2 { font-size:80px; }
 <figure><img src="../../assets/thumbs/907cbef63910.webp" style="height:560px"><figcaption>NavDP (Fig. 1): 시뮬 데이터로만 학습해 여러 로봇에 옮긴다 — arXiv:2505.08712</figcaption></figure>
 </div>
 <div class="foot" data-foot><p>NavDP, arXiv:2505.08712, ICRA 2026</p></div>
-<aside>NavDP는 하나의 transformer에 궤적 생성 헤드와 critic 헤드를 함께 둔다. 생성 헤드는 확산으로 여러 후보를 내고, critic 헤드는 각 후보가 얼마나 안전한지 점수를 낸다. critic의 라벨은 시뮬레이션에서만 알 수 있는 정답 거리장으로 만든다. 학습 때만 쓰는 이런 정보를 특권 정보라고 한다. 실물에서는 영상만 보고 점수를 맞혀야 하므로, critic이 시뮬과 실물의 차이를 얼마나 견디는지가 관건이다.</aside>
+<aside>NavDP는 하나의 transformer에 궤적 생성 헤드와 critic 헤드를 함께 둔다. 생성 헤드는 diffusion으로 여러 후보를 내고, critic 헤드는 각 후보가 얼마나 안전한지 점수를 낸다. critic의 라벨은 시뮬레이션에서만 알 수 있는 정답 거리장으로 만든다. 학습 때만 쓰는 이런 정보를 privileged 정보라고 한다. 실물에서는 영상만 보고 점수를 맞혀야 하므로, critic이 시뮬과 실물의 차이를 얼마나 견디는지가 관건이다.</aside>
 </section>
 <section id="xnavdp" class="t">
 <div class="head"><p class="kicker">3 · 폐루프 RL 후학습</p><h2>같은 상태의 후보를 폐루프 Q로 재가중하자 성공률이 61%에서 84%가 됐다</h2></div>
@@ -485,32 +485,32 @@ section.t.divider h2 { font-size:80px; }
 <tr><td>iPlanner · ViPlanner</td><td>33.84 · 43.87</td></tr>
 <tr><td>NavDP</td><td>61.20</td></tr>
 <tr><td>X-NavDP</td><td class="good">84.28</td></tr>
-<tr><td>절제: DPPO · 모방만</td><td class="bad">33.98 · 53.50</td></tr>
+<tr><td>ablation: DPPO · 모방만</td><td class="bad">33.98 · 53.50</td></tr>
 </table>
 </div>
 <figure><img src="../../assets/thumbs/1d7390b54f10.webp" style="height:380px"><figcaption>X-NavDP (Fig. 2): 로봇 임베딩 FiLM, 구조적 섭동 탐색, 그룹 안 Q 정규화 — arXiv:2607.28560</figcaption></figure>
 </div>
-<p class="take"><b>핵심:</b> 모방은 출발점이고, 폐루프에서 실제로 일어난 결과로 다듬어야 시연을 넘는다.</p>
+<p class="take"><b>핵심:</b> 모방은 출발점이고, 폐루프에서 실제로 일어난 결과로 fine-tuning해야 시연을 넘는다.</p>
 <div class="foot" data-foot><p>X-NavDP, arXiv:2607.28560, 2026-07 프리프린트</p></div>
-<aside>모방만 한 Planner는 개루프, 즉 한 번 낸 궤적이 좋아 보이는지만 배운다. 폐루프 후학습은 그 궤적을 실제로 제어기가 따라가게 한 뒤의 결과로 점수를 매긴다. X-NavDP는 같은 상태에서 뽑은 후보들의 Q를 그룹 안에서 정규화해 상대적으로 좋은 후보를 키웠다. 이것은 언어 모델의 GRPO와 같은 생각이다. 확산 정책은 우도를 계산하기 어려워 DPPO 같은 정책 기울기가 불안정했고, 절제에서도 모방만 한 모델보다 낮았다.</aside>
+<aside>모방만 한 Planner는 개루프, 즉 한 번 낸 궤적이 좋아 보이는지만 배운다. 폐루프 후학습은 그 궤적을 실제로 제어기가 따라가게 한 뒤의 결과로 점수를 매긴다. X-NavDP는 같은 상태에서 뽑은 후보들의 Q를 그룹 안에서 정규화해 상대적으로 좋은 후보를 키웠다. 이것은 언어 모델의 GRPO와 같은 생각이다. diffusion 정책은 likelihood를 계산하기 어려워 DPPO 같은 policy gradient가 불안정했고, ablation에서도 모방만 한 모델보다 낮았다.</aside>
 </section>
 <section id="learn-pc" class="t">
 <div class="head"><p class="kicker">3 · 장단점</p><h2>학습 신호마다 얻는 것과 치르는 것이 다르다</h2></div>
 <table style="font-size:27px">
 <tr><th>방식</th><th>장점</th><th>단점</th></tr>
 <tr><td>회귀 모방(BC)</td><td class="good">가장 쉽고 빠르다</td><td class="bad">다봉 평균, 분포 이동, 교사 한계</td></tr>
-<tr><td>비용 지도 자기지도</td><td class="good">라벨 불필요, 비용을 바꿔 성격 조정</td><td class="bad">국소 최적, 답 하나</td></tr>
+<tr><td>costmap 자기지도</td><td class="good">라벨 불필요, 비용을 바꿔 성격 조정</td><td class="bad">국소 최적, 답 하나</td></tr>
 <tr><td>생성 모델 + critic</td><td class="good">여러 모드, 생성과 선택 분리</td><td class="bad">critic의 일반화가 관건, 계산 증가</td></tr>
 <tr><td>폐루프 RL 후학습</td><td class="good">시연을 넘는다, 실제 결과로 배운다</td><td class="bad">시뮬과 보상 설계 필요, 불안정할 수 있다</td></tr>
 </table>
-<p class="take"><b>최근 흐름:</b> 모방으로 시작 → 생성 모델로 후보 여럿 → critic·규칙·RL로 고르거나 다듬는다.</p>
-<aside>네 방식은 차례로 쌓인다. 회귀 모방으로 시작해 다봉 문제를 만나면 생성 모델로 가고, 생성 모델의 후보를 고르려면 critic이 필요하고, critic과 생성기를 시연 너머로 키우려면 폐루프 강화학습이 필요하다. 다음 장은 이 흐름의 핵심인 생성 모델 자체를 본다.</aside>
+<p class="take"><b>최근 흐름:</b> 모방으로 시작 → 생성 모델로 후보 여럿 → critic·규칙·RL로 고르거나 fine-tuning한다.</p>
+<aside>네 방식은 차례로 쌓인다. 회귀 모방으로 시작해 다봉 문제를 만나면 생성 모델로 가고, 생성 모델의 후보를 고르려면 critic이 필요하고, critic과 생성기를 시연 너머로 키우려면 폐루프 강화학습이 필요하다. 다음 장은 이 흐름의 핵심인 생성 모델 자체를 다룬다.</aside>
 </section>
 <section id="d4" class="t dark divider">
 <p class="kicker">4 · 생성형 궤적</p>
 <h2>궤적 전체를 생성 모델에서 뽑고,<br>여럿 중 하나를 고른다</h2>
 <p class="lead">공통점은 셋이다. 궤적을 한 번에 만들고, 여러 모드를 담고, 비용이나 목표로 생성을 유도한다.</p>
-<aside>넷째 장은 생성 모델 Planner다. 먼저 diffusion과 flow matching이 무엇인지 배경지식으로 보고, 생성을 원하는 쪽으로 미는 guidance, 2022년 Diffuser부터 2025년 GoalFlow까지의 계보, 스텝 수를 줄이는 방법, 그리고 "생성하고 고른다"는 구조의 장단점을 본다.</aside>
+<aside>넷째 장은 생성 모델 Planner다. 먼저 diffusion과 flow matching이 무엇인지 배경지식으로 살펴보고, 생성을 원하는 쪽으로 미는 guidance, 2022년 Diffuser부터 2025년 GoalFlow까지의 계보, 스텝 수를 줄이는 방법, 그리고 "생성하고 고른다"는 구조의 장단점을 다룬다.</aside>
 </section>
 <section id="genbasics" class="t">
 <div class="head"><p class="kicker">4 · 배경지식 · flow matching</p><h2>생성 모델은 잡음을 데이터로 옮기는 길을 배운다</h2></div>
@@ -518,40 +518,40 @@ section.t.divider h2 { font-size:80px; }
 <div class="math">$$x_t = (1-t)\,x_0 + t\,x_1,\qquad \mathcal L = \mathbb E\big\lVert v_\theta(x_t, t, c) - (x_1 - x_0)\big\rVert^2$$</div>
 <div class="math">$$\text{생성:}\ \ x_0\sim\mathcal N(0, I),\quad \frac{dx}{dt} = v_\theta(x, t, c),\ \ t: 0\to 1$$</div>
 </div>
-<figure><img src="../../assets/figs/dl_l11_flow_matching.webp" style="height:340px"><figcaption>(a) 학습은 잡음과 데이터를 아무렇게나 이은 직선의 속도를 맞춘다 (b) 배운 평균 속도장을 적분하면 길이 두 갈래로 나뉘고 엇갈리지 않는다 (c) 1걸음만 가면 모든 표본이 두 갈래의 평균에 모인다</figcaption></figure>
+<figure><img src="../../assets/figs/dl_l11_flow_matching.webp" style="height:340px"><figcaption>(a) 학습은 잡음과 데이터를 아무렇게나 이은 직선의 속도를 맞춘다 (b) 배운 평균 속도장을 적분하면 길이 두 갈래로 나뉘고 엇갈리지 않는다 (c) 1스텝만 가면 모든 샘플이 두 갈래의 평균에 모인다</figcaption></figure>
 <div class="grid2">
 <div class="card bl"><span class="tag bl">diffusion</span><p>데이터에 잡음을 조금씩 더하는 과정을 거꾸로 배운다. 보통 수십 스텝을 되돌린다.</p></div>
 <div class="card gr"><span class="tag gr">flow matching</span><p>잡음→데이터의 속도장을 회귀로 배운다. 길이 곧아 적은 스텝으로도 된다.</p></div>
 </div>
-<aside>궤적 생성 모델의 바탕은 이미지 생성 모델과 같다. 표준 정규 잡음에서 출발해, 배운 속도장이나 잡음 추정기를 따라 여러 스텝을 가면 데이터 분포의 표본이 나온다. 조건 c에 지도, 현재 속도, 목표를 넣으면 그 상황에 맞는 궤적 분포에서 표본을 뽑는 셈이다. flow matching은 학습이 단순한 회귀이고 길이 비교적 곧아 적분 스텝을 줄이기 쉽다. 그림 (c)가 중요하다. 스텝을 1로 줄이면 다시 평균으로 돌아가, 회귀의 다봉 문제가 되살아난다.</aside>
+<aside>궤적 생성 모델의 바탕은 이미지 생성 모델과 같다. 표준 정규 잡음에서 출발해, 배운 속도장이나 잡음 추정기를 따라 여러 스텝을 가면 데이터 분포의 샘플이 나온다. 조건 c에 지도, 현재 속도, 목표를 넣으면 그 상황에 맞는 궤적 분포에서 샘플을 뽑는 셈이다. flow matching은 학습이 단순한 회귀이고 길이 비교적 곧아 적분 스텝을 줄이기 쉽다. 그림 (c)가 중요하다. 스텝을 1로 줄이면 다시 평균으로 돌아가, 회귀의 다봉 문제가 되살아난다.</aside>
 </section>
 <section id="guidance" class="t">
-<div class="head"><p class="kicker">4 · guidance</p><h2>생성 도중 비용의 기울기를 더하면 재학습 없이 표본을 원하는 쪽으로 민다</h2></div>
+<div class="head"><p class="kicker">4 · guidance</p><h2>생성 도중 비용의 gradient를 더하면 재학습 없이 샘플을 원하는 쪽으로 민다</h2></div>
 <div class="math">$$\frac{dx}{dt} = v_\theta(x, t, c) - \eta\,\nabla_x E(x) \qquad E:\ \text{장애물, 보행자, 목표의 비용}$$</div>
 <figure><img src="../../assets/figs/bg_05_guidance.webp" style="height:380px"><figcaption>같은 생성기에서 28개를 뽑았다. guidance가 없으면 기둥의 좌·우로 반반(오른쪽 14/28), 오른쪽에 보행자가 있다고 비용 E를 주면 오른쪽은 4/28로 준다</figcaption></figure>
 <div class="grid2">
 <div class="card gr"><span class="tag gr">장점</span><p>학습 뒤 새 제약(보행자, 금지 구역)을 넣을 수 있다. 다봉성은 유지된다.</p></div>
-<div class="card or"><span class="tag or">단점</span><p>비용이 미분 가능해야 한다. 세기 η가 크면 표본이 데이터 분포 밖으로 밀려 이상해진다.</p></div>
+<div class="card or"><span class="tag or">단점</span><p>비용이 미분 가능해야 한다. 세기 η가 크면 샘플이 데이터 분포 밖으로 밀려 이상해진다.</p></div>
 </div>
-<aside>guidance는 생성 과정에 바깥의 비용을 섞는 방법이다. 매 스텝 비용의 기울기만큼 표본을 밀면, 확률적으로는 "학습한 분포 × 비용의 지수"에서 표본을 뽑는 것에 가까워진다. 이미지 생성의 classifier guidance와 같은 생각이다. 장점은 재학습 없이 실행 중에 조건을 바꿀 수 있다는 것이다. 다만 충돌처럼 미분이 안 되는 비용은 기울기가 없어서, 표본 기반으로 기울기를 추정하거나 생성 뒤에 고르는 방법을 함께 쓴다.</aside>
+<aside>guidance는 생성 과정에 바깥의 비용을 섞는 방법이다. 매 스텝 비용의 gradient만큼 샘플을 밀면, 확률적으로는 "학습한 분포 × 비용의 지수"에서 샘플링하는 것에 가까워진다. 이미지 생성의 classifier guidance와 같은 생각이다. 장점은 재학습 없이 실행 중에 조건을 바꿀 수 있다는 것이다. 다만 충돌처럼 미분이 안 되는 비용은 gradient가 없어서, 샘플 기반으로 gradient를 추정하거나 생성 뒤에 고르는 방법을 함께 쓴다.</aside>
 </section>
 <section id="lineage" class="t">
 <div class="head"><p class="kicker">4 · 계보</p><h2>Diffuser에서 GoalFlow까지 바뀐 것은 조건, 시작점, 스텝 수다</h2></div>
 <div class="cols">
 <table style="font-size:25px">
 <tr><th>연도</th><th>이름</th><th>바꾼 것</th></tr>
-<tr><td>2022</td><td>Diffuser</td><td>궤적 전체를 확산으로, 보상 기울기 guidance</td></tr>
+<tr><td>2022</td><td>Diffuser</td><td>궤적 전체를 diffusion으로, 보상 gradient guidance</td></tr>
 <tr><td>2023</td><td>Diffusion Policy</td><td>관측 조건 행동 열, receding horizon</td></tr>
-<tr><td>2023</td><td>MPD</td><td>확산 prior × 비용 likelihood 사후 샘플</td></tr>
+<tr><td>2023</td><td>MPD</td><td>diffusion prior × 비용 likelihood 사후 샘플</td></tr>
 <tr><td>2024</td><td>π0</td><td>VLM에 flow matching 행동 전문가</td></tr>
 <tr><td>2024</td><td>DiffusionDrive</td><td>anchor에서 시작, 2스텝</td></tr>
 <tr><td>2025</td><td>Diffusion Planner</td><td>예측과 계획을 함께 생성</td></tr>
 <tr><td>2025</td><td>GoalFlow</td><td>목표점 먼저, flow matching 1스텝</td></tr>
 </table>
-<figure><img src="../../assets/thumbs/dd3516347a80.webp" style="height:360px"><figcaption>GoalFlow (Fig. 2): 목표점을 고르고, 후보를 생성하고, 점수기가 고른다 — arXiv:2503.05689</figcaption></figure>
+<figure><img src="../../assets/thumbs/dd3516347a80.webp" style="height:360px"><figcaption>GoalFlow (Fig. 2): 목표점을 고르고, 후보를 생성하고, scorer가 고른다 — arXiv:2503.05689</figcaption></figure>
 </div>
 <div class="foot" data-foot><p>Diffuser arXiv:2205.09991, ICML 2022 · Diffusion Policy arXiv:2303.04137, RSS 2023 · GoalFlow arXiv:2503.05689, CVPR 2025</p></div>
-<aside>"계획을 생성 모델에서 샘플한다"는 발상은 2022년 Diffuser에서 시작해 로봇 조작 정책, 운동 계획, 자율주행으로 퍼졌다. Diffusion Policy는 관측을 조건으로 짧은 행동 열을 내고 앞부분만 실행하는 receding horizon 방식을 정착시켰다. 2024–2025년에는 anchor 궤적에서 출발하거나 목표점을 먼저 고르는 식으로 시작점을 당겨 스텝 수를 1–2개로 줄이는 흐름이 강하다. GoalFlow는 목표점 선택, 생성, 점수 매기기의 세 단계가 분명히 나뉜 좋은 예다.</aside>
+<aside>"계획을 생성 모델에서 샘플링한다"는 발상은 2022년 Diffuser에서 시작해 로봇 조작 정책, 운동 계획, 자율주행으로 퍼졌다. Diffusion Policy는 관측을 조건으로 짧은 행동 열을 내고 앞부분만 실행하는 receding horizon 방식을 정착시켰다. 2024–2025년에는 anchor 궤적에서 출발하거나 목표점을 먼저 고르는 식으로 시작점을 당겨 스텝 수를 1–2개로 줄이는 흐름이 강하다. GoalFlow는 목표점 선택, 생성, scoring의 세 단계가 분명히 나뉜 좋은 예다.</aside>
 </section>
 <section id="diffplanner" class="t">
 <div class="head"><p class="kicker">4 · Diffusion Planner</p><h2>Diffusion Planner는 자기 궤적과 이웃의 미래를 한 번에 생성한다</h2></div>
@@ -570,54 +570,54 @@ section.t.divider h2 { font-size:80px; }
 </div>
 <p class="take"><b>설계 질문:</b> 실행 가능성(기구학)을 생성기 안에서 보장할 것인가, 뒤의 추종기에 맡길 것인가.</p>
 <div class="foot" data-foot><p>Zheng 외, Diffusion-Based Planning for Autonomous Driving with Flexible Guidance, arXiv:2501.15564, ICLR 2025</p></div>
-<aside>예측과 계획을 따로 하면 "다른 차는 내 계획을 모르고 움직인다"고 가정하게 된다. Diffusion Planner는 이웃의 미래와 자기 궤적을 한 번에 생성해 상호작용을 함께 다룬다. 또 하나 볼 점은 기구학이다. 망이 낸 궤적이 차가 실제로 그릴 수 있는 곡선이라는 보장은 없으므로 뒤의 추종기가 메운다. 반대로 위치 대신 제어 입력이나 그 변화율을 생성하고 동역학 모델로 굴리면 처음부터 실행 가능한 궤적이 나온다. 어느 쪽이든 장단점이 있다.</aside>
+<aside>예측과 계획을 따로 하면 "다른 차는 내 계획을 모르고 움직인다"고 가정하게 된다. Diffusion Planner는 이웃의 미래와 자기 궤적을 한 번에 생성해 상호작용을 함께 다룬다. 또 하나 볼 점은 기구학이다. 네트워크가 낸 궤적이 차가 실제로 그릴 수 있는 곡선이라는 보장은 없으므로 뒤의 추종기가 메운다. 반대로 위치 대신 제어 입력이나 그 변화율을 생성하고 동역학 모델로 rollout하면 처음부터 실행 가능한 궤적이 나온다. 어느 쪽이든 장단점이 있다.</aside>
 </section>
 <section id="steps" class="t">
 <div class="head"><p class="kicker">4 · 스텝 수 줄이기</p><h2>스텝을 줄이는 길은 적분기, 시작점, 증류의 셋이고 증류는 다양성을 잃는다</h2></div>
 <figure><img src="../../assets/figs/bg_06_paths.webp" style="height:330px"><figcaption>(왼쪽) 학습에 쓴 짝지은 직선은 서로 교차한다 (가운데) 배운 평균 속도장은 교차하지 않는 굽은 길을 만든다 (오른쪽) Euler 스텝 수 n에 따른 끝점: n이 작으면 모드 사이로 몰린다</figcaption></figure>
 <div class="grid3">
-<div class="card bl"><span class="tag bl">1 · 적분기</span><h3>고차 풀이기</h3><p>DPM-Solver++ 같은 풀이기로 10스텝 안팎. <b>장점</b> 재학습 불필요. <b>단점</b> 줄이는 데 한계.</p></div>
+<div class="card bl"><span class="tag bl">1 · 적분기</span><h3>고차 solver</h3><p>DPM-Solver++ 같은 solver로 10스텝 안팎. <b>장점</b> 재학습 불필요. <b>단점</b> 줄이는 데 한계.</p></div>
 <div class="card gr"><span class="tag gr">2 · 시작점</span><h3>anchor에서 출발</h3><p>잡음 대신 대표 궤적 근처에서 시작해 2스텝(DiffusionDrive). <b>단점</b> anchor 설계가 필요.</p></div>
-<div class="card or"><span class="tag or">3 · 증류</span><h3>한 스텝 학생 망</h3><p>여러 스텝 교사를 흉내 내는 1스텝 망. <b>단점</b> 다양성을 잃기 쉽다.</p></div>
+<div class="card or"><span class="tag or">3 · 증류</span><h3>1스텝 학생 네트워크</h3><p>여러 스텝 교사를 흉내 내는 1스텝 네트워크. <b>단점</b> 다양성을 잃기 쉽다.</p></div>
 </div>
-<aside>생성 Planner의 실시간성은 적분 스텝 수에 달려 있다. 스텝마다 망을 한 번 돌리기 때문이다. 세 가지 길이 있다. 더 좋은 수치 적분기를 쓰거나, 잡음 대신 데이터에 가까운 곳에서 출발하거나, 여러 스텝 모델을 한 스텝 모델로 증류한다. 그림 오른쪽처럼 단순히 Euler 스텝을 줄이면 표본이 모드 사이로 몰린다. 증류도 비슷한 위험이 있어, 다양성이 존재 이유인 생성 Planner에서는 신중해야 한다.</aside>
+<aside>생성 Planner의 실시간성은 적분 스텝 수에 달려 있다. 스텝마다 네트워크를 한 번 돌리기 때문이다. 세 가지 길이 있다. 더 좋은 수치 적분기를 쓰거나, 잡음 대신 데이터에 가까운 곳에서 출발하거나, 여러 스텝 모델을 한 스텝 모델로 증류한다. 그림 오른쪽처럼 단순히 Euler 스텝을 줄이면 샘플이 모드 사이로 몰린다. 증류도 비슷한 위험이 있어, 다양성이 존재 이유인 생성 Planner에서는 신중해야 한다.</aside>
 </section>
 <section id="select" class="t">
 <div class="head"><p class="kicker">4 · 생성하고 고르기</p><h2>생성기는 후보를 넓게 내고, 고르는 일은 다른 무엇이 맡는다</h2></div>
 <div class="flow">
 <div class="step"><h3>조건</h3><p>지도·센서</p><p>목표점, 현재 속도</p></div><p class="arrow">→</p>
 <div class="step"><h3>생성</h3><p>diffusion · flow</p><p>후보 K개</p></div><p class="arrow">→</p>
-<div class="step"><h3>굴리기·검증</h3><p>동역학 모델로 굴려</p><p>제약 위반 거르기</p></div><p class="arrow">→</p>
+<div class="step"><h3>rollout·검증</h3><p>동역학 모델로 rollout해</p><p>제약 위반 거르기</p></div><p class="arrow">→</p>
 <div class="step"><h3>선택</h3><p>규칙 점수 · 학습 critic</p><p>· 느린 VLM</p></div><p class="arrow">→</p>
 <div class="step"><h3>출력</h3><p>시간 붙은 궤적</p><p>→ 제어기</p></div>
 </div>
 <table style="font-size:25px">
 <tr><th>고르는 것</th><th>예</th><th>장점</th><th>단점</th></tr>
 <tr><td>규칙 점수</td><td>비용·충돌·진행 가중합</td><td class="good">해석 쉬움, 안전 규칙 직접</td><td class="bad">가중치 손 조정</td></tr>
-<tr><td>학습 critic</td><td>NavDP, X-NavDP</td><td class="good">폐루프 결과를 배운다</td><td class="bad">자료 밖 과대평가</td></tr>
+<tr><td>학습 critic</td><td>NavDP, X-NavDP</td><td class="good">폐루프 결과를 배운다</td><td class="bad">데이터 분포 밖 과대평가</td></tr>
 <tr><td>느린 VLM</td><td>Slow Brain, VAMOS</td><td class="good">의미·상식을 쓴다</td><td class="bad">수 초 지연</td></tr>
 </table>
-<aside>2025–2026년 학습 Planner는 거의 모두 이 꼴로 모였다. 생성기의 임무는 좋은 후보가 적어도 하나 들어 있게 넓게 뽑는 것이고, 선택기의 임무는 그중 하나를 고르는 것이다. 이렇게 나누면 안전 규칙을 선택 단계에 그대로 둘 수 있고, 생성기를 바꾸지 않고도 선택 기준을 바꿀 수 있다. 연구들이 갈리는 곳은 누가 고르느냐다. 규칙, 학습한 critic, 느린 언어 모델이 그 자리에 들어간다.</aside>
+<aside>2025–2026년 학습 Planner는 거의 모두 이 구조로 수렴했다. 생성기의 임무는 좋은 후보가 적어도 하나 들어 있게 넓게 뽑는 것이고, 선택기의 임무는 그중 하나를 고르는 것이다. 이렇게 나누면 안전 규칙을 선택 단계에 그대로 둘 수 있고, 생성기를 바꾸지 않고도 선택 기준을 바꿀 수 있다. 연구들이 갈리는 곳은 누가 고르느냐다. 규칙, 학습한 critic, 느린 언어 모델이 그 자리에 들어간다.</aside>
 </section>
 <section id="gen-pc" class="t">
 <div class="head"><p class="kicker">4 · 장단점</p><h2>생성형 Planner는 여러 해를 얻는 대신 계산과 선택 문제를 떠안는다</h2></div>
 <div class="grid2">
 <div class="card gr"><span class="tag gr">장점</span><ul><li>갈림길에서 평균을 내지 않는다(다봉)</li><li>궤적 전체를 한 번에 — 시간 정보와 매끄러움</li><li>guidance로 학습 뒤 조건 추가</li><li>후보 여럿이라 안전 검사·폴백과 조합하기 쉽다</li></ul></div>
-<div class="card or"><span class="tag or">단점</span><ul><li>스텝 수만큼 추론이 느리다</li><li>후보 K개를 굴리고 채점하는 계산</li><li>좋은 후보가 없으면 고를 것도 없다(교사가 한 답만 주면 다양성이 약하다)</li><li>실행 가능성은 따로 보장해야 한다</li></ul></div>
+<div class="card or"><span class="tag or">단점</span><ul><li>스텝 수만큼 추론이 느리다</li><li>후보 K개를 rollout하고 채점하는 계산</li><li>좋은 후보가 없으면 고를 것도 없다(교사가 한 답만 주면 다양성이 약하다)</li><li>실행 가능성은 따로 보장해야 한다</li></ul></div>
 </div>
 <table style="font-size:25px">
 <tr><th></th><th>회귀 Planner</th><th>생성형 Planner</th></tr>
 <tr><td>답의 수</td><td class="bad">하나, 갈림길에서 평균</td><td class="good">여럿을 뽑고 고른다</td></tr>
-<tr><td>추론</td><td class="good">망 한 번</td><td class="bad">스텝 수 × K</td></tr>
+<tr><td>추론</td><td class="good">네트워크 한 번</td><td class="bad">스텝 수 × K</td></tr>
 <tr><td>학습</td><td class="good">단순 회귀</td><td>회귀(flow) 또는 잡음 예측(diffusion)</td></tr>
 </table>
-<aside>생성형 Planner의 존재 이유는 다봉성이다. 그런데 학습 데이터가 상태마다 답 하나만 담고 있으면 생성기도 사실상 한 모드만 배운다. 그래서 여러 해를 내는 교사나 데이터 증강이 함께 필요하다. 계산 비용은 스텝 줄이기와 GPU 병렬로 줄일 수 있고, 실행 가능성은 동역학 모델로 굴리거나 추종기에 맡겨 메운다.</aside>
+<aside>생성형 Planner의 존재 이유는 다봉성이다. 그런데 학습 데이터가 상태마다 답 하나만 담고 있으면 생성기도 사실상 한 모드만 배운다. 그래서 여러 해를 내는 교사나 데이터 증강이 함께 필요하다. 계산 비용은 스텝 줄이기와 GPU 병렬로 줄일 수 있고, 실행 가능성은 동역학 모델로 rollout하거나 추종기에 맡겨 메운다.</aside>
 </section>
 <section id="d5" class="t dark divider">
 <p class="kicker">5 · 위층, 위험, 규칙</p>
 <h2>느린 모델은 위에서 목표를 정하고,<br>위험과 규칙은 선택에 남는다</h2>
 <p class="lead">VLA는 Planner를 대체하지 않는다. 위험은 칸 하나의 비용에서 방향·추종 능력·꼬리로 넓어진다.</p>
-<aside>다섯째 장은 Planner의 위와 옆이다. 위에는 언어·시각 기반 모델이 목표를 정하는 층이 있고, 옆에는 위험을 어떻게 셀지와 규칙을 어디에 둘지의 질문이 있다. 자율주행 연구에서 얻은 교훈, 즉 학습 Planner가 규칙을 없앤 것이 아니라 자리를 옮겼다는 것으로 마무리한다.</aside>
+<aside>다섯째 장은 Planner의 위와 옆이다. 위에는 언어·시각 기반 모델이 목표를 정하는 층이 있고, 옆에는 위험을 어떻게 계산할지와 규칙을 어디에 둘지의 질문이 있다. 자율주행 연구에서 얻은 교훈, 즉 학습 Planner가 규칙을 없앤 것이 아니라 자리를 옮겼다는 것으로 마무리한다.</aside>
 </section>
 <section id="vla" class="t">
 <div class="head"><p class="kicker">5 · VLA는 위층에</p><h2>의미 계획과 몸체 판단을 두 모델로 나누자 실제 코스에서 90%가 됐다</h2></div>
@@ -635,7 +635,7 @@ section.t.divider h2 { font-size:80px; }
 </div>
 </div>
 <div class="foot" data-foot><p>VAMOS arXiv:2510.20818 · Can Vision Foundation Models Navigate? arXiv:2603.25937 · NaVILA arXiv:2412.04453, RSS 2025</p></div>
-<aside>VAMOS는 "어디로 갈지"와 "이 로봇이 갈 수 있는지"를 나눴다. 위층 VLM은 영상 위에 경로 후보를 그리고, 아래층은 로봇마다 따로 배운 통과 가능성 모델로 고른다. 아래층의 라벨은 시뮬레이션 지형에서 그 로봇의 정책을 실제로 굴린 성공 여부다. 한편 시각 기반 내비 모델을 zero-shot으로 평가한 연구는 충돌이 잦고 기하 이해가 약하다는 것을 보였다. 그래서 언어 모델은 위층, 기하는 아래층이라는 분담이 수치로 뒷받침된다.</aside>
+<aside>VAMOS는 "어디로 갈지"와 "이 로봇이 갈 수 있는지"를 나눴다. 위층 VLM은 영상 위에 경로 후보를 그리고, 아래층은 로봇마다 따로 배운 traversability 모델로 고른다. 아래층의 라벨은 시뮬레이션 지형에서 그 로봇의 정책을 실제로 rollout한 성공 여부다. 한편 시각 기반 내비 모델을 zero-shot으로 평가한 연구는 충돌이 잦고 기하 이해가 약하다는 것을 보였다. 그래서 언어 모델은 위층, 기하는 아래층이라는 분담이 수치로 뒷받침된다.</aside>
 </section>
 <section id="slowbrain" class="t">
 <div class="head"><p class="kicker">5 · 느린 판정자</p><h2>늦게 오는 VLM 답은 그대로 따르지 말고 Planner 점수에 섞는다</h2></div>
@@ -665,18 +665,18 @@ section.t.divider h2 { font-size:80px; }
 <div class="head"><p class="kicker">5 · 위험을 세는 법</p><h2>평균 비용이 낮은 경로와 최악 구간이 안전한 경로는 다르다</h2></div>
 <figure><img src="../../assets/figs/bg_03_riskcost.webp" style="height:360px"><figcaption>(a) 40스텝 궤적 두 개의 스텝별 위험. A는 짧게 높고 B는 고르게 낮다 (b) 평균으로는 A를, 위쪽 20 %의 평균(CVaR₀.₂)으로는 B를 고른다</figcaption></figure>
 <div class="grid3">
-<div class="card bl"><span class="tag bl">평균 비용</span><p>칸 비용을 더한다. 단순하지만 짧고 위험한 구간을 묻는다.</p></div>
+<div class="card bl"><span class="tag bl">평균 비용</span><p>칸 비용을 더한다. 단순하지만 짧고 위험한 구간을 가린다.</p></div>
 <div class="card or"><span class="tag or">최댓값·CVaR</span><p>가장 나쁜 구간을 본다. 보수적이고 이상치에 민감하다.</p></div>
 <div class="card gr"><span class="tag gr">확률 제약</span><p>"충돌 확률 ≤ δ"를 건다. 불확실성 추정이 맞아야 한다.</p></div>
 </div>
-<aside>비용 지도 위 최단 경로는 보통 칸 비용의 합을 줄인다. 그러면 아주 위험한 칸 몇 개를 지나는 짧은 길이, 조금 위험한 칸을 오래 지나는 길보다 싸게 보일 수 있다. 그림의 A가 그렇다. 안전이 중요하면 최악 구간이나 꼬리 평균을 따로 보거나, 치명적인 칸은 아예 그래프에서 빼는 이진 제약으로 다룬다. 지형 추정의 불확실성까지 있으면 비용의 분포를 다루는 확률 제약이 필요하다.</aside>
+<aside>costmap 위 최단 경로는 보통 칸 비용의 합을 줄인다. 그러면 아주 위험한 칸 몇 개를 지나는 짧은 길이, 조금 위험한 칸을 오래 지나는 길보다 싸게 보일 수 있다. 그림의 A가 그렇다. 안전이 중요하면 최악 구간이나 꼬리 평균을 따로 보거나, 치명적인 칸은 아예 그래프에서 빼는 이진 제약으로 다룬다. 지형 추정의 불확실성까지 있으면 비용의 분포를 다루는 확률 제약이 필요하다.</aside>
 </section>
 <section id="feasibility" class="t">
 <div class="head"><p class="kicker">5 · 실행 가능성 학습</p><h2>제어기가 실제로 따라간 정도를 배워 그래프 간선 비용으로 쓴다</h2></div>
 <div class="cols">
 <div class="stack">
 <ul>
-<li>지형별 보행 정책마다 실행 가능성 망(Feasibility-Net)</li>
+<li>지형별 보행 정책마다 실행 가능성 네트워크(Feasibility-Net)</li>
 <li>입력: 높이 지도 조각, 속도 명령</li>
 <li>라벨: rollout의 속도 추종 보상</li>
 <li><b>8방향 텐서</b>를 Dijkstra 간선 비용으로</li>
@@ -700,10 +700,10 @@ section.t.divider h2 { font-size:80px; }
 </div>
 <p class="take"><b>핵심:</b> 위험의 단위가 "칸"에서 "방향·자세·추종 능력"으로 넓어지고 있다. 다만 칸 비용과 직접 견준 연구는 아직 적다.</p>
 <div class="foot" data-foot><p>TRG-planner arXiv:2501.01806 · DreamFlow arXiv:2603.02976 · Occlusion-Aware arXiv:2609.39105 · CARE arXiv:2506.03834</p></div>
-<aside>네 연구는 칸 하나에 숫자 하나를 두는 비용 지도의 한계를 각자 다르게 메운다. 경사면은 오를 때와 가로지를 때 위험이 다르고, 센서가 못 본 곳은 비용을 알 수 없고, 바퀴 하나가 구덩이에 빠지는 위험은 차체 자세로 봐야 보인다. CARE는 아예 Planner를 바꾸지 않고 출력 궤적을 밀어 고치는 안전 층이다. 새 위험 표현을 도입할 때는 기존 칸 비용과 같은 조건에서 비교해야 효과를 말할 수 있다.</aside>
+<aside>네 연구는 칸 하나에 숫자 하나를 두는 costmap의 한계를 각자 다르게 메운다. 경사면은 오를 때와 가로지를 때 위험이 다르고, 센서가 못 본 곳은 비용을 알 수 없고, 바퀴 하나가 구덩이에 빠지는 위험은 차체 자세로 봐야 보인다. CARE는 아예 Planner를 바꾸지 않고 출력 궤적을 밀어 고치는 안전 층이다. 새 위험 표현을 도입할 때는 기존 칸 비용과 같은 조건에서 비교해야 효과를 말할 수 있다.</aside>
 </section>
 <section id="pdm" class="t">
-<div class="head"><p class="kicker">5 · 규칙 기준선</p><h2>규칙 후보 15개를 굴려 고른 PDM-Closed가 학습 Planner를 이겼다</h2></div>
+<div class="head"><p class="kicker">5 · 규칙 기준선</p><h2>규칙 후보 15개를 시뮬레이션해 고른 PDM-Closed가 학습 Planner를 이겼다</h2></div>
 <figure><img src="../../assets/thumbs/f66d45834c3d.webp" style="height:380px"><figcaption>PDM (Fig. 1): 학습한 PDM-Open은 사람 차선을 따르다 0.5초 뒤부터 자기 오차를 키워 도로를 벗어난다 — arXiv:2306.07962</figcaption></figure>
 <div class="cols">
 <ul>
@@ -714,7 +714,7 @@ section.t.divider h2 { font-size:80px; }
 <div class="card bl"><span class="tag bl">교훈</span><p>개루프로 잘 맞히는 Planner가 폐루프에서도 잘하는 것은 아니다. 학습 Planner는 강한 규칙 기준선과 견줘야 한다.</p></div>
 </div>
 <div class="foot" data-foot><p>Dauner 외, Parting with Misconceptions about Learning-based Vehicle Motion Planning (PDM), arXiv:2306.07962, CoRL 2023 — nuPlan 2023 계획 챌린지 우승</p></div>
-<aside>PDM 논문은 학습 Planner가 사람 궤적을 흉내 내는 개루프 지표에서는 강하지만, 실제로 굴리는 폐루프에서는 자기 오차를 스스로 키운다는 것을 보였다. 반면 단순한 규칙 후보 15개를 모델로 굴리고 점수로 고르는 방법이 챌린지에서 우승했다. 생성형 Planner와 구조가 같다는 점이 흥미롭다. 다른 곳은 후보를 규칙으로 만드느냐 학습으로 만드느냐뿐이다. 그래서 학습 생성기의 효과를 재려면 같은 선택기에 규칙 후보를 넣은 판과 비교하는 것이 좋다.</aside>
+<aside>PDM 논문은 학습 Planner가 사람 궤적을 흉내 내는 개루프 지표에서는 강하지만, 실제로 주행하는 폐루프에서는 자기 오차를 스스로 키운다는 것을 보였다. 반면 단순한 규칙 후보 15개를 모델로 시뮬레이션하고 점수로 고르는 방법이 챌린지에서 우승했다. 생성형 Planner와 구조가 같다는 점이 흥미롭다. 다른 곳은 후보를 규칙으로 만드느냐 학습으로 만드느냐뿐이다. 그래서 학습 생성기의 효과를 재려면 같은 선택기에 규칙 후보를 넣은 기준선과 비교하는 것이 좋다.</aside>
 </section>
 <section id="rules" class="t">
 <div class="head"><p class="kicker">5 · 규칙의 자리</p><h2>학습 Planner는 규칙을 없앤 것이 아니라 규칙의 자리를 옮겼다</h2></div>
@@ -722,11 +722,11 @@ section.t.divider h2 { font-size:80px; }
 <div class="flow">
 <div class="step"><h3>PlanT · 2022</h3><p>규칙은 <b>교사</b></p></div><p class="arrow">→</p>
 <div class="step"><h3>PlanTF · 2024</h3><p>지름길 막는 <b>설계</b></p></div><p class="arrow">→</p>
-<div class="step"><h3>PLUTO · 2024</h3><p>후보 <b>채점기</b></p></div><p class="arrow">→</p>
+<div class="step"><h3>PLUTO · 2024</h3><p>후보 <b>scorer</b></p></div><p class="arrow">→</p>
 <div class="step"><h3>CaRL · 2025</h3><p><b>보상·종료 조건</b></p></div>
 </div>
 <div class="foot" data-foot><p>PlanT arXiv:2210.14222 · PlanTF arXiv:2309.10443 · PLUTO arXiv:2404.14327 · CaRL arXiv:2504.17838</p></div>
-<aside>2022–2025년의 네 편은 "학습 Planner가 규칙 Planner를 대체할 수 있는가"에 차례로 답했다. 답은 대체했지만 규칙은 다른 자리에 남았다는 것이다. 규칙은 시연을 만드는 교사가 되거나, 학습이 지름길을 배우지 못하게 막는 구조가 되거나, 후보를 채점하는 함수가 되거나, 강화학습의 보상과 종료 조건이 된다. 안전과 법규처럼 반드시 지켜야 하는 것은 여전히 규칙으로 두는 것이 실무의 결론이다.</aside>
+<aside>2022–2025년의 네 편은 "학습 Planner가 규칙 Planner를 대체할 수 있는가"에 차례로 답했다. 답은 대체했지만 규칙은 다른 자리에 남았다는 것이다. 규칙은 시연을 만드는 교사가 되거나, 학습이 지름길을 배우지 못하게 막는 구조가 되거나, 후보를 채점하는 scorer가 되거나, 강화학습의 보상과 종료 조건이 된다. 안전과 법규처럼 반드시 지켜야 하는 것은 여전히 규칙으로 두는 것이 실무의 결론이다.</aside>
 </section>
 <section id="d6" class="t dark divider">
 <p class="kicker">6 · 정리</p>
@@ -735,14 +735,14 @@ section.t.divider h2 { font-size:80px; }
 <aside>마지막 장은 복습용이다. 모든 방법을 한 표에 모으고, Planner를 평가할 때 빠지기 쉬운 함정과 공부 순서를 정리한다.</aside>
 </section>
 <section id="cheat" class="t">
-<div class="head"><p class="kicker">6 · 장단점 표</p><h2>Planner 가족을 한 표로 본다</h2></div>
+<div class="head"><p class="kicker">6 · 장단점 표</p><h2>Planner 계열을 한 표로 정리한다</h2></div>
 <table style="font-size:24px">
-<tr><th>가족</th><th>대표</th><th>장점</th><th>단점</th><th>언제</th></tr>
+<tr><th>계열</th><th>대표</th><th>장점</th><th>단점</th><th>언제</th></tr>
 <tr><td>격자 탐색</td><td>Dijkstra, A*, D* Lite</td><td class="good">최적·완전, 단순</td><td class="bad">고차원 폭발, 꺾인 경로</td><td>2D 전역 경로</td></tr>
 <tr><td>기구학 탐색</td><td>Hybrid A*, 상태 격자</td><td class="good">바로 실행 가능</td><td class="bad">설계·계산 부담</td><td>차, 주차</td></tr>
 <tr><td>샘플링</td><td>RRT(*), PRM</td><td class="good">고차원, 충돌 검사만</td><td class="bad">구불구불, 좁은 통로</td><td>로봇 팔</td></tr>
-<tr><td>로컬 표본</td><td>DWA, MPPI</td><td class="good">반응 빠름, 한계 준수</td><td class="bad">근시안</td><td>로컬 회피</td></tr>
-<tr><td>궤적 최적화</td><td>CHOMP, TEB, MPC</td><td class="good">매끄럽고 제약 정확</td><td class="bad">국소 최적</td><td>다듬기, 로컬</td></tr>
+<tr><td>로컬 샘플링</td><td>DWA, MPPI</td><td class="good">반응 빠름, 한계 준수</td><td class="bad">근시안</td><td>로컬 회피</td></tr>
+<tr><td>궤적 최적화</td><td>CHOMP, TEB, MPC</td><td class="good">매끄럽고 제약 정확</td><td class="bad">국소 최적</td><td>후처리, 로컬</td></tr>
 <tr><td>회귀 학습</td><td>iPlanner, BC</td><td class="good">센서에서 바로, 빠름</td><td class="bad">다봉 평균, 분포 밖</td><td>단순 장면</td></tr>
 <tr><td>생성 + 선택</td><td>NavDP, GoalFlow</td><td class="good">여러 해, 안전 층과 조합</td><td class="bad">계산, 선택 문제</td><td>복잡한 장면</td></tr>
 <tr><td>VLA 위층</td><td>VAMOS</td><td class="good">의미·언어 목표</td><td class="bad">느림, 기하 약함</td><td>임무 수준</td></tr>
@@ -761,17 +761,17 @@ section.t.divider h2 { font-size:80px; }
 <tr><td>충돌·개입 수</td><td>100 m당, 1시간당으로 정규화</td></tr>
 <tr><td>계획 시간</td><td>평균과 꼬리(최댓값)</td></tr>
 </table>
-<div class="card or"><span class="tag or">함정</span><p>개루프 오차(정답 궤적과의 거리)는 폐루프 성능을 잘 예측하지 못한다. seed 여러 개와 같은 조건의 짝 비교로 본다.</p></div>
+<div class="card or"><span class="tag or">함정</span><p>개루프 오차(정답 궤적과의 거리)는 폐루프 성능을 잘 예측하지 못한다. seed 여러 개와 같은 조건의 짝 비교로 판단한다.</p></div>
 </div>
 </div>
 <div class="foot" data-foot><p>SPL: Anderson 외, On Evaluation of Embodied Navigation Agents, arXiv:1807.06757</p></div>
-<aside>개루프 평가는 Planner가 낸 궤적을 정답 궤적과 비교한다. 쉽고 빠르지만 자기 오차가 쌓이는 문제를 보지 못한다. 폐루프 평가는 Planner와 제어기를 시뮬레이션에서 끝까지 굴린다. 성공률만 보면 돌아가는 비효율을 놓치므로 SPL처럼 경로 길이를 함께 본다. 실패는 여러 종류로 나눠 세는 것이 좋다. 충돌, 시간 초과, 멈춤은 원인이 다르다. 그리고 강화학습 덱에서 본 것처럼 에피소드 수가 적으면 신뢰구간이 넓으므로 한두 개 차이로 판단하지 않는다.</aside>
+<aside>개루프 평가는 Planner가 낸 궤적을 정답 궤적과 비교한다. 쉽고 빠르지만 자기 오차가 쌓이는 문제를 보지 못한다. 폐루프 평가는 Planner와 제어기를 시뮬레이션에서 끝까지 실행한다. 성공률만 보면 돌아가는 비효율을 놓치므로 SPL처럼 경로 길이를 함께 본다. 실패는 여러 종류로 나눠 세는 것이 좋다. 충돌, 시간 초과, 멈춤은 원인이 다르다. 그리고 강화학습 덱에서 본 것처럼 에피소드 수가 적으면 신뢰구간이 넓으므로 한두 개 차이로 판단하지 않는다.</aside>
 </section>
 <section id="path" class="t">
 <div class="head"><p class="kicker">6 · 공부 순서</p><h2>교과서로 고전을, 구현으로 감을, 논문으로 학습 Planner를 익힌다</h2></div>
 <div class="grid3">
 <div class="card gr"><span class="tag gr">1 · 고전</span><h3>LaValle, Planning Algorithms (2006)</h3><p>구성 공간, 이산 탐색, 샘플링, 미분 제약. 저자가 온라인에 공개했다.</p></div>
-<div class="card bl"><span class="tag bl">2 · 손으로</span><h3>작은 문제를 직접</h3><p>격자 A* → RRT → DWA → 경로 다듬기(궤적 최적화). 각 수십–백 줄이면 된다.</p></div>
+<div class="card bl"><span class="tag bl">2 · 손으로</span><h3>작은 문제를 직접</h3><p>격자 A* → RRT → DWA → 궤적 최적화(경로 후처리). 각각 수십–백 줄이면 된다.</p></div>
 <div class="card or"><span class="tag or">3 · 학습</span><h3>생성 모델과 내비 논문</h3><p>Diffusion Policy → flow matching → NavDP → GoalFlow·Diffusion Planner → VAMOS.</p></div>
 </div>
 <table style="font-size:24px">
@@ -782,19 +782,19 @@ section.t.divider h2 { font-size:80px; }
 <tr><td>4 생성</td><td>스텝을 1로 줄이면 왜 평균으로 돌아가나? guidance의 대가는?</td></tr>
 <tr><td>5 위층·위험</td><td>늦은 VLM 답을 그대로 따르면 왜 나빠지나?</td></tr>
 </table>
-<aside>순서는 고전, 구현, 학습이다. 고전 계획의 개념, 특히 구성 공간과 탐색의 보장을 먼저 알아야 학습 Planner가 무엇을 버리고 무엇을 얻는지 판단할 수 있다. 구현은 가장 확실한 공부다. 격자 A*와 RRT는 한 시간 안에 짤 수 있고, 이 덱의 그림들도 그렇게 계산했다. 표의 질문에 답하지 못하면 해당 장으로 돌아가자.</aside>
+<aside>순서는 고전, 구현, 학습이다. 고전 계획의 개념, 특히 구성 공간과 탐색의 보장을 먼저 알아야 학습 Planner가 무엇을 버리고 무엇을 얻는지 판단할 수 있다. 구현은 가장 확실한 공부다. 격자 A*와 RRT는 한 시간 안에 구현할 수 있고, 이 덱의 그림들도 그렇게 계산했다. 표의 질문에 답하지 못하면 해당 장으로 돌아가자.</aside>
 </section>
 <section id="summary" class="t">
 <div class="head"><p class="kicker">정리</p><h2>계획은 층을 나누고, 후보를 만들고, 기준으로 고르는 일이다</h2></div>
 <div class="grid2">
 <div class="card bl"><h3>층</h3><p>임무 → 전역 → 로컬 → 제어. 위는 느리고 멀리, 아래는 빠르고 가까이.</p></div>
-<div class="card bl"><h3>표현</h3><p>구성 공간과 비용 지도. 부풀린 장애물 위에서 로봇은 점이 된다.</p></div>
+<div class="card bl"><h3>표현</h3><p>구성 공간과 costmap. 부풀린 장애물 위에서 로봇은 점이 된다.</p></div>
 <div class="card gr"><h3>고전</h3><p>탐색은 정확, 샘플링은 고차원, 최적화는 매끄러움. 함께 쓴다.</p></div>
 <div class="card gr"><h3>학습</h3><p>회귀는 다봉에서 실패한다. 생성 모델이 후보를 넓게 낸다.</p></div>
 <div class="card or"><h3>선택</h3><p>규칙·critic·VLM이 고른다. 안전 규칙은 선택에 남는다.</p></div>
 <div class="card or"><h3>평가</h3><p>폐루프, 여러 seed, 강한 규칙 기준선과 견준다.</p></div>
 </div>
-<aside>오늘 본 것을 여섯 상자로 줄였다. 고전 계획과 학습 Planner는 대립하지 않는다. 최근 학습 Planner의 구조, 즉 후보를 내고 고르는 꼴은 DWA나 PDM-Closed 같은 고전 구조와 같고, 다른 것은 후보를 무엇이 만드느냐다. 그래서 학습 Planner를 평가할 때는 같은 선택기에 고전 후보를 넣은 기준선과 견주는 것이 가장 공정하다.</aside>
+<aside>오늘 본 것을 여섯 상자로 줄였다. 고전 계획과 학습 Planner는 대립하지 않는다. 최근 학습 Planner의 구조, 즉 후보를 내고 고르는 틀은 DWA나 PDM-Closed 같은 고전 방법과 같고, 다른 것은 후보를 무엇이 만드느냐다. 그래서 학습 Planner를 평가할 때는 같은 선택기에 고전 후보를 넣은 기준선과 견주는 것이 가장 공정하다.</aside>
 </section>
 <section id="refs-core" class="t">
 <div class="head"><p class="kicker">참고문헌 1/2 · 먼저 읽을 것</p><h2>처음에는 이 다섯 가지만 읽는다</h2></div>

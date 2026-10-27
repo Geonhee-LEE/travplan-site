@@ -245,15 +245,15 @@ section.t.divider h2 { font-size:80px; }
 <div class="head"><p class="kicker">0 · 순서를 정한 원칙</p><h2>세 원칙으로 일곱 덱의 순서를 정했다</h2></div>
 <div class="grid3">
 <div class="card gr"><span class="tag gr">원칙 1</span><h3>파이프라인 순서로</h3><p>로봇은 보고(인식), 길을 찾고(계획), 따라간다(제어). 앞 단계의 출력이 뒤 단계의 입력이라, 이 순서로 보면 "이 값은 어디서 왔나"가 늘 분명하다.</p></div>
-<div class="card bl"><span class="tag bl">원칙 2</span><h3>고전 먼저, 학습 나중</h3><p>탐색·되먹임·최적화의 보장을 알아야 학습 방법이 무엇을 버리고 무엇을 얻는지 판단할 수 있다. 그래서 강화학습은 제어와 MPC 뒤에 둔다.</p></div>
+<div class="card bl"><span class="tag bl">원칙 2</span><h3>고전 먼저, 학습 나중</h3><p>탐색·피드백·최적화의 보장을 알아야 학습 방법이 무엇을 버리고 무엇을 얻는지 판단할 수 있다. 그래서 강화학습은 제어와 MPC 뒤에 둔다.</p></div>
 <div class="card or"><span class="tag or">원칙 3</span><h3>종합은 마지막에</h3><p>다리 로봇 덱은 인식·제어·강화학습·시뮬레이션을 모두 쓴다. 앞의 여섯 덱을 본 뒤에 보면 각 연구가 어느 층을 바꿨는지 읽힌다.</p></div>
 </div>
-<aside>순서는 세 원칙으로 정했다. 첫째, 파이프라인의 흐름을 따른다. 인식의 비용 지도가 계획의 입력이고, 계획의 경로가 제어의 입력이다. 둘째, 고전 방법을 먼저 본다. 고전 방법은 보장과 실패 양상이 분명해서, 학습 방법을 평가하는 기준이 된다. 셋째, 여러 분야를 섞는 다리 로봇은 마지막에 둔다. 다만 이 순서가 유일한 답은 아니며, 목적에 따라 줄인 경로를 뒤에서 따로 제안한다.</aside>
+<aside>순서는 세 원칙으로 정했다. 첫째, 파이프라인의 흐름을 따른다. 인식의 costmap이 계획의 입력이고, 계획의 경로가 제어의 입력이다. 둘째, 고전 방법을 먼저 본다. 고전 방법은 보장과 실패 양상이 분명해서, 학습 방법을 평가하는 기준이 된다. 셋째, 여러 분야를 섞는 다리 로봇은 마지막에 둔다. 다만 이 순서가 유일한 답은 아니며, 목적에 따라 줄인 경로를 뒤에서 따로 제안한다.</aside>
 </section>
 <section id="map" class="t">
 <div class="head"><p class="kicker">0 · 의존 관계</p><h2>위 줄은 파이프라인, 아래 줄은 학습이다</h2></div>
 <figure><img src="img/curriculum.webp" style="height:640px"><figcaption>화살표의 글자는 앞 덱에서 뒤 덱으로 넘어가는 개념이다. 실선은 앞 덱이 필요하고, 점선은 함께 보면 좋다.</figcaption></figure>
-<aside>위 줄의 네 덱은 차례로 이어진다. 인식이 비용 지도를 만들고, 계획이 그 위에서 경로를 찾고, 제어가 경로를 따라가며, 비선형 MPC는 제어 덱 2장의 이동 지평 제어를 깊게 판다. 아래 줄은 학습이다. 강화학습의 PPO가 시뮬레이션의 병렬 학습으로, 무작위화가 다리 로봇의 실물 이전으로 이어진다. 점선 셋은 덱을 가로지르는 연결이다. 경로 계획 덱의 학습·생성 Planner 장은 강화학습 덱의 모방학습과 flow 정책을 알면 훨씬 쉽다. MPPI는 강화학습 덱의 추론으로서의 제어와 같은 식이다. MPC의 제약은 다리 로봇 덱의 투영으로 다시 나온다.</aside>
+<aside>위 줄의 네 덱은 차례로 이어진다. 인식이 costmap을 만들고, 계획이 그 위에서 경로를 찾고, 제어가 경로를 따라가며, 비선형 MPC는 제어 덱 2장의 receding horizon 제어를 깊게 다룬다. 아래 줄은 학습이다. 강화학습의 PPO가 시뮬레이션의 병렬 학습으로, 도메인 랜덤화가 다리 로봇의 sim-to-real로 이어진다. 점선 셋은 덱을 가로지르는 연결이다. 경로 계획 덱의 학습·생성 Planner 장은 강화학습 덱의 모방학습과 flow 정책을 알면 훨씬 쉽다. MPPI는 강화학습 덱의 control as inference(추론으로서의 제어)와 같은 식이다. MPC의 제약은 다리 로봇 덱의 투영으로 다시 나온다.</aside>
 </section>
 <section id="decks" class="t">
 <div class="head"><p class="kicker">1 · 일곱 덱 한눈에</p><h2>덱마다 답하는 질문이 하나씩 있다</h2></div>
@@ -317,7 +317,7 @@ section.t.divider h2 { font-size:80px; }
 <tr><th>덱</th><th>교과서</th><th>먼저 읽을 곳</th></tr>
 <tr><td>1 인식</td><td>Thrun·Burgard·Fox, Probabilistic Robotics (2005)</td><td>2–3장 베이즈·칼만 필터, 9장 점유 격자</td></tr>
 <tr><td>2 경로 계획</td><td>LaValle, Planning Algorithms (2006, 온라인 공개)</td><td>2장 이산 탐색, 4장 구성 공간, 5장 샘플링</td></tr>
-<tr><td>3 제어</td><td>Åström·Murray, Feedback Systems (2판, 2021, 온라인 공개)</td><td>되먹임·안정성·PID 장</td></tr>
+<tr><td>3 제어</td><td>Åström·Murray, Feedback Systems (2판, 2021, 온라인 공개)</td><td>피드백·안정성·PID 장</td></tr>
 <tr><td>4 비선형 MPC</td><td>Rawlings·Mayne·Diehl, Model Predictive Control (2판, 2017) · Nocedal·Wright, Numerical Optimization (2판, 2006)</td><td>MPC 책 1–3장, 8장 · 최적화 책 12장 KKT, 18장 SQP</td></tr>
 <tr><td>5 강화학습</td><td>Sutton·Barto, Reinforcement Learning: An Introduction (2판, 2018) · UC Berkeley CS 285 강의</td><td>3–6장, 13장</td></tr>
 <tr><td>6 시뮬레이션</td><td>MuJoCo 문서의 Computation 장</td><td>적분기, 접촉 모델</td></tr>
@@ -330,10 +330,10 @@ section.t.divider h2 { font-size:80px; }
 <table style="font-size:23px">
 <tr><th>덱</th><th>작은 구현</th><th>구현하며 확인할 것</th></tr>
 <tr><td>1 인식</td><td>2D 광선 투사 + log-odds 격자</td><td>왜 덧셈이 되나, 구덩이는 왜 안 보이나</td></tr>
-<tr><td>2 경로 계획</td><td>격자 A*, RRT</td><td>휴리스틱 가중치에 따라 확장 칸 수와 경로 길이가 어떻게 바뀌나</td></tr>
+<tr><td>2 경로 계획</td><td>격자 A*, RRT</td><td>휴리스틱 가중치에 따라 확장 노드 수와 경로 길이가 어떻게 바뀌나</td></tr>
 <tr><td>3 제어</td><td>PID, pure pursuit, 수십 줄 MPPI</td><td>이득·지연·온도가 응답을 어떻게 바꾸나</td></tr>
 <tr><td>4 비선형 MPC</td><td>CasADi + IPOPT로 유니사이클 장애물 회피</td><td>초기값과 soft 제약 가중치가 해를 어떻게 바꾸나</td></tr>
-<tr><td>5 강화학습</td><td>격자 세계 가치 반복, CartPole REINFORCE</td><td>기준선이 분산을 얼마나 줄이나</td></tr>
+<tr><td>5 강화학습</td><td>격자 세계 가치 반복, CartPole REINFORCE</td><td>baseline이 분산을 얼마나 줄이나</td></tr>
 <tr><td>6 시뮬레이션</td><td>용수철 적분기 비교, 튀는 공</td><td>Euler가 에너지를 만들고, 강성과 Δt가 맞물리는 것</td></tr>
 <tr><td>7 다리 로봇</td><td>Isaac Lab 4족 예제 + 높이 지도 관측</td><td>관측을 바꾸면 학습 곡선과 지형 성공률이 어떻게 바뀌나</td></tr>
 </table>
@@ -344,7 +344,7 @@ section.t.divider h2 { font-size:80px; }
 <div class="grid3">
 <div class="card gr"><span class="tag gr">원 논문</span><h3>★ 표시 문헌부터</h3><p>덱마다 참고문헌 앞 장이 먼저 읽을 문헌이다. 서론과 방법 절만 먼저 읽고, 덱의 그림과 대조한다.</p></div>
 <div class="card bl"><span class="tag bl">최근 연구</span><h3>논문 스터디 덱, 리서치 문서 덱</h3><p>같은 갤러리에 있다. 기초 덱의 장단점 표에서 궁금해진 방법을 골라 최근 변형을 본다.</p></div>
-<div class="card or"><span class="tag or">프로젝트</span><h3>두 덱 이상을 엮는다</h3><p>지도 갱신 + 계획 + 추종, 또는 시뮬에서 PPO 정책 학습 + 무작위화. 엮을 때 덱 사이의 화살표가 손에 잡힌다.</p></div>
+<div class="card or"><span class="tag or">프로젝트</span><h3>두 덱 이상을 엮는다</h3><p>지도 갱신 + 계획 + 추종, 또는 시뮬에서 PPO 정책 학습 + 도메인 랜덤화. 엮을 때 덱 사이의 화살표가 손에 잡힌다.</p></div>
 </div>
 <aside>기초 덱을 마치면 세 방향으로 나아간다. 첫째, 원 논문이다. 덱의 참고문헌 앞 장에 별을 붙인 문헌이 먼저 읽을 것이다. 둘째, 최근 연구다. 같은 갤러리의 논문 스터디 덱과 리서치 문서 덱은 최근 논문을 더 자세히 다룬다. 셋째, 두 덱 이상을 엮는 작은 프로젝트다. 덱 하나만 구현할 때는 보이지 않던 문제, 예를 들어 지도의 지연이 추종 성능을 망치는 일이 엮을 때 드러난다.</aside>
 </section>

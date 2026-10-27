@@ -239,7 +239,7 @@ section.t.divider h2 { font-size:80px; }
 <p class="kicker">TRAVPLAN · 챕터 발표 · MPC 구축 (§M)</p>
 <div class="stack"><h1>MPPI 옆에<br>acados NMPC를 세우다</h1><p class="lead">치명 셀 제약, 0차 GP 잔차, 튜브 — 그리고 plant에서 잰 결과</p></div>
 <div class="pills"><p class="pill on">§M</p><p class="pill">TP-0070 → TP-0152</p><p class="pill">acados v0.3.4</p><p class="pill">최근 연구 13편</p></div>
-<aside>이 발표는 리서치 탭의 MPC 구축 문서(§M)를 이야기로 옮긴 것입니다. MPPI를 대체하지 않고 형제로 NMPC를 더한 과정을 설계, 최근 연구, 작업 기록 순서로 봅니다. 숫자는 모두 문서의 작업 기록과 STATE에서 가져왔고 TP 번호를 달았습니다.</aside>
+<aside>이 발표는 리서치 탭의 MPC 구축 문서(§M)를 이야기로 옮긴 것입니다. MPPI를 대체하지 않고 형제로 NMPC를 더한 과정을 설계, 최근 연구, 작업 기록 순서로 살펴봅니다. 숫자는 모두 문서의 작업 기록과 STATE에서 가져왔고 TP 번호를 달았습니다.</aside>
 </section>
 <section id="agenda" class="t">
 <div class="head"><p class="kicker">순서</p><h2>설계에서 시작해 plant 비교의 판정으로 끝난다</h2></div>
@@ -268,23 +268,23 @@ section.t.divider h2 { font-size:80px; }
 </div>
 <p>둘은 같은 <code>Controller</code> 프로토콜이고 같은 벤치마크(<code>guidance+mppi</code>, <code>guidance+mpc</code>)에서 비교한다. 잔차 GP(<code>control/acados_mpc/gp.py</code>)는 둘이 공유한다.</p>
 <figure><img src="../../assets/figs/tp0076_controller_matrix.webp" style="height:300px"><figcaption>세 조건에서 Controller별 성공 비율. 파랑 MPPI 계열, 주황 MPC 계열 (TP-0076, 명령 수정 전)</figcaption></figure>
-<p class="take"><b>travplan:</b> 목적은 성능이 아니라, GP 잔차·0차 근사·튜브를 얹을 <b>조일 제약</b>을 만드는 것이다.</p>
-<aside>2026-09-30 사용자 결정으로 MPPI와 NMPC를 함께 개발합니다. 강점이 갈리기 때문입니다. MPPI는 미분이 없어 치명 셀 같은 계단 비용을 그대로 다루고, NMPC는 제약을 명시적으로 두므로 GP 분산이나 튜브가 조일 자리가 있습니다. 벤치마크가 planner+controller 문자열이라 guidance+mpc 스택이 그대로 생기고, 기존 MPPI 결과가 기준선이 됩니다.</aside>
+<p class="take"><b>travplan:</b> 목적은 성능이 아니라, GP 잔차·0차 근사·튜브로 <b>조일 제약</b>을 만드는 것이다.</p>
+<aside>2026-09-30 사용자 결정으로 MPPI와 NMPC를 함께 개발합니다. 강점이 갈리기 때문입니다. MPPI는 미분이 필요 없어 치명 셀 같은 계단 비용을 그대로 다루고, NMPC는 제약을 명시적으로 두므로 GP 분산이나 튜브가 조일 자리가 있습니다. 벤치마크가 planner+controller 문자열이라 guidance+mpc 스택이 그대로 생기고, 기존 MPPI 결과가 기준선이 됩니다.</aside>
 </section>
 <section id="d-design" class="t dark divider">
 <p class="kicker">1 · 설계 (M.1)</p>
 <h2>OCP를 어떻게 세우나</h2>
 <p class="lead">스워브 twist 모델, 추종 비용, 솔버 설정, 그리고 치명 셀을 제약으로 옮기는 일</p>
-<aside>첫 주제는 설계입니다. 모델과 OCP를 보고, 솔버 설정에서 배운 것, 마지막으로 이 문서의 핵심인 치명도를 비용에서 제약으로 옮기는 결정을 봅니다.</aside>
+<aside>첫 주제는 설계입니다. 모델과 OCP를 보고, 솔버 설정에서 배운 것, 마지막으로 이 문서의 핵심인 치명도를 비용에서 제약으로 옮기는 결정을 살펴봅니다.</aside>
 </section>
 <section id="model" class="t">
-<div class="head"><p class="kicker">M.1 · 모델</p><h2>twist를 상태에 두어 가속을 상자 제약으로 묶는다</h2></div>
+<div class="head"><p class="kicker">M.1 · 모델</p><h2>twist를 상태에 두어 가속에 box 제약을 건다</h2></div>
 <div class="cols">
 <table>
 <tr><th>항목</th><th>값</th></tr>
 <tr><td>상태</td><td>\(z = (x, y, \theta, v_x, v_y, \omega)\) — 6</td></tr>
 <tr><td>입력</td><td>\(u = (a_x, a_y, \alpha_z)\) — twist 변화율</td></tr>
-<tr><td>지평</td><td>40 × 0.1 s = 4 s (MPPI와 같다)</td></tr>
+<tr><td>horizon</td><td>40 × 0.1 s = 4 s (MPPI와 같다)</td></tr>
 <tr><td>솔버</td><td>acados SQP-RTI, HPIPM, ERK</td></tr>
 </table>
 <div class="stack">
@@ -293,12 +293,12 @@ section.t.divider h2 { font-size:80px; }
 </div>
 </div>
 <div class="grid3">
-<div class="card gy"><h3>모델에 없는 것 ①</h3><p>모듈 역기구학. 차체 상자 제약으로 번역한다.</p></div>
+<div class="card gy"><h3>모델에 없는 것 ①</h3><p>모듈 역기구학. 차체 box 제약으로 옮긴다.</p></div>
 <div class="card gy"><h3>모델에 없는 것 ②</h3><p>액추에이터 지연과 지형 슬립. plant가 만든다.</p></div>
 <div class="card gy"><h3>그 차이는</h3><p>잔차 \(\mu_d\)가 흡수한다(TP-0068).</p></div>
 </div>
-<p class="take"><b>travplan:</b> 입력 좌표계가 SmoothMPPI·Planner D와 같아서, 지평이 같으면 비교가 성립한다.</p>
-<aside>상태에 차체 twist까지 넣은 것은 변화율, 즉 가속을 상자로 제약하려고입니다. 입력은 twist 변화율이고 이것은 SmoothMPPI와 Planner D의 제어 공간과 같은 좌표계입니다. 지평은 MPPI와 똑같이 40 스텝 0.1초로 맞췄습니다. 다르면 비교가 성립하지 않기 때문입니다. 마지막 줄의 mu_d는 뒤에서 볼 GP 잔차 자리입니다.</aside>
+<p class="take"><b>travplan:</b> 입력 좌표계가 SmoothMPPI·Planner D와 같아서, horizon이 같으면 비교가 성립한다.</p>
+<aside>상태에 차체 twist까지 넣은 것은 변화율, 즉 가속에 box 제약을 걸기 위해서입니다. 입력은 twist 변화율이고 이것은 SmoothMPPI와 Planner D의 제어 공간과 같은 좌표계입니다. horizon은 MPPI와 똑같이 40 스텝 0.1초로 맞췄습니다. 다르면 비교가 성립하지 않기 때문입니다. 마지막 줄의 mu_d는 뒤에서 볼 GP 잔차 자리입니다.</aside>
 </section>
 <section id="ocp" class="t">
 <div class="head"><p class="kicker">M.1 · OCP</p><h2>추종 비용은 선형 최소제곱, 장애물은 노드마다 반평면이다</h2></div>
@@ -311,35 +311,35 @@ section.t.divider h2 { font-size:80px; }
 </div>
 <div class="cols">
 <div class="card gy"><h3>참조 만들기</h3><p>Guidance 경로는 \(v_{des} = 1.0\) m/s로 시간을 매기고, Planner D는 시간 인덱스를 그대로 쓴다.</p></div>
-<div class="card gy"><h3>slack 가중치</h3><p>장애물·보행자 행 1e6, twist 상자 1e5. 나쁜 초기해가 문제를 불능으로 만들지 않게 한다.</p></div>
+<div class="card gy"><h3>slack 가중치</h3><p>장애물·보행자 행 1e6, twist box 1e5. 나쁜 초기해가 문제를 infeasible하게 만들지 않게 한다.</p></div>
 </div>
 <p class="small muted">비용 형식 LINEAR_LS, 가중치는 <code>MPCConfig</code> 기본값(<code>control/acados_mpc/ocp.py</code>)</p>
-<aside>OCP는 단순합니다. 참조와의 위치 오차, 옆걸음과 회전을 약하게, 가속을 약하게 벌하는 선형 최소제곱 비용입니다. 종단 가중치 50이 MPPI의 ReferenceCost가 하던 진행 역할을 맡습니다. 제약은 twist와 가속 상자, 그리고 노드마다 치명 셀과 보행자에 대한 반평면 두 줄입니다. 가중치 값은 코드의 MPCConfig 기본값입니다.</aside>
+<aside>OCP는 단순합니다. 참조와의 위치 오차를 벌하고, 횡이동·회전·가속에는 약한 페널티를 주는 선형 최소제곱 비용입니다. 종단 가중치 50이 MPPI의 ReferenceCost가 하던 진행 역할을 맡습니다. 제약은 twist와 가속의 box 제약, 그리고 노드마다 치명 셀과 보행자에 대한 반평면 두 줄입니다. 가중치 값은 코드의 MPCConfig 기본값입니다.</aside>
 </section>
 <section id="solver" class="t">
-<div class="head"><p class="kicker">M.3.5 · 솔버 설정</p><h2>벌점 1e6과 RTI 3회가 함께여야 접평면 제약이 선다</h2></div>
+<div class="head"><p class="kicker">M.3.5 · 솔버 설정</p><h2>페널티 1e6과 RTI 3회가 함께여야 접평면 제약이 선다</h2></div>
 <div class="cols">
 <table>
 <tr><th>변형 (seed 0, 4 시나리오)</th><th>성공</th></tr>
-<tr><td>느슨한 벌점 1e4, RTI 1회</td><td class="bad">2/4</td></tr>
-<tr><td>벌점만 1e6</td><td class="bad">2/4</td></tr>
+<tr><td>느슨한 페널티 1e4, RTI 1회</td><td class="bad">2/4</td></tr>
+<tr><td>페널티만 1e6</td><td class="bad">2/4</td></tr>
 <tr><td>RTI만 3회</td><td>3/4</td></tr>
-<tr><td><b>벌점 1e6 + RTI 3회</b></td><td class="good">4/4</td></tr>
-<tr><td>하드 제약</td><td class="bad">2/4 (QP status 3)</td></tr>
+<tr><td><b>페널티 1e6 + RTI 3회</b></td><td class="good">4/4</td></tr>
+<tr><td>hard 제약</td><td class="bad">2/4 (QP status 3)</td></tr>
 </table>
 <div class="stack">
-<div class="card or"><h3>접평면은 iterate에 매달려 있다</h3><p>RTI는 호출당 뉴턴 한 걸음이다. 노드가 움직이면 접평면도 바뀌므로 반복을 늘려야 제약과 해가 만난다.</p></div>
+<div class="card or"><h3>접평면은 iterate에 따라 달라진다</h3><p>RTI는 호출당 Newton 스텝 한 번이다. 노드가 움직이면 접평면도 바뀌므로 반복을 늘려야 제약과 해가 만난다.</p></div>
 <p class="small">HPIPM 부분 condensing(N=5), Gauss-Newton, 리셋 뒤 첫 풀이는 RTI 5회</p>
 </div>
 </div>
 <div class="flow">
-<div class="step"><h3>EDT</h3><p>가장 가까운 치명 칸을 수치로</p></div><p class="arrow">→</p>
+<div class="step"><h3>EDT</h3><p>가장 가까운 치명 셀을 수치로</p></div><p class="arrow">→</p>
 <div class="step"><h3>접평면</h3><p>노드별 \(n_k, b_k\)를 파라미터로</p></div><p class="arrow">→</p>
-<div class="step"><h3>RTI 1회</h3><p>뉴턴 한 걸음, 노드가 움직인다</p></div><p class="arrow">→</p>
+<div class="step"><h3>RTI 1회</h3><p>Newton 스텝 한 번, 노드가 움직인다</p></div><p class="arrow">→</p>
 <div class="step"><h3>다시 접평면</h3><p>3회 반복해 제약과 해가 만난다</p></div>
 </div>
-<p class="take"><b>travplan:</b> 풀리지 않는 QP는 안전이 아니라 무작위다. 그래서 모든 행을 soft로 둔다.</p>
-<aside>처음 반평면을 넣었을 때 2/4였습니다. 예측 노드가 제약을 위반한 채 status 0으로 최적이 되고 있었습니다. 벌점만 키우거나 반복만 늘려서는 부족했고, 둘을 함께 바꿔야 4/4가 됐습니다. 하드 제약은 QP가 반복 한계로 터지면서 오히려 나빴습니다. 그래서 기본값은 soft 1e6과 RTI 3회입니다.</aside>
+<p class="take"><b>travplan:</b> 풀리지 않는 QP가 내는 것은 안전이 아니라 무작위 명령이다. 그래서 모든 행을 soft로 둔다.</p>
+<aside>처음 반평면을 넣었을 때 2/4였습니다. 예측 노드가 제약을 위반한 채 status 0으로 최적이 되고 있었습니다. 페널티만 키우거나 반복만 늘려서는 부족했고, 둘을 함께 바꿔야 4/4가 됐습니다. hard 제약은 QP가 반복 한계에 걸려 오히려 나빴습니다. 그래서 기본값은 soft 1e6과 RTI 3회입니다.</aside>
 </section>
 <section id="costmap" class="t">
 <div class="head"><p class="kicker">M.1.1 · 비용 옮기기</p><h2>MPPI 비용 항은 MPC에서 비용·제약·종단으로 갈라진다</h2></div>
@@ -356,20 +356,20 @@ section.t.divider h2 { font-size:80px; }
 <div class="card gr"><h3>비용으로 남는 것</h3><p>매끄럽고 미분할 수 있는 것: 추종, 입력, 종단.</p></div>
 <div class="card or"><h3>제약으로 가는 것</h3><p>계단처럼 끊기는 것: 치명 셀, 보행자, 자세 한계.</p></div>
 </div>
-<p class="take"><b>travplan:</b> 경사·거칠기의 매끄러운 지형 항은 아직 없다. 치명 칸 근처 여유는 부드러운 여유 행(TP-0117)이 맡는다.</p>
+<p class="take"><b>travplan:</b> 경사·거칠기의 매끄러운 지형 항은 아직 없다. 치명 셀 근처 여유는 부드러운 여유 행(TP-0117)이 맡는다.</p>
 <aside>MPPI의 CostTerm들을 MPC로 옮기면 세 갈래가 됩니다. 매끄러운 것은 비용으로 남고, 치명도와 보행자는 제약으로 가고, 목표 쪽은 종단 비용이 됩니다. 핵심은 마지막 줄입니다. 거리 제약의 오프셋 rho_k가 GP 분산, 튜브, SLP가 모두 조이는 양입니다. 경사와 거칠기의 매끄러운 지형 항은 아직 넣지 않았습니다.</aside>
 </section>
 <section id="lethal" class="t">
-<div class="head"><p class="kicker">M.1.2 · M.3.4 · 치명 셀 제약</p><h2>기울기가 없는 치명 셀은 비용이 아니라 제약으로 넣는다</h2></div>
+<div class="head"><p class="kicker">M.1.2 · M.3.4 · 치명 셀 제약</p><h2>gradient가 없는 치명 셀은 비용이 아니라 제약으로 넣는다</h2></div>
 <div class="cols">
 <div class="stack">
 <p>치명 셀(cost ≥ 0.95)은 계단이라 미분이 없다. MPPI는 샘플로 넘지만 MPC는 절벽에서 죽는다.</p>
-<p>CasADi는 기호 인덱스로 격자를 읽지 못한다. 그래서 매 스텝 EDT로 가장 가까운 치명 칸을 <b>수치로</b> 찾아 접평면을 파라미터로 넘긴다.</p>
+<p>CasADi는 기호 인덱스로 격자를 읽지 못한다. 그래서 매 스텝 EDT로 가장 가까운 치명 셀을 <b>수치로</b> 찾아 접평면을 파라미터로 넘긴다.</p>
 <p class="small muted">EDT 2.5 ms, 41노드 조회 0.27 ms. 노드마다 따로라 좁은 틈도 표현된다.</p>
 </div>
 <div class="stack">
 <div class="math">$$n_k^\top p_k \ \ge\ n_k^\top c_k + \tfrac12\Delta + m + (1-\gamma)^k \max(h_0 - m, 0)$$</div>
-<p class="small">\(\Delta\) 칸 크기, \(m\) 여유, \(\gamma = 0.2\): 이산 CBF 감쇠(TP-0093). 벽에 붙기 전에 감속한다.</p>
+<p class="small">\(\Delta\) 셀 크기, \(m\) 여유, \(\gamma = 0.2\): 이산 CBF 감쇠(TP-0093). 벽에 붙기 전에 감속한다.</p>
 </div>
 </div>
 <div class="grid3">
@@ -378,10 +378,10 @@ section.t.divider h2 { font-size:80px; }
 <div class="card gy"><h3>격자 고정 코드 생성</h3><p><code>ca.interpolant</code>. 정적 지도에만 쓴다</p></div>
 </div>
 <p class="take"><b>travplan:</b> 이것은 우회가 아니라 전제다. 조일 제약이 없으면 GP 분산도 튜브도 쓸 자리가 없다.</p>
-<aside>MPPI는 치명 벌점 10의 3승으로 그 샘플을 버리지만, 미분으로 푸는 MPC에는 그 길이 없습니다. CasADi가 기호 위치로 격자를 고를 수 없어서, 실무 해법 셋 가운데 소수 장애물을 파라미터로 넘기는 방법을 골랐습니다. travplan의 치명 기하는 대부분 연석 벽이라 원 대신 접평면을 씁니다. 나중에 이산 CBF 감쇠를 더해, 노드의 여유 하한이 로봇 자신의 여유에서 기하급수로 줄어들게 했습니다.</aside>
+<aside>MPPI는 치명 페널티 10³으로 그 샘플을 버리지만, 미분으로 푸는 MPC에는 그 길이 없습니다. CasADi가 기호 위치로 격자를 고를 수 없어서, 실무 해법 셋 가운데 소수 장애물을 파라미터로 넘기는 방법을 골랐습니다. travplan의 치명 기하는 대부분 연석 벽이라 원 대신 접평면을 씁니다. 나중에 이산 CBF 감쇠를 더해, 노드의 여유 하한이 로봇 자신의 여유에서 기하급수로 줄어들게 했습니다.</aside>
 </section>
 <section id="steer" class="t">
-<div class="head"><p class="kicker">M.1 · 모듈 한계</p><h2>모듈 역기구학은 넣지 않고, 차체 상자 제약으로 번역한다</h2></div>
+<div class="head"><p class="kicker">M.1 · 모듈 한계</p><h2>모듈 역기구학은 넣지 않고, 차체 box 제약으로 옮긴다</h2></div>
 <div class="cols">
 <div class="stack">
 <div class="card gy"><h3>IK는 비평활이다</h3><p><code>atan2</code>, 모듈 반전, 클램프, 고정점 반복 3회. 넣으면 SQP가 죽는다. 비동축 오차는 6 mm/s로 작아 잔차가 흡수한다.</p></div>
@@ -390,13 +390,13 @@ section.t.divider h2 { font-size:80px; }
 <figure><img src="../../assets/thumbs/66b749905fa2.webp" style="height:560px"><figcaption>조향 한계 ±2π/3이 속도 공간을 자르는 불연속 평면 — Liu 외, ICAR 2025 [1]</figcaption></figure>
 </div>
 <div class="foot" data-foot><p>[1] Liu 외, ICAR 2025 — arXiv:2510.19054</p></div>
-<aside>AntBot 제어기의 역기구학은 미분할 수 없는 연산으로 되어 있어 최적화에 넣지 않았습니다. 대신 모듈 한계를 차체 수준의 상자 제약으로 옮겼습니다. Liu 외는 조향이 ±130°로 막힌 로봇에서 불연속 평면 8개가 속도 공간을 12구역으로 나눈다고 보였습니다. travplan plant는 ±56.2°라 구역 대신 바퀴마다 실현 가능 원뿔이 생기고, 정면 보행자를 옆걸음으로 비키지 못한 원인이 이것이었습니다. NMPC에 넣는다면 원뿔의 매끄러운 근사를 써야 합니다.</aside>
+<aside>AntBot 제어기의 역기구학은 미분할 수 없는 연산으로 되어 있어 최적화에 넣지 않았습니다. 대신 모듈 한계를 차체 수준의 box 제약으로 옮겼습니다. Liu 외는 조향이 ±130°로 막힌 로봇에서 불연속 평면 8개가 속도 공간을 12구역으로 나눈다고 보였습니다. travplan plant는 ±56.2°라 구역 대신 바퀴마다 실현 가능 원뿔이 생기고, 정면 보행자를 횡이동으로 비키지 못한 원인이 이것이었습니다. NMPC에 넣는다면 원뿔의 매끄러운 근사를 써야 합니다.</aside>
 </section>
 <section id="d-gp" class="t dark divider">
 <p class="kicker">2 · GP 잔차 · 튜브 · 시뮬 리그</p>
 <h2>모델 오차를 어디서 얻고 어떻게 넣나</h2>
 <p class="lead">GP 평균은 파라미터로, 분산은 제약의 오프셋으로. 그 전에 배울 오차가 있는 plant가 필요하다</p>
-<aside>둘째 주제는 학습 잔차입니다. GP 평균을 acados에 넣는 방법이 곧 0차 근사라는 점, 희소 GP를 고른 근거, 튜브의 설계, 세 층 예측 모델, 그리고 plant를 어디서 얻는지를 봅니다.</aside>
+<aside>둘째 주제는 학습 잔차입니다. GP 평균을 acados에 넣는 방법이 곧 0차 근사라는 점, 희소 GP를 고른 근거, 튜브의 설계, 세 층 예측 모델, 그리고 plant를 어디서 얻는지를 살펴봅니다.</aside>
 </section>
 <section id="gp" class="t">
 <div class="head"><p class="kicker">M.3.6 · GP 잔차</p><h2>GP 평균을 노드별 파라미터로 넣으면 0차 근사가 공짜로 선다</h2></div>
@@ -408,7 +408,7 @@ section.t.divider h2 { font-size:80px; }
 </div>
 <div class="stack">
 <div class="card bl"><h3>plant가 만드는 오차 (크기 순)</h3><ul><li>액추에이터 1차 지연, τ = 0.2 s</li><li>모듈 기구학: 조향 한계·반전·스크럽</li><li>지형 슬립: twist를 \((1-s)\)배</li></ul></div>
-<p class="small">명목 대비 RMSE 66–78% 감소. 첫 시도는 95% 적중 0.35였다(관측 잡음 \(\sigma_n^2\)을 빠뜨림).</p>
+<p class="small">명목 대비 RMSE 66–78% 감소. 첫 시도는 95% coverage 0.35였다(관측 잡음 \(\sigma_n^2\)을 빠뜨림).</p>
 </div>
 </div>
 <table>
@@ -416,16 +416,16 @@ section.t.divider h2 { font-size:80px; }
 <tr><td>|d| 평균 / 최대</td><td>0.048 / 0.167</td><td>0.021 / 0.107</td><td>0.052 / 0.281</td></tr>
 <tr><td>선형모형 R²</td><td>0.708</td><td>0.951</td><td>0.888</td></tr>
 </table>
-<p class="take"><b>travplan:</b> TP-0071에서 반평면용으로 깐 파라미터 배관이 그대로 0차 GP-MPC가 됐다.</p>
+<p class="take"><b>travplan:</b> TP-0071에서 반평면용으로 만든 파라미터 전달 구조가 그대로 0차 GP-MPC가 됐다.</p>
 <aside>GP 평균을 노드별 acados 파라미터로 넣으면 솔버는 그것을 상수로 봅니다. 그래서 잔차의 미분이 구조적으로 0이 되고, 이것이 바로 0차 근사입니다. 따로 구현할 것이 없었습니다. 잔차는 plant를 켜고 guidance+mppi로 2,000 샘플을 모아 배웠고, 지연이 선형이라 선형 모형도 상당히 맞았습니다. 처음에는 예측 분산에 관측 잡음을 더하지 않아 크게 과신했습니다.</aside>
 </section>
 <section id="sgpr" class="t">
-<div class="head"><p class="kicker">M.3.8 · M.3.9 · 희소 GP</p><h2>SGPR 유도점 64만 네 축을 모두 통과한다</h2></div>
+<div class="head"><p class="kicker">M.3.8 · M.3.9 · 희소 GP</p><h2>SGPR inducing point 64만 네 축을 모두 통과한다</h2></div>
 <table>
 <tr><th>모델 (훈련 1,400)</th><th>refresh</th><th>41노드 예측</th><th>\(d\omega\) RMSE</th><th>분포 밖 최대 |μ|</th></tr>
 <tr><td>정확 GP 400점</td><td>4.5 ms</td><td>0.72 ms</td><td>0.0233</td><td>0.4</td></tr>
 <tr><td>정확 GP 1400점</td><td class="bad">121.8 ms</td><td>4.75 ms</td><td class="good">0.0190</td><td>0.6</td></tr>
-<tr><td><b>SGPR 유도점 64</b></td><td>5.5 ms</td><td class="good">0.36 ms</td><td>0.0223</td><td class="good">0.4</td></tr>
+<tr><td><b>SGPR inducing point 64</b></td><td>5.5 ms</td><td class="good">0.36 ms</td><td>0.0223</td><td class="good">0.4</td></tr>
 <tr><td>RFF 특징 128</td><td>2.4 ms</td><td>0.21 ms</td><td>0.0208</td><td class="bad">1.9</td></tr>
 <tr><td><i>선형 기준</i></td><td>—</td><td>—</td><td>0.0241</td><td>—</td></tr>
 </table>
@@ -433,7 +433,7 @@ section.t.divider h2 { font-size:80px; }
 <div class="card bl"><h3>① 정확도 · ③ 시간</h3><p>차이는 \(d\omega\)에서만 난다. SGPR 64는 1,400점을 다 쓰면서 주기 안에 든다.</p></div>
 <div class="card bl"><h3>② 보정 · ④ 분포 밖</h3><p>SGPR은 보수적이고 데이터에서 멀면 prior로 돌아간다. RFF는 1.9까지 튄다.</p></div>
 </div>
-<p class="take"><b>travplan:</b> 정확 GP를 SGPR 64로 바꾼 것만으로 폐루프 발산(0/12)이 멈췄다. 발상이 아니라 근사의 문제였다.</p>
+<p class="take"><b>travplan:</b> 정확 GP를 SGPR 64로 바꾼 것만으로 폐루프 발산(0/12)이 멈췄다. 아이디어가 아니라 근사의 문제였다.</p>
 <aside>같은 잔차 데이터로 정확 GP, SGPR, RFF를 정확도, 보정, 시간, 분포 밖의 네 축으로 쟀습니다. dvx와 dvy는 지연이 선형이라 모든 모델이 같고 차이는 d omega에서만 납니다. 정확 GP는 데이터를 다 쓰면 refresh가 제어 주기를 넘고, RFF는 빠르지만 분포 밖에서 1.9까지 튑니다. SGPR 64로 바꾸자 정확 GP에서 나던 폐루프 발산이 사라졌습니다.</aside>
 </section>
 <section id="tube" class="t">
@@ -447,23 +447,23 @@ section.t.divider h2 { font-size:80px; }
 <p class="small">먼 노드까지 보장되는 튜브를 상태 하나로 얻는다. 보장은 상수가 오프라인 LMI에서 나올 때만 선다.</p>
 <p class="take"><b>travplan:</b> 1번 노드 coverage 97.4%로 보정은 맞았지만, 실행 여유도 성공도 늘지 않았다(선택 스택 mpc_gpcc).</p>
 <div class="foot" data-foot><p>[5] Dubied 외, Automatica 2026 — arXiv:2507.02098</p></div>
-<aside>GP 분산이든 튜브든 SLP든 결국 같은 rho_k를 정하는 장치입니다. GP는 확률이고 튜브는 유계 외란이라 그대로 잇지 못하므로, GP의 신뢰 타원체를 외란 집합으로 쓰는 것이 다리입니다. travplan은 잔차 SGPR의 분산을 노드별 조임으로 바꾸고 8 cm 상한을 두었습니다. 결과는 작업 기록에서 다시 보지만, 측정되는 효과가 없어 기본값은 꺼져 있습니다.</aside>
+<aside>GP 분산이든 튜브든 SLP든 결국 같은 rho_k를 정하는 장치입니다. GP는 확률이고 튜브는 유계 외란이라 그대로 잇지 못하므로, GP의 신뢰 타원체를 외란 집합으로 쓰는 것이 다리입니다. travplan은 잔차 SGPR의 분산을 노드별 조임으로 바꾸고 8 cm 상한을 두었습니다. 결과는 작업 기록에서 다시 다루지만, 측정되는 효과가 없어 기본값은 꺼져 있습니다.</aside>
 </section>
 <section id="layers" class="t">
 <div class="head"><p class="kicker">M.1.3 · TP-0124–0126</p><h2>예측 모델은 기구학 → 동역학 → 학습의 세 층으로 쌓는다</h2></div>
 <table>
 <tr><th>층</th><th>travplan에서</th><th>지금</th></tr>
-<tr><td>기구학</td><td>twist 적분 + 상자·가속 한계 (<code>SwerveModel</code>)</td><td>MPPI·MPC 모두 이것. 기준선</td></tr>
+<tr><td>기구학</td><td>twist 적분 + box·가속 한계 (<code>SwerveModel</code>)</td><td>MPPI·MPC 모두 이것. 기준선</td></tr>
 <tr><td>동역학</td><td>모듈 1차 지연 + 슬립 (<code>SwervePlant</code>)</td><td>MPPI 지연 rollout <code>mppi_plant_lag</code>(TP-0150). MPC의 <code>mpc_lag</code>는 선택</td></tr>
 <tr><td>학습</td><td>GP 잔차, NN 잔차, forward dynamics 모델(FDM)</td><td>GP 잔차만(TP-0120). 같은 프로토콜로 묶는다</td></tr>
 </table>
 <div class="cols">
-<p class="small">학습 층은 로봇 메쉬를 고도 지도 위에서 굴린 forward 시뮬레이션에서 자기 지도로 배운다(TP-0125). 한 점의 cost로는 자세·하부 간섭·단차를 구별하지 못한다.</p>
-<p class="small">선례: FDM + 샘플링 MPC(Kim 외, RSS 2022)는 6초 궤적 1,500개를 3 ms에 굴린다 [10]. actuator net(Hwangbo 외, 2019) [11].</p>
+<p class="small">학습 층은 로봇 메쉬를 고도 지도 위에서 forward 시뮬레이션한 데이터로 자기지도 학습한다(TP-0125). 한 점의 cost로는 자세·하부 간섭·단차를 구별하지 못한다.</p>
+<p class="small">선례: FDM + 샘플링 MPC(Kim 외, RSS 2022)는 6초 궤적 1,500개를 3 ms에 rollout한다 [10]. actuator net(Hwangbo 외, 2019) [11].</p>
 </div>
 <figure><img src="../../assets/thumbs/b75e146329bb.webp" style="height:250px"><figcaption>FDM 기반 안전 내비게이션: 샘플러 → FDM 예측 → 보상 가중 평균 — Kim 외, RSS 2022 [10]</figcaption></figure>
 <div class="foot" data-foot><p>[10] Kim, Kim, Hwangbo, RSS 2022 — arXiv:2204.08647 · [11] Hwangbo 외, Science Robotics 2019 — arXiv:1901.08652</p></div>
-<aside>2026-10-01 사용자 결정으로 예측 모델을 세 층으로 쌓습니다. 잘 아는 것은 식으로 두고, 식이 못 담는 것만 배운다는 생각입니다. 지금 MPPI와 MPC는 둘 다 기구학 모델 하나로 예측하고 학습 층은 GP 잔차뿐입니다. 학습 층의 데이터는 로봇 메쉬로 굴린 시뮬레이션에서 나오게 하려고 하고, KAIST RaiLab의 FDM 연구가 그 선례입니다.</aside>
+<aside>2026-10-01 사용자 결정으로 예측 모델을 세 층으로 쌓습니다. 잘 아는 것은 식으로 두고, 식이 못 담는 것만 배운다는 생각입니다. 지금 MPPI와 MPC는 둘 다 기구학 모델 하나로 예측하고 학습 층은 GP 잔차뿐입니다. 학습 층의 데이터는 로봇 메쉬로 돌린 시뮬레이션에서 얻으려 하고, KAIST RaiLab의 FDM 연구가 그 선례입니다.</aside>
 </section>
 <section id="simrig" class="t">
 <div class="head"><p class="kicker">M.2 · 시뮬 리그</p><h2>plant가 MPC 모델과 같으면 아무것도 검증되지 않는다</h2></div>
@@ -478,7 +478,7 @@ section.t.divider h2 { font-size:80px; }
 <p class="small">MuJoCo 비동축 모듈 smoke: 5,000스텝 11 ms, 실시간의 938배</p>
 </div>
 <div class="stack">
-<div class="card or"><h3>URDF에 없는 것은 손으로 쓴다</h3><ul><li>접촉 마찰·solref·solimp</li><li>Dynamixel 액추에이터 모델</li><li>관성은 자리표시자(TP-0035)</li><li>조향 범위: URDF ±90° / 제어기 ±60° / 모터 ±56.2°</li></ul></div>
+<div class="card or"><h3>URDF에 없는 것은 손으로 쓴다</h3><ul><li>접촉 마찰·solref·solimp</li><li>Dynamixel 액추에이터 모델</li><li>관성은 placeholder 값(TP-0035)</li><li>조향 범위: URDF ±90° / 제어기 ±60° / 모터 ±56.2°</li></ul></div>
 </div>
 </div>
 <div class="grid3">
@@ -496,28 +496,28 @@ section.t.divider h2 { font-size:80px; }
 <aside>셋째 주제는 최근 연구입니다. 2025–2026년 MPC 계열은 모델을 더 맞게 하는 쪽과 초기해를 더 좋게 하는 쪽으로 움직였습니다. 하지만 뒤에서 볼 우리 실패의 원인, 즉 지연과 명령 떨림을 정면으로 다룬 바퀴 로봇 NMPC 실험 논문은 2026-10 조사에서 찾지 못했습니다.</aside>
 </section>
 <section id="cmp1" class="t">
-<div class="head"><p class="kicker">M.4 · 비교표 (1/2)</p><h2>기울기 쪽은 잔차·튜브를, 초기해 쪽은 학습 모델을 더한다</h2></div>
+<div class="head"><p class="kicker">M.4 · 비교표 (1/2)</p><h2>gradient 쪽은 잔차·튜브를, 초기해 쪽은 학습 모델을 더한다</h2></div>
 <table>
 <tr><th>연구 (연·발표)</th><th>입력·표현</th><th>방법의 핵심</th><th>최적화기</th><th>실험</th></tr>
 <tr><td>AWOISV 필터 튜브 MPC (2025.08 · 프리프린트)</td><td>Frenet 좌표, 회전 중심 각도</td><td>운동 모드 + 칼만 필터 오차로 튜브</td><td>LTV-MPC</td><td>TruckSim, HIL</td></tr>
 <tr><td>확산 초기해 MPC (2026.01 · RA-L 2026)</td><td>RGB 영상의 물체 슬롯 6개</td><td>확산 초안을 SDF hard 제약 OCP가 다듬는다</td><td>Crocoddyl</td><td>Franka 실물</td></tr>
 <tr><td>RL 유도 PAC-NMPC (2026.09 · 프리프린트)</td><td>LiDAR 또는 깊이 영상</td><td>RL 정책 → 초기해, 가치 → 종단 비용</td><td>샘플링(SNOPT)</td><td>1/10 랠리카 실물</td></tr>
 <tr><td>경로를 품은 MPC (2025.09 · 프리프린트)</td><td>가시성 그래프 Dijkstra 경로</td><td>앞쪽 경로 구간을 결정 변수로</td><td>NMPC</td><td>1:28 차량</td></tr>
-<tr><td>강건·적응 GP-MPC (2025.07 · Automatica 2026)</td><td>상태, GP 오차 상한</td><td>수축 계량 위 스칼라 튜브로 GP 오차 전파</td><td>L4acados SQP</td><td>쿼드로터 시뮬</td></tr>
-<tr><td>데이터에서 강건 MPC까지 (2025.08 · 프리프린트)</td><td>입출력 기록</td><td>기록에서 외란 상자, SDP로 튜브</td><td>acados·ForcesPro</td><td>쿼드로터 시뮬</td></tr>
+<tr><td>강건·적응 GP-MPC (2025.07 · Automatica 2026)</td><td>상태, GP 오차 상한</td><td>contraction metric 위 스칼라 튜브로 GP 오차 전파</td><td>L4acados SQP</td><td>쿼드로터 시뮬</td></tr>
+<tr><td>데이터에서 강건 MPC까지 (2025.08 · 프리프린트)</td><td>입출력 데이터</td><td>데이터에서 외란 box, SDP로 튜브</td><td>acados·ForcesPro</td><td>쿼드로터 시뮬</td></tr>
 </table>
 <p class="take"><b>travplan:</b> 초기해 쪽 연구는 OCP가 붙어야 성공했다. Planner D 궤적도 NMPC가 제약으로 다듬게 한다.</p>
 <aside>표를 둘로 나눴습니다. 첫 장은 튜브와 초기해 계열입니다. 확산 초기해 MPC는 OCP 단독 성공이 10% 아래였는데 초기해를 받자 80% 안팎이 됐습니다. 강건·적응 GP-MPC는 GP 오차 상한을 스칼라 미분방정식 하나로 전파하는데, SQP 반복 한 번이 50–90 ms라 실시간과는 거리가 있습니다. 조향 제약 4WIS 계획(Liu 외)은 MPC가 아니라 배경으로만 둡니다.</aside>
 </section>
 <section id="cmp2" class="t">
-<div class="head"><p class="kicker">M.4 · 비교표 (2/2)</p><h2>지형은 모델 입력이나 제약으로 들어가고, 샘플링이 비평활 모델을 굴린다</h2></div>
+<div class="head"><p class="kicker">M.4 · 비교표 (2/2)</p><h2>지형은 모델 입력이나 제약으로 들어가고, 샘플링이 비평활 모델을 rollout한다</h2></div>
 <table>
 <tr><th>연구 (연·발표)</th><th>입력·표현</th><th>방법의 핵심</th><th>최적화기</th><th>실험</th></tr>
 <tr><td>강건 비선형 MPC 외란 피드백 (2025.09 · ICRA 2026)</td><td>상태</td><td>명목·외란 피드백·오차 상한을 함께</td><td>SCP</td><td>시뮬</td></tr>
 <tr><td>고속 전지형 자율주행 (2026.03 · T-RO 투고)</td><td>고도 지도와 수치 기울기</td><td>3차원 강체 모델 + 에너지 안정 여유</td><td>GPU 샘플링</td><td>실차 48회</td></tr>
 <tr><td>비평면 재귀 희소 GP (2026.02 · IEEE IV 2026)</td><td>표면 법선의 roll·pitch</td><td>roll·pitch 입력 GP 잔차, 온라인 갱신</td><td>MPPI</td><td>Isaac Sim만</td></tr>
-<tr><td>에너지 정규화 NN 잔차 (2026.04 · 프리프린트)</td><td>상태, 서보각, 로터 추력</td><td>MLP 잔차에 에너지 증가 벌점</td><td>acados RTI</td><td>틸트 쿼드로터</td></tr>
-<tr><td>전체 모델 물리 롤아웃 (2025.06 · Sci. Robotics 2025)</td><td>고도 지도, 발판 후보</td><td>필터 뒤 RaiSim 롤아웃으로 고른다</td><td>샘플링 + 물리</td><td>Raibo 실물</td></tr>
+<tr><td>에너지 정규화 NN 잔차 (2026.04 · 프리프린트)</td><td>상태, 서보각, 로터 추력</td><td>MLP 잔차에 에너지 증가 페널티</td><td>acados RTI</td><td>틸트 쿼드로터</td></tr>
+<tr><td>전체 모델 물리 rollout (2025.06 · Sci. Robotics 2025)</td><td>고도 지도, foothold 후보</td><td>필터 뒤 RaiSim rollout으로 고른다</td><td>샘플링 + 물리</td><td>Raibo 실물</td></tr>
 <tr><td>L4acados (2024.11 · IEEE TCST)</td><td>상태</td><td>acados에 Python 잔차, 0차 GP-MPC</td><td>SQP-RTI</td><td>경주차·실차</td></tr>
 </table>
 <p class="take"><b>travplan:</b> 잔차 GP 구조는 이미 같다. 새로운 것은 부호 있는 roll·pitch 입력 하나다.</p>
@@ -527,7 +527,7 @@ section.t.divider h2 { font-size:80px; }
 <div class="head"><p class="kicker">M.4 · 공통점</p><h2>명목 모델에 잔차를 더하고, 그 불확실성으로 제약을 조인다</h2></div>
 <div class="grid2">
 <div class="card or"><span class="tag or">1</span><h3>명목 모델 + 학습 잔차</h3><p>식으로 아는 부분은 남기고 남는 오차만 배운다. <code>mpc_gp</code>도 같다.</p></div>
-<div class="card or"><span class="tag or">2</span><h3>불확실성으로 제약을 조인다</h3><p>GP 오차 상한, 외란 상자, 오차 불변 집합. M.1.2의 \(\rho_k\) 자리다.</p></div>
+<div class="card or"><span class="tag or">2</span><h3>불확실성으로 제약을 조인다</h3><p>GP 오차 상한, 외란 box, 오차 불변 집합. M.1.2의 \(\rho_k\) 자리다.</p></div>
 <div class="card bl"><span class="tag bl">3</span><h3>학습 모델이 출발점을 준다</h3><p>확산 궤적, RL 정책, 전역 경로 구간이 국소해 문제를 위에서 푼다.</p></div>
 <div class="card bl"><span class="tag bl">4</span><h3>지형은 비용 한 항으로 남지 않는다</h3><p>GP 입력(roll·pitch), 3차원 강체 모델과 전복 제약, 물리 엔진으로 들어간다.</p></div>
 </div>
@@ -537,12 +537,12 @@ section.t.divider h2 { font-size:80px; }
 <section id="diff" class="t">
 <div class="head"><p class="kicker">M.4 · 차이점</p><h2>네 축에서 갈리고, travplan은 그 축마다 한쪽에 서 있다</h2></div>
 <div class="grid2">
-<div class="card gy"><h3>잔차를 언제 배우나</h3><p>오프라인 고정 vs 온라인 갱신. <code>mpc_gp</code>는 온라인(고리 버퍼 200, 5 스텝마다). 경사 부호가 없고 하이퍼파라미터는 고정이다.</p></div>
-<div class="card gy"><h3>확률이냐 상자냐</h3><p>확률은 신뢰도를 고르고, 상자는 단순하지만 크기를 데이터로 정한다. TP-0069의 먼 노드 폭은 보정되지 않았다.</p></div>
-<div class="card gy"><h3>기울기냐 샘플이냐</h3><p>기울기는 매끄러운 모델이 필요하고, 샘플은 접촉·바퀴 이탈을 그대로 굴린다. MPPI와 NMPC가 양쪽에 있다.</p></div>
-<div class="card gy"><h3>조향 한계를 어디서</h3><p>Planner 비용(±130°), MPC 운동 모드(±90°). travplan ±56.2°는 원뿔이고, NMPC는 상자만 쓴다.</p></div>
+<div class="card gy"><h3>잔차를 언제 배우나</h3><p>오프라인 고정 vs 온라인 갱신. <code>mpc_gp</code>는 온라인(ring 버퍼 200, 5 스텝마다). 경사 부호가 없고 하이퍼파라미터는 고정이다.</p></div>
+<div class="card gy"><h3>확률이냐 box냐</h3><p>확률은 신뢰도를 고르고, box는 단순하지만 크기를 데이터로 정한다. TP-0069의 먼 노드 폭은 보정되지 않았다.</p></div>
+<div class="card gy"><h3>gradient냐 샘플이냐</h3><p>gradient는 매끄러운 모델이 필요하고, 샘플은 접촉·바퀴 이탈을 그대로 rollout한다. MPPI와 NMPC가 양쪽에 있다.</p></div>
+<div class="card gy"><h3>조향 한계를 어디서</h3><p>Planner 비용(±130°), MPC 운동 모드(±90°). travplan ±56.2°는 원뿔이고, NMPC는 box만 쓴다.</p></div>
 </div>
-<p class="take"><b>travplan:</b> 두 갈래가 기울기·샘플 축의 양 끝에 있으니, 같은 벤치마크의 짝 비교가 곧 이 축의 실험이다.</p>
+<p class="take"><b>travplan:</b> 두 갈래가 gradient·샘플 축의 양 끝에 있으니, 같은 벤치마크의 짝 비교가 곧 이 축의 실험이다.</p>
 <aside>차이는 네 축으로 정리됩니다. 잔차 학습 시점에서 travplan은 이미 온라인 쪽이지만 경사의 부호가 없습니다. 불확실성 표현에서는 TP-0069가 손으로 정한 오차 모델에 8 cm 상한을 두어 먼 노드가 보정되지 않았습니다. 최적화 방식에서는 travplan의 두 갈래가 이 축의 양쪽 끝에 있습니다. 조향 한계는 travplan plant가 ±56.2°라 다른 연구와 사정이 다릅니다.</aside>
 </section>
 <section id="take" class="t">
@@ -552,11 +552,11 @@ section.t.divider h2 { font-size:80px; }
 <div class="card gr"><span class="tag gr">시도 순서</span><ol><li><b>지연 상태 NMPC</b> (TP-0124 MPC 쪽): 명령을 상태 3개로, 변화율에 비용</li><li>부호 있는 경사 입력 GP: 1 s 예측 오차부터</li><li>조향 원뿔의 매끄러운 근사: 저속 처리 함께</li><li>Planner D 궤적을 초기해로: 경사로 제외 시간 초과로 판정</li><li>자세 여유(ESM)를 <code>CostTerm</code>으로 먼저</li></ol></div>
 </div>
 <div class="stack">
-<div class="card gy"><span class="tag">가져오지 않을 것</span><p>수축 계량 튜브·SDP 파이프라인: 오프라인 LMI·SDP가 필요하고 실험이 쿼드로터 시뮬뿐이다.</p><p>PAC-NMPC의 SNOPT: acados RTI 구조와 맞지 않는다. 학습 가치를 종단 비용으로 쓰는 부분만 따로 본다.</p></div>
+<div class="card gy"><span class="tag">가져오지 않을 것</span><p>contraction metric 튜브·SDP 파이프라인: 오프라인 LMI·SDP가 필요하고 실험이 쿼드로터 시뮬뿐이다.</p><p>PAC-NMPC의 SNOPT: acados RTI 구조와 맞지 않는다. 학습 가치를 종단 비용으로 쓰는 부분만 따로 본다.</p></div>
 </div>
 </div>
 <p class="take"><b>travplan:</b> 실패 원인(bang-bang 떨림)에 직접 닿는 것은 고전 해법인 지연 상태 확장뿐이다.</p>
-<aside>가져올 것 가운데 TP-0152의 실패 원인에 직접 닿는 것은 조사 밖의 고전 해법인 지연 상태 확장입니다. 명령을 상태로 두고 명령 변화율에 비용을 겁니다. Planner D 초기해는 기대할 몫이 작습니다. mpc 시간 초과 104/360 가운데 82가 설계 한계로 둔 경사로라, 판정은 경사로를 뺀 시간 초과 22/270으로 합니다. 이 순서는 아직 TODO에 넣지 않은 후보입니다.</aside>
+<aside>가져올 것 가운데 TP-0152의 실패 원인에 직접 닿는 것은 조사 밖의 고전 해법인 지연 상태 확장입니다. 명령을 상태로 두고 명령 변화율에 비용을 겁니다. Planner D 초기해는 기대할 이득이 작습니다. mpc 시간 초과 104/360 가운데 82가 설계 한계로 둔 경사로라, 판정은 경사로를 뺀 시간 초과 22/270으로 합니다. 이 순서는 아직 TODO에 넣지 않은 후보입니다.</aside>
 </section>
 <section id="d-log" class="t dark divider">
 <p class="kicker">4 · 작업 기록 (M.3)</p>
@@ -596,7 +596,7 @@ section.t.divider h2 { font-size:80px; }
 <tr><td>제어 시간</td><td class="good">8.6 ms</td><td>12.6 ms</td></tr>
 </table>
 </div>
-<figure><img src="../../assets/figs/tp0070_mpc_vs_mppi.webp" style="height:430px"><figcaption>노란 선 MPC, 파란 선 MPPI, 빨간 칸 치명 셀, X 실패 지점</figcaption></figure>
+<figure><img src="../../assets/figs/tp0070_mpc_vs_mppi.webp" style="height:430px"><figcaption>노란 선 MPC, 파란 선 MPPI, 빨간 영역 치명 셀, X 실패 지점</figcaption></figure>
 </div>
 <p class="take"><b>travplan:</b> 추종과 계산 예산은 이미 이겼다. 부족한 것은 지형 인지 하나다.</p>
 <aside>첫 측정에서 MPC는 6/12, 실패는 전부 치명 실패였습니다. 평평한 slope_crossfall에서는 MPPI와 같았고 curb_ramp에서는 전멸했습니다. 이유는 숨어 있지 않습니다. 0단계 MPC에는 지형 항이 하나도 없어서, Guidance 경로가 연석 면을 스치면 그대로 들어갔습니다. 대신 제어 시간과 jerk는 이미 MPPI보다 나았습니다.</aside>
@@ -616,17 +616,17 @@ section.t.divider h2 { font-size:80px; }
 </div>
 <figure><img src="../../assets/figs/tp0071_mpc_vs_mppi.webp" style="height:430px"><figcaption>같은 네 장면, 치명을 제약으로 넣은 뒤. MPC는 하나에서만 죽는다</figcaption></figure>
 </div>
-<p class="take"><b>travplan:</b> 노드마다 따로 거는 접평면이라 램프 양옆 벽을 서로 다른 노드가 집는다.</p>
-<aside>노드마다 접평면 하나를 걸자 9/12가 됐습니다. curb_ramp에서는 램프 틈을 통과하고 bumps_potholes에서는 블록 사이를 MPPI와 비슷한 선으로 지납니다. 남은 세 실패는 제어 시간 상위 셋과 정확히 같았고 QP가 반복 한계를 뱉었습니다. 그래서 솔버 문제라고 적었는데, 이것은 다음 장에서 정정합니다.</aside>
+<p class="take"><b>travplan:</b> 노드마다 따로 거는 접평면이라 램프 양옆 벽을 서로 다른 노드가 잡는다.</p>
+<aside>노드마다 접평면 하나를 걸자 9/12가 됐습니다. curb_ramp에서는 램프 틈을 통과하고 bumps_potholes에서는 블록 사이를 MPPI와 비슷한 선으로 지납니다. 남은 세 실패는 제어 시간 상위 셋과 정확히 같았고 QP가 반복 한계(status 3)로 끝났습니다. 그래서 솔버 문제라고 적었는데, 이것은 다음 장에서 정정합니다.</aside>
 </section>
 <section id="holes" class="t">
 <div class="head"><p class="kicker">M.3.10 · TP-0093</p><h2>남은 실패는 솔버가 아니라 제약의 구멍이었다</h2></div>
 <table>
 <tr><th>구멍</th><th>무엇이 일어났나</th><th>고침</th></tr>
-<tr><td>덩어리 안의 노드</td><td>가장 가까운 치명 칸이 자기 자신이라 법선이 없어 행을 껐다</td><td>가장 가까운 자유 칸 쪽 법선</td></tr>
-<tr><td>칸 중심에서 잰 여유</td><td>0.15 m가 가장자리 기준으로는 0.125 m였다</td><td>가장자리에서 잰다(반 칸)</td></tr>
-<tr><td>지도 경계</td><td>지도 밖은 COST 1인데 <code>LethalField</code>는 격자 안만 봤다</td><td>바깥 한 칸을 치명으로</td></tr>
-<tr><td>칸 조회 (코드 리뷰)</td><td>내림으로 찾아 반 칸 어긋났다</td><td>반올림</td></tr>
+<tr><td>덩어리 안의 노드</td><td>가장 가까운 치명 셀이 자기 자신이라 법선이 없어 행을 껐다</td><td>가장 가까운 자유 셀 쪽 법선</td></tr>
+<tr><td>셀 중심에서 잰 여유</td><td>0.15 m가 가장자리 기준으로는 0.125 m였다</td><td>가장자리에서 잰다(반 셀)</td></tr>
+<tr><td>지도 경계</td><td>지도 밖은 COST 1인데 <code>LethalField</code>는 격자 안만 봤다</td><td>바깥 한 셀을 치명으로</td></tr>
+<tr><td>셀 조회 (코드 리뷰)</td><td>내림으로 찾아 반 셀 어긋났다</td><td>반올림</td></tr>
 </table>
 <div class="cols">
 <p class="small">+ 이산 CBF 감쇠(γ = 0.2): 경로가 뒤집힐 때 벽에 붙기 전에 감속한다.</p>
@@ -647,17 +647,17 @@ section.t.divider h2 { font-size:80px; }
 </table>
 <p class="small">명령 수정(TP-0122) 뒤 MPC도 24/24, 충돌 0이다.</p>
 </div>
-<div class="card or"><h3>지평 전체에 걸면 로봇이 얼어붙는다</h3><p>원판은 예측 시간에 따라 0.15 m/s씩 자란다. 폭 1 m 통로에서 마주 오는 보행자의 원판은 4초 뒤 반경 1.15 m가 되어 통로를 막는다. 앞으로 가는 해가 없어진 MPC는 물러나다 블록에 닿았다.</p></div>
+<div class="card or"><h3>horizon 전체에 걸면 로봇이 얼어붙는다</h3><p>원판은 예측 시간에 따라 0.15 m/s씩 자란다. 폭 1 m 통로에서 마주 오는 보행자의 원판은 4초 뒤 반경 1.15 m가 되어 통로를 막는다. 앞으로 가는 해가 없어진 MPC는 물러나다 블록에 닿았다.</p></div>
 </div>
 <p class="take"><b>travplan:</b> freezing robot 구조다. 근본 처방은 로봇의 움직임에 반응하는 예측이다(TP-0090).</p>
-<aside>보행자는 지형과 같은 방식으로, 노드마다 그 시각의 가장 가까운 보행자 원판에 접평면을 겁니다. 처음 지평 4초 전체에 걸었더니 원판이 통로를 막아 MPC가 물러나다 블록에 닿았습니다. 그래서 자라는 원판은 앞 2초에만 제약으로 걸고 나머지는 재계획에 맡깁니다. slack을 낮추면 보행자를 스쳐서 가중치는 지형과 같게 둡니다. MPC는 여유를 경계까지 써서 MPPI보다 보행자에게 바짝 붙습니다.</aside>
+<aside>보행자는 지형과 같은 방식으로, 노드마다 그 시각의 가장 가까운 보행자 원판에 접평면을 겁니다. 처음 horizon 4초 전체에 걸었더니 원판이 통로를 막아 MPC가 물러나다 블록에 닿았습니다. 그래서 자라는 원판은 앞 2초에만 제약으로 걸고 나머지는 재계획에 맡깁니다. slack을 낮추면 보행자를 스쳐서 가중치는 지형과 같게 둡니다. MPC는 여유를 경계까지 써서 MPPI보다 보행자에게 바짝 붙습니다.</aside>
 </section>
 <section id="gploop" class="t">
 <div class="head"><p class="kicker">M.3.7 · M.3.12 · TP-0068</p><h2>GP 평균의 폐루프를 무너뜨린 원인은 명령과 데이터 범위였다</h2></div>
 <div class="cols">
 <div class="stack">
 <div class="card or"><span class="tag or">① 명령</span><p>GP를 넣은 모델의 \(Z_k\)는 plant가 실현할 twist다. 그것을 명령으로 보내 지연이 두 번 걸렸다. 보낼 것은 \(Z_k + u_k\Delta t\)다.</p></div>
-<div class="card bl"><span class="tag bl">② 데이터</span><p>MPPI 주행은 명령 \(v_x\)가 0.93 m/s를 넘지 않았다. 지평 뒤쪽은 1.1–1.5 m/s를 계획한다. 가진 주행 998 샘플을 더했다.</p></div>
+<div class="card bl"><span class="tag bl">② 데이터</span><p>MPPI 주행은 명령 \(v_x\)가 0.93 m/s를 넘지 않았다. horizon 뒤쪽은 1.1–1.5 m/s를 계획한다. 가진(excitation) 주행 998 샘플을 더했다.</p></div>
 </div>
 <table>
 <tr><th>plant, mpc_gp</th><th>curb_ramp</th><th>bumps</th></tr>
@@ -727,7 +727,7 @@ section.t.divider h2 { font-size:80px; }
 <div class="card or"><h3>지연 모델은 맞았다. 계획이 bang-bang이다</h3><p>두 NMPC 모두 계획이 가속 상한에 붙는다. 명목 <code>mpc</code>에서는 plant 지연이 그것을 걸러 줬다. 되돌리면 명령이 스텝마다 한계 양끝을 오가고, 조향 속도 한계에 걸리는 스텝이 6%에서 20%로 는다.</p></div>
 </div>
 <p class="take"><b>travplan:</b> 다음 후보는 명령을 상태로 두고 변화율에 비용을 거는 지연 상태 모델이다(TP-0124).</p>
-<aside>공정한 비교를 위해 mppi_plant_lag와 같은 정보를 가진 NMPC를 만들었습니다. 가속 상자에 a를 곱하고 명령에서 지연을 되돌리면, 지연만 있는 plant에서 계획한 twist가 그대로 실현됩니다. 그런데 치명이 늘었습니다. 지연 모델은 맞았지만, 지연이 bang-bang 계획을 걸러 주던 필터 역할까지 없어졌기 때문입니다. 가속 비용을 키우면 떨림은 줄었지만 회피가 굼떠져 치명이 더 늘었습니다.</aside>
+<aside>공정한 비교를 위해 mppi_plant_lag와 같은 정보를 가진 NMPC를 만들었습니다. 가속 box에 a를 곱하고 명령에서 지연을 되돌리면, 지연만 있는 plant에서 계획한 twist가 그대로 실현됩니다. 그런데 치명이 늘었습니다. 지연 모델은 맞았지만, 지연이 bang-bang 계획을 걸러 주던 필터 역할까지 없어졌기 때문입니다. 가속 비용을 키우면 떨림은 줄었지만 회피가 굼떠져 치명이 더 늘었습니다.</aside>
 </section>
 <section id="summary" class="t">
 <div class="head"><p class="kicker">5 · 정리와 다음</p><h2>NMPC는 정적·보행자에서 MPPI와 같아졌고, plant의 지연에서 졌다</h2></div>

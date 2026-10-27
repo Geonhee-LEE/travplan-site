@@ -239,20 +239,20 @@ section.t.divider h2 { font-size:80px; }
 <p class="kicker">TRAVPLAN · 챕터 발표 · 시뮬레이션 (§S)</p>
 <div class="stack"><h1>시뮬레이션은<br>네 층이다</h1><p class="lead">운동학 시뮬, Isaac Sim, 보도 장면, 실물과의 짝 평가 —<br>무엇을 믿고, 무엇부터 고칠까</p></div>
 <div class="pills"><p class="pill on">§S 시뮬레이션</p><p class="pill">엔진·리그</p><p class="pill">보도 장면·보행자</p><p class="pill">sim-to-real</p><p class="pill">지형·바퀴</p><p class="pill">최근 연구 16편</p></div>
-<aside>이 발표는 리서치 문서의 시뮬레이션 챕터를 30–40분 이야기로 옮긴 것입니다. 질문은 하나입니다. 시뮬에서 나온 12/12가 실물에서 무엇을 뜻하는가. 엔진, 장면, 보행자, 센서, 바퀴 순서로 보고, 마지막에 최근 연구 비교와 권고 로드맵을 봅니다.</aside>
+<aside>이 발표는 리서치 문서의 시뮬레이션 챕터를 30–40분 이야기로 옮긴 것입니다. 질문은 하나입니다. 시뮬에서 나온 12/12가 실물에서 무엇을 뜻하는가. 엔진, 장면, 보행자, 센서, 바퀴 순서로 살펴보고, 마지막에 최근 연구 비교와 권고 로드맵을 다룹니다.</aside>
 </section>
 <section id="agenda" class="t">
 <div class="head"><p class="kicker">목차 · 결론 먼저</p><h2>지금 가장 값싼 개선은 운동학 시뮬의 빈틈을 메우는 일이다</h2></div>
 <div class="grid3">
-<div class="card or"><span class="tag or">1 · 엔진·리그</span><h3>Isaac Sim을 유지한다</h3><p>엔진 속도와 재현성은 자기 작업으로 잰다.</p></div>
+<div class="card or"><span class="tag or">1 · 엔진·리그</span><h3>Isaac Sim을 유지한다</h3><p>엔진 속도와 재현성은 우리 작업으로 직접 잰다.</p></div>
 <div class="card bl"><span class="tag bl">2 · 보도 장면·보행자</span><h3>평가 틀을 빌린다</h3><p>SidewalkBench의 세 층. 보행자는 반응과 재현성 사이에서 고른다.</p></div>
 <div class="card gr"><span class="tag gr">3 · 센서·sim-to-real</span><h3>허점이 숫자를 부풀린다</h3><p>L0의 가림이 그랬다. 예측력(SRCC)을 먼저 설계한다.</p></div>
 <div class="card or"><span class="tag or">4 · 지형·바퀴</span><h3>바퀴 접촉은 아직 못 믿는다</h3><p>운동학 모델에 모듈 한계와 지연을 넣고 보정한다.</p></div>
-<div class="card bl"><span class="tag bl">5 · 최근 연구 16편</span><h3>무게가 평가로 옮겼다</h3><p>"더 빠른 엔진"에서 "믿을 수 있는 평가"로.</p></div>
+<div class="card bl"><span class="tag bl">5 · 최근 연구 16편</span><h3>무게 중심이 평가로 옮겨 갔다</h3><p>"더 빠른 엔진"에서 "믿을 수 있는 평가"로.</p></div>
 <div class="card gr"><span class="tag gr">6 · 권고</span><h3>L0 → L1 → L2 → L3</h3><p>싸고 효과가 큰 순서로 간다. TP 번호로 정리했다.</p></div>
 </div>
 <p class="take"><b>travplan:</b> 질문은 하나다 — 시뮬의 12/12가 실물에서 무엇을 뜻하는가.</p>
-<aside>결론을 먼저 말씀드립니다. 엔진은 바꾸지 않고, 지금 돌고 있는 운동학 시뮬의 빈틈을 하나씩 메우는 것이 가장 싸고 효과가 큽니다. 여섯 묶음은 각각 이 결론 하나씩을 뒷받침합니다. 마지막 권고 로드맵이 이 순서를 TP 번호로 정리합니다.</aside>
+<aside>결론을 먼저 말씀드립니다. 엔진은 바꾸지 않고, 지금 돌고 있는 운동학 시뮬의 빈틈을 하나씩 메우는 것이 가장 싸고 효과가 큽니다. 여섯 부분은 각각 이 결론 하나씩을 뒷받침합니다. 마지막 권고 로드맵이 이 순서를 TP 번호로 정리합니다.</aside>
 </section>
 <section id="layers" class="t">
 <div class="head"><p class="kicker">S.0 · 네 층</p><h2>travplan에 필요한 시뮬레이션은 하나가 아니라 네 층이다</h2></div>
@@ -271,7 +271,7 @@ section.t.divider h2 { font-size:80px; }
 </div>
 <p class="small muted">주의: 여기의 L0–L3는 시뮬 층이다. 벤치마크의 인식 단계 <code>--perception l0</code>·<code>l1</code>(합성 LiDAR → elevation_mapping_cupy)과는 다른 축이다.</p>
 <p class="take"><b>travplan:</b> 지금 도는 것은 L0다. L1 Isaac 폐루프(TP-0005)는 사용자 실행 대기다.</p>
-<aside>시뮬레이션을 하나로 보지 않고 네 층으로 나눕니다. L0는 싸고 빨라서 학습과 스택 비교를 맡고, L1은 실제 LiDAR에서 TravMap까지 이어지는 인식 경로를 검증합니다. L2는 장면과 보행자의 다양성을, L3는 시뮬 순위가 실물 순위를 맞히는지를 봅니다. 벤치마크의 --perception l1은 운동학 시뮬 안에서 합성 LiDAR를 쓰는 인식 단계라서, 시뮬 층 L1(Isaac)과 이름이 겹치니 주의하세요.</aside>
+<aside>시뮬레이션을 하나로 보지 않고 네 층으로 나눕니다. L0는 싸고 빨라서 학습과 스택 비교를 맡고, L1은 실제 LiDAR에서 TravMap까지 이어지는 인식 경로를 검증합니다. L2는 장면과 보행자의 다양성을, L3는 시뮬 순위가 실물 순위를 맞히는지를 검증합니다. 벤치마크의 --perception l1은 운동학 시뮬 안에서 합성 LiDAR를 쓰는 인식 단계라서, 시뮬 층 L1(Isaac)과 이름이 겹치니 주의하세요.</aside>
 </section>
 <section id="l0-today" class="t">
 <div class="head"><p class="kicker">S.0 · 오늘의 L0</p><h2>오늘의 L0는 운동학 시뮬이고, 지형은 Isaac과 한 곳에서 정의한다</h2></div>
@@ -284,7 +284,7 @@ section.t.divider h2 { font-size:80px; }
 <li>Playground: 같은 시뮬을 JS로 옮겨 브라우저에서 돌린다</li>
 </ul>
 </div>
-<figure><img src="../../assets/figs/playground_preview.webp" style="height:500px"><figcaption>travplan Playground — 가림을 켠 L0 위의 Guidance 경로와 MPPI 표본</figcaption></figure>
+<figure><img src="../../assets/figs/playground_preview.webp" style="height:500px"><figcaption>travplan Playground — 가림을 켠 L0 위의 Guidance 경로와 MPPI 샘플</figcaption></figure>
 </div>
 <p class="take"><b>travplan:</b> 수 초짜리 에피소드로 Planner를 학습하고 스택을 비교한다. 대신 빈틈이 있다(S.6.5).</p>
 <aside>오늘 실제로 쓰는 시뮬은 운동학 시뮬 하나입니다. 지형 정의를 sim/terrain.py 한 곳에 두어서, 같은 지형을 Isaac으로 내보낼 수 있게 해 두었습니다. 가림, 합성 LiDAR, plant, 보행자, 지연 같은 현실성은 선택 항목으로 하나씩 켭니다. 오른쪽은 같은 시뮬을 브라우저로 옮긴 Playground 화면입니다.</aside>
@@ -292,8 +292,8 @@ section.t.divider h2 { font-size:80px; }
 <section id="div-engine" class="t dark divider">
 <p class="kicker">1 · 엔진과 리그 (S.1, S.9)</p>
 <h2>엔진은 Isaac Sim을 유지한다</h2>
-<p class="lead">보도 시뮬레이터가 모두 그 위에 있다. 다른 엔진은 목적이 생길 때 쓴다.<br>엔진 속도와 재현성은 남의 숫자가 아니라 자기 작업으로 잰다.</p>
-<aside>첫 묶음은 엔진입니다. 결론은 Isaac Sim 유지이고, 근거는 보도 시뮬 생태계가 이미 그 위에 있다는 점입니다. 여기에 더해 엔진 비교 벤치마크가 말해 주는 교훈, 그리고 오늘 바로 띄울 수 있는 ROS 2 리그를 봅니다.</aside>
+<p class="lead">보도 시뮬레이터가 모두 그 위에 있다. 다른 엔진은 목적이 생길 때 쓴다.<br>엔진 속도와 재현성은 남의 숫자가 아니라 우리 작업으로 직접 잰다.</p>
+<aside>첫 부분은 엔진입니다. 결론은 Isaac Sim 유지이고, 근거는 보도 시뮬 생태계가 이미 그 위에 있다는 점입니다. 여기에 더해 엔진 비교 벤치마크가 말해 주는 교훈, 그리고 오늘 바로 띄울 수 있는 ROS 2 리그를 살펴봅니다.</aside>
 </section>
 <section id="engines" class="t">
 <div class="head"><p class="kicker">S.1 · 물리 엔진</p><h2>보도 생태계가 Isaac Sim 위에 있어 엔진을 바꿀 이유가 없다</h2></div>
@@ -310,7 +310,7 @@ section.t.divider h2 { font-size:80px; }
 <p class="small">Isaac Lab 3.0(Early Access)은 백엔드를 설정 한 줄로 고른다: <code>newton_mjwarp</code>·<code>ovphysx</code>(kit-less), <code>isaacsim_physx</code>(ROS 2·RTX 센서).</p>
 <p class="take"><b>travplan:</b> P1(TP-0005)은 ROS 2 브릿지가 필요해 Isaac Sim 6.0을 쓴다. 학습 루프는 Isaac Lab 3.0의 kit-less 경로로 옮긴다.</p>
 <div class="foot" data-foot><p>[1] Isaac Lab, NVIDIA — arXiv:2511.04831</p></div>
-<aside>일곱 엔진을 비교한 표입니다. URBAN-SIM, UrbanVerse, SidewalkBench, CostNav가 모두 Isaac Sim 위에 있어서 장면과 평가를 빌려 오려면 Isaac이 자연스럽습니다. Newton과 Chrono는 잔디나 자갈 같은 변형 지면이 요구 사항이 될 때만 봅니다. Isaac Lab 3.0은 Newton과 PhysX를 한 API로 고르게 해서, 학습은 Isaac Sim을 띄우지 않는 kit-less 경로로 돌릴 수 있습니다.</aside>
+<aside>일곱 엔진을 비교한 표입니다. URBAN-SIM, UrbanVerse, SidewalkBench, CostNav가 모두 Isaac Sim 위에 있어서 장면과 평가를 빌려 오려면 Isaac이 자연스럽습니다. Newton과 Chrono는 잔디나 자갈 같은 변형 지면이 요구 사항이 될 때만 검토합니다. Isaac Lab 3.0은 Newton과 PhysX를 한 API로 고르게 해서, 학습은 Isaac Sim을 띄우지 않는 kit-less 경로로 돌릴 수 있습니다.</aside>
 </section>
 <section id="gpusimbench" class="t">
 <div class="head"><p class="kicker">S.1.4 · GPUSimBench [2]</p><h2>빠르고 재현되는 엔진이 실물에 가깝다는 보장은 없다</h2></div>
@@ -337,7 +337,7 @@ section.t.divider h2 { font-size:80px; }
 <div class="pills"><p class="pill on">3D 점군</p><p class="pill on">보도급 지형</p><p class="pill on">스워브 구동</p><p class="pill on">손에 있는 장비</p><p class="pill on">지형 내보내기</p></div>
 <table>
 <tr><th>답해야 할 질문</th><th>맞는 리그</th><th>포기하는 것</th></tr>
-<tr><td>ROS 2 배관이 도는가 (브릿지, TF, 주기)</td><td>CMU 탐사 개발 환경</td><td>지형을 못 바꾼다</td></tr>
+<tr><td>ROS 2 파이프라인이 도는가 (브릿지, TF, 주기)</td><td>CMU 탐사 개발 환경</td><td>지형을 못 바꾼다</td></tr>
 <tr><td>우리 지형에서 2.5D가 이기는가</td><td>Isaac Sim + <code>terrain_export</code> (TP-0005)</td><td>Ubuntu 24.04 + Jazzy 장비</td></tr>
 <tr><td>스워브 기구학이 실물과 맞는가</td><td>antbot_gazebo (대상 로봇)</td><td>3D 센서를 직접 붙여야 한다</td></tr>
 <tr><td>3D 점군 스택과 비교해 이기는가</td><td>dddmr 내비 스택 + 아무 리그</td><td>지형이 보도가 아니다</td></tr>
@@ -347,13 +347,13 @@ section.t.divider h2 { font-size:80px; }
 <div class="card bl"><span class="tag bl">CMU 탐사 개발 환경</span><p>점군(5 Hz)과 <code>/terrain_map</code>이 바로 나온다. 비용이 평탄도 하나라 0.07 m 턱과 0.24 m 턱을 가르지 못한다.</p></div>
 </div>
 <p class="take"><b>travplan:</b> Gazebo 계열 리그를 쓰려면 PRD의 "Gazebo 주력 안 함" 결정의 예외로 둘지 먼저 정한다.</p>
-<aside>엔진이 아니라 로봇, 세계, 센서가 묶여 있어 오늘 띄우면 토픽이 나오는 리그를 비교했습니다. antbot_gazebo는 대상 로봇 그 자체지만 2D LiDAR 두 대뿐이라 TravMapBuilder에 넣을 높이가 없습니다. CMU 환경은 점군과 지형 비용이 바로 나오지만 비용이 평탄도 하나라 0.07 m 턱과 0.24 m 턱을 가르지 못합니다. 그래서 질문마다 리그를 고르고, Gazebo를 쓴다면 PRD 결정의 예외로 둘지부터 정해야 합니다.</aside>
+<aside>엔진이 아니라 로봇·세계·센서가 한 세트로 갖춰져 있어 오늘 띄우면 토픽이 나오는 리그를 비교했습니다. antbot_gazebo는 대상 로봇 그 자체지만 2D LiDAR 두 대뿐이라 TravMapBuilder에 넣을 높이가 없습니다. CMU 환경은 점군과 지형 비용이 바로 나오지만 비용이 평탄도 하나라 0.07 m 턱과 0.24 m 턱을 가르지 못합니다. 그래서 질문마다 리그를 고르고, Gazebo를 쓴다면 PRD 결정의 예외로 둘지부터 정해야 합니다.</aside>
 </section>
 <section id="div-scenes" class="t dark divider">
 <p class="kicker">2 · 보도 장면과 보행자 (S.2, S.3)</p>
 <h2>평가 틀은 보도 벤치마크에서 빌린다</h2>
 <p class="lead">보도 전용 시뮬레이터는 한 계보다. 보행자 모델은<br>반응하는 다양성과 재현되는 공정성 사이에서 고른다.</p>
-<aside>둘째 묶음은 장면과 보행자입니다. 보도 전용 시뮬레이터 연구가 어디까지 왔는지, 거기서 travplan 평가에 무엇을 빌려 왔는지 봅니다. 그리고 보행자 모델의 갈래와 travplan에서 잰 보행자 결과를 봅니다.</aside>
+<aside>둘째 부분은 장면과 보행자입니다. 보도 전용 시뮬레이터 연구가 어디까지 왔는지, 거기서 travplan 평가에 무엇을 빌려 왔는지 살펴봅니다. 그리고 보행자 모델의 갈래와 travplan에서 잰 보행자 결과를 다룹니다.</aside>
 </section>
 <section id="lineage" class="t">
 <div class="head"><p class="kicker">S.2 · 보도·도시 시뮬레이터</p><h2>보도 전용 시뮬레이터는 사실상 UCLA VAIL 한 계보다</h2></div>
@@ -367,14 +367,14 @@ section.t.divider h2 { font-size:80px; }
 <figure><img src="../../assets/thumbs/069722c607e1.webp" style="height:420px"><figcaption>MetaUrban Fig. 4 — 보도를 건물·전면·통행·시설 네 구역으로 나누고, 보도 형태 7가지를 템플릿으로 쓴다 [3]</figcaption></figure>
 <p class="take"><b>travplan:</b> 네 구역은 배치 규칙의 틀이다. 연석·램프는 전면·통행 경계에, 화분·볼라드는 시설 구역에 둔다.</p>
 <div class="foot" data-foot><p>[3] MetaUrban, ICLR 2025 — arXiv:2407.08725 · [4] URBAN-SIM, CVPR 2025 — arXiv:2505.00690 · [5] UrbanVerse, ICLR 2026 — arXiv:2510.15018 · [6] SidewalkBench, CoRL 2026 — arXiv:2606.16953</p></div>
-<aside>보도 전용 시뮬레이터는 자동차 시뮬레이터 MetaDrive에서 시작한 UCLA 한 연구실의 계보입니다. 실물 실험은 보도 배달로봇 회사 Coco Robotics와 함께 해서, travplan과 같은 문제를 푸는 가장 가까운 연구 묶음입니다. 별도 계보로 Unity 기반 Vid2Sim과 서울대·MAUM.AI의 CostNav가 있습니다. MetaUrban의 네 기능 구역은 우리 시나리오를 늘릴 때 물체를 어디에 둘지 정하는 규칙으로 쓸 수 있습니다.</aside>
+<aside>보도 전용 시뮬레이터는 자동차 시뮬레이터 MetaDrive에서 시작한 UCLA 한 연구실의 계보입니다. 실물 실험은 보도 배달로봇 회사 Coco Robotics와 함께 해서, travplan과 같은 문제를 푸는 가장 가까운 연구 계열입니다. 별도 계보로 Unity 기반 Vid2Sim과 서울대·MAUM.AI의 CostNav가 있습니다. MetaUrban의 네 기능 구역은 우리 시나리오를 늘릴 때 물체를 어디에 둘지 정하는 규칙으로 쓸 수 있습니다.</aside>
 </section>
 <section id="urbansim" class="t">
-<div class="head"><p class="kicker">S.2.2 · URBAN-SIM [4]</p><h2>URBAN-SIM은 GPU 한 장에서 보도 환경 256개를 굴린다</h2></div>
+<div class="head"><p class="kicker">S.2.2 · URBAN-SIM [4]</p><h2>URBAN-SIM은 GPU 한 장에서 보도 환경 256개를 병렬로 돌린다</h2></div>
 <div class="cols">
 <div class="stack">
 <ul>
-<li><b>WFC 지형</b>: 평지·계단·경사·요철 타일을 칸 단위로 잇는다</li>
+<li><b>WFC 지형</b>: 평지·계단·경사·요철 타일 단위로 잇는다</li>
 <li><b>JAX ORCA</b>: 보행자가 학습 중인 로봇에 실시간 반응한다</li>
 <li><b>비동기 장면 샘플링</b>: 환경 256개, RGB-D를 켜고 1,800–2,600 fps</li>
 <li><b>URBAN-BENCH</b>: 보행 4과제, 내비 3과제, km 단위 장거리</li>
@@ -384,17 +384,17 @@ section.t.divider h2 { font-size:80px; }
 <figure><img src="../../assets/thumbs/a5a5d597303b.webp" style="height:600px"><figcaption>URBAN-SIM Fig. 2 — 계층적 도시 생성, 상호작용 동역학, 비동기 샘플링</figcaption></figure>
 </div>
 <p class="take"><b>travplan:</b> L2 학습 장면의 첫 후보다. 에셋은 따로 받으므로 라이선스부터 확인한다(TP-0041).</p>
-<aside>URBAN-SIM은 MetaUrban을 Isaac Sim으로 옮기고 세 가지를 더했습니다. 지형을 칸 단위로 잇는 Wave Function Collapse, 로봇에 반응하는 GPU ORCA 보행자, 환경마다 다른 장면을 쓰는 비동기 샘플링입니다. 권장 사양 때문에 이 작업은 데스크톱에서 해야 합니다. WFC 지형 생성은 Isaac 없이도 우리 시나리오를 절차적으로 늘리는 데 바로 쓸 수 있습니다.</aside>
+<aside>URBAN-SIM은 MetaUrban을 Isaac Sim으로 옮기고 세 가지를 더했습니다. 지형을 타일 단위로 잇는 Wave Function Collapse, 로봇에 반응하는 GPU ORCA 보행자, 환경마다 다른 장면을 쓰는 비동기 샘플링입니다. 권장 사양 때문에 이 작업은 데스크톱에서 해야 합니다. WFC 지형 생성은 Isaac 없이도 우리 시나리오를 절차적으로 늘리는 데 바로 쓸 수 있습니다.</aside>
 </section>
 <section id="urbanverse" class="t">
 <div class="head"><p class="kicker">S.2.3 · UrbanVerse [5]</p><h2>장면 배치가 현실 분포를 따를 때 학습이 일반화된다</h2></div>
 <div class="grid2">
 <ul><li>도시 여행 영상 → 장면 그래프 → "디지털 사촌" 에셋 → Isaac Sim</li><li>24개국 영상에서 160장면, 에셋 10만 개 이상</li><li>배치 수를 늘리면 멱법칙으로 오른다. 템플릿 절차 생성은 거의 안 오른다</li></ul>
-<ul><li>PPO 정책: 시뮬 +6.3 %, zero-shot 실물 +30.1 % (논문 표기)</li><li>Coco·Go2 실물 최대 89.7 %, 337 m 공공 도로에서 개입 두 번</li><li>바퀴형은 차동 구동 운동학 + PD로 굴렸다</li></ul>
+<ul><li>PPO 정책: 시뮬 +6.3 %, zero-shot 실물 +30.1 % (논문 표기)</li><li>Coco·Go2 실물 최대 89.7 %, 337 m 공공 도로에서 개입 두 번</li><li>바퀴형은 차동 구동 운동학 + PD로 시뮬레이션했다</li></ul>
 </div>
-<figure><img src="../../assets/thumbs/b493464d174f.webp" style="height:400px"><figcaption>UrbanVerse-Gen Fig. 4 — 추출, 디지털 사촌 짝짓기, 장면 생성</figcaption></figure>
+<figure><img src="../../assets/thumbs/b493464d174f.webp" style="height:400px"><figcaption>UrbanVerse-Gen Fig. 4 — 추출, 디지털 사촌 매칭, 장면 생성</figcaption></figure>
 <p class="take"><b>travplan:</b> 손으로 만든 시나리오 4개는 이 곡선의 맨 왼쪽에 있다. Planner D의 일반화를 재려면 현실에서 온 배치가 필요하다.</p>
-<aside>UrbanVerse는 유튜브 도시 여행 영상에서 장면 배치를 뽑아 Isaac Sim 장면을 만듭니다. 핵심 결과는 배치 수에 따른 멱법칙입니다. 현실 분포를 따르는 배치는 늘릴수록 성능이 오르지만, 템플릿 절차 생성은 거의 오르지 않았습니다. 하나 더, UrbanVerse도 바퀴형 로봇을 관절 물리가 아니라 차동 구동 운동학 모델로 굴렸는데 실물 zero-shot이 됐습니다. Isaac에서 스워브를 운동학 프록시로 두는 우리 설계(TP-0004)와 같은 판단입니다.</aside>
+<aside>UrbanVerse는 유튜브 도시 여행 영상에서 장면 배치를 뽑아 Isaac Sim 장면을 만듭니다. 핵심 결과는 배치 수에 따른 멱법칙입니다. 현실 분포를 따르는 배치는 늘릴수록 성능이 오르지만, 템플릿 절차 생성은 거의 오르지 않았습니다. 하나 더, UrbanVerse도 바퀴형 로봇을 관절 물리가 아니라 차동 구동 운동학 모델로 시뮬레이션했는데 실물 zero-shot이 됐습니다. Isaac에서 스워브를 운동학 프록시로 두는 우리 설계(TP-0004)와 같은 판단입니다.</aside>
 </section>
 <section id="sidewalkbench" class="t">
 <div class="head"><p class="kicker">S.2.5 · SidewalkBench [6]</p><h2>SidewalkBench는 평가를 단위 시험·보행자·장거리 세 층으로 나눈다</h2></div>
@@ -421,14 +421,14 @@ section.t.divider h2 { font-size:80px; }
 <div class="stack">
 <div class="card or"><span class="tag or">CostNav [7]</span><h3>내비를 손익으로 채점한다</h3>
 <ul><li>보행자 상해(충돌 순간 Δv), 기물 파손, jerk로 상한 음식 환불</li><li>기준선 7개 모두 적자. SLA를 지킨 방법 중 CANVAS −28.40달러/회가 최소 손해, Nav2 −37.34달러</li><li>travplan: <code>collision_speed_mps</code>, <code>cargo_jerk_cost</code> 추가(TP-0038)</li></ul></div>
-<div class="card bl"><span class="tag bl">사전식 조종 [8]</span><h3>0.10 m 턱은 hard, 잔디는 벌점</h3>
-<ul><li>동적 장벽 안내로 성공 44.3 → 56.0/60, 턱 실패 12.0 → 2.0개/실행</li><li>대가: 주행 거리 27.2 → 36.9 m (약 36 %)</li><li>travplan: Planner D 선택기는 치명 벌점 1,000으로 이미 사전식이다. 남은 것은 표본 안내</li></ul></div>
+<div class="card bl"><span class="tag bl">사전식 조종 [8]</span><h3>0.10 m 턱은 hard, 잔디는 페널티</h3>
+<ul><li>동적 장벽 안내로 성공 44.3 → 56.0/60, 턱 실패 12.0 → 2.0개/실행</li><li>대가: 주행 거리 27.2 → 36.9 m (약 36 %)</li><li>travplan: Planner D 선택기는 치명 페널티 1,000으로 이미 사전식이다. 남은 것은 샘플 안내</li></ul></div>
 </div>
 <figure><img src="../../assets/thumbs/3bbab2c7760d.webp" style="height:340px"><figcaption>CostNav Fig. 2 — 시뮬 로그의 운영 신호를 비용·수익 모델과 합쳐 손익분기점을 계산한다</figcaption></figure>
 </div>
 <p class="take"><b>travplan:</b> guidance+mppi와 planner_d+mppi처럼 둘 다 12/12인 스택을 가를 때 쓴다.</p>
 <div class="foot" data-foot><p>[7] CostNav, 서울대·MAUM.AI·KAIST — arXiv:2511.20216 · [8] Jia, How, "사전식 선호로 생성 정책 조종", MIT 2026 — arXiv:2609.15014</p></div>
-<aside>성공률이 포화되면 다른 축이 필요합니다. CostNav는 시뮬 로그를 공개 수치로 비용과 수익으로 바꿔, 성공률 대신 돈으로 채점합니다. MIT의 사전식 조종 연구는 넘을 수 없는 턱과 피하고 싶은 잔디를 따로 세는데, 이것이 TravMap의 치명 셀과 cost의 구분과 같습니다. 우리 Planner D 선택기는 이미 치명 후보를 먼저 버리므로, 가져올 것은 표본을 만드는 단계의 동적 장벽 안내입니다.</aside>
+<aside>성공률이 포화되면 다른 축이 필요합니다. CostNav는 시뮬 로그를 공개 수치로 비용과 수익으로 바꿔, 성공률 대신 돈으로 채점합니다. MIT의 사전식 조종 연구는 넘을 수 없는 턱과 피하고 싶은 잔디를 따로 세는데, 이것이 TravMap의 치명 셀과 cost의 구분과 같습니다. 우리 Planner D 선택기는 이미 치명 후보를 먼저 버리므로, 가져올 것은 샘플을 만드는 단계의 동적 장벽 안내입니다.</aside>
 </section>
 <section id="ped-models" class="t">
 <div class="head"><p class="kicker">S.3 · 보행자 모델</p><h2>보행자 모델은 힘·속도·사건·언어·데이터의 다섯 갈래다</h2></div>
@@ -454,30 +454,30 @@ section.t.divider h2 { font-size:80px; }
 <div class="cols">
 <div class="stack">
 <div class="math">$$\mathbf v_A^{\text{new}} = \arg\min_{\mathbf v \in D(\mathbf 0,\, v^{\max}) \,\cap\, \bigcap_{B} ORCA^{\tau}_{A|B}} \lVert \mathbf v - \mathbf v_A^{\text{pref}} \rVert$$</div>
-<div class="card or"><span class="tag or">TP-0036 측정</span><p><b>SHARE는 약한 손잡이다.</b> 3 s 뒤 옆 이동이 SHARE 0.25·0.5·1.0에서 0.50·0.49·0.49 m로 같다. 비키는 시점은 지평 τ가 정한다(τ 0.5 → 4 s에서 2 s 뒤 0.02 → 0.37 m).</p></div>
+<div class="card or"><span class="tag or">TP-0036 측정</span><p><b>SHARE는 효과가 약한 파라미터다.</b> 3 s 뒤 옆 이동이 SHARE 0.25·0.5·1.0에서 0.50·0.49·0.49 m로 같다. 비키는 시점은 horizon τ가 정한다(τ 0.5 → 4 s에서 2 s 뒤 0.02 → 0.37 m).</p></div>
 </div>
 <div class="card bl"><span class="tag bl">DynBench [12]</span><h3>ORCA 대신 상태 기계 + NavMesh</h3>
 <ul><li>상태 셋(GoTo·Idle·LookAround), 경유점 사이는 NavMesh A*</li><li>보행자 1.1 m/s, 로봇 0.5 m/s</li><li>FLUX: SocialNav 성공 59.3 → 64.0, 충돌 21 → 16 (NavDP 대비)</li><li>서 있다가 갑자기 걷는 보행자는 등속으로도 ORCA로도 못 만든다</li></ul></div>
 </div>
 <p class="take"><b>travplan:</b> TP-0167 짝 비교에서 충돌이 줄면 Controller 덕인지 ORCA 보행자가 피해 준 덕인지 함께 적는다.</p>
-<aside>ORCA는 이웃마다 충돌 없는 속도의 반평면을 만들고 원하는 속도에 가장 가까운 속도를 고릅니다. 모두가 같은 규칙을 따르면 충돌이 없다는 보장이 있지만, 바로 그 상호 협조 가정 때문에 군중이 부자연스럽게 맞춰 움직입니다. 우리 측정에서도 SHARE 값은 거의 효과가 없었고 지평 τ가 실제 손잡이였습니다. DynBench는 반응 대신 멈춰 서기, 둘러보기 같은 상태 전환을 넣는데, 이것이 시도 순서 3번 후보입니다.</aside>
+<aside>ORCA는 이웃마다 충돌 없는 속도의 반평면을 만들고 원하는 속도에 가장 가까운 속도를 고릅니다. 모두가 같은 규칙을 따르면 충돌이 없다는 보장이 있지만, 바로 그 상호 협조 가정 때문에 군중이 부자연스럽게 맞춰 움직입니다. 우리 측정에서도 SHARE 값은 거의 효과가 없었고 horizon τ가 실제로 효과 있는 파라미터였습니다. DynBench는 반응 대신 멈춰 서기, 둘러보기 같은 상태 전환을 넣는데, 이것이 시도 순서 3번 후보입니다.</aside>
 </section>
 <section id="ped-results" class="t">
-<div class="head"><p class="kicker">travplan 결과 · TP-0154 · 0161 · 0165</p><h2>보행자 5명이면 충돌은 720 중 8건이고, 등급화 벌점이 4건으로 줄인다</h2></div>
+<div class="head"><p class="kicker">travplan 결과 · TP-0154 · 0161 · 0165</p><h2>보행자 5명이면 충돌은 720 중 8건이고, 등급화 페널티가 4건으로 줄인다</h2></div>
 <figure><img src="../../assets/figs/tp0154_ped_plant.webp" style="height:460px"><figcaption>권장 L1 + 스워브 plant + 보행자 5명 (TP-0154): 레벨 0 도달 116 → 107/120, 레벨 3은 그대로</figcaption></figure>
 <table>
 <tr><th>Controller (720 에피소드)</th><th>도달</th><th>충돌</th><th>치명</th><th>짝 비교 (기준만 : 옵션만)</th></tr>
 <tr><td><code>mppi_plant_lag</code> (기준)</td><td>568</td><td>8</td><td>10</td><td>—</td></tr>
-<tr><td><code>mppi_plant_lag_pg</code> (등급화 벌점)</td><td>571</td><td class="good">4</td><td>10</td><td>0 : 3, p = 0.25</td></tr>
+<tr><td><code>mppi_plant_lag_pg</code> (등급화 페널티)</td><td>571</td><td class="good">4</td><td>10</td><td>0 : 3, p = 0.25</td></tr>
 <tr><td><code>mppi_plant_yaw</code> (몸 먼저 돌리기)</td><td>573</td><td class="bad">9</td><td>8</td><td>24 : 29, p = 0.58</td></tr>
 </table>
-<aside>travplan에서 실제로 잰 보행자 결과입니다. 권장 L1 인식과 스워브 plant에 보행자 5명을 얹으면 충돌은 720 에피소드 중 8건, 1.1 %입니다. 등급화 벌점은 기준의 충돌 4건을 모두 피하고 나머지 716 에피소드는 결과가 같았습니다. 도달 차이는 둘 다 잡음 바닥 안이라 판정이 아니고, 기본값으로 바꿀지는 사용자 결정으로 남아 있습니다. 이 충돌들이 비키지 않는 보행자의 인공물인지는 ORCA 짝 비교 TP-0167이 답합니다.</aside>
+<aside>travplan에서 실제로 잰 보행자 결과입니다. 권장 L1 인식과 스워브 plant에 보행자 5명을 얹으면 충돌은 720 에피소드 중 8건, 1.1 %입니다. 등급화 페널티는 기준의 충돌 4건을 모두 피하고 나머지 716 에피소드는 결과가 같았습니다. 도달 차이는 둘 다 잡음 바닥 안이라 판정이 아니고, 기본값으로 바꿀지는 사용자 결정으로 남아 있습니다. 이 충돌들이 비키지 않는 보행자의 인공물인지는 ORCA 짝 비교 TP-0167이 답합니다.</aside>
 </section>
 <section id="div-s2r" class="t dark divider">
 <p class="kicker">3 · 센서·렌더링과 sim-to-real (S.4, S.6)</p>
 <h2>시뮬의 허점은 학습 정책이 가장 먼저 찾아낸다</h2>
 <p class="lead">관측을 현실에 맞추고, 장면 기하를 실측으로 만들고,<br>시뮬 순위가 실물 순위를 맞히는지 잰다.</p>
-<aside>셋째 묶음은 센서와 sim-to-real입니다. travplan의 인식 경로는 LiDAR 기하라서 사진 같은 렌더링보다 관측 모델이 먼저입니다. 실제로 L0의 허점 하나가 벤치마크를 낙관적으로 만들고 있었던 사례부터 봅니다.</aside>
+<aside>셋째 부분은 센서와 sim-to-real입니다. travplan의 인식 경로는 LiDAR 기하라서 사진 같은 렌더링보다 관측 모델이 먼저입니다. 실제로 L0의 허점 하나가 벤치마크를 낙관적으로 만들고 있었던 사례부터 살펴봅니다.</aside>
 </section>
 <section id="occlusion" class="t">
 <div class="head"><p class="kicker">S.4.1 · S.6.5 · 가림 (TP-0031 · 0047)</p><h2>L0의 가림 허점 하나가 벤치마크를 낙관적으로 만들고 있었다</h2></div>
@@ -493,26 +493,26 @@ section.t.divider h2 { font-size:80px; }
 <div class="head"><p class="kicker">S.4.2 · 3DGS real-to-sim</p><h2>보이는 것은 3DGS가, 부딪히는 것은 메시가 맡는다</h2></div>
 <div class="cols">
 <div class="stack">
-<div class="card gy"><span class="tag">Vid2Sim [16] · GaussGym [17]</span><p>영상 → 3DGS + 충돌 메시. Vid2Sim의 메시만 렌더링한 기준선은 실물 과제를 하나도 풀지 못했다. GaussGym은 RTX 4090 한 장에서 4,096 환경을 굴린다.</p></div>
-<div class="card or"><span class="tag or">Wanderland [18]</span><p>LiDAR·RTK·어안 스캔 530곳. 영상만으로 잡은 궤적 자세는 축척을 맞춘 뒤에도 0.30 m, 5.0° 어긋났다. Vid2Sim 장면 미세조정은 CityWalker 성공률을 21 % 떨어뜨렸다.</p></div>
+<div class="card gy"><span class="tag">Vid2Sim [16] · GaussGym [17]</span><p>영상 → 3DGS + 충돌 메시. Vid2Sim의 메시만 렌더링한 기준선은 실물 과제를 하나도 풀지 못했다. GaussGym은 RTX 4090 한 장에서 4,096개 환경을 돌린다.</p></div>
+<div class="card or"><span class="tag or">Wanderland [18]</span><p>LiDAR·RTK·어안 스캔 530곳. 영상만으로 잡은 궤적 자세는 축척을 맞춘 뒤에도 0.30 m, 5.0° 어긋났다. Vid2Sim 장면 fine-tuning은 CityWalker 성공률을 21 % 떨어뜨렸다.</p></div>
 </div>
 <figure><img src="../../assets/thumbs/ad22cf1e80a4.webp" style="height:400px"><figcaption>Wanderland Fig. 7 — 같은 모델도 장면 재현이 다르면 평가 결과가 달라진다</figcaption></figure>
 </div>
 <p class="take"><b>travplan:</b> 서비스 지역 스캔은 LiDAR 융합으로 하고, 메시를 terrain.py 높이장으로 바꿔 L0와 L1이 같은 실측 지형을 쓴다.</p>
 <div class="foot" data-foot><p>[16] Vid2Sim, CVPR 2025 — arXiv:2501.06693 · [17] GaussGym — arXiv:2510.15352 · [18] Wanderland, CVPR 2026 — arXiv:2511.20620</p></div>
-<aside>실제 장소를 시뮬에 넣는 연구들은 공통으로 외형은 3DGS, 충돌은 메시로 나눕니다. 3DGS의 기하가 흐리기 때문입니다. Wanderland는 기하가 부정확한 장면에서는 평가도 미세조정도 흔들린다는 것을 보였습니다. TravMap은 높이에서 나오므로 travplan은 카메라보다 기하가 먼저이고, 0.07 m 턱과 0.24 m 턱을 가르려면 LiDAR 융합 스캔이 필요합니다. 사진 같은 렌더링 자체는 카메라 모듈(TP-0022, TP-0011)을 폐루프로 시험할 때 씁니다.</aside>
+<aside>실제 장소를 시뮬에 넣는 연구들은 공통으로 외형은 3DGS, 충돌은 메시로 나눕니다. 3DGS의 기하가 흐리기 때문입니다. Wanderland는 기하가 부정확한 장면에서는 평가도 fine-tuning도 흔들린다는 것을 보였습니다. TravMap은 높이에서 나오므로 travplan은 카메라보다 기하가 먼저이고, 0.07 m 턱과 0.24 m 턱을 가르려면 LiDAR 융합 스캔이 필요합니다. 사진 같은 렌더링 자체는 카메라 모듈(TP-0022, TP-0011)을 폐루프로 시험할 때 씁니다.</aside>
 </section>
 <section id="s2r-tasks" class="t">
 <div class="head"><p class="kicker">S.6 · sim-to-real</p><h2>격차 줄이기보다 예측력 측정을 먼저 설계한다</h2></div>
 <div class="grid3">
-<div class="card gy"><span class="tag">도메인 랜덤화 [20–22]</span><p>파라미터를 넓게 흔들어 현실을 "또 하나의 표본"으로 만든다. ADR은 잘할수록 범위를 넓힌다.</p><p class="muted">L0: 지연, 위치 잡음, 슬립, 조향 한계</p></div>
+<div class="card gy"><span class="tag">도메인 랜덤화 [20–22]</span><p>파라미터를 넓게 흔들어 현실을 "또 하나의 샘플"로 만든다. ADR은 잘할수록 범위를 넓힌다.</p><p class="muted">L0: 지연, 위치 잡음, 슬립, 조향 한계</p></div>
 <div class="card bl"><span class="tag bl">보정 [23]</span><p>실물 기록으로 모델 파라미터나 잔차를 맞춘다(ANYmal actuator net).</p><p class="muted">실물 첫 주행: 명령과 실제 속도 기록</p></div>
 <div class="card or"><span class="tag or">예측력 [19]</span><p>시뮬 순위가 실물 순위를 맞히는가. Habitat은 벽 미끄러짐 허점으로 SRCC 0.18, 막자 0.844.</p></div>
 </div>
 <div class="math">$$\mathrm{SRCC} = \frac{\sum_i (s_i - \bar s)(r_i - \bar r)}{\sqrt{\sum_i (s_i - \bar s)^2}\ \sqrt{\sum_i (r_i - \bar r)^2}}$$</div>
 <div class="grid2">
 <div class="card gy"><span class="tag">판정자 방식 [31]</span><p>센서 데이터 대신 하위 알고리즘(상태 추정기)의 오차 분포를 시뮬과 실물 사이 W₁ 거리로 비교한다. TravMap 파이프라인이 판정자가 될 수 있다.</p></div>
-<div class="card gy"><span class="tag">EmbodiedSplat [24]</span><p>iPhone 스캔 3DGS 메시 장면의 sim-real 상관 0.87–0.97. 실내이고, 상관의 종류와 표본 수는 확인하지 못했다.</p></div>
+<div class="card gy"><span class="tag">EmbodiedSplat [24]</span><p>iPhone 스캔 3DGS 메시 장면의 sim-real 상관 0.87–0.97. 실내이고, 상관의 종류와 샘플 수는 확인하지 못했다.</p></div>
 </div>
 <p class="take"><b>travplan:</b> 실물이 생기면 스택 여러 개를 같은 코스에서 시뮬과 실물로 돌려 SRCC를 잰다(TP-0043).</p>
 <div class="foot" data-foot><p>[19] Kadian 외, RA-L 2020 — arXiv:1912.06321 · [20] Tobin 외 — arXiv:1703.06907 · [21] Peng 외 — arXiv:1710.06537 · [22] OpenAI ADR — arXiv:1910.07113 · [23] Hwangbo 외 — arXiv:1901.08652 · [24] EmbodiedSplat, ICCV 2025 — arXiv:2509.17430 · [31] Mahajan 외 — arXiv:2403.11000</p></div>
@@ -526,7 +526,7 @@ section.t.divider h2 { font-size:80px; }
 <tr><td>자기 위치가 정확함</td><td>드리프트, 점프</td><td>위치 잡음·드리프트</td><td>TP-0032 선택 항목</td></tr>
 <tr><td>지연 0</td><td>센서·지도·계획·제어 지연</td><td>단계별 지연</td><td>TP-0032 선택 항목</td></tr>
 <tr><td>조향 모듈이 즉시 돎</td><td>조향 속도 한계, 뒤집기</td><td>모듈 모델</td><td>TP-0034 (파라미터 TP-0035)</td></tr>
-<tr><td>슬립 없음</td><td>경사·젖은 면 슬립</td><td>슬립비 무작위화</td><td>TP-0033</td></tr>
+<tr><td>슬립 없음</td><td>경사·젖은 면 슬립</td><td>슬립비 랜덤화</td><td>TP-0033</td></tr>
 <tr><td>보행자가 반응하지 않음</td><td>피하거나 막음</td><td>ORCA·SFM</td><td>TP-0036 선택 항목</td></tr>
 <tr><td>실패 = 참 지도의 치명 셀</td><td>접촉 물리</td><td>L1 물리 검증</td><td>TP-0005</td></tr>
 </table>
@@ -538,7 +538,7 @@ section.t.divider h2 { font-size:80px; }
 <p class="kicker">4 · 지형과 바퀴 (S.5)</p>
 <h2>지형 기하는 쉽고 바퀴 접촉은 어렵다</h2>
 <p class="lead">스워브는 운동학으로 두되, 조향 모듈의 한계와<br>액추에이터 지연을 모델에 넣는다.</p>
-<aside>넷째 묶음은 지형과 바퀴입니다. 지형 생성과 난이도 커리큘럼은 성숙했지만, GPU 물리의 바퀴 접촉은 아직 불안정합니다. 그래서 travplan은 바퀴를 물리로 풀지 않고, 운동학 모델에 모듈 한계와 지연을 넣는 쪽을 택합니다.</aside>
+<aside>넷째 부분은 지형과 바퀴입니다. 지형 생성과 난이도 커리큘럼은 성숙했지만, GPU 물리의 바퀴 접촉은 아직 불안정합니다. 그래서 travplan은 바퀴를 물리로 풀지 않고, 운동학 모델에 모듈 한계와 지연을 넣는 쪽을 택합니다.</aside>
 </section>
 <section id="curriculum" class="t">
 <div class="head"><p class="kicker">S.5.1 · 지형 커리큘럼 (TP-0039)</p><h2>난이도를 올리면 실패는 같은 몇 지형에 모인다</h2></div>
@@ -549,29 +549,29 @@ section.t.divider h2 { font-size:80px; }
 <figure><img src="../../assets/figs/tp0039_levels.webp" style="height:420px"><figcaption>레벨 0–3 × 4 지형 × seed 0–9: 세 스택의 도달 수(실패는 모두 시간 초과)와 Planner D 진단</figcaption></figure>
 <p class="take"><b>travplan:</b> 레벨 3에서 세 스택 36–39/40(한 번씩, 잡음 바닥 안). 실패는 같은 몇 지형에 모였다.</p>
 <div class="foot" data-foot><p>[25] Rudin 외, 게임식 커리큘럼 — arXiv:2109.11978</p></div>
-<aside>Isaac Lab의 지형 생성기는 하위 지형을 격자로 깔고 행마다 난이도를 올립니다. 우리도 손으로 만든 시나리오에 난이도 손잡이를 열어 레벨 0에서 3까지 만들었습니다. 레벨 3에서 세 스택이 36–39/40으로 내려왔고, 실패는 모두 시간 초과였으며 같은 몇 지형에 모였습니다. 한 번씩만 돌린 차이라 스택 간 우열은 잡음 바닥 안입니다.</aside>
+<aside>Isaac Lab의 지형 생성기는 하위 지형을 격자로 깔고 행마다 난이도를 올립니다. 우리도 손으로 만든 시나리오에 난이도 파라미터를 열어 레벨 0에서 3까지 만들었습니다. 레벨 3에서 세 스택이 36–39/40으로 내려왔고, 실패는 모두 시간 초과였으며 같은 몇 지형에 모였습니다. 한 번씩만 돌린 차이라 스택 간 우열은 잡음 바닥 안입니다.</aside>
 </section>
 <section id="wheel-physics" class="t">
-<div class="head"><p class="kicker">S.5.2 · S.5.4 · 바퀴 물리</p><h2>바퀴 접촉은 풀지 않고 운동학 모델과 무작위화로 옮긴다</h2></div>
+<div class="head"><p class="kicker">S.5.2 · S.5.4 · 바퀴 물리</p><h2>바퀴 접촉은 풀지 않고 운동학 모델과 랜덤화로 대신한다</h2></div>
 <div class="cols">
 <div class="stack">
 <table>
-<tr><th>연구</th><th>바퀴형 로봇을 굴린 방법</th></tr>
+<tr><th>연구</th><th>바퀴형 로봇을 시뮬레이션한 방법</th></tr>
 <tr><td>COMPASS (NVIDIA)</td><td>속도로 루트 상태를 직접 옮김</td></tr>
 <tr><td>UrbanVerse</td><td>차동 구동 운동학 + PD</td></tr>
 <tr><td>Vid2Sim</td><td>자전거 모델 (휠베이스 0.8 m)</td></tr>
 <tr><td>travplan P1 (TP-0004)</td><td><code>SwerveModel</code> 운동학 프록시</td></tr>
 </table>
 <p class="small">PhysX GPU는 바퀴를 18각형(최대 64각형) 기둥으로 근사했고, 원기둥 지원은 2025-02에 들어갔다.</p>
-<div class="card bl"><span class="tag bl">Wheeled Lab [26] · TIAGo Omni [27]</span><p>Isaac Lab에서 RC카를 GPU당 64–1,024대 굴려 zero-shot. TIAGo는 정밀 모델 + 실물 기록으로 보정한 경량 모델을 둔다.</p></div>
+<div class="card bl"><span class="tag bl">Wheeled Lab [26] · TIAGo Omni [27]</span><p>Isaac Lab에서 RC카를 GPU당 64–1,024대 돌려 zero-shot. TIAGo는 정밀 모델 + 실물 기록으로 보정한 경량 모델을 둔다.</p></div>
 </div>
 <div class="card or"><span class="tag or">Sim2Dust [28]</span><h3>입자 없이 자갈을 넘었다</h3>
-<ul><li>단단한 면 + 절차 지형 + 지연·잡음 무작위화, DreamerV3</li><li>현무암 자갈 위 Leo Rover zero-shot: 25 cm/s에서 3.6 cm, 2.3°</li><li>입자 미세조정은 약 82시간 더 들고, 25 cm/s에서 3.6 → 4.3 cm로 나빠졌다</li></ul>
+<ul><li>단단한 면 + 절차 지형 + 지연·잡음 랜덤화, DreamerV3</li><li>현무암 자갈 위 Leo Rover zero-shot: 25 cm/s에서 3.6 cm, 2.3°</li><li>입자 fine-tuning은 약 82시간 더 들고, 25 cm/s에서 3.6 → 4.3 cm로 나빠졌다</li></ul>
 <figure><img src="../../assets/thumbs/59a829492fd1.webp" style="height:240px"><figcaption>Sim2Dust Fig. 3b — 병렬 환경마다 다른 절차 지형</figcaption></figure></div>
 </div>
 <p class="take"><b>travplan:</b> SwerveModel에 모듈 한계를 넣고, 실물이 생기면 조향·구동 응답으로 보정한다.</p>
 <div class="foot" data-foot><p>[26] Wheeled Lab, CoRL 2025 — arXiv:2502.07380 · [27] TIAGo Omni, CASE 2025 — arXiv:2510.10273 · [28] Sim2Dust, Univ. of Luxembourg, 2025 — arXiv:2508.11503</p></div>
-<aside>NVIDIA 자신도 바퀴형 로봇을 운동학으로 굴렸습니다. GPU 물리의 바퀴 접촉이 오랫동안 다각형 기둥 근사였기 때문입니다. Sim2Dust는 입자 대신 단단한 면과 무작위화로 학습해 자갈 위 실물로 옮겼고, 비싼 입자 미세조정은 거의 이득이 없었습니다. 다만 자갈 위를 느리게 가는 스키드 스티어 rover 결과라 보도 스워브에 옮길 수 있는 범위는 좁습니다. 변형 지면 엔진(Chrono, Newton MPM)은 잔디·자갈이 요구 사항이 될 때 봅니다.</aside>
+<aside>NVIDIA 자신도 바퀴형 로봇을 운동학으로 시뮬레이션했습니다. GPU 물리의 바퀴 접촉이 오랫동안 다각형 기둥 근사였기 때문입니다. Sim2Dust는 입자 대신 단단한 면과 랜덤화로 학습해 자갈 위 실물로 옮겼고, 비싼 입자 fine-tuning은 거의 이득이 없었습니다. 다만 자갈 위를 느리게 가는 스키드 스티어 rover 결과라 보도 스워브에 옮길 수 있는 범위는 좁습니다. 변형 지면 엔진(Chrono, Newton MPM)은 잔디·자갈이 요구 사항이 될 때 검토합니다.</aside>
 </section>
 <section id="antbot" class="t">
 <div class="head"><p class="kicker">S.5.3b · 비동축 스워브</p><h2>AntBot의 비동축 오프셋은 조향할 때 타이어를 끈다</h2></div>
@@ -590,35 +590,35 @@ section.t.divider h2 { font-size:80px; }
 <tr><td>스크럽 보상 꺼짐 (시뮬 설정)</td><td>0.0237 rad/s</td><td class="bad">0.0062 m</td></tr>
 <tr><td>스크럽 보상 켬</td><td>0.0007 rad/s</td><td class="good">0.0005 m</td></tr>
 </table>
-<p class="small">오차는 주로 yaw에 나타나고, 보상 스위치 하나로 12배 준다. 이 궤적들에서 조향 범위 한계는 물지 않았다.</p>
+<p class="small">오차는 주로 yaw에 나타나고, 보상 스위치 하나로 12배 준다. 이 궤적들에서는 조향 범위 한계에 걸리지 않았다.</p>
 </div>
 </div>
 <div class="math">$$\text{(ii)}\quad (\mathbf v + \boldsymbol\omega \times \mathbf c_i)\cdot e(\theta_i) - d_i\,\dot\theta_i = r\,\omega_{\text{wheel},i}, \qquad (\mathbf v + \boldsymbol\omega \times \mathbf c_i)\cdot e_\perp(\theta_i) = 0$$</div>
-<p class="take"><b>travplan:</b> 정면 보행자를 비킬 때는 56.2°가 문다. plant 충돌 12/20, 조향 90°면 2/20(TP-0162). 실제 한계 확인은 TP-0163.</p>
-<aside>비동축이라는 한 단어가 두 기구를 가리킵니다. 트레일링 캐스터는 옆으로 더 자유롭지만, AntBot은 오프셋이 바퀴 회전축 방향이라 조향하면 타이어가 끌립니다. 실측해 보니 이 오차는 주로 yaw에 나타나고 제어기의 스크럽 보상 스위치 하나로 12배 줄었습니다. 벤치마크 궤적에서는 조향 범위가 물지 않았지만, 정면 보행자를 비켜야 하는 장면에서는 56.2° 한계가 충돌의 원인이었습니다.</aside>
+<p class="take"><b>travplan:</b> 정면 보행자를 비킬 때는 56.2° 한계에 걸린다. plant 충돌 12/20, 조향 90°면 2/20(TP-0162). 실제 한계 확인은 TP-0163.</p>
+<aside>비동축이라는 한 단어가 두 기구를 가리킵니다. 트레일링 캐스터는 옆으로 더 자유롭지만, AntBot은 오프셋이 바퀴 회전축 방향이라 조향하면 타이어가 끌립니다. 실측해 보니 이 오차는 주로 yaw에 나타나고 제어기의 스크럽 보상 스위치 하나로 12배 줄었습니다. 벤치마크 궤적에서는 조향 범위 한계에 걸리지 않았지만, 정면 보행자를 비켜야 하는 장면에서는 56.2° 한계가 충돌의 원인이었습니다.</aside>
 </section>
 <section id="plant" class="t">
 <div class="head"><p class="kicker">S.5.3c · 동역학 plant</p><h2>동역학 학습의 첫 표적은 타이어가 아니라 액추에이터 지연이다</h2></div>
 <div class="cols">
 <div class="stack">
 <table>
-<tr><th>도구</th><th>바퀴 접촉</th><th>미분</th><th>자리</th></tr>
+<tr><th>도구</th><th>바퀴 접촉</th><th>미분</th><th>역할</th></tr>
 <tr><td>MuJoCo Warp</td><td>마찰 원뿔, 강함</td><td>✕</td><td class="good">plant 1순위</td></tr>
 <tr><td>Newton</td><td>MuJoCo Warp + 자체</td><td>자체만 ○</td><td>기울기로 맞출 때</td></tr>
 <tr><td>Isaac Sim (PhysX)</td><td>불안정</td><td>✕</td><td>P1 폐루프</td></tr>
 <tr><td>Verti-WM [30]</td><td>주행 기록에서 배움</td><td>○</td><td>실물 식별 참고</td></tr>
 </table>
-<p class="small">모듈 4 × 액추에이터 2 = 입력 8개가 3자유도 차체를 민다. 남는 5차원의 내부 싸움은 물리나 실물에서만 나온다.</p>
+<p class="small">모듈 4 × 액추에이터 2 = 입력 8개가 3자유도 차체를 민다. 남는 5차원의 내부 간섭은 물리나 실물에서만 나온다.</p>
 </div>
 <div class="stack">
 <div class="card or"><h3>잔차를 지배하는 항은 지연이다</h3><p>기구학 6 mm/s 대 지연 56 mm/s. 지연을 rollout에 넣은 <code>mppi_plant_lag</code>로 plant 레벨 3 치명 55 → 4 (TP-0150).</p></div>
-<div class="card bl"><h3>unitree_rl_lab의 관용구</h3><p>Isaac Lab 학습 → MuJoCo sim2sim → 실물. 액추에이터는 지연 PD + 토크-속도 곡선·마찰·armature.</p></div>
+<div class="card bl"><h3>unitree_rl_lab의 표준 파이프라인</h3><p>Isaac Lab 학습 → MuJoCo sim2sim → 실물. 액추에이터는 지연 PD + 토크-속도 곡선·마찰·armature.</p></div>
 <div class="card gy"><h3>Verti-WM: 해석 + 학습을 게이트로 섞는다</h3><p>게이트만 배워 실물 약 70분으로 맞췄다. β = 0이면 해석 모델로 돌아간다.</p></div>
 </div>
 </div>
-<p class="take"><b>travplan:</b> 동역학을 배우기 전에 관성부터 실물 값이어야 한다(TP-0035). 저장소 값은 자리표시자에 가깝다.</p>
+<p class="take"><b>travplan:</b> 동역학을 배우기 전에 관성부터 실물 값이어야 한다(TP-0035). 저장소 값은 placeholder에 가깝다.</p>
 <div class="foot" data-foot><p>[30] Verti-WM, George Mason Univ., 2026 — arXiv:2609.23118</p></div>
-<aside>기구학은 배울 것이 아니라 식을 쓰면 됩니다. 배울 것은 동역학인데, 설계 문서에서 잰 바로는 스워브 잔차를 지배하는 것이 타이어가 아니라 액추에이터 지연이었습니다. 실제로 MPPI rollout에 지연을 넣자 plant 레벨 3의 치명 실패가 55에서 4로 줄었습니다. 시뮬에서 배운 잔차는 로봇이 아니라 그 시뮬의 타이어 모델일 수 있으므로 다른 엔진으로 교차 검증하는 순서가 중요합니다. AntBot 저장소의 관성값은 차체 Ixx = Iyy = 5.0처럼 자리표시자라서, 실물 값이 먼저입니다.</aside>
+<aside>기구학은 배울 것이 아니라 식을 쓰면 됩니다. 배울 것은 동역학인데, 설계 문서에서 잰 바로는 스워브 잔차를 지배하는 것이 타이어가 아니라 액추에이터 지연이었습니다. 실제로 MPPI rollout에 지연을 넣자 plant 레벨 3의 치명 실패가 55에서 4로 줄었습니다. 시뮬에서 배운 잔차는 로봇이 아니라 그 시뮬의 타이어 모델일 수 있으므로 다른 엔진으로 교차 검증하는 순서가 중요합니다. AntBot 저장소의 관성값은 차체 Ixx = Iyy = 5.0처럼 placeholder라서, 실물 값이 먼저입니다.</aside>
 </section>
 <section id="recent-1" class="t">
 <div class="head"><p class="kicker">S.10 · 최근 연구 비교 (1/2)</p><h2>2025–2026의 무게는 "빠른 엔진"에서 "믿을 수 있는 평가"로 옮겨 갔다</h2></div>
@@ -634,45 +634,45 @@ section.t.divider h2 { font-size:80px; }
 <tr><td>NavIsaacLab (2026-06, arXiv)</td><td>보행자</td><td>궤적 diffusion + 동작 모방</td><td>Scout Mini zero-shot</td></tr>
 </table>
 <p class="take"><b>travplan:</b> 엔진·장면·보행자 쪽은 처리량보다 재현성과 공정한 비교로 모인다.</p>
-<aside>최근 연구 16편을 두 장으로 나눠 봅니다. 엔진 자체를 더 빠르게 만드는 연구보다, 평가를 믿을 수 있게 만드는 장면과 보행자 모델 연구가 많아졌습니다. 첫 장은 엔진, 보도 장면·평가, 보행자 쪽입니다. 사전식 조종과 GROVE는 실물 실험이 없다는 점을 표에 함께 적었습니다.</aside>
+<aside>최근 연구 16편을 두 장으로 나눠 살펴봅니다. 엔진 자체를 더 빠르게 만드는 연구보다, 평가를 믿을 수 있게 만드는 장면과 보행자 모델 연구가 많아졌습니다. 첫 장은 엔진, 보도 장면·평가, 보행자 쪽입니다. 사전식 조종과 GROVE는 실물 실험이 없다는 점을 표에 함께 적었습니다.</aside>
 </section>
 <section id="recent-2" class="t">
 <div class="head"><p class="kicker">S.10 · 최근 연구 비교 (2/2)</p><h2>실측 장면과 바퀴 연구는 비싼 물리 대신 기하와 학습 모델로 옮겼다</h2></div>
 <table>
 <tr><th>이름 (연 · 발표)</th><th>주제</th><th>방법의 핵심</th><th>로봇 · 실험</th></tr>
-<tr><td>SocNav Bench (2025-11, arXiv)</td><td>보행자·장면</td><td>실측 3DGS 9곳, 협조 않는 보행자</td><td>Go2 실물 85.0 %</td></tr>
+<tr><td>SocNav Bench (2025-11, arXiv)</td><td>보행자·장면</td><td>실측 3DGS 9곳, 협조하지 않는 보행자</td><td>Go2 실물 85.0 %</td></tr>
 <tr><td>GaussGym (2025-10, arXiv)</td><td>렌더링</td><td>Isaac Gym에 3DGS 렌더러</td><td>A1 계단 zero-shot</td></tr>
 <tr><td>Wanderland (2026, CVPR)</td><td>실측 장면</td><td>LIV-SLAM 기하 위 3DGS</td><td>실외 최고 0.31</td></tr>
 <tr><td>Wheeled Lab (2025, CoRL)</td><td>바퀴 물리</td><td>서스펜션·접촉 RC카 병렬</td><td>RC카 zero-shot</td></tr>
-<tr><td>Verti-WM (2026-09, arXiv)</td><td>지형·바퀴</td><td>얼린 두 전문가 + GRU 게이트</td><td>실물 4/5</td></tr>
-<tr><td>Sim2Dust (2025-08, arXiv)</td><td>변형 지면</td><td>지형 다양성 + 지연·잡음 무작위화</td><td>Leo Rover 자갈 3.6 cm</td></tr>
+<tr><td>Verti-WM (2026-09, arXiv)</td><td>지형·바퀴</td><td>고정한 전문가 둘 + GRU 게이트</td><td>실물 4/5</td></tr>
+<tr><td>Sim2Dust (2025-08, arXiv)</td><td>변형 지면</td><td>지형 다양성 + 지연·잡음 랜덤화</td><td>Leo Rover 자갈 3.6 cm</td></tr>
 <tr><td>Chrono::CRM (2025-07, arXiv)</td><td>변형 지면</td><td>GPU SPH + 다물체 바퀴</td><td>NASA MGRU3 rover 등</td></tr>
 <tr><td>EmbodiedSplat (2025, ICCV)</td><td>sim-to-real</td><td>iPhone 3DGS 메시, Habitat-Sim</td><td>상관 0.87–0.97, 실내</td></tr>
 </table>
-<p class="take"><b>travplan:</b> 실측 장면은 기하 정확도가, 바퀴는 지연·무작위화가 결과를 가른다.</p>
-<aside>두 번째 장은 실측 장면, 바퀴, 변형 지면, sim-to-real 쪽입니다. 바퀴 쪽은 Verti-WM과 Sim2Dust처럼 비싼 접촉 물리 대신 학습 모델과 무작위화로 실물에 갔습니다. 실측 장면 쪽은 기하 정확도가 평가 신뢰도를 정한다는 결과가 반복됩니다. EmbodiedSplat의 상관은 종류와 표본 수를 문서에서 확인하지 못했다는 점을 덧붙입니다.</aside>
+<p class="take"><b>travplan:</b> 실측 장면은 기하 정확도가, 바퀴는 지연·랜덤화가 결과를 가른다.</p>
+<aside>두 번째 장은 실측 장면, 바퀴, 변형 지면, sim-to-real 쪽입니다. 바퀴 쪽은 Verti-WM과 Sim2Dust처럼 비싼 접촉 물리 대신 학습 모델과 랜덤화로 실물에 갔습니다. 실측 장면 쪽은 기하 정확도가 평가 신뢰도를 정한다는 결과가 반복됩니다. EmbodiedSplat의 상관은 종류와 샘플 수를 문서에서 확인하지 못했다는 점을 덧붙입니다.</aside>
 </section>
 <section id="recent-common" class="t">
 <div class="head"><p class="kicker">S.10 · 공통점</p><h2>외형과 충돌을 나누고, Isaac 위에서 평가 신뢰도를 따로 잰다</h2></div>
 <div class="grid3">
 <div class="card or"><h3>1 · 외형과 충돌을 나눈다</h3><p>3DGS는 그림만, 충돌은 메시가 맡는다. 3DGS의 기하는 흐리다.</p></div>
-<div class="card bl"><h3>2 · Isaac 계열이 공통 바닥</h3><p>보도·배달 평가가 모두 Isaac Sim이나 Isaac Lab 위에 있다.</p></div>
-<div class="card gr"><h3>3 · 바퀴 접촉을 풀지 않는다</h3><p>학습 모델이나 단단한 면 + 무작위화로 실물에 갔다.</p></div>
+<div class="card bl"><h3>2 · Isaac 계열이 공통 기반</h3><p>보도·배달 평가가 모두 Isaac Sim이나 Isaac Lab 위에 있다.</p></div>
+<div class="card gr"><h3>3 · 바퀴 접촉을 풀지 않는다</h3><p>학습 모델이나 단단한 면 + 랜덤화로 실물에 갔다.</p></div>
 <div class="card gy"><h3>4 · 평가 신뢰도를 잰다</h3><p>실물 일치·결정론, 장면 기하에 따른 변화, 시뮬과 실물의 상관.</p></div>
-<div class="card or"><h3>5 · ORCA에서 벗어난다</h3><p>상호 협조 가정 대신 상태 기계, 협조 않는 보행자, 학습 궤적.</p></div>
+<div class="card or"><h3>5 · ORCA에서 벗어난다</h3><p>상호 협조 가정 대신 상태 기계, 협조하지 않는 보행자, 학습 궤적.</p></div>
 </div>
-<p class="take"><b>travplan:</b> Isaac 바닥과 운동학 바퀴는 이미 같은 쪽이다. 남은 것은 평가 신뢰도 측정이다.</p>
-<aside>16편의 공통점을 다섯 가지로 묶었습니다. 외형과 충돌의 분리, Isaac 계열이라는 공통 바닥, 바퀴 접촉을 정밀하게 풀지 않는 태도, 평가 신뢰도의 별도 측정, 그리고 ORCA 상호 협조 가정에서 벗어나려는 시도입니다. travplan은 엔진과 바퀴에서는 이미 같은 쪽에 있고, 평가 신뢰도 측정이 남은 일입니다.</aside>
+<p class="take"><b>travplan:</b> Isaac 기반과 운동학 바퀴는 이미 같은 쪽이다. 남은 것은 평가 신뢰도 측정이다.</p>
+<aside>16편의 공통점을 다섯 가지로 정리했습니다. 외형과 충돌의 분리, Isaac 계열이라는 공통 기반, 바퀴 접촉을 정밀하게 풀지 않는 태도, 평가 신뢰도의 별도 측정, 그리고 ORCA 상호 협조 가정에서 벗어나려는 시도입니다. travplan은 엔진과 바퀴에서는 이미 같은 쪽에 있고, 평가 신뢰도 측정이 남은 일입니다.</aside>
 </section>
 <section id="recent-diff" class="t">
 <div class="head"><p class="kicker">S.10 · 차이점</p><h2>다섯 축에서 갈리고, 축마다 얻는 것과 잃는 것이 다르다</h2></div>
 <table>
 <tr><th>축</th><th>한쪽</th><th>다른 쪽</th><th>얻는 것과 잃는 것</th><th>travplan</th></tr>
 <tr><td>동역학 출처</td><td>물리 엔진</td><td>학습 시뮬 (Verti-WM)</td><td>학습 시뮬은 학습 시간 1.36 h 대 33.48 h. 데이터 밖 지형은 보장 없음</td><td>해석 plant + 잔차 GP</td></tr>
-<tr><td>장면 출처</td><td>절차 생성</td><td>실측 스캔</td><td>절차는 난이도 손잡이와 양, 실측은 현실 분포. 실측은 수백 곳에 그친다</td><td>절차(L0), 실측은 계획</td></tr>
+<tr><td>장면 출처</td><td>절차 생성</td><td>실측 스캔</td><td>절차는 난이도 파라미터와 양, 실측은 현실 분포. 실측은 수백 곳에 그친다</td><td>절차(L0), 실측은 계획</td></tr>
 <tr><td>실측 센서</td><td>영상만</td><td>LiDAR 융합</td><td>영상만은 싸다. 궤적 자세 오차 0.30 m (Wanderland)</td><td>LiDAR 융합 권고</td></tr>
 <tr><td>보행자</td><td>사건·상태 기계</td><td>반응·생성</td><td>사건은 재현돼 스택 비교에 공정, 반응은 다양하지만 재현이 어렵다</td><td>등속 + ORCA 선택</td></tr>
-<tr><td>제약 처리</td><td>가중합 벌점</td><td>우선순위 분리</td><td>사전식 조종은 턱 실패를 줄였지만 주행 거리가 약 36 % 늘었다</td><td>치명 벌점 1,000</td></tr>
+<tr><td>제약 처리</td><td>가중합 페널티</td><td>우선순위 분리</td><td>사전식 조종은 턱 실패를 줄였지만 주행 거리가 약 36 % 늘었다</td><td>치명 페널티 1,000</td></tr>
 </table>
 <p class="take"><b>travplan:</b> 각 축의 오른쪽이 늘 낫지 않다. travplan은 장면과 보행자에서 두 쪽을 함께 쓴다.</p>
 <aside>차이점은 다섯 축으로 정리했습니다. 동역학을 엔진에서 얻느냐 학습하느냐, 장면을 생성하느냐 스캔하느냐, 스캔을 영상으로 하느냐 LiDAR로 하느냐, 보행자를 사건으로 두느냐 반응으로 두느냐, 제약을 가중합으로 두느냐 순위로 나누느냐입니다. 각 축의 오른쪽이 늘 낫지는 않습니다. travplan은 장면은 절차 생성과 실측을 둘 다, 보행자는 평가용 사건과 반응형을 둘 다 쓰는 쪽입니다.</aside>
@@ -680,7 +680,7 @@ section.t.divider h2 { font-size:80px; }
 <section id="recent-take" class="t">
 <div class="head"><p class="kicker">S.10 · travplan에 주는 의미</p><h2>가져올 것은 엔진 교체가 아니라 Isaac 폐루프의 재현성 측정이다</h2></div>
 <div class="grid3">
-<div class="card gr"><span class="tag gr">가져올 것</span><ul><li>Isaac 전에 재현성부터 (GPUSimBench)</li><li>표본 안내를 동적 장벽으로 (사전식 조종)</li><li>실측 장면은 LiDAR 기하로 (Wanderland)</li><li>ORCA 과협조를 함께 적기 (DynBench)</li></ul></div>
+<div class="card gr"><span class="tag gr">가져올 것</span><ul><li>Isaac 전에 재현성부터 (GPUSimBench)</li><li>샘플 안내를 동적 장벽으로 (사전식 조종)</li><li>실측 장면은 LiDAR 기하로 (Wanderland)</li><li>ORCA 과협조를 함께 적기 (DynBench)</li></ul></div>
 <div class="card gy"><span class="tag">가져오지 않을 것</span><ul><li>엔진 교체</li><li>입자 기반 변형 지면</li><li>지형 조건 plant 재구현 (<code>LagSlipSwerveModel</code>이 이미 있음)</li><li>LLM 보행자의 직접 평가 사용</li></ul></div>
 <div class="card or"><span class="tag or">시도 순서 (TP 후보)</span><ol><li>TP-0005 첫 측정: 재실행 뒤집힘 수, 병렬 환경 차이</li><li>FlowPolicy 안내를 동적 장벽으로, 1층·2층 비교</li><li>멈춰 서기·둘러보기 보행자 (TP-0167 뒤)</li></ol></div>
 </div>

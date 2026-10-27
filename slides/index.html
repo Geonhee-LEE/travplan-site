@@ -47,12 +47,12 @@ h2.grp { font-family:'Noto Serif KR', Georgia, serif; font-size:24px; margin:40p
 </article><article class="card">
 <h2>경로 계획 기초 — 탐색에서 생성형 Planner까지</h2>
 <p class="n">2단계 · 47장 · 발표자 노트 포함</p>
-<ul><li>시작 — 배경지식(그래프·비용·구성 공간·기구학), 계획의 층, 비용 지도</li><li>그래프 탐색과 샘플링 — Dijkstra·A*, Hybrid A*, RRT·PRM과 장단점</li><li>로컬 계획과 궤적 최적화 — DWA, CHOMP·TEB, 로컬 계획기 비교</li><li>학습 Planner — 왜 배우나, 시연과 DAgger, 비용 지도 자기지도, 다봉 문제, NavDP·X-NavDP</li><li>생성형 궤적 — flow matching 배경, guidance, 계보, 스텝 줄이기, 생성하고 고르기</li><li>위층·위험·규칙 — VLA, 느린 판정자, 위험 척도, 실행 가능성, 규칙 기준선</li><li>정리 — 장단점 표, 폐루프 평가, 공부 순서</li></ul>
+<ul><li>시작 — 배경지식(그래프·비용·구성 공간·기구학), 계획의 층, costmap</li><li>그래프 탐색과 샘플링 — Dijkstra·A*, Hybrid A*, RRT·PRM과 장단점</li><li>로컬 계획과 궤적 최적화 — DWA, CHOMP·TEB, 로컬 계획기 비교</li><li>학습 Planner — 왜 배우나, 시연과 DAgger, costmap 자기지도, 다봉 문제, NavDP·X-NavDP</li><li>생성형 궤적 — flow matching 배경, guidance, 계보, 스텝 줄이기, 생성하고 고르기</li><li>위층·위험·규칙 — VLA, 느린 판정자, 위험 척도, 실행 가능성, 규칙 기준선</li><li>정리 — 장단점 표, 폐루프 평가, 공부 순서</li></ul>
 <p class="act"><a class="btn" href="study-planner/">슬라이드 보기</a><a class="btn ghost" href="study-planner/study-planner.pptx" download>PPTX 내려받기</a></p>
 </article><article class="card">
 <h2>로봇 제어 기초 — PID에서 MPPI와 안전 필터까지</h2>
 <p class="n">3단계 · 45장 · 발표자 노트 포함</p>
-<ul><li>시작 — 배경지식(상태공간·되먹임·안정성·이산 시간), 되먹임 고리</li><li>고전 피드백과 경로 추종 — PID, pure pursuit, 추종기 비교</li><li>최적 제어와 MPC — LQR, 이동 지평, MPC의 종류, 장단점</li><li>표본 기반 MPC — MPPI 식, 온도, 잡음의 모양, 계보, 학습 prior, NMPC와 비교</li><li>모델 오차와 적응 — 지연, 학습 동역학, 잔차, GP, 적응</li><li>안전 — 비용 대 필터, CBF, CVaR, 보정, barrier 합치기, 표본 안전 필터</li><li>정리 — 장단점 표, 고르는 법, 흔한 함정, 공부 순서</li></ul>
+<ul><li>시작 — 배경지식(상태공간·피드백·안정성·이산 시간), 피드백 루프</li><li>고전 피드백과 경로 추종 — PID, pure pursuit, 추종기 비교</li><li>최적 제어와 MPC — LQR, receding horizon, MPC의 종류, 장단점</li><li>샘플 기반 MPC — MPPI 식, 온도, 잡음의 모양, 계보, 학습 prior, NMPC와 비교</li><li>모델 오차와 적응 — 지연, 학습 동역학, 잔차, GP, 적응</li><li>안전 — 비용 대 필터, CBF, CVaR, 보정, barrier 합치기, 샘플 기반 안전 필터</li><li>정리 — 장단점 표, 고르는 법, 흔한 함정, 공부 순서</li></ul>
 <p class="act"><a class="btn" href="study-controller/">슬라이드 보기</a><a class="btn ghost" href="study-controller/study-controller.pptx" download>PPTX 내려받기</a></p>
 </article><article class="card">
 <h2>비선형 MPC 구축 기초 — 문제 세우기, 실시간 풀이, 모델 오차</h2>
@@ -62,17 +62,17 @@ h2.grp { font-family:'Noto Serif KR', Georgia, serif; font-size:24px; margin:40p
 </article><article class="card">
 <h2>강화학습 기초 — 그림과 장단점으로 보는 핵심 개념</h2>
 <p class="n">5단계 · 54장 · 발표자 노트 포함</p>
-<ul><li>시작 — 배경지식(확률·기울기·편향과 분산), 지도학습과의 차이, 알고리즘 지도</li><li>문제 설정 — MDP, 할인, Bellman 식, 탐색, 행동 복제와 분포 이동</li><li>정책 기울기 — 로그 미분 요령, REINFORCE, 진화 전략, GAE, PPO와 장단점</li><li>가치 기반과 오프라인 — Q-learning, DQN, on/off-policy, AWR·CQL·IQL</li><li>추론으로서의 제어와 모델 기반 — SAC, KL의 방향, 온도, LQR, 모델 오차</li><li>보상과 생성 정책 — 보상 설계, HER, 역강화학습, RLHF·GRPO, flow 정책, 안전</li><li>정리 — 표본 효율 지도, 방법별 장단점 표, 흔한 함정, 공부 순서</li></ul>
+<ul><li>시작 — 배경지식(확률·기울기·편향과 분산), 지도학습과의 차이, 알고리즘 지도</li><li>문제 설정 — MDP, 할인, Bellman 식, 탐색, 행동 복제와 분포 이동</li><li>정책 기울기 — 로그 미분 요령, REINFORCE, 진화 전략, GAE, PPO와 장단점</li><li>가치 기반과 오프라인 — Q-learning, DQN, on/off-policy, AWR·CQL·IQL</li><li>추론으로서의 제어와 모델 기반 — SAC, KL의 방향, 온도, LQR, 모델 오차</li><li>보상과 생성 정책 — 보상 설계, HER, 역강화학습, RLHF·GRPO, flow 정책, 안전</li><li>정리 — 샘플 효율 지도, 방법별 장단점 표, 흔한 함정, 공부 순서</li></ul>
 <p class="act"><a class="btn" href="study-rl/">슬라이드 보기</a><a class="btn ghost" href="study-rl/study-rl.pptx" download>PPTX 내려받기</a></p>
 </article><article class="card">
 <h2>로봇 시뮬레이션 기초 — 물리 엔진에서 sim-to-real까지</h2>
 <p class="n">6단계 · 32장 · 발표자 노트 포함</p>
-<ul><li>시작 — 배경지식(수치 적분·접촉·재현성·통계), 충실도 사다리</li><li>물리 엔진 — 적분기와 에너지, 벌점·제약 접촉, 엔진 고르기, 속도·현실 일치·재현성, 잡음 바닥</li><li>장면과 보행자 — 절차 생성과 커리큘럼, 보도 시뮬레이터, 보행자 모델 다섯 갈래, 평가 지표</li><li>센서와 sim-to-real — 센서 시뮬, 3DGS, 차이의 출처, 도메인 무작위화, 예측력(SRCC), 바퀴 로봇</li><li>정리 — 장단점 표, 흔한 함정, 공부 순서</li></ul>
+<ul><li>시작 — 배경지식(수치 적분·접촉·재현성·통계), 충실도 사다리</li><li>물리 엔진 — 적분기와 에너지, 페널티·제약 접촉, 엔진 고르기, 속도·현실 일치·재현성, 잡음 바닥</li><li>장면과 보행자 — 절차 생성과 커리큘럼, 보도 시뮬레이터, 보행자 모델 다섯 갈래, 평가 지표</li><li>센서와 sim-to-real — 센서 시뮬, 3DGS, 차이의 출처, 도메인 랜덤화, 예측력(SRCC), 바퀴 로봇</li><li>정리 — 장단점 표, 흔한 함정, 공부 순서</li></ul>
 <p class="act"><a class="btn" href="study-simulation/">슬라이드 보기</a><a class="btn ghost" href="study-simulation/study-simulation.pptx" download>PPTX 내려받기</a></p>
 </article><article class="card">
 <h2>다리 로봇 내비게이션 기초 — 층과 경계, 지형 보행, 전신 제어</h2>
 <p class="n">7단계 · 37장 · 발표자 노트 포함</p>
-<ul><li>시작 — 지지 영역·고유감각·학습 보행, 분야별 대세</li><li>층 사이의 경계 — 경계의 사다리, 속도 계약, 경계 내리기, 학습 로컬 내비</li><li>지형을 보는 보행 — 교사–학생 증류, 볼 곳 고르기, 성긴 LiDAR, 깊이 파쿠르, 처음 보는 몸</li><li>전신 제어와 투영 — 리타기팅, 계획기·추종기·투영에서 틈 메우기</li><li>장시간 자율 — 단계 신뢰도, 세 층 구조 두 사례</li><li>정리 — 비교표, 공통점과 차이점, 장단점, 흔한 함정, 공부 순서</li></ul>
+<ul><li>시작 — 지지 영역·proprioception·학습 보행, 분야별 대세</li><li>층 사이의 경계 — 경계의 사다리, 속도 계약, 경계 내리기, 학습 로컬 내비</li><li>지형을 보는 보행 — teacher–student 증류, 볼 곳 고르기, 성긴 LiDAR, 깊이 파쿠르, 처음 보는 몸</li><li>전신 제어와 투영 — 리타기팅, 계획기·추종기·투영에서 틈 메우기</li><li>장시간 자율 — 단계 신뢰도, 세 층 구조 두 사례</li><li>정리 — 비교표, 공통점과 차이점, 장단점, 흔한 함정, 공부 순서</li></ul>
 <p class="act"><a class="btn" href="study-legged/">슬라이드 보기</a><a class="btn ghost" href="study-legged/study-legged.pptx" download>PPTX 내려받기</a></p>
 </article>
 </div>
@@ -88,12 +88,12 @@ PPTX는 글자·표·도형을 고칠 수 있는 판입니다(별행 수식은 �
 </article><article class="card">
 <h2>travplan 챕터 발표 — Planner</h2>
 <p class="n">40장 · 발표자 노트 포함</p>
-<ul><li>Planner의 계약과 고전 기준선(GuidancePlanner)</li><li>학습 로컬 Planner: 비용 지도 자기지도, NavDP, X-NavDP</li><li>생성형 궤적: Diffuser에서 Diffusion Planner, 그리고 Planner D</li><li>Foundation·VLA·언어: Planner 위의 목표 선택 층</li><li>위험 인지 계획: 실행 가능성, 방향, 센서 밖, 안전 층</li><li>자율주행 자동차: 후보 생성, 검증, 선택</li><li>B.17 최근 연구 비교: 공통점, 차이점, 다음 시도 순서</li><li>B.15 작업 기록: Planner D 폴백, RL 후학습, 레벨 스윕</li><li>정리와 참고문헌</li></ul>
+<ul><li>Planner의 계약과 고전 기준선(GuidancePlanner)</li><li>학습 로컬 Planner: costmap 자기지도, NavDP, X-NavDP</li><li>생성형 궤적: Diffuser에서 Diffusion Planner, 그리고 Planner D</li><li>Foundation·VLA·언어: Planner 위의 목표 선택 층</li><li>위험 인지 계획: 실행 가능성, 방향, 센서 밖, 안전 층</li><li>자율주행 자동차: 후보 생성, 검증, 선택</li><li>B.17 최근 연구 비교: 공통점, 차이점, 다음 시도 순서</li><li>B.15 작업 기록: Planner D 폴백, RL 후학습, 레벨 스윕</li><li>정리와 참고문헌</li></ul>
 <p class="act"><a class="btn" href="talk-planner/">슬라이드 보기</a><a class="btn ghost" href="talk-planner/talk-planner.pptx" download>PPTX 내려받기</a></p>
 </article><article class="card">
 <h2>travplan 챕터 발표 — Controller·안전</h2>
 <p class="n">40장 · 발표자 노트 포함</p>
-<ul><li>Controller가 하는 일과 새 연구가 들어오는 세 자리</li><li>MPPI 계열: 가중 평균, 계보, SMPPI, ProxPI, 지연을 다루는 MPPI</li><li>학습 동역학·적응: rollout 모델, 잔차, 선형 대 GP, GP가 앉는 자리</li><li>안전 필터: 비용 통합형과 외부 필터, 보정, barrier 합성, 표본 감시</li><li>하위 제어·4족 RL: LP-ACRL 커리큘럼과 DreamWaQ 구현 점검</li><li>최근 연구 비교(E.16): 비교표, 공통점, 차이점, 가져올 것과 시도 순서</li><li>travplan 작업 기록: plant 지연, NMPC 비교, 보행자, 멈춤 진단, 학습 정책</li><li>정리, 다음 할 일, 참고문헌</li></ul>
+<ul><li>Controller가 하는 일과 새 연구가 들어오는 세 자리</li><li>MPPI 계열: 가중 평균, 계보, SMPPI, ProxPI, 지연을 다루는 MPPI</li><li>학습 동역학·적응: rollout 모델, 잔차, 선형 대 GP, GP가 앉는 자리</li><li>안전 필터: 비용 통합형과 외부 필터, 보정, barrier 합성, 샘플 감시</li><li>하위 제어·4족 RL: LP-ACRL 커리큘럼과 DreamWaQ 구현 점검</li><li>최근 연구 비교(E.16): 비교표, 공통점, 차이점, 가져올 것과 시도 순서</li><li>travplan 작업 기록: plant 지연, NMPC 비교, 보행자, 멈춤 진단, 학습 정책</li><li>정리, 다음 할 일, 참고문헌</li></ul>
 <p class="act"><a class="btn" href="talk-controller/">슬라이드 보기</a><a class="btn ghost" href="talk-controller/talk-controller.pptx" download>PPTX 내려받기</a></p>
 </article><article class="card">
 <h2>travplan 챕터 발표 — MPC 구축</h2>

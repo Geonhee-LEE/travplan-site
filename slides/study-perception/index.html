@@ -237,9 +237,9 @@ section.t.divider h2 { font-size:80px; }
 </script>
 <section id="cover" class="t dark cover">
 <p class="kicker">로봇 인식 기초 · 개념 공부 덱</p>
-<div class="stack"><h1>센서 관측을<br>움직일 수 있는 지도로</h1><p class="lead">점유 격자와 높이 지도, 음의 장애물과 못 본 칸, traversability 자기지도, 시각 기반 모델, 사람 검출·추적·예측까지 — 그림과 배경지식과 장단점으로 보는 내비게이션 인식</p></div>
-<div class="pills"><p class="pill on">점유 격자 · 높이 지도</p><p class="pill">못 본 칸</p><p class="pill">Traversability</p><p class="pill">시각 기반 모델</p><p class="pill">추적 · 예측 · 보정</p></div>
-<aside>이 덱은 로봇 내비게이션의 인식을 처음 공부하는 사람을 위한 개념 덱이다. 센서 점군과 영상을 계획기가 읽을 수 있는 지도와 장애물 목록으로 바꾸는 과정을 따라간다. 그림 대부분은 작은 장면을 실제로 계산해 그렸고, 논문 그림에는 출처를 달았다.</aside>
+<div class="stack"><h1>센서 관측을<br>움직일 수 있는 지도로</h1><p class="lead">occupancy grid와 높이 지도, 음의 장애물과 못 본 칸, traversability 자기지도, 시각 기반 모델, 사람 검출·추적·예측까지 — 그림과 배경지식과 장단점으로 보는 내비게이션 인식</p></div>
+<div class="pills"><p class="pill on">occupancy grid · 높이 지도</p><p class="pill">못 본 칸</p><p class="pill">Traversability</p><p class="pill">시각 기반 모델</p><p class="pill">추적 · 예측 · 보정</p></div>
+<aside>이 덱은 로봇 내비게이션의 인식을 처음 공부하는 사람을 위한 개념 덱이다. 센서 점군과 영상을 Planner가 읽을 수 있는 지도와 장애물 목록으로 바꾸는 과정을 따라간다. 그림 대부분은 작은 장면을 실제로 계산해 그렸고, 논문 그림에는 출처를 달았다.</aside>
 </section>
 <section id="agenda" class="t">
 <div class="head"><p class="kicker">순서</p><h2>지도, 비용, 사람의 세 갈래로 간다</h2></div>
@@ -257,7 +257,7 @@ section.t.divider h2 { font-size:80px; }
 <div class="head"><p class="kicker">0 · 커리큘럼 1/7</p><h2>첫 덱이다: 지도가 뒤의 모든 덱의 입력이 된다</h2></div>
 <figure><img src="img/course.webp" style="height:400px"></figure>
 <div class="grid3">
-<div class="card gr"><span class="tag gr">앞에서 가져올 것</span><p>없다. 확률(기댓값, 가우시안, 베이즈 규칙)과 행렬 곱이면 시작할 수 있다.</p></div><div class="card bl"><span class="tag bl">뒤로 넘기는 것</span><p>비용 지도 → 2 경로 계획. 지도의 분산 σ와 사람 추적 → 3 제어의 위험·안전 장.</p></div><div class="card or"><span class="tag or">함께 보면 좋은 것</span><p>높이 지도 관측 → 7 다리 로봇의 지형 보행. 지연과 속도 → 3 제어의 지연 장.</p></div>
+<div class="card gr"><span class="tag gr">앞에서 가져올 것</span><p>없다. 확률(기댓값, 가우시안, 베이즈 규칙)과 행렬 곱이면 시작할 수 있다.</p></div><div class="card bl"><span class="tag bl">뒤로 넘기는 것</span><p>costmap → 2 경로 계획. 지도의 분산 σ와 사람 추적 → 3 제어의 위험·안전 장.</p></div><div class="card or"><span class="tag or">함께 보면 좋은 것</span><p>높이 지도 관측 → 7 다리 로봇의 지형 보행. 지연과 속도 → 3 제어의 지연 장.</p></div>
 </div>
 <aside>일곱 덱 가운데 첫 덱이다. 인식은 센서 값을 지형 지도와 비용과 불확실성으로 바꾸고, 이 출력이 뒤의 경로 계획과 제어의 입력이 된다. 앞 덱이 없으므로 확률과 선형대수의 기초만 있으면 된다. 여기서 만든 분산 σ는 제어 덱의 확률 제약과 CVaR에서, 사람 추적은 제어 덱의 안전 장에서 다시 쓰인다. 일곱 덱 전체의 순서와 10주 계획은 로드맵 덱에 있다.</aside>
 </section>
@@ -265,7 +265,7 @@ section.t.divider h2 { font-size:80px; }
 <div class="head"><p class="kicker">0 · 배경지식</p><h2>네 가지 배경지식이면 이 덱을 따라올 수 있다</h2></div>
 <div class="grid2">
 <div class="card bl"><span class="tag bl">좌표 변환</span><h3>센서 → 로봇 → 지도 좌표</h3><p>점 하나를 \(p_{\text{map}} = T_{\text{map}\leftarrow\text{base}}\, T_{\text{base}\leftarrow\text{sensor}}\, p\)로 옮긴다. 자세 추정이 틀리면 지도가 번진다.</p></div>
-<div class="card or"><span class="tag or">베이즈 갱신</span><h3>믿음 × 새 증거</h3><p>\(p(m \mid z_{1:t}) \propto p(z_t \mid m)\, p(m \mid z_{1:t-1})\). 지도는 관측을 하나씩 더해 가는 믿음이다.</p></div>
+<div class="card or"><span class="tag or">베이즈 갱신</span><h3>belief × 새 증거</h3><p>\(p(m \mid z_{1:t}) \propto p(z_t \mid m)\, p(m \mid z_{1:t-1})\). 지도는 관측을 하나씩 더해 가는 belief다.</p></div>
 <div class="card gr"><span class="tag gr">센서 잡음</span><h3>멀수록, 비스듬할수록 크다</h3><p>깊이 오차는 거리에 따라 커진다(스테레오는 거리의 제곱). 측정마다 분산을 붙여 합친다.</p></div>
 <div class="card gy"><span class="tag">격자</span><h3>공간을 칸으로 나눈다</h3><p>칸 크기(해상도)가 작은 턱을 볼 수 있는지와 계산량을 함께 정한다.</p></div>
 </div>
@@ -287,9 +287,9 @@ section.t.divider h2 { font-size:80px; }
 </div>
 <table style="font-size:24px">
 <tr><th>지도 표현</th><th>담는 것</th><th>장점</th><th>단점</th></tr>
-<tr><td>2D 점유 격자</td><td>칸마다 점유 확률</td><td class="good">단순, 실내 표준</td><td class="bad">경사·턱·구덩이를 못 담는다</td></tr>
+<tr><td>2D occupancy grid</td><td>칸마다 occupancy 확률</td><td class="good">단순, 실내 표준</td><td class="bad">경사·턱·구덩이를 못 담는다</td></tr>
 <tr><td>2.5D 높이 지도</td><td>칸마다 높이(+분산)</td><td class="good">실외 지형, 가볍다</td><td class="bad">오버행(다리 밑, 나뭇가지) 표현 못 함</td></tr>
-<tr><td>3D voxel·ESDF</td><td>칸마다 점유·거리</td><td class="good">오버행, 3D 거리</td><td class="bad">메모리·계산이 크다</td></tr>
+<tr><td>3D voxel·ESDF</td><td>칸마다 occupancy·거리</td><td class="good">오버행, 3D 거리</td><td class="bad">메모리·계산이 크다</td></tr>
 </table>
 <aside>인식의 출력은 두 갈래다. 위 줄은 정적인 지형으로, 점군을 격자 지도로 쌓고 거기서 비용을 계산한다. 아래 줄은 움직이는 것으로, 영상에서 검출하고 시간에 걸쳐 추적하고 미래를 예측한다. 지도 표현은 무엇을 담을지와 얼마나 무거운지를 맞바꾼다. 실외 바퀴 로봇과 보행 로봇에서는 2.5D 높이 지도가 가장 흔한 절충이다.</aside>
 </section>
@@ -299,7 +299,7 @@ section.t.divider h2 { font-size:80px; }
 <tr><th>센서</th><th>주는 것</th><th>장점</th><th>단점</th></tr>
 <tr><td>LiDAR</td><td>정확한 3D 점(수십 m)</td><td class="good">거리 정확, 조명 무관</td><td class="bad">비싸고 성기다, 검은·젖은 면에 약함</td></tr>
 <tr><td>스테레오 카메라</td><td>조밀한 깊이(수 m)</td><td class="good">싸고 조밀, 색도 함께</td><td class="bad">거리 제곱으로 오차, 무늬 없는 면에 약함</td></tr>
-<tr><td>단안 카메라</td><td>영상(+학습 깊이)</td><td class="good">가장 싸고 의미가 풍부</td><td class="bad">축척을 모른다, 조명·날씨</td></tr>
+<tr><td>단안 카메라</td><td>영상(+학습 깊이)</td><td class="good">가장 싸고 의미가 풍부</td><td class="bad">스케일을 모른다, 조명·날씨</td></tr>
 <tr><td>레이더</td><td>거리·속도(성긴 점)</td><td class="good">비·안개에 강함, 속도 직접</td><td class="bad">해상도 낮음, 지형에 약함</td></tr>
 <tr><td>IMU·바퀴 오도메트리</td><td>자기 운동</td><td class="good">빠르고 늘 있다</td><td class="bad">시간에 따라 표류</td></tr>
 </table>
@@ -309,18 +309,18 @@ section.t.divider h2 { font-size:80px; }
 <section id="d1" class="t dark divider">
 <p class="kicker">1 · 지형 지도</p>
 <h2>잡음 섞인 관측을<br>칸마다 확률로 쌓는다</h2>
-<p class="lead">점유는 log-odds로, 높이는 분산 가중 평균으로. 위험한 것은 아예 관측되지 않는 칸이다.</p>
-<aside>첫째 장은 지도를 만드는 법이다. 2D 점유 격자의 log-odds 갱신, 2.5D 높이 지도의 칼만 융합, 실제 구현인 elevation mapping, 그리고 보도에서 가장 위험한 음의 장애물과 못 본 칸을 다룬다.</aside>
+<p class="lead">occupancy는 log-odds로, 높이는 분산 가중 평균으로. 위험한 것은 아예 관측되지 않는 칸이다.</p>
+<aside>첫째 장은 지도를 만드는 법이다. 2D occupancy grid의 log-odds 갱신, 2.5D 높이 지도의 칼만 융합, 실제 구현인 elevation mapping, 그리고 보도에서 가장 위험한 음의 장애물과 못 본 칸을 다룬다.</aside>
 </section>
 <section id="logodds" class="t">
-<div class="head"><p class="kicker">1 · 점유 격자</p><h2>점유 격자는 관측마다 log-odds를 더해 확률을 쌓는다</h2></div>
+<div class="head"><p class="kicker">1 · occupancy grid</p><h2>occupancy grid는 관측마다 log-odds를 더해 확률을 쌓는다</h2></div>
 <div class="math">$$l_t(m) = l_{t-1}(m) + \log\frac{p(m \mid z_t)}{1 - p(m \mid z_t)} - l_0, \qquad p(m) = 1 - \frac{1}{1 + e^{l(m)}}$$</div>
-<figure><img src="img/logodds.webp" style="height:400px"><figcaption>로봇(주황)이 움직이며 광선을 쏜다. 광선이 지나간 칸은 비었다는 증거를, 끝점은 점유 증거를 더한다. 10 % 놓침과 3 % 헛반사가 있어도 관측이 쌓이면 벽이 드러난다</figcaption></figure>
+<figure><img src="img/logodds.webp" style="height:400px"><figcaption>로봇(주황)이 움직이며 광선을 쏜다. 광선이 지나간 칸은 비었다는 증거를, 끝점은 막혔다는 증거를 더한다. 10 % 놓침과 3 % 헛반사가 있어도 관측이 쌓이면 벽이 드러난다</figcaption></figure>
 <div class="grid2">
 <div class="card gr"><span class="tag gr">장점</span><p>덧셈 하나라 빠르고, 잡음을 자연스럽게 평균한다. 상한·하한을 두면 변하는 환경에도 반응한다.</p></div>
 <div class="card or"><span class="tag or">단점</span><p>칸이 서로 독립이라고 가정한다. 높이·경사를 담지 못한다. 자세가 틀리면 벽이 두꺼워진다.</p></div>
 </div>
-<aside>점유 확률을 그대로 곱하면 계산이 번거롭다. log-odds, 즉 확률 비의 로그로 바꾸면 베이즈 갱신이 덧셈이 된다. 광선이 지나간 칸에는 비었다는 증거로 음수를, 광선이 끝난 칸에는 점유 증거로 양수를 더한다. 값을 상한과 하한으로 자르면 오래된 증거에 갇히지 않아 문이 열리고 닫히는 변화도 따라간다. 실내 2D 내비게이션의 표준이지만, 실외의 경사와 턱은 담지 못한다.</aside>
+<aside>occupancy 확률을 그대로 곱하면 계산이 번거롭다. log-odds, 즉 확률 비의 로그로 바꾸면 베이즈 갱신이 덧셈이 된다. 광선이 지나간 칸에는 비었다는 증거로 음수를, 광선이 끝난 칸에는 막혔다는 증거로 양수를 더한다. 값을 상한과 하한으로 자르면 오래된 증거에 갇히지 않아 문이 열리고 닫히는 변화도 따라간다. 실내 2D 내비게이션의 표준이지만, 실외의 경사와 턱은 담지 못한다.</aside>
 </section>
 <section id="heightfusion" class="t">
 <div class="head"><p class="kicker">1 · 높이 지도</p><h2>높이 지도는 칸마다 높이와 분산을 칼만 갱신으로 합친다</h2></div>
@@ -359,18 +359,18 @@ section.t.divider h2 { font-size:80px; }
 <div class="card gr"><span class="tag gr">최소 고도 퍼뜨리기</span><p>그림자에 이웃 최소 고도를 채워 인공 단차를 만든다.</p></div>
 </div>
 <div class="foot" data-foot><p>G-VOM, IEEE IV 2022 — arXiv:2109.13176 · Mozzarelli 외(보도 배달로봇) — arXiv:2403.13431</p></div>
-<aside>턱이나 벽 같은 양의 장애물은 센서에 크게 보이지만, 구덩이나 내림 턱 같은 음의 장애물은 직접 보이지 않는다. 센서가 낮을수록, 멀수록 앞 모서리가 바닥을 가린다. 그림 (b)처럼 생각보다 훨씬 가까이 가야 바닥이 보인다. 그래서 "점이 없다"는 사실 자체를 신호로 써야 한다. 그림자의 위치와 크기, 광선이 지나간 높이, 주변 지면에서 외삽한 기대 높이가 그 신호다. 보수적으로 다루면 오탐으로 멈추고, 느슨하면 빠진다.</aside>
+<aside>턱이나 벽 같은 양의 장애물은 센서에 크게 보이지만, 구덩이나 내림 턱 같은 음의 장애물은 직접 보이지 않는다. 센서가 낮을수록, 멀수록 앞 모서리가 바닥을 가린다. 그림 (b)처럼 생각보다 훨씬 가까이 가야 바닥이 보인다. 그래서 "점이 없다"는 사실 자체를 신호로 써야 한다. 그림자의 위치와 크기, 광선이 지나간 높이, 주변 지면에서 외삽한 기대 높이가 그 신호다. 보수적으로 다루면 오탐으로 멈추고, 느슨하게 다루면 구덩이를 놓친다.</aside>
 </section>
 <section id="unobs" class="t">
 <div class="head"><p class="kicker">1 · 못 본 칸</p><h2>못 본 칸은 불확실성으로 전파하거나 생성 모델로 채운다</h2></div>
 <div class="grid3">
 <div class="card bl"><span class="tag bl">Occlusion-Aware</span><h3>가림을 자세 분산으로</h3><p>지형 불확실성을 차체 pitch·roll 분산으로 전파한다. 실패율 18.9%, 기준선 46.1%·41.7%.</p></div>
 <div class="card bl"><span class="tag bl">ProTerrain</span><h3>공간 상관 분산</h3><p>칸이 독립이 아니라 이웃과 상관된 공분산. 궤적 오차(ATE) 2.4277 → 0.6588.</p></div>
-<div class="card or"><span class="tag or">SceneSense</span><h3>확산 모델로 채움</h3><p>못 본 voxel만 생성 확률로 갱신. 추론 0.44 s. 못 본 구덩이를 평평하게 덮을 위험.</p></div>
+<div class="card or"><span class="tag or">SceneSense</span><h3>diffusion 모델로 채움</h3><p>못 본 voxel만 생성 확률로 갱신. 추론 0.44 s. 못 본 구덩이를 평평하게 덮을 위험.</p></div>
 </div>
 <div class="grid3">
 <figure><img src="../../assets/thumbs/5beab714ad46.webp" style="height:260px"><figcaption>가려진 언덕 뒤가 고분산 — arXiv:2609.39105</figcaption></figure>
-<figure><img src="../../assets/thumbs/008cc8216312.webp" style="height:260px"><figcaption>상관 모델 대 칸 독립 궤적 표본 — arXiv:2510.19364</figcaption></figure>
+<figure><img src="../../assets/thumbs/008cc8216312.webp" style="height:260px"><figcaption>상관 모델 대 칸 독립 궤적 샘플 — arXiv:2510.19364</figcaption></figure>
 <figure><img src="../../assets/thumbs/6fb83fe7978e.webp" style="height:260px"><figcaption>로봇 아래 빈 구멍을 생성이 채움 — arXiv:2506.20049</figcaption></figure>
 </div>
 <p class="take"><b>원칙:</b> 안전에 쓰는 비용은 보수적으로(모르면 위험), 생성 채움은 탐색과 경로 후보에만.</p>
@@ -381,7 +381,7 @@ section.t.divider h2 { font-size:80px; }
 <div class="grid3">
 <div class="card gy"><span class="tag">2020 · BEV</span><h3>Lift-Splat-Shoot</h3><p>픽셀별 깊이 분포로 특징을 들어 위에서 본 격자에 뿌린다</p></div>
 <div class="card gy"><span class="tag">2022 · BEV</span><h3>BEVFormer</h3><p>격자 query가 attention으로 여러 카메라 특징을 모은다</p></div>
-<div class="card gy"><span class="tag">2023 · occupancy</span><h3>Occ3D, FlashOcc</h3><p>3D 점유 격자를 예측. FlashOcc는 2D 합성곱만 써 배포 친화</p></div>
+<div class="card gy"><span class="tag">2023 · occupancy</span><h3>Occ3D, FlashOcc</h3><p>3D occupancy grid를 예측. FlashOcc는 2D 합성곱만 써 배포 친화</p></div>
 </div>
 <div class="cols">
 <figure><img src="../../assets/thumbs/92320a9079e8.webp" style="width:1050px"><figcaption>Lift-Splat-Shoot (Fig. 1): 여러 카메라 영상에서 BEV 의미 지도를 바로 추론한다 — arXiv:2008.05711</figcaption></figure>
@@ -397,7 +397,7 @@ section.t.divider h2 { font-size:80px; }
 <div class="head"><p class="kicker">1 · 장단점</p><h2>지도 만드는 법은 정확함, 표현력, 계산을 맞바꾼다</h2></div>
 <table style="font-size:26px">
 <tr><th>방법</th><th>장점</th><th>단점</th><th>잘 맞는 곳</th></tr>
-<tr><td>2D 점유 격자(log-odds)</td><td class="good">단순, 빠름, 잡음에 강함</td><td class="bad">높이 정보 없음</td><td>실내, 평평한 바닥</td></tr>
+<tr><td>2D occupancy grid(log-odds)</td><td class="good">단순, 빠름, 잡음에 강함</td><td class="bad">높이 정보 없음</td><td>실내, 평평한 바닥</td></tr>
 <tr><td>2.5D 높이 지도(칼만)</td><td class="good">지형·분산, GPU 실시간</td><td class="bad">오버행, 움직이는 물체 흔적</td><td>실외 바퀴·보행 로봇</td></tr>
 <tr><td>3D voxel·ESDF</td><td class="good">오버행, 거리장</td><td class="bad">메모리·계산</td><td>드론, 팔, 복잡한 3D</td></tr>
 <tr><td>학습 BEV·occupancy</td><td class="good">카메라만, 의미 포함</td><td class="bad">큰 GPU, 정답 비용, 분포 밖</td><td>자동차</td></tr>
@@ -410,7 +410,7 @@ section.t.divider h2 { font-size:80px; }
 <p class="kicker">2 · Traversability</p>
 <h2>"이 땅을 지나갈 수 있는가"를<br>숫자로 만들고, 경험으로 고친다</h2>
 <p class="lead">기하 규칙에서 출발해, 로봇이 실제로 겪은 사건으로 사람 라벨 없이 배운다.</p>
-<aside>둘째 장은 지도를 비용으로 바꾸는 traversability다. 기하 특징으로 만드는 규칙 비용, 사람 라벨에서 로봇 경험으로 옮겨 간 계보, 그리고 자기지도 학습의 핵심 난제인 PU 문제, 듬성한 라벨을 채우는 공간 보간, VLM의 역할을 본다.</aside>
+<aside>둘째 장은 지도를 비용으로 바꾸는 traversability다. 기하 특징으로 만드는 규칙 비용, 사람 라벨에서 로봇 경험으로 옮겨 간 계보, 그리고 자기지도 학습의 핵심 난제인 PU 문제, 듬성한 라벨을 채우는 공간 보간, VLM의 역할을 살펴본다.</aside>
 </section>
 <section id="travfeat" class="t">
 <div class="head"><p class="kicker">2 · 기하 비용</p><h2>높이 지도에서 경사·턱·거칠기를 계산해 비용으로 합친다</h2></div>
@@ -430,7 +430,7 @@ section.t.divider h2 { font-size:80px; }
 <tr><td>2020</td><td>RELLIS-3D</td><td>사람 라벨(20클래스)</td></tr>
 <tr><td>2020</td><td>BADGR</td><td>충돌·충격 사건</td></tr>
 <tr><td>2022</td><td>TerraPN</td><td>IMU 진동·주행거리 오차</td></tr>
-<tr><td>2022</td><td>How Does It Feel?</td><td>고유 감각(proprioception) 비용</td></tr>
+<tr><td>2022</td><td>How Does It Feel?</td><td>proprioception 비용</td></tr>
 <tr><td>2023</td><td>WVN, STERLING</td><td>주행 자국 + 고정 DINO 특징</td></tr>
 <tr><td>2024</td><td>V-STRONG, RoadRunner</td><td>주행 궤적, 기존 스택 사후 추정</td></tr>
 <tr><td>2026</td><td>SyNeT, GSAT, PIVOT</td><td>주행 자국 양성 + PU, VLM</td></tr>
@@ -442,21 +442,21 @@ section.t.divider h2 { font-size:80px; }
 </div>
 </div>
 <div class="foot" data-foot><p>RELLIS-3D arXiv:2011.12954 · BADGR arXiv:2002.05700, RA-L 2021</p></div>
-<aside>traversability 라벨은 사람이 단 의미 라벨에서 로봇이 실제로 겪은 사건으로 옮겨 왔다. 사람 라벨은 비싸고, 도시용 분할 모델은 오프로드에서 무너진다. 사건 라벨은 다르다. 충돌, 덜컹거림, 미끄러짐을 센서로 재서 그 직전에 본 영상과 짝짓는다. 그러면 기하만 보는 로봇이 벽으로 보던 키 큰 풀밭도 실제로는 지나갈 수 있다는 것을 배운다. BADGR는 사건 예측과 표본 기반 계획을 결합한 원형이다.</aside>
+<aside>traversability 라벨은 사람이 단 의미 라벨에서 로봇이 실제로 겪은 사건으로 옮겨 왔다. 사람 라벨은 비싸고, 도시용 분할 모델은 오프로드에서 무너진다. 사건 라벨은 다르다. 충돌, 덜컹거림, 미끄러짐을 센서로 재서 그 직전에 본 영상과 짝짓는다. 그러면 기하만 보는 로봇이 벽으로 보던 키 큰 풀밭도 실제로는 지나갈 수 있다는 것을 배운다. BADGR는 사건 예측과 샘플 기반 계획을 결합한 원형이다.</aside>
 </section>
 <section id="pu" class="t">
 <div class="head"><p class="kicker">2 · PU 문제</p><h2>지나간 곳은 양성이지만, 안 간 곳은 음성이 아니라 "모름"이다</h2></div>
 <div class="grid3">
-<div class="card or"><span class="tag or">음성 합성</span><h3>SyNeT</h3><p>확산 inpainting으로 지나갈 수 없는 물체를 영상에 넣는다. AUROC 0.935 → 0.979, Orin INT8 11.6 FPS.</p></div>
-<div class="card bl"><span class="tag bl">이상 탐지</span><h3>GSAT</h3><p>양성 잠재 둘레 초구 밖을 이상으로 본다. LiDAR 기하만. Gazebo 10/10, 기하 규칙 4/10.</p></div>
-<div class="card gr"><span class="tag gr">손실 보정</span><h3>nnPU</h3><p>양성과 라벨 없는 자료만으로 분류 위험을 편향 없이 추정한다. 개입 14회 → 2회(LHT).</p></div>
+<div class="card or"><span class="tag or">음성 합성</span><h3>SyNeT</h3><p>diffusion inpainting으로 지나갈 수 없는 물체를 영상에 넣는다. AUROC 0.935 → 0.979, Orin INT8 11.6 FPS.</p></div>
+<div class="card bl"><span class="tag bl">이상 탐지</span><h3>GSAT</h3><p>양성 latent를 둘러싼 초구 밖을 이상으로 본다. LiDAR 기하만. Gazebo 10/10, 기하 규칙 4/10.</p></div>
+<div class="card gr"><span class="tag gr">손실 보정</span><h3>nnPU</h3><p>양성과 라벨 없는 데이터만으로 분류 위험을 편향 없이 추정한다. 개입 14회 → 2회(LHT).</p></div>
 </div>
 <div class="cols">
 <figure><img src="../../assets/thumbs/c759b3a7c4e8.webp" style="width:820px"><figcaption>SyNeT (Fig. 2): 위치·크기를 고르고, inpainting으로 물체를 넣고, 음성 마스크를 얻는다 — arXiv:2602.00814</figcaption></figure>
-<figure><img src="../../assets/thumbs/9f5863739d52.webp" style="height:300px"><figcaption>GSAT (Fig. 1): 궤적 양성과 잠재 초구로 정상·이상을 나눈다 — arXiv:2603.07480</figcaption></figure>
+<figure><img src="../../assets/thumbs/9f5863739d52.webp" style="height:300px"><figcaption>GSAT (Fig. 1): 궤적 양성과 latent 초구로 정상·이상을 나눈다 — arXiv:2603.07480</figcaption></figure>
 </div>
 <div class="foot" data-foot><p>SyNeT arXiv:2602.00814 · GSAT arXiv:2603.07480, ICRA 2026 · Long-Horizon Traversability arXiv:2607.23743</p></div>
-<aside>자기지도 traversability의 근본 문제는 음성 라벨이 없다는 것이다. 로봇은 위험한 곳을 피해 다니므로, 지나간 곳은 확실히 갈 수 있는 곳이지만, 안 간 곳이 못 가는 곳이라는 뜻은 아니다. 이것을 양성-무라벨, PU 학습이라 한다. 안 간 곳을 모두 음성으로 두면 가 보지 않은 좋은 길까지 위험으로 배운다. 세 가지 해법이 있다. 음성을 합성하거나, 양성 분포 밖을 이상으로 보거나, 손실을 PU에 맞게 보정한다. 가장 단순한 방법은 라벨 없는 칸을 손실에서 아예 빼는 것이다.</aside>
+<aside>자기지도 traversability의 근본 문제는 음성 라벨이 없다는 것이다. 로봇은 위험한 곳을 피해 다니므로, 지나간 곳은 확실히 갈 수 있는 곳이지만, 안 간 곳이 못 가는 곳이라는 뜻은 아니다. 이것을 PU(positive-unlabeled) 학습이라 한다. 안 간 곳을 모두 음성으로 두면 가 보지 않은 좋은 길까지 위험으로 배운다. 세 가지 해법이 있다. 음성을 합성하거나, 양성 분포 밖을 이상으로 보거나, 손실을 PU에 맞게 보정한다. 가장 단순한 방법은 라벨 없는 칸을 손실에서 아예 빼는 것이다.</aside>
 </section>
 <section id="bki" class="t">
 <div class="head"><p class="kicker">2 · 배경지식 · 공간 보간</p><h2>듬성한 라벨은 거리 가중으로 퍼뜨리고, 먼 곳은 불확실하게 둔다</h2></div>
@@ -466,7 +466,7 @@ section.t.divider h2 { font-size:80px; }
 <div class="card gr"><span class="tag gr">장점</span><p>GP와 비슷한 매끄러움과 불확실성을, 희소 커널로 빠르게. 칸마다 증분 갱신.</p></div>
 <div class="card or"><span class="tag or">단점</span><p>커널 반경이 경계(턱, 구덩이 가장자리)를 흐린다. 반경 밖은 사전값으로 돌아간다.</p></div>
 </div>
-<aside>로봇이 지나간 자국이나 측정한 진동은 지도 전체에서 보면 아주 듬성하다. 이것을 주변 칸으로 퍼뜨려야 계획에 쓸 수 있다. 베이즈 커널 추론은 각 관측을 거리에 따라 줄어드는 가중치로 더한 뒤, 가중치의 합을 증거의 양으로 본다. 관측이 많으면 확신하고, 없으면 사전값과 큰 불확실성으로 돌아간다. 가우시안 과정과 비슷한 결과를 훨씬 싸게 얻는다. 다만 커널이 날카로운 경계를 흐리므로, 턱처럼 급변하는 곳은 기하 규칙이 맡는 것이 좋다.</aside>
+<aside>로봇이 지나간 자국이나 측정한 진동은 지도 전체에서 보면 아주 듬성하다. 이것을 주변 칸으로 퍼뜨려야 계획에 쓸 수 있다. 베이즈 커널 추론은 각 관측을 거리에 따라 줄어드는 가중치로 더한 뒤, 가중치의 합을 증거의 양으로 본다. 관측이 많으면 확신하고, 없으면 사전값과 큰 불확실성으로 돌아간다. GP와 비슷한 결과를 훨씬 싸게 얻는다. 다만 커널이 날카로운 경계를 흐리므로, 턱처럼 급변하는 곳은 기하 규칙이 맡는 것이 좋다.</aside>
 </section>
 <section id="vlm" class="t">
 <div class="head"><p class="kicker">2 · VLM의 자리</p><h2>VLM은 기본 비용이 아니라 막혔을 때의 보조 판단으로 쓴다</h2></div>
@@ -497,7 +497,7 @@ section.t.divider h2 { font-size:80px; }
 <p class="kicker">3 · 시각 기반 모델과 동적 장애물</p>
 <h2>큰 모델은 교사로 쓰고,<br>사람은 검출·추적·예측으로 따라간다</h2>
 <p class="lead">완벽한 예측도 얼어붙기를 풀지 못하고, 예측의 오차 폭은 따로 맞춰야 한다.</p>
-<aside>셋째 장은 영상 쪽이다. 시각 기반 모델을 어디에 쓰는지, 단안 깊이의 한계, 그리고 사람 같은 동적 장애물을 검출하고 추적하고 예측하는 흐름을 본다. 마지막으로 예측이 완벽해도 로봇이 얼어붙는 문제와, 예측의 불확실성을 보정하는 법을 본다.</aside>
+<aside>셋째 장은 영상 쪽이다. 시각 기반 모델을 어디에 쓰는지, 단안 깊이의 한계, 그리고 사람 같은 동적 장애물을 검출하고 추적하고 예측하는 흐름을 살펴본다. 마지막으로 예측이 완벽해도 로봇이 얼어붙는 문제와, 예측의 불확실성을 보정하는 법을 다룬다.</aside>
 </section>
 <section id="vfm" class="t">
 <div class="head"><p class="kicker">3 · 시각 기반 모델</p><h2>시각 기반 모델은 로봇에서 돌리기 전에 라벨 교사로 먼저 쓴다</h2></div>
@@ -506,33 +506,33 @@ section.t.divider h2 { font-size:80px; }
 <tr><th>이름</th><th>내는 것</th></tr>
 <tr><td>DINOv2 · DINOv3</td><td>범용 영상 특징(패치 단위)</td></tr>
 <tr><td>Depth Anything V2 · 3</td><td>단안 깊이</td></tr>
-<tr><td>SAM 2 · SAM 3</td><td>영상 분할(지정·명사구)</td></tr>
-<tr><td>Grounding DINO</td><td>글로 지정한 물체 상자</td></tr>
+<tr><td>SAM 2 · SAM 3</td><td>영상 분할(프롬프트·명사구)</td></tr>
+<tr><td>Grounding DINO</td><td>텍스트로 지정한 물체 상자</td></tr>
 </table>
 <figure><img src="../../assets/thumbs/7cd9298505cb.webp" style="width:740px"><figcaption>DINOv2 (Fig. 1): 패치 특징 PCA. 같은 부위가 같은 색으로 묶인다 — arXiv:2304.07193</figcaption></figure>
 </div>
 <div class="grid3">
-<div class="card bl"><span class="tag bl">특징 백본</span><p>고정 특징 위에 작은 머리만 학습해 몇 분 만에 적응(WVN).</p></div>
-<div class="card bl"><span class="tag bl">가짜 라벨</span><p>마스크·깊이를 오프라인으로 만들어 작은 실시간 모델로 증류.</p></div>
-<div class="card bl"><span class="tag bl">open-set</span><p>킥보드·볼라드처럼 학습 클래스 밖의 물체를 글로 지정.</p></div>
+<div class="card bl"><span class="tag bl">특징 백본</span><p>고정 특징 위에 작은 head만 학습해 몇 분 만에 적응(WVN).</p></div>
+<div class="card bl"><span class="tag bl">pseudo-label</span><p>마스크·깊이를 오프라인으로 만들어 작은 실시간 모델로 증류.</p></div>
+<div class="card bl"><span class="tag bl">open-set</span><p>킥보드·볼라드처럼 학습 클래스 밖의 물체를 텍스트로 지정.</p></div>
 </div>
 <div class="foot" data-foot><p>DINOv2 arXiv:2304.07193 · DINOv3 arXiv:2508.10104 · Depth Anything V2 arXiv:2406.09414 · SAM 2 arXiv:2408.00714 · Grounding DINO arXiv:2303.05499 · 가중치 라이선스는 모델마다 다르니 확인 후 사용</p></div>
-<aside>2023년 이후 로봇 인식의 출발점은 과제별 모델이 아니라 시각 기반 모델이다. 그러나 임베디드 GPU에서 큰 백본을 매 프레임 돌리기는 아직 부담이다. 그래서 흔한 사용법은 교사다. 오프라인에서 큰 모델로 마스크, 상자, 깊이 같은 가짜 라벨을 만들고, 그것으로 작은 실시간 모델을 학습한다. 고정 특징 위에 작은 머리만 온라인으로 학습하는 방법도 있다. 제품에 쓸 때는 가중치 라이선스를 반드시 확인해야 한다.</aside>
+<aside>2023년 이후 로봇 인식의 출발점은 과제별 모델이 아니라 시각 기반 모델(vision foundation model)이다. 그러나 임베디드 GPU에서 큰 백본을 매 프레임 돌리기는 아직 부담이다. 그래서 흔한 사용법은 교사다. 오프라인에서 큰 모델로 마스크, 상자, 깊이 같은 pseudo-label을 만들고, 그것으로 작은 실시간 모델을 학습한다. 고정 특징 위에 작은 head만 온라인으로 학습하는 방법도 있다. 제품에 쓸 때는 가중치 라이선스를 반드시 확인해야 한다.</aside>
 </section>
 <section id="depth" class="t">
-<div class="head"><p class="kicker">3 · 단안 깊이</p><h2>단안 깊이는 모양을 주지만 축척은 따로 맞춰야 한다</h2></div>
+<div class="head"><p class="kicker">3 · 단안 깊이</p><h2>단안 깊이는 모양을 주지만 스케일은 따로 맞춰야 한다</h2></div>
 <div class="grid2">
-<div class="card bl"><span class="tag bl">상대 깊이</span><h3>"어느 쪽이 더 먼가"</h3><p>축척과 이동을 모른다. \(d_{\text{참}} \approx s\, d_{\text{예측}} + t\)의 s, t를 LiDAR 점 몇 개나 지면 평면으로 맞춘다.</p></div>
-<div class="card gr"><span class="tag gr">미터 깊이</span><h3>카메라 내부 파라미터로 바로 미터</h3><p>학습 분포의 카메라와 비슷할 때만 믿을 만하다. 처음 보는 렌즈·높이에서 축척이 틀린다.</p></div>
+<div class="card bl"><span class="tag bl">상대 깊이</span><h3>"어느 쪽이 더 먼가"</h3><p>스케일과 오프셋을 모른다. \(d_{\text{참}} \approx s\, d_{\text{예측}} + t\)의 s, t를 LiDAR 점 몇 개나 지면 평면으로 맞춘다.</p></div>
+<div class="card gr"><span class="tag gr">미터 깊이</span><h3>카메라 내부 파라미터로 바로 미터</h3><p>학습 분포의 카메라와 비슷할 때만 믿을 만하다. 처음 보는 렌즈·높이에서 스케일이 틀린다.</p></div>
 </div>
 <table style="font-size:25px">
 <tr><th></th><th>LiDAR·스테레오</th><th>학습 단안 깊이</th></tr>
 <tr><td>거리 정확도</td><td class="good">센티미터 수준</td><td class="bad">거리에 비례한 상대 오차</td></tr>
 <tr><td>조밀함</td><td>성기다(LiDAR)</td><td class="good">픽셀마다</td></tr>
 <tr><td>실패 방식</td><td>반사·무늬 없는 면</td><td class="bad">그럴듯하지만 틀린 값(조용히 틀린다)</td></tr>
-<tr><td>잘 맞는 쓰임</td><td>안전 거리, 높이 지도</td><td>빈 곳 채우기, 가짜 라벨, 근거리 보조</td></tr>
+<tr><td>잘 맞는 쓰임</td><td>안전 거리, 높이 지도</td><td>빈 곳 채우기, pseudo-label, 근거리 보조</td></tr>
 </table>
-<aside>학습 단안 깊이 모델은 놀라울 만큼 그럴듯한 깊이를 낸다. 하지만 한 장의 영상에는 절대 거리 정보가 없어서, 상대 깊이 모델은 축척을 모르고 미터 깊이 모델도 학습 분포 밖의 카메라에서 축척이 틀린다. 더 큰 문제는 틀릴 때 조용히 틀린다는 것이다. 그래서 안전 거리는 LiDAR나 스테레오가 맡고, 단안 깊이는 성긴 점 사이를 채우거나 라벨을 만드는 보조로 쓰는 것이 안전하다.</aside>
+<aside>학습 단안 깊이 모델은 놀라울 만큼 그럴듯한 깊이를 낸다. 하지만 한 장의 영상에는 절대 거리 정보가 없어서, 상대 깊이 모델은 스케일을 모르고 미터 깊이 모델도 학습 분포 밖의 카메라에서 스케일이 틀린다. 더 큰 문제는 틀릴 때 조용히 틀린다는 것이다. 그래서 안전 거리는 LiDAR나 스테레오가 맡고, 단안 깊이는 성긴 점 사이를 채우거나 라벨을 만드는 보조로 쓰는 것이 안전하다.</aside>
 </section>
 <section id="detect" class="t">
 <div class="head"><p class="kicker">3 · 검출 · 거리 · 추적 · 예측</p><h2>사람은 영상에서 찾고, 거리는 깊이로 재고, 추적은 지도 좌표에서 한다</h2></div>
@@ -557,7 +557,7 @@ section.t.divider h2 { font-size:80px; }
 <figure><img src="img/kftrack.webp" style="height:430px"><figcaption>잡음 섞인 검출(×)을 등속 칼만 필터가 매끄럽게 따라간다. 30스텝 뒤 가려지면 예측만 남고 2σ 타원이 커진다. 사람이 방향을 바꾸면 잠시 늦게 따라간다</figcaption></figure>
 <div class="grid2">
 <div class="card gr"><span class="tag gr">등속 모델의 장점</span><p>싸고 강하다. 보행자 예측에서 신경망 모델과 비슷하거나 나은 경우가 많다. 불확실성이 시간에 따라 커지는 원판으로 안전 여유를 준다.</p></div>
-<div class="card or"><span class="tag or">한계</span><p>방향 전환·멈춤·상호작용을 모른다. 생성 예측(Trajectron++, MoFlow)은 상호작용이 문제일 때 본다.</p></div>
+<div class="card or"><span class="tag or">한계</span><p>방향 전환·멈춤·상호작용을 모른다. 생성 예측(Trajectron++, MoFlow)은 상호작용이 문제일 때 고려한다.</p></div>
 </div>
 <div class="foot" data-foot><p>Schöller 외, What the Constant Velocity Model Can Teach Us About Pedestrian Motion Prediction, RA-L 2020 — arXiv:1903.07933</p></div>
 <aside>칼만 필터는 예측과 갱신을 번갈아 한다. 상태는 위치와 속도이고, 예측 단계에서 등속으로 앞으로 옮기며 불확실성을 키우고, 검출이 오면 그 잡음과 비교해 상태를 고친다. 검출이 끊기면 예측만 남아 불확실성이 계속 커진다. 이것이 그대로 안전 여유가 된다. 보행자 예측 연구에서 가장 단순한 등속 모델이 놀라울 만큼 강하다는 결과가 있다. 다만 평균 변위 오차가 작다고 내비게이션이 좋아지는 것은 아니므로, 예측기는 폐루프 충돌 지표로 평가한다.</aside>
@@ -584,30 +584,30 @@ section.t.divider h2 { font-size:80px; }
 </div>
 </div>
 <div class="foot" data-foot><p>Trautman 외, IJRR 2015 (원 논문 IROS 2010) · PGIF-MPPI arXiv:2608.08323 · Mavrogiannis 외 arXiv:2103.05668</p></div>
-<aside>이 장에서 하나만 기억한다면 이것이다. 예측을 아무리 잘해도, 예측이 로봇의 행동에 반응하지 않는다고 가정하면 조밀한 군중 앞에서 로봇은 얼어붙는다. 사람은 실제로 로봇에게 길을 비켜 주기 때문이다. 해법은 예측과 계획을 결합해, 로봇이 움직이면 사람도 반응한다는 상호작용을 모델에 넣는 것이다. 표는 안전만 키우면 충돌이 타임아웃으로 바뀐다는 것을 숫자로 보여 준다. 안전 비용과 함께 살아 움직이게 하는 장치가 필요하다.</aside>
+<aside>이 장에서 하나만 기억한다면 이것이다. 예측을 아무리 잘해도, 예측이 로봇의 행동에 반응하지 않는다고 가정하면 조밀한 군중 앞에서 로봇은 얼어붙는다. 사람은 실제로 로봇에게 길을 비켜 주기 때문이다. 해법은 예측과 계획을 결합해, 로봇이 움직이면 사람도 반응한다는 상호작용을 모델에 넣는 것이다. 표는 안전만 키우면 충돌이 타임아웃으로 바뀐다는 것을 숫자로 보여 준다. 안전 비용과 함께 로봇을 계속 움직이게 하는 장치가 필요하다.</aside>
 </section>
 <section id="conformal" class="t">
 <div class="head"><p class="kicker">3 · 예측 보정</p><h2>예측 오차의 폭은 학습 때 맞추거나 배포 중에 conformal로 맞춘다</h2></div>
 <div class="cols">
-<figure><img src="../../assets/figs/bg_013_conformal.webp" style="height:340px"><figcaption>Conformal prediction: 보정 자료 n개의 오차를 순서대로 놓고 ⌈(n+1)(1−α)⌉번째를 반경으로 쓰면 분포 가정 없이 포함률 1−α를 보장한다. n이 작으면 실제 포함률이 흔들린다</figcaption></figure>
+<figure><img src="../../assets/figs/bg_013_conformal.webp" style="height:340px"><figcaption>Conformal prediction: 보정 데이터 n개의 오차를 순서대로 놓고 ⌈(n+1)(1−α)⌉번째를 반경으로 쓰면 분포 가정 없이 포함률 1−α를 보장한다. n이 작으면 실제 포함률이 흔들린다</figcaption></figure>
 <div class="stack">
 <div class="card bl"><span class="tag bl">학습 때</span><p>정답의 Mahalanobis 거리가 카이제곱 분포를 따르도록 손실을 준다(Calibrated Gaussian Predictors).</p></div>
-<div class="card or"><span class="tag or">배포 중</span><p>지평별 conformal 문턱을 온라인으로 맞추고 MPC 해를 그 범위로 검사한다. 12명 정면 흐름 성공 100 %, 충돌 0 %(CoCoNav).</p></div>
+<div class="card or"><span class="tag or">배포 중</span><p>horizon별 conformal 임계값을 온라인으로 맞추고 MPC 해를 그 범위로 검사한다. 12명 정면 흐름 성공 100 %, 충돌 0 %(CoCoNav).</p></div>
 </div>
 </div>
 <figure><img src="../../assets/thumbs/cefadd570374.webp" style="height:300px"><figcaption>CoCoNav (Fig. 2): 보정한 오차 범위로 MPC 해와 비상 정지 후보를 검사한다 — arXiv:2608.07751</figcaption></figure>
 <div class="foot" data-foot><p>Calibrated Gaussian Predictors arXiv:2603.10407 · CoCoNav arXiv:2608.07751</p></div>
-<aside>예측기가 내는 불확실성이 틀리면, 그것을 쓰는 안전 장치도 틀린다. 보정은 두 시점에서 할 수 있다. 학습 때는 예측 분포가 실제 오차의 분포와 맞도록 손실을 주고, 배포 중에는 최근 오차의 순위로 반경을 계속 맞춘다. conformal prediction은 보정 자료의 오차만 있으면 분포 가정 없이 포함률을 보장하는 간단하고 강력한 방법이다. 다만 자료가 적으면 실제 포함률이 크게 흔들린다.</aside>
+<aside>예측기가 내는 불확실성이 틀리면, 그것을 쓰는 안전 장치도 틀린다. 보정은 두 시점에서 할 수 있다. 학습 때는 예측 분포가 실제 오차의 분포와 맞도록 손실을 주고, 배포 중에는 최근 오차의 순위로 반경을 계속 맞춘다. conformal prediction은 보정 데이터의 오차만 있으면 분포 가정 없이 포함률을 보장하는 간단하고 강력한 방법이다. 다만 데이터가 적으면 실제 포함률이 크게 흔들린다.</aside>
 </section>
 <section id="dyn-pc" class="t">
 <div class="head"><p class="kicker">3 · 장단점</p><h2>동적 장애물 처리는 단순한 기준선에서 시작해 필요한 만큼만 키운다</h2></div>
 <table style="font-size:26px">
 <tr><th>단계</th><th>선택지</th><th>장점</th><th>단점</th></tr>
 <tr><td>검출</td><td>실시간 검출기 vs 기반 모델</td><td class="good">빠름 vs open-set</td><td class="bad">클래스 한정 vs 무거움</td></tr>
-<tr><td>거리</td><td>LiDAR 투영 vs 단안 깊이</td><td class="good">정확 vs 조밀</td><td class="bad">성김 vs 축척</td></tr>
+<tr><td>거리</td><td>LiDAR 투영 vs 단안 깊이</td><td class="good">정확 vs 조밀</td><td class="bad">성김 vs 스케일</td></tr>
 <tr><td>추적</td><td>영상 평면 vs 지도 좌표</td><td>구현 쉬움 vs 회전에 강함</td><td>로봇 회전에 약함 vs 자세 의존</td></tr>
 <tr><td>예측</td><td>등속 vs 학습·생성</td><td class="good">싸고 강함 vs 상호작용</td><td class="bad">반응 모름 vs 무겁고 검증 어려움</td></tr>
-<tr><td>불확실성</td><td>고정 여유 vs 보정</td><td>단순 vs 근거 있는 폭</td><td>과신·과소신 vs 보정 자료 필요</td></tr>
+<tr><td>불확실성</td><td>고정 여유 vs 보정</td><td>단순 vs 근거 있는 폭</td><td>과신·과소신 vs 보정 데이터 필요</td></tr>
 </table>
 <p class="take"><b>평가:</b> 예측 정확도(ADE)보다 폐루프 지표 — 충돌 수, 최소 여유 거리, 멈춤 시간 — 로 판단한다.</p>
 <aside>각 단계에서 단순한 쪽이 기준선이다. 실시간 검출기, LiDAR 거리, 지도 좌표 칼만 추적, 등속 예측, 시간에 비례한 여유. 이 기준선으로 폐루프 실험을 돌려 실제로 무엇이 문제인지 확인한 다음에, 그 단계만 키우는 것이 좋다. 예측 정확도 지표가 좋아져도 충돌이나 멈춤이 줄지 않는 경우가 많기 때문이다.</aside>
@@ -616,7 +616,7 @@ section.t.divider h2 { font-size:80px; }
 <p class="kicker">4 · 정리</p>
 <h2>인식의 지연과 탐지 거리가<br>로봇의 최고 속도를 정한다</h2>
 <p class="lead">지연·속도 예산, 다른 로봇의 인식, 장단점 표, 흔한 함정, 공부 순서.</p>
-<aside>마지막 장은 인식이 시스템 전체에 주는 제약과 복습이다. 센서에서 바퀴까지의 지연과 탐지 거리가 최고 속도를 어떻게 묶는지 보고, 로봇 형태에 따라 인식 설계가 어떻게 달라지는지, 그리고 복습용 표와 공부 순서를 정리한다.</aside>
+<aside>마지막 장은 인식이 시스템 전체에 주는 제약과 복습이다. 센서에서 바퀴까지의 지연과 탐지 거리가 최고 속도를 어떻게 제한하는지 살펴보고, 로봇 형태에 따라 인식 설계가 어떻게 달라지는지, 그리고 복습용 표와 공부 순서를 정리한다.</aside>
 </section>
 <section id="latency" class="t">
 <div class="head"><p class="kicker">4 · 지연과 속도</p><h2>지연 동안 가는 거리와 제동 거리가 탐지 거리 안에 들어와야 한다</h2></div>
@@ -634,7 +634,7 @@ section.t.divider h2 { font-size:80px; }
 <div class="card or"><span class="tag or">지연의 합</span><p>센서 노출 + 전송 + 지도 갱신 + 계획 + 제어 한 주기. 평균이 아니라 최악을 더한다.</p></div>
 </div>
 </div>
-<aside>인식은 시스템의 속도 상한을 정한다. 장애물을 보고 나서 바퀴가 반응하기까지의 지연 동안 로봇은 그대로 달리고, 그 뒤에 제동 거리가 더해진다. 이 둘의 합이 탐지 거리보다 작아야 한다. 구덩이처럼 가까이 가야 보이는 장애물은 탐지 거리가 짧으므로 속도가 크게 묶인다. 그래프처럼 탐지 거리가 1.5 m면 지연을 0.3초에서 0.6초로 늘릴 때 최고 속도가 눈에 띄게 준다. 시뮬레이션에 지연을 넣지 않으면 이 제약을 놓친다.</aside>
+<aside>인식은 시스템의 속도 상한을 정한다. 장애물을 보고 나서 바퀴가 반응하기까지의 지연 동안 로봇은 그대로 달리고, 그 뒤에 제동 거리가 더해진다. 이 둘의 합이 탐지 거리보다 작아야 한다. 구덩이처럼 가까이 가야 보이는 장애물은 탐지 거리가 짧으므로 속도가 크게 제한된다. 그래프처럼 탐지 거리가 1.5 m면 지연을 0.3초에서 0.6초로 늘릴 때 최고 속도가 눈에 띄게 준다. 시뮬레이션에 지연을 넣지 않으면 이 제약을 놓친다.</aside>
 </section>
 <section id="formfactor" class="t">
 <div class="head"><p class="kicker">4 · 다른 로봇에서</p><h2>몸이 지형과 닿는 방식이 인식 설계를 정한다</h2></div>
@@ -650,10 +650,10 @@ section.t.divider h2 { font-size:80px; }
 <div class="card gy"><span class="tag">world model</span><p>자동차 world model은 대부분 데스크톱 GPU급이다. "위험할 때만 다시 계획" 같은 설계 아이디어를 가져온다.</p></div>
 <div class="card bl"><span class="tag bl">공통 교훈</span><p>지형을 완벽히 재구성하지 않아도, 얼마나 믿을 만한지를 함께 알면 된다.</p></div>
 </div>
-<aside>같은 인식 기술도 로봇의 몸에 따라 무게중심이 다르다. 자동차는 멀리 빨리 봐야 하고, 보행 로봇은 발 디딜 곳을 정확히 봐야 하고, 바퀴 로봇은 낮은 턱과 구덩이, 가까운 사람이 문제다. 4족 보행 분야가 키운 elevation mapping 스택이 휴머노이드와 바퀴 로봇에서 재사용되는 것은 문제 설정이 닮았기 때문이다. 여러 분야를 가로지르는 교훈은 하나다. 불확실성을 함께 다루면 완벽한 재구성이 없어도 된다.</aside>
+<aside>같은 인식 기술도 로봇의 몸에 따라 무게중심이 다르다. 자동차는 멀리 빨리 봐야 하고, 보행 로봇은 foothold를 정확히 봐야 하고, 바퀴 로봇은 낮은 턱과 구덩이, 가까운 사람이 문제다. 4족 보행 분야가 키운 elevation mapping 스택이 휴머노이드와 바퀴 로봇에서 재사용되는 것은 문제 설정이 닮았기 때문이다. 여러 분야를 가로지르는 교훈은 하나다. 불확실성을 함께 다루면 완벽한 재구성이 없어도 된다.</aside>
 </section>
 <section id="cheat" class="t">
-<div class="head"><p class="kicker">4 · 장단점 표</p><h2>인식 구성 요소를 한 표로 본다</h2></div>
+<div class="head"><p class="kicker">4 · 장단점 표</p><h2>인식 구성 요소를 한 표로 정리한다</h2></div>
 <table style="font-size:24px">
 <tr><th>구성 요소</th><th>기본 선택</th><th>장점</th><th>단점</th><th>다음 단계</th></tr>
 <tr><td>지도</td><td>2.5D 높이 지도</td><td class="good">실외, GPU 실시간</td><td class="bad">오버행</td><td>여유 높이 층, 3D voxel</td></tr>
@@ -681,7 +681,7 @@ section.t.divider h2 { font-size:80px; }
 <section id="path" class="t">
 <div class="head"><p class="kicker">4 · 공부 순서</p><h2>확률 로봇공학으로 기초를, 구현으로 감을, 논문으로 학습 인식을 익힌다</h2></div>
 <div class="grid3">
-<div class="card gr"><span class="tag gr">1 · 기초</span><h3>Thrun·Burgard·Fox, Probabilistic Robotics</h3><p>베이즈 필터, 칼만 필터, 점유 격자(9장), 센서 모델.</p></div>
+<div class="card gr"><span class="tag gr">1 · 기초</span><h3>Thrun·Burgard·Fox, Probabilistic Robotics</h3><p>베이즈 필터, 칼만 필터, occupancy grid(9장), 센서 모델.</p></div>
 <div class="card bl"><span class="tag bl">2 · 손으로</span><h3>작은 문제를 직접</h3><p>2D 광선 투사 + log-odds 격자 → 높이 칼만 융합 → 경사·턱 비용 → 등속 칼만 추적.</p></div>
 <div class="card or"><span class="tag or">3 · 학습 인식</span><h3>논문 순서</h3><p>elevation mapping → BADGR → WVN → DINOv2 → 검출기 하나 → 등속 예측 논문 → conformal.</p></div>
 </div>
@@ -692,26 +692,26 @@ section.t.divider h2 { font-size:80px; }
 <tr><td>3 동적 장애물</td><td>예측이 완벽해도 로봇이 얼어붙는 이유는?</td></tr>
 <tr><td>4 정리</td><td>지연이 두 배가 되면 최고 속도는 어떻게 되나?</td></tr>
 </table>
-<aside>순서는 확률적 기초, 직접 구현, 학습 인식이다. 확률 로봇공학 교과서의 베이즈 필터와 점유 격자 장이 이 덱 1장의 바탕이다. 이 덱의 그림처럼 광선 투사와 log-odds 격자, 칼만 추적은 각각 수십 줄로 구현할 수 있다. 그 다음에 학습 기반 traversability와 시각 기반 모델 논문을 읽으면 무엇이 새로운지 분명히 보인다.</aside>
+<aside>순서는 확률적 기초, 직접 구현, 학습 인식이다. 확률 로봇공학 교과서의 베이즈 필터와 occupancy grid 장이 이 덱 1장의 바탕이다. 이 덱의 그림처럼 광선 투사와 log-odds 격자, 칼만 추적은 각각 수십 줄로 구현할 수 있다. 그 다음에 학습 기반 traversability와 시각 기반 모델 논문을 읽으면 무엇이 새로운지 분명히 보인다.</aside>
 </section>
 <section id="summary" class="t">
 <div class="head"><p class="kicker">정리</p><h2>인식은 관측을 쌓고, 비용으로 바꾸고, 모르는 것을 함께 알려 준다</h2></div>
 <div class="grid2">
-<div class="card bl"><h3>지도</h3><p>점유는 log-odds, 높이는 분산 가중 평균. 실외는 2.5D가 표준.</p></div>
+<div class="card bl"><h3>지도</h3><p>occupancy는 log-odds, 높이는 분산 가중 평균. 실외는 2.5D가 표준.</p></div>
 <div class="card bl"><h3>못 본 칸</h3><p>구덩이는 그림자로만 남는다. 안전 비용에서는 보수적으로.</p></div>
 <div class="card gr"><h3>비용</h3><p>기하 규칙으로 바닥을 깔고, 경험으로 고친다. PU 문제를 기억한다.</p></div>
 <div class="card gr"><h3>큰 모델</h3><p>교사로 먼저. VLM은 막혔을 때만.</p></div>
 <div class="card or"><h3>사람</h3><p>검출 → 지도 좌표 추적 → 등속 예측. 얼어붙기와 보정을 함께 본다.</p></div>
 <div class="card or"><h3>시스템</h3><p>지연과 탐지 거리가 최고 속도를 정한다.</p></div>
 </div>
-<aside>오늘 본 것을 여섯 상자로 줄였다. 인식의 목표는 완벽한 3D 재구성이 아니라, 계획기가 안전하게 결정할 수 있을 만큼의 지도와 그 지도의 신뢰도를 주는 것이다. 모르는 곳을 모른다고 알려 주는 것, 그리고 그 불확실성이 실제로 맞는지 재는 것이 안전의 핵심이다.</aside>
+<aside>오늘 본 것을 여섯 상자로 줄였다. 인식의 목표는 완벽한 3D 재구성이 아니라, Planner가 안전하게 결정할 수 있을 만큼의 지도와 그 지도의 신뢰도를 주는 것이다. 모르는 곳을 모른다고 알려 주는 것, 그리고 그 불확실성이 실제로 맞는지 재는 것이 안전의 핵심이다.</aside>
 </section>
 <section id="refs-core" class="t">
 <div class="head"><p class="kicker">참고문헌 1/2 · 먼저 읽을 것</p><h2>처음에는 이 다섯 가지만 읽는다</h2></div>
 <table style="font-size:24px">
 <tr><th>순서</th><th>문헌</th><th>왜 먼저 읽나</th></tr>
-<tr><td>★ 1</td><td>Thrun·Burgard·Fox, Probabilistic Robotics (MIT Press 2005) 2–3장, 9장</td><td>베이즈 필터, 칼만 필터, 점유 격자의 표준 설명</td></tr>
-<tr><td>★ 2</td><td>Elfes, Using occupancy grids for mobile robot perception and navigation (IEEE Computer 1989)</td><td>점유 격자와 확률 갱신의 원 논문</td></tr>
+<tr><td>★ 1</td><td>Thrun·Burgard·Fox, Probabilistic Robotics (MIT Press 2005) 2–3장, 9장</td><td>베이즈 필터, 칼만 필터, occupancy grid의 표준 설명</td></tr>
+<tr><td>★ 2</td><td>Elfes, Using occupancy grids for mobile robot perception and navigation (IEEE Computer 1989)</td><td>occupancy grid와 확률 갱신의 원 논문</td></tr>
 <tr><td>★ 3</td><td>Fankhauser 외, Probabilistic terrain mapping (RA-L 2018)</td><td>칸마다 높이와 분산을 칼만으로 합치는 높이 지도</td></tr>
 <tr><td>★ 4</td><td>Kahn 외, BADGR 2002.05700</td><td>주행 경험을 라벨로 쓰는 자기지도 traversability</td></tr>
 <tr><td>★ 5</td><td>Schöller 외, 등속 모델 1903.07933 · Trautman 외 (IJRR 2015)</td><td>예측의 기준선과, 예측이 좋아도 얼어붙는 이유</td></tr>
