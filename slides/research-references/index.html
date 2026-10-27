@@ -925,7 +925,7 @@ D.12 IROS 2026 수확 · D.11 기타
 </tbody>
 </table></div><div class="foot" data-foot><span>travplan 리서치 · 참고문헌 (docs/research-references.md)</span><span>14 / 109</span></div><aside>docs/research-references.md · D.3 인식 — 예측: occupancy flow·world model·행위자</aside></section>
 <section class="r content"><div class="kicker">참고문헌 · 인식</div><h2 class="ttl">D.3b 인식 — 마일스톤, 시각 기반 모델, 동적 장애물<small>1/4</small></h2><div class="body"><p>A.2·A.2b(지형 지도 계보), A.10.1–A.10.2(traversability 계보와 2026 SOTA), A.11(시각 기반 모델), A.12(검출·추적·예측, A.12.4 로봇 기준 3D·BEV)에서 다룬 연구다.
-위 D.1–D.3에 이미 있는 항목(MonoScene, TPVFormer, SurroundOcc, FlashOcc, Trajectron++ 등)은 반복하지 않는다.</p><table style="table-layout:fixed"><colgroup><col style="width:267.3px"><col style="width:221.8px"><col style="width:721.0px"><col style="width:177.5px"><col style="width:339.4px"></colgroup><thead>
+위 D.1–D.3에 이미 있는 항목(MonoScene, TPVFormer, SurroundOcc, FlashOcc, Trajectron++ 등)은 반복하지 않는다.</p><table style="table-layout:fixed"><colgroup><col style="width:252.0px"><col style="width:198.3px"><col style="width:824.5px"><col style="width:159.0px"><col style="width:293.2px"></colgroup><thead>
 <tr>
 <th>이름</th>
 <th>연·발표</th>
@@ -1017,14 +1017,8 @@ D.12 IROS 2026 수확 · D.11 기타
 <td>SAM2를 traversability prompt와 기하 증류로 적응</td>
 <td>A.10.2</td>
 <td><a href="https://arxiv.org/abs/2605.29565">논문</a></td>
-</tr><tr>
-<td>CATNAV</td>
-<td>2026.03</td>
-<td>VLM 비용 지도 + 의미 캐시로 호출 85.7% 감소</td>
-<td>A.10.2</td>
-<td><a href="https://arxiv.org/abs/2603.22800">논문</a></td>
 </tr></tbody></table></div><div class="foot" data-foot><span>travplan 리서치 · 참고문헌 (docs/research-references.md)</span><span>15 / 109</span></div><aside>docs/research-references.md · D.3b 인식 — 마일스톤, 시각 기반 모델, 동적 장애물</aside></section>
-<section class="r content"><div class="kicker">참고문헌 · 인식</div><h2 class="ttl">D.3b 인식 — 마일스톤, 시각 기반 모델, 동적 장애물<small>2/4</small></h2><div class="body"><table style="table-layout:fixed"><colgroup><col style="width:267.3px"><col style="width:221.8px"><col style="width:721.0px"><col style="width:177.5px"><col style="width:339.4px"></colgroup><thead>
+<section class="r content"><div class="kicker">참고문헌 · 인식</div><h2 class="ttl">D.3b 인식 — 마일스톤, 시각 기반 모델, 동적 장애물<small>2/4</small></h2><div class="body"><table style="table-layout:fixed"><colgroup><col style="width:252.0px"><col style="width:198.3px"><col style="width:824.5px"><col style="width:159.0px"><col style="width:293.2px"></colgroup><thead>
 <tr>
 <th>이름</th>
 <th>연·발표</th>
@@ -1033,6 +1027,12 @@ D.12 IROS 2026 수확 · D.11 기타
 <th>링크</th>
 </tr>
 </thead><tbody><tr>
+<td>CATNAV</td>
+<td>2026.03</td>
+<td>VLM 비용 지도 + 의미 캐시로 호출 85.7% 감소</td>
+<td>A.10.2</td>
+<td><a href="https://arxiv.org/abs/2603.22800">논문</a></td>
+</tr><tr>
 <td>PIVOT</td>
 <td>2026.09</td>
 <td>VLM 비용을 실측과 상관으로 보정, 기하 기본 + VLM 대체</td>
@@ -1050,6 +1050,12 @@ D.12 IROS 2026 수확 · D.11 기타
 <td>Gram anchoring으로 조밀 특징 유지, 7B 교사 증류(자체 라이선스)</td>
 <td>A.11</td>
 <td><a href="https://arxiv.org/abs/2508.10104">논문</a> · <a href="https://github.com/facebookresearch/dinov3">코드</a></td>
+</tr><tr>
+<td>DeFM</td>
+<td>2026.01 · T-RO 2026</td>
+<td>깊이 영상 6,040만 장으로 DINOv2식 자기 증류한 깊이 기반 모델, 미터 깊이 세 채널 입력, 학생 11개(CNN 10 + ViT-S), 공개 모델 12개(Apache-2.0)</td>
+<td>A.11</td>
+<td><a href="https://arxiv.org/abs/2601.18923">논문</a> · <a href="https://github.com/leggedrobotics/defm">코드</a> · <a href="https://de-fm.github.io/">프로젝트</a></td>
 </tr><tr>
 <td>Depth Anything V2</td>
 <td>2024.06 · NeurIPS 2024</td>
@@ -1116,7 +1122,16 @@ D.12 IROS 2026 수확 · D.11 기타
 <td>낮은 점수 상자도 두 번째 매칭에 쓰는 추적. PoC가 사용</td>
 <td>A.12</td>
 <td><a href="https://arxiv.org/abs/2110.06864">논문</a> · <a href="https://github.com/FoundationVision/ByteTrack">코드</a></td>
-</tr><tr>
+</tr></tbody></table></div><div class="foot" data-foot><span>travplan 리서치 · 참고문헌 (docs/research-references.md)</span><span>16 / 109</span></div><aside>docs/research-references.md · D.3b 인식 — 마일스톤, 시각 기반 모델, 동적 장애물</aside></section>
+<section class="r content"><div class="kicker">참고문헌 · 인식</div><h2 class="ttl">D.3b 인식 — 마일스톤, 시각 기반 모델, 동적 장애물<small>3/4</small></h2><div class="body"><table style="table-layout:fixed"><colgroup><col style="width:252.0px"><col style="width:198.3px"><col style="width:824.5px"><col style="width:159.0px"><col style="width:293.2px"></colgroup><thead>
+<tr>
+<th>이름</th>
+<th>연·발표</th>
+<th>요약</th>
+<th>본문</th>
+<th>링크</th>
+</tr>
+</thead><tbody><tr>
 <td>BoT-SORT</td>
 <td>2022.06</td>
 <td>카메라 움직임 보정, 칼만 상태 개선, ReID 융합</td>
@@ -1140,16 +1155,7 @@ D.12 IROS 2026 수확 · D.11 기타
 <td>시간과 사회 차원을 한 transformer로</td>
 <td>A.12</td>
 <td><a href="https://arxiv.org/abs/2103.14023">논문</a> · <a href="https://github.com/Khrylx/AgentFormer">코드</a></td>
-</tr></tbody></table></div><div class="foot" data-foot><span>travplan 리서치 · 참고문헌 (docs/research-references.md)</span><span>16 / 109</span></div><aside>docs/research-references.md · D.3b 인식 — 마일스톤, 시각 기반 모델, 동적 장애물</aside></section>
-<section class="r content"><div class="kicker">참고문헌 · 인식</div><h2 class="ttl">D.3b 인식 — 마일스톤, 시각 기반 모델, 동적 장애물<small>3/4</small></h2><div class="body"><table style="table-layout:fixed"><colgroup><col style="width:267.3px"><col style="width:221.8px"><col style="width:721.0px"><col style="width:177.5px"><col style="width:339.4px"></colgroup><thead>
-<tr>
-<th>이름</th>
-<th>연·발표</th>
-<th>요약</th>
-<th>본문</th>
-<th>링크</th>
-</tr>
-</thead><tbody><tr>
+</tr><tr>
 <td>MID</td>
 <td>2022.03 · CVPR 2022</td>
 <td>확산으로 불확정성을 걷어 내는 궤적 예측</td>
@@ -1227,7 +1233,16 @@ D.12 IROS 2026 수확 · D.11 기타
 <td>sparse 3D 합성곱 사람 검출, JRDB AP 76.4%</td>
 <td>A.12.4</td>
 <td><a href="https://arxiv.org/abs/2107.06780">논문</a> · <a href="https://github.com/VisualComputingInstitute/Person_MinkUNet">코드</a></td>
-</tr><tr>
+</tr></tbody></table></div><div class="foot" data-foot><span>travplan 리서치 · 참고문헌 (docs/research-references.md)</span><span>17 / 109</span></div><aside>docs/research-references.md · D.3b 인식 — 마일스톤, 시각 기반 모델, 동적 장애물</aside></section>
+<section class="r content"><div class="kicker">참고문헌 · 인식</div><h2 class="ttl">D.3b 인식 — 마일스톤, 시각 기반 모델, 동적 장애물<small>4/4</small></h2><div class="body"><table style="table-layout:fixed"><colgroup><col style="width:252.0px"><col style="width:198.3px"><col style="width:824.5px"><col style="width:159.0px"><col style="width:293.2px"></colgroup><thead>
+<tr>
+<th>이름</th>
+<th>연·발표</th>
+<th>요약</th>
+<th>본문</th>
+<th>링크</th>
+</tr>
+</thead><tbody><tr>
 <td>2D vs 3D LiDAR 사람 검출</td>
 <td>2021.06 · IROS 2022</td>
 <td>JRDB에서 DR-SPAAM과 CenterPoint 비교, Jetson 속도</td>
@@ -1257,16 +1272,7 @@ D.12 IROS 2026 수확 · D.11 기타
 <td>가림 원리로 점마다 수 µs에 이동 판정(GPL-2.0)</td>
 <td>A.12.4</td>
 <td><a href="https://www.nature.com/articles/s41467-023-44554-8">논문</a> · <a href="https://github.com/hku-mars/M-detector">코드</a></td>
-</tr></tbody></table></div><div class="foot" data-foot><span>travplan 리서치 · 참고문헌 (docs/research-references.md)</span><span>17 / 109</span></div><aside>docs/research-references.md · D.3b 인식 — 마일스톤, 시각 기반 모델, 동적 장애물</aside></section>
-<section class="r content"><div class="kicker">참고문헌 · 인식</div><h2 class="ttl">D.3b 인식 — 마일스톤, 시각 기반 모델, 동적 장애물<small>4/4</small></h2><div class="body"><table style="table-layout:fixed"><colgroup><col style="width:267.3px"><col style="width:221.8px"><col style="width:721.0px"><col style="width:177.5px"><col style="width:339.4px"></colgroup><thead>
-<tr>
-<th>이름</th>
-<th>연·발표</th>
-<th>요약</th>
-<th>본문</th>
-<th>링크</th>
-</tr>
-</thead><tbody><tr>
+</tr><tr>
 <td>Dynablox</td>
 <td>2023.04 · RA-L 2023</td>
 <td>확실한 빈 공간에 나타난 점으로 이동 검출, IoU 86% 17 FPS</td>

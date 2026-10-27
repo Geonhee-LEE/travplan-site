@@ -205,9 +205,9 @@ footer { max-width: 1000px; margin: 0 auto; padding: 0 16px 40px; color: var(--m
   nav.subtabs button { min-height: 32px; }
 }
 </style>
-<header data-generated="2026-10-27 14:11 KST">
+<header data-generated="2026-10-27 22:31 KST">
   <h1>travplan 대시보드</h1>
-  <div class="meta" data-site-meta><a href="index.html">← travplan 홈</a> · 갱신 2026-10-27 14:11 KST</div>
+  <div class="meta" data-site-meta><a href="index.html">← travplan 홈</a> · 갱신 2026-10-27 22:31 KST</div>
 </header>
 <nav class="tabs" role="tablist" aria-label="대시보드 탭"><button role="tab" id="tabbtn-state" aria-controls="tab-state" aria-selected="true" tabindex="0" data-tab="state" class="active">진행 현황</button><button role="tab" id="tabbtn-todo" aria-controls="tab-todo" aria-selected="false" tabindex="-1" data-tab="todo">TODO</button><button role="tab" id="tabbtn-prd" aria-controls="tab-prd" aria-selected="false" tabindex="-1" data-tab="prd">PRD</button><button role="tab" id="tabbtn-arch" aria-controls="tab-arch" aria-selected="false" tabindex="-1" data-tab="arch">아키텍처 · 기능 설명</button><button role="tab" id="tabbtn-research" aria-controls="tab-research" aria-selected="false" tabindex="-1" data-tab="research">리서치</button><button role="tab" id="tabbtn-design" aria-controls="tab-design" aria-selected="false" tabindex="-1" data-tab="design">설계 · PoC</button><button role="tab" id="tabbtn-sim" aria-controls="tab-sim" aria-selected="false" tabindex="-1" data-tab="sim">시뮬레이션 ▶</button></nav>
 <main>
@@ -216,8 +216,8 @@ footer { max-width: 1000px; margin: 0 auto; padding: 0 16px 40px; color: var(--m
 <div class="kpi"><div class="kpi-label">TODO 완료</div><div class="kpi-val">20/80</div><div class="progress-bar"><div class="progress-fill" style="width:25%"></div></div></div>
 <div class="kpi"><div class="kpi-label">진행 중·오늘</div><div class="kpi-val">0</div></div>
 <div class="kpi"><div class="kpi-label">사용자 실행 대기</div><div class="kpi-val">8</div></div>
-<div class="kpi"><div class="kpi-label">열린 PR</div><div class="kpi-val">8</div></div>
-<div class="kpi"><div class="kpi-label">최근 7일 merge</div><div class="kpi-val">32</div></div>
+<div class="kpi"><div class="kpi-label">열린 PR</div><div class="kpi-val">7</div></div>
+<div class="kpi"><div class="kpi-label">최근 7일 merge</div><div class="kpi-val">33</div></div>
 </div>
 <div class="card md"><h2>현재 병목</h2><p><mark>스워브 plant에서 치명은 거의 사라졌지만(4/360), 레벨 3의 3분의 1이 시간 초과로 끝난다. 특히 레벨 3 경사로는 거의 지나가지 못한다.</mark></p>
 <ul>
@@ -1549,7 +1549,7 @@ LiDAR 링 사이가 비어 로봇 주변 3 m 안의 10–12%가 미관측으로 
 <td>스모크 끝, 짝 비교는 <a class="tp tp-backlog" href="#todo" data-tp="TP-0169" title="백로그 · TP-0032 후속: 지연·드리프트 치명 실패의 짝 비교 — 4 시나리오 × seed 0–9 × 오프셋 3으로 --latency 2 2 3, --pose-drift 0.05 ...">TP-0169</a>와 함께(사용자 실행)</td>
 </tr>
 </tbody>
-</table><h3>열린 PR</h3><ul class='prs'><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #283</span> docs: 깊이 기반 모델 DeFM을 인식 A.11에 더한다  </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #281</span> slides: 스터디·발표 덱 16개의 한국어를 자연스럽게 다듬고 분야 용어는 영어로  </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #258</span> [auto] TP-0157 배경 0.6b·0.7b 자체 측정 재현 — n=4는 95%가 아니라 80% <a class="tp tp-done" href="#todo" data-tp="TP-0157" title="완료 · 배경 0.6b·0.7b의 자체 측정 둘에 재현 절차를 붙인다: (1) scripts/train_planner_d.py 교사 라벨의 제어 변화율 표준편차가 0.5 근처라는 것(... · PR #258(열림)">✓ TP-0157</a> </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #253</span> [auto] TP-0091 소셜 내비 지표 정지 시간·PSC <a class="tp tp-done" href="#todo" data-tp="TP-0091" title="완료 · 기록에서 복원 · 이슈 #252(열림) · PR #253(열림)">✓ TP-0091</a> </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #249</span> [auto] TP-0168 반응형 보행자 ORCA 지평 τ를 --ped-horizon으로 노출 <a class="tp tp-done" href="#todo" data-tp="TP-0168" title="완료 · TP-0036 후속: 반응형 보행자의 반응 지평 τ(SHARE보다 센 손잡이)를 --ped-horizon으로 노출하고 τ 0.5·2·4 s에서 충돌·도달 민감도 · 이슈 #248(열림) · PR #249(열림)">✓ TP-0168</a> </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #247</span> [auto] TP-0170 지연을 아는 MPPI(mppi_delay) <a class="tp tp-done" href="#todo" data-tp="TP-0170" title="완료 · TP-0032 후속: 지연을 아는 Controller — 제어 지연 스텝을 MPPI rollout에 넣는다(mppi_plant_lag처럼). 지연만 켠 치명 3/12가 줄는지 · 이슈 #246(열림) · PR #247(열림)">✓ TP-0170</a> </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #227</span> Planner B.6b TacitVLA(추론 문장을 행동에서 가린 추론 VLA) 정독  </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #224</span> Planner B.6b Pi API 베타(Physical Intelligence)와 π 계열 연표  </li></ul><h3>최근 merge된 PR</h3><ul class='prs'><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #280</span> docs: 보행 갤러리(§G) — 사족·휴머노이드 보행 마일스톤 논문 17편  <span class="date">2026-10-27</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #274</span> docs: Diffusion ReRoll을 생성형 궤적 계보(B.8.0)에 더한다  <span class="date">2026-10-27</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #272</span> help: 질문으로 찾기(관련 절 검색)와 Claude 답변 게시본  <span class="date">2026-10-27</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #270</span> automation: merge 전 전문가 검토를 훅으로 강제  <span class="date">2026-10-27</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #279</span> docs: Planner B.18.2에 층별 비교 그림과 분야별 원문 그림, travplan 연결을 더한다  <span class="date">2026-10-26</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #278</span> docs: IROS 2026 다섯 편을 원문으로 다시 읽고 그림과 자세한 설명, 고른 이유를 더한다  <span class="date">2026-10-26</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #277</span> dashboard: 리서치 문서의 그림을 크기와 모양에 맞춰 보이게 한다  <span class="date">2026-10-26</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #276</span> docs: Planner 리서치 문서의 탭을 13개로 나누고 첫머리 안내·탭 머리를 둔다  <span class="date">2026-10-26</span></li></ul><p class="note">GitHub 인덱스 갱신: 2026-10-27 14:11 · <code>python3 automation/gh_index.py</code></p></div>
+</table><h3>열린 PR</h3><ul class='prs'><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #281</span> slides: 스터디·발표 덱 16개의 한국어를 자연스럽게 다듬고 분야 용어는 영어로  </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #258</span> [auto] TP-0157 배경 0.6b·0.7b 자체 측정 재현 — n=4는 95%가 아니라 80% <a class="tp tp-done" href="#todo" data-tp="TP-0157" title="완료 · 배경 0.6b·0.7b의 자체 측정 둘에 재현 절차를 붙인다: (1) scripts/train_planner_d.py 교사 라벨의 제어 변화율 표준편차가 0.5 근처라는 것(... · PR #258(열림)">✓ TP-0157</a> </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #253</span> [auto] TP-0091 소셜 내비 지표 정지 시간·PSC <a class="tp tp-done" href="#todo" data-tp="TP-0091" title="완료 · 기록에서 복원 · 이슈 #252(열림) · PR #253(열림)">✓ TP-0091</a> </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #249</span> [auto] TP-0168 반응형 보행자 ORCA 지평 τ를 --ped-horizon으로 노출 <a class="tp tp-done" href="#todo" data-tp="TP-0168" title="완료 · TP-0036 후속: 반응형 보행자의 반응 지평 τ(SHARE보다 센 손잡이)를 --ped-horizon으로 노출하고 τ 0.5·2·4 s에서 충돌·도달 민감도 · 이슈 #248(열림) · PR #249(열림)">✓ TP-0168</a> </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #247</span> [auto] TP-0170 지연을 아는 MPPI(mppi_delay) <a class="tp tp-done" href="#todo" data-tp="TP-0170" title="완료 · TP-0032 후속: 지연을 아는 Controller — 제어 지연 스텝을 MPPI rollout에 넣는다(mppi_plant_lag처럼). 지연만 켠 치명 3/12가 줄는지 · 이슈 #246(열림) · PR #247(열림)">✓ TP-0170</a> </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #227</span> Planner B.6b TacitVLA(추론 문장을 행동에서 가린 추론 VLA) 정독  </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #224</span> Planner B.6b Pi API 베타(Physical Intelligence)와 π 계열 연표  </li></ul><h3>최근 merge된 PR</h3><ul class='prs'><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #283</span> docs: 깊이 기반 모델 DeFM을 인식 A.11에 더한다  <span class="date">2026-10-27</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #280</span> docs: 보행 갤러리(§G) — 사족·휴머노이드 보행 마일스톤 논문 17편  <span class="date">2026-10-27</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #274</span> docs: Diffusion ReRoll을 생성형 궤적 계보(B.8.0)에 더한다  <span class="date">2026-10-27</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #272</span> help: 질문으로 찾기(관련 절 검색)와 Claude 답변 게시본  <span class="date">2026-10-27</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #270</span> automation: merge 전 전문가 검토를 훅으로 강제  <span class="date">2026-10-27</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #279</span> docs: Planner B.18.2에 층별 비교 그림과 분야별 원문 그림, travplan 연결을 더한다  <span class="date">2026-10-26</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #278</span> docs: IROS 2026 다섯 편을 원문으로 다시 읽고 그림과 자세한 설명, 고른 이유를 더한다  <span class="date">2026-10-26</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #277</span> dashboard: 리서치 문서의 그림을 크기와 모양에 맞춰 보이게 한다  <span class="date">2026-10-26</span></li></ul><p class="note">GitHub 인덱스 갱신: 2026-10-27 22:31 · <code>python3 automation/gh_index.py</code></p></div>
 <div class="card md"><h2>작업 환경</h2><details><summary>체크포인트, 가상환경, 그림·인덱스 재생성</summary><ul>
 <li><strong>브랜치.</strong> 두 PC 모두 main에서 이어간다.</li>
 <li><strong>체크포인트.</strong> <code>checkpoints/</code>는 git에 없다. 릴리스에서 받는다.
@@ -2738,7 +2738,7 @@ python3 scripts/build_study_slides.py --check            # 헤드리스 Chrome�
 python3 scripts/build_study_slides.py study-papers --pptx  # PPTX도 다시 만든다(python-pptx, Pillow 필요)
 python3 scripts/build_study_slides.py --covers           # 덱마다 첫 장을 찍어 갤러리 표지를 만든다(첫 장을 바꿨거나 덱을 더했을 때, Pillow 필요)
 </code></pre>
-<p><strong>리서치 문서 덱</strong>(<code>docs/slides/research-&lt;문서&gt;/</code>)은 대시보드 리서치 탭의 문서마다 한 덱이다(13덱, 2026-10-27 기준 1,964장).
+<p><strong>리서치 문서 덱</strong>(<code>docs/slides/research-&lt;문서&gt;/</code>)은 대시보드 리서치 탭의 문서마다 한 덱이다(13덱, 2026-10-27 기준 1,967장).
 원본은 <code>docs/research-*.md</code> 그대로이고, 대시보드와 같은 변환으로 본문·표·그림·수식을 모두 옮긴다. h2·h3마다 새 장을 열고,
 넘치면 다음 장으로 잇는다(표·목록은 행·항목 단위). 논문 상세 토글은 토글마다 한 장으로 줄이고 나머지는 대시보드 토글을 가리킨다.
 PPTX는 편집 가능한 판이다. 글자·표는 PowerPoint 텍스트이고, 그림은 원본 이미지, 별행 수식만 KaTeX로 조판한 그림이다.
@@ -4088,7 +4088,7 @@ $\rho$나 $\alpha$가 0.01 이상이고 관심 영역 안인 query를 남긴다.
 <td>잔차 GP 분산으로, plant 조건의 짝 비교</td>
 </tr>
 </tbody>
-</table></div></div><div class="docpanel subpanel" id="sub-research-d-1" role="tabpanel" aria-labelledby="subbtn-research-d-1"><p class="note">▶ 이 문서를 슬라이드로: <a href="slides/research-perception/">슬라이드 보기</a> (391장) · <a href="slides/research-perception/research-perception.pptx" download>PPTX 내려받기</a>(글자·표 편집 가능) · 발표 덱: <a href="slides/talk-legged/">travplan 챕터 발표 — 휴머노이드·4족 보행 내비게이션</a> (38장, <a href="slides/talk-legged/talk-legged.pptx" download>PPTX</a>) · 발표 덱: <a href="slides/talk-perception/">travplan 챕터 발표 — 인식</a> (40장, <a href="slides/talk-perception/talk-perception.pptx" download>PPTX</a>)</p>
+</table></div></div><div class="docpanel subpanel" id="sub-research-d-1" role="tabpanel" aria-labelledby="subbtn-research-d-1"><p class="note">▶ 이 문서를 슬라이드로: <a href="slides/research-perception/">슬라이드 보기</a> (394장) · <a href="slides/research-perception/research-perception.pptx" download>PPTX 내려받기</a>(글자·표 편집 가능) · 발표 덱: <a href="slides/talk-legged/">travplan 챕터 발표 — 휴머노이드·4족 보행 내비게이션</a> (38장, <a href="slides/talk-legged/talk-legged.pptx" download>PPTX</a>) · 발표 덱: <a href="slides/talk-perception/">travplan 챕터 발표 — 인식</a> (40장, <a href="slides/talk-perception/talk-perception.pptx" download>PPTX</a>)</p>
 <nav class="subtabs" role="tablist" data-group="research-d1"><button role="tab" id="subbtn-research-d1-0" aria-controls="sub-research-d1-0" aria-selected="true" tabindex="0" data-sub="research-d1-0" class="active">개요</button><button role="tab" id="subbtn-research-d1-1" aria-controls="sub-research-d1-1" aria-selected="false" tabindex="-1" data-sub="research-d1-1">지형 지도·Occupancy</button><button role="tab" id="subbtn-research-d1-2" aria-controls="sub-research-d1-2" aria-selected="false" tabindex="-1" data-sub="research-d1-2">작업 기록</button><button role="tab" id="subbtn-research-d1-3" aria-controls="sub-research-d1-3" aria-selected="false" tabindex="-1" data-sub="research-d1-3">Traversability</button><button role="tab" id="subbtn-research-d1-4" aria-controls="sub-research-d1-4" aria-selected="false" tabindex="-1" data-sub="research-d1-4">시각 기반 모델</button><button role="tab" id="subbtn-research-d1-5" aria-controls="sub-research-d1-5" aria-selected="false" tabindex="-1" data-sub="research-d1-5">동적 장애물</button><button role="tab" id="subbtn-research-d1-6" aria-controls="sub-research-d1-6" aria-selected="false" tabindex="-1" data-sub="research-d1-6">예측·World model</button><button role="tab" id="subbtn-research-d1-7" aria-controls="sub-research-d1-7" aria-selected="false" tabindex="-1" data-sub="research-d1-7">보행 로봇</button><button role="tab" id="subbtn-research-d1-8" aria-controls="sub-research-d1-8" aria-selected="false" tabindex="-1" data-sub="research-d1-8">최근 연구 비교</button></nav><div class="card md subpanel active" id="sub-research-d1-0" role="tabpanel" aria-labelledby="subbtn-research-d1-0"><!-- doc: 인식 | 1 -->
 <h1>인식 — 지형·장애물을 TravMap으로 (§A)</h1>
 <p><strong>인식은 센서 관측을 TravMap[8,H,W]과 동적 장애물 목록으로 바꾸는 일이다.</strong> 이 문서는 여덟 탭으로 나뉜다. 네 탭(지형 지도, traversability, 시각 기반 모델, 동적 장애물)은 travplan 파이프라인에 직접 들어가고,
@@ -8544,7 +8544,7 @@ MPPI rollout은 표본마다 속도가 다르므로, 속도 조건 분산은 <co
 <td>속도 조건 MPPI 비용 항(낮은 우선순위)</td>
 </tr>
 </tbody>
-</table></div><div class="card md subpanel" id="sub-research-d1-4" role="tabpanel" aria-labelledby="subbtn-research-d1-4" data-math="30"><h3>A.11 시각 기반 모델: 라벨 없이 학습한 백본 위에 작은 헤드를 얹는다</h3>
+</table></div><div class="card md subpanel" id="sub-research-d1-4" role="tabpanel" aria-labelledby="subbtn-research-d1-4" data-math="35"><h3>A.11 시각 기반 모델: 라벨 없이 학습한 백본 위에 작은 헤드를 얹는다</h3>
 <p><strong>2023년부터 로봇 인식의 출발점은 과제별 모델이 아니라 시각 기반 모델(vision foundation model)이다.</strong> 대규모 영상으로 한 번
 사전학습한 백본이 특징, 깊이, 분할, 글로 지정한 검출을 내고, 로봇은 그 위에 작은 헤드만 학습한다. A.7의 WVN이 고정한 DINO 특징
 위에서 5분 만에 적응하고, A.10의 V-STRONG와 ViTA가 SAM 마스크를 쓰는 것도 이 흐름이다. 제품에 넣을 때는 성능만큼 <strong>라이선스</strong>가
@@ -8608,6 +8608,13 @@ MPPI rollout은 표본마다 속도가 다르므로, 속도 조건 분산은 <co
 <td>명사구로 지정한 모든 인스턴스의 분할과 추적</td>
 <td>자체 라이선스(HF 표기 other)</td>
 <td><a href="https://github.com/facebookresearch/sam3">facebookresearch/sam3</a> 11.8k, <a href="https://huggingface.co/facebook/sam3">sam3</a> 2.1M</td>
+</tr>
+<tr>
+<td>2026</td>
+<td>DeFM</td>
+<td>깊이 영상 특징(전역·패치), 작은 CNN 학생</td>
+<td>Apache-2.0</td>
+<td><a href="https://github.com/leggedrobotics/defm">leggedrobotics/defm</a> 0.2k, <a href="https://huggingface.co/leggedrobotics/defm">defm</a> 435</td>
 </tr>
 </tbody>
 </table>
@@ -8707,6 +8714,69 @@ cross-attention, MLP 순서다. 메모리 뱅크는 최근 프레임 $N$개와 �
 <p><strong>travplan에 주는 것.</strong> 보도에는 학습 클래스에 없는 장애물(킥보드, 볼라드, 공사 표지)이 많다. SAM 3나 Grounding DINO에게 이름으로
 물어 마스크를 얻으면 사람 라벨 없이 장애물 클래스를 늘릴 수 있다. 메모리 기반 추적은 가려졌다 다시 나타나는 보행자의 ID를 유지하는
 문제(A.12)와 같다.</p>
+</details>
+<h4>A.11.4 깊이 영상 백본: DeFM</h4>
+<p><strong>DeFM — 깊이 영상만으로 DINOv2식 자기 증류를 한다</strong>(<a href="https://arxiv.org/abs/2601.18923">arXiv:2601.18923</a>, T-RO 2026, ETH Zurich RSL·UC Berkeley·NVIDIA 외,
+<a href="https://github.com/leggedrobotics/defm">코드</a>, <a href="https://de-fm.github.io/">프로젝트</a>). 로봇의 깊이 입력은 지금까지 과제마다 처음부터 학습하거나
+RGB용 백본(ImageNet, DINO)을 빌려 썼다. DeFM은 깊이 영상 6,040만 장(실측 2,240만, 합성 1,300만, 단안 깊이 추정으로 만든 2,500만, 데이터셋 18개)으로
+ViT-L/14(논문 307M, 공개 체크포인트 303.7M)를 처음부터 학습했다. 목적함수는 DINOv2와 같다(A.11.1 상세의 DINO·iBOT 손실). 그 뒤 ViT-S와 ResNet, RegNet, EfficientNet
+학생 11개(CNN 10개와 ViT-S, 3M–29M)로 증류했다. 교사를 포함한 공개 모델 12개(3M–304M)의 코드와 가중치가 모두 Apache-2.0이다.</p>
+<p><mark>입력은 미터 단위 깊이를 세 채널로 바꾼 것이다.</mark> 한 채널은 영상 안 최소·최대로 정규화한 로그 깊이, 나머지 두 채널은 10 m와 100 m를 기준으로
+고정한 로그 깊이다. 그래서 장면 안 상대 구조와 절대 거리를 함께 본다. 센서마다 깊이 자르기나 잡음 모델을 따로 맞추지 않아도 된다.</p>
+<p>결과는 다섯 갈래다. 깊이로 바꾼 ImageNet 분류(사전학습과 같은 도메인)의 선형 탐침에서 ViT-S가 61.5 %로 DINOv3-S(50.9 %)를 앞섰다. TartanGround 분할(mIoU)은 ViT-L에서
+67.7로 DINOv3-L(62.2)보다 높았다. 바퀴 달린 사족 Unitree B2W의 점 목표 내비(깊이 64×40, 고정 RegNetX-400MF + FPN 위에 순환 정책)에서는
+처음 보는 세 환경의 성공률이 92.7·84.3·79.0 %였다. VAE는 89.7·83.0·73.7 %, DINOv3는 90.0·74.7·72.7 %였고, 충돌도 가장 적었다.
+ANYmal 사다리 오르기는 90.1 %로 처음부터 학습한 CNN(90.5 %)과 비슷했다. 손 파지에서 Kinect 잡음을 넣으면 고정 인코더 성공률(교사 대비)이
+DeFM 0.49, DINOv3 0.21, VAE 0.02로 차이가 가장 컸다. 실물에서 돌린 것은 내비뿐이다(실내, 도시, 공원, 공사장). 사다리는 실물 깊이 영상에서 특징이 일관됨을 PCA로만 보였다.</p>
+<div class="fig-grid"><figure class="fig full wide"><a class="thumb" href="https://arxiv.org/html/2601.18923v2/4_2_input_norm_turbo.png" title="원본 보기"><img alt="DeFM Fig. 3" src="assets/thumbs/c421a1211a70.webp" loading="lazy" width="1000" height="495"></a><figcaption>그림 — DeFM (Fig. 3): 미터 깊이를 세 채널로 정규화한다. 로그 정규화가 깊이 범위 전체를 담으면서 가까운 곳의 잔구조를 지킨다. 출처: <a href="https://arxiv.org/abs/2601.18923">arXiv:2601.18923</a></figcaption></figure>
+</div><details>
+<summary>자세히: 세 채널 정규화, 실행 시간, 한계</summary>
+<p><strong>세 채널 정규화.</strong> $\log_p(D) = \log(1 + D)$이고 $D$는 미터 깊이, $D_{\min}$·$D_{\max}$는 그 영상의 최소·최대다. 쌓은 뒤 사전학습 데이터 전체의 평균과 표준편차로 한 번 더 정규화한다.</p>
+<p>$$ C_1 = \frac{\log_p(D) - \log_p(D_{\min})}{\log_p(D_{\max}) - \log_p(D_{\min})}, \qquad C_2 = \frac{\log_p(D)}{\log_p(10)}, \qquad C_3 = \frac{\log_p(D)}{\log_p(100)} $$</p>
+<p><strong>실행 시간(Table VII).</strong> 224×224 입력, TensorRT 없는 PyTorch, Jetson AGX Orin 배치 1 기준이다.</p>
+<table>
+<thead>
+<tr>
+<th>모델</th>
+<th>파라미터</th>
+<th>Orin (ms)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ViT-L/14</td>
+<td>307M</td>
+<td>72.8</td>
+</tr>
+<tr>
+<td>ViT-S/14</td>
+<td>22.1M</td>
+<td>11.9</td>
+</tr>
+<tr>
+<td>ResNet-18</td>
+<td>11.7M</td>
+<td>8.7</td>
+</tr>
+<tr>
+<td>RegNetY-400MF</td>
+<td>4.1M</td>
+<td>25.2</td>
+</tr>
+<tr>
+<td>EfficientNet-B0</td>
+<td>3.0M</td>
+<td>21.0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>저자가 적은 한계.</strong> 데이터 큐레이션이 단순하다(연속 영상을 1–5 Hz로 솎았을 뿐, 중복 제거 없음). 단안 깊이 추정에서 온 2,500만 장은 실제 척도가 없어
+가짜 미터 범위에 맞췄다. 카메라 내부 파라미터를 받지 않아 옆 방향 척도가 모호할 수 있다. ViT 패치 잡티가 남는다. LiDAR 거리 영상은 아직 다루지 않는다.
+내비 정책은 울타리, 표지판, 가로등처럼 가늘거나 처음 보는 장애물을 VAE 기준선보다 잘 피했다. 그래도 전선, 기둥, 그물처럼 아주 얇은 장애물에는 여전히 약했다. 저자들은 64×40 입력 해상도 탓으로 본다.</p>
+<p><strong>travplan에 주는 것.</strong> 우리가 보기에 쓸 자리는 학습 모듈에 깊이 영상 가지를 더할 때다. 지금 Planner D는 TravMap 크롭을, TravNet은 고도 지도의 기하 특징(slope·step·rough·known)을 받고,
+L1 인식은 합성 LiDAR와 전면 스테레오(TP-0065)를 고도 지도로 쌓는다. 깊이 영상은 RGB보다 시뮬레이션과 실물의 차이가 작고, DeFM은 센서별 잡음 모델 없이도 버텼다.
+그래서 Isaac 단계(P1)에서 스테레오 깊이를 정책에 직접 넣는다면 DINOv2보다 먼저 시험할 후보다. Orin에서 ResNet-18 학생이 8.7 ms라 계획 시간 목표(10 ms)의
+대부분이다(조건이 달라 직접 비교는 아니다. 8.7 ms는 TensorRT 없는 PyTorch, 10 ms는 벤치마크 게이트다). 그래서 Planner 안이 아니라 인식 쪽 별도 주기로 돌리는 편이 맞다. 얇은 장애물에 약하다는 점은 보도의 볼라드·표지판 기둥과 겹치므로, 고도 지도(L1)를 대신하지 않고 보탠다.</p>
 </details>
 <p><strong>travplan에 주는 의미.</strong> <mark>시각 기반 모델은 로봇에서 직접 돌리기 전에 라벨을 만드는 교사로 먼저 쓴다.</mark> Orin에서 큰 백본을 매
 프레임 돌린 근거는 아직 얇다. 대신 오프라인에서 Grounding DINO와 SAM으로 보행자, 킥보드, 볼라드 마스크를 만들고 Depth Anything으로
@@ -47498,6 +47568,13 @@ D.12 IROS 2026 수확 · D.11 기타
 <td>Gram anchoring으로 조밀 특징 유지, 7B 교사 증류(자체 라이선스)</td>
 <td>A.11</td>
 <td><a href="https://arxiv.org/abs/2508.10104">논문</a> · <a href="https://github.com/facebookresearch/dinov3">코드</a></td>
+</tr>
+<tr>
+<td>DeFM</td>
+<td>2026.01 · T-RO 2026</td>
+<td>깊이 영상 6,040만 장으로 DINOv2식 자기 증류한 깊이 기반 모델, 미터 깊이 세 채널 입력, 학생 11개(CNN 10 + ViT-S), 공개 모델 12개(Apache-2.0)</td>
+<td>A.11</td>
+<td><a href="https://arxiv.org/abs/2601.18923">논문</a> · <a href="https://github.com/leggedrobotics/defm">코드</a> · <a href="https://de-fm.github.io/">프로젝트</a></td>
 </tr>
 <tr>
 <td>Depth Anything V2</td>

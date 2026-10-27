@@ -3046,6 +3046,7 @@ MPPI rollout은 표본마다 속도가 다르므로, 속도 조건 분산은 `Co
 | 2025 | DINOv3 | 7B 교사에서 증류한 고해상도 조밀 특징 | 자체 라이선스(HF 표기 other) | [facebookresearch/dinov3](https://github.com/facebookresearch/dinov3) 11.4k, [dinov3-vitb16](https://huggingface.co/facebook/dinov3-vitb16-pretrain-lvd1689m) 0.61M |
 | 2025 | Depth Anything 3 | 영상 여러 장에서 깊이와 카메라 광선 | Large, Metric, Mono 판은 Apache-2.0 | [ByteDance-Seed/Depth-Anything-3](https://github.com/ByteDance-Seed/Depth-Anything-3) 6.4k, [DA3METRIC-LARGE](https://huggingface.co/depth-anything/DA3METRIC-LARGE) 0.29M |
 | 2025 | SAM 3 | 명사구로 지정한 모든 인스턴스의 분할과 추적 | 자체 라이선스(HF 표기 other) | [facebookresearch/sam3](https://github.com/facebookresearch/sam3) 11.8k, [sam3](https://huggingface.co/facebook/sam3) 2.1M |
+| 2026 | DeFM | 깊이 영상 특징(전역·패치), 작은 CNN 학생 | Apache-2.0 | [leggedrobotics/defm](https://github.com/leggedrobotics/defm) 0.2k, [defm](https://huggingface.co/leggedrobotics/defm) 435 |
 
 #### A.11.1 특징 백본: DINOv2와 DINOv3
 
@@ -3195,6 +3196,54 @@ presence 점수는 개념이 영상에 있는지를 이진 교차 엔트로피�
 **travplan에 주는 것.** 보도에는 학습 클래스에 없는 장애물(킥보드, 볼라드, 공사 표지)이 많다. SAM 3나 Grounding DINO에게 이름으로
 물어 마스크를 얻으면 사람 라벨 없이 장애물 클래스를 늘릴 수 있다. 메모리 기반 추적은 가려졌다 다시 나타나는 보행자의 ID를 유지하는
 문제(A.12)와 같다.
+
+</details>
+
+#### A.11.4 깊이 영상 백본: DeFM
+
+**DeFM — 깊이 영상만으로 DINOv2식 자기 증류를 한다**([arXiv:2601.18923](https://arxiv.org/abs/2601.18923), T-RO 2026, ETH Zurich RSL·UC Berkeley·NVIDIA 외,
+[코드](https://github.com/leggedrobotics/defm), [프로젝트](https://de-fm.github.io/)). 로봇의 깊이 입력은 지금까지 과제마다 처음부터 학습하거나
+RGB용 백본(ImageNet, DINO)을 빌려 썼다. DeFM은 깊이 영상 6,040만 장(실측 2,240만, 합성 1,300만, 단안 깊이 추정으로 만든 2,500만, 데이터셋 18개)으로
+ViT-L/14(논문 307M, 공개 체크포인트 303.7M)를 처음부터 학습했다. 목적함수는 DINOv2와 같다(A.11.1 상세의 DINO·iBOT 손실). 그 뒤 ViT-S와 ResNet, RegNet, EfficientNet
+학생 11개(CNN 10개와 ViT-S, 3M–29M)로 증류했다. 교사를 포함한 공개 모델 12개(3M–304M)의 코드와 가중치가 모두 Apache-2.0이다.
+
+==입력은 미터 단위 깊이를 세 채널로 바꾼 것이다.== 한 채널은 영상 안 최소·최대로 정규화한 로그 깊이, 나머지 두 채널은 10 m와 100 m를 기준으로
+고정한 로그 깊이다. 그래서 장면 안 상대 구조와 절대 거리를 함께 본다. 센서마다 깊이 자르기나 잡음 모델을 따로 맞추지 않아도 된다.
+
+결과는 다섯 갈래다. 깊이로 바꾼 ImageNet 분류(사전학습과 같은 도메인)의 선형 탐침에서 ViT-S가 61.5 %로 DINOv3-S(50.9 %)를 앞섰다. TartanGround 분할(mIoU)은 ViT-L에서
+67.7로 DINOv3-L(62.2)보다 높았다. 바퀴 달린 사족 Unitree B2W의 점 목표 내비(깊이 64×40, 고정 RegNetX-400MF + FPN 위에 순환 정책)에서는
+처음 보는 세 환경의 성공률이 92.7·84.3·79.0 %였다. VAE는 89.7·83.0·73.7 %, DINOv3는 90.0·74.7·72.7 %였고, 충돌도 가장 적었다.
+ANYmal 사다리 오르기는 90.1 %로 처음부터 학습한 CNN(90.5 %)과 비슷했다. 손 파지에서 Kinect 잡음을 넣으면 고정 인코더 성공률(교사 대비)이
+DeFM 0.49, DINOv3 0.21, VAE 0.02로 차이가 가장 컸다. 실물에서 돌린 것은 내비뿐이다(실내, 도시, 공원, 공사장). 사다리는 실물 깊이 영상에서 특징이 일관됨을 PCA로만 보였다.
+
+![DeFM Fig. 3](https://arxiv.org/html/2601.18923v2/4_2_input_norm_turbo.png)
+*그림 — DeFM (Fig. 3): 미터 깊이를 세 채널로 정규화한다. 로그 정규화가 깊이 범위 전체를 담으면서 가까운 곳의 잔구조를 지킨다. 출처: [arXiv:2601.18923](https://arxiv.org/abs/2601.18923)*
+
+<details markdown="1">
+<summary>자세히: 세 채널 정규화, 실행 시간, 한계</summary>
+
+**세 채널 정규화.** $\log_p(D) = \log(1 + D)$이고 $D$는 미터 깊이, $D_{\min}$·$D_{\max}$는 그 영상의 최소·최대다. 쌓은 뒤 사전학습 데이터 전체의 평균과 표준편차로 한 번 더 정규화한다.
+
+$$ C_1 = \frac{\log_p(D) - \log_p(D_{\min})}{\log_p(D_{\max}) - \log_p(D_{\min})}, \qquad C_2 = \frac{\log_p(D)}{\log_p(10)}, \qquad C_3 = \frac{\log_p(D)}{\log_p(100)} $$
+
+**실행 시간(Table VII).** 224×224 입력, TensorRT 없는 PyTorch, Jetson AGX Orin 배치 1 기준이다.
+
+| 모델 | 파라미터 | Orin (ms) |
+|---|---|---|
+| ViT-L/14 | 307M | 72.8 |
+| ViT-S/14 | 22.1M | 11.9 |
+| ResNet-18 | 11.7M | 8.7 |
+| RegNetY-400MF | 4.1M | 25.2 |
+| EfficientNet-B0 | 3.0M | 21.0 |
+
+**저자가 적은 한계.** 데이터 큐레이션이 단순하다(연속 영상을 1–5 Hz로 솎았을 뿐, 중복 제거 없음). 단안 깊이 추정에서 온 2,500만 장은 실제 척도가 없어
+가짜 미터 범위에 맞췄다. 카메라 내부 파라미터를 받지 않아 옆 방향 척도가 모호할 수 있다. ViT 패치 잡티가 남는다. LiDAR 거리 영상은 아직 다루지 않는다.
+내비 정책은 울타리, 표지판, 가로등처럼 가늘거나 처음 보는 장애물을 VAE 기준선보다 잘 피했다. 그래도 전선, 기둥, 그물처럼 아주 얇은 장애물에는 여전히 약했다. 저자들은 64×40 입력 해상도 탓으로 본다.
+
+**travplan에 주는 것.** 우리가 보기에 쓸 자리는 학습 모듈에 깊이 영상 가지를 더할 때다. 지금 Planner D는 TravMap 크롭을, TravNet은 고도 지도의 기하 특징(slope·step·rough·known)을 받고,
+L1 인식은 합성 LiDAR와 전면 스테레오(TP-0065)를 고도 지도로 쌓는다. 깊이 영상은 RGB보다 시뮬레이션과 실물의 차이가 작고, DeFM은 센서별 잡음 모델 없이도 버텼다.
+그래서 Isaac 단계(P1)에서 스테레오 깊이를 정책에 직접 넣는다면 DINOv2보다 먼저 시험할 후보다. Orin에서 ResNet-18 학생이 8.7 ms라 계획 시간 목표(10 ms)의
+대부분이다(조건이 달라 직접 비교는 아니다. 8.7 ms는 TensorRT 없는 PyTorch, 10 ms는 벤치마크 게이트다). 그래서 Planner 안이 아니라 인식 쪽 별도 주기로 돌리는 편이 맞다. 얇은 장애물에 약하다는 점은 보도의 볼라드·표지판 기둥과 겹치므로, 고도 지도(L1)를 대신하지 않고 보탠다.
 
 </details>
 

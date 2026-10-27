@@ -175,6 +175,7 @@ A.2·A.2b(지형 지도 계보), A.10.1–A.10.2(traversability 계보와 2026 S
 | PIVOT | 2026.09 | VLM 비용을 실측과 상관으로 보정, 기하 기본 + VLM 대체 | A.10.2 | [논문](https://arxiv.org/abs/2609.20983) |
 | DINOv2 | 2023.04 | 라벨 없이 학습한 범용 영상 특징(Apache-2.0) | A.11 | [논문](https://arxiv.org/abs/2304.07193) · [코드](https://github.com/facebookresearch/dinov2) |
 | DINOv3 | 2025.08 | Gram anchoring으로 조밀 특징 유지, 7B 교사 증류(자체 라이선스) | A.11 | [논문](https://arxiv.org/abs/2508.10104) · [코드](https://github.com/facebookresearch/dinov3) |
+| DeFM | 2026.01 · T-RO 2026 | 깊이 영상 6,040만 장으로 DINOv2식 자기 증류한 깊이 기반 모델, 미터 깊이 세 채널 입력, 학생 11개(CNN 10 + ViT-S), 공개 모델 12개(Apache-2.0) | A.11 | [논문](https://arxiv.org/abs/2601.18923) · [코드](https://github.com/leggedrobotics/defm) · [프로젝트](https://de-fm.github.io/) |
 | Depth Anything V2 | 2024.06 · NeurIPS 2024 | 합성 영상 교사와 가짜 라벨 학생의 단안 깊이 | A.11 | [논문](https://arxiv.org/abs/2406.09414) · [코드](https://github.com/DepthAnything/Depth-Anything-V2) |
 | Depth Anything 3 | 2025.11 | 평범한 DINOv2 transformer + depth-ray 목표로 여러 시점 기하 | A.11 | [논문](https://arxiv.org/abs/2511.10647) · [코드](https://github.com/ByteDance-Seed/Depth-Anything-3) |
 | SAM 2 | 2024.08 | 스트리밍 메모리로 영상 분할과 추적(Apache-2.0) | A.11 | [논문](https://arxiv.org/abs/2408.00714) · [코드](https://github.com/facebookresearch/sam2) |
