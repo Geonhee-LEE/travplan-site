@@ -787,6 +787,9 @@ section.t.divider h2 { font-size:80px; }
   var frame = document.getElementById('frame'), notes = document.getElementById('notes');
   var q = new URLSearchParams(location.search), shot = q.has('shot') || q.has('check');
   if (shot) document.body.classList.add('shot');
+  // 주소의 장 번호(#N)는 show()가 주소를 바꾸기 전에 읽어 둔다. 늦게 읽으면 덱 링크가 늘 첫 장을 연다.
+  var want = parseInt(location.hash.slice(1), 10) - 1;
+  if (isNaN(want)) want = 0;
   var i = 0;
   function fit() {
     if (shot) return;
@@ -847,10 +850,10 @@ section.t.divider h2 { font-size:80px; }
     }
     // 한글 웹 글꼴은 글자 묶음마다 따로 받고, 숨은 장의 글자는 받지 않는다. 장을 모두 보여 글꼴을 받은 뒤 잰다.
     if (q.has('check')) { withAllFonts(check); return; }
-    var s = shot ? parseInt(q.get('shot'), 10) - 1 : parseInt(location.hash.slice(1), 10) - 1;
+    var s = shot ? parseInt(q.get('shot'), 10) - 1 : want;
     show(isNaN(s) ? 0 : s);
   }
-  show(0); fit(); window.addEventListener('resize', fit);
+  show(shot ? 0 : want); fit(); window.addEventListener('resize', fit);
   window.addEventListener('DOMContentLoaded', function () {
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(start); else start();
   });

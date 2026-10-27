@@ -115,13 +115,24 @@ table:not(.wide) td:first-child code { white-space: nowrap; overflow-wrap: norma
 .card li { break-inside: avoid; margin: 2px 0; }
 .card li::marker { font: 600 11px var(--mono); color: var(--accent); }
 .results { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
-.results li { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; }
+.results li { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px;
+  min-width: 0; overflow-wrap: anywhere; }   /* 리서치 원문의 긴 낱말(경로, 식)이 폰에서 줄을 밀어내지 않게 */
 .results a { font-weight: 600; text-decoration: none; }
 .results a:hover { text-decoration: underline; }
 .results small { display: block; color: var(--muted); font: 12px var(--mono); margin-bottom: 2px; }
 .results p { margin: 4px 0 0; font-size: 14px; color: var(--muted); }
+.results li.more { background: none; border: 0; padding: 0 4px; font-size: 14px; color: var(--muted); }   /* 결과 사이의 안내 줄 */
 mark { background: var(--hi); color: inherit; border-radius: 3px; padding: 0 1px; }
 
 footer { margin-top: 28px; color: var(--muted); font-size: 13px; display: flex; flex-wrap: wrap; gap: 6px 16px; border-top: 1px solid var(--line); padding-top: 16px; }
 footer a { color: var(--muted); }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+/* 질문으로 찾기(첫 페이지) */
+.ask { margin: 0 0 22px; padding: 14px 16px 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; }
+.ask h2 { margin: 0 0 4px; font-size: 17px; }
+.ask > small { display: block; margin: 6px 0 10px; color: var(--muted); font-size: 13px; }
+.ask button { min-height: 44px; padding: 8px 18px; font: 600 15px var(--body); color: var(--accent-ink); background: var(--accent); border: 0; border-radius: 10px; cursor: pointer; }
+.ask .results li { background: var(--bg); }
+.ask .results p { color: var(--fg); }
+.ask mark { background: var(--hi); color: inherit; border-radius: 3px; padding: 0 1px; }

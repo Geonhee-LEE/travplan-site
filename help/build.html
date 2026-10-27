@@ -226,8 +226,12 @@ python3 automation/gh_index.py          # 이슈·PR 색인(배지)
 <td data-label="생성물"><code>docs/help/index.html</code>(주제 카드와 모든 주제 찾기)</td>
 </tr>
 <tr>
-<td data-label="원본"><code>help_src/help.css</code>, <code>help.js</code></td>
-<td data-label="생성물"><code>docs/help/help.css</code>, <code>help.js</code>(그대로 복사)</td>
+<td data-label="원본"><code>help_src/help.css</code>, <code>help.js</code>, <code>ask.js</code></td>
+<td data-label="생성물"><code>docs/help/help.css</code>, <code>help.js</code>, <code>ask.js</code>(그대로 복사)</td>
+</tr>
+<tr>
+<td data-label="원본">도움말 절과 <code>docs/research-*.md</code>의 절</td>
+<td data-label="생성물"><code>docs/assets/search_index.json</code>(질문으로 찾기 색인, <code>build_search_index.py</code>. 커밋하지 않고 공개 사이트 동기화 때 만든다)</td>
 </tr>
 </tbody>
 </table></div>
@@ -480,7 +484,7 @@ python scripts/build_help.py --check    # 원본과 다른 생성물이 있으�
 </tbody>
 </table></div>
 </section>
-<p id="qempty" hidden>찾는 말이 이 주제에 없다. <a href="./">모든 주제에서 찾기</a>로 넓히거나 <kbd>Esc</kbd>로 지운다.</p>
+<p id="qempty" hidden>찾는 말이 이 주제에 없다. <a href="./">모든 주제에서 찾기</a>로 넓히면 도움말에 없는 말은 리서치 문서에서 찾는다. <kbd>Esc</kbd>로 지운다.</p>
     </main>
   </div>
 

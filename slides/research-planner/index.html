@@ -5033,7 +5033,7 @@ ANYmal에서 로봇 기술 파일(URDF)의 값만 쓴 정책은 전진하다 넘
 조향 속도 한계는 PACE가 포화를 다루듯 사양 값으로 두고, 미끄럼 계수는 지면 접촉이 있어야 해서 공중 데이터로는 맞추지 못한다. armature와 감쇠를 쓰려면 바퀴·조향 축의 동역학을 plant에 먼저 넣어야 한다.
 지연을 측정값으로 바꾸면 plant를 아는 MPPI(TP-0150)의 rollout 모델과 GP 잔차(TP-0068)의 명목 모델이 같은 근거 위에 선다. 공동 저자 Tischhauser는 Flexion 공동 창업자이고, Flexion 선언문의 '무작위화보다 보정'과 같은 방향이다.</p></div><div class="foot" data-foot><span>travplan 리서치 · Planner (docs/research-planner.md)</span><span>357 / 557</span></div><aside>docs/research-planner.md · B.16 사족보행·휴머노이드 연구실별 계보: NVIDIA, Google DeepMind, 취리히, RAI Institute와 다른 연구실</aside></section>
 <section class="r content"><div class="kicker">Planner · NVIDIA·DeepMind·취리히·RAI</div><h2 class="ttl">B.16 사족보행·휴머노이드 연구실별 계보: NVIDIA, Google DeepMind, 취리히, RAI Institute와 다른 연구실<small>2/4</small></h2><div class="body"><div class="figrow"><figure style="width:852px"><a href="https://arxiv.org/html/2509.06342v2/4_robots_compressed.png"><img src="../../assets/thumbs/f2280852176c.webp" width="852" height="700" alt="PACE Fig. 4"></a><figcaption>그림 — PACE (Fig. 4): 위 줄은 주 실험 로봇 ANYmal, Tytan, Minimal이다. 아래 두 줄은 같은 절차로 파라미터를 맞춰 움직인 Aibo·NAO·ALMA·Spacehopper·LEVA·Magnecko v2와 v1·GR-1이다. 출처: arXiv:2509.06342</figcaption></figure></div></div><div class="foot" data-foot><span>travplan 리서치 · Planner (docs/research-planner.md)</span><span>358 / 557</span></div><aside>docs/research-planner.md · B.16 사족보행·휴머노이드 연구실별 계보: NVIDIA, Google DeepMind, 취리히, RAI Institute와 다른 연구실</aside></section>
-<section class="r content"><div class="kicker">Planner · NVIDIA·DeepMind·취리히·RAI</div><h2 class="ttl">B.16 사족보행·휴머노이드 연구실별 계보: NVIDIA, Google DeepMind, 취리히, RAI Institute와 다른 연구실<small>3/4</small></h2><div class="body"><p><strong>AME-2 — 높이 지도에서 발 디딜 곳과 지형의 성격을 주의(attention)로 골라 읽고, 지도는 칸마다 분산을 함께 낸다</strong>(<a href="https://arxiv.org/abs/2601.08485">arXiv:2601.08485</a>, C. Zhang·Klemm·F. Yang·Hutter, ETH RSL, arXiv 표기 IEEE T-RO 조건부 채택; 전작 AME-1 <a href="https://doi.org/10.1126/scirobotics.adv3604">Science Robotics 10(105) 2025</a>, He·C. Zhang·Jenelten·Grandia·Bächer·Hutter, ETH RSL과 Disney Research Zurich, <a href="https://arxiv.org/abs/2506.09588">arXiv:2506.09588</a>).
+<section class="r content"><div class="kicker">Planner · NVIDIA·DeepMind·취리히·RAI</div><h2 class="ttl">B.16 사족보행·휴머노이드 연구실별 계보: NVIDIA, Google DeepMind, 취리히, RAI Institute와 다른 연구실<small>3/4</small></h2><div class="body"><p><strong>AME-2 — 높이 지도에서 발 디딜 곳과 지형의 성격을 주의(attention)로 골라 읽고, 지도는 칸마다 분산을 함께 낸다</strong>(<a href="https://arxiv.org/abs/2601.08485">arXiv:2601.08485</a>, 원제 "Agile and Generalized Legged Locomotion via Attention-Based Neural Map Encoding", arXiv에서 이 이름으로 바꾸고 AME-2는 옛 이름으로 적었다, <a href="https://sites.google.com/leggedrobotics.com/ame-2">프로젝트 페이지</a>, C. Zhang·Klemm·F. Yang·Hutter, ETH RSL, arXiv 표기 IEEE T-RO 조건부 채택; 전작 AME-1 "Attention-based map encoding for learning generalized legged locomotion" <a href="https://doi.org/10.1126/scirobotics.adv3604">Science Robotics 10(105) 2025</a>, He·C. Zhang·Jenelten·Grandia·Bächer·Hutter, ETH RSL과 Disney Research Zurich, <a href="https://arxiv.org/abs/2506.09588">arXiv:2506.09588</a>).
 보행 정책 하나가 학습에 없던 지형까지 가도록 만드는 지도 인코더와 지도 파이프라인이다. 인코더는 로봇 중심 높이 지도에서 국소 특징과 전역 특징을 따로 뽑는다. 국소 주의는 다음 발 디딤과 무릎 지지 자리에 모이고, 전역 특징은 지형 종류를 말해 주는 몇 점에 모인다(원문 그림 15).
 지도는 깊이 점을 국소 격자에 투영하고(칸마다 최대 높이), 작은 U-Net이 칸마다 높이와 로그 분산을 예측한다. 이것을 전역 지도에 합칠 때 베이즈 융합 대신 확률적 승자 독식(probabilistic winner-take-all)을 쓴다. 같은 예측이 반복될 뿐인 칸에서 분산이 줄지 않게 하려는 것이다.
 교사(참값 지도)와 학생(신경 지도)의 두 단계로 ANYmal D와 두 발 로봇 LimX TRON1을 학습했다. 표 II에서 ANYmal D는 1 m를 오르내리고, TRON1은 0.48 m를 오르고 0.88 m를 내려간다. 학습에 없던 파쿠르 코스를 최대 2 m/s로 지났다.
@@ -7702,6 +7702,9 @@ MPPI가 시간 참조 대신 경로 참조로 따라가도 seed 0–2의 성공 
   var frame = document.getElementById('frame'), notes = document.getElementById('notes');
   var q = new URLSearchParams(location.search), shot = q.has('shot') || q.has('check');
   if (shot) document.body.classList.add('shot');
+  // 주소의 장 번호(#N)는 show()가 주소를 바꾸기 전에 읽어 둔다. 늦게 읽으면 덱 링크가 늘 첫 장을 연다.
+  var want = parseInt(location.hash.slice(1), 10) - 1;
+  if (isNaN(want)) want = 0;
   var i = 0;
   function fit() {
     if (shot) return;
@@ -7762,10 +7765,10 @@ MPPI가 시간 참조 대신 경로 참조로 따라가도 seed 0–2의 성공 
     }
     // 한글 웹 글꼴은 글자 묶음마다 따로 받고, 숨은 장의 글자는 받지 않는다. 장을 모두 보여 글꼴을 받은 뒤 잰다.
     if (q.has('check')) { withAllFonts(check); return; }
-    var s = shot ? parseInt(q.get('shot'), 10) - 1 : parseInt(location.hash.slice(1), 10) - 1;
+    var s = shot ? parseInt(q.get('shot'), 10) - 1 : want;
     show(isNaN(s) ? 0 : s);
   }
-  show(0); fit(); window.addEventListener('resize', fit);
+  show(shot ? 0 : want); fit(); window.addEventListener('resize', fit);
   window.addEventListener('DOMContentLoaded', function () {
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(start); else start();
   });
