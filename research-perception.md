@@ -5767,7 +5767,7 @@ $$ r_{lv} = \begin{cases} 1, & \mathbf v_{des}\cdot\mathbf v > |\mathbf v_{des}|
 사후 보정이 그대로 옮겨지지 않는다.
 
 ![Miki 2022 Fig. 6](https://arxiv.org/html/2201.08117v1/training_details.png)
-*그림 — Robust Perceptive Locomotion (Fig. 6, HTML판 번호): (A) 높이 샘플 잡음 모델, (B) nominal·large offset·large noise 세 조건, (C) GRU와 게이트로 된 belief encoder, (D) 같은 게이트를 쓰는 디코더. 출처: [arXiv:2201.08117](https://arxiv.org/abs/2201.08117)*
+*그림 — Robust Perceptive Locomotion (Fig. 7, 본문 번호. HTML판은 Fig. 6): (A) 높이 샘플 잡음 모델, (B) nominal·large offset·large noise 세 조건, (C) GRU와 게이트로 된 belief encoder, (D) 같은 게이트를 쓰는 디코더. 출처: [arXiv:2201.08117](https://arxiv.org/abs/2201.08117)*
 
 ![Miki 2022 Fig. 4](https://arxiv.org/html/2201.08117v1/robustness_evaluation.png)
 *그림 — Robust Perceptive Locomotion (Fig. 4, HTML판 번호): 빨간 점은 입력 높이 샘플, 파란 점은 디코더로 읽은 내부 belief다. 폼 블록에서는 닿은 뒤 belief를 내리고, 센서를 가리면 계단에 부딪힌 뒤 적응한다. 출처: [arXiv:2201.08117](https://arxiv.org/abs/2201.08117)*

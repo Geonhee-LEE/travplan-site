@@ -1,0 +1,13 @@
+{
+ "title": "travplan 리서치 — 보행 갤러리",
+ "label": "보행 갤러리",
+ "n": 98,
+ "tabs": [
+  "사족보행",
+  "휴머노이드",
+  "다몸체",
+  "travplan에서"
+ ],
+ "order": 3,
+ "source": "docs/research-locomotion.md"
+}
