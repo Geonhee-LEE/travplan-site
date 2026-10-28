@@ -13,6 +13,7 @@
 * { box-sizing:border-box; }
 html, body { margin:0; height:100%; background:var(--bg); color:var(--fg); font-family:'IBM Plex Sans KR', Arial, sans-serif; }
 #stage { position:fixed; inset:0 0 56px 0; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+#stage:focus { outline:none; }
 #frame { width:1920px; height:1080px; flex:none; transform-origin:center center; box-shadow:0 8px 40px rgba(0,0,0,.5); }
 #frame > section:not(.on) { display:none !important; }
 body.all #frame > section:not(.on) { display:block !important; }
@@ -31,9 +32,9 @@ figure.video a.yt { display:block; width:fit-content; max-width:100%; line-heigh
 figure.video a.yt.off { display:none; }
 figure.video iframe { display:block; border:0; border-radius:8px; background:#000; }
 #bar { position:fixed; left:0; right:0; bottom:0; height:56px; background:var(--bar); display:flex; align-items:center; gap:12px; padding:0 16px; font-size:15px; }
-#bar button, #bar a { background:none; border:1px solid #3A4A6B; color:var(--fg); border-radius:8px; padding:6px 12px; font:inherit; cursor:pointer; text-decoration:none; }
+#bar button, #bar a { background:none; border:1px solid #3A4A6B; color:var(--fg); border-radius:8px; padding:6px 12px; font:inherit; cursor:pointer; text-decoration:none; white-space:nowrap; flex:none; }
 #bar button:hover, #bar a:hover { border-color:var(--accent); }
-#count { min-width:72px; text-align:center; color:var(--muted); }
+#count { min-width:72px; text-align:center; color:var(--muted); white-space:nowrap; flex:none; }
 #ttl { flex:1; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; color:var(--muted); }
 #notes { position:fixed; right:16px; bottom:72px; width:min(560px, calc(100% - 32px)); max-height:45vh; overflow:auto; background:#FFFDF8; color:#16213A; border-radius:12px; padding:16px 20px; font-size:16px; line-height:1.6; box-shadow:0 8px 30px rgba(0,0,0,.4); display:none; }
 #notes.show { display:block; }
@@ -41,7 +42,15 @@ figure.video iframe { display:block; border:0; border-radius:8px; background:#00
 body.shot #bar, body.shot #notes { display:none; }
 body.shot #stage { inset:0; }
 body.shot #frame { box-shadow:none; transform:none !important; }
-@media (max-width:640px) { #ttl { display:none; } }
+@media (max-width:640px) {
+  #ttl { display:none; }
+  #bar { gap:6px; padding:0 8px; overflow-x:auto; }
+  #bar button, #bar a { padding:6px 8px; }
+  #count { min-width:56px; }
+}
+/* 폰 세로 화면에서는 막대에 버튼이 다 들어가지 않는다. 전체 화면 버튼을 뺀다. 세로에서는 장 배율이 화면 폭으로 정해져 전체 화면으로도
+   장이 커지지 않는다(가로로 돌리면 다시 보인다). 그래도 넘치면 막대를 옆으로 민다. */
+@media (max-width:480px) { #fs { display:none; } }
 </style>
 </head>
 <body>
@@ -904,11 +913,13 @@ section.t.divider h2 { font-size:80px; }
   var want = parseInt(location.hash.slice(1), 10) - 1;
   if (isNaN(want)) want = 0;
   var i = 0;
+  function scaleNow() {
+    var st = document.getElementById('stage');
+    return Math.min(st.clientWidth / 1920, st.clientHeight / 1080);
+  }
   function fit() {
     if (shot) return;
-    var st = document.getElementById('stage');
-    var s = Math.min(st.clientWidth / 1920, st.clientHeight / 1080);
-    frame.style.transform = 'scale(' + s + ')';
+    frame.style.transform = 'scale(' + scaleNow() + ')';
   }
   // ▶ 영상(figure.video): 썸네일 a.yt를 누르면 그 자리에 YouTube(nocookie) iframe을 넣고, 장을 넘기면 썸네일로 되돌린다.
   // 캡처·검사(?shot, ?check)에서는 누르지 않으므로 썸네일만 찍힌다. PPTX는 그림에 하이퍼링크를 단다.
@@ -920,12 +931,19 @@ section.t.divider h2 { font-size:80px; }
     Array.prototype.forEach.call(frame.querySelectorAll('figure.video iframe'), function (f) { f.remove(); });
     Array.prototype.forEach.call(frame.querySelectorAll('figure.video a.yt.off'), function (a) { a.classList.remove('off'); });
   }
+  // 장을 크게 줄여 보여 주는 작은 화면(폰 등, 배율 0.45 미만)에서는 줄어든 플레이어의 단추가 너무 작다. 그때는 YouTube를 새 탭으로 연다.
+  var SMALL = 0.45;
   frame.addEventListener('click', function (e) {
     var a = e.target.closest ? e.target.closest('figure.video a.yt') : null;
     if (!a || shot) return;
     var id = ytId(a.href), img = a.querySelector('img');
     if (!id || !img) return;
     e.preventDefault();
+    // 'noopener'를 주면 열려도 null이 돌아와 막힘과 구분되지 않는다. 그래서 열린 창의 opener를 직접 끊는다. 막히면 그 자리에서 재생한다.
+    if (scaleNow() < SMALL) {
+      var w = window.open(a.href, '_blank');
+      if (w) { try { w.opener = null; } catch (err) {} return; }
+    }
     var f = document.createElement('iframe');
     f.width = img.clientWidth; f.height = img.clientHeight;
     f.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0';
@@ -1011,6 +1029,28 @@ section.t.divider h2 { font-size:80px; }
     else if (e.key === 'End') show(slides.length - 1);
     else if (e.key === 'n' || e.key === 'N') notes.classList.toggle('show');
     else if (e.key === 'f' || e.key === 'F') document.getElementById('fs').click();
+  });
+  // 재생 중인 영상 안을 누르면(정지, 되감기 등) 키보드 포커스가 YouTube iframe으로 넘어가 ←/→와 발표용 클리커가 먹지 않는다.
+  // 그때 포커스를 곧바로 장으로 되돌린다. 누른 동작은 영상에 그대로 전달되고, 그 뒤의 키는 Space까지 장을 넘긴다.
+  // 포커스를 영상에 두는 때는 둘이다. Tab으로 플레이어에 들어간 때와 YouTube 전체 화면일 때다. 전체 화면이 끝나면 장으로 되돌린다.
+  // Chrome은 전체 화면 요소 밖으로 포커스를 옮기지 않지만, 옮기는 브라우저를 위해 전체 화면 iframe은 되돌리지 않는다.
+  // 전체 화면 API는 F 키처럼 접두어 없는 것만 쓴다(Safari 16.4 이상).
+  var stage = document.getElementById('stage'), lastTab = -1e9, fsVideo = null;
+  stage.tabIndex = -1;
+  function isVideo(el) { return !!el && el.tagName === 'IFRAME' && !!el.closest('figure.video'); }
+  document.addEventListener('keydown', function (e) { if (e.key === 'Tab') lastTab = performance.now(); }, true);
+  window.addEventListener('blur', function () {
+    // Tab으로 들어갈 때 blur는 Tab 뒤 25 ms 안에 온다(CPU 20배 감속에서 잼). 150 ms로 좁혀 Tab 직후의 클릭은 되돌린다.
+    if (shot || performance.now() - lastTab < 150) return;
+    setTimeout(function () {
+      var el = document.activeElement;
+      if (isVideo(el) && el !== document.fullscreenElement) stage.focus({ preventScroll: true });
+    }, 0);
+  });
+  document.addEventListener('fullscreenchange', function () {
+    var f = document.fullscreenElement;
+    if (isVideo(f)) { fsVideo = f; f.focus(); }
+    else if (fsVideo) { fsVideo = null; stage.focus({ preventScroll: true }); }
   });
   var x0 = null;
   document.getElementById('stage').addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
