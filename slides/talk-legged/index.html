@@ -27,6 +27,9 @@ section .katex-display { margin:0; text-align:left; }
 section .katex-display > .katex { text-align:left; }
 x-shape { display:block; flex:none; }
 x-shape[kind="arrow-right"] { clip-path:polygon(0 32%,58% 32%,58% 0,100% 50%,58% 100%,58% 68%,0 68%); }
+figure.video a.yt { display:block; width:fit-content; max-width:100%; line-height:0; cursor:pointer; }
+figure.video a.yt.off { display:none; }
+figure.video iframe { display:block; border:0; border-radius:8px; background:#000; }
 #bar { position:fixed; left:0; right:0; bottom:0; height:56px; background:var(--bar); display:flex; align-items:center; gap:12px; padding:0 16px; font-size:15px; }
 #bar button, #bar a { background:none; border:1px solid #3A4A6B; color:var(--fg); border-radius:8px; padding:6px 12px; font:inherit; cursor:pointer; text-decoration:none; }
 #bar button:hover, #bar a:hover { border-color:var(--accent); }
@@ -197,7 +200,8 @@ section.t.divider h2 { font-size:80px; }
       var s = Math.min(r[2] / nw, r[3] / nh), w = nw * s, h = nh * s;
       r = [r[0] + (r[2] - w) / 2, r[1] + (r[3] - h) / 2, w, h];
     }
-    return { t: 'img', r: r, src: el.getAttribute('src') };
+    var a = el.closest('a');   // 영상 썸네일(figure.video > a.yt > img)은 YouTube 하이퍼링크를 단 그림이 된다
+    return { t: 'img', r: r, src: el.getAttribute('src'), href: a && /^https?:/.test(a.href) ? a.href : null };
   }
   function slide(sec) {
     var base = sec.getBoundingClientRect(), items = [];
@@ -349,6 +353,19 @@ section.t.divider h2 { font-size:80px; }
 <div class="foot" data-foot><p>[1] TAME-Nav — arXiv:2610.12877 (2026-10, SJTU·EIT·PolyU·USTC), 코드 공개 예정</p></div>
 <aside>TAME-Nav는 사족 로봇 Unitree Go2의 로컬 내비 정책이다. 2D LiDAR 41빔과 상대 목표만 보고 몸체 속도를 50 Hz로 낸다. 교사는 동적 장애물의 궤적까지 보고, 학생은 지연과 잡음이 섞인 관측만 본다. 학생의 Soft-MoE는 장면 유형마다 다른 전문가를 섞는다. 차이는 밀집 장애물과 오목 함정에서 가장 컸고 좁은 통로에서는 거의 없었다. 경계로 보면 CMU 스택과 같은 자리, 즉 몸체 twist를 넘기는 쪽이다.</aside>
 </section>
+<section id="tame-fig" class="t">
+<div class="head"><p class="kicker">B.4 · TAME-Nav · 실물 함정 탈출</p><h2>실물 함정에서 TAME-Nav만 목표 반대쪽으로 크게 돌아 나왔다</h2></div>
+<div class="cols">
+<div class="stack">
+<div class="card bl"><span class="tag bl">장면</span><p>오목한 벽이 목표를 막는다. 목표 방향으로만 가려는 정책은 벽 안쪽에서 진동하다 갇힌다. 정책은 2D LiDAR 41빔 10프레임과 상대 목표를 보고, 지도는 없다.</p></div>
+<div class="card or"><span class="tag or">결과</span><p>TAME-Nav(노란 선)는 목표 반대쪽으로 돌아 벽을 빠져나왔다. SEA-Nav·DCLP·NavRL은 벽 안쪽에서 진동하다 부딪히거나 갇혔다(OM은 같은 지도로 다시 학습한 판). Go2 실물의 함정 탈출과 좁은 통로는 10회씩 모두 성공했다.</p></div>
+</div>
+<figure><img src="../../assets/thumbs/9ff97be33566.webp" style="height:440px"><figcaption>TAME-Nav (Fig. 7): 실물 함정 탈출 궤적. 별이 목표, 빨간 화살표가 출발, ×가 충돌. 노란 선이 TAME-Nav, 빨강·보라 점선이 기준선 — arXiv:2610.12877</figcaption></figure>
+</div>
+<p class="take"><b>읽는 법:</b> 시뮬 600개 지도에서도 차이는 밀집 장애물과 오목 함정에서 가장 컸고(35 %p 이상) 좁은 통로에서는 거의 없었다. 함정 탈출은 지도 없이 LiDAR 10프레임 이력으로 한 것이다.</p>
+<div class="foot" data-foot><p>[1] TAME-Nav — arXiv:2610.12877 (2026-10)</p></div>
+<aside>Fig. 7은 실물 함정 탈출 궤적이다. 오목한 벽이 목표를 막는 장면에서 TAME-Nav만 목표 반대쪽으로 크게 돌아 나왔고, 같은 지도로 다시 학습한 기준선들은 벽 안쪽에서 진동하다 부딪히거나 갇혔다. 시뮬 600개 지도에서도 차이는 밀집 장애물과 오목 함정에서 35 %p 이상으로 가장 컸고 좁은 통로에서는 거의 없었다. 실물은 함정 탈출과 돌발 장애물이 있는 좁은 통로를 10회씩 모두 성공했고 접촉은 20회 중 한 번이었다.</aside>
+</section>
 <section id="d3" class="t dark divider">
 <p class="kicker">3 · 지형을 보는 보행 · B.16.3, A.8.2, B.16.5–6</p>
 <h2>어디를 보느냐가<br>얼마나 보느냐보다 중요하다</h2>
@@ -382,6 +399,19 @@ section.t.divider h2 { font-size:80px; }
 <p class="take"><b>travplan:</b> 학습 Controller <b>TinyPolicy</b>(TP-0128)의 지형 관측은 Naive와 같은 모양이다(앞 0–2.4 m, ±0.6 m 고정 7 × 5 격자). 경로 앞 네 점 둘레의 패치를 읽는 변형은 관측 크기를 늘리지 않고 시험할 수 있다.</p>
 <aside>학습 속도는 전체 지도 MLP보다 3.5배, attention 인코더 기준선보다 2.7배 빨랐다. 성능을 가른 것은 보는 높이의 수가 아니라 위치였다. travplan의 TinyPolicy는 로봇 앞의 고정 격자에서 belief cost를 읽으므로 논문의 Naive와 같다. 바퀴 로봇에서 foothold에 해당하는 것은 곧 지날 바닥이다. TinyPolicy는 경로 앞 네 점을 이미 받으므로, 그 둘레의 작은 패치를 읽는 변형을 바로 만들 수 있다. 다만 이 방식은 밟지 않을 지형을 버려서 옆에서 오는 장애물을 늦게 본다. travplan의 보행자는 옆에서 오므로 동적 장애물은 넓은 시야로 따로 받아야 한다.</aside>
 </section>
+<section id="wys-num-v" class="t">
+<div class="head"><p class="kicker">B.16.3 · Watch Your Step 실물</p><h2>실물 G1이 예측한 foothold를 따라 계단·틈·낙차를 지난다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:0 0 1102px"><a class="yt" href="https://www.youtube.com/watch?v=3bLU6_OPv6s"><img src="../../assets/yt/3bLU6_OPv6s.webp" alt="Watch Your Step: Anticipated Perception for Humanoid Locomotion" style="height:620px"></a>
+<figcaption>▶ 영상 — 예측한 foothold(자홍색 점)와 그 둘레 패치(파랑·초록 점)만 보는 G1이 계단, 0.55 m 틈, 0.6 m 낙차를 지난다 (Robotic Systems Lab, ETH Zürich)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점</span><p>자홍색 점이 FPM이 예측한 다음 foothold 둘이고, 파랑·초록 점이 정책이 보는 7 × 7 패치다. 정책은 그 두 곳의 높이만 본다.</p></div>
+<div class="card gr"><span class="tag gr">travplan</span><p>바퀴 로봇에서 foothold는 곧 지날 바닥이다. TinyPolicy가 경로 앞 네 점 둘레 패치를 읽는 변형이 이 영상의 자홍색 점에 해당한다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>[1] Watch Your Step — Heyrman·C. Li·Dadiotis·Hutter, ETH RSL·ETH AI Center, arXiv:2610.29612, 코드 MIT</p></div>
+<aside>영상에서는 자홍색 점이 걸음마다 어디로 옮겨 가는지, 정책이 보는 두 패치가 그 점을 따라가는지를 본다. 학습에 없던 0.55 m 틈과 0.6 m 낙차, 야외 18단 계단도 지난다. travplan의 TinyPolicy는 로봇 앞 고정 격자를 읽으므로 논문의 Naive와 같은 모양이다. 경로 앞 네 점 둘레의 패치로 바꾸는 시험이 가장 싸다. 다만 옆에서 오는 보행자는 늦게 보므로 동적 장애물은 넓은 시야로 따로 받아야 한다.</aside>
+</section>
 <section id="sparse" class="t">
 <div class="head"><p class="kicker">A.8.2 · 성긴 LiDAR 높이 지도</p><h2>머리에 단 LiDAR 한 대로 계단과 실외를 걷는다</h2></div>
 <table style="font-size:26px">
@@ -392,6 +422,20 @@ section.t.divider h2 { font-size:80px; }
 </table>
 <p class="take"><b>travplan:</b> L1(합성 LiDAR + elevation_mapping_cupy, TP-0053)도 성긴 점에서 높이 지도를 만든다. 관측하지 못한 셀을 어떻게 채우느냐(그림자 상한·깊이 prior, TP-0044·0047)가 같은 질문이다.</p>
 <aside>A.8 앞부분의 연구가 아래를 보는 깊이 카메라로 발밑을 복원했다면, 2025–2026에는 머리의 LiDAR 한 대로 걷는 연구가 늘었다. 공통 과제는 성긴 점에서 믿을 만한 발밑 지도를 만드는 것이다. 전방향 계단 보행은 빈 곳을 학습으로 채우고, world model 연구는 잡음을 학습으로 거르고, PolygMap은 학습 없이 다각형으로 만든다. travplan의 L1도 미관측 셀이 문제였고, 지금은 그림자 상한과 깊이 prior라는 비학습 규칙으로 채운다.</aside>
+</section>
+<section id="sparse-fig" class="t">
+<div class="head"><p class="kicker">A.8.2 · 전방향 계단 보행 · 지도 만들기</p><h2>성긴 LiDAR 점을 신뢰도로 걸러 발밑 높이 지도를 만든다</h2></div>
+<div class="cols">
+<div class="stack">
+<div class="card bl"><span class="tag bl">누적 점군 + 시간 신뢰도</span><p>머리의 Mid-360 점군을 오도메트리 좌표에 10 Hz로 누적하되, 점마다 시간에 따라 신뢰도를 줄여 오래된 점과 잔상을 걸러 낸다.</p></div>
+<div class="card gr"><span class="tag gr">보호 영역</span><p>몸통 바로 밑은 LiDAR 사각지대라 새 점이 들어오지 않는다. 그 원기둥 안의 점은 신뢰도를 최대로 고정해 제자리걸음에서도 발밑을 잃지 않는다.</p></div>
+<div class="card or"><span class="tag or">빈 곳 채우기</span><p>제어용 국소 지도(1.4 m × 1.0 m, 0.05 m 격자, 50 Hz 이상)의 빈 칸은 가장자리를 안내 신호로 쓰는 U-Net(EGAU)이 채운다.</p></div>
+</div>
+<figure><img src="../../assets/thumbs/37e8e70e2e9b.webp" style="height:440px"><figcaption>전방향 계단 보행 (Fig. 4): 점 색은 시간 신뢰도(빨강 새것 → 파랑 오래됨), 빨간 원뿔은 LiDAR 사각지대, 하늘색 원기둥은 신뢰도를 고정하는 보호 영역. 전역 지도는 10 Hz, 발 좌표의 1.4 m × 1 m 국소 지도는 50 Hz 이상 — arXiv:2603.07928</figcaption></figure>
+</div>
+<p class="take"><b>travplan:</b> 보호 영역과 EGAU는 L1의 두 질문, 곧 오래된 관측을 얼마나 믿나와 미관측 셀을 무엇으로 채우나(그림자 상한·깊이 prior, TP-0044·0047)에 대한 다른 답이다.</p>
+<div class="foot" data-foot><p>[1] 전방향 계단 보행 — arXiv:2603.07928 (2026-03), Unitree G1 + Livox Mid-360</p></div>
+<aside>앞 장 표의 첫 줄을 그림으로 본다. 전역 점군 지도는 10 Hz로 누적하고 점마다 신뢰도를 시간에 따라 줄인다. 그대로 누적하면 움직이는 물체와 오도메트리 드리프트가 잔상을 남기기 때문이다. 몸통 밑 보호 영역은 반대로 신뢰도를 고정한다. 느리게 걷거나 제자리걸음을 하면 사각지대에 새 점이 들어오지 않아 기억이 지워지기 때문이다. travplan의 L1은 미관측 셀을 그림자 상한과 깊이 prior라는 비학습 규칙으로 채우는데, 이 연구는 같은 자리에 학습한 U-Net을 둔다.</aside>
 </section>
 <section id="php" class="t">
 <div class="head"><p class="kicker">B.16.6 · Perceptive Humanoid Parkour</p><h2>깊이 영상을 보는 G1 정책 하나가 2D 속도 명령만 받아 1.25 m 벽을 오른다</h2></div>
@@ -406,6 +450,19 @@ section.t.divider h2 { font-size:80px; }
 <div class="foot" data-foot><p>[1] PHP — Wu 외, Amazon FAR·UC Berkeley·CMU·Stanford, RSS 2026, arXiv:2602.15827, 코드 Apache-2.0</p></div>
 <aside>PHP는 사람 파쿠르를 휴머노이드로 옮겼다. 핵심은 데이터다. 게임 애니메이션의 motion matching으로 기술 사이를 보행으로 이어 긴 학습 궤적을 만든다. 배포 정책은 proprioception, 깊이 영상, 이산 2D 속도 명령만 본다. 학습 데이터에는 장애물이 하나인 궤적만 있었는데도 실물은 여러 장애물을 이어 넘었다. travplan에서는 DAgger(TP-0143)만으로는 단독 성적이 오르지 않았고 RL 후학습(TP-0066)은 20/30을 26/30으로 올렸다. 그 해석이 curb_ramp에 맞는지는 확인하지 않았다.</aside>
 </section>
+<section id="php-v" class="t">
+<div class="head"><p class="kicker">B.16.6 · PHP 실물</p><h2>깊이 영상만 보는 G1이 사람의 파쿠르 기술을 이어서 해낸다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:0 0 1102px"><a class="yt" href="https://www.youtube.com/watch?v=IjeBnbm9sto"><img src="../../assets/yt/IjeBnbm9sto.webp" alt="Perceptive Humanoid Parkour: Chaining Dynamic Human Skills via Motion Matching" style="height:620px"></a>
+<figcaption>▶ 영상 — G1이 장애물을 vault로 넘고 1.25 m 벽에 오르며, 기술을 스스로 골라 장애물 여럿을 이어 넘는다 (Amazon FAR, 저자 소속)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점</span><p>정책이 받는 명령은 이산 2D 속도뿐이다. 어느 기술을 쓸지, 어디서 도약할지는 깊이 영상을 보고 정책이 스스로 정한다.</p></div>
+<div class="card or"><span class="tag or">학습과 실물의 차이</span><p>학습 데이터에는 장애물이 하나인 궤적만 있었지만, 실물은 48–60 s 동안 장애물 여럿을 이어 넘었다. 사람이 장애물을 약 0.5 m 옮겨도 접근을 고쳤다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>[1] PHP — Wu 외, Amazon FAR·UC Berkeley·CMU·Stanford, RSS 2026, arXiv:2602.15827, 코드 Apache-2.0</p></div>
+<aside>영상에서는 낮은 장애물을 cat vault로, 높은 장애물을 dash vault로 넘고 1.25 m 벽에 올라 굴러 내려오는 장면과, 기술을 스스로 고르며 장애물 여럿을 이어 넘는 장면을 본다. 위 층이 넘기는 것은 2D 속도 명령뿐이라 경계로는 CMU 스택과 같은 속도 계약이지만, 아래 층이 매우 강력해 벽 오르기까지 스스로 판단한다.</aside>
+</section>
 <section id="loco" class="t">
 <div class="head"><p class="kicker">B.16.5 · LocoFormer (Skild AI)</p><h2>랜덤 생성한 로봇 10만 대로 학습한 transformer 하나가 처음 보는 몸체를 몇 초 안에 제어한다</h2></div>
 <div class="cols">
@@ -418,6 +475,19 @@ section.t.divider h2 { font-size:80px; }
 <p class="take"><b>travplan:</b> RMA가 0.5 s 이력으로 환경을 추정했다면 LocoFormer는 context로 몸체 자체를 추정한다. 실물 스워브 파라미터(TP-0035)를 모르는 지금, plant를 이력으로 추정하는 길의 상한을 보여 준다.</p>
 <div class="foot" data-foot><p>[1] LocoFormer — Min Liu·Deepak Pathak·Ananye Agarwal, Skild AI, CoRL 2025 최우수 논문 최종 후보, arXiv:2509.23745, 코드 비공개</p></div>
 <aside>LocoFormer는 몸체 정보를 입력으로 받지 않는다. 관절 수, 길이, 질량을 모르는 채 몇 초의 경험으로 몸체를 알아낸다. 한 에피소드 안에서 여러 번 시도하게 하고 기억을 시도 사이에 이어 주므로, 넘어진 시도를 기억해 다음 시도에서 고친다. travplan에는 실물이 아직 없어서 스워브 모듈 파라미터를 모른다. 지금은 plant를 측정으로 맞출 계획(B.16.7의 10번)이지만, 이력으로 추정하는 길도 있다는 것을 보여 준다.</aside>
+</section>
+<section id="loco-v" class="t">
+<div class="head"><p class="kicker">B.16.5 · LocoFormer 실물</p><h2>정책 하나가 처음 보는 몸체와 고장에 몇 초 만에 적응한다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:0 0 1102px"><a class="yt" href="https://www.youtube.com/watch?v=_fQ1FwRj4ME"><img src="../../assets/yt/_fQ1FwRj4ME.webp" alt="LocoFormer: Generalist Locomotion via Long-Context Adaptation" style="height:620px"></a>
+<figcaption>▶ 영상 — 같은 정책 하나로 G1·H1·Go2·Go2-W를 몰고, 무릎 고정·바퀴 잠금·종아리 절단 뒤에도 몇 초에서 수십 초 안에 다시 걷는다 (Min Liu, LocoFormer 1저자)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점</span><p>몸체 정보는 입력에 없다. 관절 수·길이·질량을 모른 채 몇 초의 경험만으로 몸체를 알아낸다.</p></div>
+<div class="card or"><span class="tag or">시도 사이의 기억</span><p>이족 모드에서 시도 1·2는 넘어지고 시도 3에서 선다. 넘어진 시도를 기억해 다음 시도를 고치는 메타 RL 구조다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>[1] LocoFormer — Min Liu·Deepak Pathak·Ananye Agarwal, Skild AI, CoRL 2025 최우수 논문 최종 후보, arXiv:2509.23745, 코드 비공개</p></div>
+<aside>영상에서는 같은 가중치 하나가 실물 G1·H1·Go2·Go2-W를 모는 장면과, 무릎을 고정하거나 바퀴를 잠그거나 종아리를 잘라 낸 뒤 몇 초에서 수십 초 안에 다시 걷는 장면을 본다. 이족 모드에서는 시도 1·2에서 넘어지고 시도 3에서 서는데, 시도 사이에 기억을 이어 주기 때문이다. travplan에는 실물이 아직 없어 스워브 파라미터를 모른다. 이력으로 plant를 추정하는 길의 상한을 보여 준다.</aside>
 </section>
 <section id="loco-line" class="t">
 <div class="head"><p class="kicker">B.16.5 · LocoFormer의 계보와 후속</p><h2>처음 보는 몸체를 설명으로 줄 것인가, 이력에서 읽을 것인가</h2></div>
@@ -490,6 +560,19 @@ section.t.divider h2 { font-size:80px; }
 <div class="foot" data-foot><p>[1] NEXUS 프로젝트 nexus-humanoid.github.io · arXiv:2609.39000(2026-09-30)</p></div>
 <aside>프로젝트 페이지의 실물 배포다. 사람은 늘 평지에 서 있고, 로봇만 계단과 단 위에 있다. 학습 지형은 10 cm 계단과 약 16.7도 경사뿐이었는데, 실물에서는 그보다 높은 15 cm 계단과 30도 가까운 풀밭 경사를 fine-tuning 없이 지났다. 넘어진 것은 60 cm 단에서 내려오거나 옆돌기를 하는 일부 시도이고, 시도 횟수는 밝히지 않았다. 주행 관점에서 중요한 점은 위 층이 사람이라는 것이다. 어디로 갈지는 사람이 정하고, 정책은 그 동작을 지형에 맞출 뿐이다. 저자는 이 추종기를 과제 수준 Planner에 잇는 것을 다음 과제로 꼽고, 지형에 맞춘 원격조종 기록을 자율 행동의 시연으로 쓸 수 있다고 적었다. travplan에서는 실물 시험 중 사람이 원격조종한 구간을 Planner D의 DAgger 시연에 더하는 것이 같은 자리다. 실물 시험 전이라 아직 기록은 없다.</aside>
 </section>
+<section id="nexus-real-v" class="t">
+<div class="head"><p class="kicker">B.16.8 · NEXUS 실물 배포 · 영상</p><h2>운영자는 평지에 서 있고, G1은 계단과 단 위에서 같은 동작을 한다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:0 0 1102px"><a class="yt" href="https://www.youtube.com/watch?v=eg_eDn1dJ4Y"><img src="../../assets/yt/eg_eDn1dJ4Y.webp" alt="NEXUS: Perceptive Whole-Body Control for Terrain-Adaptive Teleoperation" style="height:620px"></a>
+<figcaption>▶ 영상 — 평지에서 움직이는 운영자를 따라 G1이 계단을 오르고, 60 cm 단에서 내려오고, 풀밭 경사를 지난다 (Xiangyu Miao, NEXUS 1저자)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점</span><p>운영자의 동작에는 지형 정보가 없다. 정책은 평지 동작 13프레임과 깊이 영상 32 × 18만 받아 Orin NX에서 50 Hz로 돈다.</p></div>
+<div class="card gr"><span class="tag gr">travplan</span><p>어디로 갈지는 사람이 정한다. 원격조종 기록을 자율의 시연으로 쓰는 길은 실물 시험 중 사람이 조종한 구간을 Planner D의 DAgger 시연에 더하는 것과 같은 자리다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>[1] NEXUS 프로젝트 nexus-humanoid.github.io · arXiv:2609.39000(2026-09-30)</p></div>
+<aside>영상에서는 운영자가 늘 평지에 서 있고 로봇만 계단과 단 위에 있다는 점을 본다. 위 층(사람)은 지형을 모르는 명령을 내고 아래 층이 깊이 영상 한 장으로 맞춘다. 학습 지형보다 높은 15 cm 계단과 약 30° 풀밭 경사를 fine-tuning 없이 지났지만, 60 cm 단과 옆돌기의 일부 시도에서 넘어졌고 시도 횟수는 밝히지 않았다.</aside>
+</section>
 <section id="projection" class="t">
 <div class="head"><p class="kicker">B.16.8 · 셋째 갈래</p><h2>학습 정책의 출력은 실행 전에 맞는 집합으로 투영한다</h2></div>
 <table style="font-size:25px">
@@ -502,6 +585,19 @@ section.t.divider h2 { font-size:80px; }
 <p class="small muted">CMP의 투영은 latent 명령의 방향은 두고 크기만 안전 구 반지름 안으로 줄인다. 목표를 버리지 않고 할 수 있는 만큼 다가간다.</p>
 <p class="take"><b>travplan:</b> PADP의 자리가 가장 급하다. 남은 정면 보행자 충돌 4건은 차체 twist로는 옆걸음인데 조향 한계 때문에 실행하지 못해 생긴다(TP-0162).</p>
 <aside>세 연구는 투영하는 곳이 다르다. PADP는 관절 행동을 동역학이 맞는 변수로, CMP는 위험한 latent 명령을 정책이 해낼 수 있는 구 안으로, FIBER는 따로 배운 기술을 공통 latent로 옮긴다. travplan에 비추면 PADP의 자리가 가장 급하다. 다만 스워브의 실행 가능 집합은 볼록이 아니어서, 현재 조향각 둘레에서 선형화한 QP를 매 주기 풀어야 한다. 투영은 바로 다음 명령만 고치므로, 조향 한계를 rollout에 넣는 mppi_plant_steer와 함께 비교해야 한다. 실제 조향 한계(TP-0163)가 정해지기 전에는 시험할 수 없다.</aside>
+</section>
+<section id="projection-fig" class="t">
+<div class="head"><p class="kicker">B.16.8 · CMP</p><h2>CMP는 latent 명령의 방향은 두고 크기만 안전 구 안으로 줄인다</h2></div>
+<div class="cols">
+<div class="stack">
+<div class="card bl"><span class="tag bl">안전 확률 추정기</span><p>정책과 따로 학습한다. 표적은 실패 0, 시간 초과 1, 그 사이는 TD(λ = 0.8)로 이어 실제 안전의 하한이 되게 한다. 안전할수록 latent가 원점에 가깝도록 사전분포 분산을 조절해, 숙련 영역이 반지름 R<sub>safe</sub>의 구가 된다.</p></div>
+<div class="card or"><span class="tag or">결과</span><p>실물 15과제 × 3회에서 분포 안 100 %, 중간 분포 밖 93.3 %, 극단 분포 밖 86.7 %(Neural CBF 80·60·40 %), 지연 2.99 ms. 구 모양은 학습으로 유도한 근사라 보장은 아니다(실물 45회 중 실패 3회).</p></div>
+</div>
+<figure><img src="../../assets/thumbs/ffe36805d7f1.webp" style="height:400px"><figcaption>CMP (Fig. 3): 목표 궤적 g를 Intent Encoder가 latent z<sub>raw</sub>로 인코딩하고, 크기가 R<sub>safe</sub>를 넘으면 구 안으로 줄인 z<sub>safe</sub>를 저수준 정책에 준다. 아래는 궤적 샘플러(Tossing·Umi-Cup·Random)와 TD(λ<sub>safe</sub>)로 배우는 Safety Estimator — arXiv:2604.07457</figcaption></figure>
+</div>
+<p class="take"><b>travplan:</b> 학습 분포 밖에서 Planner D의 조건을 줄이거나 폴백하는 자리다(앞 표의 둘째 줄). 안전 확률 추정기는 폴백을 학습한 감시로 켜는 B.16.7의 9번과 닿는다.</p>
+<div class="foot" data-foot><p>[1] CMP — Cheng 외, CoRL 2026 spotlight, arXiv:2604.07457, 코드 비공개</p></div>
+<aside>앞 장 표의 CMP를 그림으로 본다. 투영은 과제 공간에서 가장 가까운 안전 명령을 찾는 것이 아니라 latent 벡터의 방향은 두고 크기만 줄인다. 그래서 목표를 버리지 않고 할 수 있는 만큼 다가간다. 시뮬 7,000 궤적에서 분포 안 생존율은 94.7 %로 Neural CBF(95.9 %)와 비슷했고, 기하가 분포 밖일 때는 46.9 %로 UMI-on-Legs(4.7 %)의 약 10배였다. travplan에서는 Guidance 폴백(TP-0078)이 손으로 정한 규칙인데, CMP의 안전 확률처럼 학습한 감시로 켜는 것이 B.16.7의 9번이다.</aside>
 </section>
 <section id="d5" class="t dark divider">
 <p class="kicker">5 · 장시간 자율 작업 · B.16.3, A.8.1</p>
@@ -534,6 +630,19 @@ section.t.divider h2 { font-size:80px; }
 <p class="take"><b>travplan:</b> 가져올 것은 평가 방식이다. 연석·경사로·보행자 구간을 단계로 놓고 "첫 실수 전 비율"을 그리면, 에피소드 성공률이 감추는 실패 지점이 보인다.</p>
 <aside>곡선이 흥미롭다. 에피소드 성공률 하나 대신 단계마다 살아남은 비율을 그렸다. 기본 VLM은 거의 바로 실패하고, SFT는 앞 몇 단계에서 크게 떨어진다. RL을 더하면 끝까지 90 %가 남는다. 다만 회사 발표라 시도 수도, 평가 환경도 모른다. travplan에서 같은 곡선은 배달 경로의 구간별로 그릴 수 있다. 두 단계 복구는 Guidance 폴백과 같은 구조다. 매 스텝 재계획이 운동 층의 재시도에, 치명 샘플이 이어질 때 Guidance로 바꾸는 것이 VLM의 재계획에 해당한다.</aside>
 </section>
+<section id="reflect-num-v" class="t">
+<div class="head"><p class="kicker">B.16.3 · Reflect v1.0 시연</p><h2>지시 한 문장으로 계단, 승강기, 상자 풀기, 서랍 채우기를 이어서 한다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:0 0 1102px"><a class="yt" href="https://www.youtube.com/watch?v=6dme3JYj3Hg"><img src="../../assets/yt/6dme3JYj3Hg.webp" alt="Reflect v1.0 - The Path Towards Long-Horizon Autonomous Humanoid Work" style="height:620px"></a>
+<figcaption>▶ 영상 — 택배를 가져오라는 지시 하나로 계단을 내려가 상자를 집고 승강기로 올라와 서랍을 채우는 Reflect v1.0 시연 (Flexion, 회사 공식)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점</span><p>임무 VLM이 1인칭 영상을 보며 <code>navigate global</code>, <code>move to object</code> 같은 도구를 하나씩 부른다. 운동 층의 RL 기술과 VLA가 짧은 궤적을 내고 Reflex가 모터 명령을 낸다.</p></div>
+<div class="card or"><span class="tag or">읽을 때 주의</span><p>회사 발표 영상이다. 16단계 임무 90 %의 시도 수와 평가 환경은 적지 않았고, 논문·코드가 없다. 배포 전 시험은 3DGS 시뮬에서 한다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>[1] Flexion Reflect v1.0 — flexion.ai/news/flexion-reflect-v1.0(2026-06-29, 회사 블로그). 논문·코드 없음</p></div>
+<aside>영상에서는 임무 문장 하나가 하위 과제로 나뉘고, 계단·승강기·상자·서랍의 기술이 차례로 불리는 흐름을 본다. 실패하면 운동 층이 배운 복구 동작으로 먼저 다시 하고, 안 되면 VLM이 다시 계획한다. 두 단계 복구는 travplan의 Guidance 폴백과 같은 구조다. 회사 발표라 독립 검증은 없고, 영상은 편집본이라 시도 수를 알 수 없다.</aside>
+</section>
 <section id="dyna" class="t">
 <div class="head"><p class="kicker">A.8.1 · Dyna Robotics DYNA-2.1</p><h2>조향 바퀴 네 개 베이스의 반휴머노이드가 한 시간짜리 작업을 끊지 않는다</h2></div>
 <div class="grid3">
@@ -544,6 +653,20 @@ section.t.divider h2 { font-size:80px; }
 <p class="take"><b>travplan:</b> 스워브 베이스 위의 학습 정책이 실제 작업까지 간 예다. 세탁 한 사이클 79단계에서 단계 신뢰도 95 %면 완주 1.7 %라는 계산이, 긴 배달 경로에도 그대로 적용된다.</p>
 <div class="foot" data-foot><p>[1] DYNA-2.1 — dyna.co/dyna-2.1(2026-09, 기술 블로그, 논문 없음)</p></div>
 <aside>Dyna Robotics의 Taku는 휴머노이드는 아니지만, 조향 바퀴 네 개 베이스가 travplan 로봇과 같아서 넣었다. 층 나누기는 Flexion과 비슷하다. 맨 위가 작업 흐름을 정하고, 가운데 행동 모델이 궤적을 내고, 맨 아래 전신 제어기가 따른다. 이 발표의 논지는 단계 신뢰도다. 79단계 작업에서 단계마다 95 %면 0.95의 79제곱이 약 1.7 %라, 긴 작업에는 단계 신뢰도가 거의 1이어야 한다. 배달 경로의 연석과 횡단보도도 단계로 볼 수 있다.</aside>
+</section>
+<section id="dyna-v" class="t">
+<div class="head"><p class="kicker">A.8.1 · DYNA-2.1 시연</p><h2>호텔 세탁실 작업 한 시간을 끊지 않고 혼자 이어 간다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:0 0 1102px"><a class="yt" href="https://www.youtube.com/watch?v=ArRaPV3QIqY"><img src="../../assets/yt/ArRaPV3QIqY.webp" alt="DYNA 2.1: A Physical Agent for End-to-End Workflows" style="height:620px"></a>
+<figcaption>▶ 영상 — 조향 바퀴 베이스의 반휴머노이드가 세탁실에서 수건을 개어 쌓고 세탁기·건조기를 오가는 한 시간을 끊지 않고 배속으로 보여 준다 (Dyna Robotics, 회사 공식)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점</span><p>VL 오케스트레이터가 작업 흐름을 정하고, DYNA-2(약 5 Hz)가 작업 공간 궤적을, 시뮬 RL 전신 제어기(100 Hz)가 모터 명령을 낸다. 층 사이는 URR 자세 표현으로 잇는다.</p></div>
+<div class="card gr"><span class="tag gr">travplan</span><p>스워브 베이스 위의 학습 정책이 실제 작업까지 간 예다. 79단계에서 단계 신뢰도 95 %면 완주 1.7 %라는 계산이 긴 배달 경로에도 그대로 적용된다.</p></div>
+<div class="card or"><span class="tag or">읽을 때 주의</span><p>회사 발표 영상이다. 조건과 반복 수를 확인할 수 없고 논문이 없다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>[1] DYNA-2.1 — dyna.co/dyna-2.1(2026-09, 기술 블로그, 논문 없음)</p></div>
+<aside>영상에서는 조향 바퀴 네 개 베이스 위의 상체가 세탁실 안을 오가며 한 시간짜리 작업을 이어 가는 것을 배속으로 본다. 긴 작업의 논지는 단계 신뢰도다. 79단계에서 단계마다 95 %면 완주는 약 1.7 %라, 층마다 복구를 두어야 한다. 배달 경로의 연석과 횡단보도도 단계로 볼 수 있다. 회사 발표라 같은 무게로 읽지 않는다.</aside>
 </section>
 <section id="d6" class="t dark divider">
 <p class="kicker">6 · 비교</p>
@@ -691,7 +814,30 @@ section.t.divider h2 { font-size:80px; }
     var s = Math.min(st.clientWidth / 1920, st.clientHeight / 1080);
     frame.style.transform = 'scale(' + s + ')';
   }
+  // ▶ 영상(figure.video): 썸네일 a.yt를 누르면 그 자리에 YouTube(nocookie) iframe을 넣고, 장을 넘기면 썸네일로 되돌린다.
+  // 캡처·검사(?shot, ?check)에서는 누르지 않으므로 썸네일만 찍힌다. PPTX는 그림에 하이퍼링크를 단다.
+  function ytId(href) {
+    var m = /[?&]v=([\w-]{11})/.exec(href) || /youtu\.be\/([\w-]{11})/.exec(href);
+    return m ? m[1] : null;
+  }
+  function stopVideos() {
+    Array.prototype.forEach.call(frame.querySelectorAll('figure.video iframe'), function (f) { f.remove(); });
+    Array.prototype.forEach.call(frame.querySelectorAll('figure.video a.yt.off'), function (a) { a.classList.remove('off'); });
+  }
+  frame.addEventListener('click', function (e) {
+    var a = e.target.closest ? e.target.closest('figure.video a.yt') : null;
+    if (!a || shot) return;
+    var id = ytId(a.href), img = a.querySelector('img');
+    if (!id || !img) return;
+    e.preventDefault();
+    var f = document.createElement('iframe');
+    f.width = img.clientWidth; f.height = img.clientHeight;
+    f.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0';
+    f.allow = 'autoplay; fullscreen; picture-in-picture'; f.allowFullscreen = true; f.title = img.alt || 'YouTube';
+    a.classList.add('off'); a.parentNode.insertBefore(f, a);
+  });
   function show(n) {
+    stopVideos();
     i = Math.max(0, Math.min(slides.length - 1, n));
     slides.forEach(function (el, k) { el.classList.toggle('on', k === i); });
     document.getElementById('count').textContent = (i + 1) + ' / ' + slides.length;
@@ -709,10 +855,15 @@ section.t.divider h2 { font-size:80px; }
   window.withAllFonts = withAllFonts;
   // 넘침 검사: 본문 요소가 장 밖으로 나가거나 각주 띠를 덮으면 적는다.
   function check() {
-    var bad = [];
+    var bad = [], yt = [];
     slides.forEach(function (sec, k) {
       show(k);
       var box = sec.getBoundingClientRect();
+      // 영상 썸네일(img)의 자리. 캡처 PPTX(make_pptx)가 그 위에 보이지 않는 하이퍼링크 상자를 놓는다.
+      Array.prototype.forEach.call(sec.querySelectorAll('figure.video a.yt'), function (a) {
+        var r = (a.querySelector('img') || a).getBoundingClientRect();
+        yt.push({ slide: k + 1, href: a.href, r: [r.left - box.left, r.top - box.top, r.width, r.height] });
+      });
       Array.prototype.forEach.call(sec.querySelectorAll('.katex-error'), function (el) {
         bad.push({ slide: k + 1, id: sec.id, tag: 'TeX', text: (el.getAttribute('title') || el.textContent).slice(0, 60), over: 0 });
       });
@@ -721,7 +872,7 @@ section.t.divider h2 { font-size:80px; }
       });
       var foot = sec.querySelector('[data-foot]');
       var limit = foot ? foot.getBoundingClientRect().top - 4 : box.bottom - 24;
-      Array.prototype.forEach.call(sec.querySelectorAll('p, h1, h2, h3, img, td, th, li, .katex-display, [data-box]'), function (el) {
+      Array.prototype.forEach.call(sec.querySelectorAll('p, h1, h2, h3, img, figcaption, td, th, li, .katex-display, [data-box]'), function (el) {
         if (foot && foot.contains(el)) return;
         if (el.closest('aside')) return;
         var r = el.getBoundingClientRect();
@@ -732,7 +883,7 @@ section.t.divider h2 { font-size:80px; }
       });
     });
     var rep = document.getElementById('report');
-    rep.textContent = JSON.stringify(bad);
+    rep.textContent = JSON.stringify({ bad: bad, yt: yt });
     rep.setAttribute('data-done', '1');
   }
   function start() {

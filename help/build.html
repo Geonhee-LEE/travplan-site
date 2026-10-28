@@ -204,6 +204,7 @@ python3 automation/gh_index.py          # 이슈·PR 색인(배지)
 <li><code>&lt;aside&gt;</code>가 발표자 노트다. 수식은 KaTeX 구분자(<code>\(…\)</code>, <code>$$…$$</code>)로 쓴다.</li>
 <li><code>--check</code>는 헤드리스 Chrome으로 넘침, 깨진 그림, 수식 오류를 찾는다. <code>--pptx</code>는 늘 먼저 검사한다.</li>
 <li><code>build_study_slides.py</code>는 돌 때마다 전체 목록(<code>docs/slides/index.html</code>)과 첫 화면 갤러리를 다시 쓴다. 덱을 더했거나 첫 장을 바꿨으면 <code>--covers</code>로 표지도 다시 만든다.</li>
+<li>영상은 <code>figure.video</code> 안의 YouTube 썸네일(<code>docs/assets/yt/&lt;id&gt;.webp</code>)이다. <code>python3 scripts/slide_media.py yt &lt;id&gt;</code>가 썸네일을 만들고, 뷰어는 누르면 youtube-nocookie iframe을 그 자리에 넣는다. PPTX는 그림에 하이퍼링크를 단다.</li>
 </ul>
 </section>
 <section id="build-help">
@@ -417,6 +418,11 @@ python scripts/build_help.py --check    # 원본과 다른 생성물이 있으�
 <td data-label="검사"><code>python3 scripts/build_study_slides.py --check</code></td>
 <td data-label="언제">덱을 고쳤을 때</td>
 <td data-label="보는 것">넘침, 깨진 그림, 수식 오류</td>
+</tr>
+<tr>
+<td data-label="검사"><code>python3 scripts/slide_media.py check</code></td>
+<td data-label="언제">덱에 영상을 넣었을 때</td>
+<td data-label="보는 것">영상 장의 꼴, 썸네일 유무</td>
 </tr>
 <tr>
 <td data-label="검사"><code>python3 automation/tp_registry.py check</code></td>

@@ -29,7 +29,7 @@ h2.grp { font-family:'Noto Serif KR', Georgia, serif; font-size:24px; margin:40p
 <body>
 <main>
 <h1>travplan 스터디 슬라이드</h1>
-<p class="lead">슬라이드에서는 ← → 키로 넘기고, N 키로 발표자 노트를 엽니다.</p>
+<p class="lead">슬라이드에서는 ← → 키로 넘기고, N 키로 발표자 노트를 엽니다. ▶ 표시가 있는 그림은 누르면 그 자리에서 YouTube 영상이 재생됩니다(PPTX에서는 그림의 링크).</p>
 <h2 class="grp">기초 커리큘럼</h2>
 <p class="lead">로봇의 기본 개념을 공부하는 덱 일곱 개와, 그 순서를 정리한 로드맵(0단계)입니다. 단계 순서대로 보기를 권합니다.
 덱마다 배경지식, 계산해 그린 그림, 장단점 표, 공부 순서, 먼저 읽을 문헌이 있습니다. PPTX는 글자·표·도형을 고칠 수 있는 판입니다.</p>
@@ -41,37 +41,37 @@ h2.grp { font-family:'Noto Serif KR', Georgia, serif; font-size:24px; margin:40p
 <p class="act"><a class="btn" href="study-roadmap/">슬라이드 보기</a><a class="btn ghost" href="study-roadmap/study-roadmap.pptx" download>PPTX 내려받기</a></p>
 </article><article class="card">
 <h2>로봇 인식 기초 — 지형 지도에서 사람 추적까지</h2>
-<p class="n">1단계 · 38장 · 발표자 노트 포함</p>
+<p class="n">1단계 · 47장 · 발표자 노트 포함</p>
 <ul><li>시작 — 배경지식(좌표 변환·베이즈 갱신·센서 잡음·격자), 인식의 일, 센서 비교</li><li>지형 지도 — log-odds 점유 격자, 높이 칼만 융합, elevation mapping, 구덩이 그림자, 못 본 칸, BEV</li><li>Traversability — 기하 비용, 경험 라벨의 계보, PU 문제, 공간 보간, VLM의 자리</li><li>시각 기반 모델과 동적 장애물 — 교사로서의 기반 모델, 단안 깊이, 검출·칼만 추적·예측, 얼어붙기, 보정</li><li>정리 — 지연과 최고 속도, 로봇 형태별 인식, 장단점 표, 흔한 함정, 공부 순서</li></ul>
 <p class="act"><a class="btn" href="study-perception/">슬라이드 보기</a><a class="btn ghost" href="study-perception/study-perception.pptx" download>PPTX 내려받기</a></p>
 </article><article class="card">
 <h2>경로 계획 기초 — 탐색에서 생성형 Planner까지</h2>
-<p class="n">2단계 · 47장 · 발표자 노트 포함</p>
-<ul><li>시작 — 배경지식(그래프·비용·구성 공간·기구학), 계획의 층, costmap</li><li>그래프 탐색과 샘플링 — Dijkstra·A*, Hybrid A*, RRT·PRM과 장단점</li><li>로컬 계획과 궤적 최적화 — DWA, CHOMP·TEB, 로컬 계획기 비교</li><li>학습 Planner — 왜 배우나, 시연과 DAgger, costmap 자기지도, 다봉 문제, NavDP·X-NavDP</li><li>생성형 궤적 — flow matching 배경, guidance, 계보, 스텝 줄이기, 생성하고 고르기</li><li>위층·위험·규칙 — VLA, 느린 판정자, 위험 척도, 실행 가능성, 규칙 기준선</li><li>정리 — 장단점 표, 폐루프 평가, 공부 순서</li></ul>
+<p class="n">2단계 · 55장 · 발표자 노트 포함</p>
+<ul><li>시작 — 배경지식(그래프·비용·구성 공간·기구학), 계획의 층, costmap</li><li>그래프 탐색과 샘플링 — Dijkstra·A*, Hybrid A*, RRT·PRM과 장단점</li><li>로컬 계획과 궤적 최적화 — DWA, CHOMP·TEB, 로컬 계획기 비교</li><li>학습 Planner — 왜 배우나, 시연과 DAgger, costmap 자기지도, 다봉 문제, NavDP·X-NavDP</li><li>생성형 궤적 — flow matching 배경, guidance, 계보, 스텝 줄이기, 생성하고 고르기</li><li>위층·위험·규칙 — VLA, 느린 판정자, 위험 척도, 실행 가능성, 지도 없는 내비(SRU), 규칙 기준선</li><li>정리 — 장단점 표, 폐루프 평가, 공부 순서</li></ul>
 <p class="act"><a class="btn" href="study-planner/">슬라이드 보기</a><a class="btn ghost" href="study-planner/study-planner.pptx" download>PPTX 내려받기</a></p>
 </article><article class="card">
 <h2>로봇 제어 기초 — PID에서 MPPI와 안전 필터까지</h2>
-<p class="n">3단계 · 45장 · 발표자 노트 포함</p>
+<p class="n">3단계 · 54장 · 발표자 노트 포함</p>
 <ul><li>시작 — 배경지식(상태공간·피드백·안정성·이산 시간), 피드백 루프</li><li>고전 피드백과 경로 추종 — PID, pure pursuit, 추종기 비교</li><li>최적 제어와 MPC — LQR, receding horizon, MPC의 종류, 장단점</li><li>샘플 기반 MPC — MPPI 식, 온도, 잡음의 모양, 계보, 학습 prior, NMPC와 비교</li><li>모델 오차와 적응 — 지연, 학습 동역학, 잔차, GP, 적응</li><li>안전 — 비용 대 필터, CBF, CVaR, 보정, barrier 합치기, 샘플 기반 안전 필터</li><li>정리 — 장단점 표, 고르는 법, 흔한 함정, 공부 순서</li></ul>
 <p class="act"><a class="btn" href="study-controller/">슬라이드 보기</a><a class="btn ghost" href="study-controller/study-controller.pptx" download>PPTX 내려받기</a></p>
 </article><article class="card">
 <h2>비선형 MPC 구축 기초 — 문제 세우기, 실시간 풀이, 모델 오차</h2>
-<p class="n">4단계 · 38장 · 발표자 노트 포함</p>
+<p class="n">4단계 · 46장 · 발표자 노트 포함</p>
 <ul><li>시작 — 최적화 배경(볼록성·KKT·뉴턴·이산화), 언제 NMPC인가, OCP의 여섯 부품</li><li>OCP 세우기 — 상태 선택, 적분기, 선형 최소제곱 비용, 노드별 반평면, soft 제약, 무엇을 어디에</li><li>실시간으로 풀기 — SQP, RTI, 솔버 도구, 국소해와 초기값</li><li>모델 오차와 불확실성 — 0차 학습 잔차, 희소 GP, 튜브 MPC, 확률 제약, 모델의 층, 검증 리그</li><li>최근 흐름 — 고친 곳별 연구 예, 공통점과 차이점</li><li>정리 — 장단점 표, 흔한 함정, 공부 순서</li></ul>
 <p class="act"><a class="btn" href="study-mpc/">슬라이드 보기</a><a class="btn ghost" href="study-mpc/study-mpc.pptx" download>PPTX 내려받기</a></p>
 </article><article class="card">
 <h2>강화학습 기초 — 그림과 장단점으로 보는 핵심 개념</h2>
-<p class="n">5단계 · 54장 · 발표자 노트 포함</p>
+<p class="n">5단계 · 65장 · 발표자 노트 포함</p>
 <ul><li>시작 — 배경지식(확률·기울기·편향과 분산), 지도학습과의 차이, 알고리즘 지도</li><li>문제 설정 — MDP, 할인, Bellman 식, 탐색, 행동 복제와 분포 이동</li><li>정책 기울기 — 로그 미분 요령, REINFORCE, 진화 전략, GAE, PPO와 장단점</li><li>가치 기반과 오프라인 — Q-learning, DQN, on/off-policy, AWR·CQL·IQL</li><li>추론으로서의 제어와 모델 기반 — SAC, KL의 방향, 온도, LQR, 모델 오차</li><li>보상과 생성 정책 — 보상 설계, HER, 역강화학습, RLHF·GRPO, flow 정책, 안전</li><li>정리 — 샘플 효율 지도, 방법별 장단점 표, 흔한 함정, 공부 순서</li></ul>
 <p class="act"><a class="btn" href="study-rl/">슬라이드 보기</a><a class="btn ghost" href="study-rl/study-rl.pptx" download>PPTX 내려받기</a></p>
 </article><article class="card">
 <h2>로봇 시뮬레이션 기초 — 물리 엔진에서 sim-to-real까지</h2>
-<p class="n">6단계 · 32장 · 발표자 노트 포함</p>
+<p class="n">6단계 · 39장 · 발표자 노트 포함</p>
 <ul><li>시작 — 배경지식(수치 적분·접촉·재현성·통계), 충실도 사다리</li><li>물리 엔진 — 적분기와 에너지, 페널티·제약 접촉, 엔진 고르기, 속도·현실 일치·재현성, 잡음 바닥</li><li>장면과 보행자 — 절차 생성과 커리큘럼, 보도 시뮬레이터, 보행자 모델 다섯 갈래, 평가 지표</li><li>센서와 sim-to-real — 센서 시뮬, 3DGS, 차이의 출처, 도메인 랜덤화, 예측력(SRCC), 바퀴 로봇</li><li>정리 — 장단점 표, 흔한 함정, 공부 순서</li></ul>
 <p class="act"><a class="btn" href="study-simulation/">슬라이드 보기</a><a class="btn ghost" href="study-simulation/study-simulation.pptx" download>PPTX 내려받기</a></p>
 </article><article class="card">
 <h2>다리 로봇 내비게이션 기초 — 층과 경계, 지형 보행, 전신 제어</h2>
-<p class="n">7단계 · 37장 · 발표자 노트 포함</p>
+<p class="n">7단계 · 46장 · 발표자 노트 포함</p>
 <ul><li>시작 — 지지 영역·proprioception·학습 보행, 분야별 대세</li><li>층 사이의 경계 — 경계의 사다리, 속도 계약, 경계 내리기, 학습 로컬 내비</li><li>지형을 보는 보행 — teacher–student 증류, 볼 곳 고르기, 성긴 LiDAR, 깊이 파쿠르, 처음 보는 몸</li><li>전신 제어와 투영 — 리타기팅, 계획기·추종기·투영에서 틈 메우기</li><li>장시간 자율 — 단계 신뢰도, 세 층 구조 두 사례</li><li>정리 — 비교표, 공통점과 차이점, 장단점, 흔한 함정, 공부 순서</li></ul>
 <p class="act"><a class="btn" href="study-legged/">슬라이드 보기</a><a class="btn ghost" href="study-legged/study-legged.pptx" download>PPTX 내려받기</a></p>
 </article>
@@ -82,37 +82,37 @@ PPTX는 글자·표·도형을 고칠 수 있는 판입니다(별행 수식은 �
 <div class="grid">
 <article class="card">
 <h2>travplan 챕터 발표 — 인식</h2>
-<p class="n">40장 · 발표자 노트 포함</p>
+<p class="n">49장 · 발표자 노트 포함</p>
 <ul><li>인식이 travplan에서 답하는 질문: 센서 관측을 TravMap과 동적 장애물로</li><li>지형 지도: 자동차 occupancy 대신 로봇 elevation mapping, 음의 장애물과 못 본 칸</li><li>Traversability: 사람 라벨에서 자기지도로, PU 문제와 VLM 보조 판단</li><li>시각 기반 모델과 동적 장애물: 라벨 교사, 검출·추적·예측, 얼어붙기</li><li>최근 연구 비교(A.14): 비교표, 공통점, 차이점, 시도 순서</li><li>travplan 작업 기록(A.13): 그림자 규칙, 못 본 칸, 권장 L1, 다음 병목</li><li>센서 배치(§H): 다섯 배치, 가격·연산, 주기·지연</li><li>정리, 다음 할 일, 참고문헌</li></ul>
 <p class="act"><a class="btn" href="talk-perception/">슬라이드 보기</a><a class="btn ghost" href="talk-perception/talk-perception.pptx" download>PPTX 내려받기</a></p>
 </article><article class="card">
 <h2>travplan 챕터 발표 — Planner</h2>
-<p class="n">40장 · 발표자 노트 포함</p>
+<p class="n">51장 · 발표자 노트 포함</p>
 <ul><li>Planner의 계약과 고전 기준선(GuidancePlanner)</li><li>학습 로컬 Planner: costmap 자기지도, NavDP, X-NavDP</li><li>생성형 궤적: Diffuser에서 Diffusion Planner, 그리고 Planner D</li><li>Foundation·VLA·언어: Planner 위의 목표 선택 층</li><li>위험 인지 계획: 실행 가능성, 방향, 센서 밖, 안전 층</li><li>자율주행 자동차: 후보 생성, 검증, 선택</li><li>B.17 최근 연구 비교: 공통점, 차이점, 다음 시도 순서</li><li>B.15 작업 기록: Planner D 폴백, RL 후학습, 레벨 스윕</li><li>정리와 참고문헌</li></ul>
 <p class="act"><a class="btn" href="talk-planner/">슬라이드 보기</a><a class="btn ghost" href="talk-planner/talk-planner.pptx" download>PPTX 내려받기</a></p>
 </article><article class="card">
 <h2>travplan 챕터 발표 — Controller·안전</h2>
-<p class="n">40장 · 발표자 노트 포함</p>
+<p class="n">51장 · 발표자 노트 포함</p>
 <ul><li>Controller가 하는 일과 새 연구가 들어오는 세 자리</li><li>MPPI 계열: 가중 평균, 계보, SMPPI, ProxPI, 지연을 다루는 MPPI</li><li>학습 동역학·적응: rollout 모델, 잔차, 선형 대 GP, GP가 앉는 자리</li><li>안전 필터: 비용 통합형과 외부 필터, 보정, barrier 합성, 샘플 감시</li><li>하위 제어·4족 RL: LP-ACRL 커리큘럼과 DreamWaQ 구현 점검</li><li>최근 연구 비교(E.16): 비교표, 공통점, 차이점, 가져올 것과 시도 순서</li><li>travplan 작업 기록: plant 지연, NMPC 비교, 보행자, 멈춤 진단, 학습 정책</li><li>정리, 다음 할 일, 참고문헌</li></ul>
 <p class="act"><a class="btn" href="talk-controller/">슬라이드 보기</a><a class="btn ghost" href="talk-controller/talk-controller.pptx" download>PPTX 내려받기</a></p>
 </article><article class="card">
 <h2>travplan 챕터 발표 — MPC 구축</h2>
-<p class="n">35장 · 발표자 노트 포함</p>
+<p class="n">41장 · 발표자 노트 포함</p>
 <ul><li>MPPI 옆에 NMPC 갈래를 두는 이유</li><li>설계: 스워브 twist 모델, OCP, 솔버, 치명 셀 제약</li><li>GP 잔차의 0차 근사, 희소 GP, 튜브, 세 층 예측 모델, 시뮬 리그</li><li>최근 연구 비교(M.4): 공통점, 차이점, 가져올 것과 시도 순서</li><li>작업 기록(M.3): 0단계 6/12에서 plant 비교 TP-0152까지</li><li>정리, 다음 할 일, 참고문헌</li></ul>
 <p class="act"><a class="btn" href="talk-mpc/">슬라이드 보기</a><a class="btn ghost" href="talk-mpc/talk-mpc.pptx" download>PPTX 내려받기</a></p>
 </article><article class="card">
 <h2>travplan 챕터 발표 — 강화학습</h2>
-<p class="n">43장 · 발표자 노트 포함</p>
+<p class="n">48장 · 발표자 노트 포함</p>
 <ul><li>왜 강화학습인가 — travplan이 이미 쓰는 세 자리</li><li>문제 설정과 모방 — MDP, Bellman 식, 행동 복제의 분포 이동</li><li>정책 기울기 — REINFORCE, 진화 전략(TP-0128), GAE, PPO</li><li>가치 기반과 오프라인 — Q-learning의 과대평가, CQL·IQL, AWR</li><li>추론으로서의 제어와 모델 기반 — MPPI의 바탕과 모델 오차(TP-0150)</li><li>생성 정책의 RL과 안전 — GRPO, FPO·FPO++, 꼬리 위험</li><li>최근 연구 비교(R.19) — 14편의 공통점·차이점과 시도 순서</li><li>travplan에서 — TP-0066·0138 결과, 판정의 통계, 다음 후보</li><li>정리와 공부 순서, 참고문헌</li></ul>
 <p class="act"><a class="btn" href="talk-rl/">슬라이드 보기</a><a class="btn ghost" href="talk-rl/talk-rl.pptx" download>PPTX 내려받기</a></p>
 </article><article class="card">
 <h2>travplan 챕터 발표 — 시뮬레이션</h2>
-<p class="n">35장 · 발표자 노트 포함</p>
+<p class="n">44장 · 발표자 노트 포함</p>
 <ul><li>왜 네 층의 시뮬레이션이 필요한가, 오늘의 운동학 시뮬</li><li>엔진과 리그: Isaac Sim 유지, 엔진 속도와 재현성은 직접 잰다</li><li>보도 장면·평가 벤치마크와 보행자 모델, travplan 보행자 측정</li><li>센서·렌더링과 sim-to-real: L0 가림 허점, 3DGS 장면, 예측력(SRCC)</li><li>지형 커리큘럼, 바퀴 물리의 한계, AntBot 비동축, 동역학 plant</li><li>최근 연구 16편 비교: 공통점, 차이점, 가져올 것과 시도 순서</li><li>권고 로드맵, 정리와 다음 할 일, 참고문헌</li></ul>
 <p class="act"><a class="btn" href="talk-simulation/">슬라이드 보기</a><a class="btn ghost" href="talk-simulation/talk-simulation.pptx" download>PPTX 내려받기</a></p>
 </article><article class="card">
 <h2>travplan 챕터 발표 — 휴머노이드·4족 보행 내비게이션</h2>
-<p class="n">38장 · 발표자 노트 포함</p>
+<p class="n">47장 · 발표자 노트 포함</p>
 <ul><li>왜 다리 로봇을 보나 — 위 층이 넘기는 것과 아래 층의 실행 가능성</li><li>지형도 — 분야별 대세(B.18), 연구실 계보(B.16)</li><li>내비 층이 넘기는 것 — CMU 스택, LP-NavOA, FocusNav, TAME-Nav</li><li>지형을 보는 보행 — Watch Your Step, 성긴 LiDAR 지도, PHP, LocoFormer</li><li>전신 제어와 원격조종 — PASSAGE, NEXUS, 출력의 투영</li><li>장시간 자율 작업 — Flexion Reflect v1.0, Dyna</li><li>비교 — 열네 연구의 두 표, 공통점과 차이점</li><li>travplan에서 — 경계의 대응, 가져올 순서, 다음 시험</li><li>정리와 참고문헌</li></ul>
 <p class="act"><a class="btn" href="talk-legged/">슬라이드 보기</a><a class="btn ghost" href="talk-legged/talk-legged.pptx" download>PPTX 내려받기</a></p>
 </article>

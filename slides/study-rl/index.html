@@ -27,6 +27,9 @@ section .katex-display { margin:0; text-align:left; }
 section .katex-display > .katex { text-align:left; }
 x-shape { display:block; flex:none; }
 x-shape[kind="arrow-right"] { clip-path:polygon(0 32%,58% 32%,58% 0,100% 50%,58% 100%,58% 68%,0 68%); }
+figure.video a.yt { display:block; width:fit-content; max-width:100%; line-height:0; cursor:pointer; }
+figure.video a.yt.off { display:none; }
+figure.video iframe { display:block; border:0; border-radius:8px; background:#000; }
 #bar { position:fixed; left:0; right:0; bottom:0; height:56px; background:var(--bar); display:flex; align-items:center; gap:12px; padding:0 16px; font-size:15px; }
 #bar button, #bar a { background:none; border:1px solid #3A4A6B; color:var(--fg); border-radius:8px; padding:6px 12px; font:inherit; cursor:pointer; text-decoration:none; }
 #bar button:hover, #bar a:hover { border-color:var(--accent); }
@@ -197,7 +200,8 @@ section.t.divider h2 { font-size:80px; }
       var s = Math.min(r[2] / nw, r[3] / nh), w = nw * s, h = nh * s;
       r = [r[0] + (r[2] - w) / 2, r[1] + (r[3] - h) / 2, w, h];
     }
-    return { t: 'img', r: r, src: el.getAttribute('src') };
+    var a = el.closest('a');   // 영상 썸네일(figure.video > a.yt > img)은 YouTube 하이퍼링크를 단 그림이 된다
+    return { t: 'img', r: r, src: el.getAttribute('src'), href: a && /^https?:/.test(a.href) ? a.href : null };
   }
   function slide(sec) {
     var base = sec.getBoundingClientRect(), items = [];
@@ -339,6 +343,19 @@ section.t.divider h2 { font-size:80px; }
 <figure><img src="../../assets/figs/rl_r01_gridworld.webp" style="height:400px"><figcaption>5×5 격자 MDP를 가치 반복으로 푼 결과. 목표 +1, 검은 칸은 함정 −1, 매 스텝 −0.04, 0.1의 확률로 옆으로 미끄러진다. γ가 작으면 함정 근처를 더 조심한다.</figcaption></figure>
 <aside>MDP는 상태 집합, 행동 집합, 전이 확률, 보상 함수, 할인율 다섯 가지로 정한다. 궤적의 확률은 시작 분포, 정책, 전이의 곱이다. 이 곱에서 정책만 우리가 바꿀 수 있다는 점이 2장의 정책 기울기에서 중요해진다. 그림의 격자에서는 바람에 미끄러질 수 있으므로, 최적 정책이 함정 바로 옆을 피해 돌아가는 모습을 볼 수 있다. 오른쪽 그래프는 가치 반복을 할 때마다 보상 정보가 한 칸씩 퍼지는 모습이다.</aside>
 </section>
+<section id="mdp-v" class="t">
+<div class="head"><p class="kicker">1 · MDP · 강의 영상</p><h2>강화학습의 목표는 궤적 분포 위의 기대 보상이다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:none"><a class="yt" href="https://www.youtube.com/watch?v=jds0Wh9jTvE"><img src="../../assets/yt/jds0Wh9jTvE.webp" alt="CS 285: Lecture 4, Part 1" style="height:620px"></a>
+<figcaption>▶ 영상 — CS 285 2023 4강 1부: 강화학습 기초 — 기호, MDP의 정의, 목표 (RAIL)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점</span><p>상태·관측·행동·정책의 기호를 정하고, 궤적 분포 \(p_\theta(\tau)\)와 목표 \(J(\theta)\)를 세우는 순서를 본다.</p></div>
+<div class="card gy"><span class="tag">앞 장과 잇기</span><p>앞 장의 두 식이 그대로 나온다. 궤적 확률의 곱에서 정책만 우리가 바꿀 수 있다는 점을 확인한다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>CS 285 Deep Reinforcement Learning(Sergey Levine, UC Berkeley) 2023 가을 재생목록, RAIL 채널 — 문서 R.1 "영상과 슬라이드"</p></div>
+<aside>앞 장의 식을 Levine이 슬라이드에서 세우는 순서로 다시 듣는 장이다. 기호가 많아 보이지만 영상의 앞부분은 용어를 하나씩 정하는 데 쓴다. 영상에서는 궤적 분포가 시작 분포·정책·전이의 곱으로 적히고, 목표가 그 분포 위의 기대 보상으로 정의되는 것을 본다.</aside>
+</section>
 <section id="discount" class="t">
 <div class="head"><p class="kicker">1 · 할인율</p><h2>할인율 γ는 에이전트가 얼마나 먼 미래까지 볼지 정한다</h2></div>
 <figure><img src="img/discount.webp" style="height:400px"><figcaption>(a) t스텝 뒤 보상에 곱하는 무게 \(\gamma^t\)와 유효 horizon \(1/(1-\gamma)\) (b) 지금의 +1과 20스텝 뒤의 +3 중 무엇이 나은지는 γ가 정한다</figcaption></figure>
@@ -369,6 +386,19 @@ section.t.divider h2 { font-size:80px; }
 </div>
 <aside>밴딧은 상태가 하나뿐인 강화학습이다. 탐색과 활용의 트레이드오프만 따로 떼어 볼 수 있어 좋은 연습 문제다. greedy 전략은 처음에 운 좋게 나온 arm에 갇힌다. ε-greedy는 계속 무작위로 시도하므로 regret이 선형으로 늘어난다. UCB와 Thompson 샘플링은 덜 알려진 arm을 더 많이 시도해 regret이 로그적으로 늘어난다. 심층 강화학습에서는 정책의 엔트로피 보너스, 행동 잡음, 호기심 보상 같은 방법이 이 역할을 한다.</aside>
 </section>
+<section id="explore-v" class="t">
+<div class="head"><p class="kicker">1 · 탐색과 활용 · 강의 영상</p><h2>탐색은 밴딧에서 시작해 낙관으로 푼다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:none"><a class="yt" href="https://www.youtube.com/watch?v=RTLeJrp5Yp4"><img src="../../assets/yt/RTLeJrp5Yp4.webp" alt="CS 285: Lecture 13, Part 1" style="height:620px"></a>
+<figcaption>▶ 영상 — CS 285 2023 13강 1부: 탐색 — 왜 어려운가, 밴딧과 regret (RAIL)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점</span><p>드문 보상에서 무작위 행동만으로는 왜 배우지 못하는지, 밴딧에서 regret을 어떻게 정의하는지 본다. 불확실할수록 낙관적으로 고르는 UCB는 같은 강의 2부다.</p></div>
+<div class="card gy"><span class="tag">앞 장과 잇기</span><p>앞 장 그림 (a)의 네 곡선이 영상의 regret이고, (b)의 보너스는 같은 강의 2부의 낙관이다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>CS 285 Deep Reinforcement Learning(Sergey Levine, UC Berkeley) 2023 가을 재생목록, RAIL 채널 — 문서 R.11 "영상과 슬라이드"</p></div>
+<aside>탐색은 이 덱에서 한 장으로 줄였지만 강의에서는 두 강의를 쓴다. 영상에서는 보상이 드문 문제에서 탐색이 왜 어려운지, 상태가 하나뿐인 밴딧에서 regret으로 탐색 전략을 비교하는 틀을 본다. 모르는 행동을 낙관적으로 평가하는 UCB, 심층 강화학습에서 횟수 대신 쓰는 의사 횟수와 호기심 보상은 같은 강의의 뒷부분(2부)에 있다.</aside>
+</section>
 <section id="bc" class="t">
 <div class="head"><p class="kicker">1 · 모방학습</p><h2>행동 복제는 쉽지만 작은 실수가 쌓여 큰 이탈이 된다</h2></div>
 <div class="math">$$\max_\theta \sum_{(s,a)\in\mathcal D} \log \pi_\theta(a \mid s)$$</div>
@@ -376,6 +406,19 @@ section.t.divider h2 { font-size:80px; }
 <p class="take"><b>핵심:</b> 학습 때 본 상태와 실행 때 만나는 상태가 달라지는 것이 분포 이동이다.</p>
 <div class="foot" data-foot><p>[1] Ross 외, DAgger — arXiv:1011.0686</p></div>
 <aside>행동 복제는 시연을 지도학습 데이터로 보고 log-likelihood를 최대화한다. 가장 쉬운 출발점이지만 두 가지 함정이 있다. 첫째는 분포 이동이다. 한 번 틀리면 시연자가 가 본 적 없는 상태에 들어가고, 거기서 더 틀린다. 실수 확률 ε에 대해 누적 실수가 εT²로 커진다는 것이 고전 결과다. DAgger는 학습한 정책을 rollout해 만난 상태에서 전문가에게 다시 라벨을 받아 이를 εT로 줄인다. 둘째는 다봉(multi-modal) 문제다. 왼쪽으로 피한 시연과 오른쪽으로 피한 시연을 평균하면 가운데로 간다. 이를 피하려면 혼합 분포, diffusion, flow처럼 여러 모드를 담는 정책을 쓴다.</aside>
+</section>
+<section id="bc-v" class="t">
+<div class="head"><p class="kicker">1 · 모방학습 · 강의 영상</p><h2>행동 복제는 학습 분포와 실행 분포가 갈라져 무너진다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:none"><a class="yt" href="https://www.youtube.com/watch?v=tbLaFtYpWWU"><img src="../../assets/yt/tbLaFtYpWWU.webp" alt="CS 285: Lecture 2, Imitation Learning. Part 1" style="height:620px"></a>
+<figcaption>▶ 영상 — CS 285 2023 2강 1부: 모방학습 — 행동 복제와 분포 이동 (RAIL)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점</span><p>시연 (o, a)를 지도학습으로 맞추는 행동 복제가 어디서 틀리기 시작하는지, 학습 분포와 실행 분포가 왜 달라지는지 본다.</p></div>
+<div class="card gy"><span class="tag">앞 장과 잇기</span><p>앞 장 그림 (a)의 "한 번 벗어나면 돌아오지 못한다"가 영상의 핵심 그림과 같다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>CS 285 Deep Reinforcement Learning(Sergey Levine, UC Berkeley) 2023 가을 재생목록, RAIL 채널 — 문서 R.2 "영상과 슬라이드"</p></div>
+<aside>분포 이동은 글로 읽으면 당연해 보이지만, 왜 작은 오차가 복구되지 않고 쌓이는지는 그림으로 보는 편이 빠르다. 영상에서는 학습 때 본 관측 분포와 정책이 실제로 만나는 관측 분포가 갈라지는 모습과, 그것이 행동 복제의 구조적 한계라는 설명을 본다. DAgger와 다봉 문제는 같은 강의의 뒷부분에 있다.</aside>
 </section>
 <section id="imitation-pc" class="t">
 <div class="head"><p class="kicker">1 · 장단점</p><h2>모방은 빠르지만 시연자의 실력과 시연 범위를 넘지 못한다</h2></div>
@@ -398,11 +441,15 @@ section.t.divider h2 { font-size:80px; }
 <div class="head"><p class="kicker">2 · 배경지식 · 로그 미분 트릭</p><h2>로그 미분 트릭 하나로 환경을 미분하지 않고도 gradient를 얻는다</h2></div>
 <div class="math">$$\nabla_\theta p_\theta(\tau) = p_\theta(\tau)\, \nabla_\theta \log p_\theta(\tau) \quad\Rightarrow\quad \nabla_\theta J = \mathbb E_{\tau\sim p_\theta}\big[\nabla_\theta \log p_\theta(\tau)\, R(\tau)\big]$$</div>
 <div class="math">$$\nabla_\theta \log p_\theta(\tau) = \nabla_\theta \Big[\log p(s_1) + \sum_t \log \pi_\theta(a_t\mid s_t) + \sum_t \log p(s_{t+1}\mid s_t,a_t)\Big] = \sum_t \nabla_\theta \log \pi_\theta(a_t\mid s_t)$$</div>
-<div class="grid2">
+<div class="cols">
+<div class="stack">
 <div class="card gr"><span class="tag gr">좋은 소식</span><h3>전이 확률이 기울기에서 사라진다</h3><p>θ와 무관한 항은 미분하면 0이다. 그래서 환경 모델을 몰라도, 보상이 미분 불가여도 된다.</p></div>
 <div class="card or"><span class="tag or">나쁜 소식</span><h3>궤적 몇 개로 기댓값을 근사한다</h3><p>R(τ)는 운에 크게 흔들리므로 기울기 추정의 분산이 크다.</p></div>
 </div>
-<aside>이 트릭은 score function 추정기, 또는 likelihood ratio 방법이라고도 부른다. 핵심은 확률의 gradient를 확률에 log-probability의 gradient를 곱한 꼴로 바꾸면, 기댓값 형태가 유지되어 샘플 평균으로 근사할 수 있다는 것이다. 궤적 확률의 로그를 펼치면 시작 분포와 전이 확률은 θ에 의존하지 않으므로 사라지고, 정책의 log-probability만 남는다. 이것이 정책 기울기가 모델 없이 동작하는 이유다. 같은 트릭이 변분 추론과 진화 전략에도 나온다.</aside>
+<figure class="video"><a class="yt" href="https://www.youtube.com/watch?v=GKoKNYaBvM0"><img src="../../assets/yt/GKoKNYaBvM0.webp" alt="CS 285: Lecture 5, Part 1" style="height:360px"></a>
+<figcaption>▶ 영상 — CS 285 2023 5강 1부: 정책 기울기 — 목표를 샘플로 평가하고 로그 미분 트릭으로 미분한다 (RAIL)</figcaption></figure>
+</div>
+<aside>이 트릭은 score function 추정기, 또는 likelihood ratio 방법이라고도 부른다. 핵심은 확률의 gradient를 확률에 log-probability의 gradient를 곱한 꼴로 바꾸면, 기댓값 형태가 유지되어 샘플 평균으로 근사할 수 있다는 것이다. 궤적 확률의 로그를 펼치면 시작 분포와 전이 확률은 θ에 의존하지 않으므로 사라지고, 정책의 log-probability만 남는다. 이것이 정책 기울기가 모델 없이 동작하는 이유다. 같은 트릭이 변분 추론과 진화 전략에도 나온다. 영상에서는 위 두 식을 Levine이 슬라이드에서 차례로 유도하고, 그 결과가 REINFORCE 알고리즘이 되는 것을 본다.</aside>
 </section>
 <section id="reinforce" class="t">
 <div class="head"><p class="kicker">2 · REINFORCE</p><h2>기준선을 빼면 기울기의 평균은 그대로, 분산은 크게 준다</h2></div>
@@ -442,6 +489,19 @@ section.t.divider h2 { font-size:80px; }
 <div class="foot" data-foot><p>[1] Schulman 외, GAE — arXiv:1506.02438</p></div>
 <aside>REINFORCE의 수익 대신 critic이 낸 advantage를 쓰면 actor-critic이 된다. 한 스텝 TD 오차 δ는 분산이 작지만, critic이 틀리면 그 오차가 그대로 편향이 된다. GAE는 TD 오차를 λ로 지수 가중해 더해서 한 스텝과 몬테카를로 사이를 연속적으로 고른다. 실무 팁 하나는 비대칭 critic이다. 배포할 때는 actor만 쓰므로, 시뮬레이션에서 학습할 때 critic에게는 센서로 볼 수 없는 정답 정보를 줘도 된다.</aside>
 </section>
+<section id="gae-v" class="t">
+<div class="head"><p class="kicker">2 · Actor-critic · 강의 영상</p><h2>critic은 정책 기울기의 분산을 줄이려고 배우는 가치 함수다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:none"><a class="yt" href="https://www.youtube.com/watch?v=wr00ef_TY6Q"><img src="../../assets/yt/wr00ef_TY6Q.webp" alt="CS 285: Lecture 6, Part 1" style="height:620px"></a>
+<figcaption>▶ 영상 — CS 285 2023 6강 1부: actor-critic — 가치 함수로 정책 기울기를 개선한다 (RAIL)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점</span><p>REINFORCE의 수익 자리에 Q, V, advantage를 차례로 넣어 보고, 그 가치를 회귀로 배우는 정책 평가를 본다.</p></div>
+<div class="card gy"><span class="tag">앞 장과 잇기</span><p>몬테카를로 목표와 부트스트랩 목표의 차이가 앞 장의 λ = 1과 λ = 0이다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>CS 285 Deep Reinforcement Learning(Sergey Levine, UC Berkeley) 2023 가을 재생목록, RAIL 채널 — 문서 R.4 "영상과 슬라이드"</p></div>
+<aside>actor-critic은 정책 기울기에 가치 함수를 붙인 것이다. 왜 붙이는지가 분산 때문이라는 점을 영상이 REINFORCE에서 출발해 보여 준다. 영상에서는 보상의 합을 Q와 V로 바꾸는 단계와, 가치 함수를 몬테카를로 목표나 부트스트랩 목표로 회귀하는 정책 평가를 본다. GAE는 두 목표 사이를 λ로 잇는 뒷장의 내용이다.</aside>
+</section>
 <section id="ppo" class="t">
 <div class="head"><p class="kicker">2 · TRPO와 PPO</p><h2>PPO는 확률 비율을 clip해 한 번에 너무 멀리 가지 않게 한다</h2></div>
 <div class="math">$$L^{\mathrm{CLIP}}(\theta) = \mathbb E_t \Big[ \min\big( \rho_t \hat A_t,\ \operatorname{clip}(\rho_t, 1-\epsilon, 1+\epsilon)\, \hat A_t \big) \Big], \qquad \rho_t = \frac{\pi_\theta(a_t\mid s_t)}{\pi_{\mathrm{old}}(a_t\mid s_t)}$$</div>
@@ -452,6 +512,19 @@ section.t.divider h2 { font-size:80px; }
 </div>
 <div class="foot" data-foot><p>[1] TRPO — arXiv:1502.05477 · [2] PPO — arXiv:1707.06347</p></div>
 <aside>정책을 한 번에 너무 많이 바꾸면 옛 정책으로 모은 샘플이 새 정책을 대표하지 못해 학습이 무너진다. TRPO는 옛 정책과의 KL 거리를 제약으로 걸고 conjugate gradient와 line search로 푼다. PPO는 제약 대신 비율을 1±ε 범위로 clip해 같은 효과를 근사한다. 그 덕에 같은 배치로 여러 번 갱신해도 안전하다. 그림 (c)는 왜 파라미터 거리가 아니라 분포 거리로 업데이트 크기를 재야 하는지를 보여 준다.</aside>
+</section>
+<section id="ppo-v" class="t">
+<div class="head"><p class="kicker">2 · TRPO와 PPO · 강의 영상</p><h2>옛 정책의 샘플로 새 정책을 평가하려면 두 정책이 가까워야 한다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:none"><a class="yt" href="https://www.youtube.com/watch?v=ySenCHPsKJU"><img src="../../assets/yt/ySenCHPsKJU.webp" alt="CS 285: Lecture 9, Part 1" style="height:620px"></a>
+<figcaption>▶ 영상 — CS 285 2023 9강 1부: 고급 정책 기울기 — 정책 기울기를 정책 반복으로 다시 본다 (RAIL)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점</span><p>새 정책의 성능 차이를 옛 정책의 advantage로 적고, 확률 비율 \(\rho_t\)가 어디서 나오는지 본다.</p></div>
+<div class="card gy"><span class="tag">앞 장과 잇기</span><p>앞 장의 clip은 이 비율이 1에서 멀어지지 않게 막는 장치다. 왜 파라미터 거리가 아니라 분포 거리인지도 같은 강의에 있다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>CS 285 Deep Reinforcement Learning(Sergey Levine, UC Berkeley) 2023 가을 재생목록, RAIL 채널 — 문서 R.5 "영상과 슬라이드"</p></div>
+<aside>PPO의 clip은 결과만 보면 요령처럼 보이지만, 출발은 "옛 정책으로 모은 샘플로 새 정책을 얼마나 믿고 평가할 수 있나"라는 질문이다. 영상에서는 정책 기울기를 정책 반복의 한 형태로 다시 쓰고, 옛 정책의 상태 분포와 advantage를 그대로 쓰는 근사가 두 정책이 가까울 때만 성립한다는 설명을 본다. TRPO의 KL 제약과 PPO의 clip은 그 조건을 지키는 두 방법이다.</aside>
 </section>
 <section id="pg-pc" class="t">
 <div class="head"><p class="kicker">2 · 장단점</p><h2>정책 기울기 계열은 안정성을 얻는 대신 샘플을 많이 쓴다</h2></div>
@@ -497,6 +570,19 @@ section.t.divider h2 { font-size:80px; }
 <div class="foot" data-foot><p>[1] DQN — arXiv:1312.5602 · [2] Double DQN — arXiv:1509.06461 · [3] TD3 — arXiv:1802.09477</p></div>
 <aside>DQN은 표(table) 대신 신경망으로 Q를 표현하면서 생기는 불안정을 공학 장치로 막았다. experience replay는 데이터 사이의 상관을 끊고 재사용을 늘린다. 타깃 네트워크는 회귀 타깃을 일정 시간 고정한다. Double Q는 과대평가를 줄인다. Sutton과 Barto는 함수 근사, 부트스트랩, off-policy 학습이 함께 있으면 발산할 수 있다는 점을 deadly triad라고 불렀다. 연속 행동으로 넓힌 것이 DDPG와 TD3이고, TD3는 두 critic 중 작은 값을 써서 과대평가를 더 줄인다.</aside>
 </section>
+<section id="dqn-v" class="t">
+<div class="head"><p class="kicker">3 · DQN · 강의 영상</p><h2>replay buffer와 타깃 네트워크가 신경망 Q-learning을 안정시킨다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:none"><a class="yt" href="https://www.youtube.com/watch?v=7-D8RL3D6CI"><img src="../../assets/yt/7-D8RL3D6CI.webp" alt="CS 285: Lecture 8, Part 1" style="height:620px"></a>
+<figcaption>▶ 영상 — CS 285 2023 8강 1부: 실전 Q-learning — 온라인 Q-learning의 두 문제와 replay buffer (RAIL)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점</span><p>온라인 Q-learning이 왜 그대로는 안 되는지(연속 샘플의 상관, 움직이는 목표값)에서 출발해 replay buffer가 더해진다. 타깃 네트워크와 DQN 알고리즘 상자는 같은 강의 2부다.</p></div>
+<div class="card gy"><span class="tag">앞 장과 잇기</span><p>앞 장 세 카드 가운데 첫째가 이 영상이고, 타깃 네트워크와 Double Q는 같은 강의의 뒷부분이다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>CS 285 Deep Reinforcement Learning(Sergey Levine, UC Berkeley) 2023 가을 재생목록, RAIL 채널 — 문서 R.6 "영상과 슬라이드"</p></div>
+<aside>DQN의 장치들은 외우기보다 "무엇이 깨져서 넣었나"로 이해하는 편이 오래 남는다. 영상에서는 신경망 Q-learning을 온라인으로 그냥 돌릴 때 생기는 두 문제, 곧 이웃한 샘플끼리의 상관과 매 스텝 바뀌는 회귀 목표를 먼저 보고, replay buffer가 그중 무엇을 푸는지 본다. 타깃 네트워크와 둘을 합친 DQN 알고리즘 상자는 같은 강의 2부에 있다.</aside>
+</section>
 <section id="onoff" class="t">
 <div class="head"><p class="kicker">3 · on-policy와 off-policy</p><h2>on-policy는 방금 모은 데이터만, off-policy는 쌓아 둔 데이터도 쓴다</h2></div>
 <div class="cols">
@@ -529,6 +615,19 @@ section.t.divider h2 { font-size:80px; }
 <p class="take"><b>핵심:</b> 새로 시도해 볼 수 없으니, 데이터가 없는 곳에서 회귀가 내놓은 "높은 값"을 고치지 못한다.</p>
 <div class="foot" data-foot><p>[1] AWR — arXiv:1910.00177 · [2] CQL — arXiv:2006.04779 · [3] IQL — arXiv:2110.06169</p></div>
 <aside>오프라인 RL은 데이터를 모은 정책보다 나은 정책을 같은 데이터로 찾는다. 의료 기록, 주행 로그, 로봇 시연처럼 새로 실험하기 어렵거나 위험한 곳에서 쓴다. Q-learning을 그대로 쓰면 max가 데이터에 없는 행동의 틀린 값을 고르고, 해 볼 수 없으니 그 믿음이 고쳐지지 않는다. 그림의 빨간 곡선이 그 실패다. 세 방법은 이 행동을 다루는 위치가 다르다. AWR은 정책에서, CQL과 IQL은 가치에서 막는다.</aside>
+</section>
+<section id="offline-v" class="t">
+<div class="head"><p class="kicker">3 · 오프라인 RL · 강의 영상</p><h2>오프라인 RL의 어려움은 데이터 밖 행동의 과대평가다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:none"><a class="yt" href="https://www.youtube.com/watch?v=NV4oSWe1H9o"><img src="../../assets/yt/NV4oSWe1H9o.webp" alt="CS 285: Lecture 15, Part 1: Offline Reinforcement Learning" style="height:620px"></a>
+<figcaption>▶ 영상 — CS 285 2023 15강 1부: 오프라인 RL — 무엇이고 왜 어려운가 (RAIL)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점</span><p>고정된 데이터셋으로 데이터를 모은 정책보다 나은 정책을 찾는다는 문제 정의와, 왜 off-policy 방법을 그대로 쓰면 안 되는지를 본다.</p></div>
+<div class="card gy"><span class="tag">앞 장과 잇기</span><p>앞 장 그림의 빨간 곡선, 곧 데이터 없는 행동을 고르는 실패가 영상에서 "분포 밖 행동"이라는 이름으로 나온다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>CS 285 Deep Reinforcement Learning(Sergey Levine, UC Berkeley) 2023 가을 재생목록, RAIL 채널 — 문서 R.10 "영상과 슬라이드"</p></div>
+<aside>오프라인 RL은 3장의 결론이자 뒤의 AWR·CQL·IQL이 모두 답하려는 문제다. 영상에서는 오프라인 RL이 모방학습과 어떻게 다른지, 왜 off-policy 알고리즘을 그대로 쓰면 데이터 밖 행동의 가치가 부풀고 그것을 고칠 새 데이터가 없는지를 본다. AWR·CQL·IQL은 다음 강의인 16강에서 다룬다.</aside>
 </section>
 <section id="awr" class="t">
 <div class="head"><p class="kicker">3 · AWR</p><h2>AWR은 advantage의 지수로 가중한 행동 복제다</h2></div>
@@ -601,6 +700,19 @@ section.t.divider h2 { font-size:80px; }
 <div class="foot" data-foot><p>[1] Levine, RL and Control as Inference — arXiv:1805.00909 · [2] SAC — arXiv:1801.01290 · [3] MPPI — arXiv:1509.01149</p></div>
 <aside>각 시각에 "이 스텝이 최적이다"라는 이진 변수를 두고 그 확률을 보상의 지수로 정하면, 최적 궤적의 사후분포가 나온다. 이 사후분포를 정책으로 근사하면 엔트로피 보너스가 붙은 최대 엔트로피 RL이 되고, SAC가 그 actor-critic 판이다. 정책을 배우지 않고 매 스텝 행동 시퀀스를 직접 추론하면 MPPI가 된다. 엔트로피 항은 정책이 너무 일찍 한 행동에 확신하지 않게 해서 탐색을 유지한다.</aside>
 </section>
+<section id="soft-v" class="t">
+<div class="head"><p class="kicker">4 · 최대 엔트로피 RL · 강의 영상</p><h2>최적 궤적의 사후분포는 보상의 지수로 가중된다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:none"><a class="yt" href="https://www.youtube.com/watch?v=MzVlYYGtg0M"><img src="../../assets/yt/MzVlYYGtg0M.webp" alt="CS 285: Lecture 19, Control as Inference, Part 1" style="height:620px"></a>
+<figcaption>▶ 영상 — CS 285 2023 19강 1부: 제어를 추론으로 — 최적성 변수를 둔 그래프 모델 (RAIL)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점</span><p>스텝마다 "최적이다"라는 이진 변수 \(\mathcal O_t\)를 두고 \(p(\mathcal O_t \mid s_t, a_t) \propto \exp(r)\)로 정하면 앞 장의 첫 식이 나온다.</p></div>
+<div class="card gy"><span class="tag">앞 장과 잇기</span><p>이 그래프 모델에서 추론을 하면 SAC의 soft 가치가, 샘플링으로 근사하면 MPPI의 가중 평균이 된다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>CS 285 Deep Reinforcement Learning(Sergey Levine, UC Berkeley) 2023 가을 재생목록, RAIL 채널 — 문서 R.8 "영상과 슬라이드"</p></div>
+<aside>앞 장의 첫 식 p(τ | 최적) ∝ p(τ)·exp(Σₜ r)이 어디서 오는지를 보는 장이다. 영상에서는 사람의 행동이 완벽히 최적이 아니라 "대체로 좋은" 궤적일 때, 그것을 설명하는 확률 모델로 최적성 변수를 둔 그래프 모델을 세우고, 그 사후분포가 보상의 지수로 가중된 궤적 분포가 되는 것을 본다. 이 모델 위에서 추론을 하면 최대 엔트로피 RL이 되고, SAC와 MPPI가 그 두 근사다.</aside>
+</section>
 <section id="kl" class="t">
 <div class="head"><p class="kicker">4 · 배경지식 · KL 발산</p><h2>KL의 방향이 "모두 덮기"와 "하나 고르기"를 가른다</h2></div>
 <div class="cols">
@@ -646,6 +758,19 @@ section.t.divider h2 { font-size:80px; }
 </div>
 <div class="foot" data-foot><p>[1] PETS — arXiv:1805.12114 · [2] MBPO — arXiv:1906.08253 · [3] Dreamer — arXiv:1912.01603 · [4] TD-MPC2 — arXiv:2310.16828</p></div>
 <aside>전이 모델을 배우면 실제 상호작용 없이 모델 안에서 rollout해 볼 수 있어 샘플 효율이 높다. 대신 플래너나 정책 최적화가 모델이 실제보다 좋게 보는 행동을 골라낸다. 오프라인 RL의 과대평가와 같은 문제다. 대책은 셋이다. 앙상블의 불일치로 모르는 곳을 표시해 비관적으로 평가하고, 오차가 쌓이지 않게 짧게만 rollout하고, 관측 대신 작은 latent 공간에서 rollout한다.</aside>
+</section>
+<section id="model-based-v" class="t">
+<div class="head"><p class="kicker">4 · 모델 기반 RL · 강의 영상</p><h2>모델을 배워 계획하면 플래너가 모델 오차를 찾아가 이용한다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:none"><a class="yt" href="https://www.youtube.com/watch?v=LkTmiylbHYk"><img src="../../assets/yt/LkTmiylbHYk.webp" alt="CS 285: Lecture 11, Part 1" style="height:620px"></a>
+<figcaption>▶ 영상 — CS 285 2023 11강 1부: 모델 기반 RL — 모델을 배워 계획하는 기본 알고리즘과 그 실패 (RAIL)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점</span><p>데이터를 모아 모델을 맞추고 그 모델로 계획하는 가장 단순한 판에서 출발해, 데이터를 다시 모으는 반복과 매 스텝 다시 계획하는 MPC로 고쳐 가는 순서를 본다.</p></div>
+<div class="card gy"><span class="tag">앞 장과 잇기</span><p>앞 장 그림 (b)의 "모델이 좋게 보는 행동을 고른다"가 영상에서 모델과 플래너 사이의 분포 이동으로 설명된다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>CS 285 Deep Reinforcement Learning(Sergey Levine, UC Berkeley) 2023 가을 재생목록, RAIL 채널 — 문서 R.9 "영상과 슬라이드"</p></div>
+<aside>모델 기반 RL의 문제는 모델이 조금 틀린 것 자체가 아니라, 플래너가 그 틀린 곳을 적극적으로 찾아간다는 점이다. 영상에서는 가장 단순한 모델 기반 알고리즘이 왜 실패하는지, 계획한 행동으로 데이터를 다시 모아 모델을 고치는 반복과 매 스텝 다시 계획하는 MPC가 어떻게 그 실패를 줄이는지 본다. 앙상블과 짧은 rollout 같은 대책은 같은 강의의 뒷부분과 다음 강의에 있다.</aside>
 </section>
 <section id="mb-pc" class="t">
 <div class="head"><p class="kicker">4 · 장단점</p><h2>모델 기반은 샘플을 아끼는 대신 모델 오차를 떠안는다</h2></div>
@@ -696,6 +821,19 @@ section.t.divider h2 { font-size:80px; }
 </div>
 <aside>행동 복제가 "무엇을 했나"를 따라 한다면, 역강화학습은 "왜 그렇게 했나"를 추정한다. 최대 엔트로피 IRL은 시연이 보상의 지수에 비례하는 확률로 나왔다고 보고, 시연의 상태 방문 빈도와, 학습한 보상으로 구한 정책의 방문 빈도가 같아지도록 보상을 고친다. 그림 (c)에서 시연이 한 번도 가지 않은 함정 칸의 값이 정확하지 않은 것이 모호성의 예다. 데이터가 없는 곳은 보상도 알 수 없다. GAIL은 같은 아이디어를 discriminator로 구현한 것이다.</aside>
 </section>
+<section id="irl-v" class="t">
+<div class="head"><p class="kicker">5 · 역강화학습 · 강의 영상</p><h2>역강화학습은 보상을 배우지만, 같은 시연을 설명하는 보상이 여럿이다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:none"><a class="yt" href="https://www.youtube.com/watch?v=EcxpbhDeuZw"><img src="../../assets/yt/EcxpbhDeuZw.webp" alt="CS 285: Lecture 20, Inverse Reinforcement Learning, Part 1" style="height:620px"></a>
+<figcaption>▶ 영상 — CS 285 2023 20강 1부: 역강화학습 — 왜 보상을 배우나, 문제 정의와 모호성 (RAIL)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점</span><p>행동을 따라 하는 대신 의도를 추정하는 이유, 시연·상태·행동·동역학이 주어질 때 보상을 찾는 문제의 정의, 그리고 답이 하나로 정해지지 않는 이유를 본다.</p></div>
+<div class="card gy"><span class="tag">앞 장과 잇기</span><p>앞 장 그림 (c)에서 시연이 가지 않은 칸의 보상이 틀린 것이 영상이 말하는 모호성의 예다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>CS 285 Deep Reinforcement Learning(Sergey Levine, UC Berkeley) 2023 가을 재생목록, RAIL 채널 — 문서 R.17 "영상과 슬라이드"</p></div>
+<aside>역강화학습의 출발은 "사람은 왜 그렇게 행동했나"라는 질문이다. 영상에서는 행동 복제와 달리 보상을 배우면 새 환경으로 옮길 수 있다는 동기, 역강화학습 문제의 정의, 그리고 같은 시연을 똑같이 잘 설명하는 보상 함수가 여럿이라는 모호성을 본다. 최대 엔트로피 IRL은 4장의 제어를 추론으로 보는 틀을 그대로 써서 이 모호성을 다루며, 같은 강의의 뒷부분에 있다.</aside>
+</section>
 <section id="rlhf" class="t">
 <div class="head"><p class="kicker">5 · RLHF, DPO, GRPO</p><h2>사람의 선호와 그룹 비교만으로도 언어 모델을 강화학습한다</h2></div>
 <div class="cols">
@@ -710,6 +848,19 @@ section.t.divider h2 { font-size:80px; }
 </div>
 <div class="foot" data-foot><p>[1] RLHF — arXiv:2203.02155 · [2] DPO — arXiv:2305.18290 · [3] GRPO — arXiv:2402.03300</p></div>
 <aside>언어 모델도 토큰을 행동으로 고르는 정책이다. RLHF는 사람이 두 응답 중 나은 쪽을 고른 데이터로 보상 모델을 배우고, KL 항으로 원래 모델에서 너무 멀어지지 않게 제약한다. 그 KL 항이 없으면 보상 모델의 약점을 파고드는 응답을 만든다. DPO는 이 문제의 최적해를 closed-form으로 풀어, 보상 모델 없이 선호 쌍에 직접 분류 손실을 건다. GRPO는 같은 질문의 응답 여러 개를 그룹으로 정규화해 advantage로 쓰므로 critic이 필요 없다. 2장의 기준선 빼기와 같은 아이디어다.</aside>
+</section>
+<section id="rlhf-v" class="t">
+<div class="head"><p class="kicker">5 · RLHF · 초청 강연 영상</p><h2>DPO는 RLHF 목표의 최적해를 보상 모델 없이 선호 쌍으로 푼다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:none"><a class="yt" href="https://www.youtube.com/watch?v=BqZC7mDSbIg"><img src="../../assets/yt/BqZC7mDSbIg.webp" alt="CS 285: Eric Mitchell: Reinforcement Learning from Human Feedback: Algorithms & Applications" style="height:620px"></a>
+<figcaption>▶ 영상 — CS 285 2023 초청 강연, Eric Mitchell: 사람 피드백 강화학습의 알고리즘과 응용 (RAIL)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점</span><p>선호 데이터 → 보상 모델 → KL 제약 아래 정책 최적화라는 RLHF의 흐름과, 보상 모델 없이 선호 쌍으로 바로 학습하는 DPO를 본다.</p></div>
+<div class="card gy"><span class="tag">앞 장과 잇기</span><p>앞 장의 첫 식(보상 − β KL)이 강연의 출발점이고, DPO는 그 식의 최적해를 closed-form으로 푼 것이다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>CS 285 2023 초청 강연(Eric Mitchell, DPO 공저자), RAIL 채널 — 문서 R.12 "2023 초청 강연 — Eric Mitchell"</p></div>
+<aside>RLHF는 언어 모델 쪽 이야기라 로봇 공부에서 건너뛰기 쉽지만, KL 제약 아래의 정책 최적화와 보상 모델 해킹은 로봇의 RL fine-tuning에도 그대로 나오는 문제다. 영상에서는 선호 데이터에서 보상 모델을 배우고 PPO로 정책을 고치는 RLHF의 흐름, 그 문제의 최적해를 보상 모델 없이 분류 손실로 바꾼 DPO, 그리고 두 방법의 응용을 저자가 직접 설명하는 것을 본다. GRPO는 강연 뒤에 나온 방법이라 영상에는 없다.</aside>
 </section>
 <section id="flow" class="t">
 <div class="head"><p class="kicker">5 · 생성 정책의 RL</p><h2>diffusion·flow 정책은 여러 해를 담지만 log-probability를 구하기 어렵다</h2></div>
@@ -876,7 +1027,30 @@ section.t.divider h2 { font-size:80px; }
     var s = Math.min(st.clientWidth / 1920, st.clientHeight / 1080);
     frame.style.transform = 'scale(' + s + ')';
   }
+  // ▶ 영상(figure.video): 썸네일 a.yt를 누르면 그 자리에 YouTube(nocookie) iframe을 넣고, 장을 넘기면 썸네일로 되돌린다.
+  // 캡처·검사(?shot, ?check)에서는 누르지 않으므로 썸네일만 찍힌다. PPTX는 그림에 하이퍼링크를 단다.
+  function ytId(href) {
+    var m = /[?&]v=([\w-]{11})/.exec(href) || /youtu\.be\/([\w-]{11})/.exec(href);
+    return m ? m[1] : null;
+  }
+  function stopVideos() {
+    Array.prototype.forEach.call(frame.querySelectorAll('figure.video iframe'), function (f) { f.remove(); });
+    Array.prototype.forEach.call(frame.querySelectorAll('figure.video a.yt.off'), function (a) { a.classList.remove('off'); });
+  }
+  frame.addEventListener('click', function (e) {
+    var a = e.target.closest ? e.target.closest('figure.video a.yt') : null;
+    if (!a || shot) return;
+    var id = ytId(a.href), img = a.querySelector('img');
+    if (!id || !img) return;
+    e.preventDefault();
+    var f = document.createElement('iframe');
+    f.width = img.clientWidth; f.height = img.clientHeight;
+    f.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0';
+    f.allow = 'autoplay; fullscreen; picture-in-picture'; f.allowFullscreen = true; f.title = img.alt || 'YouTube';
+    a.classList.add('off'); a.parentNode.insertBefore(f, a);
+  });
   function show(n) {
+    stopVideos();
     i = Math.max(0, Math.min(slides.length - 1, n));
     slides.forEach(function (el, k) { el.classList.toggle('on', k === i); });
     document.getElementById('count').textContent = (i + 1) + ' / ' + slides.length;
@@ -894,10 +1068,15 @@ section.t.divider h2 { font-size:80px; }
   window.withAllFonts = withAllFonts;
   // 넘침 검사: 본문 요소가 장 밖으로 나가거나 각주 띠를 덮으면 적는다.
   function check() {
-    var bad = [];
+    var bad = [], yt = [];
     slides.forEach(function (sec, k) {
       show(k);
       var box = sec.getBoundingClientRect();
+      // 영상 썸네일(img)의 자리. 캡처 PPTX(make_pptx)가 그 위에 보이지 않는 하이퍼링크 상자를 놓는다.
+      Array.prototype.forEach.call(sec.querySelectorAll('figure.video a.yt'), function (a) {
+        var r = (a.querySelector('img') || a).getBoundingClientRect();
+        yt.push({ slide: k + 1, href: a.href, r: [r.left - box.left, r.top - box.top, r.width, r.height] });
+      });
       Array.prototype.forEach.call(sec.querySelectorAll('.katex-error'), function (el) {
         bad.push({ slide: k + 1, id: sec.id, tag: 'TeX', text: (el.getAttribute('title') || el.textContent).slice(0, 60), over: 0 });
       });
@@ -906,7 +1085,7 @@ section.t.divider h2 { font-size:80px; }
       });
       var foot = sec.querySelector('[data-foot]');
       var limit = foot ? foot.getBoundingClientRect().top - 4 : box.bottom - 24;
-      Array.prototype.forEach.call(sec.querySelectorAll('p, h1, h2, h3, img, td, th, li, .katex-display, [data-box]'), function (el) {
+      Array.prototype.forEach.call(sec.querySelectorAll('p, h1, h2, h3, img, figcaption, td, th, li, .katex-display, [data-box]'), function (el) {
         if (foot && foot.contains(el)) return;
         if (el.closest('aside')) return;
         var r = el.getBoundingClientRect();
@@ -917,7 +1096,7 @@ section.t.divider h2 { font-size:80px; }
       });
     });
     var rep = document.getElementById('report');
-    rep.textContent = JSON.stringify(bad);
+    rep.textContent = JSON.stringify({ bad: bad, yt: yt });
     rep.setAttribute('data-done', '1');
   }
   function start() {

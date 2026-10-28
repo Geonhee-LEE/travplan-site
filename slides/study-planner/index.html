@@ -27,6 +27,9 @@ section .katex-display { margin:0; text-align:left; }
 section .katex-display > .katex { text-align:left; }
 x-shape { display:block; flex:none; }
 x-shape[kind="arrow-right"] { clip-path:polygon(0 32%,58% 32%,58% 0,100% 50%,58% 100%,58% 68%,0 68%); }
+figure.video a.yt { display:block; width:fit-content; max-width:100%; line-height:0; cursor:pointer; }
+figure.video a.yt.off { display:none; }
+figure.video iframe { display:block; border:0; border-radius:8px; background:#000; }
 #bar { position:fixed; left:0; right:0; bottom:0; height:56px; background:var(--bar); display:flex; align-items:center; gap:12px; padding:0 16px; font-size:15px; }
 #bar button, #bar a { background:none; border:1px solid #3A4A6B; color:var(--fg); border-radius:8px; padding:6px 12px; font:inherit; cursor:pointer; text-decoration:none; }
 #bar button:hover, #bar a:hover { border-color:var(--accent); }
@@ -197,7 +200,8 @@ section.t.divider h2 { font-size:80px; }
       var s = Math.min(r[2] / nw, r[3] / nh), w = nw * s, h = nh * s;
       r = [r[0] + (r[2] - w) / 2, r[1] + (r[3] - h) / 2, w, h];
     }
-    return { t: 'img', r: r, src: el.getAttribute('src') };
+    var a = el.closest('a');   // 영상 썸네일(figure.video > a.yt > img)은 YouTube 하이퍼링크를 단 그림이 된다
+    return { t: 'img', r: r, src: el.getAttribute('src'), href: a && /^https?:/.test(a.href) ? a.href : null };
   }
   function slide(sec) {
     var base = sec.getBoundingClientRect(), items = [];
@@ -439,6 +443,19 @@ section.t.divider h2 { font-size:80px; }
 <div class="foot" data-foot><p>iPlanner arXiv:2302.11434, RSS 2023 · ViPlanner arXiv:2310.00982, ICRA 2024 (ETH RSL)</p></div>
 <aside>ETH RSL이 명령형 학습(imperative learning)이라 부른 방식이다. 네트워크가 경로점을 내면, 그 점에서 costmap을 미분 가능하게 읽어 평균 비용을 손실로 쓴다. 그러면 비용의 gradient가 네트워크의 파라미터까지 흐른다. 네트워크 안에 궤적 최적화를 넣어 학습하는 것과 같다. 라벨이 필요 없다는 큰 장점이 있지만, 2장의 궤적 최적화처럼 국소 최적에 빠질 수 있고 답이 하나라 다봉 문제를 풀지 못한다.</aside>
 </section>
+<section id="iplanner-v" class="t">
+<div class="head"><p class="kicker">3 · costmap 자기지도 · 영상</p><h2>깊이 영상 한 장에서 나온 경로를 로봇이 그대로 따라간다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:none;width:1067px"><a class="yt" href="https://www.youtube.com/watch?v=-IfjSW0wPBI"><img src="../../assets/yt/-IfjSW0wPBI.webp" alt="iPlanner: Imperative Path Planning (RSS 2023)" style="height:600px"></a>
+<figcaption>▶ 영상 — 깊이 영상 한 장과 목표만으로 매끄럽고 충돌 없는 경로를 내는 iPlanner의 학습 구조와 주행 시연 (Robotic Systems Lab: Legged Robotics at ETH Zürich)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점 1</span><p>라벨 없이 궤적 비용의 gradient만으로 배우는 bilevel 구조다. 네트워크 갱신과 궤적 최적화가 학습 안에서 함께 돈다.</p></div>
+<div class="card or"><span class="tag or">볼 점 2</span><p>출력은 경로 하나다. 여러 갈래가 있어도 하나만 낸다는 점이 다음 장의 다봉 문제로 이어진다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>iPlanner arXiv:2302.11434, RSS 2023 (ETH RSL) · 영상 1분 29초</p></div>
+<aside>영상에서는 깊이 영상 한 장에서 경로점이 나오고 로봇이 그 경로를 따라가는 모습을 본다. 앞 장의 구조도가 학습 때의 손실 흐름이라면, 영상은 실행 때의 입출력이다. 경로가 하나뿐이라는 점을 눈여겨보자.</aside>
+</section>
 <section id="multimodal" class="t">
 <div class="head"><p class="kicker">3 · 다봉(multimodal) 문제</p><h2>왼쪽과 오른쪽이 모두 정답이면, 회귀는 그 평균인 장애물 한가운데를 낸다</h2></div>
 <figure><img src="../../assets/figs/rl_r13_flow_policy.webp" style="height:380px"><figcaption>(a) 잡음에서 시작한 flow 정책 샘플은 두 모드로 갈린다 (b) 같은 시연으로 배운 가우시안(평균 제곱 오차) 정책은 두 모드의 평균, 곧 장애물 쪽이 가장 짙다 (c) 강화학습으로 한쪽 모드를 키울 수도 있다</figcaption></figure>
@@ -471,6 +488,19 @@ section.t.divider h2 { font-size:80px; }
 <div class="foot" data-foot><p>NavDP, arXiv:2505.08712, ICRA 2026</p></div>
 <aside>NavDP는 하나의 transformer에 궤적 생성 헤드와 critic 헤드를 함께 둔다. 생성 헤드는 diffusion으로 여러 후보를 내고, critic 헤드는 각 후보가 얼마나 안전한지 점수를 낸다. critic의 라벨은 시뮬레이션에서만 알 수 있는 정답 거리장으로 만든다. 학습 때만 쓰는 이런 정보를 privileged 정보라고 한다. 실물에서는 영상만 보고 점수를 맞혀야 하므로, critic이 시뮬과 실물의 차이를 얼마나 견디는지가 관건이다.</aside>
 </section>
+<section id="navdp-v" class="t">
+<div class="head"><p class="kicker">3 · 생성 + critic · 영상</p><h2>시뮬레이션만으로 배운 NavDP가 바퀴·4족·휴머노이드에서 같은 정책으로 돈다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:none;width:1067px"><a class="yt" href="https://www.youtube.com/watch?v=vfUnxD9WfoA"><img src="../../assets/yt/vfUnxD9WfoA.webp" alt="NavDP: Learning Sim-to-Real Navigation Diffusion Policy with Privileged Information Guidance" style="height:600px"></a>
+<figcaption>▶ 영상 — 시뮬 데이터로만 학습한 NavDP의 실물 주행 시연 (1저자 Wenzhe Cai 채널 蔡文哲, 프로젝트 페이지가 거는 영상)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점 1</span><p>RGB-D 이력에서 궤적 후보 여럿이 나오고 critic 점수로 하나를 고른다.</p></div>
+<div class="card gr"><span class="tag gr">볼 점 2</span><p>같은 정책이 Turtlebot, Go2, G1에 옮겨진다. 몸체가 달라도 입력은 RGB-D 이력과 목표뿐이다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>NavDP arXiv:2505.08712, ICRA 2026 · 영상 3분 23초</p></div>
+<aside>영상에서는 시뮬레이션에서만 학습한 정책이 세 종류의 실물 로봇에서 장애물을 피해 목표로 가는 모습을 본다. 앞 장 표의 실물 9/10·7/10·7/10이 실물 실험의 수치다. 후보 여럿 가운데 critic이 고른 하나가 실행된다는 구조를 염두에 두고 보자.</aside>
+</section>
 <section id="xnavdp" class="t">
 <div class="head"><p class="kicker">3 · 폐루프 RL 후학습</p><h2>같은 상태의 후보를 폐루프 Q로 재가중하자 성공률이 61%에서 84%가 됐다</h2></div>
 <div class="cols">
@@ -493,6 +523,19 @@ section.t.divider h2 { font-size:80px; }
 <p class="take"><b>핵심:</b> 모방은 출발점이고, 폐루프에서 실제로 일어난 결과로 fine-tuning해야 시연을 넘는다.</p>
 <div class="foot" data-foot><p>X-NavDP, arXiv:2607.28560, 2026-07 프리프린트</p></div>
 <aside>모방만 한 Planner는 개루프, 즉 한 번 낸 궤적이 좋아 보이는지만 배운다. 폐루프 후학습은 그 궤적을 실제로 제어기가 따라가게 한 뒤의 결과로 점수를 매긴다. X-NavDP는 같은 상태에서 뽑은 후보들의 Q를 그룹 안에서 정규화해 상대적으로 좋은 후보를 키웠다. 이것은 언어 모델의 GRPO와 같은 생각이다. diffusion 정책은 likelihood를 계산하기 어려워 DPPO 같은 policy gradient가 불안정했고, ablation에서도 모방만 한 모델보다 낮았다.</aside>
+</section>
+<section id="xnavdp-fig" class="t">
+<div class="head"><p class="kicker">3 · 폐루프 RL 후학습 · 그림</p><h2>폐루프 후학습 뒤에는 되돌아 나오기, 우회, 더 안전한 선택이 나타난다</h2></div>
+<div class="cols">
+<div class="stack">
+<div class="card gr"><span class="tag gr">위 · 함정에서 되돌아 나오기</span><p>X-NavDP(왼쪽)는 막다른 곳에 들어갔다가 물러나 다른 길을 찾는다. NavDP(오른쪽)는 같은 장면에서 실패한다.</p></div>
+<div class="card bl"><span class="tag bl">가운데 · 긴 장애물 우회</span><p>긴 장애물을 돌아가는 궤적(detour)이 생긴다. 개루프 모방만으로는 몇 초 뒤의 결과를 보상하지 못한다.</p></div>
+<div class="card or"><span class="tag or">아래 · 더 안전한 궤적 선택</span><p>장애물 사이에서 더 안전한 궤적을 고른다. 폐루프 Q가 후보를 재가중한 효과다.</p></div>
+</div>
+<figure><img src="../../assets/thumbs/69c3d9ffe169.webp" style="height:400px"><figcaption>X-NavDP (Fig. 3): 세 장면의 점군 지도 위 궤적. 왼쪽 열이 X-NavDP 성공, 오른쪽 열이 같은 장면의 NavDP 실패 — arXiv:2607.28560</figcaption></figure>
+</div>
+<div class="foot" data-foot><p>X-NavDP, arXiv:2607.28560, 2026-07 프리프린트</p></div>
+<aside>그림은 논문이 꼽은 세 가지 새 행동이다. 위는 함정(trap)에서 되돌아 나오기, 가운데는 긴 장애물 우회, 아래는 더 안전한 궤적 선택이다. 오른쪽 열의 NavDP는 같은 장면에서 실패한다. 세 행동 모두 "지금 낸 궤적이 좋아 보이는가"가 아니라 "따라간 뒤 어떻게 됐는가"로 점수를 매겨야 배울 수 있는 것들이다.</aside>
 </section>
 <section id="learn-pc" class="t">
 <div class="head"><p class="kicker">3 · 장단점</p><h2>학습 신호마다 얻는 것과 치르는 것이 다르다</h2></div>
@@ -553,6 +596,19 @@ section.t.divider h2 { font-size:80px; }
 <div class="foot" data-foot><p>Diffuser arXiv:2205.09991, ICML 2022 · Diffusion Policy arXiv:2303.04137, RSS 2023 · GoalFlow arXiv:2503.05689, CVPR 2025</p></div>
 <aside>"계획을 생성 모델에서 샘플링한다"는 발상은 2022년 Diffuser에서 시작해 로봇 조작 정책, 운동 계획, 자율주행으로 퍼졌다. Diffusion Policy는 관측을 조건으로 짧은 행동 열을 내고 앞부분만 실행하는 receding horizon 방식을 정착시켰다. 2024–2025년에는 anchor 궤적에서 출발하거나 목표점을 먼저 고르는 식으로 시작점을 당겨 스텝 수를 1–2개로 줄이는 흐름이 강하다. GoalFlow는 목표점 선택, 생성, scoring의 세 단계가 분명히 나뉜 좋은 예다.</aside>
 </section>
+<section id="lineage-fig" class="t">
+<div class="head"><p class="kicker">4 · 계보 · 그림</p><h2>Diffuser는 궤적 전체를 한 배열로 놓고 반복해 denoise한다</h2></div>
+<div class="cols">
+<div class="stack">
+<div class="card bl"><span class="tag bl">배열</span><p>가로는 계획 horizon, 칸 하나가 한 시점의 상태 \(s_t\)와 행동 \(a_t\)다. 이 2차원 배열 전체가 샘플 하나다.</p></div>
+<div class="card or"><span class="tag or">국소에서 전역으로</span><p>denoise 한 번은 이웃 시간만 보는 시간 합성곱이다. 여러 번 반복하면 국소 일관성이 계획 전체의 일관성으로 커진다.</p></div>
+<div class="card gr"><span class="tag gr">guidance와 inpainting</span><p>보상의 gradient \(\mathcal J\)로 샘플을 유도하고, 시작과 목표 상태를 고정(inpainting)해 목표 도달 계획을 만든다.</p></div>
+</div>
+<figure><img src="../../assets/thumbs/7fdd10ca251d.webp" style="height:440px"><figcaption>Diffuser (Fig. 2): 상태·행동 쌍의 배열을 denoising 축(세로)을 따라 반복해 denoise한다. 빨간 칸이 한 번의 국소 수용 영역, \(\mathcal J\)가 선택적인 guide 함수다 — arXiv:2205.09991</figcaption></figure>
+</div>
+<div class="foot" data-foot><p>Diffuser, arXiv:2205.09991, ICML 2022 (MIT·UC Berkeley)</p></div>
+<aside>앞 장 표의 첫 줄을 그림으로 본다. Diffuser는 궤적 최적화를 모델 안으로 접어, 모델에서 샘플하는 것과 계획하는 것이 거의 같아지게 했다. 뒤의 모든 생성형 Planner가 이 틀 위에 있다. 바뀐 것은 조건(관측·차선·목표점), 시작점(잡음 대신 anchor), 스텝 수다.</aside>
+</section>
 <section id="diffplanner" class="t">
 <div class="head"><p class="kicker">4 · Diffusion Planner</p><h2>Diffusion Planner는 자기 궤적과 이웃의 미래를 한 번에 생성한다</h2></div>
 <div class="cols">
@@ -571,6 +627,19 @@ section.t.divider h2 { font-size:80px; }
 <p class="take"><b>설계 질문:</b> 실행 가능성(기구학)을 생성기 안에서 보장할 것인가, 뒤의 추종기에 맡길 것인가.</p>
 <div class="foot" data-foot><p>Zheng 외, Diffusion-Based Planning for Autonomous Driving with Flexible Guidance, arXiv:2501.15564, ICLR 2025</p></div>
 <aside>예측과 계획을 따로 하면 "다른 차는 내 계획을 모르고 움직인다"고 가정하게 된다. Diffusion Planner는 이웃의 미래와 자기 궤적을 한 번에 생성해 상호작용을 함께 다룬다. 또 하나 볼 점은 기구학이다. 네트워크가 낸 궤적이 차가 실제로 그릴 수 있는 곡선이라는 보장은 없으므로 뒤의 추종기가 메운다. 반대로 위치 대신 제어 입력이나 그 변화율을 생성하고 동역학 모델로 rollout하면 처음부터 실행 가능한 궤적이 나온다. 어느 쪽이든 장단점이 있다.</aside>
+</section>
+<section id="diffplanner-v" class="t">
+<div class="head"><p class="kicker">4 · Diffusion Planner · 영상</p><h2>같은 Diffusion Planner가 오픈소스 자율주행 스택 Autoware 안에서 돈다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:none;width:1067px"><a class="yt" href="https://www.youtube.com/watch?v=Ug9Pv2fOdmg"><img src="../../assets/yt/Ug9Pv2fOdmg.webp" alt="Autoware: Diffusion-based trajectory planner" style="height:600px"></a>
+<figcaption>▶ 영상 — Autoware에 diffusion 기반 궤적 Planner를 넣은 모듈식 end-to-end 구성의 주행 (TIER IV)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점 1</span><p>예측과 계획을 학습 모듈이 맡고, 스택의 나머지 모듈은 그대로다. 생성기 뒤에 추종기가 붙는 앞 장의 구조와 같다.</p></div>
+<div class="card or"><span class="tag or">볼 점 2</span><p>복잡한 상황에서 더 자연스러운 주행을 내세운다. 앞 장의 "이웃의 미래를 함께 생성"이 어떤 장면에서 드러나는지 본다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>TIER IV, Autoware Diffusion Planner(autoware_universe PR #10957, 2025-07 머지) · 원 논문 Zheng 외, arXiv:2501.15564, ICLR 2025 · 영상 1분 38초</p></div>
+<aside>영상은 논문 자체가 아니라 TIER IV가 Autoware에 옮긴 Diffusion Planner의 주행이다. 예측과 계획을 학습이 맡는 모듈식 end-to-end 구성이라는 것이 TIER IV의 설명이다. 영상에서는 생성기가 낸 궤적을 차가 따라가는 모습을 본다. 수치는 앞 장의 nuPlan 결과로 본다.</aside>
 </section>
 <section id="steps" class="t">
 <div class="head"><p class="kicker">4 · 스텝 수 줄이기</p><h2>스텝을 줄이는 길은 적분기, 시작점, 증류의 셋이고 증류는 다양성을 잃는다</h2></div>
@@ -637,6 +706,19 @@ section.t.divider h2 { font-size:80px; }
 <div class="foot" data-foot><p>VAMOS arXiv:2510.20818 · Can Vision Foundation Models Navigate? arXiv:2603.25937 · NaVILA arXiv:2412.04453, RSS 2025</p></div>
 <aside>VAMOS는 "어디로 갈지"와 "이 로봇이 갈 수 있는지"를 나눴다. 위층 VLM은 영상 위에 경로 후보를 그리고, 아래층은 로봇마다 따로 배운 traversability 모델로 고른다. 아래층의 라벨은 시뮬레이션 지형에서 그 로봇의 정책을 실제로 rollout한 성공 여부다. 한편 시각 기반 내비 모델을 zero-shot으로 평가한 연구는 충돌이 잦고 기하 이해가 약하다는 것을 보였다. 그래서 언어 모델은 위층, 기하는 아래층이라는 분담이 수치로 뒷받침된다.</aside>
 </section>
+<section id="vla-v" class="t">
+<div class="head"><p class="kicker">5 · VLA는 위층에 · 영상</p><h2>NaVILA는 언어 지시를 "앞으로 75 cm" 같은 중간 행동으로 바꾸고, 보행 정책이 실행한다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:none;width:1067px"><a class="yt" href="https://www.youtube.com/watch?v=QsF5x3m_p7U"><img src="../../assets/yt/QsF5x3m_p7U.webp" alt="NaVILA: Legged Robot Vision-Language-Action Model for Navigation" style="height:600px"></a>
+<figcaption>▶ 영상 — 언어 지시를 받은 다리 로봇이 NaVILA의 중간 행동을 따라 움직이는 시연 (1저자 An-Chieh Cheng 채널, 프로젝트 페이지가 거는 영상)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">두 층</span><p>VLA는 단일 시점 영상과 지시에서 언어로 된 중간 행동을 내고, 영상 기반 보행 RL 정책이 그것을 관절 움직임으로 바꾼다.</p></div>
+<div class="card or"><span class="tag or">앞 장과 맞춰 보기</span><p>Go2·H1·Booster T1에 배포해 실제 지시 25개에서 88%였다. VAMOS 논문의 실제 코스 6곳에서는 10%였다. 앞 장의 결론대로 단일 모델은 몸체의 기하 판단이 약하다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>NaVILA arXiv:2412.04453, RSS 2025 (UC San Diego·USC·NVIDIA) · 영상 4분 29초</p></div>
+<aside>영상에서는 지시를 받은 다리 로봇이 VLA가 낸 중간 행동을 따라 움직이는 모습을 본다. 두 수치가 어긋나 보이는 이유를 생각해 보자. 88%는 NaVILA 논문의 지시 따르기 과제이고, 10%는 VAMOS 논문이 꾸민 코스다. 같은 모델도 과제가 바뀌면 성적이 바뀌고, 몸체의 기하 판단이 필요한 곳에서 단일 VLA가 약하다는 것이 앞 장의 결론이다.</aside>
+</section>
 <section id="slowbrain" class="t">
 <div class="head"><p class="kicker">5 · 느린 판정자</p><h2>늦게 오는 VLM 답은 그대로 따르지 말고 Planner 점수에 섞는다</h2></div>
 <div class="cols">
@@ -702,6 +784,19 @@ section.t.divider h2 { font-size:80px; }
 <div class="foot" data-foot><p>TRG-planner arXiv:2501.01806 · DreamFlow arXiv:2603.02976 · Occlusion-Aware arXiv:2609.39105 · CARE arXiv:2506.03834</p></div>
 <aside>네 연구는 칸 하나에 숫자 하나를 두는 costmap의 한계를 각자 다르게 메운다. 경사면은 오를 때와 가로지를 때 위험이 다르고, 센서가 못 본 곳은 비용을 알 수 없고, 바퀴 하나가 구덩이에 빠지는 위험은 차체 자세로 봐야 보인다. CARE는 아예 Planner를 바꾸지 않고 출력 궤적을 밀어 고치는 안전 층이다. 새 위험 표현을 도입할 때는 기존 칸 비용과 같은 조건에서 비교해야 효과를 말할 수 있다.</aside>
 </section>
+<section id="risk4-v" class="t">
+<div class="head"><p class="kicker">5 · 지도 없는 내비 · 영상</p><h2>지도 없는 내비의 기억은 과거 관측을 지금 좌표로 옮겨야 하고, SRU는 원소별 곱 하나로 그것을 한다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:none;width:1067px"><a class="yt" href="https://www.youtube.com/watch?v=iG41e0yQIjg"><img src="../../assets/yt/iG41e0yQIjg.webp" alt="Spatially-Enhanced Recurrent Memory for Long-Range Mapless Navigation" style="height:600px"></a>
+<figcaption>▶ 영상 — 앞 카메라 하나와 SRU 기억만으로 막다른 곳을 되돌아 나오고 70 m 넘는 목표까지 지도 없이 가는 Unitree B2W (Robotic Systems Lab: Legged Robotics at ETH Zürich)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">SRU</span><p>LSTM·GRU 후보 상태의 tanh 안에 입력의 아핀 사상을 원소별로 곱한다. 동차 변환이 곱의 꼴이라는 데서 착안했다. 시뮬 120개 환경 성공률이 LSTM 63.5%, GRU 61.0%에서 SRU 78.9%로 올랐다.</p></div>
+<div class="card or"><span class="tag or">앞 장과 맞춰 보기</span><p>DreamFlow가 센서 밖을 상상한다면, SRU는 지나온 곳을 기억한다. 둘 다 지도를 따로 만들지 않고 정책 안에서 푼다. 실물 데이터로 fine-tuning하지 않고 사무실의 막다른 곳 둘을 되돌아 나왔다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>SRU — Yang·Frivik·Hoeller·Wang·Cadena·Hutter, arXiv:2506.05997, IJRR 45(11), 2026 (ETH RSL) · 영상 4분 15초</p></div>
+<aside>영상에서는 앞을 보는 스테레오 깊이 카메라 하나와 상대 목표만 받은 B2W가 지도 없이 막다른 곳을 확인하고 되돌아 나오는 모습을 본다. 같은 조건의 LSTM 정책은 막다른 곳 사이를 맴돌았다. 고전 파이프라인은 과거 관측을 동차 변환으로 지금 좌표에 옮겨 지도에 쌓는데, 일반 순환망은 이 정합을 스스로 배우지 못한다는 것이 이 논문의 발견이다. 센서 밖의 위험을 상상으로 메우든 기억으로 메우든, 그것이 지도를 대신할 수 있는지가 이 장의 질문이다.</aside>
+</section>
 <section id="pdm" class="t">
 <div class="head"><p class="kicker">5 · 규칙 기준선</p><h2>규칙 후보 15개를 시뮬레이션해 고른 PDM-Closed가 학습 Planner를 이겼다</h2></div>
 <figure><img src="../../assets/thumbs/f66d45834c3d.webp" style="height:380px"><figcaption>PDM (Fig. 1): 학습한 PDM-Open은 사람 차선을 따르다 0.5초 뒤부터 자기 오차를 키워 도로를 벗어난다 — arXiv:2306.07962</figcaption></figure>
@@ -715,6 +810,19 @@ section.t.divider h2 { font-size:80px; }
 </div>
 <div class="foot" data-foot><p>Dauner 외, Parting with Misconceptions about Learning-based Vehicle Motion Planning (PDM), arXiv:2306.07962, CoRL 2023 — nuPlan 2023 계획 챌린지 우승</p></div>
 <aside>PDM 논문은 학습 Planner가 사람 궤적을 흉내 내는 개루프 지표에서는 강하지만, 실제로 주행하는 폐루프에서는 자기 오차를 스스로 키운다는 것을 보였다. 반면 단순한 규칙 후보 15개를 모델로 시뮬레이션하고 점수로 고르는 방법이 챌린지에서 우승했다. 생성형 Planner와 구조가 같다는 점이 흥미롭다. 다른 곳은 후보를 규칙으로 만드느냐 학습으로 만드느냐뿐이다. 그래서 학습 생성기의 효과를 재려면 같은 선택기에 규칙 후보를 넣은 기준선과 비교하는 것이 좋다.</aside>
+</section>
+<section id="pdm-v" class="t">
+<div class="head"><p class="kicker">5 · 규칙 기준선 · 영상</p><h2>개루프 점수와 폐루프 주행이 어긋나는 것을 1분짜리 spotlight로 본다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:none;width:1067px"><a class="yt" href="https://www.youtube.com/watch?v=cKIofruqbIk"><img src="../../assets/yt/cKIofruqbIk.webp" alt="[Spotlight Video] Parting with Misconceptions about Learning-based Vehicle Motion Planning" style="height:600px"></a>
+<figcaption>▶ 영상 — PDM 논문의 spotlight(57초): 개루프·폐루프 평가의 차이와 PDM-Closed의 후보 생성·선택 (1저자 Daniel Dauner 채널, 저장소 README가 거는 영상)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점 1</span><p>사람 궤적을 흉내 내던 학습 Planner가 폐루프에서 자기 오차를 키우는가. 앞 장 그림의 PDM-Open이 그 예다.</p></div>
+<div class="card gr"><span class="tag gr">볼 점 2</span><p>IDM 속도 5 × 횡 오프셋 3의 후보 15개를 4초 시뮬레이션하고 규칙·진행·편안함 점수로 고르는 PDM-Closed의 흐름이다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>Dauner 외, PDM, arXiv:2306.07962, CoRL 2023 · 영상 57초</p></div>
+<aside>영상에서는 개루프 점수와 폐루프 주행이 어긋나는 논문의 주장과 규칙 후보를 시뮬레이션해 고르는 PDM-Closed의 흐름을 본다. 1분이 안 되는 spotlight라 수업에서 바로 틀기 좋다. 영상을 본 뒤 "생성형 Planner와 구조가 같고 후보를 누가 만드느냐만 다르다"는 앞 장의 결론을 다시 읽자.</aside>
 </section>
 <section id="rules" class="t">
 <div class="head"><p class="kicker">5 · 규칙의 자리</p><h2>학습 Planner는 규칙을 없앤 것이 아니라 규칙의 자리를 옮겼다</h2></div>
@@ -854,7 +962,30 @@ section.t.divider h2 { font-size:80px; }
     var s = Math.min(st.clientWidth / 1920, st.clientHeight / 1080);
     frame.style.transform = 'scale(' + s + ')';
   }
+  // ▶ 영상(figure.video): 썸네일 a.yt를 누르면 그 자리에 YouTube(nocookie) iframe을 넣고, 장을 넘기면 썸네일로 되돌린다.
+  // 캡처·검사(?shot, ?check)에서는 누르지 않으므로 썸네일만 찍힌다. PPTX는 그림에 하이퍼링크를 단다.
+  function ytId(href) {
+    var m = /[?&]v=([\w-]{11})/.exec(href) || /youtu\.be\/([\w-]{11})/.exec(href);
+    return m ? m[1] : null;
+  }
+  function stopVideos() {
+    Array.prototype.forEach.call(frame.querySelectorAll('figure.video iframe'), function (f) { f.remove(); });
+    Array.prototype.forEach.call(frame.querySelectorAll('figure.video a.yt.off'), function (a) { a.classList.remove('off'); });
+  }
+  frame.addEventListener('click', function (e) {
+    var a = e.target.closest ? e.target.closest('figure.video a.yt') : null;
+    if (!a || shot) return;
+    var id = ytId(a.href), img = a.querySelector('img');
+    if (!id || !img) return;
+    e.preventDefault();
+    var f = document.createElement('iframe');
+    f.width = img.clientWidth; f.height = img.clientHeight;
+    f.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0';
+    f.allow = 'autoplay; fullscreen; picture-in-picture'; f.allowFullscreen = true; f.title = img.alt || 'YouTube';
+    a.classList.add('off'); a.parentNode.insertBefore(f, a);
+  });
   function show(n) {
+    stopVideos();
     i = Math.max(0, Math.min(slides.length - 1, n));
     slides.forEach(function (el, k) { el.classList.toggle('on', k === i); });
     document.getElementById('count').textContent = (i + 1) + ' / ' + slides.length;
@@ -872,10 +1003,15 @@ section.t.divider h2 { font-size:80px; }
   window.withAllFonts = withAllFonts;
   // 넘침 검사: 본문 요소가 장 밖으로 나가거나 각주 띠를 덮으면 적는다.
   function check() {
-    var bad = [];
+    var bad = [], yt = [];
     slides.forEach(function (sec, k) {
       show(k);
       var box = sec.getBoundingClientRect();
+      // 영상 썸네일(img)의 자리. 캡처 PPTX(make_pptx)가 그 위에 보이지 않는 하이퍼링크 상자를 놓는다.
+      Array.prototype.forEach.call(sec.querySelectorAll('figure.video a.yt'), function (a) {
+        var r = (a.querySelector('img') || a).getBoundingClientRect();
+        yt.push({ slide: k + 1, href: a.href, r: [r.left - box.left, r.top - box.top, r.width, r.height] });
+      });
       Array.prototype.forEach.call(sec.querySelectorAll('.katex-error'), function (el) {
         bad.push({ slide: k + 1, id: sec.id, tag: 'TeX', text: (el.getAttribute('title') || el.textContent).slice(0, 60), over: 0 });
       });
@@ -884,7 +1020,7 @@ section.t.divider h2 { font-size:80px; }
       });
       var foot = sec.querySelector('[data-foot]');
       var limit = foot ? foot.getBoundingClientRect().top - 4 : box.bottom - 24;
-      Array.prototype.forEach.call(sec.querySelectorAll('p, h1, h2, h3, img, td, th, li, .katex-display, [data-box]'), function (el) {
+      Array.prototype.forEach.call(sec.querySelectorAll('p, h1, h2, h3, img, figcaption, td, th, li, .katex-display, [data-box]'), function (el) {
         if (foot && foot.contains(el)) return;
         if (el.closest('aside')) return;
         var r = el.getBoundingClientRect();
@@ -895,7 +1031,7 @@ section.t.divider h2 { font-size:80px; }
       });
     });
     var rep = document.getElementById('report');
-    rep.textContent = JSON.stringify(bad);
+    rep.textContent = JSON.stringify({ bad: bad, yt: yt });
     rep.setAttribute('data-done', '1');
   }
   function start() {

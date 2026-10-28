@@ -27,6 +27,9 @@ section .katex-display { margin:0; text-align:left; }
 section .katex-display > .katex { text-align:left; }
 x-shape { display:block; flex:none; }
 x-shape[kind="arrow-right"] { clip-path:polygon(0 32%,58% 32%,58% 0,100% 50%,58% 100%,58% 68%,0 68%); }
+figure.video a.yt { display:block; width:fit-content; max-width:100%; line-height:0; cursor:pointer; }
+figure.video a.yt.off { display:none; }
+figure.video iframe { display:block; border:0; border-radius:8px; background:#000; }
 #bar { position:fixed; left:0; right:0; bottom:0; height:56px; background:var(--bar); display:flex; align-items:center; gap:12px; padding:0 16px; font-size:15px; }
 #bar button, #bar a { background:none; border:1px solid #3A4A6B; color:var(--fg); border-radius:8px; padding:6px 12px; font:inherit; cursor:pointer; text-decoration:none; }
 #bar button:hover, #bar a:hover { border-color:var(--accent); }
@@ -197,7 +200,8 @@ section.t.divider h2 { font-size:80px; }
       var s = Math.min(r[2] / nw, r[3] / nh), w = nw * s, h = nh * s;
       r = [r[0] + (r[2] - w) / 2, r[1] + (r[3] - h) / 2, w, h];
     }
-    return { t: 'img', r: r, src: el.getAttribute('src') };
+    var a = el.closest('a');   // 영상 썸네일(figure.video > a.yt > img)은 YouTube 하이퍼링크를 단 그림이 된다
+    return { t: 'img', r: r, src: el.getAttribute('src'), href: a && /^https?:/.test(a.href) ? a.href : null };
   }
   function slide(sec) {
     var base = sec.getBoundingClientRect(), items = [];
@@ -339,6 +343,20 @@ section.t.divider h2 { font-size:80px; }
 <div class="foot" data-foot><p>[1] Fankhauser 등, CLAWAR 2014 · RA-L 2018 · [2] Miki 외, IROS 2022 — arXiv:2204.12876</p></div>
 <aside>travplan이 채택한 계보는 ETH의 elevation mapping입니다. 점 하나의 분산은 센서 거리의 제곱에 비례하고, 칸 높이는 그 분산으로 가중 평균합니다. GPU 판인 elevation_mapping_cupy는 가시성 정리와 상한 층을 더했습니다. 광선이 관측되지 않은 칸 위를 지나가면, 그 칸의 지면은 광선보다 높을 수 없다는 것입니다. travplan 셀 수는 220×220이라, Orin Nano 30 Hz 보고와 거의 같은 규모입니다. 그래서 매핑 자체는 병목이 아니라는 외부 근거로 삼습니다.</aside>
 </section>
+<section id="emap-v" class="t">
+<div class="head"><p class="kicker">A.2b · 로봇 지형 지도 · 영상</p><h2>높이 지도는 로봇이 걷는 동안 관측을 더해 가며 쌓인다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:none"><a class="yt" href="https://www.youtube.com/watch?v=iVMsQPTM65M"><img src="../../assets/yt/iVMsQPTM65M.webp" alt="Outdoor Terrain Mapping with ANYmal" style="height:580px"></a>
+<figcaption>▶ 영상 — 전·후방 회전 LiDAR를 단 ANYmal이 숲을 걸으며 robot-centric 높이 지도를 쌓는다 (ETH RSL)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점</span><p>로봇 둘레의 격자가 걸음마다 갱신된다. 관성·운동학 자세 추정과 LiDAR 거리 측정을 합쳐 지도를 만든다 [1].</p></div>
+<div class="card gy"><span class="tag">앞 장과 잇기</span><p>앞 장의 Kalman 갱신이 이 격자의 칸마다 돈다. elevation_mapping_cupy는 같은 파이프라인을 CUDA 커널로 옮기고 가시성 정리와 상한 층을 더한 것이다 [2].</p></div>
+</div>
+</div>
+<p class="take"><b>travplan:</b> L1이 쓰는 elevation_mapping_cupy는 이 파이프라인의 GPU 판이다. 매핑 자체는 병목이 아니다.</p>
+<div class="foot" data-foot><p>[1] Fankhauser 등, Robot-Centric Elevation Mapping with Uncertainty Estimates, CLAWAR 2014 · 영상은 ETH RSL 채널(2016)</p></div>
+<aside>영상에서는 ANYmal이 숲을 걷는 동안 로봇 둘레의 격자가 채워지는 과정을 봅니다. 앞뒤의 회전 LiDAR가 거리를 재고, 관성·운동학 자세 추정과 합쳐 지도를 만듭니다. 2014년 CLAWAR 논문의 결과이고, travplan L1의 코어인 elevation_mapping_cupy는 이 파이프라인에 가시성 정리와 상한 층을 더해 GPU로 옮긴 것입니다.</aside>
+</section>
 <section id="negobs" class="t">
 <div class="head"><p class="kicker">A.2b.3 · A.2b.7 · 음의 장애물</p><h2>포트홀은 관측되지 않고 그림자로만 남는다</h2></div>
 <div class="cols">
@@ -356,6 +374,20 @@ section.t.divider h2 { font-size:80px; }
 <p class="take"><b>travplan:</b> 그림자 상한은 광선 높이를, G-VOM은 경사 외삽을 쓴다. 같은 포트홀을 가리키는 독립된 두 신호다.</p>
 <div class="foot" data-foot><p>[5] Overbye·Saripalli, G-VOM, IEEE IV 2022 — arXiv:2109.13176 · [6] Mozzarelli 외 — arXiv:2403.13431</p></div>
 <aside>보도에서 가장 위험한 것은 포트홀과 내림 턱 같은 음의 장애물입니다. 이것은 직접 관측되지 않고 반사 없는 그림자로만 남습니다. emap은 광선 높이를 상한으로, G-VOM은 지면 경사 외삽을, Mozzarelli 외는 그림자에 최소 고도를 퍼뜨려 인공 단차를 만드는 방식을 씁니다. Mozzarelli 외는 보도 라스트마일 배달로봇을 명시 대상으로 해서 travplan과 문제 설정이 가장 가깝습니다. G-VOM은 GPL-3.0이고 파라미터가 트럭용이라, 방법만 참고하고 수치는 쓰지 않습니다.</aside>
+</section>
+<section id="negobs-v" class="t">
+<div class="head"><p class="kicker">A.2b.3 · 음의 장애물 · 영상</p><h2>G-VOM은 경사 외삽으로 찾은 음의 장애물을 지도의 1급 출력으로 낸다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:none"><a class="yt" href="https://www.youtube.com/watch?v=fgMx6gbHCk8"><img src="../../assets/yt/fgMx6gbHCk8.webp" alt="G-VOM Long Path" style="height:580px"></a>
+<figcaption>▶ 영상 — Warthog가 자율 주행하는 동안 G-VOM이 높이·거칠기·장애물 지도를 실시간으로 만든다 (Tim Overbye, 저자)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점</span><p>네 화면이 한 장면이다. 뒤따르는 차량의 카메라, voxel 점군, 색으로 칠한 지형 지도, 그리고 장애물 지도(검정 경성, 분홍 연성 장애물). 음의 장애물은 별도 층으로 낸다. 내부는 3D voxel인데 출력은 2.5D 여러 장이다 [5].</p></div>
+<div class="card or"><span class="tag or">주의</span><p>해상도 0.40 m, 음의 장애물 문턱 0.5 m, 로봇 반지름 4.0 m는 이 체급의 값이다. GPL-3.0이라 코드도 쓰지 않는다.</p></div>
+</div>
+</div>
+<p class="take"><b>travplan:</b> 경사 외삽이라는 방법만 가져온다. 파라미터와 코드는 가져오지 않는다.</p>
+<div class="foot" data-foot><p>[5] Overbye·Saripalli, G-VOM, IEEE IV 2022 — arXiv:2109.13176 · 영상은 저자 채널(2021), 코드 저장소 README가 건다</p></div>
+<aside>영상에서는 Warthog가 자율 주행하는 동안 G-VOM이 차량 둘레에 지도를 만드는 과정을 봅니다. 앞 장의 G-VOM 카드가 이 시스템입니다. 알려진 지면에서 경사를 외삽한 기대 높이와 관측 높이의 차로 음의 장애물을 판정하고, 그것을 지도의 1급 출력으로 냅니다. 트럭 체급의 파라미터와 GPL-3.0 코드는 쓰지 않고, 그림자 상한과 독립인 둘째 신호로 방법만 참고합니다.</aside>
 </section>
 <section id="impls" class="t">
 <div class="head"><p class="kicker">A.5.1 · A.5.4 · 지도 구현체 비교</p><h2>구현체를 견줘도 2.5D elevation mapping을 바꿀 이유는 없다</h2></div>
@@ -393,6 +425,20 @@ section.t.divider h2 { font-size:80px; }
 <div class="foot" data-foot><p>[8] Manoharan 등 — arXiv:2609.39105 · [9] Raja 등, ProTerrain — arXiv:2510.19364 · [10] Achey 등, SceneSense — arXiv:2506.20049</p></div>
 <aside>못 본 칸을 다루는 최근 연구는 두 방향입니다. Occlusion-Aware Planning과 ProTerrain은 불확실성을 계획까지 전파합니다. 앞의 것은 그 칸이 얼마나 높은지가 아니라 자세 추정을 얼마나 흔드는지로 위험을 잽니다. SceneSense는 반대로 못 본 칸을 생성 모델로 채웁니다. 이것은 탐사 시간을 줄일 수 있지만, 못 본 포트홀을 평평하게 덮을 수 있어 그림자 상한의 원칙과 정면으로 부딪힙니다. 그래서 travplan은 생성 채움을 cost에 넣지 않습니다.</aside>
 </section>
+<section id="unobs-v" class="t">
+<div class="head"><p class="kicker">A.2b.7 · 미관측 · 영상</p><h2>가려진 칸은 정답 지도 없이 자기지도로 복원할 수 있다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:none"><a class="yt" href="https://www.youtube.com/watch?v=quP_mNkMQEY"><img src="../../assets/yt/quP_mNkMQEY.webp" alt="Reconstructing Occluded Elevation Information in Terrain Maps With Self-Supervised Learning" style="height:580px"></a>
+<figcaption>▶ 영상 — 바위와 지형이 가린 높이 지도의 빈 칸을 자기지도 학습이 복원한다 — 저자 발표 영상 (ETH RSL)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점</span><p>이미 불완전한 실제 DEM에 레이캐스팅으로 가림을 더 넣고, 원래 관측됐던 칸을 복원하도록 학습한다. 정답 지도가 필요 없다. Telea 인페인팅은 뭉개고, 학습 쪽은 지형 구조를 지킨다.</p></div>
+<div class="card or"><span class="tag or">원칙은 그대로</span><p>복원한 높이는 추정이다. 앞 장의 SceneSense와 같은 "채움" 갈래라 cost에 넣지 않는다.</p></div>
+</div>
+</div>
+<p class="take"><b>travplan:</b> 가림을 더 넣어 복원을 배우는 트릭은 L0/L1 가림 학습 데이터를 만드는 데 쓴다. 결과를 cost에 넣지는 않는다.</p>
+<div class="foot" data-foot><p>Stölzle 외, Reconstructing Occluded Elevation Information in Terrain Maps with Self-Supervised Learning, RA-L 2022 — arXiv:2109.07150 (A.2b ⑥) · 영상은 ETH RSL 채널(2022)</p></div>
+<aside>발표 영상에서는 가려져 비어 있는 높이 지도와 학습 모델이 채운 지도를 봅니다. 인식 문서 A.2b의 여섯째 항목입니다. 실제 DEM은 이미 불완전하므로, 거기에 합성 시점에서 가림을 더 넣고 원래 관측됐던 칸을 복원하도록 학습하면 정답 지도가 필요 없습니다. travplan은 이 데이터 만드는 법을 L0/L1 가림 학습에 쓰고, 복원 결과는 그림자 상한의 원칙대로 cost에 넣지 않습니다.</aside>
+</section>
 <section id="div-trav" class="t dark divider">
 <p class="kicker">2 · Traversability (A.10)</p>
 <h2>"이 땅을 지나갈 수 있는가"를<br>사람 라벨 없이 배운다</h2>
@@ -422,6 +468,20 @@ section.t.divider h2 { font-size:80px; }
 <div class="foot" data-foot><p>[11] RELLIS-3D, ICRA 2021 — arXiv:2011.12954 · [12] BADGR, RA-L 2021 — arXiv:2002.05700 · LHT = Long-Horizon Traversability</p></div>
 <aside>traversability 라벨은 사람이 단 의미 라벨에서, 로봇이 실제로 겪은 사건으로 옮겨 왔습니다. RELLIS-3D는 도시용 분할 모델이 오프로드에서 무너진다는 것을 보여 줬고, BADGR은 충돌과 충격 같은 사건을 라벨로 삼았습니다. 기하만 보는 로봇은 키 큰 풀밭을 벽으로 보지만, 사건 라벨은 실제로 지나갈 수 있다는 것을 배웁니다. BADGR의 사건 예측과 샘플 기반 계획은 TravNet과 MPPI 조합과 구조가 같아서 travplan의 원형으로 봅니다.</aside>
 </section>
+<section id="trav-lineage-v" class="t">
+<div class="head"><p class="kicker">A.10.1 · 계보 · 영상</p><h2>BADGR는 스스로 모은 충돌·충격 사건으로 풀밭을 지나갈 수 있다고 배운다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:none"><a class="yt" href="https://www.youtube.com/watch?v=UtoZEwrDHj4"><img src="../../assets/yt/UtoZEwrDHj4.webp" alt="BADGR: An Autonomous Self-Supervised Learning-Based Navigation System" style="height:580px"></a>
+<figcaption>▶ 영상 — 바퀴 로봇이 스스로 모은 사건 라벨로 배워, 기하로는 벽처럼 보이는 풀밭을 지나가고 덜컹거리는 길을 피한다 (Greg Kahn, 저자)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점</span><p>사람 라벨이 없다. 충돌과 덜컹거림을 센서로 재서 그 직전의 영상과 짝짓는다. 행동 시퀀스마다 미래 사건을 예측하고, 가장 좋은 시퀀스를 골라 움직인다 [12].</p></div>
+<div class="card or"><span class="tag or">한계</span><p>가 본 곳만 안다. 위험한 사건은 일부러 모으기 어렵다. 다음 장의 PU 문제가 여기서 시작된다.</p></div>
+</div>
+</div>
+<p class="take"><b>travplan:</b> 사건 라벨은 TravNet 자기지도(TP-0010), 행동 시퀀스 샘플의 가중 평균은 MPPI와 구조가 같다.</p>
+<div class="foot" data-foot><p>[12] Kahn·Abbeel·Levine, BADGR, RA-L 2021 — arXiv:2002.05700 · 영상은 저자 채널(2020), 프로젝트 페이지가 건다</p></div>
+<aside>영상에서는 로봇이 스스로 데이터를 모으는 과정과, 그 데이터로 배운 뒤 풀밭을 통과하고 덜컹거리는 땅을 피하는 주행을 봅니다. 앞 장 그림의 사건 예측 모델이 실제로 어떻게 쓰이는지가 보입니다. 영상과 행동 시퀀스를 넣어 미래 사건을 예측하고 샘플 기반으로 시퀀스를 고르는 구조가, travplan의 TravNet과 MPPI 조합의 원형입니다.</aside>
+</section>
 <section id="pu" class="t">
 <div class="head"><p class="kicker">A.10.1 · 2026 자기지도</p><h2>2026년 연구는 "음성 라벨이 없다"는 PU 문제를 세 방식으로 푼다</h2></div>
 <div class="grid3">
@@ -436,6 +496,20 @@ section.t.divider h2 { font-size:80px; }
 <p class="take"><b>travplan:</b> TravNet은 라벨 없는 칸을 손실에서 빼서 이 문제를 이미 피한다. 세 방법은 실물·영상 단계(TP-0059)에서 다시 다룬다.</p>
 <div class="foot" data-foot><p>[13] Kim 등, SyNeT — arXiv:2602.00814 · [14] Cho 등, GSAT, ICRA 2026 — arXiv:2603.07480 · [15] Viswanath 등 — arXiv:2607.23743</p></div>
 <aside>자기지도 traversability는 지나간 자리만 양성이고, 지나가지 않은 곳은 음성이 아니라 모름입니다. 이것이 PU 문제입니다. SyNeT은 음성을 합성하고, GSAT은 양성 둘레 hypersphere 밖을 이상으로 보고, Long-Horizon Traversability는 nnPU 손실로 보정합니다. travplan의 TravNet은 연속 회귀 목표와 가우시안 NLL을 쓰고 라벨 없는 칸을 손실에서 빼므로, 지금 단계에서는 이 문제가 생기지 않습니다. GSAT은 입력이 기하라 TravNet과 가장 가깝고, hypersphere 거리는 OOD 점수 후보로 남깁니다.</aside>
+</section>
+<section id="pu-v" class="t">
+<div class="head"><p class="kicker">A.10.1 · 2026 자기지도 · 영상</p><h2>GSAT은 LiDAR 기하만으로 양성 분포 밖을 이상으로 보아 지나갈 수 없는 곳을 찾는다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:none"><a class="yt" href="https://www.youtube.com/watch?v=1ULi2VL8g1o"><img src="../../assets/yt/1ULi2VL8g1o.webp" alt="[ICRA 2026] GSAT: Geometric Traversability Estimation using Self-supervised Learning" style="height:580px"></a>
+<figcaption>▶ 영상 — 궤적 양성만으로 배운 GSAT이 RELLIS-3D와 실물(SCOUT MINI, Go2)에서 정상·이상 칸을 가른다 (SPARO Lab, 저자 연구실)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점</span><p>높이 지도 위에 정상(파랑)과 이상(빨강)이 칠해진다. 로봇이 지나간 곳과 닮은 기하는 정상, latent hypersphere 밖은 이상이다. 입력이 LiDAR 기하라 조명에 강하다 [14].</p></div>
+<div class="card or"><span class="tag or">PU를 어떻게 피하나</span><p>라벨 없는 칸을 전부 음성으로 두면 F1이 오히려 떨어진다. hypersphere 안은 정상으로 당기고 밖만 밀어낸다. 같은 낮은 덤불이 Go2에는 정상, SCOUT MINI에는 이상이다.</p></div>
+</div>
+</div>
+<p class="take"><b>travplan:</b> 입력이 기하라 TravNet과 가장 가깝다. 가져올 것은 OOD 경계(hypersphere 거리)와 기하 증강이다.</p>
+<div class="foot" data-foot><p>[14] Cho 등, GSAT, ICRA 2026 — arXiv:2603.07480 · 영상은 저자 연구실 채널(2026), 프로젝트 페이지가 건다</p></div>
+<aside>영상에서는 높이 지도 위에 정상과 이상이 칠해지는 정성 결과와 실물 주행을 봅니다. 라벨 없는 칸을 전부 음성으로 두면 F1이 떨어진다는 것을 보였고, 대신 양성 latent 둘레의 hypersphere 밖만 이상으로 밉니다. 같은 낮은 덤불이 다리 로봇에는 지나갈 수 있고 바퀴 로봇에는 아니라고 나온 것이, 그 로봇의 실제 능력을 배운다는 뜻입니다. travplan은 라벨 없는 칸을 손실에서 빼므로 GSAT이 고친 실패는 생기지 않습니다.</aside>
 </section>
 <section id="vlm" class="t">
 <div class="head"><p class="kicker">A.10.2 · 비전 파운데이션 모델과 VLM</p><h2>VLM은 기본 비용이 아니라 막혔을 때의 보조 판단으로 쓴다</h2></div>
@@ -478,6 +552,20 @@ section.t.divider h2 { font-size:80px; }
 <p class="take"><b>travplan:</b> 오프라인에서 마스크·깊이 pseudo-label을 만들어 작은 실시간 모델(검출기, TravNet)로 증류한다.</p>
 <div class="foot" data-foot><p>[18] DINOv2 — arXiv:2304.07193 · DINOv3 — arXiv:2508.10104 · [19] Depth Anything V2 — arXiv:2406.09414 · SAM 2 — arXiv:2408.00714 · Grounding DINO — arXiv:2303.05499</p></div>
 <aside>2023년부터 로봇 인식의 출발점은 과제별 모델이 아니라 비전 파운데이션 모델입니다. 그런데 Orin에서 큰 백본을 매 프레임 돌린 근거는 아직 얇습니다. 그래서 travplan은 Grounding DINO와 SAM으로 보행자, 킥보드, 볼라드 마스크를 만들고, Depth Anything으로 깊이 pseudo-label을 만든 뒤 작은 모델로 증류하는 교사 용도로 먼저 씁니다. 제품 경로에는 Apache-2.0 가중치만 두고, DINOv3와 SAM 3는 라이선스 조건을 확인한 뒤 연구 비교에만 씁니다.</aside>
+</section>
+<section id="vfm-v" class="t">
+<div class="head"><p class="kicker">A.11 · 비전 파운데이션 모델 · 영상</p><h2>WVN은 고정한 DINO 특징 위에 작은 head를 현장에서 5분 만에 학습한다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:none"><a class="yt" href="https://www.youtube.com/watch?v=0Vgw9MHWe4g"><img src="../../assets/yt/0Vgw9MHWe4g.webp" alt="Wild Visual Navigation - Example 2" style="height:580px"></a>
+<figcaption>▶ 영상 — ANYmal이 걷는 동안 Wild Visual Navigation이 영상에서 traversability를 배우고 높이 지도에 입힌다 (ETH RSL)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점</span><p>왼쪽이 카메라와 예측(파랑이 지나갈 수 있음), 오른쪽이 그 예측을 입힌 높이 지도다. 사무실, 복도, 마른 풀밭에서 걸으면서 라벨 생성·학습·추론이 함께 돈다.</p></div>
+<div class="card gy"><span class="tag">왜 빠른가</span><p>큰 백본은 고정하고 작은 head만 배운다. 라벨은 사람이 5분쯤 몰며 모은 속도 추종 오차뿐이어도 된다. 높은 풀을 기하 규칙은 막지만 WVN은 통과로 본다.</p></div>
+</div>
+</div>
+<p class="take"><b>travplan:</b> 영상 TravNet을 도입할 때 따를 구조다. 큰 백본은 고정하고, 작은 head만 로봇 경험으로 배운다.</p>
+<div class="foot" data-foot><p>Mattamala·Frey 외, Wild Visual Navigation, Autonomous Robots 2025 — arXiv:2404.07110 (A.7) · 영상은 ETH RSL 채널(2024), 프로젝트 페이지가 건다</p></div>
+<aside>영상에서는 ANYmal이 걷는 동안 카메라 영상의 traversability 예측이 높이 지도 위에 입혀지는 과정을 봅니다. 앞 장의 "특징 백본" 카드가 이것입니다. 사람이 5분쯤 로봇을 몰면 그동안의 속도 추종 오차가 라벨이 되고, 고정한 DINO 특징 위의 작은 head가 새 환경에서 온보드로 학습을 끝냅니다. 예측을 붙이는 높이 지도가 travplan이 벤더링한 elevation_mapping_cupy 계열이라, TP-0010의 시뮬 접촉·슬립 로그 자기지도와 구조가 같습니다.</aside>
 </section>
 <section id="detect" class="t">
 <div class="head"><p class="kicker">A.12.1–A.12.4 · 검출 · 추적 · 예측</p><h2>검출은 Apache DETR로 바꾸고, 추적과 예측은 로봇 좌표로 옮긴다</h2></div>
@@ -539,6 +627,20 @@ section.t.divider h2 { font-size:80px; }
 <div class="foot" data-foot><p>[25] Cheraghi Pouria 등 — arXiv:2603.10407 · [26] Guo 등, CoCoNav — arXiv:2608.07751</p></div>
 <aside>예측 불확실성을 믿을 수 있게 만드는 2026년 연구 둘입니다. 하나는 학습 때 가우시안 공분산을 보정하고, 다른 하나는 배포 중에 conformal로 오차 폭을 맞춥니다. CoCoNav는 같은 정면 흐름에서 ACP-MPC가 얼어붙어 시간 초과로 끝난 것과 대비됩니다. 하지만 travplan의 기본 시뮬은 보행자가 등속으로 걷고 등속으로 예측하므로 오차가 0입니다. 그래서 반응형 보행자 짝 비교에서 오차와 충돌이 실제로 생길 때 시작합니다.</aside>
 </section>
+<section id="conformal-v" class="t">
+<div class="head"><p class="kicker">A.12.4 · 예측 보정 · 영상</p><h2>conformal로 맞춘 오차 범위를 제약으로 쓰면 군중 속 안전 여유에 근거가 생긴다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:none"><a class="yt" href="https://www.youtube.com/watch?v=z8Eux3UOWc8"><img src="../../assets/yt/z8Eux3UOWc8.webp" alt="Towards Generalizable Safety in Crowd Navigation via Conformal Uncertainty Handling" style="height:580px"></a>
+<figcaption>▶ 영상 — 보행자 예측에 적응형 conformal 오차 범위를 더해 군중을 지나는 로봇 (TASL, UC Riverside, 저자 연구실)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점</span><p>예측기가 틀릴 폭을 최근 오차로 온라인 추정해 관측에 더하고, 제약 강화학습이 그 범위를 지키게 한다. 분포 안 성공률 96.93 %, 충돌 3.72배 감소 [30].</p></div>
+<div class="card gy"><span class="tag">앞 장과 잇기</span><p>앞 장의 "배포 중" 보정이다. 속도·정책·집단 행동이 바뀐 분포 밖에서도 강건했다.</p></div>
+</div>
+</div>
+<p class="take"><b>travplan:</b> 반응형 보행자(TP-0167)에서 예측 오차가 실제로 생길 때, 이런 범위 검사를 Controller 뒤에 붙인다.</p>
+<div class="foot" data-foot><p>[30] Yao 등, CoRL 2025 — arXiv:2508.05634 · 영상은 저자 연구실(Trustworthy Autonomous Systems Lab) 채널(2025), 프로젝트 페이지가 건다</p></div>
+<aside>영상에서는 방법의 흐름과 군중 속 주행 결과를 봅니다. 보행자 예측의 오차 범위를 분포 가정 없이 최근 오차의 순위로 맞추고, 그 범위를 제약 강화학습의 안전 제약으로 넣었습니다. 분포 밖 조건에서도 강건했다는 것이 보정을 배포 중에 하는 쪽의 장점입니다. travplan의 기본 시뮬은 예측 오차가 0이라, 반응형 보행자 짝 비교에서 오차가 생길 때 시작합니다.</aside>
+</section>
 <section id="formfactor" class="t">
 <div class="head"><p class="kicker">A.6–A.9 · 다른 로봇에서</p><h2>몸이 지형과 닿는 방식이 인식 설계를 정한다</h2></div>
 <table>
@@ -555,6 +657,20 @@ section.t.divider h2 { font-size:80px; }
 </div>
 <p class="take"><b>travplan:</b> 4족의 교훈 하나를 쓴다. 지형을 완벽히 재구성하지 않아도, 얼마나 믿을 만한지를 함께 알면 된다.</p>
 <aside>보행 로봇 탭과 예측 탭은 다른 분야에서 가져올 설계 참고입니다. 자동차 world model은 모두 데스크톱 GPU급이고 Orin 실측이 없어 앞으로 지켜볼 계보로 둡니다. 다만 RiskWorld의 위험할 때만 재계획은 Planner D 재계획에 참고합니다. travplan이 쓰는 GPU elevation mapping은 자동차보다 4족 보행 계보가 가장 강하게 뒷받침합니다. 같은 스택이 4족과 휴머노이드 양쪽에서 재사용되고 있습니다. 바퀴형 공개 기준으로는 CMU 자율 스택의 지형 분석을 둡니다.</aside>
+</section>
+<section id="formfactor-v" class="t">
+<div class="head"><p class="kicker">A.9.1 · CMU 지형 분석 · 영상</p><h2>바퀴형 공개 기준인 CMU 자율 스택은 NUC 한 대로 지형 분석과 탐사를 돌린다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:none"><a class="yt" href="https://www.youtube.com/watch?v=gJMwWmBZNpI"><img src="../../assets/yt/gJMwWmBZNpI.webp" alt="Open-source: Autonomous Exploration Development Environment" style="height:580px"></a>
+<figcaption>▶ 영상 — 지형 분석, 충돌 회피, waypoint 추종을 갖춘 CMU 자율 탐사 개발 환경의 공개 소개 (Ji Zhang, 저자)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점</span><p>바퀴 로봇 한 대가 LiDAR 점군에서 지형을 분석하고 건물 안팎을 탐사한다. 시뮬레이션 환경 여러 개와 실제 로봇 배포가 같은 모듈을 쓴다.</p></div>
+<div class="card gy"><span class="tag">travplan이 보는 것</span><p>0.2 m 칸의 25 % 분위수를 지면으로 두고 높이 임계값 하나로 판단하는 <code>terrain_analysis</code>. 음의 장애물(<code>negObstacle</code>)과 shrink/expand 파라미터는 TP-0048 설계에 참고한다.</p></div>
+</div>
+</div>
+<p class="take"><b>travplan:</b> 라이선스가 없어 파라미터 설계만 참고한다. 바퀴형 공개 기준으로 둔다.</p>
+<div class="foot" data-foot><p>CMU Autonomous Exploration Development Environment, <code>terrain_analysis</code>(A.9.1 · A.2b.5) · 영상은 저자 채널(2020)</p></div>
+<aside>영상에서는 바퀴 로봇이 LiDAR 점군에서 지형을 분석하며 건물 안팎을 자율 탐사하는 모습과, 같은 모듈을 쓰는 시뮬레이션 환경들을 봅니다. 앞 장의 A.9.1 카드가 이 스택입니다. 0.2 m 칸의 25 % 분위수를 지면으로 두고 높이 임계값 하나로 판단하는 단순한 규칙이 NUC 한 대에서 돕니다. 라이선스가 없어 코드는 쓰지 않고, 음의 장애물과 미관측 처리 파라미터만 TP-0048 설계에 참고합니다.</aside>
 </section>
 <section id="div-recent" class="t dark divider">
 <p class="kicker">4 · 최근 연구 비교 (A.14)</p>
@@ -769,6 +885,20 @@ section.t.divider h2 { font-size:80px; }
 <p class="take"><b>travplan:</b> A를 유지하고, 옆·뒤 이동이 잦으면 후면 저가 반구형 LiDAR(약 400달러)를 더한다.</p>
 <aside>센서 배치 문서는 다섯 배치를 비교합니다. 화면에는 넷을 남겼고, 다섯째인 차체 위 반구형 LiDAR 한 대는 가격이 견적이라 뺐습니다. 사용자 구성인 전면 LiDAR 하나와 카메라 다섯은 가격 대비 지형 인식이 좋고, 옆과 뒤의 지형은 기억에만 기댑니다. L1 시뮬에서 15° 숙인 전면 120° 센서는 360° 센서와 비슷한 폐루프 성공률을 냈습니다. Unitree L2급 하나를 후면에 더하면 옆·뒤 지형이 기억에서 관측으로 바뀝니다.</aside>
 </section>
+<section id="sensor-layout-v" class="t">
+<div class="head"><p class="kicker">§H.1 · 센서 배치 · 영상</p><h2>카메라 중심 배치의 대표 사례인 Starship은 LiDAR 없이 보도를 달린다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:none"><a class="yt" href="https://www.youtube.com/watch?v=Z417CncwQsg"><img src="../../assets/yt/Z417CncwQsg.webp" alt="A Day in the Life of a Starship Robot" style="height:580px"></a>
+<figcaption>▶ 영상 — 밀턴케인스에서 새벽까지 자율 배달하는 Starship 로봇의 하루 (Starship Technologies 공식)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점</span><p>배치 C다. 카메라 12대(ToF 포함), 초음파, 레이더로 장애물을 본다. 보도, 횡단보도, 밤길을 어떻게 지나는지와 보도·횡단보도·밤길 주행을 본다.</p></div>
+<div class="card or"><span class="tag or">사용자 구성 A와 비교</span><p>A는 전면 LiDAR 1 + 카메라 5다. 가격 대비 지형 인식이 좋고, 옆·뒤 지형은 기억에만 기댄다. C는 옆·뒤를 카메라가 맡는 대신 지형 추정이 학습에 의존한다.</p></div>
+</div>
+</div>
+<p class="take"><b>travplan:</b> A를 유지한다. 옆·뒤 이동이 잦으면 후면 저가 반구형 LiDAR(배치 D, 약 400달러)를 더한다.</p>
+<div class="foot" data-foot><p>센서 배치 문서 §H.1 배치 C(Starship FAQ: 카메라 12, 초음파, 레이더) · 영상은 회사 공식 채널(2022)</p></div>
+<aside>영상에서는 Starship 로봇이 도시 보도를 자율 배달하는 하루를 봅니다. LiDAR 없이 카메라 12대와 초음파, 레이더로 장애물을 보는 배치 C의 대표 사례입니다. 사용자 구성인 배치 A는 전면 LiDAR 하나와 카메라 다섯으로 가격 대비 지형 인식이 좋지만 옆·뒤 지형은 기억에만 기댑니다. 옆·뒤 이동이 잦으면 Unitree L2급 반구형 LiDAR를 후면에 더하는 배치 D를 권합니다.</aside>
+</section>
 <section id="sensor-compute" class="t">
 <div class="head"><p class="kicker">§H.3 · §H.4 · 가격 · 연산</p><h2>카메라 다섯 대의 검출이 가장 무겁고, AGX Orin 32GB 이상이 필요하다</h2></div>
 <div class="cols">
@@ -912,7 +1042,30 @@ section.t.divider h2 { font-size:80px; }
     var s = Math.min(st.clientWidth / 1920, st.clientHeight / 1080);
     frame.style.transform = 'scale(' + s + ')';
   }
+  // ▶ 영상(figure.video): 썸네일 a.yt를 누르면 그 자리에 YouTube(nocookie) iframe을 넣고, 장을 넘기면 썸네일로 되돌린다.
+  // 캡처·검사(?shot, ?check)에서는 누르지 않으므로 썸네일만 찍힌다. PPTX는 그림에 하이퍼링크를 단다.
+  function ytId(href) {
+    var m = /[?&]v=([\w-]{11})/.exec(href) || /youtu\.be\/([\w-]{11})/.exec(href);
+    return m ? m[1] : null;
+  }
+  function stopVideos() {
+    Array.prototype.forEach.call(frame.querySelectorAll('figure.video iframe'), function (f) { f.remove(); });
+    Array.prototype.forEach.call(frame.querySelectorAll('figure.video a.yt.off'), function (a) { a.classList.remove('off'); });
+  }
+  frame.addEventListener('click', function (e) {
+    var a = e.target.closest ? e.target.closest('figure.video a.yt') : null;
+    if (!a || shot) return;
+    var id = ytId(a.href), img = a.querySelector('img');
+    if (!id || !img) return;
+    e.preventDefault();
+    var f = document.createElement('iframe');
+    f.width = img.clientWidth; f.height = img.clientHeight;
+    f.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0';
+    f.allow = 'autoplay; fullscreen; picture-in-picture'; f.allowFullscreen = true; f.title = img.alt || 'YouTube';
+    a.classList.add('off'); a.parentNode.insertBefore(f, a);
+  });
   function show(n) {
+    stopVideos();
     i = Math.max(0, Math.min(slides.length - 1, n));
     slides.forEach(function (el, k) { el.classList.toggle('on', k === i); });
     document.getElementById('count').textContent = (i + 1) + ' / ' + slides.length;
@@ -930,10 +1083,15 @@ section.t.divider h2 { font-size:80px; }
   window.withAllFonts = withAllFonts;
   // 넘침 검사: 본문 요소가 장 밖으로 나가거나 각주 띠를 덮으면 적는다.
   function check() {
-    var bad = [];
+    var bad = [], yt = [];
     slides.forEach(function (sec, k) {
       show(k);
       var box = sec.getBoundingClientRect();
+      // 영상 썸네일(img)의 자리. 캡처 PPTX(make_pptx)가 그 위에 보이지 않는 하이퍼링크 상자를 놓는다.
+      Array.prototype.forEach.call(sec.querySelectorAll('figure.video a.yt'), function (a) {
+        var r = (a.querySelector('img') || a).getBoundingClientRect();
+        yt.push({ slide: k + 1, href: a.href, r: [r.left - box.left, r.top - box.top, r.width, r.height] });
+      });
       Array.prototype.forEach.call(sec.querySelectorAll('.katex-error'), function (el) {
         bad.push({ slide: k + 1, id: sec.id, tag: 'TeX', text: (el.getAttribute('title') || el.textContent).slice(0, 60), over: 0 });
       });
@@ -942,7 +1100,7 @@ section.t.divider h2 { font-size:80px; }
       });
       var foot = sec.querySelector('[data-foot]');
       var limit = foot ? foot.getBoundingClientRect().top - 4 : box.bottom - 24;
-      Array.prototype.forEach.call(sec.querySelectorAll('p, h1, h2, h3, img, td, th, li, .katex-display, [data-box]'), function (el) {
+      Array.prototype.forEach.call(sec.querySelectorAll('p, h1, h2, h3, img, figcaption, td, th, li, .katex-display, [data-box]'), function (el) {
         if (foot && foot.contains(el)) return;
         if (el.closest('aside')) return;
         var r = el.getBoundingClientRect();
@@ -953,7 +1111,7 @@ section.t.divider h2 { font-size:80px; }
       });
     });
     var rep = document.getElementById('report');
-    rep.textContent = JSON.stringify(bad);
+    rep.textContent = JSON.stringify({ bad: bad, yt: yt });
     rep.setAttribute('data-done', '1');
   }
   function start() {

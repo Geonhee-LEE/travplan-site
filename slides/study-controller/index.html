@@ -27,6 +27,9 @@ section .katex-display { margin:0; text-align:left; }
 section .katex-display > .katex { text-align:left; }
 x-shape { display:block; flex:none; }
 x-shape[kind="arrow-right"] { clip-path:polygon(0 32%,58% 32%,58% 0,100% 50%,58% 100%,58% 68%,0 68%); }
+figure.video a.yt { display:block; width:fit-content; max-width:100%; line-height:0; cursor:pointer; }
+figure.video a.yt.off { display:none; }
+figure.video iframe { display:block; border:0; border-radius:8px; background:#000; }
 #bar { position:fixed; left:0; right:0; bottom:0; height:56px; background:var(--bar); display:flex; align-items:center; gap:12px; padding:0 16px; font-size:15px; }
 #bar button, #bar a { background:none; border:1px solid #3A4A6B; color:var(--fg); border-radius:8px; padding:6px 12px; font:inherit; cursor:pointer; text-decoration:none; }
 #bar button:hover, #bar a:hover { border-color:var(--accent); }
@@ -197,7 +200,8 @@ section.t.divider h2 { font-size:80px; }
       var s = Math.min(r[2] / nw, r[3] / nh), w = nw * s, h = nh * s;
       r = [r[0] + (r[2] - w) / 2, r[1] + (r[3] - h) / 2, w, h];
     }
-    return { t: 'img', r: r, src: el.getAttribute('src') };
+    var a = el.closest('a');   // 영상 썸네일(figure.video > a.yt > img)은 YouTube 하이퍼링크를 단 그림이 된다
+    return { t: 'img', r: r, src: el.getAttribute('src'), href: a && /^https?:/.test(a.href) ? a.href : null };
   }
   function slide(sec) {
     var base = sec.getBoundingClientRect(), items = [];
@@ -393,6 +397,19 @@ section.t.divider h2 { font-size:80px; }
 <div class="foot" data-foot><p>Williams 외, MPPI arXiv:1509.01149 (2015) · Information-theoretic MPC arXiv:1707.02342, T-RO 2018</p></div>
 <aside>MPPI는 Model Predictive Path Integral의 줄임이다. 경로 적분 제어 이론에서 나왔고, 2017년판은 "비용의 볼츠만 분포에 KL로 가장 가까운 제어 분포"를 찾는 문제로 다시 유도했다. 계산은 단순하다. 현재 명령열 주변에 잡음을 섞은 후보를 많이 만들고, 모델로 rollout해 비용을 매기고, 비용의 지수로 가중 평균한다. 비용을 미분하지 않으므로 충돌하면 큰 값, 아니면 0인 계단 비용도 그대로 쓴다. 강화학습 덱에서 본 최대 엔트로피 RL의 샘플링 버전이기도 하다.</aside>
 </section>
+<section id="mppi-core-v" class="t">
+<div class="head"><p class="kicker">3 · MPPI · 시연</p><h2>MPPI는 GPU로 rollout한 명령열 후보의 가중 평균으로 흙길을 공격적으로 달린다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:2"><a class="yt" href="https://www.youtube.com/watch?v=FbcGs-XoiUw"><img src="../../assets/yt/FbcGs-XoiUw.webp" alt="GT AutoRally: Aggressive Driving with Model Predictive Path Integral Control" style="height:620px"></a>
+<figcaption>▶ 영상 — 1/5 크기 AutoRally 차량이 MPPI로 흙길 트랙을 공격적으로 달린다 (GT AutoRally)</figcaption></figure>
+<div class="stack">
+<div class="card or"><span class="tag or">볼 점</span><p>앞 장의 ①–③이 매 주기 반복된다. 명령열 후보 수천 개를 GPU로 동시에 rollout하고, 비용의 지수 가중으로 평균한 명령열의 첫 명령만 실행한다.</p></div>
+<div class="card gy"><span class="tag">모델이 틀리면</span><p>흙길처럼 모델이 틀리거나 외란이 크면 샘플 전체가 나쁜 영역으로 밀린다. 계보의 Tube-MPPI·Robust MPPI가 이 문제를 다룬다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>Williams 외, MPPI arXiv:1509.01149 (2015) · 정보이론적 MPC arXiv:1707.02342, T-RO 2018 · 영상: GT AutoRally 채널(ICRA 2016 투고 영상)</p></div>
+<aside>영상에서는 1/5 크기 AutoRally 차량이 흙길 트랙을 미끄러지며 도는 장면을 본다. MPPI는 제어열에 잡음을 섞은 후보 수천 개를 GPU로 동시에 rollout하고 비용의 지수 가중치로 평균한다. 2017년판은 같은 차량으로 교차 엔트로피 방법(CEM)의 MPC 판과 비교했다. 미끄러지는 흙길은 모델 오차와 외란이 큰 곳이라, 계보의 Tube-MPPI와 Robust MPPI가 같은 차량에서 강건성을 다뤘다.</aside>
+</section>
 <section id="temp" class="t">
 <div class="head"><p class="kicker">3 · 온도 λ</p><h2>온도는 몇 개의 샘플을 믿을지 정한다</h2></div>
 <figure><img src="../../assets/figs/rl_r08_mppi_temperature.webp" style="height:340px"><figcaption>넓고 얕은 골짜기, 좁고 깊은 골짜기, 가운데 언덕이 있는 비용. 같은 샘플 64개를 세 온도로 가중했다(빨간 선이 가중 평균)</figcaption></figure>
@@ -415,6 +432,19 @@ section.t.divider h2 { font-size:80px; }
 <div class="foot" data-foot><p>Kim 외, Smooth Model Predictive Path Integral Control without Smoothing, arXiv:2112.09988, RA-L 2022</p></div>
 <aside>MPPI의 해는 샘플의 가중 평균이므로 샘플의 모양을 닮는다. 스텝마다 독립인 잡음을 쓰면 평균한 명령도 떨리고, 떨림을 비용으로 페널티를 주면 다른 목표와 싸운다. 잡음을 시간 상관 있게 뽑거나, 한 차수 높은 변화율 공간에서 뽑아 적분하면 처음부터 매끄러운 후보가 나온다. SMPPI는 이렇게 해서 MPPI의 유도를 그대로 지키면서 매끄러움을 얻었다.</aside>
 </section>
+<section id="noise-v" class="t">
+<div class="head"><p class="kicker">3 · 잡음의 모양 · 시연</p><h2>잡음을 변화율에 넣으면 비용을 튜닝하지 않아도 명령이 매끄럽다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:2"><a class="yt" href="https://www.youtube.com/watch?v=fyngK8PCoyM"><img src="../../assets/yt/fyngK8PCoyM.webp" alt="[RAL/IROS 2022] Smooth Model Predictive Path Integral Control without Smoothing" style="height:620px"></a>
+<figcaption>▶ 영상 — SMPPI 저자 시연: 변화율에 잡음을 넣은 MPPI의 주행과 제어 입력 (Taekyung Kim, RA-L/IROS 2022)</figcaption></figure>
+<div class="stack">
+<div class="card or"><span class="tag or">볼 점</span><p>표준 MPPI는 스텝마다 독립인 잡음을 제어값에 바로 더해 제어열이 떨린다. SMPPI는 잡음을 변화율에 더하고 적분한다. 랜덤 워크가 개별 잡음보다 매끄러운 것과 같은 원리다.</p></div>
+<div class="card gy"><span class="tag">유도는 그대로</span><p>MPPI의 정보이론적 유도가 유지된다. 비용 항을 튜닝하지 않고도 구조적으로 매끄러운 제어를 얻는다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>Kim 외, Smooth Model Predictive Path Integral Control without Smoothing, arXiv:2112.09988, RA-L 2022</p></div>
+<aside>영상에서는 SMPPI로 움직이는 차량과 그때의 제어 입력을 본다. 앞 장 그림의 세 번째 열, 변화율 공간의 잡음이 실제 주행에서 어떻게 보이는지가 핵심이다. 떨림을 비용으로 페널티를 주면 다른 목표와 싸우지만, 잡음의 모양을 바꾸면 후보 자체가 처음부터 매끄럽다.</aside>
+</section>
 <section id="mppi-lineage" class="t">
 <div class="head"><p class="kicker">3 · 계보</p><h2>십 년 동안 바뀐 것은 가중 평균이 아니라 샘플 분포와 구현이다</h2></div>
 <table style="font-size:24px">
@@ -430,6 +460,19 @@ section.t.divider h2 { font-size:80px; }
 </table>
 <div class="foot" data-foot><p>RMPPI arXiv:2102.09027 · log-MPPI arXiv:2203.16599 · MPPI-Generic arXiv:2409.07563 · Feedback-MPPI arXiv:2506.14855 · CLIS-MPPI arXiv:2610.21239</p></div>
 <aside>계보를 보면 MPPI의 가중 평균 자체는 거의 그대로이고, 샘플을 어디서 어떻게 뽑느냐와 구현이 바뀌었다. 강건 MPPI는 실제 상태가 위험할 때 명목 상태를 유지해 외란에 버틴다. MPPI-Generic은 같은 알고리즘도 구현에 따라 속도가 수십 배 다르다는 것을 보였다. 최근 연구는 MPPI의 해에 피드백 이득을 붙여 주기 사이와 지연을 메우는 쪽으로 간다.</aside>
+</section>
+<section id="mppi-lineage-v" class="t">
+<div class="head"><p class="kicker">3 · 계보 · 시연</p><h2>샘플 기반 MPC는 annealing으로 샘플 분포를 좁혀 다리 로봇의 관절 토크까지 낸다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:2"><a class="yt" href="https://www.youtube.com/watch?v=baCGTKIooO0"><img src="../../assets/yt/baCGTKIooO0.webp" alt="[Demos] DIAL-MPC: Diffusion-Inspired Annealing for Legged MPC" style="height:620px"></a>
+<figcaption>▶ 영상 — DIAL-MPC 데모 모음: 시뮬레이션 휴머노이드의 크레이트 밀기 등, diffusion식 annealing을 쓴 샘플 기반 MPC가 학습 없이 관절 토크를 낸다 (Haoru Xue, 1저자)</figcaption></figure>
+<div class="stack">
+<div class="card or"><span class="tag or">볼 점</span><p>가중 평균은 그대로 두고 두 겹의 annealing을 더했다. 반복마다 잡음을 줄이고, horizon 위치마다 잡음을 달리한다. 학습 없이 실물 Go2의 속도 추종과 7 kg 짐을 진 점프를 해낸다.</p></div>
+<div class="card gy"><span class="tag">계보의 공통점</span><p>입력이 관절 토크라 차원이 크다. 십 년 동안 바뀐 것은 가중 평균이 아니라 샘플을 어디서 어떻게 뽑느냐다(앞 장).</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>DIAL-MPC, Xue 외(CMU), ICRA 2025 — arXiv:2409.15610</p></div>
+<aside>영상의 데모 모음에서는 샘플 기반 MPC가 관절 토크 수준에서 도는 다리 로봇(시뮬레이션 휴머노이드 등)을 본다. 계보 표의 DIAL-MPC 줄이다. 반복마다 잡음을 줄이는 diffusion식 annealing으로 샘플 분포를 좁혀, 입력 차원이 큰 관절 토크 문제에서도 샘플이 부족하지 않게 했다. 앞 장의 결론, 가중 평균은 그대로이고 샘플 분포와 구현이 바뀐다는 말의 가장 최근 예다.</aside>
 </section>
 <section id="proxpi" class="t">
 <div class="head"><p class="kicker">3 · 학습 prior 넣기</p><h2>학습한 prior는 샘플의 중심이 아니라 비용으로 넣는다</h2></div>
@@ -508,6 +551,19 @@ section.t.divider h2 { font-size:80px; }
 <div class="foot" data-foot><p>PETS arXiv:1805.12114 · IKD arXiv:2102.12667 · RMA arXiv:2107.04034 · 지형 인지 arXiv:2305.00676 · TD-MPC2 arXiv:2310.16828</p></div>
 <aside>MPC와 MPPI는 모델을 바꿔 끼울 수 있는 틀이다. 손으로 만든 운동학 모델이 슬립이나 지형 효과를 설명하지 못하면, 그 자리를 데이터로 배운 모델로 바꾼다. PETS는 앙상블로 불확실성을 함께 내고, IKD는 IMU로 지형 효과를 배우고, RMA는 숨은 환경 요인을 짧은 이력에서 추정한다. 학습 모델의 위험은 강화학습 덱에서 본 것과 같다. Planner는 모델이 틀린 곳을 찾아가 이용한다.</aside>
 </section>
+<section id="learned-dyn-v" class="t">
+<div class="head"><p class="kicker">4 · 학습 동역학 · 시연</p><h2>IMU로 배운 inverse kinodynamic 모델이 고속 오프로드에서 계획대로 움직이게 한다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:2"><a class="yt" href="https://www.youtube.com/watch?v=QJDINgrtlCc"><img src="../../assets/yt/QJDINgrtlCc.webp" alt="Learning Inverse Kinodynamics for Accurate High-Speed Off-Road Navigation on Unstructured Terrain" style="height:620px"></a>
+<figcaption>▶ 영상 — IKD: 1/10 크기 차량이 학습한 inverse kinodynamic 모델로 비정형 지형을 고속으로 달린다 (UT AMRL, RA-L 2021)</figcaption></figure>
+<div class="stack">
+<div class="card or"><span class="tag or">볼 점</span><p>원하는 속도·곡률과 최근 IMU 관측을 넣으면 그 변화를 실제로 만드는 제어 입력을 낸다. 자갈 같은 지형이 고속에서 언더스티어를 만드는 효과를 IMU가 보여 주기 때문이다.</p></div>
+<div class="card gr"><span class="tag gr">결과</span><p>실외 트랙에서 계획 실행 성공률 52.4% → 86.9%. 보지 못한 실내 바닥에서도 효과가 유지됐다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>IKD arXiv:2102.12667, RA-L 2021 (UT Austin)</p></div>
+<aside>영상에서는 비정형 지형을 빠르게 달릴 때 계획한 궤적과 실제 움직임이 얼마나 어긋나는지, 그리고 학습한 역운동 모델이 그 차이를 얼마나 줄이는지를 본다. 작은 지형 차이도 고속에서는 크게 증폭된다. IKD는 손으로 만든 운동학 모델 대신 데이터로 배운 모델을 제어기에 끼운 가장 단순한 예다. 앞 장 표의 두 번째 줄이다.</aside>
+</section>
 <section id="residual" class="t">
 <div class="head"><p class="kicker">4 · 잔차와 context</p><h2>물리 모델 위에 작은 학습 잔차를 얹고, 짧은 이력으로 조건을 전달한다</h2></div>
 <div class="math">$$x_{t+1} = \underbrace{f_{\text{물리}}(x_t, u_t)}_{\text{대부분}} + \underbrace{g_\theta(x_t, u_t, z_t)}_{\text{작은 잔차}}, \qquad z_t = \text{encoder}(x_{t-H:t}, u_{t-H:t})$$</div>
@@ -533,6 +589,20 @@ section.t.divider h2 { font-size:80px; }
 <div class="foot" data-foot><p>McKinnon·Schoellig, Learn Fast, Forget Slow, arXiv:1810.06681 — 900 kg 지상 로봇 3 km 실측에서 가중 베이즈 선형회귀가 GP보다 정확했다</p></div>
 <aside>가우시안 프로세스는 함수 위의 확률 분포다. 커널이 "가까운 입력은 비슷한 출력"을 정하고, 관측을 조건으로 하면 평균과 분산이 닫힌 꼴로 나온다. 제어에서 GP의 진짜 가치는 분산이다. 모델을 얼마나 모르는지를 알면 그만큼 제약을 조이거나 속도를 줄일 수 있다. 다만 바퀴 로봇의 잔차는 상당 부분이 지연처럼 선형이라, 실측 연구에서는 선형 베이즈 회귀가 GP만큼 또는 더 정확했다. 비선형이 남는 채널과 분산이 필요한 곳에만 GP를 쓰는 것이 실용적이다.</aside>
 </section>
+<section id="gp-v" class="t">
+<div class="head"><p class="kicker">4 · 강연 · 배운 모델 위의 보장</p><h2>배운 모델 위에서 보장을 만드는 길은 세 갈래다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:2"><a class="yt" href="https://www.youtube.com/watch?v=tfDv32K5Pmo"><img src="../../assets/yt/tfDv32K5Pmo.webp" alt="Melanie Zeilinger: Learning for Complex Control Systems - Guarantees in the Unknown" style="height:620px"></a>
+<figcaption>▶ 영상 — Melanie Zeilinger(ETH Zürich)의 MIT Robotics 세미나 "Learning for Complex Control Systems — Guarantees in the Unknown" (MIT Robotics, 2026-04-10)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">① 예측 모델</span><p>기록한 데이터로 예측 모델을 자동 개선한다. 이 장의 학습 동역학·잔차·GP가 여기다.</p></div>
+<div class="card or"><span class="tag or">② MPC 파라미터화</span><p>폐루프 성능이 가장 좋은 비용·제약을 데이터에서 추론한다.</p></div>
+<div class="card gr"><span class="tag gr">③ 제약 만족</span><p>MPC로 학습 제어기에 제약 만족을 덧붙인다. 5장의 예측 안전 필터가 여기다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>Hewing·Wabersich·Menner·Zeilinger, Annual Review of Control, Robotics, and Autonomous Systems 3:269–296 (2020) · Cautious MPC arXiv:1705.10702 · PCBF arXiv:2105.10241</p></div>
+<aside>영상에서는 Zeilinger 그룹이 학습한 모델 위에서 보장을 만드는 법을 강연으로 본다. 세 갈래 분류는 같은 그룹의 개관 논문을 따랐다. Cautious MPC는 GP 잔차의 불확실성을 예측 horizon 위로 전파해 확률 제약으로 바꾼다. 모델이 자신 없는 영역에서는 제약이 저절로 조여져 제어가 조심스러워진다. PCBF는 예측 안전 필터가 실행 불가능해지는 순간을 없애는 회복 장치다. 앞 장의 GP 분산을 어디에 쓰느냐에 대한 답이 ①과 ③에 있다.</aside>
+</section>
 <section id="adapt" class="t">
 <div class="head"><p class="kicker">4 · 적응</p><h2>숨은 조건은 학습 때 privileged 정보로 배우고, 배포 때 이력에서 추정한다</h2></div>
 <div class="cols">
@@ -546,6 +616,19 @@ section.t.divider h2 { font-size:80px; }
 <tr><td>메타학습(MAML)</td><td>가중치(몇 스텝 갱신)</td><td class="good">새 조건에 빠르게</td><td class="bad">학습이 까다롭다</td></tr>
 </table>
 <aside>마찰, 하중, 노면처럼 센서로 직접 보이지 않는 조건을 다루는 세 방식이다. RMA는 시뮬레이션에서 정답 조건을 아는 teacher를 학습한 뒤, student가 최근 이력만 보고 그 latent를 맞히게 한다. 온라인 회귀는 모델의 몇 계수만 실시간으로 고친다. 메타학습은 몇 스텝의 갱신만으로 새 조건에 맞도록 시작점을 배운다. 공통의 위험은 학습 때 보지 못한 조건이다.</aside>
+</section>
+<section id="adapt-v" class="t">
+<div class="head"><p class="kicker">4 · 적응 · 시연</p><h2>시뮬레이션에서만 배운 RMA가 보지 못한 노면에 1초 안쪽으로 적응한다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:2"><a class="yt" href="https://www.youtube.com/watch?v=nBy1piJrq1A"><img src="../../assets/yt/nBy1piJrq1A.webp" alt="RMA: Rapid Motor Adaptation for Legged Robots (Results)" style="height:620px"></a>
+<figcaption>▶ 영상 — RMA 결과 영상: 시뮬레이션만으로 학습한 A1이 바위·미끄러운 바닥·모래·계단에 미세조정 없이 적응한다 (Legged Robots)</figcaption></figure>
+<div class="stack">
+<div class="card or"><span class="tag or">볼 점</span><p>노면이 바뀌어도 걸음이 이어지는지. 적응 모듈은 최근 상태·행동 이력만으로 latent(extrinsics)를 추정하고 10 Hz로 돈다. 기본 정책은 100 Hz다.</p></div>
+<div class="card gy"><span class="tag">한계</span><p>학습 때 본 조건 범위 안에서만 적응한다(앞 장 표). 보지 못한 조건은 세 방식 모두의 공통 위험이다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>RMA arXiv:2107.04034, RSS 2021 (UC Berkeley·CMU)</p></div>
+<aside>영상에서는 시뮬레이션에서만 학습한 정책이 미세조정 없이 바위, 미끄러운 바닥, 모래, 계단을 지나는 것을 본다. 시뮬레이션에서는 마찰, 하중, 모터 세기를 알므로 teacher가 그것을 latent로 압축해 배우고, 적응 모듈이 이력만으로 같은 latent를 맞히도록 지도 학습한다. 저가형 A1에서도 1초 안쪽으로 새 지형과 하중에 적응했다.</aside>
 </section>
 <section id="dyn-pc" class="t">
 <div class="head"><p class="kicker">4 · 장단점</p><h2>모델 오차를 다루는 법은 "얼마나 배우느냐"에 따라 단계가 나뉜다</h2></div>
@@ -582,6 +665,19 @@ section.t.divider h2 { font-size:80px; }
 <div class="foot" data-foot><p>그림 출처: OcclusionCBF 공개 저장소 데모</p></div>
 <aside>비용 통합형은 장애물을 비용으로 표현해 최적화에 맡긴다. 샘플 기반 MPC와 잘 맞고 지연이 없지만, 다른 비용 항과 맞바꿔지므로 반드시 피한다는 보장은 없다. 외부 안전 필터는 제어기의 출력을 받아, 안전 조건을 만족하는 가장 가까운 명령으로 투영한다. 제어기가 무엇이든 같은 보장을 준다. 오른쪽 그림의 OcclusionCBF는 가려진 사각지대에서 사람이 튀어나올 수 있는 영역까지 고려해 보이기 전에 감속한다.</aside>
 </section>
+<section id="two-structures-v" class="t">
+<div class="head"><p class="kicker">5 · 외부 안전 필터 · 시연</p><h2>외부 안전 필터는 위험 수준을 상황에 맞게 조절하며 보행자 사이를 지난다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:2"><a class="yt" href="https://www.youtube.com/watch?v=VHRnmXToLN8"><img src="../../assets/yt/VHRnmXToLN8.webp" alt="[IROS 2025] Safe Navigation in Uncertain Crowded Scenarios Using Risk Adaptive CVaR Barrier Functions" style="height:620px"></a>
+<figcaption>▶ 영상 — Risk Adaptive CVaR Barrier Functions: 불확실한 보행자 사이를 지나는 안전 필터 시연 (Xinyi Wang, IROS 2025)</figcaption></figure>
+<div class="stack">
+<div class="card or"><span class="tag or">볼 점</span><p>앞 장의 (2) 외부 안전 필터형이다. 제어기가 낸 명령을 barrier 조건을 만족하는 가장 가까운 명령으로 고친다. CVaR와 동적 영역 기반 barrier 함수를 결합해 위험 수준을 상황에 맞게 스스로 조절한다.</p></div>
+<div class="card gy"><span class="tag">풀이</span><p>오픈소스 CasADi(qpOASES·IPOPT)로 푼다. 공식 구현의 의존성은 casadi·numpy·scipy뿐이다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>Risk Adaptive CVaR Barrier Functions (IROS 2025) · 공개 구현 Adaptive-CVaR-Barrier-Function</p></div>
+<aside>영상에서는 움직임이 불확실한 보행자 사이를 로봇이 안전 필터와 함께 지나는 것을 본다. 비용 통합형은 보행자를 비용으로 녹여 최적화에 맡기지만, 이 필터는 제어기가 무엇이든 마지막에 명령을 최소한으로 고친다. CVaR는 이 절의 세 장 뒤 CVaR 장에서 다루는 꼬리 위험 척도다. 안전 반경을 고정하지 않고 위험 수준에 따라 barrier를 조절한다는 점이 표준 CBF-QP와 다르다.</aside>
+</section>
 <section id="cbf" class="t">
 <div class="head"><p class="kicker">5 · 배경지식 · 제어 장벽 함수</p><h2>CBF는 안전 집합의 경계로 다가가는 속도를 제한한다</h2></div>
 <div class="math">$$\mathcal S = \{x : h(x) \ge 0\}, \qquad \min_u \lVert u - u_{\mathrm{nom}} \rVert^2 \ \ \text{s.t.}\ \ \dot h(x, u) \ge -\gamma\, h(x)$$</div>
@@ -591,6 +687,19 @@ section.t.divider h2 { font-size:80px; }
 <div class="card or"><span class="tag or">단점</span><p>h를 설계해야 하고 모델이 맞아야 한다. 입력 한계와 충돌하면 해가 없을 수 있다. 장애물이 많으면 합치는 법이 문제다.</p></div>
 </div>
 <aside>안전 집합을 h(x) ≥ 0으로 적는다. 예를 들어 h는 보행자까지 거리에서 안전 반경을 뺀 값이다. CBF 조건은 h가 줄어드는 속도를 h에 비례해 제한한다. 경계에서 멀면 빨리 다가가도 되지만, 가까워질수록 천천히만 다가갈 수 있어 결코 경계를 넘지 않는다. 이 조건은 많은 시스템에서 입력에 선형이라, 원래 명령에 가장 가까운 안전 명령을 작은 QP로 찾는다. 그림 (b)처럼 속도 공간에서 허용 반공간으로 투영하는 것과 같다.</aside>
+</section>
+<section id="cbf-v" class="t">
+<div class="head"><p class="kicker">5 · 제어 장벽 함수 · 시연</p><h2>CBF 필터는 명령이 경계를 향해도 안전 집합을 벗어나지 않게 고친다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:2"><a class="yt" href="https://www.youtube.com/watch?v=_sCoAdBrgJw"><img src="../../assets/yt/_sCoAdBrgJw.webp" alt="Onboard Safety Guarantees for Racing Drones: High-speed Geofencing with Control Barrier Functions" style="height:620px"></a>
+<figcaption>▶ 영상 — 고속 레이싱 드론의 geofence(가상 경계)를 CBF 안전 필터로 지키는 시연 (AMBER-Lab, Caltech)</figcaption></figure>
+<div class="stack">
+<div class="card or"><span class="tag or">볼 점</span><p>조종 명령이 경계를 향할 때 필터가 \(u_{\mathrm{nom}}\)에 가장 가까운 안전 명령으로 바꾼다(앞 장의 QP). 경계에서 멀면 빨리, 가까우면 천천히만 다가갈 수 있다.</p></div>
+<div class="card gy"><span class="tag">주의</span><p>필터도 모델과 지연이 맞아야 한다. 뒤 장의 Poisson 안전 함수는 G1에서 보행 제어기의 속도 추종 지연 때문에 \(h\)가 잠깐 음수가 됐다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>Ames 외, Control Barrier Functions: Theory and Applications, arXiv:1903.11199 · 영상: AMBER-Lab(Caltech) 채널, Singletary 외, Onboard Safety Guarantees for Racing Drones, RA-L 2022 — arXiv:2201.04331</p></div>
+<aside>영상에서는 빠르게 나는 드론이 보이지 않는 경계 앞에서 명령을 고쳐 받아 경계를 넘지 않는 것을 본다. 앞 장 그림 (b)의 반공간 투영이 실시간으로 일어나는 셈이다. 조종자나 상위 제어기가 어떤 명령을 내도 같은 보장을 준다는 것이 외부 안전 필터의 요점이다. 다만 그 보장은 모델이 맞을 때의 것이라, 지연이 크면 경계를 잠깐 넘을 수 있다.</aside>
 </section>
 <section id="cvar" class="t">
 <div class="head"><p class="kicker">5 · 배경지식 · 꼬리 위험</p><h2>평균 비용은 드문 큰 사고를 가리고, CVaR는 나쁜 꼬리를 본다</h2></div>
@@ -631,6 +740,19 @@ section.t.divider h2 { font-size:80px; }
 <p class="take"><b>핵심:</b> 장애물이 셀 단위로 많을 때는 barrier를 하나씩 합치기보다 지도 전체에서 h 하나를 만드는 편이 틈을 지킨다.</p>
 <div class="foot" data-foot><p>Exact-Safe MPPI arXiv:2610.07369 · Poisson 안전 함수 arXiv:2505.06794</p></div>
 <aside>장애물이 여러 개면 barrier도 여러 개다. 미분 가능하게 합치려고 soft-min을 쓰면, 그 값이 늘 실제 최솟값보다 작아서 안전 집합이 깎인다. 장애물이 많을수록 깎이는 양이 커져 좁은 통로가 먼저 닫힌다. 정확한 최솟값을 쓰면 틈을 지키지만 계산이 무겁다. Poisson 안전 함수는 지도 전체에서 경계 조건을 만족하는 매끄러운 함수 하나를 풀어 이 문제를 피한다. 다만 실물 실험에서 보행 제어기의 속도 추종 지연 때문에 h가 잠깐 음수가 됐다고 보고했다. 지연은 안전 필터에서도 문제다.</aside>
+</section>
+<section id="barrier-grid-v" class="t">
+<div class="head"><p class="kicker">5 · Poisson 안전 함수 · 시연</p><h2>occupancy 지도에서 Poisson 방정식으로 푼 \(h\) 하나가 Go2·G1의 CBF 필터가 된다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:2"><a class="yt" href="https://www.youtube.com/watch?v=fBRdkAJGixI"><img src="../../assets/yt/fBRdkAJGixI.webp" alt="Dynamic Safety in Complex Environments: Synthesizing Safety Filters with Poisson's Equation" style="height:620px"></a>
+<figcaption>▶ 영상 — Poisson 안전 함수: occupancy 지도에서 푼 \(h\)로 CBF-QP 필터를 걸어 Go2·G1이 장애물 사이를 지난다 (Gilbert Bahati, Caltech)</figcaption></figure>
+<div class="stack">
+<div class="card or"><span class="tag or">볼 점</span><p>장애물 경계를 \(h = 0\)인 Dirichlet 경계로 두고 Poisson 방정식을 푼다. \(h\)는 자유 공간에서 양수, 경계에서 멀수록 크고, 기울기가 경계 근처에서도 0이 되지 않아 거리장보다 CBF로 쓰기 좋다.</p></div>
+<div class="card gy"><span class="tag">속도</span><p>GPU SOR로 120 × 120 격자를 0.2–0.3 ms에 풀고, 이전 해로 시작해 10 Hz로 갱신한다. 로봇은 단일 적분기(속도 명령)로 보고 CBF-QP를 건다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>Poisson 안전 함수, Bahati·Bena·Ames (Caltech), arXiv:2505.06794 (2025)</p></div>
+<aside>영상에서는 인식한 occupancy 지도에서 h를 풀고 그 위에서 Go2와 G1이 장애물 사이를 지나는 것을 본다. 앞 장의 결론, 장애물이 많을 때는 barrier를 하나씩 합치기보다 지도 전체에서 h 하나를 만드는 편이 틈을 지킨다는 말의 실물 예다. Go2에서는 h가 늘 양수였고, G1에서는 보행 제어기의 속도 추종 지연 때문에 잠깐 음수가 됐다. 지연은 안전 필터에서도 문제다.</aside>
 </section>
 <section id="sample-filter" class="t">
 <div class="head"><p class="kicker">5 · 샘플 기반 안전 필터</p><h2>안전한 샘플이 하나도 없을 때만 백업 명령으로 개입한다</h2></div>
@@ -793,7 +915,30 @@ section.t.divider h2 { font-size:80px; }
     var s = Math.min(st.clientWidth / 1920, st.clientHeight / 1080);
     frame.style.transform = 'scale(' + s + ')';
   }
+  // ▶ 영상(figure.video): 썸네일 a.yt를 누르면 그 자리에 YouTube(nocookie) iframe을 넣고, 장을 넘기면 썸네일로 되돌린다.
+  // 캡처·검사(?shot, ?check)에서는 누르지 않으므로 썸네일만 찍힌다. PPTX는 그림에 하이퍼링크를 단다.
+  function ytId(href) {
+    var m = /[?&]v=([\w-]{11})/.exec(href) || /youtu\.be\/([\w-]{11})/.exec(href);
+    return m ? m[1] : null;
+  }
+  function stopVideos() {
+    Array.prototype.forEach.call(frame.querySelectorAll('figure.video iframe'), function (f) { f.remove(); });
+    Array.prototype.forEach.call(frame.querySelectorAll('figure.video a.yt.off'), function (a) { a.classList.remove('off'); });
+  }
+  frame.addEventListener('click', function (e) {
+    var a = e.target.closest ? e.target.closest('figure.video a.yt') : null;
+    if (!a || shot) return;
+    var id = ytId(a.href), img = a.querySelector('img');
+    if (!id || !img) return;
+    e.preventDefault();
+    var f = document.createElement('iframe');
+    f.width = img.clientWidth; f.height = img.clientHeight;
+    f.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0';
+    f.allow = 'autoplay; fullscreen; picture-in-picture'; f.allowFullscreen = true; f.title = img.alt || 'YouTube';
+    a.classList.add('off'); a.parentNode.insertBefore(f, a);
+  });
   function show(n) {
+    stopVideos();
     i = Math.max(0, Math.min(slides.length - 1, n));
     slides.forEach(function (el, k) { el.classList.toggle('on', k === i); });
     document.getElementById('count').textContent = (i + 1) + ' / ' + slides.length;
@@ -811,10 +956,15 @@ section.t.divider h2 { font-size:80px; }
   window.withAllFonts = withAllFonts;
   // 넘침 검사: 본문 요소가 장 밖으로 나가거나 각주 띠를 덮으면 적는다.
   function check() {
-    var bad = [];
+    var bad = [], yt = [];
     slides.forEach(function (sec, k) {
       show(k);
       var box = sec.getBoundingClientRect();
+      // 영상 썸네일(img)의 자리. 캡처 PPTX(make_pptx)가 그 위에 보이지 않는 하이퍼링크 상자를 놓는다.
+      Array.prototype.forEach.call(sec.querySelectorAll('figure.video a.yt'), function (a) {
+        var r = (a.querySelector('img') || a).getBoundingClientRect();
+        yt.push({ slide: k + 1, href: a.href, r: [r.left - box.left, r.top - box.top, r.width, r.height] });
+      });
       Array.prototype.forEach.call(sec.querySelectorAll('.katex-error'), function (el) {
         bad.push({ slide: k + 1, id: sec.id, tag: 'TeX', text: (el.getAttribute('title') || el.textContent).slice(0, 60), over: 0 });
       });
@@ -823,7 +973,7 @@ section.t.divider h2 { font-size:80px; }
       });
       var foot = sec.querySelector('[data-foot]');
       var limit = foot ? foot.getBoundingClientRect().top - 4 : box.bottom - 24;
-      Array.prototype.forEach.call(sec.querySelectorAll('p, h1, h2, h3, img, td, th, li, .katex-display, [data-box]'), function (el) {
+      Array.prototype.forEach.call(sec.querySelectorAll('p, h1, h2, h3, img, figcaption, td, th, li, .katex-display, [data-box]'), function (el) {
         if (foot && foot.contains(el)) return;
         if (el.closest('aside')) return;
         var r = el.getBoundingClientRect();
@@ -834,7 +984,7 @@ section.t.divider h2 { font-size:80px; }
       });
     });
     var rep = document.getElementById('report');
-    rep.textContent = JSON.stringify(bad);
+    rep.textContent = JSON.stringify({ bad: bad, yt: yt });
     rep.setAttribute('data-done', '1');
   }
   function start() {

@@ -27,6 +27,9 @@ section .katex-display { margin:0; text-align:left; }
 section .katex-display > .katex { text-align:left; }
 x-shape { display:block; flex:none; }
 x-shape[kind="arrow-right"] { clip-path:polygon(0 32%,58% 32%,58% 0,100% 50%,58% 100%,58% 68%,0 68%); }
+figure.video a.yt { display:block; width:fit-content; max-width:100%; line-height:0; cursor:pointer; }
+figure.video a.yt.off { display:none; }
+figure.video iframe { display:block; border:0; border-radius:8px; background:#000; }
 #bar { position:fixed; left:0; right:0; bottom:0; height:56px; background:var(--bar); display:flex; align-items:center; gap:12px; padding:0 16px; font-size:15px; }
 #bar button, #bar a { background:none; border:1px solid #3A4A6B; color:var(--fg); border-radius:8px; padding:6px 12px; font:inherit; cursor:pointer; text-decoration:none; }
 #bar button:hover, #bar a:hover { border-color:var(--accent); }
@@ -197,7 +200,8 @@ section.t.divider h2 { font-size:80px; }
       var s = Math.min(r[2] / nw, r[3] / nh), w = nw * s, h = nh * s;
       r = [r[0] + (r[2] - w) / 2, r[1] + (r[3] - h) / 2, w, h];
     }
-    return { t: 'img', r: r, src: el.getAttribute('src') };
+    var a = el.closest('a');   // 영상 썸네일(figure.video > a.yt > img)은 YouTube 하이퍼링크를 단 그림이 된다
+    return { t: 'img', r: r, src: el.getAttribute('src'), href: a && /^https?:/.test(a.href) ? a.href : null };
   }
   function slide(sec) {
     var base = sec.getBoundingClientRect(), items = [];
@@ -270,6 +274,19 @@ section.t.divider h2 { font-size:80px; }
 <div class="card or"><span class="tag or">학습 보행</span><p>시뮬레이터 수천 개 병렬 환경에서 PPO로 관절 목표를 배우고, 도메인 랜덤화로 실물에 옮긴다.</p></div>
 </div>
 <aside>다리 로봇은 땅에 닿은 발이 만드는 지지 영역 안에 무게중심을 두거나, 그렇지 못하면 다음 발을 제때 놓아 균형을 잡는다. 4족의 걷기(walk)는 다리 셋이 땅에 있어 멈춰도 서 있지만, trot이나 이족 보행은 지지 영역이 선분이나 발 하나라 움직임으로 균형을 잡는다. 그래서 다리 로봇의 아래 층은 바퀴보다 훨씬 복잡하고, 지금은 대부분 시뮬레이터에서 강화학습으로 배운다. 몸 안의 감각과 몸 밖의 감각을 어떻게 섞을지도 핵심 설계다.</aside>
+</section>
+<section id="prereq-v" class="t">
+<div class="head"><p class="kicker">0 · 배경지식 · 학습 보행</p><h2>GPU 한 장의 병렬 학습으로 보행 정책이 몇 분 만에 나온다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:0 0 1102px"><a class="yt" href="https://www.youtube.com/watch?v=8sO7VS3q8d0"><img src="../../assets/yt/8sO7VS3q8d0.webp" alt="Learning to Walk in Minutes Using Massively Parallel Deep RL" style="height:620px"></a>
+<figcaption>▶ 영상 — 계단 피라미드와 장애물 칸 위에서 ANYmal 수천 대가 함께 걷는 법을 배우는 병렬 시뮬레이션 (Robotic Systems Lab, ETH Zürich)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점</span><p>시뮬레이션과 PPO 갱신이 모두 GPU 한 장에서 돈다. 평지 정책은 4분, 험지 정책은 20분 안에 나온다. 로봇 수천 대의 분포 자체가 지형 커리큘럼이다.</p></div>
+<div class="card gr"><span class="tag gr">왜 중요한가</span><p>공개한 legged_gym·rsl_rl이 그 뒤 4족 RL의 공통 출발점이 됐다. 이 덱의 연구 대부분이 이 절차 위에 서 있다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>Rudin·Hoeller·Reist·Hutter, Learning to Walk in Minutes Using Massively Parallel Deep RL, CoRL 2021 — arXiv:2109.11978</p></div>
+<aside>앞 장의 "학습 보행" 카드를 영상으로 본다. 영상에서는 계단과 장애물 칸을 한 메시에 깔고 그 위에서 로봇 수천 대가 함께 배우는 장면을 본다. 논문은 20분 안에 배운 정책을 실물 ANYmal C에 올려 계단과 나무 블록 더미를 지났다. 이 설정이 Isaac Gym에서 Isaac Lab으로 이어졌고, 이 덱의 연구 대부분이 같은 절차로 학습한다.</aside>
 </section>
 <section id="domains" class="t">
 <div class="head"><p class="kicker">0 · 분야별 대세</p><h2>4족과 휴머노이드는 RL이 대세, 바퀴 모바일 로봇은 고전 계획이 대세다</h2></div>
@@ -369,6 +386,19 @@ section.t.divider h2 { font-size:80px; }
 </div>
 <aside>다리 로봇의 지형 인식 보행은 거의 모두 이 절차를 쓴다. 센서가 잡음 섞인 높이 지도나 깊이 영상만 볼 때 처음부터 RL로 배우기는 어렵다. 그래서 먼저 시뮬의 정답 지형을 보는 교사를 배운다. 이것은 완전 관측 문제라 RL이 잘 푼다. 그다음 학생이 실제 센서 관측과 이력만 보고 교사의 행동을 따라 하게 한다. 학생이 rollout한 상태에서 교사에게 라벨을 받는 DAgger가 분포 이동을 막는다. 증류 손실을 너무 빨리 끄면 학생 행동이 떨리는 경우가 보고됐다.</aside>
 </section>
+<section id="distill-v" class="t">
+<div class="head"><p class="kicker">2 · 배경지식 · teacher–student의 대표 사례</p><h2>teacher–student로 배운 ANYmal이 산길·눈·동굴을 걷는다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:0 0 1102px"><a class="yt" href="https://www.youtube.com/watch?v=zXbb6KQ0xV8"><img src="../../assets/yt/zXbb6KQ0xV8.webp" alt="Learning robust perceptive locomotion for quadrupedal robots in the wild" style="height:620px"></a>
+<figcaption>▶ 영상 — 2.2 km 알프스 하이킹, DARPA SubT 지하, 믿을 수 없는 지도 위에서 ANYmal이 높이 지도를 얼마나 믿을지 스스로 정하며 걷는다 (Robotic Systems Lab, ETH Zürich)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">교사와 학생</span><p>교사는 시뮬의 정답 지형을 보고 RL로 배운다. 학생은 잡음 모델을 거친 높이 샘플 208개와 proprioception만 보고 교사를 따라 한다.</p></div>
+<div class="card or"><span class="tag or">지도가 틀리면</span><p>눈·수풀·반사로 높이 지도가 틀리면 attention gate가 닫혀 proprioception 보행으로 물러난다. 여러 계절의 배치에서 넘어진 적이 없다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>Miki·Lee·Hwangbo·Wellhausen·Koltun·Hutter, Learning robust perceptive locomotion for quadrupedal robots in the wild, Science Robotics 2022 — arXiv:2201.08117</p></div>
+<aside>앞 장의 절차를 실제로 쓴 대표 연구다. 영상에서는 알프스 산길 2.2 km, DARPA SubT 지하, 눈과 수풀에서 ANYmal이 걷는 장면과 belief state가 무엇을 담는지 설명하는 부분을 본다. 핵심 장치는 학생 입력에 넣은 높이 샘플 잡음 모델이다. 지도가 맞으면 미리 보고 걸음을 바꾸고, 틀리면 게이트가 닫혀 proprioception 보행으로 물러난다. 이 정책을 위해 만든 GPU 높이 지도가 elevation_mapping_cupy가 됐고, travplan의 L1 인식이 그 코어를 쓴다.</aside>
+</section>
 <section id="wys" class="t">
 <div class="head"><p class="kicker">2 · 볼 곳 고르기</p><h2>다음 foothold 둘을 먼저 예측하고, 정책은 그 두 곳의 지형만 본다</h2></div>
 <div class="cols">
@@ -387,6 +417,19 @@ section.t.divider h2 { font-size:80px; }
 <div class="foot" data-foot><p>Watch Your Step — ETH RSL, arXiv:2610.29612</p></div>
 <aside>이 연구는 정책이 볼 지형을 크게 줄였다. 작은 예측기가 몸의 감각만으로 다음 두 발이 어디 닿을지 예측하고, 정책은 그 두 곳 둘레의 작은 조각만 본다. 학습이 몇 배 빨랐고 디딜 곳이 드문 지형에서 강했다. 중요한 대조는 같은 수의 높이를 로봇 앞 고정 격자에서 뽑으면 오히려 나빠졌다는 것이다. 바퀴 로봇이라면 곧 지날 바닥이 foothold에 해당한다. 다만 볼 곳을 좁히면 옆에서 오는 장애물을 늦게 보므로, 동적 장애물은 넓은 시야로 따로 받아야 한다.</aside>
 </section>
+<section id="wys-v" class="t">
+<div class="head"><p class="kicker">2 · 볼 곳 고르기 · 실물</p><h2>실물 G1이 예측한 foothold를 따라 계단·틈·낙차를 지난다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:0 0 1102px"><a class="yt" href="https://www.youtube.com/watch?v=3bLU6_OPv6s"><img src="../../assets/yt/3bLU6_OPv6s.webp" alt="Watch Your Step: Anticipated Perception for Humanoid Locomotion" style="height:620px"></a>
+<figcaption>▶ 영상 — 예측한 foothold(자홍색 점)와 그 둘레 패치(파랑·초록 점)만 보는 G1이 계단, 0.55 m 틈, 0.6 m 낙차를 지난다 (Robotic Systems Lab, ETH Zürich)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점</span><p>자홍색 점이 예측기가 낸 다음 foothold 둘이고, 파랑·초록 점이 정책이 보는 7 × 7 패치다. 정책은 그 두 곳의 높이만 본다.</p></div>
+<div class="card or"><span class="tag or">학습 분포 밖</span><p>0.55 m 틈과 0.6 m 낙차는 학습에 없던 지형이다. 틈 앞에서는 보상에 넣지 않은 감속과 몸 낮추기가 나타났다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>Watch Your Step — Heyrman·C. Li·Dadiotis·Hutter, ETH RSL·ETH AI Center, arXiv:2610.29612</p></div>
+<aside>영상에서는 자홍색 점이 걸음마다 어디로 옮겨 가는지, 그리고 정책이 보는 두 패치가 그 점을 따라가는지를 본다. 학습에 없던 0.55 m 틈과 0.6 m 낙차, 야외 18단 계단도 지난다. 바퀴 로봇으로 옮기면 foothold는 곧 지날 바닥이고, 정책은 경로 앞 몇 점 둘레만 보면 된다는 뜻이다. 다만 옆에서 오는 장애물은 늦게 보므로 동적 장애물은 넓은 시야로 따로 받아야 한다.</aside>
+</section>
 <section id="sparse" class="t">
 <div class="head"><p class="kicker">2 · 성긴 센서로 걷기</p><h2>머리에 단 LiDAR 한 대로도 계단과 실외를 걷는다</h2></div>
 <table style="font-size:25px">
@@ -402,6 +445,19 @@ section.t.divider h2 { font-size:80px; }
 </div>
 <aside>초기의 지형 인식 보행은 아래를 보는 깊이 카메라로 발밑을 복원했다. 최근에는 머리에 단 LiDAR 한 대로 걷는 연구가 늘었다. 공통 과제는 성긴 점에서 믿을 만한 발밑 지도를 만드는 것이다. 빈 곳을 학습으로 채우거나, 평면을 맞춰 다각형으로 만들거나, world model로 잡음을 거른다. 인식 덱에서 본 못 본 칸 문제가 여기서도 핵심이다.</aside>
 </section>
+<section id="sparse-fig" class="t">
+<div class="head"><p class="kicker">2 · 성긴 센서로 걷기 · 지도 만들기</p><h2>성긴 LiDAR 점을 신뢰도로 걸러 발밑 높이 지도를 만든다</h2></div>
+<div class="cols">
+<div class="stack">
+<div class="card bl"><span class="tag bl">누적 점군 + 시간 신뢰도</span><p>머리의 Mid-360 점군을 오도메트리 좌표에 10 Hz로 누적하되, 점마다 시간에 따라 신뢰도를 줄여 오래된 점과 잔상을 걸러 낸다.</p></div>
+<div class="card gr"><span class="tag gr">보호 영역</span><p>몸통 바로 밑은 LiDAR 사각지대라 새 점이 들어오지 않는다. 그 원기둥 안의 점은 신뢰도를 최대로 고정해 제자리걸음에서도 발밑을 잃지 않는다.</p></div>
+<div class="card or"><span class="tag or">빈 곳 채우기</span><p>제어용 국소 지도(1.4 m × 1.0 m, 0.05 m 격자, 50 Hz 이상)의 빈 칸은 가장자리를 안내 신호로 쓰는 U-Net(EGAU)이 채운다.</p></div>
+</div>
+<figure><img src="../../assets/thumbs/37e8e70e2e9b.webp" style="height:440px"><figcaption>전방향 계단 보행 (Fig. 4): 점 색은 시간 신뢰도(빨강 새것 → 파랑 오래됨), 빨간 원뿔은 LiDAR 사각지대, 하늘색 원기둥은 신뢰도를 고정하는 보호 영역. 전역 지도는 10 Hz, 발 좌표의 1.4 m × 1 m 국소 지도는 50 Hz 이상 — arXiv:2603.07928</figcaption></figure>
+</div>
+<div class="foot" data-foot><p>전방향 계단 보행 — arXiv:2603.07928 (2026-03), Unitree G1 + Livox Mid-360</p></div>
+<aside>앞 장 표의 첫 줄을 그림으로 본다. 전역 점군 지도는 10 Hz로 누적하고 점마다 신뢰도를 시간에 따라 줄인다. 그대로 누적하면 움직이는 물체와 오도메트리 드리프트가 잔상을 남기기 때문이다. 몸통 밑 보호 영역은 반대로 신뢰도를 고정한다. 느리게 걷거나 제자리걸음을 하면 사각지대에 새 점이 들어오지 않아 기억이 지워지기 때문이다. 인식 덱에서 본 못 본 칸 문제가 여기서는 "오래된 점을 얼마나 믿나"와 "빈 칸을 무엇으로 채우나"로 나타난다.</aside>
+</section>
 <section id="php" class="t">
 <div class="head"><p class="kicker">2 · 깊이로 파쿠르</p><h2>깊이 영상을 보는 정책 하나가 2D 속도 명령만 받아 1.25 m 벽을 오른다</h2></div>
 <div class="cols">
@@ -415,6 +471,19 @@ section.t.divider h2 { font-size:80px; }
 <div class="foot" data-foot><p>Perceptive Humanoid Parkour — RSS 2026, arXiv:2602.15827</p></div>
 <aside>이 연구는 사람의 파쿠르를 휴머노이드로 옮겼다. 핵심은 데이터다. 게임 애니메이션에서 쓰는 motion matching으로 기술 사이를 보행으로 이어 긴 학습 궤적을 만든다. 배포 정책은 proprioception, 깊이 영상, 이산 2D 속도 명령만 본다. 경계로 보면 속도 계약이지만, 아래 층이 매우 강력해서 벽 오르기까지 스스로 판단한다. teacher–student 증류의 실무 요령도 하나 보여 준다. 증류 손실을 완전히 끄지 말고 작게 남겨야 한다.</aside>
 </section>
+<section id="php-v" class="t">
+<div class="head"><p class="kicker">2 · 깊이로 파쿠르 · 실물</p><h2>깊이 영상만 보는 G1이 사람의 파쿠르 기술을 이어서 해낸다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:0 0 1102px"><a class="yt" href="https://www.youtube.com/watch?v=IjeBnbm9sto"><img src="../../assets/yt/IjeBnbm9sto.webp" alt="Perceptive Humanoid Parkour: Chaining Dynamic Human Skills via Motion Matching" style="height:620px"></a>
+<figcaption>▶ 영상 — G1이 장애물을 vault로 넘고 1.25 m 벽에 오르며, 기술을 스스로 골라 장애물 여럿을 이어 넘는다 (Amazon FAR, 저자 소속)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점</span><p>정책이 받는 명령은 이산 2D 속도뿐이다. 어느 기술을 쓸지, 어디서 도약할지는 깊이 영상을 보고 정책이 스스로 정한다.</p></div>
+<div class="card or"><span class="tag or">학습과 실물의 차이</span><p>학습 데이터에는 장애물이 하나인 궤적만 있었지만, 실물은 48–60 s 동안 장애물 여럿을 이어 넘었다. 사람이 장애물을 약 0.5 m 옮겨도 접근을 고쳤다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>Perceptive Humanoid Parkour — Wu 외, Amazon FAR·UC Berkeley·CMU·Stanford, RSS 2026, arXiv:2602.15827</p></div>
+<aside>영상에서는 낮은 장애물을 cat vault로, 높은 장애물을 dash vault로 넘고 1.25 m 벽에 올라 굴러 내려오는 장면과, 기술을 스스로 고르며 장애물 여럿을 이어 넘는 장면을 본다. 위 층이 넘기는 것은 2D 속도 명령뿐이라 경계로는 속도 계약이지만, 아래 층이 매우 강력해 벽 오르기까지 스스로 판단한다.</aside>
+</section>
 <section id="loco" class="t">
 <div class="head"><p class="kicker">2 · 처음 보는 몸</p><h2>로봇 10만 대로 배운 정책 하나가 처음 보는 몸에 몇 초 만에 적응한다</h2></div>
 <div class="cols">
@@ -427,6 +496,19 @@ section.t.divider h2 { font-size:80px; }
 <p class="take"><b>배경:</b> 적응은 "환경을 이력에서 추정"(RMA)에서 "몸 자체를 이력에서 추정"으로 넓어졌다.</p>
 <div class="foot" data-foot><p>LocoFormer — Skild AI, CoRL 2025, arXiv:2509.23745</p></div>
 <aside>LocoFormer는 몸(embodiment) 정보를 입력으로 받지 않는다. 관절 수, 길이, 질량을 모르고, 몇 초의 경험으로 몸을 알아낸다. 그러려면 학습 때 정말 다양한 몸을 봐야 한다. 무작위로 만든 로봇 10만 대가 그 역할을 한다. 또 한 에피소드 안에서 여러 번 시도하게 하고 기억을 시도 사이에 넘기므로, 넘어진 시도를 기억해 다음 시도를 고친다. 제어 덱에서 본 RMA의 "이력에서 숨은 조건 추정"을 몸 전체로 넓힌 것이다.</aside>
+</section>
+<section id="loco-v" class="t">
+<div class="head"><p class="kicker">2 · 처음 보는 몸 · 실물</p><h2>정책 하나가 처음 보는 몸체와 고장에 몇 초 만에 적응한다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:0 0 1102px"><a class="yt" href="https://www.youtube.com/watch?v=_fQ1FwRj4ME"><img src="../../assets/yt/_fQ1FwRj4ME.webp" alt="LocoFormer: Generalist Locomotion via Long-Context Adaptation" style="height:620px"></a>
+<figcaption>▶ 영상 — 같은 정책 하나로 G1·H1·Go2·Go2-W를 몰고, 무릎 고정·바퀴 잠금·종아리 절단 뒤에도 몇 초에서 수십 초 안에 다시 걷는다 (Min Liu, LocoFormer 1저자)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점</span><p>몸체 정보는 입력에 없다. 관절 수·길이·질량을 모른 채 몇 초의 경험만으로 몸을 알아낸다.</p></div>
+<div class="card or"><span class="tag or">시도 사이의 기억</span><p>이족 모드에서 시도 1·2는 넘어지고 시도 3에서 선다. 넘어진 시도를 기억해 다음 시도를 고치는 메타 RL 구조다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>LocoFormer — Min Liu·Deepak Pathak·Ananye Agarwal, Skild AI, CoRL 2025, arXiv:2509.23745</p></div>
+<aside>영상에서는 같은 가중치 하나가 실물 G1·H1·Go2·Go2-W를 모는 장면과, 무릎을 고정하거나 바퀴를 잠그거나 종아리를 잘라 낸 뒤 몇 초에서 수십 초 안에 다시 걷는 장면을 본다. 이족 모드에서는 시도 1·2에서 넘어지고 시도 3에서 서는데, 시도 사이에 기억을 넘기기 때문이다. 제어 덱에서 본 RMA의 "이력에서 환경 추정"을 몸 전체로 넓힌 것이다.</aside>
 </section>
 <section id="loco-line" class="t">
 <div class="head"><p class="kicker">2 · 두 갈래</p><h2>처음 보는 몸은 설명으로 줄 것인가, 이력에서 읽을 것인가</h2></div>
@@ -489,6 +571,19 @@ section.t.divider h2 { font-size:80px; }
 <div class="foot" data-foot><p>NEXUS — arXiv:2609.39000</p></div>
 <aside>NEXUS는 원격조종용 전신 추종기다. 운영자가 평지에서 움직이면 로봇은 계단과 경사 위에서 같은 동작을 한다. 핵심은 쌍 데이터를 자동으로 만드는 방법이다. 평지에서 잡은 동작에서 손발이 닿는 순간을 찾아, 그 자리의 지형 높이에 맞게 골반과 팔다리를 고친다. 그 데이터로 높이 지도를 보는 교사를 배우고 깊이 영상만 보는 학생에게 옮긴다. 위 층은 지형을 몰라도 되고, 아래 층이 국소 인식으로 맞춘다는 점에서 내비게이션의 Planner–Controller 분리와 같은 계약이다.</aside>
 </section>
+<section id="nexus-v" class="t">
+<div class="head"><p class="kicker">3 · 추종기에서 메우기 · 실물</p><h2>운영자는 평지에 서 있고, G1은 계단과 단 위에서 같은 동작을 한다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:0 0 1102px"><a class="yt" href="https://www.youtube.com/watch?v=eg_eDn1dJ4Y"><img src="../../assets/yt/eg_eDn1dJ4Y.webp" alt="NEXUS: Perceptive Whole-Body Control for Terrain-Adaptive Teleoperation" style="height:620px"></a>
+<figcaption>▶ 영상 — 평지에서 움직이는 운영자를 따라 G1이 계단을 오르고, 60 cm 단에서 내려오고, 풀밭 경사를 지난다 (Xiangyu Miao, NEXUS 1저자)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점</span><p>운영자의 동작에는 지형 정보가 없다. 정책은 평지 동작 13프레임과 깊이 영상 32 × 18만 받아 Orin NX에서 50 Hz로 돈다.</p></div>
+<div class="card or"><span class="tag or">학습 지형 밖</span><p>학습 지형은 10 cm 계단과 약 16.7° 경사뿐이었다. 실물에서는 15 cm 계단과 약 30° 풀밭 경사를 fine-tuning 없이 지났고, 60 cm 단과 옆돌기 일부 시도에서 넘어졌다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>NEXUS — Miao 외, arXiv:2609.39000, nexus-humanoid.github.io</p></div>
+<aside>영상에서는 운영자가 늘 평지에 서 있고 로봇만 계단과 단 위에 있다는 점을 본다. 위 층(사람)은 지형을 모르는 명령을 내고 아래 층이 깊이 영상 한 장으로 맞춘다. 학습 지형보다 높은 계단과 가파른 경사를 fine-tuning 없이 지났지만, 시도 횟수는 밝히지 않았다.</aside>
+</section>
 <section id="projection" class="t">
 <div class="head"><p class="kicker">3 · 투영에서 메우기</p><h2>학습 정책의 출력은 실행 전에 해낼 수 있는 집합으로 투영한다</h2></div>
 <figure><img src="img/projection.webp" style="height:370px"><figcaption>(a) latent 명령의 크기만 안전 구 안으로 줄인다(방향은 둔다) (b) 조향 한계처럼 비볼록한 실행 가능 집합은 지금 근처에서 선형화해 QP로 가장 가까운 점을 찾는다</figcaption></figure>
@@ -542,6 +637,19 @@ section.t.divider h2 { font-size:80px; }
 <div class="foot" data-foot><p>Flexion Reflect v1.0 — flexion.ai 회사 블로그(2026-06), 논문·코드 없음</p></div>
 <aside>이 사례의 새로운 점은 강화학습을 운동 기술에만 쓰지 않고 맨 위 임무 언어 모델까지 넓혔다는 것이다. 기성 언어 모델은 앞 도구 호출이 정말 끝났는지 확인하지 않고 그럴듯한 다음 호출을 내는 버릇이 있는데, 이를 RL로 고쳤다고 한다. 실패는 두 층에서 처리한다. 운동 층이 배운 복구 동작으로 먼저 다시 하고, 안 되면 언어 모델이 다시 계획한다. 회사 발표 수치라 독립 검증은 없다.</aside>
 </section>
+<section id="reflect-v" class="t">
+<div class="head"><p class="kicker">4 · 세 층 구조 1 · 시연</p><h2>지시 한 문장으로 계단, 승강기, 상자 풀기, 서랍 채우기를 이어서 한다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:0 0 1102px"><a class="yt" href="https://www.youtube.com/watch?v=6dme3JYj3Hg"><img src="../../assets/yt/6dme3JYj3Hg.webp" alt="Reflect v1.0 - The Path Towards Long-Horizon Autonomous Humanoid Work" style="height:620px"></a>
+<figcaption>▶ 영상 — 택배를 가져오라는 지시 하나로 계단을 내려가 상자를 집고 승강기로 올라와 서랍을 채우는 Reflect v1.0 시연 (Flexion, 회사 공식)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점</span><p>임무 VLM이 1인칭 영상을 보며 전역 이동, 물체로 이동 같은 도구를 하나씩 부른다. 운동 층의 RL 기술과 VLA가 짧은 궤적을 내고 전신 제어기가 따른다.</p></div>
+<div class="card or"><span class="tag or">읽을 때 주의</span><p>회사 발표 영상이다. 16단계 임무 90 %의 시도 수와 평가 환경은 적지 않았고, 논문·코드가 없다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>Flexion Reflect v1.0 — flexion.ai 회사 블로그(2026-06-29), 논문·코드 없음</p></div>
+<aside>영상에서는 임무 문장 하나가 하위 과제로 나뉘고, 계단·승강기·상자·서랍의 기술이 차례로 불리는 흐름을 본다. 실패하면 운동 층이 배운 복구 동작으로 먼저 다시 하고, 안 되면 언어 모델이 다시 계획한다. 회사 발표라 독립 검증은 없고, 영상은 편집본이라 시도 수를 알 수 없다.</aside>
+</section>
 <section id="dyna" class="t">
 <div class="head"><p class="kicker">4 · 세 층 구조 2</p><h2>조향 바퀴 네 개 베이스 위의 반휴머노이드가 한 시간짜리 작업을 끊지 않는다</h2></div>
 <div class="grid3">
@@ -555,6 +663,19 @@ section.t.divider h2 { font-size:80px; }
 </div>
 <div class="foot" data-foot><p>Dyna Robotics DYNA-2.1 — dyna.co 기술 블로그(2026-09), 논문 없음</p></div>
 <aside>이 사례는 휴머노이드는 아니지만, 바퀴 베이스 위에 상체를 얹은 로봇이 실제 작업까지 간 예다. 층 나누기는 앞 사례와 비슷하다. 맨 위가 작업 흐름을 정하고, 가운데 행동 모델이 궤적을 내고, 맨 아래 전신 제어기가 따른다. 층 사이를 잇는 표현을 몸의 주요 지점 자세로 명시적으로 정한 것이 눈에 띈다. 그래야 층마다 따로 학습하고 바꿀 수 있다. 수치는 회사 발표라 같은 무게로 읽지 않는다.</aside>
+</section>
+<section id="dyna-v" class="t">
+<div class="head"><p class="kicker">4 · 세 층 구조 2 · 시연</p><h2>호텔 세탁실 작업 한 시간을 끊지 않고 혼자 이어 간다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:0 0 1102px"><a class="yt" href="https://www.youtube.com/watch?v=ArRaPV3QIqY"><img src="../../assets/yt/ArRaPV3QIqY.webp" alt="DYNA 2.1: A Physical Agent for End-to-End Workflows" style="height:620px"></a>
+<figcaption>▶ 영상 — 조향 바퀴 베이스의 반휴머노이드가 세탁실에서 수건을 개어 쌓고 세탁기·건조기를 오가는 한 시간을 끊지 않고 배속으로 보여 준다 (Dyna Robotics, 회사 공식)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점</span><p>VL 오케스트레이터가 작업 흐름을 정하고, 행동 모델(약 5 Hz)이 작업 공간 궤적을, 시뮬 RL 전신 제어기(100 Hz)가 모터 명령을 낸다. 층 사이는 손목·팔꿈치·가슴·발자국 자세 표현으로 잇는다.</p></div>
+<div class="card or"><span class="tag or">읽을 때 주의</span><p>회사 발표 영상이다. 조건과 반복 수를 확인할 수 없고 논문이 없다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>Dyna Robotics DYNA-2.1 — dyna.co 기술 블로그(2026-09), 논문 없음</p></div>
+<aside>영상에서는 조향 바퀴 네 개 베이스 위의 상체가 세탁실 안을 오가며 한 시간짜리 작업을 이어 가는 것을 배속으로 본다. 긴 작업의 논지는 단계 신뢰도다. 79단계에서 단계마다 95 %면 완주는 약 1.7 %라, 층마다 복구를 두어야 한다. 회사 발표라 같은 무게로 읽지 않는다.</aside>
 </section>
 <section id="d5" class="t dark divider">
 <p class="kicker">5 · 정리</p>
@@ -701,7 +822,30 @@ section.t.divider h2 { font-size:80px; }
     var s = Math.min(st.clientWidth / 1920, st.clientHeight / 1080);
     frame.style.transform = 'scale(' + s + ')';
   }
+  // ▶ 영상(figure.video): 썸네일 a.yt를 누르면 그 자리에 YouTube(nocookie) iframe을 넣고, 장을 넘기면 썸네일로 되돌린다.
+  // 캡처·검사(?shot, ?check)에서는 누르지 않으므로 썸네일만 찍힌다. PPTX는 그림에 하이퍼링크를 단다.
+  function ytId(href) {
+    var m = /[?&]v=([\w-]{11})/.exec(href) || /youtu\.be\/([\w-]{11})/.exec(href);
+    return m ? m[1] : null;
+  }
+  function stopVideos() {
+    Array.prototype.forEach.call(frame.querySelectorAll('figure.video iframe'), function (f) { f.remove(); });
+    Array.prototype.forEach.call(frame.querySelectorAll('figure.video a.yt.off'), function (a) { a.classList.remove('off'); });
+  }
+  frame.addEventListener('click', function (e) {
+    var a = e.target.closest ? e.target.closest('figure.video a.yt') : null;
+    if (!a || shot) return;
+    var id = ytId(a.href), img = a.querySelector('img');
+    if (!id || !img) return;
+    e.preventDefault();
+    var f = document.createElement('iframe');
+    f.width = img.clientWidth; f.height = img.clientHeight;
+    f.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0';
+    f.allow = 'autoplay; fullscreen; picture-in-picture'; f.allowFullscreen = true; f.title = img.alt || 'YouTube';
+    a.classList.add('off'); a.parentNode.insertBefore(f, a);
+  });
   function show(n) {
+    stopVideos();
     i = Math.max(0, Math.min(slides.length - 1, n));
     slides.forEach(function (el, k) { el.classList.toggle('on', k === i); });
     document.getElementById('count').textContent = (i + 1) + ' / ' + slides.length;
@@ -719,10 +863,15 @@ section.t.divider h2 { font-size:80px; }
   window.withAllFonts = withAllFonts;
   // 넘침 검사: 본문 요소가 장 밖으로 나가거나 각주 띠를 덮으면 적는다.
   function check() {
-    var bad = [];
+    var bad = [], yt = [];
     slides.forEach(function (sec, k) {
       show(k);
       var box = sec.getBoundingClientRect();
+      // 영상 썸네일(img)의 자리. 캡처 PPTX(make_pptx)가 그 위에 보이지 않는 하이퍼링크 상자를 놓는다.
+      Array.prototype.forEach.call(sec.querySelectorAll('figure.video a.yt'), function (a) {
+        var r = (a.querySelector('img') || a).getBoundingClientRect();
+        yt.push({ slide: k + 1, href: a.href, r: [r.left - box.left, r.top - box.top, r.width, r.height] });
+      });
       Array.prototype.forEach.call(sec.querySelectorAll('.katex-error'), function (el) {
         bad.push({ slide: k + 1, id: sec.id, tag: 'TeX', text: (el.getAttribute('title') || el.textContent).slice(0, 60), over: 0 });
       });
@@ -731,7 +880,7 @@ section.t.divider h2 { font-size:80px; }
       });
       var foot = sec.querySelector('[data-foot]');
       var limit = foot ? foot.getBoundingClientRect().top - 4 : box.bottom - 24;
-      Array.prototype.forEach.call(sec.querySelectorAll('p, h1, h2, h3, img, td, th, li, .katex-display, [data-box]'), function (el) {
+      Array.prototype.forEach.call(sec.querySelectorAll('p, h1, h2, h3, img, figcaption, td, th, li, .katex-display, [data-box]'), function (el) {
         if (foot && foot.contains(el)) return;
         if (el.closest('aside')) return;
         var r = el.getBoundingClientRect();
@@ -742,7 +891,7 @@ section.t.divider h2 { font-size:80px; }
       });
     });
     var rep = document.getElementById('report');
-    rep.textContent = JSON.stringify(bad);
+    rep.textContent = JSON.stringify({ bad: bad, yt: yt });
     rep.setAttribute('data-done', '1');
   }
   function start() {

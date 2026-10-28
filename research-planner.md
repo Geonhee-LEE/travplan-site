@@ -4120,7 +4120,7 @@ travplan GP는 한 스텝 입력(명령·직전 twist·경사·거칠기)을 본
 
 </details>
 
-**SRU — 자기 운동을 입력으로 받아도 LSTM·GRU는 과거에 본 것을 지금 좌표로 옮기지 못하고, 원소별 곱 하나가 그것을 고친다**([arXiv:2506.05997](https://arxiv.org/abs/2506.05997), 원제 "Spatially-Enhanced Recurrent Memory for Long-Range Mapless Navigation via End-to-End Reinforcement Learning", Yang·Frivik·Hoeller·Wang·Cadena·Hutter, IJRR 45(11), 2026(온라인 2025-12), [프로젝트](https://michaelfyang.github.io/sru-project-website/), [코드](https://github.com/leggedrobotics/sru-pytorch-spatial-learning)).
+**SRU — 자기 운동을 입력으로 받아도 LSTM·GRU는 과거에 본 것을 지금 좌표로 옮기지 못하고, 원소별 곱 하나가 그것을 고친다**([arXiv:2506.05997](https://arxiv.org/abs/2506.05997), 원제 "Spatially-Enhanced Recurrent Memory for Long-Range Mapless Navigation via End-to-End Reinforcement Learning", Yang·Frivik·Hoeller·Wang·Cadena·Hutter, IJRR 45(11), 2026(온라인 2025-12), [프로젝트](https://michaelfyang.github.io/sru-project-website/), [코드](https://github.com/leggedrobotics/sru-pytorch-spatial-learning), [영상](https://www.youtube.com/watch?v=iG41e0yQIjg)).
 iPlanner(B.4b)를 쓴 Fan Yang이 1저자다. 앞을 보는 스테레오 깊이 카메라 하나와 상대 목표만으로, 지도 없이 막다른 길을 되돌아 나오는 내비게이션 정책을 강화학습으로 끝에서 끝까지 배웠다.
 
 먼저 작은 과제로 순환망의 약점을 보였다. 로봇이 움직이며 본 랜드마크를 마지막 로봇 좌표로 옮겨 말해야 하는 과제다.

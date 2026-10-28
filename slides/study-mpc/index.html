@@ -27,6 +27,9 @@ section .katex-display { margin:0; text-align:left; }
 section .katex-display > .katex { text-align:left; }
 x-shape { display:block; flex:none; }
 x-shape[kind="arrow-right"] { clip-path:polygon(0 32%,58% 32%,58% 0,100% 50%,58% 100%,58% 68%,0 68%); }
+figure.video a.yt { display:block; width:fit-content; max-width:100%; line-height:0; cursor:pointer; }
+figure.video a.yt.off { display:none; }
+figure.video iframe { display:block; border:0; border-radius:8px; background:#000; }
 #bar { position:fixed; left:0; right:0; bottom:0; height:56px; background:var(--bar); display:flex; align-items:center; gap:12px; padding:0 16px; font-size:15px; }
 #bar button, #bar a { background:none; border:1px solid #3A4A6B; color:var(--fg); border-radius:8px; padding:6px 12px; font:inherit; cursor:pointer; text-decoration:none; }
 #bar button:hover, #bar a:hover { border-color:var(--accent); }
@@ -197,7 +200,8 @@ section.t.divider h2 { font-size:80px; }
       var s = Math.min(r[2] / nw, r[3] / nh), w = nw * s, h = nh * s;
       r = [r[0] + (r[2] - w) / 2, r[1] + (r[3] - h) / 2, w, h];
     }
-    return { t: 'img', r: r, src: el.getAttribute('src') };
+    var a = el.closest('a');   // 영상 썸네일(figure.video > a.yt > img)은 YouTube 하이퍼링크를 단 그림이 된다
+    return { t: 'img', r: r, src: el.getAttribute('src'), href: a && /^https?:/.test(a.href) ? a.href : null };
   }
   function slide(sec) {
     var base = sec.getBoundingClientRect(), items = [];
@@ -359,6 +363,19 @@ section.t.divider h2 { font-size:80px; }
 </table>
 <aside>격자 지도의 장애물은 계단 함수라 미분이 없고, 기호 계산 도구는 격자를 기호 위치로 읽지 못한다. 실무 해법은 장애물을 매 주기 수치로 처리해 단순한 제약으로 넘기는 것이다. 노드마다 가장 가까운 장애물 점을 거리 변환으로 찾고, 그 점에서 장애물 바깥을 향하는 법선으로 반평면을 만든다. 제약은 선형이고 값만 파라미터로 바뀌므로 코드를 다시 생성할 필요가 없다. 다만 접평면은 지금의 해에 의존하므로, 해가 움직이면 다시 계산해야 한다.</aside>
 </section>
+<section id="halfplanes-v" class="t">
+<div class="head"><p class="kicker">1 · 장애물 제약 · 실례</p><h2>지형의 비볼록 조건도 노드마다 볼록 부등식으로 근사하면 NMPC가 온라인으로 푼다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:0 0 1104px"><a class="yt" href="https://www.youtube.com/watch?v=v6MhPl2ICsc"><img src="../../assets/yt/v6MhPl2ICsc.webp" alt="Perceptive Locomotion through Nonlinear Model Predictive Control" style="height:620px"></a>
+<figcaption>▶ 영상 — 틈·경사·징검다리를 건너는 ANYmal. foothold가 놓일 수 있는 영역을 노드마다 볼록 부등식 제약으로 근사해 온라인 MPC에 넣는다 (Robotic Systems Lab: Legged Robotics at ETH Zürich)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">같은 생각</span><h3>비볼록 → 국소 볼록 근사</h3><p>앞 장의 접평면과 같다. 지금 해 근처에서 지형 조건을 볼록 부등식 몇 개로 바꾸고, 해가 움직이면 다시 만든다.</p></div>
+<div class="card or"><span class="tag or">볼 점</span><h3>불완전한 지도 위에서</h3><p>불완전하고 부정확한 인식 정보 아래서 발 놓기·충돌 회피·동역학을 한 OCP로 푼다. 전신 자유도를 모두 실시간에 최적화한다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>Grandia 외, “Perceptive Locomotion through Nonlinear Model Predictive Control”, T-RO 2023 — arXiv:2208.08373</p></div>
+<aside>바퀴 로봇이 아니라 다리 로봇이지만 원리는 같다. 영상에서는 로봇이 틈과 징검다리에서 발을 놓을 수 있는 영역을 고르며 건너는 것을 본다. 지형의 발 놓기 조건은 비볼록하지만, 예측 노드마다 국소 볼록 부등식으로 근사해 OCP에 넣으면 온라인으로 풀린다. 앞 장에서 격자 지도의 치명 셀을 접평면으로 바꾼 것과 같은 전략이다.</aside>
+</section>
 <section id="soft" class="t">
 <div class="head"><p class="kicker">1 · soft 제약</p><h2>L1 페널티는 가중치가 충분히 크면 hard 제약과 같은 해를 주고, 늘 풀린다</h2></div>
 <div class="math">$$g(x_k) \le s_k,\quad s_k \ge 0,\qquad \text{비용에 } +\ \rho\, s_k \ \ (\text{L1}) \ \ \text{또는}\ \ +\ \rho\, s_k^2\ \ (\text{이차})$$</div>
@@ -419,6 +436,19 @@ section.t.divider h2 { font-size:80px; }
 </div>
 <aside>SQP는 뉴턴법을 제약 최적화로 넓힌 것이다. 지금의 추정 해에서 모델과 제약을 선형화하고 비용을 이차로 근사하면 QP가 된다. 그 QP의 해만큼 추정 해를 옮기고 다시 반복한다. MPC의 QP는 특별한 구조를 가진다. 시간 단계마다 이웃 단계와만 연결되어 있어서, 이 banded 구조를 쓰는 솔버는 horizon 길이에 선형인 시간으로 푼다. 비용이 최소제곱이면 Gauss-Newton 근사로 Hessian을 2차 미분 없이 얻는다.</aside>
 </section>
+<section id="sqp-v" class="t">
+<div class="head"><p class="kicker">2 · SQP · 강연</p><h2>SQP와 Gauss-Newton은 비용의 볼록-비선형 구조를 이용하는 뉴턴형 방법이다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:0 0 1104px"><a class="yt" href="https://www.youtube.com/watch?v=kneSZOz8Xus"><img src="../../assets/yt/kneSZOz8Xus.webp" alt="Moritz Diehl: Convexity Exploiting Newton-Type Optimization for Learning and Control" style="height:620px"></a>
+<figcaption>▶ 영상 — Diehl의 강연 ‘Convexity Exploiting Newton-Type Optimization for Learning and Control’. Gauss-Newton을 일반화한 뉴턴형 방법과 추정·제어 OCP에의 적용, 56분 (Institute for Pure &amp; Applied Mathematics (IPAM))</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점 1</span><h3>볼록-비선형 구조</h3><p>비용이 볼록 함수 ∘ 비선형 함수 꼴이면, 바깥 볼록 함수의 곡률만으로 Hessian을 근사한다. 최소제곱의 \(J^\top W J\)가 그 가장 단순한 경우다.</p></div>
+<div class="card or"><span class="tag or">볼 점 2</span><h3>추정과 제어에 같은 기계</h3><p>볼록 부분문제를 반복해 푸는 같은 알고리즘이 상태 추정과 MPC의 OCP에 쓰인다. 데이터 기반 변형도 다룬다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>M. Diehl, Intersections between Control, Learning and Optimization (IPAM, 2020)</p></div>
+<aside>SQP의 Gauss-Newton 근사가 왜 안정적인지를 저자에게 직접 듣는 강연이다. 영상에서는 비용이 볼록 함수와 비선형 함수의 합성일 때 바깥 볼록 함수의 곡률만으로 Hessian을 만드는 뉴턴형 방법의 계보를 본다. 앞 장의 JᵀWJ는 그 가장 단순한 경우다. 56분이라 전체를 보기보다 앞부분의 동기와 Gauss-Newton 일반화 부분을 먼저 보면 된다.</aside>
+</section>
 <section id="rti" class="t">
 <div class="head"><p class="kicker">2 · 실시간 반복</p><h2>RTI는 주기마다 SQP 한 스텝만 가고, 준비 단계를 측정 전에 미리 한다</h2></div>
 <div class="flow">
@@ -448,6 +478,19 @@ section.t.divider h2 { font-size:80px; }
 </table>
 <p class="take"><b>흔한 조합:</b> CasADi로 모델을 쓰고, acados가 RK 적분기·SQP-RTI·HPIPM을 합친 C 코드를 생성한다.</p>
 <aside>MPC를 만들 때 쓰는 도구는 층이 다르다. CasADi는 모델과 비용을 기호로 적고 미분을 자동으로 만드는 모델링 도구다. IPOPT는 일반 비선형 문제를 견고하게 풀지만 실시간 MPC에는 무겁다. acados는 MPC 전용으로, 적분기와 그 민감도, SQP-RTI, 구조를 쓰는 QP 솔버를 합쳐 C 코드로 생성한다. QP 솔버는 문제의 크기와 warm start 여부에 따라 고른다. 파라미터로 바뀌는 값(참조, 장애물 접평면)은 코드 재생성 없이 매 주기 넘길 수 있다.</aside>
+</section>
+<section id="solvers-v" class="t">
+<div class="head"><p class="kicker">2 · 도구 · 실례</p><h2>acados로 만든 MPC가 창고의 AGV를 급커브와 장애물 사이로 추종시킨다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:0 0 1104px"><a class="yt" href="https://www.youtube.com/watch?v=NDta6AD5WCA"><img src="../../assets/yt/NDta6AD5WCA.webp" alt="Model Predictive Control with acados of an automated forklift in a warehouse" style="height:620px"></a>
+<figcaption>▶ 영상 — acados 기반 MPC가 곡률이 급히 뒤집히는 궤적을 따라 원형·사각 장애물 사이로 삼륜 AGV를 몬다 (acados)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점 1</span><h3>Frenet–Cartesian 추종</h3><p>경로를 따라가는 추종 문제를 acados로 세워 실물 창고 차량에 얹었다(acados 공식 시연, IROS 2024 논문).</p></div>
+<div class="card or"><span class="tag or">볼 점 2</span><h3>앞 장의 조합 그대로</h3><p>모델, 적분기, SQP-RTI, QP 솔버가 한 틀에 들어 있다. 설정 항목이 많은 대가로 임베디드 실시간이 된다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>acados 공식 채널 시연 영상 — 삼륜 AGV의 Frenet–Cartesian 궤적 추종 MPC (IROS 2024 논문, acados 개발진)</p></div>
+<aside>acados 공식 채널의 시연이다. 영상에서는 곡률이 급히 바뀌는 트랙과 원형·사각 장애물이 있는 창고 구간에서 삼륜 AGV가 MPC로 궤적을 따라가는 것을 본다. 도구 표의 조합, 즉 acados가 생성한 SQP-RTI와 QP 솔버 코드가 실물에서 어떻게 쓰이는지 감을 잡는 용도다.</aside>
 </section>
 <section id="warmstart" class="t">
 <div class="head"><p class="kicker">2 · 국소해와 초기값</p><h2>비볼록 문제는 초기값이 어느 쪽에 있느냐로 해가 정해진다</h2></div>
@@ -499,6 +542,19 @@ section.t.divider h2 { font-size:80px; }
 <div class="foot" data-foot><p>L4acados (IEEE TCST) — acados에 Python 학습 잔차를 붙이는 틀, 0차 GP-MPC</p></div>
 <aside>모델 오차를 다루는 가장 실용적인 방법은 명목 모델을 그대로 두고, 남는 오차만 배워 더하는 것이다. 잔차를 학습 모델의 기호식으로 넣으면 미분까지 계산해야 해서 무겁다. 대신 이전 해의 예측 노드에서 잔차를 계산해 상수 파라미터로 넘기면, 솔버는 그것을 상수로 보고 미분은 명목 모델로만 한다. 이것이 0차 근사이며, 계산은 거의 늘지 않는다. 주의할 점은 학습 잔차가 데이터 분포 밖에서 엉뚱한 값을 낼 때다. 최적화는 그 오류를 찾아가 이용한다.</aside>
 </section>
+<section id="residual-v" class="t">
+<div class="head"><p class="kicker">3 · 학습 잔차 · 도구</p><h2>L4acados는 Python 학습 잔차를 acados의 실시간 풀이에 그대로 꽂는다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:0 0 1104px"><a class="yt" href="https://www.youtube.com/watch?v=6tnhRnJSwW4"><img src="../../assets/yt/6tnhRnJSwW4.webp" alt="L4acados - Learning-based models for acados, applied to Gaussian process-based predictive control" style="height:620px"></a>
+<figcaption>▶ 영상 — L4acados: 신경망·GP 같은 Python 잔차 모델을 실시간 최적 제어 소프트웨어 acados에 잇는 틀. GP 기반 MPC에 적용했다 (IDSC - Intelligent Control Systems)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점 1</span><h3>두 세계의 접점</h3><p>학습 프레임워크와 실시간 최적 제어 소프트웨어 사이의 인터페이스가 비어 있었다. L4acados가 그 틈을 메운다.</p></div>
+<div class="card or"><span class="tag or">볼 점 2</span><h3>0차 GP-MPC</h3><p>앞 장의 방식 그대로다. 잔차의 평균을 파라미터로 넘기고, 솔버는 명목 모델의 미분으로 탐색한다. 소형 경주차와 실차에 적용했다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>Lahr 외, “L4acados: Learning-based models for acados, applied to Gaussian process-based predictive control”, IEEE TCST — arXiv:2411.19258</p></div>
+<aside>앞 장의 0차 근사를 실제 소프트웨어로 구현한 것이 L4acados다. 영상에서는 Python 잔차 모델을 acados에 붙이는 구조와 GP 기반 MPC의 적용 예를 본다. 명목 모델과 솔버를 그대로 두고 예측만 고친다는 앞 장의 장점이 도구 수준에서 어떻게 실현되는지 보면 된다.</aside>
+</section>
 <section id="sparsegp" class="t">
 <div class="head"><p class="kicker">3 · 희소 GP</p><h2>정확 GP는 데이터가 늘면 주기를 넘기고, inducing point로 요약하면 실시간에 든다</h2></div>
 <figure><img src="img/sparsegp.webp" style="height:360px"><figcaption>데이터 300점을 inducing point 6개와 16개로 요약한 희소 GP(DTC). inducing point가 적으면 굴곡을 놓치고, 데이터 분포 밖에서는 prior로 돌아간다</figcaption></figure>
@@ -509,6 +565,19 @@ section.t.divider h2 { font-size:80px; }
 <tr><td>random feature(RFF)</td><td>O(n D²)</td><td>O(D)</td><td class="good">가장 빠름</td><td class="bad">데이터 분포 밖에서 튈 수 있다</td></tr>
 </table>
 <aside>가우시안 프로세스를 제어 루프에서 쓰려면 계산이 걸림돌이다. 정확 GP는 데이터 수의 세제곱이라 데이터가 수천 개면 갱신 한 번이 제어 주기를 넘긴다. 희소 GP는 데이터를 소수의 inducing point로 요약해 계산을 크게 줄인다. random feature 근사는 더 빠르지만, 데이터에서 먼 곳에서 prior로 돌아가지 않고 튀는 값을 낼 수 있다. MPC는 그런 값을 이용하므로, 근사를 고를 때는 정확도와 속도뿐 아니라 데이터 분포 밖에서의 거동과 불확실성 보정도 함께 재야 한다.</aside>
+</section>
+<section id="sparsegp-v" class="t">
+<div class="head"><p class="kicker">3 · 희소 GP · 실례</p><h2>공력 잔차를 GP로 배워 넣은 MPC는 고속 비행의 추종 오차를 최대 70% 줄였다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:0 0 1104px"><a class="yt" href="https://www.youtube.com/watch?v=FHvDghUUQtc"><img src="../../assets/yt/FHvDghUUQtc.webp" alt="Data-Driven MPC for Quadrotors (RA-L 2021)" style="height:620px"></a>
+<figcaption>▶ 영상 — 공력 효과를 GP로 모델링해 MPC에 넣은 쿼드로터의 고속 궤적 추종 (UZH Robotics and Perception Group)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점 1</span><h3>400점 → inducing point 20개</h3><p>데이터 400점에서 뽑은 inducing point 20개로 실시간에 들었다. 15–25개가 성능과 계산의 최적 구간이었다.</p></div>
+<div class="card or"><span class="tag or">볼 점 2</span><h3>앞 표의 균형</h3><p>같은 잔차를 소수의 점으로 요약해도 추종 오차는 최대 70% 줄었다. 희소 근사가 실시간과 정확도를 함께 준 예다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>Torrente·Kaufmann·Föhn·Scaramuzza, “Data-Driven MPC for Quadrotors”, RA-L 2021 — arXiv:2102.05773</p></div>
+<aside>희소 GP가 실제로 어디까지 가는지 보여 주는 예다. 영상에서는 공력 잔차를 GP로 배운 MPC가 쿼드로터를 고속으로 추종시키는 것을 본다. 400점에서 뽑은 inducing point 20개로 실시간에 들었고, 15–25개가 성능과 계산의 최적 구간이었다. 앞 표의 m이 작으면 굴곡을 놓친다는 말과 m이 크면 주기를 넘긴다는 말 사이의 균형이 실제 문제에서는 이렇게 정해진다.</aside>
 </section>
 <section id="tube" class="t">
 <div class="head"><p class="kicker">3 · 튜브 MPC</p><h2>튜브는 외란이 오차를 얼마나 키울 수 있는지만큼 제약을 조인다</h2></div>
@@ -537,6 +606,19 @@ section.t.divider h2 { font-size:80px; }
 </table>
 <aside>확률 제약은 "위반 확률이 ε 이하"를 요구한다. 상태 분포가 가우시안이면 이 조건은 평균에 대한 결정적 제약으로 바뀌고, 조임 폭은 표준 정규 분위수와 예측 표준편차의 곱이다. 이 조임 폭이 튜브의 ρ_k와 같은 자리에 들어간다. 확률 제약의 약점은 분산 추정에 기댄다는 것이다. 분산이 실제 오차를 명목 비율만큼 덮지 못하면 보장도 깨진다. 그래서 분산을 제약에 쓰기 전에 보정을 재야 한다.</aside>
 </section>
+<section id="cc-v" class="t">
+<div class="head"><p class="kicker">3 · 확률 제약 · 실례</p><h2>GP로 배운 잔차와 그 분산으로 조인 제약이 경주차의 랩타임과 안전을 함께 올렸다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:0 0 1104px"><a class="yt" href="https://www.youtube.com/watch?v=-cdXw1MyTUA"><img src="../../assets/yt/-cdXw1MyTUA.webp" alt="MPCC with Gaussian Process Based Model Learning for Autonomous Racing" style="height:620px"></a>
+<figcaption>▶ 영상 — 부정확한 차량 모델로는 충돌 없이 달리지 못하던 소형 경주차의 MPCC를, 주행 데이터로 배운 GP가 안전하게 개선한다. 랩타임과 안전이 함께 는다 (IDSC - Intelligent Control Systems)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점 1</span><h3>앞 장의 식 그대로</h3><p>GP 잔차의 평균은 예측에, 분산은 확률 제약의 조임 폭 \(\rho_k\)에 들어간다. 이것이 cautious MPC다.</p></div>
+<div class="card or"><span class="tag or">볼 점 2</span><h3>데이터로 안전하게 개선</h3><p>처음 모델로는 충돌하던 제어기가 기록한 데이터로 GP를 배워 더 빠르고 안전해진다. 분산이 큰 곳에서는 제약이 더 조여져 보수적으로 간다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>Hewing·Kabzan·Zeilinger, “Cautious Model Predictive Control using Gaussian Process Regression”, IEEE TCST 2020 — arXiv:1705.10702</p></div>
+<aside>확률 제약을 실제 차에 쓴 원조 격의 시연이다. 영상에서는 부정확한 모델의 MPCC로 충돌하던 소형 경주차가 주행 데이터로 GP를 배운 뒤 더 빠르고 안전하게 도는 것을 본다. 잔차 평균이 예측을 고치고 분산이 제약의 여유를 정한다는 두 역할이 한 화면에서 드러난다. 참고문헌 ★5가 이 논문이다.</aside>
+</section>
 <section id="layers" class="t">
 <div class="head"><p class="kicker">3 · 예측 모델의 층</p><h2>예측 모델은 기구학 → 동역학 → 학습의 세 층으로 쌓는다</h2></div>
 <table style="font-size:25px">
@@ -554,6 +636,19 @@ section.t.divider h2 { font-size:80px; }
 </div>
 <div class="foot" data-foot><p>Kim·Kim·Hwangbo, RSS 2022 — arXiv:2204.08647 · Hwangbo 외, Science Robotics 2019 — arXiv:1901.08652</p></div>
 <aside>모델을 한 번에 정교하게 만들 필요는 없다. 기구학 모델에서 시작해, 폐루프 실험에서 문제가 되는 효과를 동역학 층에 식으로 넣고, 그래도 남는 오차를 학습 층이 맡는다. 특히 액추에이터 지연은 동역학 층에서 간단히 넣을 수 있는데 효과가 크다. 학습 층은 식으로 쓰기 어려운 접촉과 지형 효과를 담는다. 층마다 같은 인터페이스로 맞춰 두면 MPC와 샘플 기반 MPC가 같은 예측 모델을 공유할 수 있다.</aside>
+</section>
+<section id="layers-v" class="t">
+<div class="head"><p class="kicker">3 · 예측 모델의 층 · 실례</p><h2>학습한 forward 모델 위에서 샘플 기반 MPC가 사족 로봇을 충돌 없이 안내한다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:0 0 1104px"><a class="yt" href="https://www.youtube.com/watch?v=-UTEL6zHNv4"><img src="../../assets/yt/-UTEL6zHNv4.webp" alt="Learning Forward Dynamics Model and Informed Trajectory Sampler for Safe Quadruped Navigation" style="height:620px"></a>
+<figcaption>▶ 영상 — 학습한 forward dynamics 모델(FDM)과 informed trajectory sampler로 복잡한 환경을 충돌 없이 지나는 사족 로봇 (RaiLab Kaist)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점 1</span><h3>학습 층 전체를 모델로</h3><p>잔차가 아니라 forward 모델 자체를 배운다. 미래 위치와 함께 충돌 확률을 내고, 6초 궤적 1,500개를 3 ms에 rollout해 샘플 기반 MPC가 고른다.</p></div>
+<div class="card or"><span class="tag or">볼 점 2</span><h3>데이터는 전체 로봇 시뮬에서</h3><p>전체 로봇 모델을 RaiSim의 무작위 환경에서 시뮬레이션해 자기지도로 모은다. 식에 없는 접촉·지형 효과가 이렇게 학습 층에 들어간다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>Kim·Kim·Hwangbo, “Learning Forward Dynamics Model and Informed Trajectory Sampler for Safe Quadruped Navigation”, RSS 2022 — arXiv:2204.08647</p></div>
+<aside>앞 장의 선례를 영상으로 본다. 영상에서는 학습한 forward 모델로 예측한 궤적 샘플 가운데 안전한 것을 골라 사족 로봇이 장애물 사이를 지나는 것을 본다. 세 층 가운데 학습 층이 모델 전체를 맡는 경우이고, 샘플 기반 MPC라 비평활 모델도 그대로 rollout할 수 있다. gradient 기반 NMPC에 같은 모델을 넣으려면 미분이 매끄러워야 한다는 점이 차이다.</aside>
 </section>
 <section id="simrig" class="t">
 <div class="head"><p class="kicker">3 · 검증 리그</p><h2>시뮬레이터가 MPC 모델과 같으면 아무것도 검증되지 않는다</h2></div>
@@ -604,6 +699,19 @@ section.t.divider h2 { font-size:80px; }
 </table>
 <div class="foot" data-foot><p>Haffemayer 외, RA-L 2026 · Dubied 외 arXiv:2507.02098 · L4acados (IEEE TCST)</p></div>
 <aside>표의 연구들을 고친 곳으로 묶었다. 초기해 쪽은 학습한 생성 모델이나 RL 정책이 출발점을 주고 OCP가 제약을 지키며 다듬는다. diffusion 초기해 연구에서는 OCP 단독 성공률이 10 % 아래였다가 초기해를 받자 80 % 안팎이 됐다. 제약 쪽은 GP 오차나 기록된 외란으로 튜브를 만든다. 모델 쪽은 지형의 기울기를 입력으로 넣거나, 학습 잔차가 물리적으로 말이 안 되는 가속을 내지 않게 페널티를 준다.</aside>
+</section>
+<section id="recent-v" class="t">
+<div class="head"><p class="kicker">4 · 연구 예 · 실례</p><h2>학습 잔차의 에너지 변화에 페널티를 주면 NMPC가 비물리적 가속을 이용하지 못한다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:0 0 1104px"><a class="yt" href="https://www.youtube.com/watch?v=E3XG979NXHk"><img src="../../assets/yt/E3XG979NXHk.webp" alt="Energy-based Regularization for Learning Residual Dynamics in Neural MPC for Omnidirectional Aerial Robots" style="height:620px"></a>
+<figcaption>▶ 영상 — 잔차 신경망을 보정의 상대 에너지 변화로 정규화해 학습한 neural MPC. 전방향 비행 로봇에서 시연한다 (DRAGON Lab)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">볼 점 1</span><h3>잔차가 에너지를 만들면 안 된다</h3><p>학습 잔차가 물리적으로 말이 안 되는 가속을 내면 최적화는 그것을 찾아가 이용한다. 보정의 에너지 증가에 페널티를 주어 막는다.</p></div>
+<div class="card or"><span class="tag or">볼 점 2</span><h3>3장의 함정과 같은 문제</h3><p>데이터 분포 밖에서 튀는 잔차, 분산이 없는 신경망 잔차. 그것을 손실 함수의 구조로 막는 방법 하나를 본다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>Kübel·Krauss·Li·Zhao, “Energy-based Regularization for Learning Residual Dynamics in Neural MPC for Omnidirectional Aerial Robots”, 2026 — arXiv:2604.14678</p></div>
+<aside>표의 ‘에너지 정규화 NN 잔차’ 행이다. 영상에서는 잔차 신경망의 보정이 만드는 상대 에너지 변화에 페널티를 주어 학습한 neural MPC가 전방향 비행 로봇을 모는 것을 본다. 3장에서 본 학습 잔차의 함정, 즉 분포 밖에서 튀는 값을 MPC가 이용한다는 문제를 손실 함수의 구조로 막는 예다.</aside>
 </section>
 <section id="trends" class="t">
 <div class="head"><p class="kicker">4 · 공통점과 차이점</p><h2>네 가지를 함께 하고, 네 축에서 갈린다</h2></div>
@@ -704,6 +812,7 @@ section.t.divider h2 { font-size:80px; }
 <div class="stack">
 <p><b>튜브·확률</b> — Mayne 외, Robust MPC (Automatica 2005) · Koller 외 1803.08287 · Dubied 외 2507.02098</p>
 <p><b>최근 흐름</b> — diffusion 초기해 MPC 2601.02873 · RL 유도 PAC-NMPC 2609.39854 · 비평면 재귀 희소 GP 2602.16206 · 에너지 정규화 NN 잔차 2604.14678 · 고속 전지형 자율주행 2603.20525</p>
+<p><b>영상의 원 논문</b> — Grandia 외, 인식 보행 NMPC 2208.08373 · acados 공식 시연, 삼륜 AGV 추종 (IROS 2024) · Torrente 외, Data-Driven MPC 2102.05773</p>
 </div>
 </div>
 <aside>덱의 각 장에 나온 문헌을 주제별로 모았다. 숫자만 있는 항목은 arXiv 번호이고, 학회지나 책은 저자와 연도를 적었다. 처음부터 모두 읽을 필요는 없다. 앞 장의 다섯 가지를 먼저 읽고, 이 덱의 장단점 표에서 궁금해진 방법의 원 논문만 골라 읽기를 권한다. Diehl의 RTI 논문과 acados 논문은 실습 전에 읽어 두면 솔버 옵션이 왜 그런지 보인다.</aside>
@@ -735,7 +844,30 @@ section.t.divider h2 { font-size:80px; }
     var s = Math.min(st.clientWidth / 1920, st.clientHeight / 1080);
     frame.style.transform = 'scale(' + s + ')';
   }
+  // ▶ 영상(figure.video): 썸네일 a.yt를 누르면 그 자리에 YouTube(nocookie) iframe을 넣고, 장을 넘기면 썸네일로 되돌린다.
+  // 캡처·검사(?shot, ?check)에서는 누르지 않으므로 썸네일만 찍힌다. PPTX는 그림에 하이퍼링크를 단다.
+  function ytId(href) {
+    var m = /[?&]v=([\w-]{11})/.exec(href) || /youtu\.be\/([\w-]{11})/.exec(href);
+    return m ? m[1] : null;
+  }
+  function stopVideos() {
+    Array.prototype.forEach.call(frame.querySelectorAll('figure.video iframe'), function (f) { f.remove(); });
+    Array.prototype.forEach.call(frame.querySelectorAll('figure.video a.yt.off'), function (a) { a.classList.remove('off'); });
+  }
+  frame.addEventListener('click', function (e) {
+    var a = e.target.closest ? e.target.closest('figure.video a.yt') : null;
+    if (!a || shot) return;
+    var id = ytId(a.href), img = a.querySelector('img');
+    if (!id || !img) return;
+    e.preventDefault();
+    var f = document.createElement('iframe');
+    f.width = img.clientWidth; f.height = img.clientHeight;
+    f.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0';
+    f.allow = 'autoplay; fullscreen; picture-in-picture'; f.allowFullscreen = true; f.title = img.alt || 'YouTube';
+    a.classList.add('off'); a.parentNode.insertBefore(f, a);
+  });
   function show(n) {
+    stopVideos();
     i = Math.max(0, Math.min(slides.length - 1, n));
     slides.forEach(function (el, k) { el.classList.toggle('on', k === i); });
     document.getElementById('count').textContent = (i + 1) + ' / ' + slides.length;
@@ -753,10 +885,15 @@ section.t.divider h2 { font-size:80px; }
   window.withAllFonts = withAllFonts;
   // 넘침 검사: 본문 요소가 장 밖으로 나가거나 각주 띠를 덮으면 적는다.
   function check() {
-    var bad = [];
+    var bad = [], yt = [];
     slides.forEach(function (sec, k) {
       show(k);
       var box = sec.getBoundingClientRect();
+      // 영상 썸네일(img)의 자리. 캡처 PPTX(make_pptx)가 그 위에 보이지 않는 하이퍼링크 상자를 놓는다.
+      Array.prototype.forEach.call(sec.querySelectorAll('figure.video a.yt'), function (a) {
+        var r = (a.querySelector('img') || a).getBoundingClientRect();
+        yt.push({ slide: k + 1, href: a.href, r: [r.left - box.left, r.top - box.top, r.width, r.height] });
+      });
       Array.prototype.forEach.call(sec.querySelectorAll('.katex-error'), function (el) {
         bad.push({ slide: k + 1, id: sec.id, tag: 'TeX', text: (el.getAttribute('title') || el.textContent).slice(0, 60), over: 0 });
       });
@@ -765,7 +902,7 @@ section.t.divider h2 { font-size:80px; }
       });
       var foot = sec.querySelector('[data-foot]');
       var limit = foot ? foot.getBoundingClientRect().top - 4 : box.bottom - 24;
-      Array.prototype.forEach.call(sec.querySelectorAll('p, h1, h2, h3, img, td, th, li, .katex-display, [data-box]'), function (el) {
+      Array.prototype.forEach.call(sec.querySelectorAll('p, h1, h2, h3, img, figcaption, td, th, li, .katex-display, [data-box]'), function (el) {
         if (foot && foot.contains(el)) return;
         if (el.closest('aside')) return;
         var r = el.getBoundingClientRect();
@@ -776,7 +913,7 @@ section.t.divider h2 { font-size:80px; }
       });
     });
     var rep = document.getElementById('report');
-    rep.textContent = JSON.stringify(bad);
+    rep.textContent = JSON.stringify({ bad: bad, yt: yt });
     rep.setAttribute('data-done', '1');
   }
   function start() {

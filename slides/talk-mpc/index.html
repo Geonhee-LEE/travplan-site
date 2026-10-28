@@ -27,6 +27,9 @@ section .katex-display { margin:0; text-align:left; }
 section .katex-display > .katex { text-align:left; }
 x-shape { display:block; flex:none; }
 x-shape[kind="arrow-right"] { clip-path:polygon(0 32%,58% 32%,58% 0,100% 50%,58% 100%,58% 68%,0 68%); }
+figure.video a.yt { display:block; width:fit-content; max-width:100%; line-height:0; cursor:pointer; }
+figure.video a.yt.off { display:none; }
+figure.video iframe { display:block; border:0; border-radius:8px; background:#000; }
 #bar { position:fixed; left:0; right:0; bottom:0; height:56px; background:var(--bar); display:flex; align-items:center; gap:12px; padding:0 16px; font-size:15px; }
 #bar button, #bar a { background:none; border:1px solid #3A4A6B; color:var(--fg); border-radius:8px; padding:6px 12px; font:inherit; cursor:pointer; text-decoration:none; }
 #bar button:hover, #bar a:hover { border-color:var(--accent); }
@@ -197,7 +200,8 @@ section.t.divider h2 { font-size:80px; }
       var s = Math.min(r[2] / nw, r[3] / nh), w = nw * s, h = nh * s;
       r = [r[0] + (r[2] - w) / 2, r[1] + (r[3] - h) / 2, w, h];
     }
-    return { t: 'img', r: r, src: el.getAttribute('src') };
+    var a = el.closest('a');   // 영상 썸네일(figure.video > a.yt > img)은 YouTube 하이퍼링크를 단 그림이 된다
+    return { t: 'img', r: r, src: el.getAttribute('src'), href: a && /^https?:/.test(a.href) ? a.href : null };
   }
   function slide(sec) {
     var base = sec.getBoundingClientRect(), items = [];
@@ -380,6 +384,19 @@ section.t.divider h2 { font-size:80px; }
 <p class="take"><b>travplan:</b> 이것은 우회가 아니라 전제다. 조일 제약이 없으면 GP 분산도 튜브도 쓸 자리가 없다.</p>
 <aside>MPPI는 치명 페널티 10³으로 그 샘플을 버리지만, 미분으로 푸는 MPC에는 그 길이 없습니다. CasADi가 기호 위치로 격자를 고를 수 없어서, 실무 해법 셋 가운데 소수 장애물을 파라미터로 넘기는 방법을 골랐습니다. travplan의 치명 기하는 대부분 연석 벽이라 원 대신 접평면을 씁니다. 나중에 이산 CBF 감쇠를 더해, 노드의 여유 하한이 로봇 자신의 여유에서 기하급수로 줄어들게 했습니다.</aside>
 </section>
+<section id="lethal-v" class="t">
+<div class="head"><p class="kicker">M.1.2 · 치명 셀 제약 · 바깥 실례</p><h2>지형 조건을 노드마다 볼록 제약으로 근사하는 같은 전략이 다리 로봇 NMPC에도 있다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:0 0 1104px"><a class="yt" href="https://www.youtube.com/watch?v=v6MhPl2ICsc"><img src="../../assets/yt/v6MhPl2ICsc.webp" alt="Perceptive Locomotion through Nonlinear Model Predictive Control" style="height:620px"></a>
+<figcaption>▶ 영상 — 틈·경사·징검다리를 건너는 ANYmal. foothold가 놓일 수 있는 영역을 노드마다 볼록 부등식 제약으로 근사해 온라인 MPC에 넣는다 (Robotic Systems Lab: Legged Robotics at ETH Zürich)</figcaption></figure>
+<div class="stack">
+<div class="card or"><span class="tag or">travplan과 같은 점</span><h3>비볼록 → 노드별 볼록 부등식</h3><p>foothold가 놓일 수 있는 영역을 예측 노드마다 볼록 부등식으로 근사해 온라인 MPC에 넣는다. travplan의 노드별 접평면과 같은 자리다.</p></div>
+<div class="card gy"><span class="tag">다른 점</span><h3>전신 자유도, 다리</h3><p>발 놓기·충돌 회피·동역학을 한 OCP로 푼다. travplan은 차체 twist 6상태뿐이라 문제가 훨씬 작다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>Grandia 외, “Perceptive Locomotion through Nonlinear Model Predictive Control”, T-RO 2023 — arXiv:2208.08373</p></div>
+<aside>치명 셀을 접평면 제약으로 넣은 것이 우회가 아니라 전제라는 말을 바깥 사례로 뒷받침합니다. 영상에서는 ANYmal이 틈과 징검다리를 건너며 발을 놓을 수 있는 영역을 노드마다 볼록 제약으로 근사한 NMPC로 걷는 것을 봅니다. 지형이 만드는 비볼록 조건을 국소 볼록 근사로 바꾸는 전략은 같고, 다만 다리 로봇은 전신 자유도까지 함께 풀어 문제가 훨씬 큽니다.</aside>
+</section>
 <section id="steer" class="t">
 <div class="head"><p class="kicker">M.1 · 모듈 한계</p><h2>모듈 역기구학은 넣지 않고, 차체 box 제약으로 옮긴다</h2></div>
 <div class="cols">
@@ -391,6 +408,19 @@ section.t.divider h2 { font-size:80px; }
 </div>
 <div class="foot" data-foot><p>[1] Liu 외, ICAR 2025 — arXiv:2510.19054</p></div>
 <aside>AntBot 제어기의 역기구학은 미분할 수 없는 연산으로 되어 있어 최적화에 넣지 않았습니다. 대신 모듈 한계를 차체 수준의 box 제약으로 옮겼습니다. Liu 외는 조향이 ±130°로 막힌 로봇에서 불연속 평면 8개가 속도 공간을 12구역으로 나눈다고 보였습니다. travplan plant는 ±56.2°라 구역 대신 바퀴마다 실현 가능 원뿔이 생기고, 정면 보행자를 횡이동으로 비키지 못한 원인이 이것이었습니다. NMPC에 넣는다면 원뿔의 매끄러운 근사를 써야 합니다.</aside>
+</section>
+<section id="steer-v" class="t">
+<div class="head"><p class="kicker">M.1 · 모듈 한계 · 영상</p><h2>불연속 평면을 넘으면 바퀴가 뒤집히고, 평면을 피하는 Planner가 그것을 막는다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:0 0 1104px"><a class="yt" href="https://www.youtube.com/watch?v=8l9s2Wb_vec"><img src="../../assets/yt/8l9s2Wb_vec.webp" alt="ICAR 2025 보충 영상: 조향 한계가 있는 4륜 독립 조향 로봇" style="height:620px"></a>
+<figcaption>▶ 영상 — 조향 한계가 만드는 불연속 평면(0:00–0:07), 평면을 넘을 때 바퀴가 쉬지 않고 뒤집히는 기준 제어기(0:07–0:25), 속도 벡터를 평면에서 떨어뜨려 뒤집기를 막는 보강 Planner(0:25–0:41) (Nokia Bell Labs)</figcaption></figure>
+<div class="stack">
+<div class="card or"><span class="tag or">볼 점</span><h3>wheel thrashing</h3><p>평면을 넘으면 바퀴를 뒤집어야 한다. 순수 DWA는 실물 미로에서 바퀴가 쉬지 않고 왔다 갔다 해 시험을 중단했다 [1].</p></div>
+<div class="card gy"><span class="tag">travplan에서는</span><p>plant 조향 ±56.2°는 90°보다 좁아 구역 대신 바퀴마다 실현 가능 원뿔이 생긴다(TP-0162). NMPC는 이 원뿔을 모른다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>[1] Liu 외, ICAR 2025 — arXiv:2510.19054</p></div>
+<aside>앞 장 그림의 평면이 실제로 무엇을 뜻하는지 영상으로 봅니다. 영상에서는 조향 한계에 따라 평면이 만들어지는 과정, 평면을 넘을 때 바퀴가 쉬지 않고 뒤집히는 기준 제어기, 그리고 속도 벡터를 평면에서 떨어뜨려 뒤집기를 막는 보강 Planner를 차례로 봅니다. travplan plant는 조향이 ±56.2°라 사정이 다르지만, 조향 한계가 속도 공간을 자른다는 점은 같습니다.</aside>
 </section>
 <section id="d-gp" class="t dark divider">
 <p class="kicker">2 · GP 잔차 · 튜브 · 시뮬 리그</p>
@@ -418,6 +448,19 @@ section.t.divider h2 { font-size:80px; }
 </table>
 <p class="take"><b>travplan:</b> TP-0071에서 반평면용으로 만든 파라미터 전달 구조가 그대로 0차 GP-MPC가 됐다.</p>
 <aside>GP 평균을 노드별 acados 파라미터로 넣으면 솔버는 그것을 상수로 봅니다. 그래서 잔차의 미분이 구조적으로 0이 되고, 이것이 바로 0차 근사입니다. 따로 구현할 것이 없었습니다. 잔차는 plant를 켜고 guidance+mppi로 2,000 샘플을 모아 배웠고, 지연이 선형이라 선형 모형도 상당히 맞았습니다. 처음에는 예측 분산에 관측 잡음을 더하지 않아 크게 과신했습니다.</aside>
+</section>
+<section id="gp-v" class="t">
+<div class="head"><p class="kicker">M.3.6 · GP 잔차 · 같은 구조의 도구</p><h2>L4acados는 travplan의 mpc_gp와 같은 구조로 Python 잔차를 acados에 꽂는다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:0 0 1104px"><a class="yt" href="https://www.youtube.com/watch?v=6tnhRnJSwW4"><img src="../../assets/yt/6tnhRnJSwW4.webp" alt="L4acados - Learning-based models for acados, applied to Gaussian process-based predictive control" style="height:620px"></a>
+<figcaption>▶ 영상 — L4acados: 신경망·GP 같은 Python 잔차 모델을 실시간 최적 제어 소프트웨어 acados에 잇는 틀. GP 기반 MPC에 적용했다 (IDSC - Intelligent Control Systems)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">같은 점</span><h3>0차 GP-MPC</h3><p>GP 평균을 파라미터로 넘기고 명목 모델의 미분으로 탐색한다. travplan은 TP-0071의 파라미터 전달 구조를 그대로 썼다.</p></div>
+<div class="card gy"><span class="tag">다른 점</span><h3>일반 잔차 인터페이스</h3><p>L4acados는 Python 모델과 그 민감도를 받는 일반 틀이다. travplan은 SGPR 잔차 하나를 손으로 꽂았다(<code>control/acados_mpc/gp.py</code>).</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>L4acados — Lahr 외, IEEE TCST — arXiv:2411.19258</p></div>
+<aside>같은 구조를 일반 도구로 만든 것이 L4acados입니다. 영상에서는 Python 잔차 모델을 acados에 붙이는 틀과 GP 기반 MPC의 적용 예를 봅니다. travplan의 mpc_gp는 GP 평균을 노드별 파라미터로 넘기는 0차 방식이고, L4acados는 잔차의 민감도까지 Python에서 받아 넘길 수 있는 일반 인터페이스라는 점이 다릅니다.</aside>
 </section>
 <section id="sgpr" class="t">
 <div class="head"><p class="kicker">M.3.8 · M.3.9 · 희소 GP</p><h2>SGPR inducing point 64만 네 축을 모두 통과한다</h2></div>
@@ -449,6 +492,16 @@ section.t.divider h2 { font-size:80px; }
 <div class="foot" data-foot><p>[5] Dubied 외, Automatica 2026 — arXiv:2507.02098</p></div>
 <aside>GP 분산이든 튜브든 SLP든 결국 같은 rho_k를 정하는 장치입니다. GP는 확률이고 튜브는 유계 외란이라 그대로 잇지 못하므로, GP의 신뢰 타원체를 외란 집합으로 쓰는 것이 다리입니다. travplan은 잔차 SGPR의 분산을 노드별 조임으로 바꾸고 8 cm 상한을 두었습니다. 결과는 작업 기록에서 다시 다루지만, 측정되는 효과가 없어 기본값은 꺼져 있습니다.</aside>
 </section>
+<section id="tube-fig" class="t">
+<div class="head"><p class="kicker">M.3.18 · TP-0069 · 튜브 폭</p><h2>SGPR 분산에서 나온 튜브는 4 s 끝에서 중앙값 4 cm, 90% 분위 8 cm(상한)다</h2></div>
+<figure><img src="../../assets/figs/tp0069_tube.webp" style="height:330px"><figcaption>(a) plant curb_ramp s0(도달)에서 스텝마다 계산한 노드별 튜브 폭 \(t_k\), (b) 예측 시간별 중앙값과 90% 분위. 빨리 달릴 때 넓다 (TP-0069)</figcaption></figure>
+<div class="grid2">
+<div class="card bl"><span class="tag bl">(a) 노드별 폭</span><p>세로축이 예측 노드 k, 가로축이 시각이다. 먼 노드일수록, 빨리 달릴 때일수록 진하다. 분산이 horizon을 따라 자라는 모습이다.</p></div>
+<div class="card or"><span class="tag or">(b) 예측 시간별</span><p>상한 8 cm는 90% 분위가 4 s 끝에서 닿는 값이다. 1번 노드 coverage 97.4%로 보정은 맞았지만, 실행 여유도 성공도 늘지 않았다.</p></div>
+</div>
+<p class="take"><b>travplan:</b> 먼 노드의 폭은 보정되지 않았고(90 % 분위가 상한 8 cm에 닿는다), 튜브는 계획을 조금 더 조심스럽게 만들 뿐 실제 경로를 벽에서 떼지 못했다.</p>
+<aside>앞 장의 rho_k가 실제로 얼마나 되는지 보여 주는 그림입니다. 왼쪽은 한 에피소드에서 스텝마다 계산한 노드별 튜브 폭이고, 오른쪽은 그것을 예측 시간별로 모은 중앙값과 90% 분위입니다. 4초 끝에서 중앙값 4 cm, 90% 분위는 상한 8 cm에 닿습니다. 1번 노드의 coverage는 97.4%로 보정이 맞았지만, 그 조임 폭은 작아서 실행 여유나 성공을 늘리지 못했습니다.</aside>
+</section>
 <section id="layers" class="t">
 <div class="head"><p class="kicker">M.1.3 · TP-0124–0126</p><h2>예측 모델은 기구학 → 동역학 → 학습의 세 층으로 쌓는다</h2></div>
 <table>
@@ -464,6 +517,19 @@ section.t.divider h2 { font-size:80px; }
 <figure><img src="../../assets/thumbs/b75e146329bb.webp" style="height:250px"><figcaption>FDM 기반 안전 내비게이션: 샘플러 → FDM 예측 → 보상 가중 평균 — Kim 외, RSS 2022 [10]</figcaption></figure>
 <div class="foot" data-foot><p>[10] Kim, Kim, Hwangbo, RSS 2022 — arXiv:2204.08647 · [11] Hwangbo 외, Science Robotics 2019 — arXiv:1901.08652</p></div>
 <aside>2026-10-01 사용자 결정으로 예측 모델을 세 층으로 쌓습니다. 잘 아는 것은 식으로 두고, 식이 못 담는 것만 배운다는 생각입니다. 지금 MPPI와 MPC는 둘 다 기구학 모델 하나로 예측하고 학습 층은 GP 잔차뿐입니다. 학습 층의 데이터는 로봇 메쉬로 돌린 시뮬레이션에서 얻으려 하고, KAIST RaiLab의 FDM 연구가 그 선례입니다.</aside>
+</section>
+<section id="layers-v" class="t">
+<div class="head"><p class="kicker">M.1.3 · 학습 층의 선례</p><h2>RaiLab의 FDM은 학습 층이 forward 모델 전체를 맡고, 샘플 기반 MPC가 그 위에서 고른다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:0 0 1104px"><a class="yt" href="https://www.youtube.com/watch?v=-UTEL6zHNv4"><img src="../../assets/yt/-UTEL6zHNv4.webp" alt="Learning Forward Dynamics Model and Informed Trajectory Sampler for Safe Quadruped Navigation" style="height:620px"></a>
+<figcaption>▶ 영상 — 학습한 forward dynamics 모델(FDM)과 informed trajectory sampler로 복잡한 환경을 충돌 없이 지나는 사족 로봇 (RaiLab Kaist)</figcaption></figure>
+<div class="stack">
+<div class="card gr"><span class="tag gr">선례가 주는 것</span><h3>전체 로봇 시뮬 데이터로 자기지도 학습</h3><p>전체 로봇 모델을 RaiSim 무작위 환경에서 시뮬레이션해 데이터를 모으고, FDM은 미래 위치와 충돌 확률을 낸다. travplan의 메쉬 시뮬레이터(TP-0125)가 그 자리다.</p></div>
+<div class="card gy"><span class="tag">travplan 지금</span><p>학습 층은 GP 잔차뿐(TP-0120). MPPI·MPC는 기구학 층 하나로 예측한다. FDM의 충돌 확률은 MPPI 확률 제약의 손으로 만든 여유를 대신할 후보다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>[10] Kim, Kim, Hwangbo, RSS 2022 — arXiv:2204.08647</p></div>
+<aside>앞 장의 선례를 영상으로 봅니다. 영상에서는 학습한 forward 모델로 예측한 궤적 샘플 가운데 안전한 것을 골라 사족 로봇이 장애물 사이를 지나는 것을 봅니다. 문서 M.1.3이 이 연구에서 가져오려는 것은 둘입니다. 학습 층의 출력에 위치뿐 아니라 실패 확률을 두는 것, 그리고 데이터를 실제 로봇 모델로 돌린 시뮬레이션에서 얻는 것입니다.</aside>
 </section>
 <section id="simrig" class="t">
 <div class="head"><p class="kicker">M.2 · 시뮬 리그</p><h2>plant가 MPC 모델과 같으면 아무것도 검증되지 않는다</h2></div>
@@ -522,6 +588,19 @@ section.t.divider h2 { font-size:80px; }
 </table>
 <p class="take"><b>travplan:</b> 잔차 GP 구조는 이미 같다. 새로운 것은 부호 있는 roll·pitch 입력 하나다.</p>
 <aside>둘째 장은 모델 쪽입니다. 비평면 재귀 희소 GP는 travplan 잔차 GP와 구조가 거의 같고, 다른 점은 부호 있는 roll·pitch를 입력으로 쓴다는 것입니다. 에너지 정규화 잔차는 학습 잔차가 물리적으로 말이 안 되는 가속을 만들면 NMPC가 그것을 이용해 떨리는 명령을 낸다는 점을 짚습니다. L4acados는 acados에 학습 잔차를 꽂는 틀이고, travplan의 mpc_gp도 같은 구조입니다.</aside>
+</section>
+<section id="cmp2-v" class="t">
+<div class="head"><p class="kicker">M.4 · 비교표 (2/2) · 영상</p><h2>에너지 정규화 잔차는 NMPC가 비물리적 가속을 이용해 떨리는 명령을 내는 것을 막는다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:0 0 1104px"><a class="yt" href="https://www.youtube.com/watch?v=E3XG979NXHk"><img src="../../assets/yt/E3XG979NXHk.webp" alt="Energy-based Regularization in Neural MPC for Omnidirectional Aerial Robots" style="height:620px"></a>
+<figcaption>▶ 영상 — 잔차 신경망을 보정의 상대 에너지 변화로 정규화해 학습한 neural MPC. 전방향 비행 로봇에서 시연한다 (DRAGON Lab)</figcaption></figure>
+<div class="stack">
+<div class="card or"><span class="tag or">표의 행</span><h3>잔차가 에너지를 만들면 안 된다</h3><p>학습 잔차가 물리적으로 말이 안 되는 가속을 만들면 NMPC가 그것을 이용해 떨리는 명령을 낸다. 보정의 에너지 증가에 페널티를 주어 막는다.</p></div>
+<div class="card gy"><span class="tag">travplan에서는</span><p>SGPR 잔차는 분산이 있어 분포 밖에서 prior로 돌아간다. 신경망 잔차로 바꾼다면 이런 정규화가 먼저 필요하다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>[9] Kübel 외, 2026 — arXiv:2604.14678</p></div>
+<aside>표의 에너지 정규화 행을 영상으로 봅니다. 영상에서는 잔차 신경망의 보정이 만드는 상대 에너지 변화에 페널티를 주어 학습한 neural MPC가 전방향 비행 로봇을 모는 것을 봅니다. travplan의 SGPR 잔차는 분포 밖에서 prior로 돌아가지만, 신경망 잔차로 바꾼다면 이 논문이 짚은 문제, 즉 NMPC가 비물리적 보정을 이용하는 일을 먼저 막아야 합니다.</aside>
 </section>
 <section id="common" class="t">
 <div class="head"><p class="kicker">M.4 · 공통점</p><h2>명목 모델에 잔차를 더하고, 그 불확실성으로 제약을 조인다</h2></div>
@@ -629,8 +708,11 @@ section.t.divider h2 { font-size:80px; }
 <tr><td>셀 조회 (코드 리뷰)</td><td>내림으로 찾아 반 셀 어긋났다</td><td>반올림</td></tr>
 </table>
 <div class="cols">
+<div class="stack">
 <p class="small">+ 이산 CBF 감쇠(γ = 0.2): 경로가 뒤집힐 때 벽에 붙기 전에 감속한다.</p>
 <p class="small">정적 seed 0–9: <b>38/40</b>, 제어 6.6 ms(MPPI 40/40). 여유 하나로는 램프 모서리와 좁은 틈을 함께 맞추지 못했다.</p>
+</div>
+<figure><img src="../../assets/figs/tp0093_mpc_vs_mppi.webp" style="height:300px"><figcaption>구멍을 막은 뒤의 네 장면: 1단계에서 MPC가 죽던 curb_ramp s1·bumps_potholes s1·random_mix s2와 지도 경계 장면 random_mix s6. 노란 선 MPC, 파란 선 MPPI, 빨간 칸 치명 셀. 네 장면 모두 둘 다 도달한다 (TP-0093)</figcaption></figure>
 </div>
 <p class="take"><b>travplan:</b> QP 반복 한계(status 3)는 원인이 아니라 증상이었다. 실패 에피소드를 스텝마다 계측해서 찾았다.</p>
 <aside>실패한 에피소드를 스텝마다 계측하자 세 실패가 모두 제약의 구멍이었습니다. QP 반복 한계는 원인이 아니라 증상이었습니다. 네 번째 구멍은 코드 리뷰가 찾았는데, 이것을 막기 전의 40/40은 한쪽 면의 낙관 덕분에 틈이 넓어 보였던 결과였습니다. 정확한 기하로는 38/40이었고, 여유를 스윕해도 40/40을 내는 값은 없었습니다.</aside>
@@ -765,6 +847,7 @@ section.t.divider h2 { font-size:80px; }
 <p class="small">[12] Kim 외, Science Robotics 2025 — arXiv:2506.02835</p>
 <p class="small">[13] Kalaria 외, 2022 (지연 상태 확장) — arXiv:2208.13856</p>
 <p class="small">경로를 품은 MPC, 외란 피드백 강건 MPC, L4acados: Controller 문서 E.6·E.7</p>
+<p class="small">영상의 원 논문: Grandia 외, T-RO 2023 — arXiv:2208.08373 · L4acados, Lahr 외, IEEE TCST — arXiv:2411.19258</p>
 </div>
 </div>
 <p class="small muted">travplan 결과: <code>docs/research-mpc.md</code> M.3, <code>STATE.md</code>. 코드: <code>control/acados_mpc/</code></p>
@@ -797,7 +880,30 @@ section.t.divider h2 { font-size:80px; }
     var s = Math.min(st.clientWidth / 1920, st.clientHeight / 1080);
     frame.style.transform = 'scale(' + s + ')';
   }
+  // ▶ 영상(figure.video): 썸네일 a.yt를 누르면 그 자리에 YouTube(nocookie) iframe을 넣고, 장을 넘기면 썸네일로 되돌린다.
+  // 캡처·검사(?shot, ?check)에서는 누르지 않으므로 썸네일만 찍힌다. PPTX는 그림에 하이퍼링크를 단다.
+  function ytId(href) {
+    var m = /[?&]v=([\w-]{11})/.exec(href) || /youtu\.be\/([\w-]{11})/.exec(href);
+    return m ? m[1] : null;
+  }
+  function stopVideos() {
+    Array.prototype.forEach.call(frame.querySelectorAll('figure.video iframe'), function (f) { f.remove(); });
+    Array.prototype.forEach.call(frame.querySelectorAll('figure.video a.yt.off'), function (a) { a.classList.remove('off'); });
+  }
+  frame.addEventListener('click', function (e) {
+    var a = e.target.closest ? e.target.closest('figure.video a.yt') : null;
+    if (!a || shot) return;
+    var id = ytId(a.href), img = a.querySelector('img');
+    if (!id || !img) return;
+    e.preventDefault();
+    var f = document.createElement('iframe');
+    f.width = img.clientWidth; f.height = img.clientHeight;
+    f.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0';
+    f.allow = 'autoplay; fullscreen; picture-in-picture'; f.allowFullscreen = true; f.title = img.alt || 'YouTube';
+    a.classList.add('off'); a.parentNode.insertBefore(f, a);
+  });
   function show(n) {
+    stopVideos();
     i = Math.max(0, Math.min(slides.length - 1, n));
     slides.forEach(function (el, k) { el.classList.toggle('on', k === i); });
     document.getElementById('count').textContent = (i + 1) + ' / ' + slides.length;
@@ -815,10 +921,15 @@ section.t.divider h2 { font-size:80px; }
   window.withAllFonts = withAllFonts;
   // 넘침 검사: 본문 요소가 장 밖으로 나가거나 각주 띠를 덮으면 적는다.
   function check() {
-    var bad = [];
+    var bad = [], yt = [];
     slides.forEach(function (sec, k) {
       show(k);
       var box = sec.getBoundingClientRect();
+      // 영상 썸네일(img)의 자리. 캡처 PPTX(make_pptx)가 그 위에 보이지 않는 하이퍼링크 상자를 놓는다.
+      Array.prototype.forEach.call(sec.querySelectorAll('figure.video a.yt'), function (a) {
+        var r = (a.querySelector('img') || a).getBoundingClientRect();
+        yt.push({ slide: k + 1, href: a.href, r: [r.left - box.left, r.top - box.top, r.width, r.height] });
+      });
       Array.prototype.forEach.call(sec.querySelectorAll('.katex-error'), function (el) {
         bad.push({ slide: k + 1, id: sec.id, tag: 'TeX', text: (el.getAttribute('title') || el.textContent).slice(0, 60), over: 0 });
       });
@@ -827,7 +938,7 @@ section.t.divider h2 { font-size:80px; }
       });
       var foot = sec.querySelector('[data-foot]');
       var limit = foot ? foot.getBoundingClientRect().top - 4 : box.bottom - 24;
-      Array.prototype.forEach.call(sec.querySelectorAll('p, h1, h2, h3, img, td, th, li, .katex-display, [data-box]'), function (el) {
+      Array.prototype.forEach.call(sec.querySelectorAll('p, h1, h2, h3, img, figcaption, td, th, li, .katex-display, [data-box]'), function (el) {
         if (foot && foot.contains(el)) return;
         if (el.closest('aside')) return;
         var r = el.getBoundingClientRect();
@@ -838,7 +949,7 @@ section.t.divider h2 { font-size:80px; }
       });
     });
     var rep = document.getElementById('report');
-    rep.textContent = JSON.stringify(bad);
+    rep.textContent = JSON.stringify({ bad: bad, yt: yt });
     rep.setAttribute('data-done', '1');
   }
   function start() {

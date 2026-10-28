@@ -27,6 +27,9 @@ section .katex-display { margin:0; text-align:left; }
 section .katex-display > .katex { text-align:left; }
 x-shape { display:block; flex:none; }
 x-shape[kind="arrow-right"] { clip-path:polygon(0 32%,58% 32%,58% 0,100% 50%,58% 100%,58% 68%,0 68%); }
+figure.video a.yt { display:block; width:fit-content; max-width:100%; line-height:0; cursor:pointer; }
+figure.video a.yt.off { display:none; }
+figure.video iframe { display:block; border:0; border-radius:8px; background:#000; }
 #bar { position:fixed; left:0; right:0; bottom:0; height:56px; background:var(--bar); display:flex; align-items:center; gap:12px; padding:0 16px; font-size:15px; }
 #bar button, #bar a { background:none; border:1px solid #3A4A6B; color:var(--fg); border-radius:8px; padding:6px 12px; font:inherit; cursor:pointer; text-decoration:none; }
 #bar button:hover, #bar a:hover { border-color:var(--accent); }
@@ -197,7 +200,8 @@ section.t.divider h2 { font-size:80px; }
       var s = Math.min(r[2] / nw, r[3] / nh), w = nw * s, h = nh * s;
       r = [r[0] + (r[2] - w) / 2, r[1] + (r[3] - h) / 2, w, h];
     }
-    return { t: 'img', r: r, src: el.getAttribute('src') };
+    var a = el.closest('a');   // 영상 썸네일(figure.video > a.yt > img)은 YouTube 하이퍼링크를 단 그림이 된다
+    return { t: 'img', r: r, src: el.getAttribute('src'), href: a && /^https?:/.test(a.href) ? a.href : null };
   }
   function slide(sec) {
     var base = sec.getBoundingClientRect(), items = [];
@@ -305,6 +309,19 @@ section.t.divider h2 { font-size:80px; }
 <div class="foot" data-foot><p>[1] MPPI, Georgia Tech, arXiv:1509.01149 (2015)  [2] Information-theoretic MPC, arXiv:1707.02342, T-RO 2018</p></div>
 <aside>MPPI는 제어 시퀀스에 노이즈를 섞은 후보를 많이 rollout하고, 비용의 지수 가중치로 평균해 새 제어 시퀀스를 얻습니다. λ가 작을수록 비용이 가장 낮은 몇 개에 가중치가 몰립니다. 2017년판은 이 갱신을 KL 기준으로 다시 유도해 일반 비선형 동역학으로 넓혔고, 1/5 크기 AutoRally 차량으로 흙길을 달렸습니다. travplan은 이 정보이론적 MPPI에 AR(1) 노이즈와 참조 추종 샘플을 더한 형태입니다.</aside>
 </section>
+<section id="mppi-core-v" class="t">
+<div class="head"><p class="kicker">E.1 · 정보이론적 MPC · 시연</p><h2>정보이론적 MPPI는 1/5 크기 AutoRally로 흙길 트랙을 공격적으로 달렸다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:2"><a class="yt" href="https://www.youtube.com/watch?v=f2at-cqaJMM"><img src="../../assets/yt/f2at-cqaJMM.webp" alt="Information Theoretic MPC for Model-Based Reinforcement Learning" style="height:620px"></a>
+<figcaption>▶ 영상 — 정보이론적 MPC: AutoRally 차량이 샘플 rollout의 가중 평균으로 흙길 트랙을 달린다 (GT AutoRally)</figcaption></figure>
+<div class="stack">
+<div class="card or"><span class="tag or">볼 점</span><p>제어 시퀀스에 노이즈를 섞은 후보 수천 개를 GPU로 동시에 rollout하고 비용의 지수 가중치로 평균한다. 2017년판은 교차 엔트로피 방법(CEM)의 MPC 판과 비교했다.</p></div>
+<div class="card gr"><span class="tag gr">travplan</span><p>같은 가중 평균이 TravMap 위에서 돈다. 샘플 768개, horizon 40스텝, 스텝당 약 10 ms(PyTorch).</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>[2] Information-theoretic MPC, arXiv:1707.02342, T-RO 2018 · 영상: GT AutoRally 채널(ICRA 2017판)</p></div>
+<aside>영상에서는 1/5 크기 AutoRally 차량이 흙길 트랙을 미끄러지며 도는 장면을 봅니다. 앞 장의 가중 평균이 매 주기 실제로 도는 모습입니다. 2017년판은 비용의 볼츠만 분포에 KL 기준으로 가장 가까운 제어 분포를 찾는 유도로 틀을 넓혀 일반 비선형 동역학에 썼습니다. travplan MPPIController는 이 정보이론적 MPPI에 AR(1) 노이즈와 참조 추종 샘플을 더한 형태입니다.</aside>
+</section>
 <section id="mppi-lineage" class="t">
 <div class="head"><p class="kicker">E.1 · 계보</p><h2>십 년 동안 바뀐 것은 샘플 분포와 구현이다</h2></div>
 <table>
@@ -326,12 +343,27 @@ section.t.divider h2 { font-size:80px; }
 <div class="foot" data-foot><p>RMPPI arXiv:2102.09027 (RA-L 2021) · log-MPPI arXiv:2203.16599 (RA-L 2022) · MPPI-Generic arXiv:2409.07563 (2024)</p></div>
 <aside>계보를 보면 MPPI의 가중 평균 자체는 거의 그대로이고, 샘플을 어디서 어떻게 뽑느냐와 구현이 바뀌었습니다. Robust MPPI는 실제 상태가 위험할 때 명목 상태를 유지해 외란에 버팁니다. MPPI-Generic은 Nav2의 CPU 구현(0.39–0.62 ms)보다 빠르고 PyTorch 기반 구현(25–48 ms)보다 두 자릿수 이상 빨랐습니다. Isaac이나 실물에서 슬립이 커지면 RMPPI식 명목 상태 선택도 다시 검토할 후보입니다.</aside>
 </section>
+<section id="mppi-lineage-v" class="t">
+<div class="head"><p class="kicker">E.1 · Robust MPPI · 시연</p><h2>Robust MPPI는 명목 상태를 어디서 다시 시작할지 정해 외란에 버틴다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:2"><a class="yt" href="https://www.youtube.com/watch?v=lD_6CLoa4rY"><img src="../../assets/yt/lD_6CLoa4rY.webp" alt="Robust Model Predictive Path Integral Control (RMPPI)" style="height:620px"></a>
+<figcaption>▶ 영상 — Robust MPPI(RMPPI): 명목 상태와 추종 제어기를 더한 MPPI의 AutoRally 실차 주행 (Grady Williams)</figcaption></figure>
+<div class="stack">
+<div class="card or"><span class="tag or">볼 점</span><p>MPPI는 매 스텝 실제 상태에서 다시 시작한다. 모델이 틀리거나 외란이 크면 샘플 전체가 나쁜 영역으로 밀려 중요도 샘플링이 무너진다. RMPPI는 명목과 실제를 합친 증강 상태와 재시작 규칙을 둔다.</p></div>
+<div class="card gr"><span class="tag gr">travplan</span><p>Isaac이나 실물에서 슬립이 커지면 RMPPI식 명목 상태 선택을 다시 검토할 후보다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>RMPPI arXiv:2102.09027 (RA-L 2021, Georgia Tech) · Tube-MPPI (RSS 2018) · 영상: Williams 박사학위 논문(2019)의 RMPPI</p></div>
+<aside>영상에서는 외란과 모델 오차가 있는 흙길에서 RMPPI가 어떻게 버티는지를 봅니다. Tube-MPPI는 외란을 받지 않는 명목 상태에서 MPPI를 풀고 실제 상태가 명목 궤적을 따라가게 하는 추종 제어기를 붙였는데, 명목 상태가 실제에서 멀어질 수 있고 보장이 없었습니다. RMPPI는 추종 제어기의 능력을 반영한 중요도 샘플링까지 더해 자유 에너지 증가의 상한을 유도했고, AutoRally 실차에서 MPPI의 강건성 부족과 Tube-MPPI의 과한 보수성을 함께 줄였습니다.</aside>
+</section>
 <section id="smppi" class="t">
 <div class="head"><p class="kicker">B.5 · Smooth MPPI · TP-0016 · TP-0021</p><h2>노이즈를 변화율에 넣으니 jerk가 28% 줄었다</h2></div>
 <div class="cols">
 <div class="stack">
 <div class="math">$$a_t = a_{t-1} + u_t\,\Delta t, \qquad u_t = \bar u_t + \epsilon_t$$</div>
 <p>표준 MPPI는 스텝마다 독립인 노이즈를 제어값에 더하므로 제어가 떨린다. SMPPI는 노이즈를 한 차수 높은 공간에서 샘플링해 적분한다. MPPI 유도는 그대로 지킨다.</p>
+<figure class="video"><a class="yt" href="https://www.youtube.com/watch?v=fyngK8PCoyM"><img src="../../assets/yt/fyngK8PCoyM.webp" alt="[RAL/IROS 2022] Smooth Model Predictive Path Integral Control without Smoothing" style="height:340px"></a>
+<figcaption>▶ 영상 — SMPPI 저자 시연: 변화율에 노이즈를 넣은 MPPI의 주행과 제어 입력 (Taekyung Kim)</figcaption></figure>
 </div>
 <div class="stack">
 <table>
@@ -350,7 +382,7 @@ section.t.divider h2 { font-size:80px; }
 </div>
 <p class="take"><b>travplan:</b> 비용 항은 그대로 두고 노이즈 모델만 바꾸면 된다. <code>SmoothMPPIController</code>로 정식 추가했다.</p>
 <div class="foot" data-foot><p>Smooth MPPI, arXiv:2112.09988, RA-L/IROS 2022 · 결과: <code>results/exp_smppi.txt</code>, <code>results/tp0021.log</code></p></div>
-<aside>SMPPI의 세 요소 중 변화율 비용과 가중평균의 매끄러움 보존은 travplan MPPI에 이미 있었습니다. 그래서 노이즈를 변화율 공간에서 샘플링하는 것 하나만 바꾼 서브클래스로 비교했습니다. RMS jerk가 28% 줄었고 안전 지표는 그대로였습니다. ρ를 0.9로 올리면 더 빠르지만 gt_cost가 25% 나빠졌습니다. 기본 Controller는 바꾸지 않았고 선택 스택으로 둡니다.</aside>
+<aside>SMPPI의 세 요소 중 변화율 비용과 가중평균의 매끄러움 보존은 travplan MPPI에 이미 있었습니다. 그래서 노이즈를 변화율 공간에서 샘플링하는 것 하나만 바꾼 서브클래스로 비교했습니다. RMS jerk가 28% 줄었고 안전 지표는 그대로였습니다. ρ를 0.9로 올리면 더 빠르지만 gt_cost가 25% 나빠졌습니다. 기본 Controller는 바꾸지 않았고 선택 스택으로 둡니다. 영상에서는 SMPPI로 움직이는 차량과 그때의 제어 입력이 얼마나 매끄러운지를 봅니다.</aside>
 </section>
 <section id="proxpi" class="t">
 <div class="head"><p class="kicker">B.5 · ProxPI</p><h2>학습 prior는 샘플 평균이 아니라 비용으로 넣는다</h2></div>
@@ -383,6 +415,19 @@ section.t.divider h2 { font-size:80px; }
 <div class="foot" data-foot><p>[1] CLIS-MPPI, arXiv:2610.21239, CDC 2026  [2] Feedback-MPPI, arXiv:2506.14855, RA-L 2026</p></div>
 <aside>두 연구 모두 MPPI 해에 피드백 이득을 붙이는데, 얻는 방법이 다릅니다. CLIS-MPPI는 계획 시간 동안 로봇이 계속 움직인다는 점을 초기 상태 불확실성으로 바꾸고, 이득을 가중 공분산 회귀로 얻습니다. 다만 시행이 5번뿐이고 분산은 보고하지 않았습니다. Feedback-MPPI는 미분으로 이득을 얻어서 travplan처럼 계단 같은 비용에서는 의미를 잃습니다. travplan의 지연은 에피소드 안에서 일정한 이산값이라 CLIS의 가우시안 가정은 맞지 않고, 이 점은 최근 연구 비교에서 다시 다룹니다.</aside>
 </section>
+<section id="latency-v" class="t">
+<div class="head"><p class="kicker">E.1 · Feedback-MPPI · 시연</p><h2>Feedback-MPPI는 rollout을 미분한 국소 이득으로 풀이 사이의 공백을 메운다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:2"><a class="yt" href="https://www.youtube.com/watch?v=2XhkAzyi1Qs"><img src="../../assets/yt/2XhkAzyi1Qs.webp" alt="Feedback-MPPI: Fast Sampling-Based MPC via Rollout Differentiation" style="height:620px"></a>
+<figcaption>▶ 영상 — Feedback-MPPI: 쿼드로터 실물과 Aliengo 4족 시뮬레이션에서 피드백 이득이 풀이 사이를 메운다 (Giulio Turrisi)</figcaption></figure>
+<div class="stack">
+<div class="card or"><span class="tag or">볼 점</span><p>Jetson Orin NX 쿼드로터에서 F-MPPI(풀이 50 Hz, 피드백 200 Hz)가 MPPI보다 x RMSE를 0.048 m에서 0.017 m로 줄였다. Aliengo 4족은 MuJoCo 시뮬레이션뿐이다.</p></div>
+<div class="card gr"><span class="tag gr">travplan</span><p>비용이 치명 셀·이진 충돌이라 gradient가 거의 0이다. 미분 이득은 두고 가고, 회귀 이득(CLIS)을 먼저 본다(E.16).</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>[2] Feedback-MPPI, arXiv:2506.14855, RA-L 2026 (Inria·UCL·IIT)</p></div>
+<aside>영상에서는 같은 풀이 주기에서 피드백 이득이 있을 때와 없을 때 쿼드로터의 추종이 어떻게 다른지를 봅니다. 가중 평균 제어를 초기 상태로 미분하면 샘플 섭동, 가중치, 비용 기울기의 곱을 더한 꼴이 되고, 비용 기울기는 JAX 자동 미분으로 rollout과 병렬로 계산합니다. 입력 포화가 걸리면 이득이 0으로 가고, 제약은 비용으로만 들어가므로 이득은 제약을 보지 못합니다. 이득 계산은 Jetson에서 실행 시간을 40–70% 늘립니다.</aside>
+</section>
 <section id="div-dyn" class="t dark divider">
 <p class="kicker">2 · 학습 동역학·적응 · E.2–E.10</p>
 <h2>MPPI가 rollout하는<br>모델을 바꾼다</h2>
@@ -408,6 +453,19 @@ section.t.divider h2 { font-size:80px; }
 <div class="foot" data-foot><p>[1] arXiv:2305.00676 (RA-L 2023)  [2] PENN arXiv:2207.07920  [3] Bridging arXiv:2305.12240 (RSS 2023)  [4] TOAST arXiv:2201.08321</p></div>
 <aside>이 계열은 Taekyung Kim, Wonsuk Lee 계열 연구에서 출발했습니다. 공통점은 MPPI 구조를 그대로 두고 rollout 모델만 바꾼다는 것입니다. Bridging의 탐색 쪽은 자기지도 라벨 수집 때의 탐색 정책(TP-0022 E2)에 쓸 근거입니다. 이 자리를 바꿀 계기는 Isaac Sim이나 실물에서 슬립이 커지는 순간입니다.</aside>
 </section>
+<section id="rollout-model-v" class="t">
+<div class="head"><p class="kicker">E · 지형 인지 운동 모델 · 시연</p><h2>지형 인지 운동 모델은 지형이 차량 운동에 주는 영향을 예측해 위험한 궤적에 페널티를 준다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:2"><a class="yt" href="https://www.youtube.com/watch?v=VXf_prNQnJo"><img src="../../assets/yt/VXf_prNQnJo.webp" alt="[RAL 2023] Learning Terrain-Aware Kinodynamic Model for Autonomous Off-Road Rally Driving" style="height:620px"></a>
+<figcaption>▶ 영상 — 지형 인지 kinodynamic 모델을 MPPI rollout에 넣은 오프로드 랠리 주행 (Taekyung Kim, RA-L 2023)</figcaption></figure>
+<div class="stack">
+<div class="card or"><span class="tag or">볼 점</span><p>proprioception과 지형 인식을 조건으로 6자유도 운동을 예측하고, 힘의 정답 없이 접촉 상호작용을 추정한다. MPPI 구조는 그대로다.</p></div>
+<div class="card gr"><span class="tag gr">travplan</span><p><code>SwerveModel</code>을 rollout한 뒤 <code>terrain_attitude</code>로 자세만 지형에 투영한다. 슬립과 충격이 커지면 이 자리를 바꾼다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>[1] Learning Terrain-Aware Kinodynamic Model for Autonomous Off-Road Rally Driving With MPPI Control, arXiv:2305.00676 (RA-L 2023)</p></div>
+<aside>영상에서는 지형 기하가 차량 운동에 미치는 영향을 예측하는 모델을 rollout에 넣은 MPPI가 오프로드를 달리는 것을 봅니다. 앞 장 그림의 샘플 궤적과 최적 궤적이 실제 주행에서 어떻게 보이는지가 핵심입니다. travplan은 평면 운동학을 rollout하고 자세만 지형에 투영하므로, 이 논문은 그 자리를 학습 모델로 바꾼 사례입니다.</aside>
+</section>
 <section id="milestones" class="t">
 <div class="head"><p class="kicker">E.2 · 마일스톤</p><h2>네 마일스톤이 이 계열의 바탕이다</h2></div>
 <table>
@@ -427,6 +485,19 @@ section.t.divider h2 { font-size:80px; }
 <div class="foot" data-foot><p>PETS arXiv:1805.12114 · IKD arXiv:2102.12667 · RMA arXiv:2107.04034 · TD-MPC2 arXiv:2310.16828</p></div>
 <aside>뒤의 최근 연구는 이 네 편 위에 서 있습니다. PETS는 불확실성을 아는 동역학, IKD는 IMU로 지형 효과를 배우는 역운동 모델, RMA는 privileged 정보를 latent로 압축한 뒤 이력에서 추정하는 온라인 적응입니다. TD-MPC2는 latent 공간에서 MPPI로 계획하는 모델 기반 RL입니다. 표의 수치는 모두 논문이 보고한 값입니다.</aside>
 </section>
+<section id="milestones-v" class="t">
+<div class="head"><p class="kicker">E.2 · RMA · 시연</p><h2>RMA는 privileged 정보로 배운 latent를 이력에서 추정해 1초 안쪽에 적응한다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:2"><a class="yt" href="https://www.youtube.com/watch?v=nBy1piJrq1A"><img src="../../assets/yt/nBy1piJrq1A.webp" alt="RMA: Rapid Motor Adaptation for Legged Robots (Results)" style="height:620px"></a>
+<figcaption>▶ 영상 — RMA 결과 영상: 시뮬레이션만으로 학습한 A1이 바위·미끄러운 바닥·모래·계단에 미세조정 없이 적응한다 (Legged Robots)</figcaption></figure>
+<div class="stack">
+<div class="card or"><span class="tag or">볼 점</span><p>적응 모듈은 최근 상태·행동 이력만으로 latent(extrinsics)를 추정하고 10 Hz로 돈다. 기본 정책은 100 Hz다. 시뮬레이션에서는 마찰·하중·모터 세기를 알므로 privileged 정보로 먼저 배운다.</p></div>
+<div class="card gr"><span class="tag gr">travplan</span><p>이 "이력에서 latent 추정"이 2026년 OptCar와 Continual VND의 뼈대다. 노면·하중 조건의 자리는 아직 없다(E.16).</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>RMA arXiv:2107.04034 (RSS 2021, UC Berkeley·CMU)</p></div>
+<aside>영상에서는 시뮬레이션에서만 학습한 정책이 미세조정 없이 바위, 미끄러운 바닥, 모래, 계단을 지나는 것을 봅니다. 첫 단계에서는 환경 요인을 인코더로 latent로 줄여 기본 정책과 함께 RL로 학습하고, 둘째 단계에서 적응 모듈이 이력만으로 같은 latent를 추정하도록 지도 학습합니다. 뒤의 OptCar와 Continual VND는 같은 뼈대 위에서 이력의 길이와 압축 방식을 바꾼 것입니다.</aside>
+</section>
 <section id="residual" class="t">
 <div class="head"><p class="kicker">E.3 · E.4 · 잔차와 문맥</p><h2>물리 모델 위에 작은 학습 잔차를 얹는다</h2></div>
 <div class="cols">
@@ -440,6 +511,19 @@ section.t.divider h2 { font-size:80px; }
 <p class="take"><b>travplan:</b> 보정한 물리 모델은 이미 있다(<code>robot/plant.py</code>). 학습 모델은 Isaac이나 실물에서 그 식이 틀릴 때 필요하다.</p>
 <div class="foot" data-foot><p>[1] HDVIO2.0 arXiv:2504.00969  [2] Continual VND arXiv:2606.27353  [3] OptCar arXiv:2607.13319</p></div>
 <aside>세 연구 모두 큰 블랙박스 동역학을 처음부터 배우지 않습니다. 물리 모델이 대부분을 설명하고 신경망은 잔차만 맡으니 작아도 되고 빠릅니다. OptCar는 Orin에서 MPPI(샘플 600, horizon 50)를 37 Hz로 돌렸습니다. OptCar 저자도 적었듯 합성 데이터의 자전거 모델에는 경사 효과가 빠져 있습니다. travplan의 남은 병목이 경사로(TP-0151)라서, 경사 슬립은 실제 데이터에서 배워야 합니다.</aside>
+</section>
+<section id="residual-v" class="t">
+<div class="head"><p class="kicker">E.3 · HDVIO2.0 · 시연</p><h2>HDVIO2.0은 물리 모델 + TCN 잔차로 바람 같은 외란을 상태 추정의 부산물로 낸다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:2"><a class="yt" href="https://www.youtube.com/watch?v=wUaEp0YGpDM"><img src="../../assets/yt/wUaEp0YGpDM.webp" alt="HDVIO2.0: Wind and Disturbance Estimation with Hybrid Dynamics VIO (T-RO 2025)" style="height:620px"></a>
+<figcaption>▶ 영상 — HDVIO2.0: 강체 물리 + 잔차 동역학을 VIO에 넣어 비행 중 바람과 외란을 추정한다 (UZH Robotics and Perception Group, T-RO 2025)</figcaption></figure>
+<div class="stack">
+<div class="card or"><span class="tag or">볼 점</span><p>병진은 점질량, 회전은 강체인 물리 모델이 대부분을 설명하고, TCN 두 개가 잔차 추력·토크만 맡는다. 입력은 명령과 자이로의 최근 100 ms다. 외력은 자세·속도·IMU bias와 함께 슬라이딩 윈도 최적화에서 같이 푼다.</p></div>
+<div class="card gr"><span class="tag gr">travplan</span><p>HDVIO2.0은 지금 받는 외란을 상태로 추정해 읽고, Continual VND는 겪어 본 조건을 기억해 미리 대비한다(E.4).</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>[1] HDVIO2.0 arXiv:2504.00969 (T-RO 2025, UZH RPG)</p></div>
+<aside>영상에서는 바람 속을 나는 쿼드로터와, 모델이 예측한 움직임과 실제 움직임의 차이로 추정한 외력을 봅니다. 앞 절들은 학습 동역학을 MPPI rollout에 넣었는데, 이 연구는 같은 종류의 모델을 반대쪽인 상태 추정에 넣습니다. 힘 정답 없이 위치·속도·자세만으로 잔차를 학습하고, Jetson TX2에서 약 180 Hz로 돕니다.</aside>
 </section>
 <section id="linear-gp" class="t">
 <div class="head"><p class="kicker">E.4 · E.9 · FE-RLS · wBLR</p><h2>바퀴 로봇 잔차의 큰 몫은 선형인 지연이다</h2></div>
@@ -475,6 +559,20 @@ section.t.divider h2 { font-size:80px; }
 <p class="take"><b>travplan:</b> 둘을 같은 벤치마크에서 비교한다. 잔차 GP는 두 갈래가 공유하므로 두 번 만들지 않는다.</p>
 <div class="foot" data-foot><p>Data-Driven Sampling Based Stochastic MPC (ICRA 2025), arXiv:2411.03289 — GP 잔차 위의 확률 제약을 MPPI로 풀었다</p></div>
 <aside>예전 MPC 문서에는 MPPI에 hard 제약이 없으니 GP 분산을 쓰려면 NMPC가 필요하다고 적었습니다. 그것은 틀렸습니다. ICRA 2025 연구가 GP 잔차 위에서 장애물 회피를 확률 제약으로 세워 MPPI로 풀고 스키드 스티어 실물에서 검증했습니다. 그래서 두 길이 모두 열려 있고, 2026-09-30에 둘 다 개발하기로 했습니다. 지금 TravNet은 점 추정이라 SIGMA를 내지 않는다는 것도 기억해 둘 점입니다.</aside>
+</section>
+<section id="gp-seats-v" class="t">
+<div class="head"><p class="kicker">E.5 · 강연 · 배운 모델 위의 보장</p><h2>배운 모델 위에서 보장을 만드는 길은 세 갈래이고, travplan은 첫째만 건드렸다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:2"><a class="yt" href="https://www.youtube.com/watch?v=tfDv32K5Pmo"><img src="../../assets/yt/tfDv32K5Pmo.webp" alt="Melanie Zeilinger: Learning for Complex Control Systems - Guarantees in the Unknown" style="height:620px"></a>
+<figcaption>▶ 영상 — Melanie Zeilinger(ETH Zürich)의 MIT Robotics 세미나 "Learning for Complex Control Systems — Guarantees in the Unknown" (MIT Robotics, 2026-04-10)</figcaption></figure>
+<div class="stack">
+<div class="card bl"><span class="tag bl">① 예측 모델</span><p>기록한 데이터로 예측 모델을 자동 개선한다. E.2–E.4(IKD·PETS·RMA, HDVIO2.0, latent 조건)가 여기다.</p></div>
+<div class="card or"><span class="tag or">② MPC 파라미터화</span><p>폐루프 성능이 가장 좋은 비용·제약을 추론한다. travplan이 아직 손대지 않은 축이다.</p></div>
+<div class="card gr"><span class="tag gr">③ 제약 만족</span><p>MPC로 학습 제어기에 제약 만족을 덧붙인다. C.4 예측 안전 필터와 PCBF의 회복 장치가 여기다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>Hewing·Wabersich·Menner·Zeilinger, Annual Review of Control, Robotics, and Autonomous Systems 3:269–296 (2020) · Cautious MPC arXiv:1705.10702 · PCBF arXiv:2105.10241</p></div>
+<aside>영상에서는 Zeilinger 그룹이 학습한 모델 위에서 보장을 만드는 법을 강연으로 봅니다. 강연 초록과 자막은 확보하지 못해 세 갈래 분류는 같은 그룹의 개관 논문을 따랐습니다. Cautious MPC는 GP 잔차의 불확실성을 예측 horizon 위로 전파해 확률 제약으로 바꾸고, 모델이 자신 없는 영역에서 제약이 저절로 조여집니다. PCBF는 예측 안전 필터가 실행 불가능해지는 순간을 없애는 회복 장치입니다. travplan의 순서는 잔차에 불확실성을 붙이고, 그것과 SIGMA로 비용이 아니라 제약을 조이고, 예측 안전 필터에 PCBF의 회복 장치까지 가져오는 것입니다.</aside>
 </section>
 <section id="div-safety" class="t dark divider">
 <p class="kicker">3 · 안전 필터 · C.1–C.4</p>
@@ -519,6 +617,19 @@ section.t.divider h2 { font-size:80px; }
 <div class="foot" data-foot><p>DRA-MPPI arXiv:2506.21205 (IROS 2025) · RA-MPPI arXiv:2209.12842 · Risk Adaptive CVaR Barrier Functions (IROS 2025)</p></div>
 <aside>후보를 지연, 보장, 의존성으로 비교했습니다. DRA-MPPI는 반복당 100 ms 안팎이라 Orin 실측이 없고, OA-MPC 계열은 48–200 ms라 예산 밖입니다. CVaR-BF는 공식 구현의 requirements를 직접 보고 오픈소스 CasADi로 푼다는 것을 확인했습니다. 그래서 라이선스 걸림돌이 없는 첫 후보입니다.</aside>
 </section>
+<section id="safety-table-v" class="t">
+<div class="head"><p class="kicker">C.3 · CVaR-BF · 시연</p><h2>CVaR-BF는 위험 수준을 스스로 조절하며 보행자 사이를 지난다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:2"><a class="yt" href="https://www.youtube.com/watch?v=VHRnmXToLN8"><img src="../../assets/yt/VHRnmXToLN8.webp" alt="[IROS 2025] Safe Navigation in Uncertain Crowded Scenarios Using Risk Adaptive CVaR Barrier Functions" style="height:620px"></a>
+<figcaption>▶ 영상 — Risk Adaptive CVaR Barrier Functions: 불확실한 보행자 사이를 지나는 안전 필터 시연 (Xinyi Wang, IROS 2025)</figcaption></figure>
+<div class="stack">
+<div class="card or"><span class="tag or">볼 점</span><p>CVaR와 동적 영역 기반 barrier 함수를 결합해 위험 수준을 상황에 맞게 스스로 조절한다. 오픈소스 CasADi(qpOASES·IPOPT)로 풀고, 공식 구현의 의존성은 casadi·numpy·scipy뿐이다.</p></div>
+<div class="card gr"><span class="tag gr">travplan</span><p><code>RiskCost</code>가 이미 CVaR를 쓰므로 개념이 가장 가깝다. TP-0014의 1순위 후보로 Controller 뒤에 붙인다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>Risk Adaptive CVaR Barrier Functions (IROS 2025) · 공개 구현 Adaptive-CVaR-Barrier-Function</p></div>
+<aside>영상에서는 움직임이 불확실한 보행자 사이를 로봇이 안전 필터와 함께 지나는 것을 봅니다. 앞 장 표의 결론이 이 후보인 이유는 둘입니다. 라이선스 걸림돌이 없고, RiskCost의 CVaR와 개념이 가장 가깝습니다. OcclusionCBF는 상용 Gurobi를 요구해 보류했습니다. 넣는다면 Controller 뒤의 필터이므로 최적화기와 CostTerm은 그대로입니다.</aside>
+</section>
 <section id="calibration" class="t">
 <div class="head"><p class="kicker">C.2 · E.10 · 위험 보정</p><h2>불확실성이 틀리면 확률 제약도 틀린다</h2></div>
 <div class="cols">
@@ -555,6 +666,19 @@ section.t.divider h2 { font-size:80px; }
 <p class="take"><b>travplan:</b> CBF는 격자 전체를 Poisson \(h\) 하나로 풀어 Controller 뒤에 붙인다. MPPI 안의 샘플별 QP는 예산 밖이다.</p>
 <div class="foot" data-foot><p>[1] Poisson 안전 함수, arXiv:2505.06794  [2] Exact-Safe MPPI, arXiv:2610.07369  [3] GS-MPPI, arXiv:2410.02154</p></div>
 <aside>TravMap에서는 치명 셀 하나하나가 barrier 후보라서 합치는 방식이 중요합니다. GS-MPPI처럼 soft-min으로 합치면 barrier가 많을수록 깎이는 양이 커져 레벨 3 경사로의 폭 0.2 m 통로 같은 좁은 길이 먼저 닫힙니다. Exact-Safe MPPI는 틈을 지키지만 768 샘플 × 40스텝마다 QP를 풀어야 합니다. Poisson 안전 함수는 격자 하나를 풀어 매끄러운 h를 주므로 합성 문제가 없습니다. G1에서 보행 제어기의 속도 추종 지연으로 h가 잠깐 음수가 됐다는 점은 스워브 조향 지연에도 같은 주의를 줍니다.</aside>
+</section>
+<section id="barrier-grid-v" class="t">
+<div class="head"><p class="kicker">C.4 · Poisson 안전 함수 · 시연</p><h2>occupancy 지도에서 Poisson 방정식으로 푼 \(h\) 하나가 Go2·G1의 CBF 필터가 된다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:2"><a class="yt" href="https://www.youtube.com/watch?v=fBRdkAJGixI"><img src="../../assets/yt/fBRdkAJGixI.webp" alt="Dynamic Safety in Complex Environments: Synthesizing Safety Filters with Poisson's Equation" style="height:620px"></a>
+<figcaption>▶ 영상 — Poisson 안전 함수: occupancy 지도에서 푼 \(h\)로 CBF-QP 필터를 걸어 Go2·G1이 장애물 사이를 지난다 (Gilbert Bahati, Caltech)</figcaption></figure>
+<div class="stack">
+<div class="card or"><span class="tag or">볼 점</span><p>장애물 경계를 \(h = 0\)인 Dirichlet 경계로 두고 Poisson 방정식을 푼다. \(h\)는 자유 공간에서 양수, 경계에서 멀수록 크고, 기울기가 경계 근처에서도 0이 되지 않는다. GPU SOR로 120 × 120 격자를 0.2–0.3 ms에 풀고 10 Hz로 갱신한다.</p></div>
+<div class="card gr"><span class="tag gr">travplan</span><p>TravMap의 치명 셀을 Dirichlet 경계로 두면 격자 하나로 CBF 안전 필터를 만든다. G1의 속도 추종 지연은 스워브 조향 지연에도 같은 주의를 준다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>[1] Poisson 안전 함수, Bahati·Bena·Ames (Caltech), arXiv:2505.06794 (2025)</p></div>
+<aside>영상에서는 인식한 occupancy 지도에서 h를 풀고 그 위에서 Go2와 G1이 장애물 사이를 지나는 것을 봅니다. 로봇은 단일 적분기(속도 명령) 축소 모델로 보고 CBF-QP를 겁니다. Go2에서는 h가 늘 양수였고, G1에서는 보행 제어기의 속도 추종 지연 때문에 잠깐 음수가 됐습니다. 앞 장의 soft-min 합성 문제가 없다는 점이 travplan에서 이 방식을 고른 이유입니다.</aside>
 </section>
 <section id="sample-filter" class="t">
 <div class="head"><p class="kicker">C.4 · 샘플 안전 필터</p><h2>안전한 샘플이 하나도 없을 때만 개입한다</h2></div>
@@ -598,6 +722,19 @@ section.t.divider h2 { font-size:80px; }
 <div class="foot" data-foot><p>[1] Li·Li·Hutter, Scaling Rough Terrain Locomotion with Automatic Curriculum RL, arXiv:2601.17428</p></div>
 <aside>지형 종류와 속도 명령을 함께 다루면 어느 과제가 더 쉬운지 순서를 매길 수 없습니다. LP-ACRL은 연속한 두 학습 단계의 보상 차이를 진척으로 재고, 그 값에 softmax를 걸어 샘플링합니다. 보상은 바꾸지 않고 어떤 과제를 얼마나 자주 보여줄지만 바꿉니다. 실물에서는 elevation mapping 잡음 때문에 privileged 정보를 보는 teacher에서 LSTM student로 distillation했는데, travplan L1에서 Planner D 성능이 떨어지는 문제(TP-0055)와 같은 처방입니다.</aside>
 </section>
+<section id="lp-acrl-v" class="t">
+<div class="head"><p class="kicker">F.2 · LP-ACRL · 시연</p><h2>LP-ACRL로 학습한 ANYmal D가 평지 3.0 m/s, 험지 2.5 m/s로 달린다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:2"><a class="yt" href="https://www.youtube.com/watch?v=rr05THCb6Mg"><img src="../../assets/yt/rr05THCb6Mg.webp" alt="Scaling Rough Terrain Locomotion With Automatic Curriculum Reinforcement Learning" style="height:620px"></a>
+<figcaption>▶ 영상 — LP-ACRL: 자동 커리큘럼으로 학습한 ANYmal D의 계단·경사·자갈 주행 (Robotic Systems Lab, ETH Zürich)</figcaption></figure>
+<div class="stack">
+<div class="card or"><span class="tag or">볼 점</span><p>실물 ANYmal D는 평지 3.0 m/s, 계단·경사·자갈 같은 험지 2.5 m/s, 각속도 3.0 rad/s까지 나왔다. 실물에서는 elevation mapping 잡음 때문에 privileged teacher에서 LSTM student로 distillation했다.</p></div>
+<div class="card gr"><span class="tag gr">travplan</span><p>지형 레벨을 균등 샘플링하는 지금(TP-0039)과 달리, GT cost나 진행 거리 같은 연속 지표로 진척을 재는 커리큘럼의 본보기다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>[1] Li·Li·Hutter, Scaling Rough Terrain Locomotion with Automatic Curriculum RL, arXiv:2601.17428</p></div>
+<aside>영상에서는 자동 커리큘럼으로 학습한 정책이 ANYmal D 실물에서 경사판, 계단, 자갈, 돌계단을 지나는 것을 봅니다. 보상은 바꾸지 않고 어떤 과제를 얼마나 자주 보여줄지만 학습 진척으로 바꿨는데, 600개 과제에서 1,500 iteration에 성공률 80%에 닿았습니다. travplan L1에서 Planner D 성능이 떨어지는 문제(TP-0055)에 같은 처방, 곧 privileged teacher에서 student로의 distillation이 들어맞습니다.</aside>
+</section>
 <section id="dreamwaq" class="t">
 <div class="head"><p class="kicker">F.6.1 · E.15 · TP-0155</p><h2>공개 DreamWaQ 구현에서 작동하는 문맥 z는 없었다</h2></div>
 <div class="cols">
@@ -615,6 +752,19 @@ section.t.divider h2 { font-size:80px; }
 <figure><img src="../../assets/figs/tp0155_dreamwaq_checks.webp" style="height:400px"><figcaption>TP-0155 실측 요약: (a) actor 첫 층 열 노름, (b) z·속도 추정을 지운 변형의 실측 속도, (c) 감쇠 설정별 추종</figcaption></figure>
 <p class="take"><b>travplan:</b> 가져올 것은 DreamWaQ++의 신뢰도 필터, 곧 <code>SIGMA</code>를 믿을지 정하는 게이트다(TP-0055).</p>
 <aside>DreamWaQ는 공식 코드가 없어서 비공식 구현 넷을 읽고 돌려 봤습니다. 문맥 z가 실제로 작동하는 구현은 하나도 없었고, 유일하게 가중치를 싣는 M20 정책은 z 없이도 계단을 오릅니다. MuJoCo는 학습 시뮬레이터가 아니고 장면마다 seed 하나라서, 이 수치는 실물 성능을 말하지 않습니다. 이 계열에서 travplan이 가져올 것은 정책이 아니라 절차입니다. DreamWaQ++는 exteroception(카메라·LiDAR)이 믿을 만할 때만 쓰는 신뢰도 필터를 배우는데, travplan은 SIGMA를 들고만 있고 게이트로 쓰지 않습니다.</aside>
+</section>
+<section id="dreamwaq-v" class="t">
+<div class="head"><p class="kicker">F.6.1 · DreamWaQ · 시연</p><h2>DreamWaQ는 exteroception 없이 proprioception만으로 지형을 암묵적으로 추정해 걷는다</h2></div>
+<div class="cols">
+<figure class="video" style="flex:2"><a class="yt" href="https://www.youtube.com/watch?v=JC1_bnTxPiQ"><img src="../../assets/yt/JC1_bnTxPiQ.webp" alt="DreamWaQ: legged robot walks in harsh environments with its imagination" style="height:620px"></a>
+<figcaption>▶ 영상 — DreamWaQ: proprioception만 쓰는 정책이 험한 환경을 걷는 KAIST 공개 영상 (KAIST Urban Robotics Lab)</figcaption></figure>
+<div class="stack">
+<div class="card or"><span class="tag or">볼 점</span><p>CENet이 관절 이력에서 지형·동역학 문맥을 latent로 뽑고, 정책은 그 latent를 조건으로 받는다. RMA와 같은 뼈대인데 대상이 환경 파라미터가 아니라 지형이다. ICRA 2023 자율 사족보행 대회 1위, 고도차 22 m 실외 주행.</p></div>
+<div class="card gr"><span class="tag gr">travplan</span><p>공개 비공식 구현 넷에서는 작동하는 문맥 z가 없었다(앞 장, TP-0155). 가져올 것은 정책이 아니라 DreamWaQ++의 신뢰도 필터다.</p></div>
+</div>
+</div>
+<div class="foot" data-foot><p>DreamWaQ arXiv:2301.10602 (ICRA 2023, KAIST Urban Robotics Lab, Nahrendra·Yu·Myung) · DreamWaQ++ arXiv:2409.19709</p></div>
+<aside>영상에서는 카메라나 높이 스캐너 없이 proprioception만으로 걷는 A1이 험한 환경을 지나는 것을 봅니다. 논문 속 DreamWaQ는 Unitree A1 한 대에서만 돌고, 새로움으로 내세우는 것은 단일 플랫폼에서의 blind 보행입니다. 앞 장의 결론은 그대로입니다. 공개 구현에서 문맥 z는 작동하지 않았고, travplan이 가져올 것은 SIGMA를 믿을지 정하는 신뢰도 게이트입니다.</aside>
 </section>
 <section id="div-recent" class="t dark divider">
 <p class="kicker">5 · 최근 연구 비교 · E.16</p>
@@ -831,7 +981,30 @@ section.t.divider h2 { font-size:80px; }
     var s = Math.min(st.clientWidth / 1920, st.clientHeight / 1080);
     frame.style.transform = 'scale(' + s + ')';
   }
+  // ▶ 영상(figure.video): 썸네일 a.yt를 누르면 그 자리에 YouTube(nocookie) iframe을 넣고, 장을 넘기면 썸네일로 되돌린다.
+  // 캡처·검사(?shot, ?check)에서는 누르지 않으므로 썸네일만 찍힌다. PPTX는 그림에 하이퍼링크를 단다.
+  function ytId(href) {
+    var m = /[?&]v=([\w-]{11})/.exec(href) || /youtu\.be\/([\w-]{11})/.exec(href);
+    return m ? m[1] : null;
+  }
+  function stopVideos() {
+    Array.prototype.forEach.call(frame.querySelectorAll('figure.video iframe'), function (f) { f.remove(); });
+    Array.prototype.forEach.call(frame.querySelectorAll('figure.video a.yt.off'), function (a) { a.classList.remove('off'); });
+  }
+  frame.addEventListener('click', function (e) {
+    var a = e.target.closest ? e.target.closest('figure.video a.yt') : null;
+    if (!a || shot) return;
+    var id = ytId(a.href), img = a.querySelector('img');
+    if (!id || !img) return;
+    e.preventDefault();
+    var f = document.createElement('iframe');
+    f.width = img.clientWidth; f.height = img.clientHeight;
+    f.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0';
+    f.allow = 'autoplay; fullscreen; picture-in-picture'; f.allowFullscreen = true; f.title = img.alt || 'YouTube';
+    a.classList.add('off'); a.parentNode.insertBefore(f, a);
+  });
   function show(n) {
+    stopVideos();
     i = Math.max(0, Math.min(slides.length - 1, n));
     slides.forEach(function (el, k) { el.classList.toggle('on', k === i); });
     document.getElementById('count').textContent = (i + 1) + ' / ' + slides.length;
@@ -849,10 +1022,15 @@ section.t.divider h2 { font-size:80px; }
   window.withAllFonts = withAllFonts;
   // 넘침 검사: 본문 요소가 장 밖으로 나가거나 각주 띠를 덮으면 적는다.
   function check() {
-    var bad = [];
+    var bad = [], yt = [];
     slides.forEach(function (sec, k) {
       show(k);
       var box = sec.getBoundingClientRect();
+      // 영상 썸네일(img)의 자리. 캡처 PPTX(make_pptx)가 그 위에 보이지 않는 하이퍼링크 상자를 놓는다.
+      Array.prototype.forEach.call(sec.querySelectorAll('figure.video a.yt'), function (a) {
+        var r = (a.querySelector('img') || a).getBoundingClientRect();
+        yt.push({ slide: k + 1, href: a.href, r: [r.left - box.left, r.top - box.top, r.width, r.height] });
+      });
       Array.prototype.forEach.call(sec.querySelectorAll('.katex-error'), function (el) {
         bad.push({ slide: k + 1, id: sec.id, tag: 'TeX', text: (el.getAttribute('title') || el.textContent).slice(0, 60), over: 0 });
       });
@@ -861,7 +1039,7 @@ section.t.divider h2 { font-size:80px; }
       });
       var foot = sec.querySelector('[data-foot]');
       var limit = foot ? foot.getBoundingClientRect().top - 4 : box.bottom - 24;
-      Array.prototype.forEach.call(sec.querySelectorAll('p, h1, h2, h3, img, td, th, li, .katex-display, [data-box]'), function (el) {
+      Array.prototype.forEach.call(sec.querySelectorAll('p, h1, h2, h3, img, figcaption, td, th, li, .katex-display, [data-box]'), function (el) {
         if (foot && foot.contains(el)) return;
         if (el.closest('aside')) return;
         var r = el.getBoundingClientRect();
@@ -872,7 +1050,7 @@ section.t.divider h2 { font-size:80px; }
       });
     });
     var rep = document.getElementById('report');
-    rep.textContent = JSON.stringify(bad);
+    rep.textContent = JSON.stringify({ bad: bad, yt: yt });
     rep.setAttribute('data-done', '1');
   }
   function start() {

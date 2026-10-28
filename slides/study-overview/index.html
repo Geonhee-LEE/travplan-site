@@ -27,6 +27,9 @@ section .katex-display { margin:0; text-align:left; }
 section .katex-display > .katex { text-align:left; }
 x-shape { display:block; flex:none; }
 x-shape[kind="arrow-right"] { clip-path:polygon(0 32%,58% 32%,58% 0,100% 50%,58% 100%,58% 68%,0 68%); }
+figure.video a.yt { display:block; width:fit-content; max-width:100%; line-height:0; cursor:pointer; }
+figure.video a.yt.off { display:none; }
+figure.video iframe { display:block; border:0; border-radius:8px; background:#000; }
 #bar { position:fixed; left:0; right:0; bottom:0; height:56px; background:var(--bar); display:flex; align-items:center; gap:12px; padding:0 16px; font-size:15px; }
 #bar button, #bar a { background:none; border:1px solid #3A4A6B; color:var(--fg); border-radius:8px; padding:6px 12px; font:inherit; cursor:pointer; text-decoration:none; }
 #bar button:hover, #bar a:hover { border-color:var(--accent); }
@@ -144,15 +147,15 @@ body.shot #frame { box-shadow:none; transform:none !important; }
 <p style="font-size:28px;line-height:1.5;color:#16213A;background:#FBE7D9;padding:20px 24px;border-radius:12px">상한 기울기 작음 → 가려진 구멍, 큼 → 위험한 낙차. 포트홀을 가르는 travplan 그림자 상한(TP-0044)의 근거.</p>
 </div>
 <div style="width:560px;display:flex;flex-direction:column;gap:12px">
-<img src="img/1b1ec90d55cdb0898f516cc13bda2a52.webp" alt="elevation_mapping_cupy 파이프라인: 점군 처리, traversability 추정, 법선 계산을 GPU에서" style="width:560px;height:560px;object-fit:contain;background:#FFFFFF;border-radius:12px">
-<p style="font-size:24px;line-height:1.4;color:#5A6478">elevation_mapping_cupy (Fig. 1) <span style="color:#C2410C">[3]</span> — travplan L1 인식 루프의 코어</p>
+<figure class="video" style="width:560px;display:flex;flex-direction:column;gap:8px;font-size:24px;line-height:1.4;color:#5A6478"><a class="yt" href="https://www.youtube.com/watch?v=I9eP8GrMyNQ"><img src="../../assets/yt/I9eP8GrMyNQ.webp" alt="Robot-Centric Elevation Mapping with StarlETH" style="width:560px;height:315px;border-radius:12px"></a>
+<figcaption>▶ 영상 — StarlETH가 걸으며 로봇 중심(robot-centric) 높이 지도를 쌓는다, <span style="color:#C2410C">[2]</span>의 시연 (ETH RSL)</figcaption></figure>
 </div>
 </div>
 <div data-foot style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:14px 0 0 0;display:flex;flex-direction:column;gap:2px">
 <p style="font-size:24px;line-height:1.35;color:#5A6478">[2] Fankhauser et al., “Robot-Centric Elevation Mapping with Uncertainty Estimates”, CLAWAR 2014</p>
 <p style="font-size:24px;line-height:1.35;color:#5A6478">[3] Miki et al., “Elevation Mapping for Locomotion and Navigation using GPU”, IROS 2022 — arXiv:2204.12876</p>
 </div>
-<aside>분산이 작은 쪽을 더 믿는 정밀도 가중 평균이다. 측정 분산이 거리 제곱에 비례하므로 먼 점은 적게 반영된다. 이상치는 Mahalanobis 거리로 버린다. 상한 층이 핵심: 광선이 관측되지 않은 셀 위를 지나가면 그 셀의 지면은 광선 높이보다 낮다. travplan L1(--perception l1)은 이 코드의 코어를 쓰고, TP-0146에서 매퍼 격자가 반 셀 어긋난 래퍼 버그를 고쳤다.</aside>
+<aside>분산이 작은 쪽을 더 믿는 정밀도 가중 평균이다. 측정 분산이 거리 제곱에 비례하므로 먼 점은 적게 반영된다. 이상치는 Mahalanobis 거리로 버린다. 상한 층이 핵심: 광선이 관측되지 않은 셀 위를 지나가면 그 셀의 지면은 광선 높이보다 낮다. travplan L1(--perception l1)은 이 코드의 코어를 쓰고, TP-0146에서 매퍼 격자가 반 셀 어긋난 래퍼 버그를 고쳤다. [3]의 GPU 파이프라인 그림(Fig. 1)은 인식 문서 A.1에 있다. 영상에서는 StarlETH가 걸으며 로봇 중심 높이 지도가 셀마다 갱신되는 것을 본다.</aside>
 </section>
 <section id="travcost" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 200px;display:flex;flex-direction:column;gap:36px">
 <div style="display:flex;flex-direction:column;gap:12px">
@@ -187,39 +190,26 @@ body.shot #frame { box-shadow:none; transform:none !important; }
 <p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#C2410C;letter-spacing:1px">§0.10 · BAYESIAN KERNEL INFERENCE</p>
 <h2 style="font-family:'Noto Serif KR', Georgia, serif;font-size:64px;font-weight:700;line-height:1.2;color:#16213A">이웃의 관측을 거리만큼 덜 믿는다</h2>
 </div>
-<div style="display:flex;flex-direction:column;gap:28px">
-<div style="display:flex;gap:48px;align-items:center">
+<div style="display:flex;gap:48px">
 <div style="flex:1;display:flex;flex-direction:column;gap:22px">
 <p style="font-size:30px;line-height:1.5;color:#3D4A63">LiDAR 점은 멀수록 성기고 연석 뒤엔 그림자가 진다. BKI는 관측 <i>i</i>를 “관측 <i>k</i>(x*, xᵢ)개”로 세어 셀마다 사후분포를 만든다 <span style="color:#C2410C">[5][6]</span>.</p>
 <div style="background:#FFFDF8;border-left:6px solid #C2410C;border-radius:8px;padding:22px 28px">
 <img src="img/a70a1d28af7a5524fc727db74c4f5980.png" alt="BKI 사후: p(θ* | x*, D) ∝ [∏ p(yᵢ | θ*)^k(x*, xᵢ)] p(θ*)" style="width:885px;height:141px;object-fit:contain">
 </div>
+<p style="font-size:28px;line-height:1.55;color:#3D4A63"><b>가까운 관측이 많으면</b> — 유효 관측 수 Σk가 커져 사후가 좁다 → 낮은 σ<br><b>관측이 없으면</b> — 사전분포가 남는다 → 그대로 SIGMA 채널이 된다<br><b>희소 커널</b> — 반경 l 밖은 정확히 0 → 계산이 지역적</p>
 </div>
 <div style="width:620px;display:flex;flex-direction:column;gap:12px">
-<img src="img/c6769f685b1e63ab8d72d7ae05ab80b0.webp" alt="희소 커널 k(d)와 가려진 높이 단면에서 BKI 평균 ± 2σ가 관측 없는 곳에서 넓어지는 모습" style="width:620px;height:255px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<figure class="video" style="width:620px;display:flex;flex-direction:column;gap:8px;font-size:24px;line-height:1.4;color:#5A6478"><a class="yt" href="https://www.youtube.com/watch?v=uFyT8zCg1Kk"><img src="../../assets/yt/uFyT8zCg1Kk.webp" alt="Autonomous Navigation and 3D Semantic Mapping on Bipedal Robot Cassie Blue" style="width:520px;height:293px;border-radius:12px"></a>
+<figcaption>▶ 영상 — Cassie Blue가 걸으며 BKI로 시맨틱 지도를 실시간으로 쌓고 보도만 골라 걷는다 <span style="color:#C2410C">[6]</span> (Michigan Robotics DLLL)</figcaption></figure>
+<img src="img/c6769f685b1e63ab8d72d7ae05ab80b0.webp" alt="희소 커널 k(d)와 가려진 높이 단면에서 BKI 평균 ± 2σ가 관측 없는 곳에서 넓어지는 모습" style="width:620px;height:215px;object-fit:contain;background:#FFFFFF;border-radius:12px">
 <p style="font-size:24px;line-height:1.4;color:#5A6478">(A) 희소 커널, l = 0.5 m (B) 가려진 단면의 평균 ± 2σ — travplan 작도</p>
-</div>
-</div>
-<div style="display:flex;gap:24px">
-<div style="flex:1;background:#FFFDF8;border:2px solid #D9D4C7;border-radius:16px;padding:28px;display:flex;flex-direction:column;gap:10px">
-<h3 style="font-size:32px;font-weight:600;color:#16213A">가까운 관측이 많으면</h3>
-<p style="font-size:26px;line-height:1.5;color:#3D4A63">유효 관측 수 Σk가 커져 사후가 좁다 → 낮은 σ</p>
-</div>
-<div style="flex:1;background:#FFFDF8;border:2px solid #D9D4C7;border-radius:16px;padding:28px;display:flex;flex-direction:column;gap:10px">
-<h3 style="font-size:32px;font-weight:600;color:#16213A">관측이 없으면</h3>
-<p style="font-size:26px;line-height:1.5;color:#3D4A63">사전분포가 남는다 → 그대로 SIGMA 채널이 된다</p>
-</div>
-<div style="flex:1;background:#FFFDF8;border:2px solid #D9D4C7;border-radius:16px;padding:28px;display:flex;flex-direction:column;gap:10px">
-<h3 style="font-size:32px;font-weight:600;color:#16213A">희소 커널</h3>
-<p style="font-size:26px;line-height:1.5;color:#3D4A63">반경 l 밖은 정확히 0 → 계산이 지역적</p>
-</div>
 </div>
 </div>
 <div data-foot style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:14px 0 0 0;display:flex;flex-direction:column;gap:2px">
 <p style="font-size:24px;line-height:1.35;color:#5A6478">[5] Vega-Brown, Doniec &amp; Roy, “Nonparametric Bayesian Inference on Multivariate Exponential Families”, NeurIPS 2014</p>
 <p style="font-size:24px;line-height:1.35;color:#5A6478">[6] Gan et al., “Bayesian Spatial Kernel Smoothing for Scalable Dense Semantic Mapping”, RA-L 2020 — arXiv:1909.04631</p>
 </div>
-<aside>거리 d에 있는 관측을 k(d)개의 관측으로 세는 우도는 임의의 규칙이 아니다. Vega-Brown 등은 가까우면 비슷하다는 매끄러움 제약 아래 이것이 자연스럽게 나온다는 것을 보였다. 켤레 사전분포를 쓰면 사후가 닫힌 식이라 GPU 격자에서 빠르다. travplan의 fill_unknown과 비교하면, BKI는 채운 값과 함께 얼마나 믿을지를 준다는 점이 다르다.</aside>
+<aside>거리 d에 있는 관측을 k(d)개의 관측으로 세는 우도는 임의의 규칙이 아니다. Vega-Brown 등은 가까우면 비슷하다는 매끄러움 제약 아래 이것이 자연스럽게 나온다는 것을 보였다. 켤레 사전분포를 쓰면 사후가 닫힌 식이라 GPU 격자에서 빠르다. travplan의 fill_unknown과 비교하면, BKI는 채운 값과 함께 얼마나 믿을지를 준다는 점이 다르다. 영상에서는 Cassie Blue의 LiDAR·카메라 관측이 BKI로 합쳐져 시맨틱 지도가 실시간으로 쌓이고, 그 지도에서 보도 칸만 골라 길을 찾는 것을 본다.</aside>
 </section>
 <section id="sec-planner" data-transition="fade" style="background:#16213A;color:#F4F1EA;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;justify-content:center;gap:32px">
 <p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:32px;color:#F59E5B;letter-spacing:2px">PART 2 · PLANNER §B</p>
@@ -370,22 +360,17 @@ body.shot #frame { box-shadow:none; transform:none !important; }
 <p style="font-size:28px;line-height:1.5;color:#3D4A63"><b>λ = 너그러움</b>. 비용이 λ만큼 오를 때마다 가중치가 1/e로 준다. S = (10, 11, 13, 20), λ = 0.5 → w = (0.879, 0.119, 0.002, 0.000) <span style="color:#C2410C">[14]</span></p>
 </div>
 <div style="width:580px;display:flex;flex-direction:column;gap:12px">
-<img src="img/073086cf2e10a46d043dfb7f8dac9dca.webp" alt="(a) 네 후보에 온도 λ를 바꾼 가중치와 ESS (b) AR(1) 노이즈와 적분 노이즈(SMPPI) 샘플" style="width:580px;height:226px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<figure class="video" style="width:580px;display:flex;flex-direction:column;gap:8px;font-size:24px;line-height:1.4;color:#5A6478"><a class="yt" href="https://www.youtube.com/watch?v=f2at-cqaJMM"><img src="../../assets/yt/f2at-cqaJMM.webp" alt="Information Theoretic MPC for Model-Based Reinforcement Learning" style="width:500px;height:281px;border-radius:12px"></a>
+<figcaption>▶ 영상 — MPPI가 AutoRally를 흙길에서 공격적으로 몬다, <span style="color:#C2410C">[14]</span>의 학회판(ICRA 2017) 시연 (GT AutoRally)</figcaption></figure>
+<img src="img/073086cf2e10a46d043dfb7f8dac9dca.webp" alt="(a) 네 후보에 온도 λ를 바꾼 가중치와 ESS (b) AR(1) 노이즈와 적분 노이즈(SMPPI) 샘플" style="width:580px;height:200px;object-fit:contain;background:#FFFFFF;border-radius:12px">
 <p style="font-size:24px;line-height:1.4;color:#5A6478">(a) λ별 가중치·ESS (b) AR(1) vs 적분 노이즈(SMPPI <span style="color:#C2410C">[15]</span>) — travplan 작도</p>
-<table style="width:580px;font-size:24px;color:#16213A;padding:10px 14px">
-<tr style="background:#16213A"><th style="width:55%;color:#F4F1EA;text-align:left">MPPIConfig</th><th style="width:45%;color:#F4F1EA;text-align:left">기본값</th></tr>
-<tr><td>후보 K</td><td>768</td></tr>
-<tr style="background:#EFEBE2"><td>horizon T × dt</td><td>40 × 0.1 s</td></tr>
-<tr><td>온도 λ</td><td>0.5</td></tr>
-<tr style="background:#EFEBE2"><td>경로 추종 후보</td><td>30 %</td></tr>
-</table>
 </div>
 </div>
 <div data-foot style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:14px 0 0 0;display:flex;flex-direction:column;gap:2px">
 <p style="font-size:24px;line-height:1.35;color:#5A6478">[14] Williams et al., “Information Theoretic Model Predictive Control: Theory and Applications to Autonomous Driving”, IEEE T-RO 2018 — arXiv:1707.02342</p>
 <p style="font-size:24px;line-height:1.35;color:#5A6478">[15] Kim et al., “Smooth Model Predictive Path Integral Control without Smoothing”, IEEE RA-L 2022 — arXiv:2112.09988</p>
 </div>
-<aside>한 주기는 다섯 단계다: 지난 해를 한 스텝 당겨 warm start, 노이즈를 더해 K개 후보, 후보마다 rollout해 비용 S_k, 지수 가중치, 가중평균의 첫 제어만 실행. 최솟값 ρ를 빼지 않으면 모든 후보가 치명 페널티(1000)를 받을 때 0/0이 된다. 함정: λ는 비용의 절대 크기에 따라 달라지고, 후보가 모두 나쁜 곳에 있으면 평균도 나쁘며, 두 무리 사이로 평균이 떨어질 수 있다. 유효 샘플 수 1/Σw²는 λ = 0.5에서 1.27, λ = 2에서 2.38이다. 코드: control/mppi/mppi.py, smooth.py.</aside>
+<aside>한 주기는 다섯 단계다: 지난 해를 한 스텝 당겨 warm start, 노이즈를 더해 K개 후보, 후보마다 rollout해 비용 S_k, 지수 가중치, 가중평균의 첫 제어만 실행. 최솟값 ρ를 빼지 않으면 모든 후보가 치명 페널티(1000)를 받을 때 0/0이 된다. 함정: λ는 비용의 절대 크기에 따라 달라지고, 후보가 모두 나쁜 곳에 있으면 평균도 나쁘며, 두 무리 사이로 평균이 떨어질 수 있다. 유효 샘플 수 1/Σw²는 λ = 0.5에서 1.27, λ = 2에서 2.38이다. MPPIConfig 기본값은 후보 K 768, horizon T × dt 40 × 0.1 s, 온도 λ 0.5, 경로 추종 후보 30 %다. 코드: control/mppi/mppi.py, smooth.py. 영상에서는 정보이론적 MPPI가 AutoRally를 흙길 트랙에서 공격적으로 모는 것을 본다([14]의 학회판, Williams 외 ICRA 2017의 영상이다).</aside>
 </section>
 <section id="mppi-kl" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 200px;display:flex;flex-direction:column;gap:32px">
 <div style="display:flex;flex-direction:column;gap:12px">
@@ -434,21 +419,17 @@ body.shot #frame { box-shadow:none; transform:none !important; }
 <p style="font-size:28px;line-height:1.5;color:#3D4A63"><b>③</b> 여유 ρₖ는 고정 inflation이 아니라 <b>예측 불확실성이 정한다</b> — costmap 한계 ④에 대한 답.</p>
 </div>
 <div style="width:580px;display:flex;flex-direction:column;gap:12px">
-<img src="img/064a1470f7648c9a26c2c94954272501.webp" alt="TP-0070: 네 시나리오에서 MPC(노란 선)와 MPPI(파란 선) 궤적. 빨간 셀이 치명, X가 실패 지점" style="width:580px;height:318px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<figure class="video" style="width:580px;display:flex;flex-direction:column;gap:8px;font-size:24px;line-height:1.4;color:#5A6478"><a class="yt" href="https://www.youtube.com/watch?v=-cdXw1MyTUA"><img src="../../assets/yt/-cdXw1MyTUA.webp" alt="MPCC with Gaussian Process Based Model Learning for Autonomous Racing" style="width:480px;height:270px;border-radius:12px"></a>
+<figcaption>▶ 영상 — RC 경주차의 MPCC가 GP로 모델 잔차를 배워 랩 타임과 안전을 함께 올린다, <span style="color:#C2410C">[16]</span>의 시연 (ETH IDSC)</figcaption></figure>
+<img src="img/064a1470f7648c9a26c2c94954272501.webp" alt="TP-0070: 네 시나리오에서 MPC(노란 선)와 MPPI(파란 선) 궤적. 빨간 셀이 치명, X가 실패 지점" style="width:580px;height:245px;object-fit:contain;background:#FFFFFF;border-radius:12px">
 <p style="font-size:24px;line-height:1.4;color:#5A6478">TP-0070 0단계(지형 항 없음): 노랑 MPC, 파랑 MPPI, X = 실패</p>
-<table style="width:580px;font-size:24px;color:#16213A;padding:10px 14px">
-<tr style="background:#16213A"><th style="width:58%;color:#F4F1EA;text-align:left">plant L1 레벨 3</th><th style="width:42%;color:#F4F1EA;text-align:left">도달 (치명)</th></tr>
-<tr><td>mppi_plant_lag</td><td>239/360 (4)</td></tr>
-<tr style="background:#EFEBE2"><td>mpc</td><td>222/360 (34)</td></tr>
-<tr><td>mpc_gp</td><td>215/360 (32)</td></tr>
-</table>
 </div>
 </div>
 <div data-foot style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:14px 0 0 0;display:flex;flex-direction:column;gap:2px">
 <p style="font-size:24px;line-height:1.35;color:#5A6478">[16] Hewing, Kabzan &amp; Zeilinger, “Cautious Model Predictive Control Using Gaussian Process Regression”, IEEE TCST 2020 — arXiv:1705.10702</p>
 <p style="font-size:24px;line-height:1.35;color:#5A6478">[17] Verschueren et al., “acados — a modular open-source framework for fast embedded optimal control”, Math. Prog. Comp. 2022 — arXiv:1910.13753</p>
 </div>
-<aside>NMPC는 기울기로 풀기 때문에 계단 모양 비용(치명 셀)에서 방향을 얻지 못한다. 대신 hard 제약, 튜브, 확률 제약을 품는다. 표의 수치는 travplan 권장 L1 + 스워브 plant 조건, 레벨 3 seed 10 × 오프셋 3 × 지형 4(TP-0150, TP-0152)다. 지금은 MPPI 갈래가 앞서지만, 혼돈 조건이라 짝 비교와 잡음 바닥으로 판정해야 한다(CLAUDE.md 2층 게이트). 코드: control/acados_mpc/.</aside>
+<aside>NMPC는 기울기로 풀기 때문에 계단 모양 비용(치명 셀)에서 방향을 얻지 못한다. 대신 hard 제약, 튜브, 확률 제약을 품는다. plant L1 레벨 3 도달(치명)은 mppi_plant_lag 239/360 (4), mpc 222/360 (34), mpc_gp 215/360 (32)이다. 조건은 travplan 권장 L1 + 스워브 plant, 레벨 3 seed 10 × 오프셋 3 × 지형 4(TP-0150, TP-0152)다. 지금은 MPPI 갈래가 앞서지만, 혼돈 조건이라 짝 비교와 잡음 바닥으로 판정해야 한다(CLAUDE.md 2층 게이트). 코드: control/acados_mpc/. 영상에서는 처음엔 모델 오차로 충돌하던 RC 경주차가 GP로 잔차를 배운 뒤 더 빠르고 안전하게 도는 것을 본다.</aside>
 </section>
 <section id="sec-safety" data-transition="fade" style="background:#16213A;color:#F4F1EA;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;justify-content:center;gap:32px">
 <p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:32px;color:#F59E5B;letter-spacing:2px">PART 4 · 안전 §C</p>
@@ -527,32 +508,21 @@ body.shot #frame { box-shadow:none; transform:none !important; }
 <div style="background:#FFFDF8;border-left:6px solid #C2410C;border-radius:8px;padding:28px 32px">
 <img src="img/3d19b4df62d4ec305dd46d43493b133a.png" alt="CVaR-BF: CVaR_β(h_(k+1)) ≥ (1−γ) h_k" style="width:676px;height:95px;object-fit:contain">
 </div>
-<div style="display:flex;gap:20px">
-<div style="flex:1;background:#FFFDF8;border:2px solid #D9D4C7;border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:8px">
-<h3 style="font-size:28px;font-weight:600;color:#16213A">β → 0</h3>
-<p style="font-size:24px;line-height:1.45;color:#3D4A63">있을 수 있는 모든 위치를 피한다 (보수적)</p>
-</div>
-<div style="flex:1;background:#FFFDF8;border:2px solid #D9D4C7;border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:8px">
-<h3 style="font-size:28px;font-weight:600;color:#16213A">β → 1</h3>
-<p style="font-size:24px;line-height:1.45;color:#3D4A63">평균 위치만 피한다 (위험 중립)</p>
-</div>
-<div style="flex:1;background:#FFFDF8;border:2px solid #D9D4C7;border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:8px">
-<h3 style="font-size:28px;font-weight:600;color:#16213A">적응 β</h3>
-<p style="font-size:24px;line-height:1.45;color:#3D4A63">군중 밀도에 따라 스스로 고른다 <span style="color:#C2410C">[23]</span></p>
-</div>
-</div>
+<p style="font-size:26px;line-height:1.55;color:#3D4A63"><b>β → 0</b> — 있을 수 있는 모든 위치를 피한다 (보수적)<br><b>β → 1</b> — 평균 위치만 피한다 (위험 중립)<br><b>적응 β</b> — 군중 밀도에 따라 스스로 고른다 <span style="color:#C2410C">[23]</span></p>
 <p style="font-size:28px;line-height:1.5;color:#16213A;background:#FBE7D9;padding:20px 24px;border-radius:12px">travplan에서는 TP-0014의 1순위 후보 — 보행자 예측 분포를 MPPI 뒤 안전 필터로 잇는 다리다.</p>
 </div>
-<div style="width:560px;display:flex;flex-direction:column;gap:12px">
-<img src="img/db840c70fbf7ab56fd896f0a7397caa0.webp" alt="이족 로봇 장애물 회피: barrier 없음과 위험 중립 barrier는 h가 0 아래로, CVaR barrier만 h를 양수로 지킨다" style="width:560px;height:486px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<div style="width:400px;display:flex;flex-direction:column;gap:12px">
+<img src="img/db840c70fbf7ab56fd896f0a7397caa0.webp" alt="이족 로봇 장애물 회피: barrier 없음과 위험 중립 barrier는 h가 0 아래로, CVaR barrier만 h를 양수로 지킨다" style="width:400px;height:348px;object-fit:contain;background:#FFFFFF;border-radius:12px">
 <p style="font-size:24px;line-height:1.4;color:#5A6478">CVaR-BF (Fig. 1) <span style="color:#C2410C">[22]</span> — (a) barrier 없음 (b) 위험 중립 (c) CVaR barrier만 h &gt; 0 유지</p>
 </div>
+<figure class="video" style="width:380px;display:flex;flex-direction:column;gap:8px;font-size:24px;line-height:1.4;color:#5A6478"><a class="yt" href="https://www.youtube.com/watch?v=VHRnmXToLN8"><img src="../../assets/yt/VHRnmXToLN8.webp" alt="Safe Navigation in Uncertain Crowded Scenarios Using Risk Adaptive CVaR Barrier Functions (IROS 2025)" style="width:380px;height:214px;border-radius:12px"></a>
+<figcaption>▶ 영상 — 군중 속에서 위험 수준 β를 스스로 고르는 적응 CVaR-BF <span style="color:#C2410C">[23]</span>의 시연 (Xinyi Wang, 저자)</figcaption></figure>
 </div>
 <div data-foot style="position:absolute;left:128px;bottom:40px;width:1664px;border-top:2px solid #D9D4C7;padding:14px 0 0 0;display:flex;flex-direction:column;gap:2px">
 <p style="font-size:24px;line-height:1.35;color:#5A6478">[22] Ahmadi et al., “Risk-Averse Control via CVaR Barrier Functions: Application to Bipedal Robot Locomotion”, IEEE L-CSS 2022 — arXiv:2011.01578</p>
 <p style="font-size:24px;line-height:1.35;color:#5A6478">[23] Wang et al., “Safe Navigation in Uncertain Crowded Environments Using Risk Adaptive CVaR Barrier Functions”, IROS 2025 — arXiv:2504.06513</p>
 </div>
-<aside>CVaR는 볼록이라 h가 아핀이고 샘플이 유한하면 제약을 선형 계획/QP로 풀 수 있다. Adaptive CVaR-BF는 CasADi 구현이 공개돼 있어 travplan의 acados 트랙과도 맞는다. 위험 중립 barrier는 기대값 E[h] ≥ (1−γ)h만 지키므로 실제 샘플의 일부는 h &lt; 0으로 떨어진다. 그것이 그림 (b)다.</aside>
+<aside>CVaR는 볼록이라 h가 아핀이고 샘플이 유한하면 제약을 선형 계획/QP로 풀 수 있다. Adaptive CVaR-BF는 CasADi 구현이 공개돼 있어 travplan의 acados 트랙과도 맞는다. 위험 중립 barrier는 기대값 E[h] ≥ (1−γ)h만 지키므로 실제 샘플의 일부는 h &lt; 0으로 떨어진다. 그것이 그림 (b)다. 영상에서는 적응 CVaR-BF가 군중 속에서 위험 수준 β를 바꿔 가며 보행자 사이를 지나는 것을 본다.</aside>
 </section>
 <section id="conformal" data-transition="fade" style="background:#F7F5F0;color:#16213A;font-family:'IBM Plex Sans KR', Arial, sans-serif;padding:112px 128px 200px;display:flex;flex-direction:column;gap:32px">
 <div style="display:flex;flex-direction:column;gap:12px">
@@ -690,7 +660,30 @@ body.shot #frame { box-shadow:none; transform:none !important; }
     var s = Math.min(st.clientWidth / 1920, st.clientHeight / 1080);
     frame.style.transform = 'scale(' + s + ')';
   }
+  // ▶ 영상(figure.video): 썸네일 a.yt를 누르면 그 자리에 YouTube(nocookie) iframe을 넣고, 장을 넘기면 썸네일로 되돌린다.
+  // 캡처·검사(?shot, ?check)에서는 누르지 않으므로 썸네일만 찍힌다. PPTX는 그림에 하이퍼링크를 단다.
+  function ytId(href) {
+    var m = /[?&]v=([\w-]{11})/.exec(href) || /youtu\.be\/([\w-]{11})/.exec(href);
+    return m ? m[1] : null;
+  }
+  function stopVideos() {
+    Array.prototype.forEach.call(frame.querySelectorAll('figure.video iframe'), function (f) { f.remove(); });
+    Array.prototype.forEach.call(frame.querySelectorAll('figure.video a.yt.off'), function (a) { a.classList.remove('off'); });
+  }
+  frame.addEventListener('click', function (e) {
+    var a = e.target.closest ? e.target.closest('figure.video a.yt') : null;
+    if (!a || shot) return;
+    var id = ytId(a.href), img = a.querySelector('img');
+    if (!id || !img) return;
+    e.preventDefault();
+    var f = document.createElement('iframe');
+    f.width = img.clientWidth; f.height = img.clientHeight;
+    f.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0';
+    f.allow = 'autoplay; fullscreen; picture-in-picture'; f.allowFullscreen = true; f.title = img.alt || 'YouTube';
+    a.classList.add('off'); a.parentNode.insertBefore(f, a);
+  });
   function show(n) {
+    stopVideos();
     i = Math.max(0, Math.min(slides.length - 1, n));
     slides.forEach(function (el, k) { el.classList.toggle('on', k === i); });
     document.getElementById('count').textContent = (i + 1) + ' / ' + slides.length;
@@ -708,10 +701,15 @@ body.shot #frame { box-shadow:none; transform:none !important; }
   window.withAllFonts = withAllFonts;
   // 넘침 검사: 본문 요소가 장 밖으로 나가거나 각주 띠를 덮으면 적는다.
   function check() {
-    var bad = [];
+    var bad = [], yt = [];
     slides.forEach(function (sec, k) {
       show(k);
       var box = sec.getBoundingClientRect();
+      // 영상 썸네일(img)의 자리. 캡처 PPTX(make_pptx)가 그 위에 보이지 않는 하이퍼링크 상자를 놓는다.
+      Array.prototype.forEach.call(sec.querySelectorAll('figure.video a.yt'), function (a) {
+        var r = (a.querySelector('img') || a).getBoundingClientRect();
+        yt.push({ slide: k + 1, href: a.href, r: [r.left - box.left, r.top - box.top, r.width, r.height] });
+      });
       Array.prototype.forEach.call(sec.querySelectorAll('.katex-error'), function (el) {
         bad.push({ slide: k + 1, id: sec.id, tag: 'TeX', text: (el.getAttribute('title') || el.textContent).slice(0, 60), over: 0 });
       });
@@ -720,7 +718,7 @@ body.shot #frame { box-shadow:none; transform:none !important; }
       });
       var foot = sec.querySelector('[data-foot]');
       var limit = foot ? foot.getBoundingClientRect().top - 4 : box.bottom - 24;
-      Array.prototype.forEach.call(sec.querySelectorAll('p, h1, h2, h3, img, td, th, li, .katex-display, [data-box]'), function (el) {
+      Array.prototype.forEach.call(sec.querySelectorAll('p, h1, h2, h3, img, figcaption, td, th, li, .katex-display, [data-box]'), function (el) {
         if (foot && foot.contains(el)) return;
         if (el.closest('aside')) return;
         var r = el.getBoundingClientRect();
@@ -731,7 +729,7 @@ body.shot #frame { box-shadow:none; transform:none !important; }
       });
     });
     var rep = document.getElementById('report');
-    rep.textContent = JSON.stringify(bad);
+    rep.textContent = JSON.stringify({ bad: bad, yt: yt });
     rep.setAttribute('data-done', '1');
   }
   function start() {
