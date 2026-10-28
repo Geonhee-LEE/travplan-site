@@ -1495,7 +1495,7 @@ D.12 IROS 2026 수확 · D.11 기타
 <td><strong>플래너</strong>(부분): 몸체 무관 출력 공간</td>
 <td>D.4</td>
 </tr></tbody></table></div><div class="foot" data-foot><span>travplan 리서치 · 참고문헌 (docs/research-references.md)</span><span>21 / 109</span></div><aside>docs/research-references.md · D.0 E2E 연구 분해 — 인식 부분 / 플래너 부분</aside></section>
-<section class="r content"><div class="kicker">참고문헌 · Planner</div><h2 class="ttl">D.4 Planner — 학습 기반 (waypoint·RL·foundation)<small>1/3</small></h2><div class="body"><table style="table-layout:fixed"><colgroup><col style="width:375.7px"><col style="width:305.8px"><col style="width:641.7px"><col style="width:102.0px"><col style="width:301.8px"></colgroup><thead>
+<section class="r content"><div class="kicker">참고문헌 · Planner</div><h2 class="ttl">D.4 Planner — 학습 기반 (waypoint·RL·foundation)<small>1/3</small></h2><div class="body"><table style="table-layout:fixed"><colgroup><col style="width:647.8px"><col style="width:243.1px"><col style="width:504.5px"><col style="width:94.3px"><col style="width:237.4px"></colgroup><thead>
 <tr>
 <th>이름</th>
 <th>연·발표</th>
@@ -1576,25 +1576,19 @@ D.12 IROS 2026 수확 · D.11 기타
 <td>B.14.4</td>
 <td><a href="https://arxiv.org/abs/2405.01792">논문</a> · <a href="https://junja94.github.io/learning_robust_autonomous_navigation_and_locomotion_for_wheeled_legged_robots/">프로젝트</a></td>
 </tr><tr>
-<td>SRU (공간 강화 순환 유닛)</td>
+<td>Spatially-Enhanced Recurrent Memory for Long-Range Mapless Navigation via End-to-End Reinforcement Learning(SRU, 공간 강화 순환 유닛)</td>
 <td>2025.06 · IJRR 45(11) 2026(온라인 2025-12)</td>
 <td>원소별 곱으로 RNN에 공간 변환을 넣어 지도 없는 장거리 내비 (ETH RSL)</td>
 <td>B.14.3</td>
-<td><a href="https://arxiv.org/abs/2506.05997">논문</a> · <a href="https://github.com/leggedrobotics/sru-pytorch-spatial-learning">코드</a></td>
+<td><a href="https://arxiv.org/abs/2506.05997">논문</a> · <a href="https://michaelfyang.github.io/sru-project-website/">프로젝트</a> · <a href="https://github.com/leggedrobotics/sru-pytorch-spatial-learning">코드</a></td>
 </tr><tr>
 <td>CLUE</td>
 <td>2026.05</td>
 <td>LLM 상식으로 방·물체 단서를 가중한 통합 시맨틱 가치 지도, zero-shot object-goal</td>
 <td>B.6</td>
 <td><a href="https://arxiv.org/abs/2605.19206">논문</a></td>
-</tr><tr>
-<td>DreamFlow <code>E2E▸플래너</code></td>
-<td>2026.03 · ICRA 2026</td>
-<td>관측 + 상상 잠재 DRL 로컬 내비, Go2 실험</td>
-<td>B.9</td>
-<td><a href="https://arxiv.org/abs/2603.02976">논문</a> · <a href="https://dreamflow-icra.github.io">프로젝트</a></td>
 </tr></tbody></table></div><div class="foot" data-foot><span>travplan 리서치 · 참고문헌 (docs/research-references.md)</span><span>22 / 109</span></div><aside>docs/research-references.md · D.4 Planner — 학습 기반 (waypoint·RL·foundation)</aside></section>
-<section class="r content"><div class="kicker">참고문헌 · Planner</div><h2 class="ttl">D.4 Planner — 학습 기반 (waypoint·RL·foundation)<small>2/3</small></h2><div class="body"><table style="table-layout:fixed"><colgroup><col style="width:375.7px"><col style="width:305.8px"><col style="width:641.7px"><col style="width:102.0px"><col style="width:301.8px"></colgroup><thead>
+<section class="r content"><div class="kicker">참고문헌 · Planner</div><h2 class="ttl">D.4 Planner — 학습 기반 (waypoint·RL·foundation)<small>2/3</small></h2><div class="body"><table style="table-layout:fixed"><colgroup><col style="width:647.8px"><col style="width:243.1px"><col style="width:504.5px"><col style="width:94.3px"><col style="width:237.4px"></colgroup><thead>
 <tr>
 <th>이름</th>
 <th>연·발표</th>
@@ -1603,6 +1597,12 @@ D.12 IROS 2026 수확 · D.11 기타
 <th>링크</th>
 </tr>
 </thead><tbody><tr>
+<td>DreamFlow <code>E2E▸플래너</code></td>
+<td>2026.03 · ICRA 2026</td>
+<td>관측 + 상상 잠재 DRL 로컬 내비, Go2 실험</td>
+<td>B.9</td>
+<td><a href="https://arxiv.org/abs/2603.02976">논문</a> · <a href="https://dreamflow-icra.github.io">프로젝트</a></td>
+</tr><tr>
 <td>Robostral Navigate <code>E2E▸플래너</code></td>
 <td>2026.07</td>
 <td>8B VLM, 이미지 공간 waypoint, R2R-CE 77.4%</td>
@@ -1674,7 +1674,16 @@ D.12 IROS 2026 수확 · D.11 기타
 <td>PPO + 속도 장애물 안전 방패, 동적 환경 드론 비행</td>
 <td>B.4</td>
 <td><a href="https://arxiv.org/abs/2409.15634">논문</a> · <a href="https://github.com/Zhefan-Xu/NavRL">코드</a></td>
-</tr><tr>
+</tr></tbody></table></div><div class="foot" data-foot><span>travplan 리서치 · 참고문헌 (docs/research-references.md)</span><span>23 / 109</span></div><aside>docs/research-references.md · D.4 Planner — 학습 기반 (waypoint·RL·foundation)</aside></section>
+<section class="r content"><div class="kicker">참고문헌 · Planner</div><h2 class="ttl">D.4 Planner — 학습 기반 (waypoint·RL·foundation)<small>3/3</small></h2><div class="body"><table style="table-layout:fixed"><colgroup><col style="width:647.8px"><col style="width:243.1px"><col style="width:504.5px"><col style="width:94.3px"><col style="width:237.4px"></colgroup><thead>
+<tr>
+<th>이름</th>
+<th>연·발표</th>
+<th>요약</th>
+<th>본문</th>
+<th>링크</th>
+</tr>
+</thead><tbody><tr>
 <td>DRL-DCLP</td>
 <td>RA-L 2025</td>
 <td>몸체 치수를 설정 가능한 DRL 로컬 플래너(EIT Ningbo)</td>
@@ -1686,16 +1695,7 @@ D.12 IROS 2026 수확 · D.11 기타
 <td>발자국 여유를 상대 운동 특징으로 쓰는 DRL 로컬 내비(EIT Ningbo)</td>
 <td>B.4</td>
 <td><a href="https://arxiv.org/abs/2609.08711">논문</a></td>
-</tr></tbody></table></div><div class="foot" data-foot><span>travplan 리서치 · 참고문헌 (docs/research-references.md)</span><span>23 / 109</span></div><aside>docs/research-references.md · D.4 Planner — 학습 기반 (waypoint·RL·foundation)</aside></section>
-<section class="r content"><div class="kicker">참고문헌 · Planner</div><h2 class="ttl">D.4 Planner — 학습 기반 (waypoint·RL·foundation)<small>3/3</small></h2><div class="body"><table style="table-layout:fixed"><colgroup><col style="width:375.7px"><col style="width:305.8px"><col style="width:641.7px"><col style="width:102.0px"><col style="width:301.8px"></colgroup><thead>
-<tr>
-<th>이름</th>
-<th>연·발표</th>
-<th>요약</th>
-<th>본문</th>
-<th>링크</th>
-</tr>
-</thead><tbody><tr>
+</tr><tr>
 <td>DODGER</td>
 <td>2026.09</td>
 <td>CBF 안내를 학습 때만 쓰는 동적 장애물 RL 내비, LiDAR 휴머노이드</td>
