@@ -13,6 +13,7 @@
 * { box-sizing:border-box; }
 html, body { margin:0; height:100%; background:var(--bg); color:var(--fg); font-family:'IBM Plex Sans KR', Arial, sans-serif; }
 #stage { position:fixed; inset:0 0 56px 0; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+#stage:focus { outline:none; }
 #frame { width:1920px; height:1080px; flex:none; transform-origin:center center; box-shadow:0 8px 40px rgba(0,0,0,.5); }
 #frame > section:not(.on) { display:none !important; }
 body.all #frame > section:not(.on) { display:block !important; }
@@ -27,10 +28,13 @@ section .katex-display { margin:0; text-align:left; }
 section .katex-display > .katex { text-align:left; }
 x-shape { display:block; flex:none; }
 x-shape[kind="arrow-right"] { clip-path:polygon(0 32%,58% 32%,58% 0,100% 50%,58% 100%,58% 68%,0 68%); }
+figure.video a.yt { display:block; width:fit-content; max-width:100%; line-height:0; cursor:pointer; }
+figure.video a.yt.off { display:none; }
+figure.video iframe { display:block; border:0; border-radius:8px; background:#000; }
 #bar { position:fixed; left:0; right:0; bottom:0; height:56px; background:var(--bar); display:flex; align-items:center; gap:12px; padding:0 16px; font-size:15px; }
-#bar button, #bar a { background:none; border:1px solid #3A4A6B; color:var(--fg); border-radius:8px; padding:6px 12px; font:inherit; cursor:pointer; text-decoration:none; }
+#bar button, #bar a { background:none; border:1px solid #3A4A6B; color:var(--fg); border-radius:8px; padding:6px 12px; font:inherit; cursor:pointer; text-decoration:none; white-space:nowrap; flex:none; }
 #bar button:hover, #bar a:hover { border-color:var(--accent); }
-#count { min-width:72px; text-align:center; color:var(--muted); }
+#count { min-width:72px; text-align:center; color:var(--muted); white-space:nowrap; flex:none; }
 #ttl { flex:1; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; color:var(--muted); }
 #notes { position:fixed; right:16px; bottom:72px; width:min(560px, calc(100% - 32px)); max-height:45vh; overflow:auto; background:#FFFDF8; color:#16213A; border-radius:12px; padding:16px 20px; font-size:16px; line-height:1.6; box-shadow:0 8px 30px rgba(0,0,0,.4); display:none; }
 #notes.show { display:block; }
@@ -38,7 +42,15 @@ x-shape[kind="arrow-right"] { clip-path:polygon(0 32%,58% 32%,58% 0,100% 50%,58%
 body.shot #bar, body.shot #notes { display:none; }
 body.shot #stage { inset:0; }
 body.shot #frame { box-shadow:none; transform:none !important; }
-@media (max-width:640px) { #ttl { display:none; } }
+@media (max-width:640px) {
+  #ttl { display:none; }
+  #bar { gap:6px; padding:0 8px; overflow-x:auto; }
+  #bar button, #bar a { padding:6px 8px; }
+  #count { min-width:56px; }
+}
+/* 폰 세로 화면에서는 막대에 버튼이 다 들어가지 않는다. 전체 화면 버튼을 뺀다. 세로에서는 장 배율이 화면 폭으로 정해져 전체 화면으로도
+   장이 커지지 않는다(가로로 돌리면 다시 보인다). 그래도 넘치면 막대를 옆으로 민다. */
+@media (max-width:480px) { #fs { display:none; } }
 </style>
 </head>
 <body>
@@ -90,18 +102,18 @@ section.r.divider .body p { break-inside:avoid; margin:0 0 6px; }
 section.r.divider .body p.h2 { color:#F59E5B; font-weight:600; margin-top:10px; }
 section.r.details .kicker::after { content:'  ·  논문 상세(토글 요약)'; }
 </style>
-<section class="r cover"><div class="kicker">travplan 리서치 · 센서 배치</div><div class="big">센서 배치 — 낮은 실외 배달로봇 (§H)</div><div class="lead"><p>센서 배치 문서 · 탭 3개</p><p>배치 비교 · 가격·연산 · 주기·지연</p></div><div class="foot" data-foot><span>travplan 리서치 · 센서 배치 (docs/research-sensors.md)</span><span>1 / 12</span></div><aside>원본 docs/research-sensors.md. 대시보드 리서치 탭의 &#x27;센서 배치&#x27; 문서를 장으로 옮겼다.</aside></section>
+<section class="r cover"><div class="kicker">travplan 리서치 · 센서 배치</div><div class="big">센서 배치 — 낮은 실외 배달로봇 (§H)</div><div class="lead"><p>센서 배치 문서 · 탭 3개</p><p>배치 비교 · 가격·연산 · 주기·지연</p></div><div class="foot" data-foot><span>travplan 리서치 · 센서 배치 (docs/research-sensors.md)</span><span>1 / 14</span></div><aside>원본 docs/research-sensors.md. 대시보드 리서치 탭의 &#x27;센서 배치&#x27; 문서를 장으로 옮겼다.</aside></section>
 <section class="r content"><div class="kicker">센서 배치 · 개요</div><h2 class="ttl">센서 배치 — 낮은 실외 배달로봇 (§H)</h2><div class="body"><p><strong>배달로봇의 센서 배치는 "LiDAR를 어디에 몇 개, 카메라가 무엇을 맡는가"로 갈린다.</strong> 이 문서는 다섯 가지 배치를 비교하고, 2026-09 기준
 센서·연산 장치 가격, 필요한 연산 성능, 센서·지도·계획·제어 주기를 정리한다. travplan의 권장 배치와 시뮬 근거는
 <code>docs/design-sensor-layout.md</code>(TP-0060)에 있다. 가격은 판매처와 시점에 따라 크게 달라지므로 출처를 함께 적었고, 공개 가격이 없는 제품은
-"견적"으로 표시했다.</p></div><div class="foot" data-foot><span>travplan 리서치 · 센서 배치 (docs/research-sensors.md)</span><span>2 / 12</span></div><aside>docs/research-sensors.md 머리말</aside></section>
-<section class="r divider"><div class="kicker">센서 배치 · 탭</div><h2 class="ttl">배치 비교</h2><div class="body"><p class="h2">H.1 다섯 가지 배치</p><p class="h2">H.2 센서별 장단점</p></div><div class="foot" data-foot><span>travplan 리서치 · 센서 배치 (docs/research-sensors.md)</span><span>3 / 12</span></div><aside>docs/research-sensors.md · 탭 &#x27;배치 비교&#x27;</aside></section>
+"견적"으로 표시했다.</p></div><div class="foot" data-foot><span>travplan 리서치 · 센서 배치 (docs/research-sensors.md)</span><span>2 / 14</span></div><aside>docs/research-sensors.md 머리말</aside></section>
+<section class="r divider"><div class="kicker">센서 배치 · 탭</div><h2 class="ttl">배치 비교</h2><div class="body"><p class="h2">H.1 다섯 가지 배치</p><p class="h2">H.2 센서별 장단점</p><p class="h3">CODEI — 센서·장착 위치·알고리즘·연산 장치를 비용 가중치로 함께 고른다</p></div><div class="foot" data-foot><span>travplan 리서치 · 센서 배치 (docs/research-sensors.md)</span><span>3 / 14</span></div><aside>docs/research-sensors.md · 탭 &#x27;배치 비교&#x27;</aside></section>
 <section class="r content"><div class="kicker">센서 배치 · 배치 비교</div><h2 class="ttl">H.1 다섯 가지 배치<small>1/2</small></h2><div class="body"><p><strong>한눈에 보기</strong></p><ul>
 <li>지금 구성(전면 LiDAR 1 + 카메라 5)은 <strong>가격 대비 좋고, 약점은 옆·뒤 지형</strong>이다. 후면에 저가 반구형 LiDAR(약 400달러)를 더하면 가장 싸게 보강된다.</li>
 <li>연산은 <strong>카메라 5대 검출이 가장 무겁다</strong>(AGX Orin GPU의 55–65%). AGX Orin 32GB 이상을 권한다. Jetson 가격은 2026-07에 최대 101% 올랐다.</li>
 <li>주기는 LiDAR·지도 10 Hz, Planner 5–10 Hz, Controller 10–20 Hz, 모듈 100 Hz 이상. <strong>센서에서 바퀴까지 300 ms 안</strong>이면 탐지 거리 1.5 m에서 약 1.3 m/s.</li>
 </ul><div class="figrow"><figure style="width:1600px"><a href="../../assets/figs/sensor_layouts.webp"><img src="../../assets/figs/sensor_layouts.webp" width="1600" height="395" alt="센서 배치 다섯 가지"></a><figcaption>그림 — 다섯 가지 배치의 시야 개념도(파랑: LiDAR, 초록: 카메라). 출처: travplan scripts/make_doc_figures.py</figcaption></figure></div><p><strong>결론부터: 사용자 구성(전면 LiDAR 1 + 카메라 5)은 가격 대비 지형 인식이 좋고, 약점은 옆·뒤 지형이다.</strong> 360° LiDAR는 그 약점이 없지만
-센서값이 몇 배다. 카메라만 쓰는 배치는 가장 싸지만 음의 장애물과 거리 정확도를 학습 모델에 맡긴다.</p></div><div class="foot" data-foot><span>travplan 리서치 · 센서 배치 (docs/research-sensors.md)</span><span>4 / 12</span></div><aside>docs/research-sensors.md · H.1 다섯 가지 배치</aside></section>
+센서값이 몇 배다. 카메라만 쓰는 배치는 가장 싸지만 음의 장애물과 거리 정확도를 학습 모델에 맡긴다.</p></div><div class="foot" data-foot><span>travplan 리서치 · 센서 배치 (docs/research-sensors.md)</span><span>4 / 14</span></div><aside>docs/research-sensors.md · H.1 다섯 가지 배치</aside></section>
 <section class="r content"><div class="kicker">센서 배치 · 배치 비교</div><h2 class="ttl">H.1 다섯 가지 배치<small>2/2</small></h2><div class="body"><table>
 <thead>
 <tr>
@@ -169,7 +181,7 @@ Neubility는 LiDAR 없이 멀티카메라 visual SLAM으로 위치를 잡는다(
 <a href="https://www.hesaitech.com/product/jt128/">Hesai</a>)은 아래쪽까지 한 번에 봐서 근거리 사각이 거의 없다. 차체 위 중앙에 달면 A와 B의 장점을
 합친다. 가격은 공개되지 않아 견적이 필요하다.</p><p><strong>travplan에 주는 의미.</strong> <mark>사용자 구성(A)은 유지하되, 옆·뒤 이동이 잦으면 후면에 저가 반구형 LiDAR 하나를 더하는 것(A + D)이 가장 싼 보강이다.</mark>
 L2급 한 대(약 400달러)면 옆·뒤 지형이 "기억"에서 "관측"으로 바뀐다. 예산이 허락하면 전면 LiDAR를 반구형(E)으로 바꿔 숙이지 않고도 근거리를
-본다.</p></div><div class="foot" data-foot><span>travplan 리서치 · 센서 배치 (docs/research-sensors.md)</span><span>5 / 12</span></div><aside>docs/research-sensors.md · H.1 다섯 가지 배치</aside></section>
+본다.</p></div><div class="foot" data-foot><span>travplan 리서치 · 센서 배치 (docs/research-sensors.md)</span><span>5 / 14</span></div><aside>docs/research-sensors.md · H.1 다섯 가지 배치</aside></section>
 <section class="r content"><div class="kicker">센서 배치 · 배치 비교</div><h2 class="ttl">H.2 센서별 장단점</h2><div class="body"><table>
 <thead>
 <tr>
@@ -223,8 +235,18 @@ L2급 한 대(약 400달러)면 옆·뒤 지형이 "기억"에서 "관측"으로
 <td>악천후 보조, 움직이는 물체 속도</td>
 </tr>
 </tbody>
-</table></div><div class="foot" data-foot><span>travplan 리서치 · 센서 배치 (docs/research-sensors.md)</span><span>6 / 12</span></div><aside>docs/research-sensors.md · H.2 센서별 장단점</aside></section>
-<section class="r divider"><div class="kicker">센서 배치 · 탭</div><h2 class="ttl">가격·연산</h2><div class="body"><p class="h2">H.3 예상 가격 (2026-09 기준)</p><p class="h2">H.4 필요한 연산 성능</p></div><div class="foot" data-foot><span>travplan 리서치 · 센서 배치 (docs/research-sensors.md)</span><span>7 / 12</span></div><aside>docs/research-sensors.md · 탭 &#x27;가격·연산&#x27;</aside></section>
+</table></div><div class="foot" data-foot><span>travplan 리서치 · 센서 배치 (docs/research-sensors.md)</span><span>6 / 14</span></div><aside>docs/research-sensors.md · H.2 센서별 장단점</aside></section>
+<section class="r content"><div class="kicker">센서 배치 · 배치 비교 · H.2 센서별 장단점</div><h2 class="ttl">CODEI — 센서·장착 위치·알고리즘·연산 장치를 비용 가중치로 함께 고른다<small>1/2</small></h2><div class="body"><p><strong>과제가 요구하는 인식 성능과 각 센서·검출기의 측정된 오탐·미탐률을 정수 선형 계획(ILP)으로 맞춰, 가격·질량·전력·연산 가운데 무엇을 아끼느냐에 따라 센서 구성을 고른다.</strong>
+논문 제목은 <em>CODEI: Resource-Efficient Task-Driven Co-Design of Perception and Decision Making for Mobile Robots Applied to Autonomous Vehicles</em>다
+(Milojevic·Zardini·Elser·Censi·Frazzoli <a href="https://arxiv.org/abs/2503.10296">arXiv:2503.10296</a>, IEEE T-RO 2025, ETH Zürich·Empa·MIT). 코드는 확인하지 못했다.
+<mark>결론은 "카메라는 싸고 가벼운 설계에, LiDAR는 전력과 연산을 아끼는 설계에"다.</mark> 복잡한 과제에서는 모든 설계가 LiDAR를 하나 이상 골랐다.</p><p>동작 방식은 이렇다. 표본 기반 계획기가 던지는 "이 시각에 이 자세가 부딪히는가"라는 질의(occupancy query)를, 인식이 반드시 잡아야 할 물체 배치로 바꾼다.
+센서와 검출기의 짝(LiDAR + PointPillars, 카메라 + FCOS3D)은 nuScenes에서 거리·방향·크기·조명별 미탐률과 오탐률을 재 Gaussian process 분류기로 모델링한다.
+장착 위치(yaw 8방향, pitch 0°)마다 광선 투사로 시야와 차체 자기 가림을 계산하고, 모든 요구를 덮는 가장 싼 조합을 ILP(결정 변수 667개, 약 75 s)로 푼다.
+연산 장치 후보는 Jetson Nano부터 AGX Orin 64GB까지 일곱이다. 연산을 아끼면 Orin Nano에 카메라 없이 LiDAR만, 질량을 아끼면 카메라에 AGX Orin 64GB가 뽑혔다.</p><p><strong>travplan에 주는 의미.</strong> 사례 연구는 승용차(Smart·Pacifica·C63)와 자동차용 센서라 숫자를 그대로 쓸 수 없다. 가져올 것은 절차다.
+H.1의 다섯 배치를 감으로 비교하는 대신, travplan 시뮬에서 "Planner가 실제로 묻는 칸"을 요구로 모으고, L1 합성 센서별 미관측률을 성능으로 재면 같은 ILP로 배치를 고를 수 있다.
+배달로봇에서 지형(음의 장애물)은 이 논문의 물체 검출 요구와 다르므로, 요구 정의를 TravMap 칸 단위로 바꿔야 한다.</p></div><div class="foot" data-foot><span>travplan 리서치 · 센서 배치 (docs/research-sensors.md)</span><span>7 / 14</span></div><aside>docs/research-sensors.md · CODEI — 센서·장착 위치·알고리즘·연산 장치를 비용 가중치로 함께 고른다</aside></section>
+<section class="r content"><div class="kicker">센서 배치 · 배치 비교 · H.2 센서별 장단점</div><h2 class="ttl">CODEI — 센서·장착 위치·알고리즘·연산 장치를 비용 가중치로 함께 고른다<small>2/2</small></h2><div class="body"><div class="figrow"><figure style="width:806px"><a href="https://arxiv.org/html/2503.10296v2/figures/intro-v3-comp-s.jpg"><img src="../../assets/thumbs/0cf3852e4f88.webp" width="806" height="700" alt="CODEI Fig. 1"></a><figcaption>그림 — CODEI (Fig. 1): 도심 자율주행차를 부품 목록(차체, 센서, 검출기, 계획기, 연산 장치)에서 골라 설계하는 문제의 개념도. 출처: arXiv:2503.10296</figcaption></figure></div></div><div class="foot" data-foot><span>travplan 리서치 · 센서 배치 (docs/research-sensors.md)</span><span>8 / 14</span></div><aside>docs/research-sensors.md · CODEI — 센서·장착 위치·알고리즘·연산 장치를 비용 가중치로 함께 고른다</aside></section>
+<section class="r divider"><div class="kicker">센서 배치 · 탭</div><h2 class="ttl">가격·연산</h2><div class="body"><p class="h2">H.3 예상 가격 (2026-09 기준)</p><p class="h2">H.4 필요한 연산 성능</p></div><div class="foot" data-foot><span>travplan 리서치 · 센서 배치 (docs/research-sensors.md)</span><span>9 / 14</span></div><aside>docs/research-sensors.md · 탭 &#x27;가격·연산&#x27;</aside></section>
 <section class="r content"><div class="kicker">센서 배치 · 가격·연산</div><h2 class="ttl">H.3 예상 가격 (2026-09 기준)<small>1/2</small></h2><div class="body"><p><strong>가격은 판매처와 시점에 따라 두 배 가까이 차이 난다. 특히 NVIDIA Jetson은 2026-07에 최대 101% 올랐다.</strong> 아래는 공개 가격이고, 양산 수량
 가격은 별도 견적이다.</p><table>
 <thead>
@@ -326,8 +348,8 @@ L2급 한 대(약 400달러)면 옆·뒤 지형이 "기억"에서 "관측"으로
 <td>약 5,000–9,000달러</td>
 </tr>
 </tbody>
-</table></div><div class="foot" data-foot><span>travplan 리서치 · 센서 배치 (docs/research-sensors.md)</span><span>8 / 12</span></div><aside>docs/research-sensors.md · H.3 예상 가격 (2026-09 기준)</aside></section>
-<section class="r content"><div class="kicker">센서 배치 · 가격·연산</div><h2 class="ttl">H.3 예상 가격 (2026-09 기준)<small>2/2</small></h2><div class="body"><p>합계에는 배선, 캐리어 보드, 보정 장비, 방수 하우징이 빠져 있다.</p></div><div class="foot" data-foot><span>travplan 리서치 · 센서 배치 (docs/research-sensors.md)</span><span>9 / 12</span></div><aside>docs/research-sensors.md · H.3 예상 가격 (2026-09 기준)</aside></section>
+</table></div><div class="foot" data-foot><span>travplan 리서치 · 센서 배치 (docs/research-sensors.md)</span><span>10 / 14</span></div><aside>docs/research-sensors.md · H.3 예상 가격 (2026-09 기준)</aside></section>
+<section class="r content"><div class="kicker">센서 배치 · 가격·연산</div><h2 class="ttl">H.3 예상 가격 (2026-09 기준)<small>2/2</small></h2><div class="body"><p>합계에는 배선, 캐리어 보드, 보정 장비, 방수 하우징이 빠져 있다.</p></div><div class="foot" data-foot><span>travplan 리서치 · 센서 배치 (docs/research-sensors.md)</span><span>11 / 14</span></div><aside>docs/research-sensors.md · H.3 예상 가격 (2026-09 기준)</aside></section>
 <section class="r content"><div class="kicker">센서 배치 · 가격·연산</div><h2 class="ttl">H.4 필요한 연산 성능</h2><div class="body"><p><strong>카메라 다섯 대의 검출이 가장 큰 부하이고, AGX Orin급이 필요하다.</strong> Isaac ROS 공식 벤치마크(Jetson AGX Orin)와 travplan 실측을 합쳤다.</p><table>
 <thead>
 <tr>
@@ -402,8 +424,8 @@ L2급 한 대(약 400달러)면 옆·뒤 지형이 "기억"에서 "관측"으로
 <li><strong>학습 Planner나 VLA를 올리려면 Thor급이다.</strong> Joint Planner(TP-0049)는 CPU에서 180 ms였다.</li>
 <li><strong>카메라 인터페이스.</strong> USB 카메라 다섯 대는 대역폭과 케이블 신뢰성이 문제다. GMSL2 카메라와 역직렬화 캐리어 보드를 권한다.</li>
 <li><strong>Orin에서 elevation mapping 시간은 아직 모른다.</strong> 실측이 필요하다(TP-0053의 매퍼를 Orin에서 돌린다).</li>
-</ul></div><div class="foot" data-foot><span>travplan 리서치 · 센서 배치 (docs/research-sensors.md)</span><span>10 / 12</span></div><aside>docs/research-sensors.md · H.4 필요한 연산 성능</aside></section>
-<section class="r divider"><div class="kicker">센서 배치 · 탭</div><h2 class="ttl">주기·지연</h2><div class="body"><p class="h2">H.5 센서·지도·계획·제어 주기</p></div><div class="foot" data-foot><span>travplan 리서치 · 센서 배치 (docs/research-sensors.md)</span><span>11 / 12</span></div><aside>docs/research-sensors.md · 탭 &#x27;주기·지연&#x27;</aside></section>
+</ul></div><div class="foot" data-foot><span>travplan 리서치 · 센서 배치 (docs/research-sensors.md)</span><span>12 / 14</span></div><aside>docs/research-sensors.md · H.4 필요한 연산 성능</aside></section>
+<section class="r divider"><div class="kicker">센서 배치 · 탭</div><h2 class="ttl">주기·지연</h2><div class="body"><p class="h2">H.5 센서·지도·계획·제어 주기</p></div><div class="foot" data-foot><span>travplan 리서치 · 센서 배치 (docs/research-sensors.md)</span><span>13 / 14</span></div><aside>docs/research-sensors.md · 탭 &#x27;주기·지연&#x27;</aside></section>
 <section class="r content"><div class="kicker">센서 배치 · 주기·지연</div><h2 class="ttl">H.5 센서·지도·계획·제어 주기</h2><div class="body"><p><strong>제어는 10–20 Hz, 계획은 5–10 Hz, 지도는 센서 주기(10 Hz)를 따른다. 전체 지연(센서에서 바퀴까지)은 300 ms 안에 둔다.</strong> 이 지연이
 설계 D6의 속도 제한식에 들어간다.</p><table>
 <thead>
@@ -469,7 +491,7 @@ L2급 한 대(약 400달러)면 옆·뒤 지형이 "기억"에서 "관측"으로
 $v t + v^2 / (2a) + m \le d_{\text{det}}$에서 $t$ = 0.3 s로 두면, 음의 장애물 탐지 거리 1.5 m에서 최고 속도는 약 1.3 m/s다. 지연이 0.5 s로
 늘면 같은 거리에서 약 1.1 m/s로 내려간다.</p><p><strong>시간 동기화.</strong> 센서 여섯 개(LiDAR 1, 카메라 5)와 IMU를 PTP나 하드웨어 트리거로 맞춘다. 1 m/s로 움직일 때 50 ms 어긋나면 5 cm가 틀리고,
 회전 중이면 먼 곳일수록 더 틀린다. 스테레오 두 대는 반드시 같은 트리거로 찍는다.</p><p><strong>travplan 시뮬과의 차이.</strong> 운동학 시뮬은 모든 층이 10 Hz(dt 0.1 s)로 같은 순간에 돌고 지연이 없다. 지연·위치 잡음 무작위화(TP-0032)를
-켜면 위 지연 예산을 시뮬에서 시험할 수 있다.</p></div><div class="foot" data-foot><span>travplan 리서치 · 센서 배치 (docs/research-sensors.md)</span><span>12 / 12</span></div><aside>docs/research-sensors.md · H.5 센서·지도·계획·제어 주기</aside></section>
+켜면 위 지연 예산을 시뮬에서 시험할 수 있다.</p></div><div class="foot" data-foot><span>travplan 리서치 · 센서 배치 (docs/research-sensors.md)</span><span>14 / 14</span></div><aside>docs/research-sensors.md · H.5 센서·지도·계획·제어 주기</aside></section>
 <script>
 // ?layout=1: 장마다 요소 위치를 적는다. PPTX가 이 좌표에 글상자·표·그림을 놓는다.
 (function () {
@@ -522,13 +544,45 @@ $v t + v^2 / (2a) + m \le d_{\text{det}}$에서 $t$ = 0.3 s로 두면, 음의 �
   var want = parseInt(location.hash.slice(1), 10) - 1;
   if (isNaN(want)) want = 0;
   var i = 0;
+  function scaleNow() {
+    var st = document.getElementById('stage');
+    return Math.min(st.clientWidth / 1920, st.clientHeight / 1080);
+  }
   function fit() {
     if (shot) return;
-    var st = document.getElementById('stage');
-    var s = Math.min(st.clientWidth / 1920, st.clientHeight / 1080);
-    frame.style.transform = 'scale(' + s + ')';
+    frame.style.transform = 'scale(' + scaleNow() + ')';
   }
+  // ▶ 영상(figure.video): 썸네일 a.yt를 누르면 그 자리에 YouTube(nocookie) iframe을 넣고, 장을 넘기면 썸네일로 되돌린다.
+  // 캡처·검사(?shot, ?check)에서는 누르지 않으므로 썸네일만 찍힌다. PPTX는 그림에 하이퍼링크를 단다.
+  function ytId(href) {
+    var m = /[?&]v=([\w-]{11})/.exec(href) || /youtu\.be\/([\w-]{11})/.exec(href);
+    return m ? m[1] : null;
+  }
+  function stopVideos() {
+    Array.prototype.forEach.call(frame.querySelectorAll('figure.video iframe'), function (f) { f.remove(); });
+    Array.prototype.forEach.call(frame.querySelectorAll('figure.video a.yt.off'), function (a) { a.classList.remove('off'); });
+  }
+  // 장을 크게 줄여 보여 주는 작은 화면(폰 등, 배율 0.45 미만)에서는 줄어든 플레이어의 단추가 너무 작다. 그때는 YouTube를 새 탭으로 연다.
+  var SMALL = 0.45;
+  frame.addEventListener('click', function (e) {
+    var a = e.target.closest ? e.target.closest('figure.video a.yt') : null;
+    if (!a || shot) return;
+    var id = ytId(a.href), img = a.querySelector('img');
+    if (!id || !img) return;
+    e.preventDefault();
+    // 'noopener'를 주면 열려도 null이 돌아와 막힘과 구분되지 않는다. 그래서 열린 창의 opener를 직접 끊는다. 막히면 그 자리에서 재생한다.
+    if (scaleNow() < SMALL) {
+      var w = window.open(a.href, '_blank');
+      if (w) { try { w.opener = null; } catch (err) {} return; }
+    }
+    var f = document.createElement('iframe');
+    f.width = img.clientWidth; f.height = img.clientHeight;
+    f.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0';
+    f.allow = 'autoplay; fullscreen; picture-in-picture'; f.allowFullscreen = true; f.title = img.alt || 'YouTube';
+    a.classList.add('off'); a.parentNode.insertBefore(f, a);
+  });
   function show(n) {
+    stopVideos();
     i = Math.max(0, Math.min(slides.length - 1, n));
     slides.forEach(function (el, k) { el.classList.toggle('on', k === i); });
     document.getElementById('count').textContent = (i + 1) + ' / ' + slides.length;
@@ -546,10 +600,15 @@ $v t + v^2 / (2a) + m \le d_{\text{det}}$에서 $t$ = 0.3 s로 두면, 음의 �
   window.withAllFonts = withAllFonts;
   // 넘침 검사: 본문 요소가 장 밖으로 나가거나 각주 띠를 덮으면 적는다.
   function check() {
-    var bad = [];
+    var bad = [], yt = [];
     slides.forEach(function (sec, k) {
       show(k);
       var box = sec.getBoundingClientRect();
+      // 영상 썸네일(img)의 자리. 캡처 PPTX(make_pptx)가 그 위에 보이지 않는 하이퍼링크 상자를 놓는다.
+      Array.prototype.forEach.call(sec.querySelectorAll('figure.video a.yt'), function (a) {
+        var r = (a.querySelector('img') || a).getBoundingClientRect();
+        yt.push({ slide: k + 1, href: a.href, r: [r.left - box.left, r.top - box.top, r.width, r.height] });
+      });
       Array.prototype.forEach.call(sec.querySelectorAll('.katex-error'), function (el) {
         bad.push({ slide: k + 1, id: sec.id, tag: 'TeX', text: (el.getAttribute('title') || el.textContent).slice(0, 60), over: 0 });
       });
@@ -558,7 +617,7 @@ $v t + v^2 / (2a) + m \le d_{\text{det}}$에서 $t$ = 0.3 s로 두면, 음의 �
       });
       var foot = sec.querySelector('[data-foot]');
       var limit = foot ? foot.getBoundingClientRect().top - 4 : box.bottom - 24;
-      Array.prototype.forEach.call(sec.querySelectorAll('p, h1, h2, h3, img, td, th, li, .katex-display, [data-box]'), function (el) {
+      Array.prototype.forEach.call(sec.querySelectorAll('p, h1, h2, h3, img, figcaption, td, th, li, .katex-display, [data-box]'), function (el) {
         if (foot && foot.contains(el)) return;
         if (el.closest('aside')) return;
         var r = el.getBoundingClientRect();
@@ -569,7 +628,7 @@ $v t + v^2 / (2a) + m \le d_{\text{det}}$에서 $t$ = 0.3 s로 두면, 음의 �
       });
     });
     var rep = document.getElementById('report');
-    rep.textContent = JSON.stringify(bad);
+    rep.textContent = JSON.stringify({ bad: bad, yt: yt });
     rep.setAttribute('data-done', '1');
   }
   function start() {
@@ -601,6 +660,28 @@ $v t + v^2 / (2a) + m \le d_{\text{det}}$에서 $t$ = 0.3 s로 두면, 음의 �
     else if (e.key === 'End') show(slides.length - 1);
     else if (e.key === 'n' || e.key === 'N') notes.classList.toggle('show');
     else if (e.key === 'f' || e.key === 'F') document.getElementById('fs').click();
+  });
+  // 재생 중인 영상 안을 누르면(정지, 되감기 등) 키보드 포커스가 YouTube iframe으로 넘어가 ←/→와 발표용 클리커가 먹지 않는다.
+  // 그때 포커스를 곧바로 장으로 되돌린다. 누른 동작은 영상에 그대로 전달되고, 그 뒤의 키는 Space까지 장을 넘긴다.
+  // 포커스를 영상에 두는 때는 둘이다. Tab으로 플레이어에 들어간 때와 YouTube 전체 화면일 때다. 전체 화면이 끝나면 장으로 되돌린다.
+  // Chrome은 전체 화면 요소 밖으로 포커스를 옮기지 않지만, 옮기는 브라우저를 위해 전체 화면 iframe은 되돌리지 않는다.
+  // 전체 화면 API는 F 키처럼 접두어 없는 것만 쓴다(Safari 16.4 이상).
+  var stage = document.getElementById('stage'), lastTab = -1e9, fsVideo = null;
+  stage.tabIndex = -1;
+  function isVideo(el) { return !!el && el.tagName === 'IFRAME' && !!el.closest('figure.video'); }
+  document.addEventListener('keydown', function (e) { if (e.key === 'Tab') lastTab = performance.now(); }, true);
+  window.addEventListener('blur', function () {
+    // Tab으로 들어갈 때 blur는 Tab 뒤 25 ms 안에 온다(CPU 20배 감속에서 잼). 150 ms로 좁혀 Tab 직후의 클릭은 되돌린다.
+    if (shot || performance.now() - lastTab < 150) return;
+    setTimeout(function () {
+      var el = document.activeElement;
+      if (isVideo(el) && el !== document.fullscreenElement) stage.focus({ preventScroll: true });
+    }, 0);
+  });
+  document.addEventListener('fullscreenchange', function () {
+    var f = document.fullscreenElement;
+    if (isVideo(f)) { fsVideo = f; f.focus(); }
+    else if (fsVideo) { fsVideo = null; stage.focus({ preventScroll: true }); }
   });
   var x0 = null;
   document.getElementById('stage').addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });

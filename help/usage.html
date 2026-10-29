@@ -106,7 +106,7 @@
 </tr>
 <tr>
 <td data-label="자리">슬라이드 갤러리</td>
-<td data-label="무엇">챕터 발표 덱 7개와 스터디 슬라이드 2개. 카드를 누르면 뷰어가 열리고, PPTX 링크는 파일을 내려받는다. 오른쪽 위 '전체 슬라이드 목록'에 리서치 문서 덱까지 있다(<a href="#slides">7절</a>)</td>
+<td data-label="무엇">기초 커리큘럼 8개, 챕터 발표 덱 7개, 스터디 슬라이드 2개. 카드를 누르면 뷰어가 열리고, PPTX 링크는 파일을 내려받는다. 오른쪽 위 '전체 슬라이드 목록'에 리서치 문서 덱까지 있다(<a href="#slides">7절</a>)</td>
 </tr>
 <tr>
 <td data-label="자리">아래 네 칸</td>
@@ -155,7 +155,7 @@
 <tr>
 <td data-label="탭">리서치</td>
 <td data-label="주소 끝"><code>#research</code></td>
-<td data-label="무엇">리서치 문서 12개와 발표 덱(<a href="#dash-research">5절</a>)</td>
+<td data-label="무엇">리서치 문서 13개와 발표 덱(<a href="#dash-research">5절</a>)</td>
 <td data-label="원본"><code>docs/research-*.md</code>, 덱의 <code>deck.json</code></td>
 </tr>
 <tr>
@@ -251,7 +251,7 @@
 </tr>
 <tr>
 <td data-label="자리">문서 버튼</td>
-<td data-label="무엇">개요, 인식, 센서 배치, Planner, Controller·안전, 시뮬레이션, 배경·수식, 딥러닝, 모방, 강화학습, 참고문헌, MPC 구축</td>
+<td data-label="무엇">개요, 인식, 센서 배치, Planner, Controller·안전, 보행 갤러리, 시뮬레이션, 배경·수식, 딥러닝, 모방, 강화학습, 참고문헌, MPC 구축</td>
 </tr>
 <tr>
 <td data-label="자리">하위 탭</td>
@@ -346,13 +346,14 @@ JS로 다시 짠 것이라 지형이 Python과 똑같지는 않다(난수 생성
 </section>
 <section id="slides">
   <h2><span class="n">7</span>슬라이드</h2>
-<p><span class="key">슬라이드는 세 종류이고, 모두 같은 뷰어로 열리며 PPTX를 내려받을 수 있다.</span></p>
-<p>▶ 표시가 있는 그림은 논문의 시연이나 강의 영상(YouTube)이다. 뷰어에서 누르면 그 자리에서 재생되고, 장을 넘기면 멈춘다. PPTX에서는 그 그림을 누르면 영상이 열린다.</p>
+<p><span class="key">슬라이드는 네 종류이고, 모두 같은 뷰어로 열리며 PPTX를 내려받을 수 있다.</span></p>
+<p>▶ 표시가 있는 그림은 논문의 시연이나 강의 영상(YouTube)이다. 뷰어는 누르면 그 자리에서 재생하고, 장을 넘기면 멈춘다. PPTX에서는 그 그림을 누르면 영상이 열린다.</p>
 <ul>
 <li>영상 안을 눌러 조작한 뒤에도 키보드와 발표용 클리커는 장을 넘긴다. Space도 다음 장이다. 영상을 멈추거나 다시 틀 때는 영상을 누른다.</li>
 <li>YouTube 단축키는 Tab으로 플레이어에 들어갔을 때와 YouTube 전체 화면에서 듣는다. 그때는 영상을 눌러도 키가 플레이어에 남는다.
   장으로 돌아오려면 장의 빈 곳을 누른다. 전체 화면에서는 Esc를 누른다.</li>
-<li>장이 작게 보이는 화면(폰, 세로로 든 태블릿, 좁은 창)에서는 영상이 새 탭(YouTube)으로 열린다.</li>
+<li>장이 작게 보이는 화면에서는 영상이 새 탭(YouTube)으로 열린다. 창 폭이 864px보다 좁거나 높이가 542px보다 낮은 화면이다.
+  폰, 세로로 든 11인치 이하 태블릿, 1280×520처럼 높이가 낮은 창이 그렇다. 브라우저가 새 탭을 막으면 뷰어가 그 자리에서 재생한다.</li>
 <li>영상을 튼 뒤에는 플레이어 위에서 옆으로 밀어도 넘어가지 않는다. 영상 밖을 밀거나 ◀ ▶를 누른다.</li>
 </ul>
 <div class="tbl"><table class="wide">
@@ -365,6 +366,12 @@ JS로 다시 짠 것이라 지형이 Python과 똑같지는 않다(난수 생성
 </tr>
 </thead>
 <tbody>
+<tr>
+<td data-label="종류">기초 커리큘럼</td>
+<td data-label="수">8</td>
+<td data-label="무엇">로봇의 기본 개념을 공부하는 덱 7개와 그 순서를 정리한 로드맵(0단계)</td>
+<td data-label="PPTX">글자를 고칠 수 있는 판</td>
+</tr>
 <tr>
 <td data-label="종류">챕터 발표 덱</td>
 <td data-label="수">7</td>
@@ -380,12 +387,12 @@ JS로 다시 짠 것이라 지형이 Python과 똑같지는 않다(난수 생성
 <tr>
 <td data-label="종류">리서치 문서 덱</td>
 <td data-label="수">13</td>
-<td data-label="무엇">리서치 문서 전체를 옮긴 덱(2026-10-29 기준 2,015장)</td>
+<td data-label="무엇">리서치 문서 전체를 옮긴 덱(2026-10-29 기준 2,060장)</td>
 <td data-label="PPTX">글자를 고칠 수 있는 판</td>
 </tr>
 </tbody>
 </table></div>
-<p>첫 화면 갤러리에는 앞의 두 종류가 있고, <a href="../slides/">슬라이드 목록</a>에는 셋 다 있다.</p>
+<p>첫 화면 갤러리에는 앞의 세 종류가 있고, <a href="../slides/">슬라이드 목록</a>에는 넷 다 있다.</p>
 <div class="tbl"><table>
 <thead>
 <tr>

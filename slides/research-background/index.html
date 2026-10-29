@@ -13,6 +13,7 @@
 * { box-sizing:border-box; }
 html, body { margin:0; height:100%; background:var(--bg); color:var(--fg); font-family:'IBM Plex Sans KR', Arial, sans-serif; }
 #stage { position:fixed; inset:0 0 56px 0; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+#stage:focus { outline:none; }
 #frame { width:1920px; height:1080px; flex:none; transform-origin:center center; box-shadow:0 8px 40px rgba(0,0,0,.5); }
 #frame > section:not(.on) { display:none !important; }
 body.all #frame > section:not(.on) { display:block !important; }
@@ -27,10 +28,13 @@ section .katex-display { margin:0; text-align:left; }
 section .katex-display > .katex { text-align:left; }
 x-shape { display:block; flex:none; }
 x-shape[kind="arrow-right"] { clip-path:polygon(0 32%,58% 32%,58% 0,100% 50%,58% 100%,58% 68%,0 68%); }
+figure.video a.yt { display:block; width:fit-content; max-width:100%; line-height:0; cursor:pointer; }
+figure.video a.yt.off { display:none; }
+figure.video iframe { display:block; border:0; border-radius:8px; background:#000; }
 #bar { position:fixed; left:0; right:0; bottom:0; height:56px; background:var(--bar); display:flex; align-items:center; gap:12px; padding:0 16px; font-size:15px; }
-#bar button, #bar a { background:none; border:1px solid #3A4A6B; color:var(--fg); border-radius:8px; padding:6px 12px; font:inherit; cursor:pointer; text-decoration:none; }
+#bar button, #bar a { background:none; border:1px solid #3A4A6B; color:var(--fg); border-radius:8px; padding:6px 12px; font:inherit; cursor:pointer; text-decoration:none; white-space:nowrap; flex:none; }
 #bar button:hover, #bar a:hover { border-color:var(--accent); }
-#count { min-width:72px; text-align:center; color:var(--muted); }
+#count { min-width:72px; text-align:center; color:var(--muted); white-space:nowrap; flex:none; }
 #ttl { flex:1; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; color:var(--muted); }
 #notes { position:fixed; right:16px; bottom:72px; width:min(560px, calc(100% - 32px)); max-height:45vh; overflow:auto; background:#FFFDF8; color:#16213A; border-radius:12px; padding:16px 20px; font-size:16px; line-height:1.6; box-shadow:0 8px 30px rgba(0,0,0,.4); display:none; }
 #notes.show { display:block; }
@@ -38,7 +42,15 @@ x-shape[kind="arrow-right"] { clip-path:polygon(0 32%,58% 32%,58% 0,100% 50%,58%
 body.shot #bar, body.shot #notes { display:none; }
 body.shot #stage { inset:0; }
 body.shot #frame { box-shadow:none; transform:none !important; }
-@media (max-width:640px) { #ttl { display:none; } }
+@media (max-width:640px) {
+  #ttl { display:none; }
+  #bar { gap:6px; padding:0 8px; overflow-x:auto; }
+  #bar button, #bar a { padding:6px 8px; }
+  #count { min-width:56px; }
+}
+/* 폰 세로 화면에서는 막대에 버튼이 다 들어가지 않는다. 전체 화면 버튼을 뺀다. 세로에서는 장 배율이 화면 폭으로 정해져 전체 화면으로도
+   장이 커지지 않는다(가로로 돌리면 다시 보인다). 그래도 넘치면 막대를 옆으로 민다. */
+@media (max-width:480px) { #fs { display:none; } }
 </style>
 </head>
 <body>
@@ -651,7 +663,7 @@ $\epsilon \sim \mathcal{N}(0, I)$는 표준 가우시안 노이즈, $q_t$는 $x_
 $\mathbb{E}[x_0 \mid x_t] = \big(x_t + (1-\bar\alpha_t)\nabla \log q_t(x_t)\big)/\sqrt{\bar\alpha_t}$와 순방향 식을 함께 쓰면 다음 두 식이 나온다.</p><p class="mathp">$$ \nabla_{x_t} \log q_t(x_t) \approx -\frac{\epsilon_\theta(x_t, t, c)}{\sqrt{1-\bar\alpha_t}}, \qquad \hat x_0(x_t) = \frac{x_t - \sqrt{1-\bar\alpha_t}\,\epsilon_\theta(x_t, t, c)}{\sqrt{\bar\alpha_t}} $$</p><p>노이즈를 맞히는 것은 score를 배우는 것과 같다. 모델이 $x_0$를 바로 예측하게 해도 된다(DiffusionDrive).</p><p><strong>샘플링.</strong> 역방향을 확률 흐름 ODE로 보고 적분한다. DPM-Solver(++) 같은 고차 ODE 풀이기를 쓰면 10스텝 안팎으로 줄어든다(Diffusion Planner).
 <mark>이 식이 바로 0.6의 $\dot x = v_\theta$다</mark> — 환율과 규약 지뢰는 <strong>0.6b</strong>에 있다.</p><p class="mathp">$$ \frac{dx_t}{dt} = f(t)\, x_t - \tfrac{1}{2} g^2(t)\, \nabla_{x_t} \log q_t(x_t) $$</p><p>$f$와 $g$는 순방향을 SDE $dx = f(t)\,x\,dt + g(t)\,dw$로 쓴 계수이고, 위 스케줄에서는 $f = -\tfrac{1}{2}\beta(t)$, $g^2 = \beta(t)$다.
 가장 단순한 적은 스텝 규칙은 DDIM(denoising diffusion implicit model, <a href="https://arxiv.org/abs/2010.02502">arXiv:2010.02502</a>)이다.
-$\hat x_0$와 노이즈 추정으로 이전 시각 $s &lt; t$의 상태를 바로 만든다.</p><p class="mathp">$$ x_s = \sqrt{\bar\alpha_s}\, \hat x_0(x_t) + \sqrt{1-\bar\alpha_s}\, \epsilon_\theta(x_t, t, c) $$</p><p class="more">… 이 토글의 나머지 블록 8개(문단·식·그림)는 대시보드 리서치 탭의 "수식 보기" 토글에 있다.</p></div><div class="foot" data-foot><span>travplan 리서치 · 배경 · 수식 (docs/research-background.md)</span><span>41 / 105</span></div><aside>docs/research-background.md · 0.5 Diffusion 모델과 guidance · 토글 &#x27;수식 보기&#x27;</aside></section>
+$\hat x_0$와 노이즈 추정으로 이전 시각 $s &lt; t$의 상태를 바로 만든다.</p><p class="mathp">$$ x_s = \sqrt{\bar\alpha_s}\, \hat x_0(x_t) + \sqrt{1-\bar\alpha_s}\, \epsilon_\theta(x_t, t, c) $$</p><p><strong>Guidance.</strong> 학습한 분포 $q_0$에 에너지 $\mathcal{E}$(충돌, 차선 이탈, 속도 등)의 지수 $e^{-\mathcal{E}}$를 곱해 목표 분포를 만든다.</p><p class="more">… 이 토글의 나머지 블록 7개(문단·식·그림)는 대시보드 리서치 탭의 "수식 보기" 토글에 있다.</p></div><div class="foot" data-foot><span>travplan 리서치 · 배경 · 수식 (docs/research-background.md)</span><span>41 / 105</span></div><aside>docs/research-background.md · 0.5 Diffusion 모델과 guidance · 토글 &#x27;수식 보기&#x27;</aside></section>
 <section class="r content"><div class="kicker">배경 · 수식 · Planner·학습</div><h2 class="ttl">0.5 Diffusion 모델과 guidance</h2><div class="body"><p><strong>참고문헌.</strong></p><ul>
 <li>Ho 외, <em>Denoising Diffusion Probabilistic Models</em>, NeurIPS 2020 — <a href="https://arxiv.org/abs/2006.11239">arXiv:2006.11239</a>. 순방향 닫힌 식과 노이즈 예측 손실의 원전이다.</li>
 <li>Song 외, <em>Score-Based Generative Modeling through Stochastic Differential Equations</em>, ICLR 2021 — <a href="https://arxiv.org/abs/2011.13456">arXiv:2011.13456</a>. score, SDE, 확률 흐름 ODE를 한 틀로 묶어 적은 스텝 풀이기의 바탕을 놓는다.</li>
@@ -757,55 +769,52 @@ coincide with the vector field previously used in the deterministic probability 
 <em>when restricted to these conditional diffusion processes</em>가 중요하다 —
 <mark>이 동치는 <strong>VP(확산) 조건부 경로에 한정한 진술</strong>이다.</mark> 임의의 보간자까지 덮는 주장이 아니고,
 아래 "등가가 깨지는 곳 셋"이 그 한계를 적는다.</p><h4>⚠️ 규약 지뢰: 이 문서 안에서 충돌하는 기호</h4><p><mark>문헌마다 $t=0$이 노이즈인지 데이터인지가 다르다.</mark> 아래는 <strong>이 문서 안에서 실제로 충돌하는</strong> 것만 모았다.
-새 글을 쓸 때는 중립 기호 $x_{\text{data}}$, $\epsilon$, $\alpha_t$, $\sigma_t$를 쓰고, 어느 규약인지 문장으로 밝힌다.</p></div><div class="foot" data-foot><span>travplan 리서치 · 배경 · 수식 (docs/research-background.md)</span><span>49 / 105</span></div><aside>docs/research-background.md · 0.6b Diffusion과 flow matching은 같은 것의 두 좌표계다</aside></section>
-<section class="r content"><div class="kicker">배경 · 수식 · Planner·학습</div><h2 class="ttl">0.6b Diffusion과 flow matching은 같은 것의 두 좌표계다<small>2/5</small></h2><div class="body"><table>
-<thead>
+새 글을 쓸 때는 중립 기호 $x_{\text{data}}$, $\epsilon$, $\alpha_t$, $\sigma_t$를 쓰고, 어느 규약인지 문장으로 밝힌다.</p><table style="table-layout:fixed"><colgroup><col style="width:297.1px"><col style="width:321.8px"><col style="width:321.8px"><col style="width:786.2px"></colgroup><thead>
 <tr>
 <th>기호</th>
 <th>0.5(Song·DDPM)</th>
 <th>0.6·travplan</th>
 <th>함정</th>
 </tr>
-</thead>
-<tbody>
-<tr>
+</thead><tbody><tr>
 <td>$t = 0$</td>
 <td><strong>데이터</strong></td>
 <td><strong>노이즈</strong></td>
 <td>시간이 반대로 흐른다</td>
-</tr>
+</tr></tbody></table></div><div class="foot" data-foot><span>travplan 리서치 · 배경 · 수식 (docs/research-background.md)</span><span>49 / 105</span></div><aside>docs/research-background.md · 0.6b Diffusion과 flow matching은 같은 것의 두 좌표계다</aside></section>
+<section class="r content"><div class="kicker">배경 · 수식 · Planner·학습</div><h2 class="ttl">0.6b Diffusion과 flow matching은 같은 것의 두 좌표계다<small>2/5</small></h2><div class="body"><table style="table-layout:fixed"><colgroup><col style="width:297.1px"><col style="width:321.8px"><col style="width:321.8px"><col style="width:786.2px"></colgroup><thead>
 <tr>
+<th>기호</th>
+<th>0.5(Song·DDPM)</th>
+<th>0.6·travplan</th>
+<th>함정</th>
+</tr>
+</thead><tbody><tr>
 <td>$t = 1$ 또는 $T$</td>
 <td>노이즈</td>
 <td><strong>데이터</strong></td>
 <td>〃</td>
-</tr>
-<tr>
+</tr><tr>
 <td>$\hat x_0$ / $\hat x_1$</td>
 <td>$\hat x_0$가 <strong>깨끗한 데이터</strong></td>
 <td>$\hat x_1$이 <strong>깨끗한 데이터</strong></td>
 <td><mark>둘은 <strong>같은 양</strong>이다</mark></td>
-</tr>
-<tr>
+</tr><tr>
 <td>"$x_0$-prediction"</td>
 <td>데이터 예측</td>
 <td>—</td>
 <td><mark>Flow Matching Guide에서는 <strong>노이즈</strong> 예측을 뜻한다</mark></td>
-</tr>
-<tr>
+</tr><tr>
 <td>속도 $v$</td>
 <td>—</td>
 <td>데이터 쪽으로</td>
 <td>규약을 뒤집으면 <strong>부호가 바뀐다</strong></td>
-</tr>
-<tr>
+</tr><tr>
 <td>score $s$, 노이즈 $\epsilon$</td>
 <td>그대로</td>
 <td>그대로</td>
 <td><mark>규약을 뒤집어도 <strong>부호가 안 바뀐다</strong></mark></td>
-</tr>
-</tbody>
-</table><p>마지막 두 줄이 핵심이다. $s$와 $\epsilon$은 <strong>시각 $t$의 분포만</strong> 보는 양이라 시간이 어느 쪽으로 흐르는지
+</tr></tbody></table><p>마지막 두 줄이 핵심이다. $s$와 $\epsilon$은 <strong>시각 $t$의 분포만</strong> 보는 양이라 시간이 어느 쪽으로 흐르는지
 모른다. 속도만 방향을 안다. 그래서 규약을 옮길 때 <strong>속도만 부호를 뒤집는다</strong>(Lemma: $\tilde u_t(x) = -u_{1-t}(x)$).
 0.5↔0.6 사이 실수의 거의 전부가 이 비대칭에서 나온다.</p><h4>환율표</h4><p>두 문헌이 공유하는 틀은 <strong>아핀 가우시안 경로</strong>다. 노이즈 $\epsilon \sim \mathcal{N}(0, I)$와 데이터 $x_{\text{data}}$를
 섞되, 섞는 비율만 다르다.</p><p class="mathp">$$ x_t = \alpha_t\, x_{\text{data}} + \sigma_t\, \epsilon $$</p><table>
@@ -925,10 +934,10 @@ Planner D가 curb_ramp에서 급회전 후보를 못 만드는 문제를 풀 후
 <li><strong>흐리는 정도가 핵심이다.</strong> 섞는 노이즈의 양이 truncation 수준이다. SDEdit가 밑그림 편집에서 보인 것과 같은 절충이 생긴다(아래 그림).</li>
 </ol><p><strong>작은 예.</strong></p><ol><li><strong>드문 기동이 후보에 들어갈 확률.</strong> 시연의 5%가 급회전이라 하자. 순수 노이즈에서 이상적으로 샘플해도 후보 16개에 급회전이 하나라도 들어갈
    확률은 $1 - 0.95^{16} = 0.56$이다. 열 번 중 네 번 넘게 급회전 후보가 없다. mode collapse가 있으면 더 낮다. anchor 20개 중 하나가 급회전이면
-   매 주기 후보에 들어간다.</li><li><strong>섞는 노이즈의 양.</strong> DiffusionDrive 공식 코드(<code>transfuser_model_v2.py</code>)는 scaled_linear 스케줄($T = 1000$)을 쓴다. 학습 때는 스텝 $i$를 0–49에서
+   매 주기 후보에 들어간다.</li></ol></div><div class="foot" data-foot><span>travplan 리서치 · 배경 · 수식 (docs/research-background.md)</span><span>54 / 105</span></div><aside>docs/research-background.md · 0.7 Truncated / anchored diffusion: 시작점을 노이즈가 아니라 후보에서</aside></section>
+<section class="r content"><div class="kicker">배경 · 수식 · Planner·학습</div><h2 class="ttl">0.7 Truncated / anchored diffusion: 시작점을 노이즈가 아니라 후보에서<small>2/3</small></h2><div class="body"><ol start="2"><li><strong>섞는 노이즈의 양.</strong> DiffusionDrive 공식 코드(<code>transfuser_model_v2.py</code>)는 scaled_linear 스케줄($T = 1000$)을 쓴다. 학습 때는 스텝 $i$를 0–49에서
    뽑고, 추론 때는 $i = 8$의 노이즈를 섞는다. $i = 8$에서 $\sqrt{1-\bar\alpha^{i}} = 0.032$다. 정규화 좌표 한 단위가 횡 방향 23 m(폭 46 m를
-   $[-1, 1]$로)라, 횡 방향 1σ는 0.73 m다. 학습 쪽 끝($i = 49$)은 2.2 m, 스케줄 끝($i = 999$)은 23 m로 지도 전체다.</li></ol></div><div class="foot" data-foot><span>travplan 리서치 · 배경 · 수식 (docs/research-background.md)</span><span>54 / 105</span></div><aside>docs/research-background.md · 0.7 Truncated / anchored diffusion: 시작점을 노이즈가 아니라 후보에서</aside></section>
-<section class="r content"><div class="kicker">배경 · 수식 · Planner·학습</div><h2 class="ttl">0.7 Truncated / anchored diffusion: 시작점을 노이즈가 아니라 후보에서<small>2/3</small></h2><div class="body"><ol start="3"><li><strong>Planner D에 옮기면.</strong> flow matching(0.6)에서는 $t_0 = 0.8$에서 $x_{t_0} = 0.2\,\epsilon + 0.8\,a_k$로 시작해 남은 0.2 구간을 Euler 2스텝
+   $[-1, 1]$로)라, 횡 방향 1σ는 0.73 m다. 학습 쪽 끝($i = 49$)은 2.2 m, 스케줄 끝($i = 999$)은 23 m로 지도 전체다.</li><li><strong>Planner D에 옮기면.</strong> flow matching(0.6)에서는 $t_0 = 0.8$에서 $x_{t_0} = 0.2\,\epsilon + 0.8\,a_k$로 시작해 남은 0.2 구간을 Euler 2스텝
    (흐름 시각 폭 $1/n = 0.1$)으로 적분한다. 시작 노이즈 0.2σ는 회전 채널에서 각가속 0.4 rad/s²다($a_{\max} = 2.0$ rad/s²의 20%).</li></ol><p><strong>함정.</strong></p><ul>
 <li><strong>흐리는 양은 절충이다.</strong> 너무 적으면 anchor에 묶여 장면에 맞게 바뀌지 못한다. 너무 많으면 anchor 정보가 사라져 순수 노이즈와 같아진다.</li>
 <li><strong>K-means는 드문 기동을 놓칠 수 있다.</strong> MultiPath는 일부 데이터셋에서 분포가 흔한 모드에 치우쳐 K-means anchor가 겹치자, 궤적 공간 균등
@@ -944,13 +953,13 @@ Planner D가 curb_ramp에서 급회전 후보를 못 만드는 문제를 풀 후
 <li><strong>후보 수와 점수기가 성능을 정한다.</strong> DiffusionDrive는 추론 샘플을 20개에서 10개로 줄이자 NAVSIM 점수(PDMS)가 88.1에서 84.9로 떨어졌다.
   anchor마다 결과가 하나씩 나오므로 고르는 장치도 필요하다. DiffusionDrive는 점수를 학습하고, Planner D는 TravMap 비용과 cost-to-go로 고르는
   선택기를 이미 가진다.</li>
-</ul><p><strong>어디서 쓰나.</strong></p><ul>
+</ul><p><strong>어디서 쓰나.</strong></p></div><div class="foot" data-foot><span>travplan 리서치 · 배경 · 수식 (docs/research-background.md)</span><span>55 / 105</span></div><aside>docs/research-background.md · 0.7 Truncated / anchored diffusion: 시작점을 노이즈가 아니라 후보에서</aside></section>
+<section class="r content"><div class="kicker">배경 · 수식 · Planner·학습</div><h2 class="ttl">0.7 Truncated / anchored diffusion: 시작점을 노이즈가 아니라 후보에서<small>3/3</small></h2><div class="body"><ul>
 <li>Planner: §B.8.2 DiffusionDrive(anchor 20개, 50/1000 truncation, 2스텝)와 GuideFlow(추론 때만 적분 상태를 anchor로 치환), §B.9 NMoMa(primitive
   32개 중 하나를 먼저 고르고 50/1200 truncation, 2스텝). §B.8.0의 계보 표도 DiffusionDrive를 다룬다.</li>
 <li>travplan 코드: truncation은 아직 없다. 가까운 장치는 둘이다. Planner D의 <code>keep_previous</code>(<code>planners/learned/flow_planner.py</code>)는 직전 계획을 한
   스텝 밀어 후보에 넣는다. 생성 없이 anchor 하나를 후보에 직접 넣는 셈이다. <code>JointFlowPolicy.sample</code>의 <code>init_ego</code>는 위 함정의 예다.</li>
-</ul></div><div class="foot" data-foot><span>travplan 리서치 · 배경 · 수식 (docs/research-background.md)</span><span>55 / 105</span></div><aside>docs/research-background.md · 0.7 Truncated / anchored diffusion: 시작점을 노이즈가 아니라 후보에서</aside></section>
-<section class="r content"><div class="kicker">배경 · 수식 · Planner·학습</div><h2 class="ttl">0.7 Truncated / anchored diffusion: 시작점을 노이즈가 아니라 후보에서<small>3/3</small></h2><div class="body"><div class="figrow"><figure style="width:560px"><a href="https://arxiv.org/html/2411.15139v3/method_trunc.png"><img src="../../assets/thumbs/64e73167fcde.webp" width="556" height="420" alt="DiffusionDrive Fig. 3"></a><figcaption>그림 — DiffusionDrive (Fig. 3): 위는 일반 diffusion으로, 궤적을 순수 노이즈까지 망가뜨렸다가 전 구간을 되돌린다. 아래는 truncated diffusion으로, anchor들에 짧은 스케줄만큼만 노이즈를 섞고 anchor 주변 가우시안에서 몇 스텝만 되돌린다. 출처: arXiv:2411.15139</figcaption></figure><figure style="width:560px"><a href="https://arxiv.org/html/2411.15139v3/navsim_2comp_0.png"><img src="../../assets/thumbs/0ef06e2d47e8.webp" width="560" height="272" alt="DiffusionDrive Fig. 2a"></a><figcaption>그림 — DiffusionDrive (Fig. 2a): 일반 diffusion 정책(위)은 노이즈 20개를 20스텝 정제해도 한 궤적으로 몰린다(mode collapse). anchor에서 시작한 DiffusionDrive(아래)는 2스텝에 직진과 차선 변경 후보를 함께 낸다. 출처: arXiv:2411.15139</figcaption></figure><figure style="width:560px"><a href="https://arxiv.org/html/2108.01073v2/sdedit_manifold.png"><img src="../../assets/thumbs/821f51b7aaa1.webp" width="560" height="154" alt="SDEdit Fig. 3b"></a><figcaption>그림 — SDEdit (Fig. 3b): 밑그림에 노이즈를 t0만큼 섞고 되돌린 결과. t0 = 0은 밑그림 그대로, t0 = 1은 밑그림과 무관한 샘플이다. 0.3–0.6 부근이 밑그림을 따르면서도 사실적이다. anchor에 섞는 노이즈 양도 같은 절충이다. 출처: arXiv:2108.01073</figcaption></figure></div></div><div class="foot" data-foot><span>travplan 리서치 · 배경 · 수식 (docs/research-background.md)</span><span>56 / 105</span></div><aside>docs/research-background.md · 0.7 Truncated / anchored diffusion: 시작점을 노이즈가 아니라 후보에서</aside></section>
+</ul><div class="figrow"><figure style="width:560px"><a href="https://arxiv.org/html/2411.15139v3/method_trunc.png"><img src="../../assets/thumbs/64e73167fcde.webp" width="556" height="420" alt="DiffusionDrive Fig. 3"></a><figcaption>그림 — DiffusionDrive (Fig. 3): 위는 일반 diffusion으로, 궤적을 순수 노이즈까지 망가뜨렸다가 전 구간을 되돌린다. 아래는 truncated diffusion으로, anchor들에 짧은 스케줄만큼만 노이즈를 섞고 anchor 주변 가우시안에서 몇 스텝만 되돌린다. 출처: arXiv:2411.15139</figcaption></figure><figure style="width:560px"><a href="https://arxiv.org/html/2411.15139v3/navsim_2comp_0.png"><img src="../../assets/thumbs/0ef06e2d47e8.webp" width="560" height="272" alt="DiffusionDrive Fig. 2a"></a><figcaption>그림 — DiffusionDrive (Fig. 2a): 일반 diffusion 정책(위)은 노이즈 20개를 20스텝 정제해도 한 궤적으로 몰린다(mode collapse). anchor에서 시작한 DiffusionDrive(아래)는 2스텝에 직진과 차선 변경 후보를 함께 낸다. 출처: arXiv:2411.15139</figcaption></figure><figure style="width:560px"><a href="https://arxiv.org/html/2108.01073v2/sdedit_manifold.png"><img src="../../assets/thumbs/821f51b7aaa1.webp" width="560" height="154" alt="SDEdit Fig. 3b"></a><figcaption>그림 — SDEdit (Fig. 3b): 밑그림에 노이즈를 t0만큼 섞고 되돌린 결과. t0 = 0은 밑그림 그대로, t0 = 1은 밑그림과 무관한 샘플이다. 0.3–0.6 부근이 밑그림을 따르면서도 사실적이다. anchor에 섞는 노이즈 양도 같은 절충이다. 출처: arXiv:2108.01073</figcaption></figure></div></div><div class="foot" data-foot><span>travplan 리서치 · 배경 · 수식 (docs/research-background.md)</span><span>56 / 105</span></div><aside>docs/research-background.md · 0.7 Truncated / anchored diffusion: 시작점을 노이즈가 아니라 후보에서</aside></section>
 <section class="r details"><div class="kicker">배경 · 수식 · Planner·학습</div><h2 class="ttl">0.7 Truncated / anchored diffusion: 시작점을 노이즈가 아니라 후보에서<small>수식 보기</small></h2><div class="body"><p><strong>기호.</strong> $a_k$는 $k$번째 anchor다(DiffusionDrive는 4초 동안의 waypoint 8개). $N$은 anchor 수, $i$는 diffusion 스텝, $T$는 전체 스텝 수,
 $T_{\text{trunc}}$는 잘라 쓰는 스텝 수, $\bar\alpha^{i}$는 0.5의 누적 신호 비율, $\epsilon \sim \mathcal{N}(0, I)$, $z$는 장면 조건이다.</p><p>학습 데이터 궤적을 K-means로 묶어 anchor $\{a_k\}_{k=1}^{N}$을 만든다(DiffusionDrive는 $N = 20$). 전체 스케줄 $T$ 대신 앞부분 $T_{\text{trunc}} \ll T$까지만
 노이즈를 섞는다.</p><p class="mathp">$$ \tau_k^{i} = \sqrt{\bar\alpha^{i}}\, a_k + \sqrt{1 - \bar\alpha^{i}}\, \epsilon, \qquad i \in [1, T_{\text{trunc}}] $$</p><p><strong>출발 분포.</strong> 추론은 anchor마다 이 가우시안에서 하나씩 뽑아 시작한다. 전체로 보면 표준 가우시안 하나를 anchor 중심의 작은 가우시안 $N$개로
@@ -1748,13 +1757,45 @@ $\theta \leftarrow \theta + \epsilon\,(\tilde\theta_j - \theta)$다.</p><p><stro
   var want = parseInt(location.hash.slice(1), 10) - 1;
   if (isNaN(want)) want = 0;
   var i = 0;
+  function scaleNow() {
+    var st = document.getElementById('stage');
+    return Math.min(st.clientWidth / 1920, st.clientHeight / 1080);
+  }
   function fit() {
     if (shot) return;
-    var st = document.getElementById('stage');
-    var s = Math.min(st.clientWidth / 1920, st.clientHeight / 1080);
-    frame.style.transform = 'scale(' + s + ')';
+    frame.style.transform = 'scale(' + scaleNow() + ')';
   }
+  // ▶ 영상(figure.video): 썸네일 a.yt를 누르면 그 자리에 YouTube(nocookie) iframe을 넣고, 장을 넘기면 썸네일로 되돌린다.
+  // 캡처·검사(?shot, ?check)에서는 누르지 않으므로 썸네일만 찍힌다. PPTX는 그림에 하이퍼링크를 단다.
+  function ytId(href) {
+    var m = /[?&]v=([\w-]{11})/.exec(href) || /youtu\.be\/([\w-]{11})/.exec(href);
+    return m ? m[1] : null;
+  }
+  function stopVideos() {
+    Array.prototype.forEach.call(frame.querySelectorAll('figure.video iframe'), function (f) { f.remove(); });
+    Array.prototype.forEach.call(frame.querySelectorAll('figure.video a.yt.off'), function (a) { a.classList.remove('off'); });
+  }
+  // 장을 크게 줄여 보여 주는 작은 화면(폰 등, 배율 0.45 미만)에서는 줄어든 플레이어의 단추가 너무 작다. 그때는 YouTube를 새 탭으로 연다.
+  var SMALL = 0.45;
+  frame.addEventListener('click', function (e) {
+    var a = e.target.closest ? e.target.closest('figure.video a.yt') : null;
+    if (!a || shot) return;
+    var id = ytId(a.href), img = a.querySelector('img');
+    if (!id || !img) return;
+    e.preventDefault();
+    // 'noopener'를 주면 열려도 null이 돌아와 막힘과 구분되지 않는다. 그래서 열린 창의 opener를 직접 끊는다. 막히면 그 자리에서 재생한다.
+    if (scaleNow() < SMALL) {
+      var w = window.open(a.href, '_blank');
+      if (w) { try { w.opener = null; } catch (err) {} return; }
+    }
+    var f = document.createElement('iframe');
+    f.width = img.clientWidth; f.height = img.clientHeight;
+    f.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0';
+    f.allow = 'autoplay; fullscreen; picture-in-picture'; f.allowFullscreen = true; f.title = img.alt || 'YouTube';
+    a.classList.add('off'); a.parentNode.insertBefore(f, a);
+  });
   function show(n) {
+    stopVideos();
     i = Math.max(0, Math.min(slides.length - 1, n));
     slides.forEach(function (el, k) { el.classList.toggle('on', k === i); });
     document.getElementById('count').textContent = (i + 1) + ' / ' + slides.length;
@@ -1772,10 +1813,15 @@ $\theta \leftarrow \theta + \epsilon\,(\tilde\theta_j - \theta)$다.</p><p><stro
   window.withAllFonts = withAllFonts;
   // 넘침 검사: 본문 요소가 장 밖으로 나가거나 각주 띠를 덮으면 적는다.
   function check() {
-    var bad = [];
+    var bad = [], yt = [];
     slides.forEach(function (sec, k) {
       show(k);
       var box = sec.getBoundingClientRect();
+      // 영상 썸네일(img)의 자리. 캡처 PPTX(make_pptx)가 그 위에 보이지 않는 하이퍼링크 상자를 놓는다.
+      Array.prototype.forEach.call(sec.querySelectorAll('figure.video a.yt'), function (a) {
+        var r = (a.querySelector('img') || a).getBoundingClientRect();
+        yt.push({ slide: k + 1, href: a.href, r: [r.left - box.left, r.top - box.top, r.width, r.height] });
+      });
       Array.prototype.forEach.call(sec.querySelectorAll('.katex-error'), function (el) {
         bad.push({ slide: k + 1, id: sec.id, tag: 'TeX', text: (el.getAttribute('title') || el.textContent).slice(0, 60), over: 0 });
       });
@@ -1784,7 +1830,7 @@ $\theta \leftarrow \theta + \epsilon\,(\tilde\theta_j - \theta)$다.</p><p><stro
       });
       var foot = sec.querySelector('[data-foot]');
       var limit = foot ? foot.getBoundingClientRect().top - 4 : box.bottom - 24;
-      Array.prototype.forEach.call(sec.querySelectorAll('p, h1, h2, h3, img, td, th, li, .katex-display, [data-box]'), function (el) {
+      Array.prototype.forEach.call(sec.querySelectorAll('p, h1, h2, h3, img, figcaption, td, th, li, .katex-display, [data-box]'), function (el) {
         if (foot && foot.contains(el)) return;
         if (el.closest('aside')) return;
         var r = el.getBoundingClientRect();
@@ -1795,7 +1841,7 @@ $\theta \leftarrow \theta + \epsilon\,(\tilde\theta_j - \theta)$다.</p><p><stro
       });
     });
     var rep = document.getElementById('report');
-    rep.textContent = JSON.stringify(bad);
+    rep.textContent = JSON.stringify({ bad: bad, yt: yt });
     rep.setAttribute('data-done', '1');
   }
   function start() {
@@ -1827,6 +1873,28 @@ $\theta \leftarrow \theta + \epsilon\,(\tilde\theta_j - \theta)$다.</p><p><stro
     else if (e.key === 'End') show(slides.length - 1);
     else if (e.key === 'n' || e.key === 'N') notes.classList.toggle('show');
     else if (e.key === 'f' || e.key === 'F') document.getElementById('fs').click();
+  });
+  // 재생 중인 영상 안을 누르면(정지, 되감기 등) 키보드 포커스가 YouTube iframe으로 넘어가 ←/→와 발표용 클리커가 먹지 않는다.
+  // 그때 포커스를 곧바로 장으로 되돌린다. 누른 동작은 영상에 그대로 전달되고, 그 뒤의 키는 Space까지 장을 넘긴다.
+  // 포커스를 영상에 두는 때는 둘이다. Tab으로 플레이어에 들어간 때와 YouTube 전체 화면일 때다. 전체 화면이 끝나면 장으로 되돌린다.
+  // Chrome은 전체 화면 요소 밖으로 포커스를 옮기지 않지만, 옮기는 브라우저를 위해 전체 화면 iframe은 되돌리지 않는다.
+  // 전체 화면 API는 F 키처럼 접두어 없는 것만 쓴다(Safari 16.4 이상).
+  var stage = document.getElementById('stage'), lastTab = -1e9, fsVideo = null;
+  stage.tabIndex = -1;
+  function isVideo(el) { return !!el && el.tagName === 'IFRAME' && !!el.closest('figure.video'); }
+  document.addEventListener('keydown', function (e) { if (e.key === 'Tab') lastTab = performance.now(); }, true);
+  window.addEventListener('blur', function () {
+    // Tab으로 들어갈 때 blur는 Tab 뒤 25 ms 안에 온다(CPU 20배 감속에서 잼). 150 ms로 좁혀 Tab 직후의 클릭은 되돌린다.
+    if (shot || performance.now() - lastTab < 150) return;
+    setTimeout(function () {
+      var el = document.activeElement;
+      if (isVideo(el) && el !== document.fullscreenElement) stage.focus({ preventScroll: true });
+    }, 0);
+  });
+  document.addEventListener('fullscreenchange', function () {
+    var f = document.fullscreenElement;
+    if (isVideo(f)) { fsVideo = f; f.focus(); }
+    else if (fsVideo) { fsVideo = null; stage.focus({ preventScroll: true }); }
   });
   var x0 = null;
   document.getElementById('stage').addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
