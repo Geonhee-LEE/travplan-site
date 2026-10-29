@@ -205,9 +205,9 @@ footer { max-width: 1000px; margin: 0 auto; padding: 0 16px 40px; color: var(--m
   nav.subtabs button { min-height: 32px; }
 }
 </style>
-<header data-generated="2026-10-28 09:43 KST">
+<header data-generated="2026-10-29 04:51 KST">
   <h1>travplan 대시보드</h1>
-  <div class="meta" data-site-meta><a href="index.html">← travplan 홈</a> · 갱신 2026-10-28 09:43 KST</div>
+  <div class="meta" data-site-meta><a href="index.html">← travplan 홈</a> · 갱신 2026-10-29 04:51 KST</div>
 </header>
 <nav class="tabs" role="tablist" aria-label="대시보드 탭"><button role="tab" id="tabbtn-state" aria-controls="tab-state" aria-selected="true" tabindex="0" data-tab="state" class="active">진행 현황</button><button role="tab" id="tabbtn-todo" aria-controls="tab-todo" aria-selected="false" tabindex="-1" data-tab="todo">TODO</button><button role="tab" id="tabbtn-prd" aria-controls="tab-prd" aria-selected="false" tabindex="-1" data-tab="prd">PRD</button><button role="tab" id="tabbtn-arch" aria-controls="tab-arch" aria-selected="false" tabindex="-1" data-tab="arch">아키텍처 · 기능 설명</button><button role="tab" id="tabbtn-research" aria-controls="tab-research" aria-selected="false" tabindex="-1" data-tab="research">리서치</button><button role="tab" id="tabbtn-design" aria-controls="tab-design" aria-selected="false" tabindex="-1" data-tab="design">설계 · PoC</button><button role="tab" id="tabbtn-sim" aria-controls="tab-sim" aria-selected="false" tabindex="-1" data-tab="sim">시뮬레이션 ▶</button></nav>
 <main>
@@ -216,7 +216,7 @@ footer { max-width: 1000px; margin: 0 auto; padding: 0 16px 40px; color: var(--m
 <div class="kpi"><div class="kpi-label">TODO 완료</div><div class="kpi-val">20/80</div><div class="progress-bar"><div class="progress-fill" style="width:25%"></div></div></div>
 <div class="kpi"><div class="kpi-label">진행 중·오늘</div><div class="kpi-val">0</div></div>
 <div class="kpi"><div class="kpi-label">사용자 실행 대기</div><div class="kpi-val">8</div></div>
-<div class="kpi"><div class="kpi-label">열린 PR</div><div class="kpi-val">6</div></div>
+<div class="kpi"><div class="kpi-label">열린 PR</div><div class="kpi-val">7</div></div>
 <div class="kpi"><div class="kpi-label">최근 7일 merge</div><div class="kpi-val">30</div></div>
 </div>
 <div class="card md"><h2>현재 병목</h2><p><mark>스워브 plant에서 치명은 거의 사라졌지만(4/360), 레벨 3의 3분의 1이 시간 초과로 끝난다. 특히 레벨 3 경사로는 거의 지나가지 못한다.</mark></p>
@@ -1549,7 +1549,7 @@ LiDAR 링 사이가 비어 로봇 주변 3 m 안의 10–12%가 미관측으로 
 <td>스모크 끝, 짝 비교는 <a class="tp tp-backlog" href="#todo" data-tp="TP-0169" title="백로그 · TP-0032 후속: 지연·드리프트 치명 실패의 짝 비교 — 4 시나리오 × seed 0–9 × 오프셋 3으로 --latency 2 2 3, --pose-drift 0.05 ...">TP-0169</a>와 함께(사용자 실행)</td>
 </tr>
 </tbody>
-</table><h3>열린 PR</h3><ul class='prs'><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #258</span> [auto] TP-0157 배경 0.6b·0.7b 자체 측정 재현 — n=4는 95%가 아니라 80% <a class="tp tp-done" href="#todo" data-tp="TP-0157" title="완료 · 배경 0.6b·0.7b의 자체 측정 둘에 재현 절차를 붙인다: (1) scripts/train_planner_d.py 교사 라벨의 제어 변화율 표준편차가 0.5 근처라는 것(... · PR #258(열림)">✓ TP-0157</a> </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #253</span> [auto] TP-0091 소셜 내비 지표 정지 시간·PSC <a class="tp tp-done" href="#todo" data-tp="TP-0091" title="완료 · 기록에서 복원 · 이슈 #252(열림) · PR #253(열림)">✓ TP-0091</a> </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #249</span> [auto] TP-0168 반응형 보행자 ORCA 지평 τ를 --ped-horizon으로 노출 <a class="tp tp-done" href="#todo" data-tp="TP-0168" title="완료 · TP-0036 후속: 반응형 보행자의 반응 지평 τ(SHARE보다 센 손잡이)를 --ped-horizon으로 노출하고 τ 0.5·2·4 s에서 충돌·도달 민감도 · 이슈 #248(열림) · PR #249(열림)">✓ TP-0168</a> </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #247</span> [auto] TP-0170 지연을 아는 MPPI(mppi_delay) <a class="tp tp-done" href="#todo" data-tp="TP-0170" title="완료 · TP-0032 후속: 지연을 아는 Controller — 제어 지연 스텝을 MPPI rollout에 넣는다(mppi_plant_lag처럼). 지연만 켠 치명 3/12가 줄는지 · 이슈 #246(열림) · PR #247(열림)">✓ TP-0170</a> </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #227</span> Planner B.6b TacitVLA(추론 문장을 행동에서 가린 추론 VLA) 정독  </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #224</span> Planner B.6b Pi API 베타(Physical Intelligence)와 π 계열 연표  </li></ul><h3>최근 merge된 PR</h3><ul class='prs'><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #286</span> slides: 영상을 누른 뒤에도 ←/→·클리커 유지, 폰에서는 새 탭, 폰 막대 넘침 수정  <span class="date">2026-10-28</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #285</span> slides: 덱 17개에 논문 YouTube 영상 139곳·그림 49곳, 뷰어 재생·PPTX 링크  <span class="date">2026-10-28</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #284</span> docs: SRU 카드에 원제를 적어 도움말 검색에서 찾히게 한다  <span class="date">2026-10-28</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #283</span> docs: 깊이 기반 모델 DeFM을 인식 A.11에 더한다  <span class="date">2026-10-27</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #281</span> slides: 스터디·발표 덱 16개의 한국어를 자연스럽게 다듬고 분야 용어는 영어로  <span class="date">2026-10-27</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #280</span> docs: 보행 갤러리(§G) — 사족·휴머노이드 보행 마일스톤 논문 17편  <span class="date">2026-10-27</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #274</span> docs: Diffusion ReRoll을 생성형 궤적 계보(B.8.0)에 더한다  <span class="date">2026-10-27</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #272</span> help: 질문으로 찾기(관련 절 검색)와 Claude 답변 게시본  <span class="date">2026-10-27</span></li></ul><p class="note">GitHub 인덱스 갱신: 2026-10-28 09:43 · <code>python3 automation/gh_index.py</code></p></div>
+</table><h3>열린 PR</h3><ul class='prs'><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #288</span> TP-0175 Watch Your Step FPM 재현 결과(작업 기록 B.15.7) <a class="tp tp-unknown" href="#todo" data-tp="TP-0175" title="TODO.md에 없는 번호 · 이슈 #287(열림) · PR #288(열림)">TP-0175</a> </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #258</span> [auto] TP-0157 배경 0.6b·0.7b 자체 측정 재현 — n=4는 95%가 아니라 80% <a class="tp tp-done" href="#todo" data-tp="TP-0157" title="완료 · 배경 0.6b·0.7b의 자체 측정 둘에 재현 절차를 붙인다: (1) scripts/train_planner_d.py 교사 라벨의 제어 변화율 표준편차가 0.5 근처라는 것(... · PR #258(열림)">✓ TP-0157</a> </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #253</span> [auto] TP-0091 소셜 내비 지표 정지 시간·PSC <a class="tp tp-done" href="#todo" data-tp="TP-0091" title="완료 · 기록에서 복원 · 이슈 #252(열림) · PR #253(열림)">✓ TP-0091</a> </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #249</span> [auto] TP-0168 반응형 보행자 ORCA 지평 τ를 --ped-horizon으로 노출 <a class="tp tp-done" href="#todo" data-tp="TP-0168" title="완료 · TP-0036 후속: 반응형 보행자의 반응 지평 τ(SHARE보다 센 손잡이)를 --ped-horizon으로 노출하고 τ 0.5·2·4 s에서 충돌·도달 민감도 · 이슈 #248(열림) · PR #249(열림)">✓ TP-0168</a> </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #247</span> [auto] TP-0170 지연을 아는 MPPI(mppi_delay) <a class="tp tp-done" href="#todo" data-tp="TP-0170" title="완료 · TP-0032 후속: 지연을 아는 Controller — 제어 지연 스텝을 MPPI rollout에 넣는다(mppi_plant_lag처럼). 지연만 켠 치명 3/12가 줄는지 · 이슈 #246(열림) · PR #247(열림)">✓ TP-0170</a> </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #227</span> Planner B.6b TacitVLA(추론 문장을 행동에서 가린 추론 VLA) 정독  </li><li><span class="private-ref gh gh-open gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #224</span> Planner B.6b Pi API 베타(Physical Intelligence)와 π 계열 연표  </li></ul><h3>최근 merge된 PR</h3><ul class='prs'><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #289</span> docs: 모방 문서에 동작 사전 탭(I.15–I.19) — AMP·ADD·SMP·MimicKit  <span class="date">2026-10-29</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #286</span> slides: 영상을 누른 뒤에도 ←/→·클리커 유지, 폰에서는 새 탭, 폰 막대 넘침 수정  <span class="date">2026-10-28</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #285</span> slides: 덱 17개에 논문 YouTube 영상 139곳·그림 49곳, 뷰어 재생·PPTX 링크  <span class="date">2026-10-28</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #284</span> docs: SRU 카드에 원제를 적어 도움말 검색에서 찾히게 한다  <span class="date">2026-10-28</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #283</span> docs: 깊이 기반 모델 DeFM을 인식 A.11에 더한다  <span class="date">2026-10-27</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #281</span> slides: 스터디·발표 덱 16개의 한국어를 자연스럽게 다듬고 분야 용어는 영어로  <span class="date">2026-10-27</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #280</span> docs: 보행 갤러리(§G) — 사족·휴머노이드 보행 마일스톤 논문 17편  <span class="date">2026-10-27</span></li><li><span class="private-ref gh gh-merged gh-pr" title="비공개 연구 저장소 링크라 공개 사이트에서는 글자로 둔다">⇄ #274</span> docs: Diffusion ReRoll을 생성형 궤적 계보(B.8.0)에 더한다  <span class="date">2026-10-27</span></li></ul><p class="note">GitHub 인덱스 갱신: 2026-10-29 04:51 · <code>python3 automation/gh_index.py</code></p></div>
 <div class="card md"><h2>작업 환경</h2><details><summary>체크포인트, 가상환경, 그림·인덱스 재생성</summary><ul>
 <li><strong>브랜치.</strong> 두 PC 모두 main에서 이어간다.</li>
 <li><strong>체크포인트.</strong> <code>checkpoints/</code>는 git에 없다. 릴리스에서 받는다.
@@ -2743,7 +2743,7 @@ python3 scripts/build_study_slides.py --covers           # 덱마다 첫 장을 
 python3 scripts/slide_media.py check                     # 영상 장(figure.video)의 꼴과 썸네일 유무를 본다
 node scripts/check_slides_viewer.mjs                     # 뷰어를 고치고 덱을 다시 만든 뒤(리서치 덱 포함): 영상을 누른 뒤의 키, 전체 화면, 작은 화면의 새 탭, 폰 막대(Node 22 이상)
 </code></pre>
-<p><strong>리서치 문서 덱</strong>(<code>docs/slides/research-&lt;문서&gt;/</code>)은 대시보드 리서치 탭의 문서마다 한 덱이다(13덱, 2026-10-27 기준 1,967장).
+<p><strong>리서치 문서 덱</strong>(<code>docs/slides/research-&lt;문서&gt;/</code>)은 대시보드 리서치 탭의 문서마다 한 덱이다(13덱, 2026-10-29 기준 2,015장).
 원본은 <code>docs/research-*.md</code> 그대로이고, 대시보드와 같은 변환으로 본문·표·그림·수식을 모두 옮긴다. h2·h3마다 새 장을 열고,
 넘치면 다음 장으로 잇는다(표·목록은 행·항목 단위). 논문 상세 토글은 토글마다 한 장으로 줄이고 나머지는 대시보드 토글을 가리킨다.
 PPTX는 편집 가능한 판이다. 글자·표는 PowerPoint 텍스트이고, 그림은 원본 이미지, 별행 수식만 KaTeX로 조판한 그림이다.
@@ -3276,7 +3276,7 @@ Jetson <strong>AGX Orin</strong>급을 쓴다. Orin Nano는 여유가 빠듯한 
   <section class="tab" id="tab-research" role="tabpanel" aria-labelledby="tabbtn-research">
     <p class="note">▶ 챕터 발표 덱: <a href="slides/talk-perception/">인식</a> (49장, <a href="slides/talk-perception/talk-perception.pptx" download>PPTX</a>) · <a href="slides/talk-planner/">Planner</a> (51장, <a href="slides/talk-planner/talk-planner.pptx" download>PPTX</a>) · <a href="slides/talk-controller/">Controller·안전</a> (51장, <a href="slides/talk-controller/talk-controller.pptx" download>PPTX</a>) · <a href="slides/talk-mpc/">MPC 구축</a> (41장, <a href="slides/talk-mpc/talk-mpc.pptx" download>PPTX</a>) · <a href="slides/talk-rl/">강화학습</a> (48장, <a href="slides/talk-rl/talk-rl.pptx" download>PPTX</a>) · <a href="slides/talk-simulation/">시뮬레이션</a> (44장, <a href="slides/talk-simulation/talk-simulation.pptx" download>PPTX</a>) · <a href="slides/talk-legged/">휴머노이드·4족 보행 내비게이션</a> (47장, <a href="slides/talk-legged/talk-legged.pptx" download>PPTX</a>)</p>
 <p class="note">▶ 스터디 슬라이드: <a href="slides/study-controller/">로봇 제어 기초 — PID에서 MPPI와 안전 필터까지</a> (54장, <a href="slides/study-controller/study-controller.pptx" download>PPTX</a>) · <a href="slides/study-legged/">다리 로봇 내비게이션 기초 — 층과 경계, 지형 보행, 전신 제어</a> (46장, <a href="slides/study-legged/study-legged.pptx" download>PPTX</a>) · <a href="slides/study-mpc/">비선형 MPC 구축 기초 — 문제 세우기, 실시간 풀이, 모델 오차</a> (46장, <a href="slides/study-mpc/study-mpc.pptx" download>PPTX</a>) · <a href="slides/study-overview/">travplan 리서치 스터디 — 보도 로봇을 움직이는 수식들</a> (25장, <a href="slides/study-overview/study-overview.pptx" download>PPTX</a>) · <a href="slides/study-papers/">travplan 논문 스터디 — 챕터별 (편마다 세 장)</a> (152장, <a href="slides/study-papers/study-papers.pptx" download>PPTX</a>) · <a href="slides/study-perception/">로봇 인식 기초 — 지형 지도에서 사람 추적까지</a> (47장, <a href="slides/study-perception/study-perception.pptx" download>PPTX</a>) · <a href="slides/study-planner/">경로 계획 기초 — 탐색에서 생성형 Planner까지</a> (55장, <a href="slides/study-planner/study-planner.pptx" download>PPTX</a>) · <a href="slides/study-rl/">강화학습 기초 — 그림과 장단점으로 보는 핵심 개념</a> (65장, <a href="slides/study-rl/study-rl.pptx" download>PPTX</a>) · <a href="slides/study-roadmap/">로봇 공부 로드맵 — 일곱 개념 덱을 어떤 순서로 볼까</a> (12장, <a href="slides/study-roadmap/study-roadmap.pptx" download>PPTX</a>) · <a href="slides/study-simulation/">로봇 시뮬레이션 기초 — 물리 엔진에서 sim-to-real까지</a> (39장, <a href="slides/study-simulation/study-simulation.pptx" download>PPTX</a>) · <a href="slides/">전체 슬라이드 목록(챕터 발표 덱·리서치 문서 덱 포함)</a></p>
-<nav class="subtabs docs" role="tablist" data-group="research-d"><button role="tab" id="subbtn-research-d-0" aria-controls="sub-research-d-0" aria-selected="true" tabindex="0" data-sub="research-d-0" class="active">개요</button><button role="tab" id="subbtn-research-d-1" aria-controls="sub-research-d-1" aria-selected="false" tabindex="-1" data-sub="research-d-1">인식</button><button role="tab" id="subbtn-research-d-2" aria-controls="sub-research-d-2" aria-selected="false" tabindex="-1" data-sub="research-d-2">센서 배치</button><button role="tab" id="subbtn-research-d-3" aria-controls="sub-research-d-3" aria-selected="false" tabindex="-1" data-sub="research-d-3">Planner</button><button role="tab" id="subbtn-research-d-4" aria-controls="sub-research-d-4" aria-selected="false" tabindex="-1" data-sub="research-d-4">Controller · 안전</button><button role="tab" id="subbtn-research-d-5" aria-controls="sub-research-d-5" aria-selected="false" tabindex="-1" data-sub="research-d-5">보행 갤러리</button><button role="tab" id="subbtn-research-d-6" aria-controls="sub-research-d-6" aria-selected="false" tabindex="-1" data-sub="research-d-6">시뮬레이션</button><button role="tab" id="subbtn-research-d-7" aria-controls="sub-research-d-7" aria-selected="false" tabindex="-1" data-sub="research-d-7">배경 · 수식</button><button role="tab" id="subbtn-research-d-8" aria-controls="sub-research-d-8" aria-selected="false" tabindex="-1" data-sub="research-d-8">딥러닝</button><button role="tab" id="subbtn-research-d-9" aria-controls="sub-research-d-9" aria-selected="false" tabindex="-1" data-sub="research-d-9">모방</button><button role="tab" id="subbtn-research-d-10" aria-controls="sub-research-d-10" aria-selected="false" tabindex="-1" data-sub="research-d-10">강화학습</button><button role="tab" id="subbtn-research-d-11" aria-controls="sub-research-d-11" aria-selected="false" tabindex="-1" data-sub="research-d-11">참고문헌</button><button role="tab" id="subbtn-research-d-12" aria-controls="sub-research-d-12" aria-selected="false" tabindex="-1" data-sub="research-d-12">MPC 구축</button></nav><div class="docpanel subpanel active" id="sub-research-d-0" role="tabpanel" aria-labelledby="subbtn-research-d-0"><p class="note">▶ 이 문서를 슬라이드로: <a href="slides/research-overview/">슬라이드 보기</a> (37장) · <a href="slides/research-overview/research-overview.pptx" download>PPTX 내려받기</a>(글자·표 편집 가능)</p>
+<nav class="subtabs docs" role="tablist" data-group="research-d"><button role="tab" id="subbtn-research-d-0" aria-controls="sub-research-d-0" aria-selected="true" tabindex="0" data-sub="research-d-0" class="active">개요</button><button role="tab" id="subbtn-research-d-1" aria-controls="sub-research-d-1" aria-selected="false" tabindex="-1" data-sub="research-d-1">인식</button><button role="tab" id="subbtn-research-d-2" aria-controls="sub-research-d-2" aria-selected="false" tabindex="-1" data-sub="research-d-2">센서 배치</button><button role="tab" id="subbtn-research-d-3" aria-controls="sub-research-d-3" aria-selected="false" tabindex="-1" data-sub="research-d-3">Planner</button><button role="tab" id="subbtn-research-d-4" aria-controls="sub-research-d-4" aria-selected="false" tabindex="-1" data-sub="research-d-4">Controller · 안전</button><button role="tab" id="subbtn-research-d-5" aria-controls="sub-research-d-5" aria-selected="false" tabindex="-1" data-sub="research-d-5">보행 갤러리</button><button role="tab" id="subbtn-research-d-6" aria-controls="sub-research-d-6" aria-selected="false" tabindex="-1" data-sub="research-d-6">시뮬레이션</button><button role="tab" id="subbtn-research-d-7" aria-controls="sub-research-d-7" aria-selected="false" tabindex="-1" data-sub="research-d-7">배경 · 수식</button><button role="tab" id="subbtn-research-d-8" aria-controls="sub-research-d-8" aria-selected="false" tabindex="-1" data-sub="research-d-8">딥러닝</button><button role="tab" id="subbtn-research-d-9" aria-controls="sub-research-d-9" aria-selected="false" tabindex="-1" data-sub="research-d-9">모방</button><button role="tab" id="subbtn-research-d-10" aria-controls="sub-research-d-10" aria-selected="false" tabindex="-1" data-sub="research-d-10">강화학습</button><button role="tab" id="subbtn-research-d-11" aria-controls="sub-research-d-11" aria-selected="false" tabindex="-1" data-sub="research-d-11">참고문헌</button><button role="tab" id="subbtn-research-d-12" aria-controls="sub-research-d-12" aria-selected="false" tabindex="-1" data-sub="research-d-12">MPC 구축</button></nav><div class="docpanel subpanel active" id="sub-research-d-0" role="tabpanel" aria-labelledby="subbtn-research-d-0"><p class="note">▶ 이 문서를 슬라이드로: <a href="slides/research-overview/">슬라이드 보기</a> (38장) · <a href="slides/research-overview/research-overview.pptx" download>PPTX 내려받기</a>(글자·표 편집 가능)</p>
 <nav class="subtabs" role="tablist" data-group="research-d0"><button role="tab" id="subbtn-research-d0-0" aria-controls="sub-research-d0-0" aria-selected="true" tabindex="0" data-sub="research-d0-0" class="active">개요</button><button role="tab" id="subbtn-research-d0-1" aria-controls="sub-research-d0-1" aria-selected="false" tabindex="-1" data-sub="research-d0-1">학회 수확 (IROS 2026)</button></nav><div class="card md subpanel active" id="sub-research-d0-0" role="tabpanel" aria-labelledby="subbtn-research-d0-0"><!-- doc: 개요 | 0 -->
 <h1>리서치 개요 (2026-09)</h1>
 <p><strong>travplan의 리서치는 이 개요와, 파이프라인 순서의 네 주제 문서, 두 보조 문서로 나뉜다.</strong> 주제 문서는 인식, Planner,
@@ -3360,9 +3360,9 @@ Controller·안전, 시뮬레이션이고, 보조 문서는 여러 논문이 함
 </tr>
 <tr>
 <td>모방 (§I)</td>
-<td>개요(I.0), 데이터·리타기팅(I.1–I.6), 동작 추종(I.7–I.9), 범용 추종기(I.10–I.12), 위 층(I.13), travplan에서(I.14)</td>
-<td>사람 동작 데이터와 라이선스, 리타기팅(로봇 쪽 고전, GMR·OmniRetarget), 동작 추종(SAMCON·DeepMimic에서 BeyondMimic까지의 계보), 범용 추종기(SONIC, SuperMimic)와 2026년 후속, 공개 코드. 장난감 문제를 풀어 그린 그림</td>
-<td>학습 절차(적응 표집, 교사–학생, world model을 통한 정책 기울기), Planner·Controller 분리, Playground 휴머노이드</td>
+<td>개요(I.0), 데이터·리타기팅(I.1–I.6), 동작 추종(I.7–I.9), 동작 사전(I.15–I.19), 범용 추종기(I.10–I.12), 위 층(I.13), travplan에서(I.14)</td>
+<td>사람 동작 데이터와 라이선스, 리타기팅(로봇 쪽 고전, GMR·OmniRetarget), 동작 추종(SAMCON·DeepMimic에서 BeyondMimic까지의 계보), 동작 사전(AMP·ADD·SMP와 기준 구현 MimicKit), 범용 추종기(SONIC, SuperMimic)와 2026년 후속, 공개 코드. 장난감 문제를 풀어 그린 그림</td>
+<td>학습 절차(적응 표집, 교사–학생, world model을 통한 정책 기울기), RL 후학습 보상에 동작 사전을 넣는 가설, Planner·Controller 분리, Playground 휴머노이드</td>
 </tr>
 <tr>
 <td>참고문헌 (§D)</td>
@@ -42334,8 +42334,8 @@ Planner B.6b는 VLA 계열을 정리하고, travplan에서는 VLA가 하위 목�
 <td>없음(새 항목 후보)</td>
 </tr>
 </tbody>
-</table></div></div><div class="docpanel subpanel" id="sub-research-d-9" role="tabpanel" aria-labelledby="subbtn-research-d-9"><p class="note">▶ 이 문서를 슬라이드로: <a href="slides/research-mimic/">슬라이드 보기</a> (67장) · <a href="slides/research-mimic/research-mimic.pptx" download>PPTX 내려받기</a>(글자·표 편집 가능) · 발표 덱: <a href="slides/talk-legged/">travplan 챕터 발표 — 휴머노이드·4족 보행 내비게이션</a> (47장, <a href="slides/talk-legged/talk-legged.pptx" download>PPTX</a>)</p>
-<nav class="subtabs" role="tablist" data-group="research-d9"><button role="tab" id="subbtn-research-d9-0" aria-controls="sub-research-d9-0" aria-selected="true" tabindex="0" data-sub="research-d9-0" class="active">개요</button><button role="tab" id="subbtn-research-d9-1" aria-controls="sub-research-d9-1" aria-selected="false" tabindex="-1" data-sub="research-d9-1">데이터·리타기팅</button><button role="tab" id="subbtn-research-d9-2" aria-controls="sub-research-d9-2" aria-selected="false" tabindex="-1" data-sub="research-d9-2">동작 추종</button><button role="tab" id="subbtn-research-d9-3" aria-controls="sub-research-d9-3" aria-selected="false" tabindex="-1" data-sub="research-d9-3">범용 추종기</button><button role="tab" id="subbtn-research-d9-4" aria-controls="sub-research-d9-4" aria-selected="false" tabindex="-1" data-sub="research-d9-4">위 층</button><button role="tab" id="subbtn-research-d9-5" aria-controls="sub-research-d9-5" aria-selected="false" tabindex="-1" data-sub="research-d9-5">travplan에서</button></nav><div class="card md subpanel active" id="sub-research-d9-0" role="tabpanel" aria-labelledby="subbtn-research-d9-0" data-math="9"><!-- doc: 모방 | 5 -->
+</table></div></div><div class="docpanel subpanel" id="sub-research-d-9" role="tabpanel" aria-labelledby="subbtn-research-d-9"><p class="note">▶ 이 문서를 슬라이드로: <a href="slides/research-mimic/">슬라이드 보기</a> (111장) · <a href="slides/research-mimic/research-mimic.pptx" download>PPTX 내려받기</a>(글자·표 편집 가능) · 발표 덱: <a href="slides/talk-legged/">travplan 챕터 발표 — 휴머노이드·4족 보행 내비게이션</a> (47장, <a href="slides/talk-legged/talk-legged.pptx" download>PPTX</a>)</p>
+<nav class="subtabs" role="tablist" data-group="research-d9"><button role="tab" id="subbtn-research-d9-0" aria-controls="sub-research-d9-0" aria-selected="true" tabindex="0" data-sub="research-d9-0" class="active">개요</button><button role="tab" id="subbtn-research-d9-1" aria-controls="sub-research-d9-1" aria-selected="false" tabindex="-1" data-sub="research-d9-1">데이터·리타기팅</button><button role="tab" id="subbtn-research-d9-2" aria-controls="sub-research-d9-2" aria-selected="false" tabindex="-1" data-sub="research-d9-2">동작 추종</button><button role="tab" id="subbtn-research-d9-3" aria-controls="sub-research-d9-3" aria-selected="false" tabindex="-1" data-sub="research-d9-3">동작 사전</button><button role="tab" id="subbtn-research-d9-4" aria-controls="sub-research-d9-4" aria-selected="false" tabindex="-1" data-sub="research-d9-4">범용 추종기</button><button role="tab" id="subbtn-research-d9-5" aria-controls="sub-research-d9-5" aria-selected="false" tabindex="-1" data-sub="research-d9-5">위 층</button><button role="tab" id="subbtn-research-d9-6" aria-controls="sub-research-d9-6" aria-selected="false" tabindex="-1" data-sub="research-d9-6">travplan에서</button></nav><div class="card md subpanel active" id="sub-research-d9-0" role="tabpanel" aria-labelledby="subbtn-research-d9-0" data-math="11"><!-- doc: 모방 | 5 -->
 <h1>모방 (§I) — 사람 동작을 휴머노이드가 따라 하게 한다: 데이터, 리타기팅, 동작 추종, 범용 추종기</h1>
 <p><strong>결론 먼저.</strong> <mark>휴머노이드 전신 제어의 표준 경로는 "사람 동작 데이터를 모으고, 로봇 몸에 맞게 옮기고(리타기팅), 그 동작을 RL(reinforcement learning, 강화학습)로 따라 하는 추종기를 학습하고, 추종기 위에 원격조종·Planner·VLA(vision-language-action) 모델을 얹는 것"이다.</mark>
 2025–2026년의 쟁점은 셋이다. 첫째, 리타기팅 품질이 추종 성공률을 바꾼다(GMR, OmniRetarget). 둘째, 추종기 하나를 데이터·모델·계산으로 키우면 처음 보는 동작까지 따른다(SONIC, Humanoid-GPT).
@@ -42366,14 +42366,19 @@ Planner B.6b는 VLA 계열을 정리하고, travplan에서는 VLA가 하위 목�
 <td>I.0, I.14</td>
 </tr>
 <tr>
+<td>Controller F.6, Planner B.14.4, B.16.2</td>
+<td>AMP for hardware, Multi-AMP</td>
+<td>I.15의 계보 표</td>
+</tr>
+<tr>
 <td>인식 A.8</td>
 <td>TANGO(SONIC을 system-0으로 쓴 예)</td>
 <td>I.13</td>
 </tr>
 <tr>
-<td>강화학습 R.2, R.3, R.9, R.17</td>
-<td>행동 복제, REINFORCE, 모델 기반 RL, 적대적 모방</td>
-<td>I.7, I.11</td>
+<td>강화학습 R.2, R.3, R.9, R.10, R.17</td>
+<td>행동 복제, REINFORCE, 모델 기반 RL, AWR, 적대적 모방</td>
+<td>I.7, I.11, I.15, I.19</td>
 </tr>
 <tr>
 <td>딥러닝 L.21</td>
@@ -42414,6 +42419,11 @@ Planner B.6b는 VLA 계열을 정리하고, travplan에서는 VLA가 하위 목�
 <td>동작 추종</td>
 <td>I.7–I.9</td>
 <td>캐릭터 애니메이션의 뿌리(DeepMimic·AMP·PHC), 실물 휴머노이드 추종기(2024–2025), 공통 설계와 평가 지표</td>
+</tr>
+<tr>
+<td>동작 사전</td>
+<td>I.15–I.19</td>
+<td>동작 사전의 계보, AMP, ADD, SMP, MimicKit(AWR·LCP 포함)</td>
 </tr>
 <tr>
 <td>범용 추종기</td>
@@ -42528,7 +42538,7 @@ Planner B.6b는 VLA 계열을 정리하고, travplan에서는 VLA가 하위 목�
 </tr>
 <tr>
 <td><a href="https://github.com/xbpeng/MimicKit">xbpeng/MimicKit</a></td>
-<td>DeepMimic·AMP·ASE·ADD·SMP 등 Peng 계열을 Isaac Gym·Isaac Lab·Newton 위에 다시 구현. G1·Go2 설정과 GMR 출력 변환기 포함</td>
+<td>Peng 계열의 DeepMimic·AMP·ASE·ADD·SMP와 학습 기법 AWR·LCP를 Isaac Gym·Isaac Lab·Newton 위에 다시 구현(I.19). G1·Go2 설정과 GMR 출력 변환기 포함</td>
 <td>2,395 · 2026-10-17 · Apache-2.0</td>
 </tr>
 <tr>
@@ -42564,11 +42574,11 @@ Planner B.6b는 VLA 계열을 정리하고, travplan에서는 VLA가 하위 목�
 </tbody>
 </table>
 <p>SuperMimic은 2026-10-22 현재 공식 코드가 없다. 공개 이틀 안에 비공식 재현 둘이 올라왔다(<code>zita-ch/supermimic_vibed</code>, <code>CuboiLeo/SuperMimic-Reproduced</code>, 둘 다 MIT).
-처음 재현하는 사람에게는 MimicKit(DeepMimic·AMP·ASE·ADD·SMP. PHC·MaskedMimic 계열은 ProtoMotions)과 whole_body_tracking 또는 mjlab(G1 추종)이 가장 짧은 길이다. Isaac Lab 본체에는 캐릭터 AMP 예제만 있고 로봇 동작 추종 과제는 없다(v3.0.0 기준).</p>
-<p><strong>보는 순서.</strong> 처음이면 I.0, I.3, I.7, I.8의 표, I.9, I.10, I.11 순서로 읽는다. I.11 앞에는 강화학습 문서 R.3(REINFORCE)과 R.9(모델 기반 RL)를 먼저 본다.
+처음 재현하는 사람에게는 MimicKit(DeepMimic·AMP·ASE·ADD·SMP, I.19. PHC·MaskedMimic 계열은 ProtoMotions)과 whole_body_tracking 또는 mjlab(G1 추종)이 가장 짧은 길이다. Isaac Lab 본체에는 캐릭터 AMP 예제만 있고 로봇 동작 추종 과제는 없다(v3.0.0 기준).</p>
+<p><strong>보는 순서.</strong> 처음이면 I.0, I.3, I.7, I.8의 표, I.9, I.10, I.11 순서로 읽는다. I.11 앞에는 강화학습 문서 R.3(REINFORCE)과 R.9(모델 기반 RL)를 먼저 본다. 판별기나 diffusion 모델이 주는 보상(동작 사전)은 I.15의 표부터 읽고 I.16–I.19로 간다.
 리타기팅을 직접 해 볼 사람은 I.3의 그림을 만든 스크립트(<code>scripts/make_mimic_figures.py</code>)와 GMR 저장소부터 본다. travplan과의 연결만 보려면 I.14로 바로 간다.</p>
 <p><strong>표기.</strong> 관절 위치 $q$, 몸체(링크) 위치 $p$, 자세(회전) $R$, 기준(참조) 동작은 모자 $\hat{\cdot}$를 붙인다. 정책 $\pi_\theta$, 보상 $r$, 할인율 $\gamma$, 가치 함수 $V$를 쓴다.
-예외가 하나 있다. I.11에서는 원문 표기를 따라 모자가 world model의 예측을 뜻한다. I.11 장난감 문제의 한 스텝 비용은 $\ell$이다.
+예외가 둘 있다. I.11에서는 원문 표기를 따라 모자가 world model의 예측을 뜻한다. I.18에서는 모자가 diffusion·flow 모델의 예측(예측 잡음 $\hat\epsilon$, 데이터 예측 $\hat x_1$)을 뜻한다. I.11 장난감 문제의 한 스텝 비용은 $\ell$이다.
 MPJPE(mean per-joint position error)는 논문마다 단위가 다르다. 캐릭터 애니메이션과 CMU 계열은 관절 위치 오차(mm)이고, 2025–2026년 로봇 논문 다수는 관절각 오차(rad)를 MPJPE로, 위치 오차를 MPKPE(mean per-keypoint position error)로 쓴다. 이 문서는 표마다 단위를 적는다.</p>
 <p><strong>약어.</strong> IK(inverse kinematics, 역기구학), SMPL(skinned multi-person linear model, 사람 몸 매개변수 모델), PPO(proximal policy optimization), DAgger(dataset aggregation, 학생이 방문한 상태에서 교사 행동을 모아 따라 하는 증류),
 MoE(mixture of experts), BPTT(backpropagation through time)를 처음부터 쓴다.</p>
@@ -43081,8 +43091,8 @@ Planner D도 같은 질문을 할 수 있다. Controller(MPPI)를 고정하고 �
 ET(early termination)는 몸통이나 머리가 땅에 닿으면 끝내고 남은 보상을 0으로 둔다. 추종 보상은 모두 0과 1 사이의 양수라, 일찍 끝나면 받을 보상을 잃는 것 자체가 벌점이 된다. 절제 실험에서 둘 다 역동적 기술에 결정적이었다.
 정책은 30 Hz로 PD 목표를 낸다. 정규화한 수익은 걷기 0.985, 뒤공중제비 0.729, 앞공중제비 0.485였다(표 2).</p>
 <p><strong>AMP — 기준 동작을 프레임마다 맞추지 않고, 상태 전이가 데이터 같은지를 판별기로 채점한다</strong>(<a href="https://arxiv.org/abs/2104.02180">arXiv:2104.02180</a>, SIGGRAPH 2021).
-최소제곱 GAN(generative adversarial network) 판별기 $D(s, s')$의 출력을 스타일 보상으로 바꿔 과제 보상과 더한다. 위상도 클립 선택도 필요 없어 정리되지 않은 데이터에 쓴다.
-한 클립 자세 오차는 동작에 따라 다르다. 뒤공중제비에서는 0.150 m로 DeepMimic식 추종(0.076 m)의 두 배였고, 옆돌기(0.124 대 0.191 m)와 회전(0.047 대 0.063 m)에서는 AMP 쪽이 작았다(표 3).</p>
+최소제곱 GAN(generative adversarial network) 판별기 $D(s, s')$의 출력을 스타일 보상으로 바꿔 과제 보상과 더한다. 위상도 클립 선택도 필요 없어 정리되지 않은 데이터에 쓴다. 카드는 I.16에 있다.
+한 클립 자세 오차는 동작에 따라 다르다. 뒤공중제비에서는 0.150 m로 DeepMimic식 추종(0.076 m)의 두 배였고, 옆 공중제비(0.124 대 0.191 m)와 회전(0.047 대 0.063 m)에서는 AMP 쪽이 작았다(표 3). 옆돌기에서는 0.067 대 0.039 m로 추종 쪽이 작았다.</p>
 <p>$$ r^S_t = \max\left[0,\; 1 - 0.25\,\left(D(s_t, s_{t+1}) - 1\right)^2\right] $$</p>
 <p><strong>ASE, PHC, PULSE, MaskedMimic.</strong> 카드는 Planner B.16.1에 있다. 여기서는 추종기 설계에 남긴 것만 적는다.</p>
 <ul>
@@ -43156,9 +43166,9 @@ ET(early termination)는 몸통이나 머리가 땅에 닿으면 끝내고 남�
 <figure class="fig full wide"><a class="thumb" href="https://arxiv.org/html/1811.11711v2/architecture_neural_primitives.png" title="원본 보기"><img alt="NPMP Fig. 2" src="assets/thumbs/0ac6869b3292.webp" loading="lazy" width="1000" height="326"></a><figcaption>그림 — NPMP (Fig. 2): 기준 궤적 조각을 인코더가 운동 의도 잠재로 바꾸고, 잠재와 고유감각 상태를 받는 디코더가 행동을 낸다. 점선 안(잠재 공간과 디코더)이 재사용하는 기본 단위 모듈이다. 출처: <a href="https://arxiv.org/abs/1811.11711">arXiv:1811.11711</a></figcaption></figure>
 <figure class="fig full"><a class="thumb" href="https://arxiv.org/html/2208.07363v3/MoCapAct.png" title="원본 보기"><img alt="MoCapAct Fig. 1" src="assets/thumbs/c5fd6fc09d23.webp" loading="lazy" width="1000" height="562"></a><figcaption>그림 — MoCapAct (Fig. 1): CMU 동작 조각마다 RL로 전문가를 학습하고, 잡음을 넣은 전문가 롤아웃을 모아 다중 클립 정책 증류와 GPT식 지도 학습에 쓴다. 출처: <a href="https://arxiv.org/abs/2208.07363">arXiv:2208.07363</a></figcaption></figure>
 </div><p><strong>왜 추종이 주류가 됐나.</strong> AMP 계열은 "사람 같음"을 유도할 뿐 특정 동작을 정확히 재현하도록 학습하지 않는다. 범용 추종기는 원격조종처럼 "이 동작을 지금 해라"는 명령을 받아야 한다.
-그래서 2024년 이후 실물 휴머노이드 연구는 DeepMimic식 추종 보상과 PHC식 범용 추종을 기본으로 삼았다(I.8). 판별기 보상은 사라지지 않았고, PHC처럼 보조 항으로 남았다. 적대적 모방의 일반론은 강화학습 문서 R.17에 있다.
+그래서 2024년 이후 실물 휴머노이드 연구는 DeepMimic식 추종 보상과 PHC식 범용 추종을 기본으로 삼았다(I.8). 판별기 보상은 사라지지 않았고, PHC처럼 보조 항으로 남았다. 적대적 모방의 일반론은 강화학습 문서 R.17에, 동작 사전의 계보는 I.15에 있다.
 추종이 아닌 갈래도 있다. Meta Motivo(<a href="https://arxiv.org/abs/2504.11054">arXiv:2504.11054</a>, ICLR 2025)와 BFM-Zero(<a href="https://arxiv.org/abs/2511.04131">arXiv:2511.04131</a>)는 비지도 RL로 행동 기반 모델을 만들고, 보상·목표 자세·추종을 같은 잠재 공간에서 영 샷으로 푼다.</p>
-<p><strong>그래픽스 쪽의 최근 부품(2025–2026).</strong> 휴머노이드 추종기가 다음에 가져올 후보다. 수치는 넷 다 시뮬레이션에서 쟀고, ADD와 SMP는 MimicKit에 구현이 있다.</p>
+<p><strong>그래픽스 쪽의 최근 부품(2025–2026).</strong> 휴머노이드 추종기가 다음에 가져올 후보다. 수치는 넷 다 시뮬레이션에서 쟀고, ADD와 SMP는 MimicKit에 구현이 있다(I.19).</p>
 <table>
 <thead>
 <tr>
@@ -43169,12 +43179,12 @@ ET(early termination)는 몸통이나 머리가 땅에 닿으면 끝내고 남�
 </thead>
 <tbody>
 <tr>
-<td>ADD (<a href="https://arxiv.org/abs/2505.04961">arXiv:2505.04961</a>, SIGGRAPH Asia 2025)</td>
+<td>ADD (<a href="https://arxiv.org/abs/2505.04961">arXiv:2505.04961</a>, SIGGRAPH Asia 2025, 카드는 I.17)</td>
 <td>손으로 가중한 추종 보상 대신, 추종 오차 벡터만 보는 판별기를 둔다. 양성 표본은 영벡터 하나이고 기울기 벌점을 더한다</td>
-<td>파쿠르 이중 콩 볼트(Double Kong) 위치 오차 0.030 m(DeepMimic 0.223 m, 넘지 못함, 표 1, 학습 클립에서 잼). 달리기는 0.165 대 0.013 m로 나빴고, 옆 공중제비(sideflip)는 끝까지 돌지 않고 서는 쪽으로 수렴했다(§7)</td>
+<td>파쿠르 이중 콩 볼트(Double Kong) 위치 오차 0.030 m(DeepMimic 0.223 m, 넘지 못함, 표 1, 학습 클립에서 잼). 달리기는 0.165 대 0.013 m로 나빴고, 옆 공중제비(sideflip)는 끝까지 돌지 않고 서는 쪽으로 수렴했다(§6.4)</td>
 </tr>
 <tr>
-<td>SMP (<a href="https://arxiv.org/abs/2512.03028">arXiv:2512.03028</a>, ACM TOG·SIGGRAPH 2026)</td>
+<td>SMP (<a href="https://arxiv.org/abs/2512.03028">arXiv:2512.03028</a>, ACM TOG·SIGGRAPH 2026, 카드는 I.18)</td>
 <td>고정한 동작 diffusion 모델의 점수(score)를 보상으로 쓴다. 판별기를 과제마다 다시 학습하지 않아 동작 사전을 재사용한다</td>
 <td>피구 과제 0.733(AMP 0.233, 판별기를 고정한 AMP 0.204, 표 2). 한 클립 모방 여섯 기술의 평균 위치 오차는 AMP와 같은 0.046 m(표 4)</td>
 </tr>
@@ -43190,7 +43200,7 @@ ET(early termination)는 몸통이나 머리가 땅에 닿으면 끝내고 남�
 </tr>
 </tbody>
 </table>
-<p>ADD가 겨냥한 것은 I.9의 보상 꼴 행이다. 지수 추종 보상의 항별 계수를 동작마다 맞추는 일을 판별기 하나로 바꾼다. 다만 앞으로 달리는 이동에서는 뿌리 위치를 덜 따라가 손으로 짠 보상이 아직 낫다(뿌리는 오차 벡터의 세 성분뿐이다, §7).
+<p>ADD가 겨냥한 것은 I.9의 보상 꼴 행이다. 지수 추종 보상의 항별 계수를 동작마다 맞추는 일을 판별기 하나로 바꾼다. 다만 한 클립 사람 달리기와 로봇 걷기에서는 뿌리 위치를 덜 따라가 DeepMimic이 더 정확했다. 저자는 뿌리 위치가 오차 벡터의 세 성분뿐이고 기울기 벌점이 그 성분에 큰 가중을 막기 때문이라고 본다(가설, §6.4).
 PARC(지형 조건 동작 생성기와 추종기를 번갈아 키우는 데이터 증강)와 MaskedManipulator(MaskedMimic의 증류를 전신 물체 조작으로)는 Planner B.16.1에 카드가 있다.</p>
 <div class="fig-grid"><figure class="fig full wide"><a class="thumb" href="https://arxiv.org/html/2505.04961v2/figures/teaser_v2.png" title="원본 보기"><img alt="ADD Fig. 1" src="assets/thumbs/cb9e6cf9e549.webp" loading="lazy" width="1000" height="159"></a><figcaption>그림 — ADD (Fig. 1): 적대적 차분 판별기로 학습한 캐릭터가 달려와 두 상자를 넘는 파쿠르 동작을 한다. 출처: <a href="https://arxiv.org/abs/2505.04961">arXiv:2505.04961</a></figcaption></figure>
 <figure class="fig full wide"><a class="thumb" href="https://ar5iv.labs.arxiv.org/html/1804.02717/assets/figures/teaser3.png" title="원본 보기"><img alt="DeepMimic Fig. 1" src="assets/thumbs/632823d4a54c.webp" loading="lazy" width="1000" height="120"></a><figcaption>그림 — DeepMimic (Fig. 1): 모션 캡처를 따라 하도록 학습한 물리 캐릭터. 왼쪽은 옆돌기 하는 휴머노이드, 오른쪽은 회전 발차기 하는 Atlas다. 출처: <a href="https://arxiv.org/abs/1804.02717">arXiv:1804.02717</a>(ar5iv 판)</figcaption></figure>
@@ -43459,7 +43469,1701 @@ travplan의 Planner D는 이미 Guidance + MPPI 교사의 DAgger로 학습한다
   HoloMotion-1의 영역 밖 다섯 셋에서는 뿌리 높이 0.25 m 문턱으로 재서 95.58 %다(표 6). 데이터 셋과 성공 정의가 숫자를 정한다.</li>
 </ul>
 <p><strong>travplan에 주는 의미.</strong> "성공률의 정의가 숫자를 정한다"는 travplan의 평가에도 같다. travplan은 성공과 치명 실패를 따로 세고, 혼돈 조건에서는 짝 비교와 잡음 바닥으로 판정한다(CLAUDE.md의 2층 게이트).
-추종 연구가 단일 실행의 1–2 % 차이로 순위를 매기는 표는 잡음 바닥을 적지 않은 경우가 많다. 읽을 때 같은 기준을 댄다.</p></div><div class="card md subpanel" id="sub-research-d9-3" role="tabpanel" aria-labelledby="subbtn-research-d9-3" data-math="25"><h3>I.10 SONIC: 동작 추종을 데이터·모델·계산으로 키운다</h3>
+추종 연구가 단일 실행의 1–2 % 차이로 순위를 매기는 표는 잡음 바닥을 적지 않은 경우가 많다. 읽을 때 같은 기준을 댄다.</p></div><div class="card md subpanel" id="sub-research-d9-3" role="tabpanel" aria-labelledby="subbtn-research-d9-3" data-math="108"><h3>I.15 동작 사전의 계보: 정책마다 다시 배우던 판별기가 한 번 배워 고정해 다시 쓰는 diffusion 사전으로 이어졌다</h3>
+<p><strong>한 줄 요약.</strong> <mark>동작 사전은 정해진 동작을 재현하지 않아도 되는 과제에 "데이터 같은 움직임"이라는 보상을 더하는 도구이고, 실물 휴머노이드에서는 추종이 기본이라 보조 항으로 남았다.</mark></p>
+<p><strong>동작 사전이란.</strong> 동작 사전(motion prior)은 정책이 낸 움직임이 동작 데이터와 닮았는지 채점해 보상으로 주는 모델이다. 추종 보상(I.7의 DeepMimic 식)은 지금 프레임의 기준 자세와의 거리를 잰다.
+동작 사전은 기준 프레임 없이 데이터와의 닮음을 재고, 과제 보상은 따로 더한다(I.16의 식).
+계보는 적대적 모방에서 시작했다. GAIL(generative adversarial imitation learning)의 판별기를 상태 전이에 건 AMP(adversarial motion priors)가 바탕이 됐다.
+그 뒤를 세 갈래가 이었다. ASE(adversarial skill embeddings)와 CALM(conditional adversarial latent models)은 적대적 잠재 기술을 배웠다. PHC(Perpetual Humanoid Control)는 판별기 보상을 추종의 보조 항으로 썼다. 로봇에서는 Multi-AMP와 AMP for hardware가 나왔다.
+2025–2026년에는 두 갈래가 나왔다. ADD(adversarial differential discriminator)는 판별기를 추종 오차 벡터에 돌려 썼다. SMP(score-matching motion priors)는 판별기 대신 미리 학습해 고정한 diffusion 모델을 쓴다.</p>
+<p><strong>추종이 맞는 곳.</strong> I.0과 I.7의 결론과 같다.</p>
+<ul>
+<li>위 층이 "이 동작을 지금 하라"고 명령하는 곳이다. 원격조종, 운동학 Planner, VLA(vision-language-action) 모델이 그렇다(I.13). 동작 사전은 사람 같음을 유도할 뿐 특정 동작을 재현하도록 학습하지 않는다(I.7).</li>
+<li>데이터와 모델을 함께 키우는 곳이다. 추종은 프레임마다 목표 자세가 있어 키울수록 좋아졌다(I.10). SONIC 서론은 판별기 방법이 데이터가 커지면 모드 붕괴에 빠지기 쉽다고 정리한다(I.0).</li>
+<li>한 클립을 정확히 따라야 하는 곳이다. AMP의 한 클립 자세 오차는 스무 동작 가운데 열여덟에서 추종보다 컸다(I.16).</li>
+</ul>
+<p><strong>사전이 맞는 곳.</strong></p>
+<ul>
+<li>과제 목표가 따로 있고, 동작은 데이터와 닮기만 하면 되는 곳이다. AMP 정책은 클립 선택이나 동작 Planner 없이, 멀면 걷고 가까우면 치는 순서를 스스로 익혔다(I.16).</li>
+<li>데이터에 없는 기술을 과제가 요구하는 곳이다. LAFAN1 달리기 데이터로 만든 사전으로 피구를 학습하면 과제 수익이 SMP 0.733, AMP 0.233이었다(I.18). 데이터는 보행뿐이고, 과제는 공을 피하는 기술을 요구했다.</li>
+<li>데이터가 몇 초뿐이거나 사람이 아닌 원천에서 오는 곳이다. AMP for hardware는 개 모션 캡처 4.5초로 배운 스타일 보상으로 손으로 짠 규제 항을 대신했다(Controller F.6, Planner B.16.2). Multi-AMP는 궤적 최적화를 MPC(model predictive control)로 따른 기록과 다른 RL(reinforcement learning) 정책의 동작을 스타일로 썼다(Planner B.14.4).</li>
+<li>한 번 만든 사전을 여러 과제에 다시 쓰려는 곳이다. ASE는 아래 층 정책을, SMP는 보상 모델을 한 번 학습해 과제마다 다시 쓴다(Planner B.16.1, I.18).</li>
+</ul>
+<p><strong>둘을 섞는 쪽.</strong> 추종과 사전은 한 보상 안에서 함께 쓰인다. PHC는 추종 보상에 AMP 판별기 보상을 반씩 더했고(I.7), HumanX는 몸 추종 항에 AMP 항을 넣었다(Planner B.16.6).
+ADD는 추종 보상의 가중을 판별기가 정하게 했다(I.17). PDF-HR(Pose Distance Fields for Humanoid Robots)은 ADD 보상에 자세 사전의 보상을 더했다. PFM-HR(Pose Flow Matching for Humanoid Robots)은 자세 사전의 점수로 만든 계수를 추종 보상에 곱했다(I.17).
+2024년 이후 실물 휴머노이드는 추종을 기본으로 삼았고, 판별기 보상은 보조 항으로 남았다(I.7). 이 탭의 연구도 그 결론을 바꾸지 않는다. ADD 논문에는 실물 결과가 없고, SMP 논문의 실물 G1은 정성 결과뿐이다(I.17, I.18).
+이 탭이 다룬 연구 가운데 ADD 보상으로 학습한 정책을 실물 G1에 올린 것은 BCG(Bundled Contact Gradients)뿐이다(I.17).</p>
+<p><strong>계보.</strong> 아래 표는 각 연구의 사전이 무엇을 보고, 보상이 어떤 꼴이며, 과제마다 다시 학습하는지만 적는다. 행은 arXiv 첫 게재 순이고, 두 연구를 묶은 행은 앞 연구의 날짜에 놓았다.</p>
+<table>
+<thead>
+<tr>
+<th>연구(연·발표)</th>
+<th>사전이 보는 것</th>
+<th>보상의 꼴</th>
+<th>과제마다 다시 학습하나</th>
+<th>절</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GAIL (2016.06 · NeurIPS 2016)</td>
+<td>상태–행동 쌍</td>
+<td>판별기 출력의 로그</td>
+<td>예. 수렴하면 판별기가 어디서나 0.5가 되어 다시 쓸 보상이 남지 않는다</td>
+<td>강화학습 R.17</td>
+</tr>
+<tr>
+<td>AMP (2021.04 · SIGGRAPH 2021)</td>
+<td>연속한 두 상태의 특징(뿌리 속도, 관절 회전·속도, 끝점 위치). 과제 특징은 뺀다</td>
+<td>최소제곱 판별기의 출력을 0–1로 옮긴 스타일 보상과 과제 보상을 0.5씩</td>
+<td>예. 정책마다 처음부터 학습한다</td>
+<td>I.7, I.16</td>
+</tr>
+<tr>
+<td>Multi-AMP (2022.03 · ICRA 2023)</td>
+<td>연속한 두 상태의 서술자(상태마다 50차원, 둘을 이어 100차원). 스타일마다 판별기 하나</td>
+<td>과제 보상과 스타일 보상의 합. 데이터가 없는 과제에서는 스타일 보상이 0</td>
+<td>예. 정책과 함께 학습하고, one-hot 선택자로 스타일을 고른다</td>
+<td>Planner B.14.4</td>
+</tr>
+<tr>
+<td>AMP for hardware (2022.03 · IROS 2022)</td>
+<td>AMP와 같다. 데이터는 개 모션 캡처 4.5초</td>
+<td>스타일 보상이 손으로 짠 규제 항을 대신하고, 속도 추종 과제 보상은 남는다</td>
+<td>예(AMP와 같다)</td>
+<td>Controller F.6, Planner B.16.2</td>
+</tr>
+<tr>
+<td>ASE (2022.05 · SIGGRAPH 2022), CALM (2023.05 · SIGGRAPH 2023)</td>
+<td>ASE는 AMP와 같은 상태 전이 판별기를 쓰고, 기술 잠재(64차원)는 정책 입력이다. CALM은 동작 인코더가 만든 잠재를 판별기 조건으로도 넣는다</td>
+<td>ASE는 판별기 보상과, 상태 전이에서 잠재를 되맞히는 인코더 보상의 합(MimicKit의 ASE 설정은 반씩). CALM은 잠재 조건 판별기의 로그 보상</td>
+<td>아니다. 아래 층 정책을 한 번 사전학습하고 과제마다 위 층만 학습한다</td>
+<td>Planner B.16.1, I.7</td>
+</tr>
+<tr>
+<td>PHC (2023.05 · ICCV 2023), HumanX (2026.02 · CoRL 2026)</td>
+<td>AMP 판별기</td>
+<td>추종 보상에 더한 보조 항. PHC는 반씩 더했다</td>
+<td>추종기와 함께 학습한다</td>
+<td>I.7, Planner B.16.1, B.16.6</td>
+</tr>
+<tr>
+<td>SMILING (2024.10 · ICLR 2025)</td>
+<td>상태를 배운 diffusion 모델</td>
+<td>VSD(variational score distillation)와 비슷한 score matching 목적</td>
+<td>예. 과제마다 diffusion 모델을 학습한다</td>
+<td>I.18</td>
+</tr>
+<tr>
+<td>ADD (2025.05 · SIGGRAPH Asia 2025)</td>
+<td>기준 상태와 정책 상태의 특징 차이 벡터. 양성 표본은 영벡터 하나</td>
+<td>판별기 출력의 로그 보상. 과제 목적은 같은 벡터 끝에 붙인다</td>
+<td>예. 판별기를 정책과 함께 학습하고, 기준 동작이 프레임마다 있어야 한다</td>
+<td>I.7, I.17</td>
+</tr>
+<tr>
+<td>MimicKit (2025.10 · arXiv 안내서)</td>
+<td>AMP 판별기는 최근 10프레임, ADD는 차이 벡터, SMP는 10프레임 창</td>
+<td>AMP·ADD는 교차 엔트로피 판별기의 로그 보상에 2를 곱한다. 기본 과제 설정은 과제 보상과 0.5씩 섞는다</td>
+<td>방법을 따른다</td>
+<td>I.19</td>
+</tr>
+<tr>
+<td>SMP (2025.12 · ACM TOG 45(4)·SIGGRAPH 2026)</td>
+<td>정책의 최근 10프레임 창에 고정 단계의 잡음을 더한 것. 스타일 라벨은 선택</td>
+<td>정규화한 잡음 예측 오차의 지수 보상과 과제 보상의 가중합</td>
+<td>아니다. 한 번 학습해 고정하고, 스타일은 조건과 합성으로 바꾼다</td>
+<td>I.7, I.18</td>
+</tr>
+<tr>
+<td>PDF-HR (2026.02), PFM-HR (2026.08), 둘 다 arXiv</td>
+<td>자세 사전. PDF-HR은 자세 하나를 거리장으로 채점한다. PFM-HR은 순서 없는 자세로 배운 flow matching 사전으로, 연속한 두 자세 사이의 관절 변화를 채점한다</td>
+<td>PDF-HR은 ADD 추종 보상에 자세 사전의 보상을 더한다. PFM-HR은 자세 사전 점수로 만든 계수(0.61–1)를 추종 보상에 곱한다</td>
+<td>아니다. 둘 다 미리 학습한 사전을 고정한다</td>
+<td>I.17, I.18</td>
+</tr>
+<tr>
+<td>Context-Aware Motion Priors (2026.08 · arXiv)</td>
+<td>바탕 사전(주 설정은 AMP 판별기, 확장은 고정한 SMP denoiser)에 과제 상황을 받는 작은 잔차 어댑터를 더한다</td>
+<td>상황에 맞는 기준 동작에 가중을 준 사전 보상</td>
+<td>예. 관련도 모델과 어댑터를 과제 학습 중에 기준 동작 데이터로 배운다. SMP 판도 denoiser만 고정한다</td>
+<td>I.18</td>
+</tr>
+</tbody>
+</table>
+<p><strong>세 사전의 비교.</strong> AMP와 그 뒤의 두 꼴(ADD, SMP)을 나란히 둔다. 계산 행의 숫자는 논문마다 하드웨어와 기준이 달라 서로 비교하지 않는다.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>AMP: 상태 전이 판별기 (I.16)</th>
+<th>ADD: 오차 벡터 판별기 (I.17)</th>
+<th>SMP: 고정 diffusion 점수 (I.18)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>보는 것</td>
+<td>연속한 두 상태의 특징</td>
+<td>기준과 정책의 특징 차이</td>
+<td>정책의 최근 10프레임 창에 잡음 단계 22·15·8의 잡음을 더한 것</td>
+</tr>
+<tr>
+<td>기준 동작</td>
+<td>프레임마다 맞출 기준은 필요 없다. 위상과 클립 선택 없이 정리되지 않은 클립을 쓰지만, 판별기를 학습하는 동안 그 데이터를 계속 들고 있어야 한다</td>
+<td>프레임마다 필요하다. 기준 동작이 없는 Walker·Go1은 과제 목표값과의 차이를 쓴다</td>
+<td>필요 없다. 생성 시작 상태(GSI, generative state initialization)를 쓰면 사전을 만든 뒤 원 데이터를 버려도 된다</td>
+</tr>
+<tr>
+<td>과제마다 다시 학습</td>
+<td>예. 판별기를 고정한 AMP는 조향 0.243(다시 학습하면 0.634), 목표 위치 0.101(0.737)로 무너졌다(SMP 표 2)</td>
+<td>예. 판별기를 정책과 함께 학습한다</td>
+<td>아니다. 고정한 채 과제와 스타일을 바꾼다</td>
+</tr>
+<tr>
+<td>안정 장치</td>
+<td>최소제곱 판별기, 데이터 표본의 기울기 벌점(가중 10), 지난 정책 전이의 재생 버퍼(10⁵), 속도 특징</td>
+<td>정책 쪽 음성 표본의 기울기 벌점. 벌점 없이 학습한 모델은 대개 쓸 만한 정책을 배우지 못했다</td>
+<td>잡음 단계 셋을 고정해 평균(ESM, ensemble score-matching)하고, 단계별 오차를 누적 평균으로 나눈다(AdaNorm). 고정 단계 평균은 SDS(score distillation sampling) 오차의 분산을 1.140에서 9.964×10⁻⁶으로 줄였다</td>
+</tr>
+<tr>
+<td>알려진 실패</td>
+<td>모드 붕괴, 앞공중제비의 국소 최적. 휴머노이드 로봇의 비교 둘(ExBody, PHP(Perceptive Humanoid Parkour))에서 불리했다</td>
+<td>역동 동작의 국소 최적, 앞으로 가는 이동의 뿌리 위치(달리기 0.165 대 0.013 m), 재구현에서 판별기 포화(Llobera 외)</td>
+<td>모드를 좇는 목적의 모드 붕괴, GSI가 만든 자기 충돌, 먼 스타일을 합성하면 묽어짐</td>
+</tr>
+<tr>
+<td>계산</td>
+<td>정책 하나에 표본 1억–3억 개, CPU 16코어로 약 30–140시간(원 논문)</td>
+<td>A100 한 클립 약 9시간(DeepMimic 6.5, AMP 12). 벽시계가 DeepMimic의 1.2–1.4배</td>
+<td>사전은 RTX 4090 한 장에서 대개 5시간 안에 수렴. 정책 학습은 AMP보다 길다(11.5 대 6.2시간)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>읽는 법.</strong> 세 사전은 보상의 목표를 얻는 곳이 다르다. AMP는 데이터 분포 전체에서, ADD는 지금 프레임의 기준 동작에서, SMP는 고정한 모델이 매 스텝 만드는 가짜 목표에서 얻는다.
+그래서 ADD는 기준 동작이 있어야 하는 추종이고, 위의 "추종이 맞는 곳"에 쓰인다. 가중을 손으로 맞추는 일만 판별기에 넘겼다.
+SMP 보상은 DeepMimic의 지수 추종 보상과 같은 꼴이고, 목표만 고정한 모델이 매 스텝 새로 만든다(I.18의 항등식). 추종과 사전의 차이는 보상의 꼴보다 목표를 어디서 얻느냐에 있다.</p>
+<p><strong>travplan이 가져갈 것.</strong> travplan에는 사람 동작 데이터가 없고, 시연은 Guidance + MPPI가 만든다. 그래서 동작 사전이 들어갈 자리는 사람다움이 아니라 학습 쪽 보상이다. 네 카드의 "travplan에 주는 의미"가 같은 자리를 다르게 채운다.
+AMP는 RL 후학습(TP-0066)의 부드러움 항 자리에 판별기 점수를 넣는다(I.16). ADD는 안전과 무관한 항만 오차 벡터로 모은다(I.17). SMP식 오차는 고정한 Planner D DAgger 체크포인트로 잰다(I.18). MimicKit에서는 끝남 표지, AWR(advantage-weighted regression) 가중, LCP(Lipschitz-constrained policies) 벌점, Newton 엔진 경로를 읽는다(I.19).
+세 사전 카드(I.16–I.18)의 공통 규칙은 하나다. 치명 cost는 학습한 보상에 맡기지 않고 고정 벌점과 종료로 남기며, 채택은 CLAUDE.md의 2층 게이트와 치명 실패 규칙으로 판정한다(강화학습 R.17과 같은 결론).
+제안은 모두 가설이고 재지 않았다. 대응표는 I.14에 있다.</p>
+<h3>I.16 AMP: 과제는 보상 식으로, 스타일은 동작 데이터로 학습한 판별기로 정한다</h3>
+<p><strong>AMP — 상태 전이가 동작 데이터에서 왔는지 가리는 판별기의 점수를 스타일 보상으로 써서, 정리되지 않은 클립만으로 캐릭터가 과제에 맞는 기술을 스스로 골라 잇는다</strong>(<a href="https://arxiv.org/abs/2104.02180">arXiv:2104.02180</a>, 원제 "AMP: Adversarial Motion Priors for Stylized Physics-Based Character Control", Peng·Ma(공동 1저자)·Abbeel·Levine·Kanazawa, UC Berkeley·상하이 자오퉁 대학교, ACM TOG 40(4) 144, SIGGRAPH 2021, <a href="https://xbpeng.github.io/projects/AMP/index.html">프로젝트</a>, <a href="https://youtu.be/wySUxZN_KbM">영상</a>, <a href="https://youtu.be/O6fBSMxThR4">보충 영상</a>, <a href="https://github.com/xbpeng/DeepMimic">코드</a> MIT(TensorFlow 원 구현이고, README가 2025-11부터 MimicKit을 권한다), <a href="https://github.com/xbpeng/MimicKit">MimicKit 구현</a> Apache-2.0).</p>
+<p><strong>한 줄 요약.</strong> <mark>AMP는 "무엇을 하나"는 단순한 과제 보상에, "어떻게 움직이나"는 동작 데이터로 학습한 판별기의 스타일 보상에 맡겨, 클립 선택이나 동작 Planner 없이 기술의 전환과 조합이 학습에서 저절로 나오게 했다.</mark></p>
+<p><strong>왜 중요한가.</strong> 저자의 출발점은 추종 기반 방법의 두 부담이다(§1, §2). 하나는 자세 오차 척도를 손으로 짜야 하고, 모든 기술에 통하는 척도를 맞추기 어렵다는 것이다. 다른 하나는 데이터가 커지면 지금 따라 할 클립을 고르는 동작 Planner가 따로 있어야 한다는 것이다(DeepLoco, DReCon, Park 외 2019).
+앞선 적대적 모방(<a href="https://arxiv.org/abs/1707.02201">Merel 외 2017</a>, <a href="https://arxiv.org/abs/1707.02747">Wang 외 2017</a>)은 학습이 불안정했고, 동작 품질도 추종에 크게 못 미쳤다. 같은 1저자의 VDB(variational discriminator bottleneck, <a href="https://arxiv.org/abs/1810.00821">arXiv:1810.00821</a>)는 판별기에 정보 병목을 걸어 품질을 올렸지만, 위상 변수로 기준 동작과 시간을 맞춰야 해서 정책 하나가 동작 하나만 배웠다.
+잠재 공간 모델(Merel 외 2019, Peng 외 2019a)은 위 층이 사전학습 때 보지 못한 잠재를 고르면 부자연스러운 동작을 낸다. AMP는 판별기로 캐릭터의 동작 자체를 채점하고, 사전학습 없이 정책과 함께 학습한다. 저자는 AMP를 물리 캐릭터의 고품질 전신 동작을 만든 초기 적대적 학습 시스템 가운데 하나로 적는다(§1).
+DeepMimic(I.7)의 1저자가 3년 뒤 낸 연구다. 기준 상태 초기화와 조기 종료는 그대로 두고, 추종 보상은 판별기로 바꾸고 위상 입력은 뺐다(§6.1, §6.3). 이름은 시각 기반 자세 추정에서 쓰던 적대적 자세 사전(Kanazawa 외 2018)을 본떴다(§5).</p>
+<p><strong>초록 번역.</strong> (arXiv v2 PDF, 2022-05-12) 물리 시뮬레이션 캐릭터에 우아하고 생명체다운 행동을 합성하는 일은 컴퓨터 애니메이션의 근본 과제였다. 동작 추종을 활용하는 데이터 기반 방법은 폭넓은 행동에서 충실도 높은 동작을 만드는 대표적인 기법군이다.
+그러나 이런 추종 기반 방법의 효과는 공들여 설계한 목적 함수에 달린 경우가 많다. 그리고 크고 다양한 동작 데이터에 적용하면, 주어진 상황에서 캐릭터가 따라 할 알맞은 동작을 고르는 상당한 추가 장치가 필요하다. 이 연구에서 우리는 적대적 모방 학습에 기반한 완전 자동 접근으로, 모방 목적과 동작 선택 장치를 손으로 설계할 필요를 없애자고 제안한다.
+캐릭터가 수행할 상위 과제 목표는 비교적 단순한 보상 함수로 지정하고, 캐릭터 행동의 하위 스타일은 정리되지 않은 동작 클립 데이터로 지정할 수 있다. 이때 명시적인 클립 선택이나 순서 정하기는 필요 없다. 예를 들어 장애물 코스를 지나는 캐릭터는 앞으로 나아간 정도만 보는 과제 보상을 쓰고, 데이터에는 달리기, 점프, 구르기 같은 관련 행동의 클립을 담을 수 있다.
+이 동작 클립으로 적대적 동작 사전을 학습하고, 이 사전이 강화학습(RL, reinforcement learning)으로 캐릭터를 학습할 때 쓰는 스타일 보상을 정한다. 적대적 RL 절차는 어떤 동작을 할지 자동으로 고르며, 데이터를 동적으로 보간하고 일반화한다.
+우리 시스템은 최신 추종 기반 기법에 견줄 만한 고품질 동작을 만들고, 정리되지 않은 큰 동작 클립 데이터도 쉽게 받아들인다. 서로 다른 기술의 조합은 동작 사전에서 자동으로 나타나며, 상위 동작 Planner나 동작 클립의 과제별 주석이 필요 없다. 우리는 다양한 복잡한 시뮬레이션 캐릭터와 어려운 운동 제어 과제 모음에서 이 틀의 효과를 보인다.</p>
+<div class="fig-grid"><figure class="fig full wide"><a class="thumb" href="https://xbpeng.github.io/projects/AMP/AMP_teaser.png" title="원본 보기"><img alt="AMP 장애물 코스와 치기" src="assets/thumbs/1b1e9f2f4a0c.webp" loading="lazy" width="1000" height="121"></a><figcaption>그림 — AMP (Fig. 1): 왼쪽은 장애물 코스다. 캐릭터가 달리다 틈을 뛰어넘고, 머리 위 장애물 앞에서 몸을 말아 굴러 지난 뒤, 낮은 바닥에서 일어나 다시 달린다. 오른쪽은 표적(바닥의 빨간 원 안에 쌓인 상자)까지 걸어가 주먹으로 쳐 무너뜨린다. 출처: <a href="https://xbpeng.github.io/projects/AMP/index.html">프로젝트 페이지</a></figcaption></figure>
+<figure class="fig"><a class="thumb" href="https://arxiv.org/html/2104.02180v2/figures/speed_test_humanoid.png" title="원본 보기"><img alt="AMP 목표 속도와 실제 속도" src="assets/thumbs/d91745c2fd57.webp" loading="lazy" width="653" height="661"></a><figcaption>그림 — AMP (Fig. 4 오른쪽): 목표 방향 과제에서 목표 속도(가로)와 정책의 평균 속도(세로)다. 걷기·조깅·달리기를 모두 담은 Locomotion 데이터(파랑 원)로 학습한 정책은 대각선 가까이를 따른다. 걷기만 담은 데이터(주황 십자)는 목표와 상관없이 약 1.2 m/s로 걷고, 달리기만 담은 데이터(초록 삼각형)는 1–3 m/s 목표에서도 약 3 m/s로 달린다. 출처: <a href="https://arxiv.org/abs/2104.02180">arXiv:2104.02180</a></figcaption></figure>
+<figure class="fig"><a class="thumb" href="https://arxiv.org/html/2104.02180v2/figures/curves_humanoid_backflip.png" title="원본 보기"><img alt="AMP 절제 학습 곡선, 뒤공중제비" src="assets/thumbs/7580d192d2ce.webp" loading="lazy" width="918" height="665"></a><figcaption>그림 — AMP (Fig. 8 일부, 뒤공중제비): 표본 수(가로, 최대 1억)에 따른 자세 오차(세로, m)다. 빨강은 위상으로 기준과 시간을 맞추는 동작 추종(DeepMimic), 파랑은 AMP, 주황은 판별기 특징에서 속도를 뺀 AMP, 초록은 기울기 벌점을 뺀 AMP다. 기울기 벌점이 없으면 1억 표본까지 오차가 약 0.95 m에서 내려오지 않는다. 출처: <a href="https://arxiv.org/abs/2104.02180">arXiv:2104.02180</a></figcaption></figure>
+</div><p><strong>동작 방식.</strong> 한 스텝의 보상은 과제 보상과 스타일 보상의 선형 합이고, 모든 과제에서 두 가중치는 0.5다(식 4, §8.2). 과제 보상 $r^G$는 목표 $g$를 보고, 스타일 보상 $r^S$는 상태 전이만 본다.</p>
+<p>$$ r_t = w^G\, r^G(s_t, a_t, s_{t+1}, g) + w^S\, r^S(s_t, s_{t+1}) $$</p>
+<p><strong>(1) 관찰만으로 하는 모방.</strong> 모션 캡처에는 행동이 없다. 그래서 판별기는 상태–행동 쌍 $D(s, a)$ 대신 상태 전이 $D(s, s')$를 본다(§5.1). 이 변형은 Torabi 외(<a href="https://arxiv.org/abs/1807.06158">arXiv:1807.06158</a>)를 따른 것이고, 바탕인 GAIL(generative adversarial imitation learning)은 강화학습 R.17에 있다.
+시연자가 사람처럼 캐릭터와 다른 몸이면, 캐릭터가 똑같이 낼 수 없는 전이가 데이터에 섞일 수 있다. 저자는 그래도 판별기가 효과적인 목적이 된다고 보였다.</p>
+<p><strong>(2) 최소제곱 판별기.</strong> 교차 엔트로피 판별기는 시그모이드가 포화하면 기울기가 사라져 정책 학습을 방해한다(§5.2). 그래서 AMP는 최소제곱 GAN(LSGAN, least-squares generative adversarial network)을 따른다(<a href="https://arxiv.org/abs/1611.04076">arXiv:1611.04076</a>). 데이터 전이에는 +1을, 정책 전이에는 −1을 최소제곱으로 회귀한다.
+이 목적은 두 전이 분포 사이의 Pearson $\chi^2$ 발산을 줄이고, GAIL의 교차 엔트로피 목적은 Jensen–Shannon 발산을 줄인다(§4.2, §5.2). 스타일 보상(I.7의 식)은 판별기 출력을 0과 1 사이로 옮긴 것이다. $D = 1$에서 1로 가장 크고, $D \le -1$이거나 $D \ge 3$이면 0이다.</p>
+<p><strong>(3) 기울기 벌점.</strong> 판별기가 데이터 위에서 0이 아닌 기울기를 내면, 정책이 데이터 다양체에 수렴하지 않고 지나쳐 진동한다(§5.4, <a href="https://arxiv.org/abs/1801.04406">Mescheder 외 2018</a>). 그래서 데이터 표본에서 판별기 입력에 대한 기울기 크기를 벌한다.
+판별기 목적 전체는 아래와 같고(식 8), $w^{gp} = 10$이다(§8.1). 벌점은 전체 상태가 아니라 판별기 특징 $\phi$에 대해 계산한다.</p>
+<p>$$ \min_D\; \mathbb E_{\mathcal M}\big[(D(\phi) - 1)^2\big] + \mathbb E_{\pi}\big[(D(\phi) + 1)^2\big] + \frac{w^{gp}}{2}\, \mathbb E_{\mathcal M}\big[\|\nabla_\phi D(\phi)\|^2\big], \quad \phi = (\Phi(s), \Phi(s')) $$</p>
+<p><strong>(4) 판별기 특징.</strong> 특징 사상 $\Phi(s)$에는 뿌리의 선속도와 각속도, 관절별 국소 회전과 속도, 손발 끝점의 3D 위치가 들어간다(§5.3). 뿌리는 골반이다. 뿌리 속도와 끝점 위치는 캐릭터 국소 좌표에서 잰다. 원점은 뿌리이고, x축은 몸이 향한 방향, y축은 위쪽이다. 과제 특징은 넣지 않으므로, 같은 데이터로 학습한 사전을 다른 과제에도 쓸 수 있다.</p>
+<p><strong>(5) 정책과 학습.</strong> 정책은 위상 변수나 목표 자세 없이 몸 상태와 목표 $g$만 보고, 관절 PD(proportional-derivative) 목표를 낸다(§6.1). 정책과 가치 함수는 PPO로 갱신한다.
+판별기는 데이터와 재생 버퍼에서 전이를 256개씩 뽑아 갱신한다(알고리즘 1, 표 4). 재생 버퍼(크기 10⁵)에는 지난 반복의 정책 궤적이 쌓이고, 저자는 이것이 판별기의 최신 정책 과적합을 막는다고 적는다(§6.3). 기준 상태 초기화는 데이터의 모든 클립에서 시작 상태를 뽑는다. 조기 종료는 발 외의 몸이 땅에 닿으면 걸고, 구르기와 일어나기처럼 접촉이 많은 과제에서는 끈다.</p>
+<p><strong>(6) 캐릭터와 과제.</strong> 캐릭터는 34자유도 휴머노이드, 59자유도 T-Rex, 64자유도 개다(§7). 과제는 목표 방향(1–5 m/s)·목표 위치·축구공 드리블·표적 치기·장애물 통과의 다섯이다. 장애물 통과는 장애물 코스와 디딤돌의 두 환경에서 학습했다(§7). 장애물 과제의 정책은 앞 10 m를 100점으로 잰 1D 높이 지도를 더 본다(부록 A). 시뮬레이터는 Bullet(1.2 kHz)이고 정책은 30 Hz로 돈다(§8.1).</p>
+<p><strong>결과.</strong> 과제 수익은 에피소드의 최소를 0, 최대를 1로 정규화했고, seed 3개 × 에피소드 32개의 평균이다(원문 표 1). ± 뒤 값의 정의는 원문에 없다. 데이터 크기는 원문 표 2에서 옮겨 합쳤다.</p>
+<table>
+<thead>
+<tr>
+<th>과제</th>
+<th>데이터 (길이 s · 클립 · 사람)</th>
+<th>과제 수익</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>휴머노이드 목표 방향</td>
+<td>Locomotion (434.1 · 56 · 8)</td>
+<td>0.90 ± 0.01</td>
+</tr>
+<tr>
+<td>휴머노이드 목표 방향</td>
+<td>Walk (229.6 · 9 · 5)</td>
+<td>0.46 ± 0.01</td>
+</tr>
+<tr>
+<td>휴머노이드 목표 방향</td>
+<td>Run (204.4 · 47 · 3)</td>
+<td>0.63 ± 0.01</td>
+</tr>
+<tr>
+<td>휴머노이드 목표 방향</td>
+<td>Stealthy (136.5 · 3 · 1)</td>
+<td>0.89 ± 0.02</td>
+</tr>
+<tr>
+<td>휴머노이드 목표 방향</td>
+<td>Zombie (18.3 · 1 · 1)</td>
+<td>0.94 ± 0.00</td>
+</tr>
+<tr>
+<td>휴머노이드 목표 위치</td>
+<td>Locomotion</td>
+<td>0.63 ± 0.01</td>
+</tr>
+<tr>
+<td>휴머노이드 목표 위치</td>
+<td>Zombie</td>
+<td>0.50 ± 0.00</td>
+</tr>
+<tr>
+<td>휴머노이드 장애물</td>
+<td>Run + Leap + Roll (22.1 · 10 · 7)</td>
+<td>0.27 ± 0.10</td>
+</tr>
+<tr>
+<td>휴머노이드 디딤돌</td>
+<td>Cartwheel (13.6 · 3 · 1)</td>
+<td>0.43 ± 0.03</td>
+</tr>
+<tr>
+<td>휴머노이드 디딤돌</td>
+<td>Jump (28.6 · 10 · 4)</td>
+<td>0.56 ± 0.12</td>
+</tr>
+<tr>
+<td>휴머노이드 드리블</td>
+<td>Locomotion</td>
+<td>0.78 ± 0.05</td>
+</tr>
+<tr>
+<td>휴머노이드 드리블</td>
+<td>Zombie</td>
+<td>0.60 ± 0.04</td>
+</tr>
+<tr>
+<td>휴머노이드 치기</td>
+<td>Walk + Punch (247.8 · 15 · 9)</td>
+<td>0.73 ± 0.02</td>
+</tr>
+<tr>
+<td>T-Rex 목표 위치</td>
+<td>Locomotion (10.5 · 5 · 1)</td>
+<td>0.36 ± 0.03</td>
+</tr>
+</tbody>
+</table>
+<p>같은 과제도 데이터만 바꾸면 스타일이 바뀐다. 목표 방향의 수익 차이에는 스타일과 함께 과제 조건의 차이가 섞여 있다. Stealthy와 Zombie는 목표 속도를 1 m/s로 고정했고(§7), Walk만이나 Run만 담은 데이터로는 목표 속도 범위의 한쪽을 따르지 못했다(그림 4).
+Locomotion 데이터로 학습한 정책은 약 1 m/s에서 걷고, 약 2.5 m/s에서 조깅으로, 약 4.5 m/s에서 빠른 달리기로 바꾼다. 회전할 때 몸을 안쪽으로 기울이고, 크게 방향을 틀기 전에 속도를 줄이는 행동도 저절로 나왔다(§8.2).
+치기 데이터에는 걷는 클립과 치는 클립만 있고 걸어가 치는 클립은 없다. 정책은 멀면 걷고 가까우면 치는 순서를 스스로 익혔다. 일어나기 클립을 더하면 넘어진 뒤 일어나 과제를 이었고, 앞으로 넘어질 때는 데이터에 없는 구르기로 몸을 말아 더 빨리 일어났다(§8.2).</p>
+<p>한 클립 모방(원문 표 3)은 과제 보상 없이 스타일 보상만으로 클립 하나를 따라 한다. 자세 오차는 뿌리 기준 관절 위치 오차의 관절 평균(m)이다(식 10). AMP는 기준과 시간이 맞지 않으므로, 두 방법 모두 DTW(dynamic time warping)로 시간을 맞춘 뒤 쟀다. 에피소드는 최대 20 s이고, seed 3개 × 에피소드 32개의 평균이다.</p>
+<table>
+<thead>
+<tr>
+<th>휴머노이드 동작</th>
+<th>데이터 길이 (s)</th>
+<th>DeepMimic식 추종 (m)</th>
+<th>AMP (m)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>뒤공중제비</td>
+<td>1.75</td>
+<td>0.076 ± 0.021</td>
+<td>0.150 ± 0.028</td>
+</tr>
+<tr>
+<td>옆돌기</td>
+<td>2.72</td>
+<td>0.039 ± 0.011</td>
+<td>0.067 ± 0.014</td>
+</tr>
+<tr>
+<td>기어가기</td>
+<td>2.93</td>
+<td>0.044 ± 0.001</td>
+<td>0.049 ± 0.007</td>
+</tr>
+<tr>
+<td>춤</td>
+<td>1.62</td>
+<td>0.038 ± 0.001</td>
+<td>0.055 ± 0.015</td>
+</tr>
+<tr>
+<td>앞공중제비</td>
+<td>1.65</td>
+<td>0.278 ± 0.040</td>
+<td>0.425 ± 0.010</td>
+</tr>
+<tr>
+<td>조깅</td>
+<td>0.83</td>
+<td>0.029 ± 0.001</td>
+<td>0.056 ± 0.001</td>
+</tr>
+<tr>
+<td>점프</td>
+<td>1.77</td>
+<td>0.033 ± 0.001</td>
+<td>0.083 ± 0.022</td>
+</tr>
+<tr>
+<td>구르기</td>
+<td>2.02</td>
+<td>0.072 ± 0.018</td>
+<td>0.088 ± 0.008</td>
+</tr>
+<tr>
+<td>달리기</td>
+<td>0.80</td>
+<td>0.028 ± 0.002</td>
+<td>0.075 ± 0.015</td>
+</tr>
+<tr>
+<td>회전</td>
+<td>1.00</td>
+<td>0.063 ± 0.022</td>
+<td>0.047 ± 0.002</td>
+</tr>
+<tr>
+<td>옆 공중제비</td>
+<td>2.44</td>
+<td>0.191 ± 0.043</td>
+<td>0.124 ± 0.012</td>
+</tr>
+<tr>
+<td>회전 발차기</td>
+<td>1.28</td>
+<td>0.042 ± 0.001</td>
+<td>0.058 ± 0.012</td>
+</tr>
+<tr>
+<td>걷기</td>
+<td>1.30</td>
+<td>0.018 ± 0.005</td>
+<td>0.030 ± 0.001</td>
+</tr>
+<tr>
+<td>좀비 걸음</td>
+<td>1.68</td>
+<td>0.049 ± 0.013</td>
+<td>0.058 ± 0.014</td>
+</tr>
+</tbody>
+</table>
+<p>같은 표의 T-Rex 두 동작과 개 네 동작(구보·측대보·회전·속보)도 모두 추종의 오차가 작다. 이 여섯 가운데 추종 대비 AMP의 오차가 가장 크게 벌어진 것은 T-Rex 방향 바꾸기(0.098 대 0.284 m)와 개 회전(0.026 대 0.086 m)이다.
+스무 동작 가운데 AMP의 오차가 더 작은 것은 휴머노이드의 회전과 옆 공중제비 둘뿐이다. 앞공중제비에서 AMP는 도는 대신 앞으로 발을 끌며 넘어지지 않는 국소 최적에 빠졌다(§8.4). 저자가 내세우는 결과는 수치가 아니라, 동작마다 보상을 짜지 않고도 비슷한 품질을 냈다는 점이다.</p>
+<p><strong>한계.</strong> 저자가 밝힌 것은 넷이다(§9, §8.4). 첫째, 많은 GAN 기법처럼 모드 붕괴에 취약하다. 다양한 클립을 주면 정책이 일부 행동만 따라 하고, 과제에 더 나은 다른 행동을 무시하기 쉽다. 둘째, 동작 사전을 정책마다 처음부터 학습한다. 판별기 입력에 과제 정보는 없지만, 판별기가 보는 정책 표본이 한 과제에서 나오므로 과제 의존성이 스며들 수 있다.
+셋째, 실험이 시간 순서의 조합(걸어간 뒤 치기)에 치우쳤다. 두 기술을 동시에 쓰는 공간 조합은 부록 D에서 일부만 보였다. 넷째, 앞공중제비처럼 국소 최적에 빠지는 동작이 있다. 기준과 시간이 맞지 않아, 추종처럼 기준에서 벗어나면 끝내는 조기 종료로 막을 수 없다(§8.4).
+데이터를 키울 때의 모드 붕괴는 SONIC 서론의 지적으로 I.0에 있다. ASE는 과제마다 처음부터 학습해 걷기 같은 공통 행동을 매번 다시 배우는 것을 이 계열의 약점으로 꼽았다(ASE §2).
+휴머노이드 로봇에서 AMP를 비교한 두 보고는 AMP에 불리하다. ExBody와 PHP(Perceptive Humanoid Parkour)의 AMP 비교는 Planner B.16.6의 두 카드에 있다. ExBody 카드에 없는 결과가 둘 있다. AMP 보상을 더하면 에피소드 길이와 몸통 기울기 추종은 나아졌지만 선속도 추종이 크게 나빠졌다. AMP 보상만으로 정규화 항을 대신한 판은 실물에 옮길 수 없는 고주파 떨림이 생겼다(ExBody §IV, 표 IV).
+PHP 저자는 AMP의 성적이 구현 세부와 조정에 크게 좌우될 수 있다고 덧붙였다(PHP 부록 C2).</p>
+<p><strong>travplan에 주는 의미.</strong> AMP의 보상 분해로 보면 TP-0066 후보 채점의 어느 항이 손으로 짠 스타일인지 드러난다. <code>scripts/rl_finetune_planner_d.py</code>의 과제 쪽 항은 진행·GT(ground truth) cost·치명이고, 가중은 차례로 1.0·2.0·5.0이다. 스타일 쪽은 정규화한 twist 가속의 제곱 평균에 0.02를 곱한 부드러움 항과, 시연 쪽으로 당기는 모방 손실(λ = 0.5)이다(Planner B.15.3).
+AMP식으로 바꾸면 부드러움 항 자리에 판별기 점수가 들어간다. 데이터는 Planner D가 이미 쓰는 시연, 곧 Guidance + MPPI가 최적화한 4초 제어열이다(Planner B.8.3). 다만 그 판별기가 배우는 스타일은 사람다운 주행이 아니라 MPPI가 낸 twist의 모양이다. 승차감이나 보행자가 읽기 쉬운 움직임을 바란다면, 사람이 조종한 배달로봇 로그(Planner B.6d의 MIMIC)가 먼저 있어야 한다.
+판별기를 들인다면 AMP의 설계 둘을 따른다. 특징에는 twist와 그 변화율을 넣는다. AMP에서는 속도 특징을 빼자 구르기를 배우지 못했다(§8.5). TravMap 같은 과제 특징은 뺀다(§5.3). 지형을 보는 판별기는 시연이 어디로 갔는지까지 배워, 스타일 점수가 치명 셀 판정과 섞인다. 학습한 비용을 안전 판정과 떼어 두라는 강화학습 R.17의 결론과 같은 이유다.
+TP-0066은 4초 후보를 통째로 채점하므로, 판별기도 전이 한 쌍보다 후보 구간 전체를 보는 편이 맞는다. MimicKit의 AMP 기본 설정이 판별기에 10프레임을 주는 것과 같은 방향이다. 여기까지는 가설이고 재지 않았다.
+그림 5는 채택 판정의 함정을 보인다. 동작 데이터 없이 과제 보상만 쓴 정책이 장애물 과제에서 AMP보다 높은 수익을 냈다(아래 토글). 스타일 항이 과제를 깎을 수 있으므로, CLAUDE.md의 2층 게이트와 치명 실패 규칙(하나라도 늘면 기본값으로 채택하지 않는다)으로 판정한다.</p>
+<details>
+<summary>자세히: AMP의 방법과 수식</summary>
+<p><strong>버전 주의.</strong> arXiv v1(2021-04-05)과 v2(2022-05-12)는 키워드 줄만 다르다. arXiv 목록 페이지의 초록에는 본문 초록의 장애물 코스 예시 문장이 빠져 있다.
+표 4·5의 PPO 자르기 문턱은 arXiv판이 0.02, 프로젝트 페이지의 학회지판 PDF가 0.2다. 원 코드의 AMP 설정(<code>data/agents/ct_agent_humanoid_amp*.txt</code>의 <code>RatioClip</code>)도 0.2다.</p>
+<p><strong>상태·행동·망(§6.1, §6.2).</strong> 정책 상태는 뿌리 기준 링크별 상대 위치, 링크 회전, 링크 선속도와 각속도이고, 모두 캐릭터 국소 좌표에서 잰다. 회전은 법선과 접선 두 3D 벡터로 쓰는 6D 표현이다. 행동은 관절 PD 목표다. 구면 관절은 3D 지수 사상 $q$로 내고(회전축 $q / \|q\|$, 회전각 $\|q\|$), 회전 관절은 각 하나로 낸다.
+정책 평균은 은닉층 1024·512개의 완전 연결망이고, 대각 공분산은 손으로 정해 학습 내내 고정한다. 가치 함수와 판별기도 같은 꼴의 별도 망이다.</p>
+<p><strong>하이퍼파라미터(표 4, 부록 B).</strong> SGD는 stochastic gradient descent, GAE는 generalized advantage estimation, TD는 temporal difference다.</p>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>값</th>
+<th>항목</th>
+<th>값</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>과제 · 스타일 · 기울기 벌점 가중</td>
+<td>0.5 · 0.5 · 10</td>
+<td>할인율 (한 클립 · 과제)</td>
+<td>0.95 · 0.99</td>
+</tr>
+<tr>
+<td>갱신당 표본 · 묶음 · 판별기 묶음</td>
+<td>4,096 · 256 · 256</td>
+<td>SGD 모멘텀 · GAE(λ) · TD(λ)</td>
+<td>0.9 · 0.95 · 0.95</td>
+</tr>
+<tr>
+<td>정책 학습률 (한 클립 · 과제)</td>
+<td>2×10⁻⁶ · 4×10⁻⁶</td>
+<td>판별기 학습률 · 재생 버퍼</td>
+<td>10⁻⁵ · 10⁵</td>
+</tr>
+<tr>
+<td>가치 학습률 (한 클립 · 과제)</td>
+<td>10⁻⁴ · 2×10⁻⁵</td>
+<td>PPO 자르기 문턱</td>
+<td>arXiv판 0.02, 학회지판 0.2</td>
+</tr>
+</tbody>
+</table>
+<p>저자는 한 클립 모방에서 할인율을 0.95로 낮추면 기준 동작을 더 가깝게 따른다고 적는다. 과제가 있는 실험에는 모두 0.99를 쓴다. 드리블과 치기처럼 긴 계획이 필요할 수 있어서다.</p>
+<p><strong>과제 보상(부록 A).</strong> 과제 보상은 과제마다 짧은 식이다. 목표 방향은 질량 중심 속도를 목표 방향 $d^*$에 투영해 목표 속도 $v^*$와 비교한다.</p>
+<p>$$ r^G_t = \exp\left(-0.25\,\left(v^* - d^* \cdot \dot x^{com}_t\right)^2\right) $$</p>
+<p>목표 위치는 거리 항(0.7)과 1 m/s 이상으로 다가가는 속도 항(0.3)의 합이다. 드리블은 공에 다가가기·공 곁에 있기·공을 목표 쪽으로 굴리기·공을 목표에 두기의 합이고, 가중은 차례로 0.1·0.1·0.3·0.5다.
+치기는 맞힌 뒤에는 1이다. 표적 1.375 m 안에서는 끝점 위치와 끝점 속도 항을, 그 밖에서는 목표 위치 꼴 항을 준다. 장애물은 목표 방향 보상을 앞 방향으로 고정해 쓴다.</p>
+<p><strong>학습 루프와 계산(알고리즘 1, §6.3, §8.1).</strong> 정책으로 궤적 m개를 모으고, 전이마다 판별기 점수로 스타일 보상을 계산해 과제 보상과 섞은 뒤, 궤적을 재생 버퍼에 넣는다. 데이터와 버퍼에서 전이를 K개씩 뽑아 판별기를 n번 갱신하고, PPO로 정책과 가치 함수를 갱신한다. 가치 목표는 TD(λ)로, 이점은 GAE(λ)로 계산한다.
+과제와 캐릭터에 따라 정책 하나에 표본 1억–3억 개, CPU 16코어로 약 30–140시간이 들었다.</p>
+<p><strong>절제(§8.5, 그림 8).</strong> 기울기 벌점이 가장 중요했다. 빼면 학습 중 성능이 크게 출렁이고 최종 정책에 눈에 띄는 결함이 남았다. 벌점은 여러 기술에서 학습도 빠르게 했다.
+판별기는 연속한 두 자세를 보므로 원리상 속도를 추론할 수 있다. 그러나 구르기처럼 그것만으로 부족한 동작이 있었다. 속도 특징이 없으면 구르는 대신 바닥에서 한 자세로 버티는 쪽으로 수렴했다.</p>
+<p><strong>잠재 공간 모델과 비교(§8.3, 부록 C, 그림 5).</strong> 비교 모델의 아래 층은 다음 두 프레임의 기준 자세를 16차원 잠재로 받아 추종하도록 표본 3억 개로 사전학습한다. KL(Kullback–Leibler) 가중은 10⁻⁴이고, 5–10 s마다 기준 클립을 바꾼다. 과제마다 위 층이 잠재를 고른다.
+그림 5에서 이 모델은 목표 위치와 드리블에서 가장 빨리 오르지만, 치기와 장애물에서는 낮게 머문다(그림에서 읽으면 약 0.2와 0.06). 동작 데이터 없이 과제 보상만 쓴 정책은 장애물에서 약 0.6으로 AMP(약 0.3)보다 높다. 저자는 AMP와 잠재 공간 모델이 이 기준선보다 훨씬 생명체다운 동작을 낸다고 적는다. 자연스러움은 수치로 재지 않고 영상으로 보였다.</p>
+<div class="fig-grid"><figure class="fig"><a class="thumb" href="https://arxiv.org/html/2104.02180v2/figures/curves_humanoid_roll.png" title="원본 보기"><img alt="AMP 절제 학습 곡선, 구르기" src="assets/thumbs/5be333b6ec41.webp" loading="lazy" width="872" height="665"></a><figcaption>그림 — AMP (Fig. 8 일부, 구르기): 뒤공중제비 그림과 같은 네 곡선이다. 속도 특징을 뺀 AMP(주황)는 약 0.4 m에서 멈춘다. 기울기 벌점을 뺀 AMP(초록)는 약 6천만 표본에서야 크게 내려간다. AMP(파랑)는 약 0.1 m로 추종(빨강)에 가깝다. 출처: <a href="https://arxiv.org/abs/2104.02180">arXiv:2104.02180</a></figcaption></figure>
+<figure class="fig"><a class="thumb" href="https://arxiv.org/html/2104.02180v2/figures/comp_curves_humanoid_obstacles.png" title="원본 보기"><img alt="AMP 비교 학습 곡선, 장애물" src="assets/thumbs/d1cd0dc59d6f.webp" loading="lazy" width="873" height="666"></a><figcaption>그림 — AMP (Fig. 5 일부, 장애물): 표본 수(가로, 최대 3억)에 따른 과제 수익(세로)이다. 초록은 동작 데이터 없이 과제 보상만 쓴 정책, 주황은 잠재 공간 모델, 파랑은 AMP다. 출처: <a href="https://arxiv.org/abs/2104.02180">arXiv:2104.02180</a></figcaption></figure>
+</div><p><strong>공간 조합(부록 D, 표 6).</strong> 목표 방향으로 걸으며 오른손을 목표 높이로 드는 과제이고, 데이터에는 걷기와 손 흔들기가 따로만 있다. 둘을 함께 담은 데이터(281.4 s)로 학습한 정책만 두 목표를 모두 채웠다. 방향 수익은 0.885, 손 수익은 0.891이고, 모델마다 에피소드 100개의 평균이다.
+걷기만 쓰면 손 수익이 0.306이고, 손 흔들기만 쓰면 방향 수익이 0.683이며 발을 끌며 어색하게 걸었다. 손 높이 목표가 높으면 함께 담은 데이터에서도 부자연스러운 동작이 나왔다.</p>
+<p><strong>공개 구현의 차이.</strong> 공개 구현 셋 가운데 논문의 최소제곱 판별기를 그대로 쓰는 것은 DeepMimic 저장소뿐이고, ASE 저장소와 MimicKit은 교차 엔트로피 판별기를 쓴다. 값은 각 저장소의 AMP 기본 설정이다. 코드마다 손실의 상수 배가 달라 벌점 설정값끼리는 그대로 비교하지 않는다.</p>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>논문 (§5, 표 4)</th>
+<th>DeepMimic 저장소 (TensorFlow, 2021-04)</th>
+<th>ASE 저장소 (Isaac Gym, 2022)</th>
+<th>MimicKit (2025)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>판별기 목적</td>
+<td>최소제곱 (+1, −1)</td>
+<td>최소제곱 (+1, −1)</td>
+<td>교차 엔트로피</td>
+<td>교차 엔트로피</td>
+</tr>
+<tr>
+<td>스타일 보상</td>
+<td>식 7</td>
+<td>식 7에 2를 곱함</td>
+<td>GAIL식 로그 보상에 2를 곱함</td>
+<td>GAIL식 로그 보상에 2를 곱함</td>
+</tr>
+<tr>
+<td>기울기 벌점을 거는 표본 (설정값)</td>
+<td>데이터 (10)</td>
+<td>데이터 (10)</td>
+<td>데이터 (5)</td>
+<td>데이터와 정책 (5)</td>
+</tr>
+<tr>
+<td>판별기 입력</td>
+<td>전이 한 쌍</td>
+<td>전이 한 쌍</td>
+<td>10프레임</td>
+<td>10프레임</td>
+</tr>
+<tr>
+<td>출력층 L2 · 가중치 감쇠</td>
+<td>논문에 없음</td>
+<td>0.05 · 5×10⁻⁴</td>
+<td>0.01 · 10⁻⁴</td>
+<td>0.01 · 10⁻⁴</td>
+</tr>
+<tr>
+<td>과제와 스타일 가중</td>
+<td>0.5 · 0.5</td>
+<td>0.5 · 0.5 (드리블과 Zombie 목표 방향은 0.7 · 0.3)</td>
+<td>0.5 · 0.5 (과제 설정)</td>
+<td>0.5 · 0.5 (과제 설정)</td>
+</tr>
+</tbody>
+</table>
+<p>GAIL식 로그 보상은 $-\log(1 - D)$다. 세 구현 모두 판별기 보상에 2를 곱한다. 기본 과제 설정은 과제 보상과 0.5씩 섞으므로, 계수로는 논문보다 스타일 쪽이 두 배 무겁다. 같은 1저자의 ASE 본문도 교차 엔트로피 목적과 이 로그 보상을 쓴다(ASE §5.1). ASE 저장소 코드는 NVIDIA 라이선스(비상업)다.</p>
+</details>
+<p><strong>이어진 연구.</strong> 둘째 한계(과제마다 처음부터 학습)는 같은 1저자의 ASE가 겨냥했다. 카드는 Planner B.16.1에 있고, 같은 소절에 CALM과 PACER(Trace and Pace)가 있다. 추종 보상의 보조 항으로 남은 예는 PHC(I.7)와 HumanX(Planner B.16.6)다.
+로봇 쪽 갈래는 셋이다. AMP for hardware는 Controller F.6과 Planner B.16.2에, 스타일마다 판별기를 둔 Multi-AMP는 Planner B.14.4에 있다. 인식 휴머노이드의 스타일 보상은 인식 A.8에 있다.
+판별기의 다른 약점을 고친 그래픽스 후속은 이 탭에 있다. ADD(I.17)는 손으로 가중한 추종 보상을 오차 벡터만 보는 판별기로 바꾸고, SMP(I.18)는 과제마다 다시 학습하는 판별기 대신 고정한 동작 diffusion 모델의 점수를 보상으로 쓴다. MimicKit(I.19)이 AMP와 두 후속을 한 틀로 다시 구현했고, G1·Go2·HighTorque Pi Plus용 AMP 설정도 담았다.</p>
+<h3>I.17 ADD: 오차 벡터를 보는 판별기가 추종 보상의 가중을 대신 정한다</h3>
+<p><strong>ADD(Adversarial Differential Discriminator) — 기준 동작과의 오차를 쌓은 벡터를 영벡터 하나와 가려내는 판별기가, 항별 가중을 손으로 맞추던 추종 보상을 대신한다</strong>(<a href="https://arxiv.org/abs/2505.04961">arXiv:2505.04961</a>, 원제 "Physics-Based Motion Imitation with Adversarial Differential Discriminators"(v1 제목은 앞에 "ADD:"가 붙었다), Zhang·Bashkirov(공동 1저자)·Yang·Shi·Taylor·Peng, Simon Fraser University·Sony PlayStation·NVIDIA, SIGGRAPH Asia 2025 Conference Papers(홍콩, 2025-12, DOI <a href="https://doi.org/10.1145/3757377.3763819">10.1145/3757377.3763819</a>), <a href="https://add-moo.github.io/">프로젝트</a>, <a href="https://youtu.be/SZpQfXNDulo">영상</a>, <a href="https://github.com/xbpeng/MimicKit">코드</a> Apache-2.0).</p>
+<p><strong>한 줄 요약.</strong> <mark>추종 보상을 항별 가중합으로 짜는 대신 오차 벡터와 영벡터를 가려내는 판별기의 출력을 보상으로 쓰면, 가중을 손으로 맞추지 않고도 DeepMimic 수준으로 동작을 따라 한다.</mark> 이중 콩 볼트(Double Kong)에서는 DeepMimic이 넘지 못한 상자를 넘었다(위치 오차 0.030 대 0.223 m, 표 1).</p>
+<p><strong>왜 중요한가.</strong> 강화학습 추종 보상은 관절 회전, 뿌리 위치 같은 특징마다 지수 오차 항을 두고 가중합한다(원문 식 6, 7). 저자는 항마다 가중 $w^i$와 척도 $\alpha^i$를 맞추는 일이 고되고, 동작 종류에 따라 다시 맞춰야 할 수 있다고 적는다(§5). 이 논문의 DeepMimic 기준선도 보상 매개변수가 24개다(가중 5, 척도 5, 관절 가중 14, 표 7). 저자는 Sony EVAL 로봇으로 옮길 때 이 값을 다시 맞췄다(표 10).
+데이터에서 보상을 배우는 적대적 모방은 이 수작업을 던다. GAIL(generative adversarial imitation learning)과 AMP(adversarial motion priors)가 그 예이고, 둘 다 데이터 전체의 분포만 맞춘다. 그래서 정책이 동작 조각의 순서를 바꾸거나 모드를 빠뜨릴 수 있다. 사이 동작 채우기나 키프레임 후처리처럼 클립을 정확히 재현해야 하는 응용에는 이것이 약점이다(§2).
+저자는 다목적 최적화의 다른 해법에도 부담이 있다고 본다. 진화 알고리즘은 해의 집단을 유지하느라 비싸다. 선호 벡터를 받는 메타 정책은 그 선호를 사람이 정해야 한다. 목적마다 비평가를 두는 방법은 척도 차이를 풀지만 비평가를 목적 수만큼 둔다. 저자는 ADD가 선호 지정과 여러 비평가 없이 균형을 잡는다고 적는다(§2).
+ADD는 AMP 판별기(I.16)를 분포 맞추기에서 프레임별 추종으로 돌려 쓴다. 저자는 양성 표본 하나로 학습한 판별기도 최적화를 이끈다는 것을 이 논문의 핵심 발견으로 꼽는다(§1).</p>
+<p><strong>초록 번역.</strong> (arXiv v2, 2025-10-04) 여러 목적을 동시에 최적화해야 하는 다목적 최적화 문제는 수많은 응용에 널리 퍼져 있다. 기존 다목적 최적화 방법은 하나의 결합 목적을 세우려고 손으로 조정한 집계 함수에 기대는 경우가 많다. 손으로 조정하는 이런 방법의 성능은 신중한 가중치 선택에 크게 좌우되고, 그 선택은 시간이 많이 드는 고된 과정이다. 같은 한계가 물리 시뮬레이션 캐릭터를 위한 강화학습 기반 동작 추종에서도 나타난다. 이 분야는 충실도 높은 결과를 얻으려고 정교하게 짠 보상 함수를 흔히 쓴다. 이런 해법은 분야 지식과 상당한 수동 조정을 요구할 뿐 아니라, 만들어진 보상 함수를 다양한 기술에 쓰는 것도 제한한다. 이 간극을 메우려고, 우리는 동작 추종을 포함한 여러 다목적 강화학습 과제에 폭넓게 쓸 수 있는 새로운 적대적 다목적 최적화 기법을 제시한다. 우리가 제안하는 적대적 차분 판별기(ADD)는 양성 표본을 하나만 받는데도 최적화 과정을 효과적으로 이끈다. 우리는 이 기법이 손으로 설계한 보상 함수 없이도 캐릭터가 여러 곡예적이고 민첩한 행동을 가깝게 재현하게 하며, 최신 동작 추종 방법과 견줄 만한 품질을 낸다는 것을 보인다. 코드와 결과는 <a href="https://add-moo.github.io/">프로젝트 페이지</a>에 있다.</p>
+<div class="fig-grid"><figure class="fig"><a class="thumb" href="https://add-moo.github.io/static/images/add_dm_reward_comp.jpg" title="원본 보기"><img alt="ADD 보상과 DeepMimic 보상" src="assets/thumbs/5f8e50359af9.webp" loading="lazy" width="1000" height="562"></a><figcaption>그림 — ADD (프로젝트 페이지 그림): 왼쪽은 ADD의 보상이다. 보상은 판별기 출력 하나에서 나오고, 판별기 입력은 기준과 시뮬레이션의 질량 중심 위치(오른쪽 식과 같은 기호 $p^c$), 관절 위치, 관절 회전, 관절 속도 차이를 쌓은 벡터다. 이 그림의 $\Delta$는 요약이고, 논문 §5.1의 특징에는 질량 중심 대신 뿌리의 위치·회전·속도가 들어간다. 오른쪽은 DeepMimic의 모방 보상이다. 항 넷에 가중 0.65, 0.1, 0.15, 0.1을 두고, 항마다 지수 계수 2, 0.1, 40, 10을 둔다. 이 식은 DeepMimic 원 논문의 것이고, 본 실험의 기준선은 뿌리 속도 항을 더한 다섯 항이다(표 7). 출처: <a href="https://add-moo.github.io/">프로젝트 페이지</a></figcaption></figure>
+<figure class="fig"><a class="thumb" href="https://arxiv.org/html/2505.04961v2/figures/motion_comparison_learning_curves/double_kong_learning_curve.png" title="원본 보기"><img alt="ADD Fig. 4 이중 콩 학습 곡선" src="assets/thumbs/79729b500755.webp" loading="lazy" width="1000" height="703"></a><figcaption>그림 — ADD (Fig. 4 일부): 이중 콩 볼트를 따라 하는 사람 캐릭터의 위치 오차(m) 학습 곡선이다. 방법마다 seed 5개이고 가로축은 표본 수(×10⁸)다. DeepMimic(파랑)과 AMP(주황)는 서서히 줄어 7억 표본에서도 0.2 m 안팎이다. ADD(빨강)는 2.5억–3.5억 표본 사이에 급히 떨어져 0.03 m대에 닿는다. 출처: <a href="https://arxiv.org/abs/2505.04961">arXiv:2505.04961</a></figcaption></figure>
+</div><p><strong>동작 방식.</strong> 세 단계다.</p>
+<p><strong>(1) 오차를 벡터로 모은다.</strong> 손실 $n$개를 가중합하지 않고 차분 벡터 $\Delta = (l^1(\theta), \dots, l^n(\theta))$로 이어 붙인다(§4). 동작 추종에서는 기준 상태와 정책 상태에서 같은 특징을 뽑아 뺀 $\Delta_t = \phi(\hat s_t) \ominus \phi(s_t)$가 이 벡터다(§5.1). 특징은 뿌리의 위치·회전·속도와 관절의 위치·회전·속도다(토글).</p>
+<p><strong>(2) 영벡터와 가려낸다.</strong> 판별기 $D(\Delta)$는 영벡터를 양성, 정책이 만든 $\Delta$를 음성으로 가린다. AMP(I.16)의 최소제곱 손실 대신 표준 GAN(generative adversarial network)의 로그 손실을 쓴다(식 8). 그대로 두면 $D$가 영점에서만 1이고 나머지에서 0인 델타 함수로 수렴할 수 있고, 그러면 정책이 받는 기울기가 정보를 잃는다(§4). 그래서 정책 상태 분포 $p(s \mid \pi)$에서 뽑은 음성 표본 위에 기울기 벌점(GP, gradient penalty)을 건다(식 9). AMP는 같은 벌점을 데이터 쪽 양성 표본에 걸었는데, ADD의 양성은 점 하나라 음성 쪽으로 옮겼다(§5).</p>
+<p>$$ \max_D \; \log D(\mathbf 0) + \mathbb E_{p(s \mid \pi)}\big[\log(1 - D(\Delta))\big] - \lambda^{GP}\, \mathbb E_{p(s \mid \pi)}\Big[\big\| \nabla_\phi D(\phi)\big|_{\phi = \Delta} \big\|_2^2\Big] $$</p>
+<p><strong>(3) 판별기 출력이 보상이다.</strong> 정책 보상은 $r_t = -\log(1 - D(\Delta_t))$이다(식 10). 정책은 PPO로, 가치 함수는 시간차 목표 TD(λ)로 학습한다. 판별기는 같은 경험 버퍼에서 뽑은 미니배치로 함께 갱신한다(§6.3, 알고리즘 1). 정책은 $\Delta$를 0으로 밀어 판별기를 속이려 한다. 판별기는 정책이 아직 줄이지 못한 목적의 조합으로 주의를 옮긴다(§4). 기울기 $\nabla_\Delta D$가 목적별 가중 노릇을 한다(부록 A.2, 토글의 그림 11).</p>
+<p><strong>과제 목적도 같은 벡터에 넣는다.</strong> 조향 과제는 목표 속도·방향 오차를 $\Delta$ 끝에 붙인다(부록 B.6). Walker와 Go1은 기준 동작 없이, 과제가 정한 목표값과의 차이로 $\Delta$를 만든다(§7.1). Walker의 $\Delta$는 몸통 높이, 몸통 각의 코사인, 수평 속도가 목표값(1.2, 1, 8.0)에서 벗어난 세 성분이다. 저자는 이 값이 조정할 매개변수가 아니라 문제 정의라고 적는다(부록 C.1).</p>
+<p><strong>결과.</strong> 동작 추종 평가는 모두 Isaac Gym 시뮬레이션이다(부록 B.1). 위치 오차는 뿌리 기준 관절 위치 오차와 뿌리 전역 위치 오차를 (관절 수 + 1)로 평균한 값이다(식 12, m). 관절 속도 오차는 떨림의 지표로 쓴다(§6.4). 공정한 비교를 위해 DeepMimic의 자세 오차 종료를 끄고, 몸이 땅에 잘못 닿을 때만 에피소드를 끝냈다. 두 기준선은 DeepMimic·AMP 원저자가 공개하고 조정한 코드로 돌렸다. AMP는 추종용이 아니지만 ADD와 같은 적대적 틀이라 함께 비교했다(§6.4).</p>
+<p><strong>표 1(원문 표 1, v2).</strong> 대상은 28자유도 사람 캐릭터다. seed 5개의 평균 ± 표준편차이고(LAFAN1 부분집합은 계산 비용 때문에 1개), 모델마다 시험 에피소드 4,096개다.</p>
+<table>
+<thead>
+<tr>
+<th>기술</th>
+<th>길이 (s)</th>
+<th>위치 오차 AMP (m)</th>
+<th>DeepMimic (m)</th>
+<th>ADD (m)</th>
+<th>관절 속도 오차 AMP (rad/s)</th>
+<th>DeepMimic (rad/s)</th>
+<th>ADD (rad/s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>달리기(Run)</td>
+<td>0.80</td>
+<td>0.163 ± 0.008</td>
+<td>0.013 ± 0.002</td>
+<td>0.165 ± 0.017</td>
+<td>2.811 ± 0.048</td>
+<td>0.584 ± 0.054</td>
+<td>0.478 ± 0.007</td>
+</tr>
+<tr>
+<td>조깅(Jog)</td>
+<td>0.83</td>
+<td>0.120 ± 0.007</td>
+<td>0.021 ± 0.000</td>
+<td>0.024 ± 0.004</td>
+<td>2.017 ± 0.052</td>
+<td>0.575 ± 0.007</td>
+<td>0.507 ± 0.010</td>
+</tr>
+<tr>
+<td>옆 공중제비(Sideflip)</td>
+<td>2.44</td>
+<td>0.387 ± 0.011</td>
+<td>0.138 ± 0.004</td>
+<td>0.145 ± 0.006</td>
+<td>2.276 ± 0.014</td>
+<td>1.118 ± 0.034</td>
+<td>1.350 ± 0.049</td>
+</tr>
+<tr>
+<td>기어가기(Crawl)</td>
+<td>2.93</td>
+<td>0.050 ± 0.006</td>
+<td>0.027 ± 0.000</td>
+<td>0.028 ± 0.002</td>
+<td>0.646 ± 0.089</td>
+<td>0.430 ± 0.006</td>
+<td>0.283 ± 0.002</td>
+</tr>
+<tr>
+<td>구르기(Roll)</td>
+<td>2.00</td>
+<td>0.141 ± 0.031</td>
+<td>0.115 ± 0.132</td>
+<td>0.152 ± 0.005</td>
+<td>1.576 ± 0.318</td>
+<td>0.994 ± 0.051</td>
+<td>1.330 ± 0.101</td>
+</tr>
+<tr>
+<td>이중 콩 볼트(Double Kong)</td>
+<td>5.17</td>
+<td>0.214 ± 0.014</td>
+<td>0.223 ± 0.006</td>
+<td>0.030 ± 0.001</td>
+<td>1.309 ± 0.043</td>
+<td>0.784 ± 0.013</td>
+<td>0.473 ± 0.004</td>
+</tr>
+<tr>
+<td>엎드려 일어나기(Getup Facedown)</td>
+<td>3.03</td>
+<td>0.096 ± 0.018</td>
+<td>0.023 ± 0.001</td>
+<td>0.022 ± 0.001</td>
+<td>0.838 ± 0.029</td>
+<td>0.433 ± 0.008</td>
+<td>0.325 ± 0.005</td>
+</tr>
+<tr>
+<td>회전 발차기(Spinkick)</td>
+<td>1.28</td>
+<td>0.064 ± 0.010</td>
+<td>0.078 ± 0.062</td>
+<td>0.025 ± 0.000</td>
+<td>1.453 ± 0.327</td>
+<td>1.222 ± 0.233</td>
+<td>0.774 ± 0.007</td>
+</tr>
+<tr>
+<td>옆돌기(Cartwheel)</td>
+<td>2.71</td>
+<td>0.076 ± 0.006</td>
+<td>0.144 ± 0.153</td>
+<td>0.017 ± 0.000</td>
+<td>0.722 ± 0.020</td>
+<td>0.659 ± 0.160</td>
+<td>0.317 ± 0.002</td>
+</tr>
+<tr>
+<td>뒤공중제비(Backflip)</td>
+<td>1.75</td>
+<td>0.267 ± 0.015</td>
+<td>0.111 ± 0.054</td>
+<td>0.062 ± 0.001</td>
+<td>2.243 ± 0.113</td>
+<td>1.103 ± 0.024</td>
+<td>0.878 ± 0.013</td>
+</tr>
+<tr>
+<td>오르기(Climb)</td>
+<td>9.97</td>
+<td>0.185 ± 0.021</td>
+<td>0.066 ± 0.004</td>
+<td>0.046 ± 0.031</td>
+<td>1.190 ± 0.012</td>
+<td>0.567 ± 0.015</td>
+<td>0.374 ± 0.071</td>
+</tr>
+<tr>
+<td>춤 A(Dance A)</td>
+<td>1.62</td>
+<td>0.065 ± 0.009</td>
+<td>0.065 ± 0.029</td>
+<td>0.028 ± 0.007</td>
+<td>0.895 ± 0.108</td>
+<td>0.830 ± 0.090</td>
+<td>0.428 ± 0.014</td>
+</tr>
+<tr>
+<td>걷기(Walk)</td>
+<td>0.96</td>
+<td>0.132 ± 0.021</td>
+<td>0.009 ± 0.001</td>
+<td>0.009 ± 0.001</td>
+<td>1.394 ± 0.123</td>
+<td>0.286 ± 0.005</td>
+<td>0.213 ± 0.003</td>
+</tr>
+<tr>
+<td>AMASS DanceDB</td>
+<td>2,804</td>
+<td>0.299 ± 0.001</td>
+<td>0.045 ± 0.002</td>
+<td>0.044 ± 0.001</td>
+<td>1.156 ± 0.009</td>
+<td>0.504 ± 0.019</td>
+<td>0.387 ± 0.010</td>
+</tr>
+<tr>
+<td>LAFAN1 부분집합</td>
+<td>5,470</td>
+<td>0.438 ± 0.000</td>
+<td>0.029 ± 0.000</td>
+<td>0.028 ± 0.000</td>
+<td>1.302 ± 0.000</td>
+<td>0.511 ± 0.000</td>
+<td>0.393 ± 0.000</td>
+</tr>
+</tbody>
+</table>
+<p>한 클립 13개 중 위치 오차는 ADD가 8개에서 가장 작거나 같았고(걷기는 0.009 m로 같다), DeepMimic은 달리기·조깅·옆 공중제비·기어가기·구르기 5개에서 작았다. 큰 데이터 둘에서는 두 방법의 위치 오차 차이가 0.001 m다. 관절 속도 오차는 15행 중 13행에서 ADD가 가장 작다.</p>
+<p><strong>표 2(원문 표 2).</strong> Sony EVAL 로봇(26자유도, 시뮬레이션)의 위치 오차(m). seed 3개 × 시험 에피소드 4,096개의 평균 ± 표준편차다.</p>
+<table>
+<thead>
+<tr>
+<th>기술</th>
+<th>AMP</th>
+<th>DeepMimic</th>
+<th>ADD</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>걷기</td>
+<td>0.020 ± 0.001</td>
+<td>0.013 ± 0.002</td>
+<td>0.036 ± 0.002</td>
+</tr>
+<tr>
+<td>차기</td>
+<td>0.030 ± 0.00</td>
+<td>0.012 ± 0.000</td>
+<td>0.008 ± 0.000</td>
+</tr>
+<tr>
+<td>주먹 지르기</td>
+<td>0.020 ± 0.003</td>
+<td>0.007 ± 0.000</td>
+<td>0.005 ± 0.000</td>
+</tr>
+</tbody>
+</table>
+<p>로봇 걷기에서 ADD 오차는 DeepMimic의 약 2.8배였다. 저자는 이것을 사람 달리기와 같은 뿌리 위치 문제로 본다(§6.4).</p>
+<p><strong>표 3(원문 표 3).</strong> 기준 동작을 따르면서 목표 방향으로 목표 속도를 내는 조향 과제다. 목표 속도 오차는 뿌리 2차원 속도와 목표 속도 벡터의 차이 노름이다. ADD는 과제 목적을 $\Delta$에 붙이고, AMP와 DeepMimic은 추종 보상과 과제 보상을 0.5씩 더했다(부록 B.6).</p>
+<table>
+<thead>
+<tr>
+<th>방법</th>
+<th>위치 오차 달리기 (m)</th>
+<th>위치 오차 걷기 (m)</th>
+<th>목표 속도 오차 달리기 (m/s)</th>
+<th>목표 속도 오차 걷기 (m/s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AMP</td>
+<td>0.188 ± 0.001</td>
+<td>0.117 ± 0.001</td>
+<td>0.810 ± 0.015</td>
+<td>0.374 ± 0.042</td>
+</tr>
+<tr>
+<td>DeepMimic</td>
+<td>0.048 ± 0.000</td>
+<td>0.034 ± 0.003</td>
+<td>0.882 ± 0.038</td>
+<td>0.411 ± 0.049</td>
+</tr>
+<tr>
+<td>ADD</td>
+<td>0.029 ± 0.001</td>
+<td>0.024 ± 0.001</td>
+<td>0.803 ± 0.009</td>
+<td>0.274 ± 0.003</td>
+</tr>
+</tbody>
+</table>
+<p>조향을 섞으면 ADD가 네 칸 모두에서 가장 낮다. 달리기 위치 오차의 순위가 한 클립 추종(표 1)과 뒤집힌 이유는 논문이 설명하지 않고, 이 표의 seed 수도 적혀 있지 않다.</p>
+<p><strong>추종 밖의 과제(§7.2).</strong> DeepMind Control Suite의 2차원 Walker에서 정규화한 최종 수익은 ADD 0.691 ± 0.053, 손으로 짠 보상 0.705 ± 0.051이다(seed 10개, 그림 7). Go1 보행(legged_gym 보상, Rudin 외, 보행 갤러리 G.4)에서는 선속도 명령 추종이 조금 나빴다. 몸통 roll·pitch 각속도와 관절 가속은 더 낮았다(seed 5개, 그림 8). 정성적으로는 발을 더 들고 보폭이 긴 걸음이 나왔다고 적는다(그림 6). 조향 과제 정책에 학습 때 없던 최대 300 N의 무작위 외력을 뿌리에 주면, ADD의 성능 저하는 DeepMimic과 비슷했다(부록 B.7, 그림 15).</p>
+<p><strong>한계.</strong> 저자가 밝힌 것(§6.4, §9):</p>
+<ul>
+<li>역동적인 동작에서 국소 최적에 빠진다. 옆 공중제비는 다 돌지 않고 서는 쪽으로, 구르기는 누웠다 일어나는 쪽으로 수렴했다. 기존 방법은 추종 오차로 끝내는 조기 종료로 이것을 막는데, 공정한 비교를 위해 일부러 뺐다.</li>
+<li>앞으로 가는 이동(사람 달리기, 로봇 걷기)에서 DeepMimic보다 덜 정확하다. 저자의 가설은 뿌리 위치가 고차원 $\Delta$의 세 성분뿐이고, 기울기 벌점이 판별기가 그 성분에 큰 가중을 주지 못하게 막는다는 것이다.</li>
+<li>큰 데이터로 범용 제어기를 학습하는 것은 앞으로의 과제로 남겼다.</li>
+</ul>
+<p>우리가 보기에:</p>
+<ul>
+<li>실험은 모두 시뮬레이션이다. EVAL과 Go1도 시뮬레이션이고 실물 결과는 없다.</li>
+<li>손 조정이 사라지지는 않았다. 기울기 벌점 계수가 동작(오르기 0.1, 나머지 1)과 과제(Walker 0.001, Go1 0.1)마다 다르다(표 6, 12, 15). 조향 성분은 정규화 뒤 50배로 키웠다(부록 B.6). Go1의 $\Delta$에도 허용 문턱 넷이 있는데 고른 근거는 적혀 있지 않다(식 26).</li>
+<li>벽시계 시간이 DeepMimic의 1.2–1.4배다(부록 B.1). LAFAN1 부분집합 결과는 seed 하나다.</li>
+</ul>
+<p>뒤 연구가 보고한 것:</p>
+<ul>
+<li>PDF-HR(Pose Distance Fields for Humanoid Robots, <a href="https://arxiv.org/abs/2602.04851">arXiv:2602.04851</a>, 2026-02)은 MimicKit 기본 하이퍼파라미터로 Unitree G1 동작 9개를 8억 표본까지 학습했다. 성공률을 에피소드 길이 대비 끊김 없이 따라간 시간의 비율로 재면, ADD는 뒤공중제비와 이중 콩에서 80 %에 닿은 seed가 3개 중 하나도 없었다(표 I). 같은 그룹의 PFM-HR(Pose Flow Matching for Humanoid Robots, <a href="https://arxiv.org/abs/2608.03227">arXiv:2608.03227</a>)도 같은 두 동작에서 ADD 단독이 실패했다고 적는다(§IV-B). 몸과 설정이 ADD 논문과 달라 표 1과 바로 비교할 수는 없다.</li>
+<li>Llobera 외(<a href="https://arxiv.org/abs/2610.26278">arXiv:2610.26278</a>, 2026-10)는 ADD를 JAX와 MuJoCo-MJX로 다시 구현했다. 그 구현에서는 판별기 정확도가 2천만 스텝 안에 거의 100 %가 되어 보상 기울기가 사라졌다. 저자는 이것을 영벡터 하나가 양성인 구조의 근본 한계라고 주장하고, 과제 보상을 5–15 % 섞어 해결했다. 걸음 스타일 8개 × 캐릭터 2개의 네 지표는 모두 DeepMimic, ADD, AMP 순이었다(표 1, 관절 위치 오차 1.3–1.5, 2.3–2.4, 9.9–12.8 mm).</li>
+</ul>
+<p><strong>travplan에 주는 의미.</strong> ADD가 들어갈 자리는 travplan의 학습 쪽 보상 둘이고, 치명 항은 그 밖에 남겨야 한다.
+Planner D의 강화학습 후학습(TP-0066)은 후보 궤적을 진행 1.0, 비용 2.0, 치명 5.0, 부드러움 0.02의 가중합으로 채점하고 모방 정규화 0.5를 더한다(<code>scripts/rl_finetune_planner_d.py</code> 기본값). 학습 Controller <code>TinyPolicy</code>(TP-0128)는 진화 전략(ES, evolution strategies)으로 다듬는다. 그 스텝 보상은 진행 10, cost −0.5(시간 간격을 곱함), 시간 −0.02의 가중합이다. 치명·넘어짐에는 −10, 도달에는 +10을 준다(<code>scripts/train_playground_policy.py</code>).
+ADD로 바꾼다면 진행 부족분, 국소 cost, 제어 변화율처럼 안전과 무관한 항만 $\Delta$로 모으고 양성은 영벡터로 둔다. 사람 동작 데이터는 필요 없다. Walker와 Go1처럼 과제 목표값과의 차이로 $\Delta$를 만들면 되고, Guidance + MPPI 시연과의 차이를 성분으로 더할 수도 있다. 가설이고 재지 않았다.
+치명 항은 $\Delta$에 넣지 않고 고정 벌점과 종료로 남긴다. 그림 11의 반복 30,000에서 원점 쪽 쉬운 영역(x &lt; 1.9)의 판별기 기울기는 0이었다. 치명 셀을 드물게만 밟는 정책에서는 치명 성분의 가중도 같은 식으로 0 근처로 떨어질 수 있다(가설이고 재지 않았다). travplan 게이트는 치명 실패가 하나라도 늘면 채택하지 않으므로(CLAUDE.md), 안전을 학습한 집계에 맡길 수 없다. 학습한 비용을 안전 판정과 분리하라는 강화학습 R.17의 결론과 같다.
+성분 수도 설계 변수다. 저자는 사람 달리기의 부진을 뿌리 위치(성분 셋)가 고차원 $\Delta$에 묻힌 탓으로 보았다(§6.4). 같은 식으로 스칼라 하나인 진행 성분이 여러 개의 부드러움 성분 사이에서 묻힐 수 있다. 가설이고 재지 않았다.
+I.11은 <code>TinyPolicy</code>를 학습 시뮬로 그대로 BPTT하는 길을 제안했다. ADD 보상은 $\Delta$로 미분할 수 있고, 기울기 벌점이 판별기의 경계를 매끄럽게 만든다(프로젝트 페이지). 아래 BCG는 이 보상을 미분 가능 시뮬레이션의 경로 미분에 그대로 넣었다. travplan에서도 비안전 항을 이 보상으로 바꾸면 미분 경로에 넣을 수 있지만, 치명 종료의 뜀은 여전히 경로 미분에 들어가지 않는다(I.11 장난감 (b)). 가설이고 재지 않았다.
+MPPI 비용에는 쓰지 않는 쪽으로 본다. 판별기는 학습하는 정책의 오차 분포를 따라 함께 움직이는 보상이라, 매 주기 최적화만 하는 MPPI에는 짝이 없다. 가설이고 재지 않았다. 잰다면 보상만 바꾼 두 팔을 1층 스모크로 거르고, 2층 짝 비교(seed 0–9 × 오프셋 3판)로 성공과 치명을 센다. seed 사이 일관성(그림 4)은 학습 seed만 바꾼 정책 여럿의 성공률 퍼짐으로 따로 잰다.</p>
+<details>
+<summary>자세히: ADD의 방법과 수식</summary>
+<p><strong>판별기가 보는 것(§5.1).</strong> 특징 $\phi$는 뿌리의 전역 위치와 회전, 캐릭터 좌표의 관절 위치, 관절의 전역 회전, 캐릭터 좌표의 뿌리 선속도·각속도, 관절의 국소 속도다. 캐릭터 좌표는 골반이 원점이고 x축이 몸통 정면, y축이 위다. 판별기는 이 특징의 차이만 보고, 정책 상태나 기준 상태를 따로 보지 않는다.</p>
+<p><strong>정책(§6.1, §6.2).</strong> 상태는 뿌리 기준 링크 위치, 6차원(법선·접선) 링크 회전, 링크 선속도·각속도이고 모두 캐릭터 좌표다. 기준 동작의 목표 자세도 받아 시점을 맞춘다. 행동은 관절 PD(비례·미분) 목표이고, 구면 관절은 3차원 지수 사상, 회전 관절은 각 하나로 낸다. 정책 평균은 은닉층 1024, 512의 MLP(multilayer perceptron)이고 공분산은 손으로 정한 대각 고정값이다. 가치 함수와 판별기도 같은 구조에 출력만 하나다.</p>
+<p><strong>학습 설정(표 6–11).</strong> 에피소드는 기준 동작의 무작위 시점에서 시작한다(RSI(reference state initialization), I.7). 사람 캐릭터의 ADD 설정은 아래와 같다(표 6). GAE는 generalized advantage estimation이다. AMP는 벌점 계수 5.0을 쓴다(표 8).</p>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>값</th>
+<th>항목</th>
+<th>값</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>기울기 벌점 계수</td>
+<td>1 (오르기만 0.1)</td>
+<td>미니배치</td>
+<td>4,096 × 4</td>
+</tr>
+<tr>
+<td>학습률 (정책·가치 · 판별기)</td>
+<td>1×10⁻⁴ · 5×10⁻⁴</td>
+<td>경험 버퍼</td>
+<td>4,096 × 32</td>
+</tr>
+<tr>
+<td>할인율</td>
+<td>0.99</td>
+<td>GAE와 TD의 λ</td>
+<td>0.95</td>
+</tr>
+<tr>
+<td>PPO 자르기</td>
+<td>0.2</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>DeepMimic 보상은 다섯 항마다 가중과 척도가 따로 있고, 관절 가중 14개가 더 있다(표 7). EVAL 로봇으로 옮길 때 가중과 척도를 다시 맞췄다(표 10).</p>
+<table>
+<thead>
+<tr>
+<th>항</th>
+<th>자세</th>
+<th>관절 속도</th>
+<th>뿌리 속도</th>
+<th>끝점</th>
+<th>질량 중심</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>가중 (사람)</td>
+<td>0.5</td>
+<td>0.1</td>
+<td>0.15</td>
+<td>0.1</td>
+<td>0.15</td>
+</tr>
+<tr>
+<td>척도 (사람)</td>
+<td>0.25</td>
+<td>0.01</td>
+<td>5</td>
+<td>1</td>
+<td>10</td>
+</tr>
+<tr>
+<td>가중 (EVAL)</td>
+<td>0.5</td>
+<td>0.05</td>
+<td>0.5</td>
+<td>0.15</td>
+<td>0.1</td>
+</tr>
+<tr>
+<td>척도 (EVAL)</td>
+<td>1</td>
+<td>0.01</td>
+<td>10</td>
+<td>1</td>
+<td>10</td>
+</tr>
+</tbody>
+</table>
+<p><strong>DeepMimic의 가중 민감도(부록 B.3, 표 5, 그림 12).</strong> LAFAN1 부분집합에서 DeepMimic 보상 설정 여섯을 비교했다.</p>
+<table>
+<thead>
+<tr>
+<th>설정</th>
+<th>가중(자세, 관절 속도, 뿌리 속도, 끝점, 질량 중심)</th>
+<th>척도(같은 순서)</th>
+<th>결과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>0.2, 0.2, 0.2, 0.2, 0.2</td>
+<td>1, 1, 1, 1, 1</td>
+<td>뿌리 회전·위치는 정확, 관절 속도 오차가 커 떨림</td>
+</tr>
+<tr>
+<td>2</td>
+<td>0.5, 0.1, 0.15, 0.1, 0.15</td>
+<td>4, 10, 0.2, 1, 0.1</td>
+<td>모든 지표에서 나쁘고 느림</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0.5, 0.1, 0.15, 0.1, 0.15</td>
+<td>0.2, 0.05, 3, 1.5, 8</td>
+<td>정확하고 빠름</td>
+</tr>
+<tr>
+<td>4</td>
+<td>0.5, 0.1, 0.15, 0.1, 0.15</td>
+<td>10, 0.04, 100, 7.5, 75</td>
+<td>정확하지만 표본 효율이 나쁨</td>
+</tr>
+<tr>
+<td>5</td>
+<td>0.2, 0.1, 0.2, 0.05, 0.45</td>
+<td>0.25, 0.01, 5, 1, 10</td>
+<td>정확하고 빠름</td>
+</tr>
+<tr>
+<td>기본(본 실험)</td>
+<td>0.5, 0.1, 0.15, 0.1, 0.15</td>
+<td>0.25, 0.01, 5, 1, 10</td>
+<td>정확하고 빠름</td>
+</tr>
+</tbody>
+</table>
+<p>저자는 ADD가 모든 지표에서 더 낫다고 적는다(그림 12 캡션). 그림 12의 위치 오차 패널에서 끝값이 ADD와 크게 갈리는 것은 설정 2뿐이다. 설정 4는 늦게 내려오지만 1.5×10¹⁰ 표본 무렵 다른 설정과 겹친다.</p>
+<p><strong>조향·Walker·Go1의 $\Delta$(부록 B.6, C.1, D.1).</strong> 조향 과제는 아래 벡터를 쓰고, 과제 성분은 정규화 뒤 50배로 키운다. AMP와 DeepMimic은 둘째 식의 과제 보상을 추종 보상과 0.5씩 더한다(식 20, 21).</p>
+<p>$$ \Delta_t = \Big[\, \Delta_t^{\text{tracking}},\; v^* - v_t^\top d_t^*,\; -\big\| v_t - (v_t^\top d_t^*)\, d_t^* \big\| \,\Big] $$</p>
+<p>$$ r_t^G = \exp\Big[-2\Big( (v^* - v_t^\top d_t^*)^2 + 0.1\, \big\| v_t - (v_t^\top d_t^*)\, d_t^* \big\|^2 \Big)\Big] $$</p>
+<p>Walker의 손 보상(Tassa 외 2018)은 서기 항과 이동 항을 곱한 꼴이다(식 22). 높이와 수평 속도는 허용(tolerance) 함수로 점수를 매긴다(식 23–25). Go1의 $\Delta$는 12성분이다(식 26). 여덟은 목표값과의 차다. 수직 속도는 0이, roll·pitch 각속도와 중력 방향의 수평 성분은 제곱 노름 0이 목표다. 몸통 높이는 0.3, 발 공중 시간 합은 0.02, 선속도 x·y와 yaw 각속도는 명령값이 목표다. 나머지 넷은 관절 토크·속도·가속·행동 변화율의 제곱 노름이 문턱 500, 100, 100,000, 0.5를 넘는 몫이다. 비교한 손 보상은 Rudin 외 공개 저장소의 항 11개이고, A1 가중에서 일부를 Go1에 맞게 다시 맞췄다(표 14).</p>
+<p><strong>기울기 벌점 절제(§8, 그림 9).</strong> 벌점을 거는 곳을 다섯으로 바꿨다. 없음, 음성에만(식 9), 양성에만(AMP식), 양쪽, WGAN-GP(Wasserstein GAN의 기울기 벌점, 양성과 음성 사이 보간점에서 기울기 노름을 1로 당긴다, 식 13)다. 없음과 WGAN-GP는 추종 오차가 크게 높았다. 양성에만은 그 둘보다 정확했지만 음성에만·양쪽보다 오차가 크고 느렸다. 음성에만과 양쪽은 오차가 비슷했고, 양쪽이 표본 효율에서 조금 앞섰다. 저자는 벌점 없이 학습한 모델은 대개 쓸 만한 정책을 배우지 못했다고 적는다.</p>
+<p><strong>seed 사이 일관성(그림 4, 14).</strong> 논문은 뒤공중제비와 옆돌기에서 DeepMimic이 seed 절반에서 국소 최적에 머물렀다고 적는다. 그림에서 세면 둘 다 5개 중 2개다. 표 1에서는 이 퍼짐이 DeepMimic의 표준편차(뒤공중제비 0.054, 옆돌기 0.153 m)로 나타난다. 본문이 꼽지 않은 구르기도 표준편차가 0.132 m로 크다.</p>
+<div class="fig-grid"><figure class="fig"><a class="thumb" href="https://arxiv.org/html/2505.04961v2/figures/motion_comparison_learning_curves/cartwheel_learning_curve.png" title="원본 보기"><img alt="ADD Fig. 4 옆돌기 학습 곡선" src="assets/thumbs/ff328f5d52b1.webp" loading="lazy" width="1000" height="702"></a><figcaption>그림 — ADD (Fig. 4 일부): 옆돌기의 위치 오차(m) 학습 곡선이고 방법마다 seed 5개다. DeepMimic(파랑)은 seed 2개가 0.33 m 근처에 머물고 3개는 0.02 m대로 내려간다. ADD(빨강)는 5개 모두 1억 표본 근처에서 0.1 m 아래로 떨어져 0.02 m 아래에서 끝난다. AMP(주황)는 0.07–0.08 m에서 끝난다. 출처: <a href="https://arxiv.org/abs/2505.04961">arXiv:2505.04961</a></figcaption></figure>
+<figure class="fig"><a class="thumb" href="https://arxiv.org/html/2505.04961v2/figures/ablations/double_kong_gp_ablation.png" title="원본 보기"><img alt="ADD Fig. 9 기울기 벌점 절제" src="assets/thumbs/c96dcb89a5f0.webp" loading="lazy" width="1000" height="702"></a><figcaption>그림 — ADD (Fig. 9 일부): 이중 콩 볼트에서 기울기 벌점을 거는 곳을 바꾼 절제이고, 세로축은 위치 오차(m)다. 벌점 없음(주황)은 0.35 m, WGAN-GP(보라)는 0.29 m 근처에서 끝난다. 양성에만(빨강)은 4억–6억 표본 사이에 seed마다 따로 떨어져 0.05 m 안팎에서 끝난다. 음성에만(초록)과 양쪽(파랑)은 3억–4억 표본 사이에 0.04 m 아래로 내려간다. 출처: <a href="https://arxiv.org/abs/2505.04961">arXiv:2505.04961</a></figcaption></figure>
+</div><p><strong>장난감 문제(부록 A).</strong> $f(x) = \cos(x^{2.5})$를 $[0, 4.3]$에서 균일하게 뽑은 512점으로 회귀했다. 원점 근처는 천천히, 멀어질수록 빨리 진동해 영역마다 난도가 다르다. 512개 예측 오차 전체가 $\Delta$ 하나이고, 회귀 망 $G$와 판별기는 은닉층 1024, 512의 MLP다(벌점 계수 0.1, 표 4). 그림 11은 표본별 $|\nabla_\Delta D|$를 반복 0, 30,000, 170,000, 380,000에서 그렸다. 반복 30,000 패널에서는 x &lt; 1.9의 막대가 0이다.</p>
+<div class="fig-grid"><figure class="fig"><a class="thumb" href="https://arxiv.org/html/2505.04961v2/figures/run12_grad_1.png" title="원본 보기"><img alt="ADD Fig. 11 반복 0" src="assets/thumbs/2ed1b8c77d45.webp" loading="lazy" width="1000" height="732"></a><figcaption>그림 — ADD (Fig. 11 첫 패널): 1차원 회귀 장난감 문제의 학습 시작(반복 0)이다. 가로축은 입력 x, 세로축은 표본별 오차에 대한 판별기 출력의 기울기 크기다. 기울기가 x와 상관없이 0.05–0.31 사이에 흩어져 있다. 출처: <a href="https://arxiv.org/abs/2505.04961">arXiv:2505.04961</a></figcaption></figure>
+<figure class="fig"><a class="thumb" href="https://arxiv.org/html/2505.04961v2/figures/run12_grad_380001.png" title="원본 보기"><img alt="ADD Fig. 11 반복 380,000" src="assets/thumbs/add20f678785.webp" loading="lazy" width="1000" height="774"></a><figcaption>그림 — ADD (Fig. 11 마지막 패널): 같은 문제의 반복 380,000이다. 이미 맞춘 원점 근처(x &lt; 1.5)의 기울기는 0.02 이하로 낮다. 빨리 진동하는 x &gt; 3에서는 대부분 0.05를 넘고, 오른쪽 끝에서 0.39에 이른다. 판별기가 어려운 목적으로 가중을 옮긴 것이다. 출처: <a href="https://arxiv.org/abs/2505.04961">arXiv:2505.04961</a></figcaption></figure>
+</div><p><strong>계산(부록 B.1, C, D).</strong> 동작 추종은 A100과 Isaac Gym으로 돌렸고, 런마다 GPU 장수는 적혀 있지 않다. 사람 캐릭터는 물리 120 Hz, 정책 30 Hz이고 EVAL은 150 Hz, 50 Hz다. 학습 시간은 아래와 같다.</p>
+<table>
+<thead>
+<tr>
+<th>데이터 (표본 수)</th>
+<th>ADD</th>
+<th>AMP</th>
+<th>DeepMimic</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>한 클립 (7.5억–8.5억)</td>
+<td>약 9시간</td>
+<td>12시간</td>
+<td>6.5시간</td>
+</tr>
+<tr>
+<td>DanceDB (약 90억)</td>
+<td>5일</td>
+<td>6일</td>
+<td>3.5일</td>
+</tr>
+<tr>
+<td>LAFAN1 부분집합 (180억)</td>
+<td>10일</td>
+<td>11일</td>
+<td>7일</td>
+</tr>
+<tr>
+<td>EVAL 로봇 (약 9억)</td>
+<td>16시간</td>
+<td>18시간</td>
+<td>13시간</td>
+</tr>
+</tbody>
+</table>
+<p>Walker는 6천만 표본을 CPU 코어 2개로 학습했고, 손 보상은 24시간, ADD는 26시간이 걸렸다. Go1은 10억 표본을 A100에서 학습했고, 둘 다 약 3시간이 걸렸다.</p>
+<p><strong>MimicKit 구현(main 2026-10-17, <code>fbe1a36</code>).</strong> 논문과 다른 점이 있다. 기울기 벌점을 음성과 영벡터 양쪽에 걸고(절제의 '양쪽') 계수는 2다. 판별기 출력층 가중에 0.01의 정칙화를 더한다. 보상은 $-\log \max(1 - D, 10^{-4})$에 2를 곱한다. 음성 표본은 이번 배치와 재생 버퍼(크기 200,000, 가득 찬 뒤에는 반복마다 1,000개 추가)의 $\Delta$다. $\Delta$의 각 성분은 그 성분 절댓값의 누적 평균으로 나누고(<code>DiffNormalizer</code>), 영벡터는 나눠도 영벡터다. 사람 캐릭터와 G1 설정은 자세 오차 종료(1.0 m)를 켠다.</p>
+<p><strong>v1과 v2.</strong> v1(2025-05-08)은 모델마다 시험 에피소드가 32개였고 v2(2025-10-04)는 4,096개다. 한 클립 행의 수치는 같고, DanceDB·LAFAN1 행이 조금 바뀌었다(예: LAFAN1 AMP 위치 오차 0.498에서 0.438 m). EVAL 표는 걷기·차기·볼트·옆돌기에서 걷기·차기·주먹 지르기로 바뀌었다. v2에 조향 과제(§6.5), DeepMimic 보상 식(부록 B.2), 외란 시험(부록 B.7)이 더해졌다. 기울기 벌점 절제에는 WGAN-GP 설정이 더해졌고(v1은 넷), DeepMimic·AMP 하이퍼파라미터 표(표 7, 8, 10, 11)도 v2에만 있다. 이 카드의 표 번호는 v2를 따른다. DanceDB 모델 수는 v1의 3개에서 v2의 5개로 늘었다.</p>
+</details>
+<p><strong>이어진 연구.</strong></p>
+<ul>
+<li>MimicKit(I.19)이 공식 구현이다. 사람 캐릭터 말고도 SMPL 캐릭터, Unitree G1, Go2, HighTorque Pi Plus 설정이 있다. MimicKit 논문(§7.1)은 자세 오차 종료를 켜면 추종 정확도와 seed 일관성이 크게 좋아진다고 적고, 기본 설정은 이 종료를 켠다.</li>
+<li>PDF-HR과 PFM-HR(HKUST(GZ) 외, 2026)은 학습한 자세 사전으로 ADD 추종 보상을 보강해, ADD 단독이 실패한 G1의 뒤공중제비와 이중 콩을 풀었다. PDF-HR은 자세 거리장의 보상을 따로 더한다(PDF-HR §V-A). PFM-HR은 롤아웃의 자세 변화가 사전의 기하와 맞는 정도에 따라 추종 보상에 0.61–1의 계수를 곱한다(PFM-HR §III-D). PFM-HR의 실물 배포는 ADD가 아니라 BeyondMimic 학습에 같은 사전을 붙인 것이다.</li>
+<li>BCG(Bundled Contact Gradients, <a href="https://arxiv.org/abs/2609.30951">arXiv:2609.30951</a>, USC·ETH Zurich·NVIDIA 외, 2026-09)는 ADD 보상을 SHAC(short-horizon actor-critic)식 1차 정책 학습(I.11 토글의 표)의 목적으로 썼다. 뻣뻣한 접촉에서는 섭동 롤아웃 묶음의 기울기를 평균해 분산을 줄인다. LAFAN1 동작 넷(달리기, 점프, 싸움, 춤)에서 PPO와 비슷한 보상에 표본을 10배 넘게 적게 써서 닿았다(그림 5). 학습한 정책은 실물 G1에 영 샷으로 올렸다(§V-B5). 저자는 ADD를 미분 가능 시뮬레이션의 1차 정책 학습과 묶은 것이 처음이라고 주장한다.</li>
+<li>Wei 외(<a href="https://arxiv.org/abs/2603.29332">arXiv:2603.29332</a>, Tsinghua, 2026-03)는 근골격 사람 모델의 전신 동작 재현에서 추종 보상을 ADD로 바꿨다.</li>
+<li>ADD 저자 다섯이 함께 쓴 SMP(Score-Matching Motion Priors, I.18)는 판별기를 정책과 함께 학습하지 않고, 미리 학습해 고정한 동작 diffusion 모델의 점수를 보상으로 쓴다. SMP 논문은 ADD와 비교하지 않는다.</li>
+<li>적대적 모방의 일반론은 강화학습 R.17에, 판별기 보상을 바퀴·다리 로봇의 스타일 사전으로 쓴 Multi-AMP는 Planner B.14.4에 있다.</li>
+</ul>
+<h3>I.18 SMP: 고정한 동작 diffusion 모델이 판별기 대신 보상을 주어, 과제와 스타일이 바뀌어도 사전을 다시 학습하지 않는다</h3>
+<p><strong>SMP — 동작 데이터로 한 번 학습해 고정한 diffusion 모델이, 정책의 최근 동작에 더한 잡음을 얼마나 맞히는지로 스타일 보상을 매긴다</strong>(<a href="https://arxiv.org/abs/2512.03028">arXiv:2512.03028</a>, 원제 "SMP: Reusable Score-Matching Motion Priors for Physics-Based Character Control", Mu·Zhang·Shi(공동 1저자)·Yang·Matsumoto·Imamura·Tevet·Guo·Taylor·Shu·Xi·Peng, Simon Fraser University·Sony Interactive Entertainment·Stanford University·Snap Inc.·National Research Council Canada·NVIDIA, ACM TOG 45(4)·SIGGRAPH 2026(<a href="https://doi.org/10.1145/3811282">DOI</a>), <a href="https://yxmu.foo/smp-page/">프로젝트</a>, <a href="https://youtu.be/jBA2tWk6vzU">영상</a>, <a href="https://github.com/xbpeng/MimicKit/blob/main/docs/README_SMP.md">코드</a> MimicKit, Apache-2.0).</p>
+<p><strong>한 줄 요약.</strong> <mark>SMP(Score-Matching Motion Priors)는 판별기 대신 고정한 동작 diffusion 모델의 잡음 예측 오차를 스타일 보상으로 써서, 한 번 만든 동작 사전을 원 데이터 없이 여러 과제와 스타일에 다시 쓴다.</mark>
+LAFAN1 달리기 데이터로 만든 사전 하나로 피구 정책을 학습하면 과제 수익이 0.733이었다. AMP는 0.233, 판별기를 고정한 AMP는 0.204였다(표 2).</p>
+<p><strong>왜 중요한가.</strong> AMP(adversarial motion priors, I.7, 카드는 I.16)는 판별기를 정책과 함께 학습한다. 새 정책마다 판별기를 다시 학습해야 하고, 그러려면 기준 동작 데이터를 계속 들고 있어야 한다(§1). AMP 논문도 사전을 정책마다 처음부터 학습한 것을 한계로 적었다. 사전이 대체로 과제와 무관하니 원리상 다른 정책과 과제에 옮겨 쓸 수 있어야 한다는 것이다(AMP §9).
+SMP는 이 재사용을 목표로 두 조건을 세웠다. 사전은 원 데이터 없이 보상 노릇을 해야 한다(모듈성). 그리고 다시 학습하지 않고 여러 과제와 정책에 쓰여야 한다(재사용성, §1). 적대적 모방의 판별기가 수렴하면 다시 쓸 보상을 남기지 않는다는 일반론은 강화학습 R.17에 있다.
+§2는 diffusion 모델을 제어에 쓴 연구를 둘로 나눈다. 운동학 Planner로 쓰는 쪽(CLoSD는 I.13, PARC는 Planner B.16.1)과 정책 자체로 쓰는 쪽(Diffusion Policy는 딥러닝 L.10)이다. SMP는 diffusion 모델을 보상 모델로 쓴다는 점에서 둘과 다르다(§2, §4).
+가까운 선행 연구는 세 갈래다(§2). 첫째는 diffusion 모델을 GAIL(generative adversarial imitation learning)의 판별기 자리에 넣은 DiffAIL(<a href="https://arxiv.org/abs/2312.06348">arXiv:2312.06348</a>)과 DRAIL(<a href="https://arxiv.org/abs/2405.16194">arXiv:2405.16194</a>)이다. DIFO(<a href="https://arxiv.org/abs/2410.05429">arXiv:2410.05429</a>)도 같은 갈래다. 이들은 여전히 적대적으로 학습하고, 대개 정책을 학습하는 동안 diffusion 모델을 계속 고친다.
+둘째는 글 조건의 이미지·영상 diffusion 모델로 정책을 이끈 Text-Aware Diffusion for Policy Learning(<a href="https://arxiv.org/abs/2407.01903">arXiv:2407.01903</a>)이다. SMP 저자는 그 동작이 자주 부자연스러웠다고 적는다. 셋째이자 가장 닮은 연구는 ICLR 2025의 SMILING(<a href="https://arxiv.org/abs/2410.13855">arXiv:2410.13855</a>)이다. SMILING은 VSD(variational score distillation, <a href="https://arxiv.org/abs/2305.16213">arXiv:2305.16213</a>)와 비슷한 score matching 목적을 쓰지만 과제마다 diffusion 모델을 학습한다.</p>
+<p><strong>초록 번역.</strong> (arXiv v3, 2026-04-24) 에이전트가 자연스러운 행동을 내도록 이끄는 데이터 기반 동작 사전은 살아 있는 듯한 가상 캐릭터를 만드는 데 핵심 역할을 한다. 적대적 모방 학습은 기준 동작 데이터에서 동작 사전을 배우는 매우 효과적인 방법이었다. 그러나 적대적 사전은 몇몇 예외를 빼면 새 제어기마다 다시 학습해야 한다. 그래서 재사용성이 떨어지고, 하위 과제에 적용할 때 기준 동작 데이터를 계속 보관해야 한다.
+이 연구에서 우리는 Score-Matching Motion Priors(SMP)를 제시한다. SMP는 사전학습한 동작 diffusion 모델과 SDS(score distillation sampling)를 써서, 재사용할 수 있고 과제와 무관한 동작 사전을 만든다. SMP는 어떤 제어 정책이나 과제와도 독립적으로 동작 데이터셋에서 사전학습할 수 있다. 학습이 끝난 SMP는 고정한 채, 하위 과제에서 자연스러운 행동을 내는 새 정책을 학습시키는 범용 보상 함수로 다시 쓸 수 있다.
+우리는 대규모 데이터셋으로 학습한 범용 동작 사전을 여러 스타일 전용 사전으로 바꿔 쓸 수 있음을 보인다. 나아가 SMP는 서로 다른 스타일을 합성해 원 데이터셋에 없는 새 스타일을 만들 수 있다. 우리 방법은 최신 적대적 모방 학습 방법에 견줄 만한 고품질 동작을 내는, 재사용할 수 있고 모듈화된 동작 사전을 만들 수 있다. 실험에서 우리는 물리 시뮬레이션 휴머노이드 캐릭터의 다양한 제어 과제에서 SMP의 효과를 보인다. 영상은 <a href="https://youtu.be/jBA2tWk6vzU">youtu.be/jBA2tWk6vzU</a>에 있다.</p>
+<div class="fig-grid"><figure class="fig full"><a class="thumb" href="https://arxiv.org/html/2512.03028v3/pipeline.png" title="원본 보기"><img alt="SMP 구조" src="assets/thumbs/014655b5302f.webp" loading="lazy" width="1000" height="510"></a><figcaption>그림 — SMP (Fig. 2): 정책의 행동으로 시뮬레이션한 상태에 가우스 잡음을 더해, 자물쇠로 표시한 고정 diffusion 모델에 넣는다. 스타일 라벨(그림의 Zombie)은 조건으로 들어간다. 모델이 예측한 잡음과 더한 잡음의 차이로 보상을 만들어 정책에 준다. 점선은 정책 학습 때만 쓰는 부분이다. 출처: <a href="https://arxiv.org/abs/2512.03028">arXiv:2512.03028</a></figcaption></figure>
+<figure class="fig full wide"><a class="thumb" href="https://arxiv.org/html/2512.03028v3/pdfmap.png" title="원본 보기"><img alt="SMP 밀도 그림" src="assets/thumbs/dab2aae6911a.webp" loading="lazy" width="1000" height="459"></a><figcaption>그림 — SMP (Fig. 3): 점수를 보상으로 바꾸는 직관이다. 왼쪽은 깨끗한 동작의 밀도로, 데이터에서 먼 에이전트 동작(파란 점) 주변에서는 점수를 믿을 수 없어 어느 쪽이 데이터인지 모른다(물음표). 오른쪽은 잡음을 더한 동작의 밀도로 넓게 퍼져 있다. 잡음 섞인 표본에서 예측 잡음을 거꾸로 따라가면 데이터 쪽의 가짜 목표(초록 점선 원)에 닿고, 더한 잡음과 예측 잡음의 차이가 에이전트 동작을 그 목표로 옮기는 보정이 된다. 출처: <a href="https://arxiv.org/abs/2512.03028">arXiv:2512.03028</a></figcaption></figure>
+<figure class="fig full wide"><a class="thumb" href="https://arxiv.org/html/2512.03028v3/figures/demos/composedprior.png" title="원본 보기"><img alt="SMP 스타일 합성" src="assets/thumbs/42261f9f0550.webp" loading="lazy" width="1000" height="364"></a><figcaption>그림 — SMP (Fig. 6): 100STYLE로 학습한 사전 하나로 목표 위치(빨간 깃발) 과제를 푼다. 왼쪽 위는 AeroPlane(팔 벌리기)과 HighKnees(무릎 높이 들기) 스타일 사전 각각의 결과다. 오른쪽 위는 두 스타일의 예측을 상체와 하체로 나눠 합친 사전의 결과이고, 아래는 같은 방법으로 만든 Elated + FlickLegs와 GracefulArms + Spin이다. 합성한 스타일의 기준 동작은 데이터에 없다. 출처: <a href="https://arxiv.org/abs/2512.03028">arXiv:2512.03028</a></figcaption></figure>
+</div><p><strong>동작 방식.</strong> 이 절에서는 원문 표기를 따라 모자 $\hat\epsilon$가 diffusion 모델이 예측한 잡음이다(I.11처럼 문서 표기의 예외). 물결 $\tilde x$는 정책이 시뮬레이션에서 낸 동작이고, $\bar\alpha_i$는 잡음 단계 $i$에서 남은 신호의 분산 비율이다(배경 0.5).</p>
+<p><strong>(1) 사전 학습.</strong> 동작 데이터의 연속 10프레임 창 $x = (s_{t-8}, \dots, s_{t+1})$을 diffusion 모델 $f$로 배운다(§5, 부록 A). 프레임 특징은 뿌리의 선속도와 각속도, 관절 국소 회전(구면 관절은 6D), 손발 끝점의 3차원 위치다. 뿌리 속도와 끝점 위치는 캐릭터 국소 좌표로 적는다(§6.1). 잡음 단계는 50개이고 모델은 더한 잡음 $\epsilon$을 맞힌다. 정책도 과제도 보지 않는다.</p>
+<p><strong>(2) 보상.</strong> 정책을 학습하는 동안 매 스텝 에이전트의 최근 창 $\tilde x$에, 정해 둔 단계 $\mathbb K = \{22, 15, 8\}$마다 잡음을 더해 고정한 $f$에 넣는다. 단계마다 잡음 예측 오차를 그 단계 오차의 누적 평균 $\mu_i$로 나누고(AdaNorm, 적응 정규화), 평균해 지수로 바꾼다.
+아래 식은 식 (8)에 §5.1의 정규화를 넣은 것이고, MimicKit <code>smp_agent.py</code>도 이렇게 계산한다. $c$는 선택적인 스타일 라벨이고, 크기 $w_s$는 과제마다 4–8이다(부록 D).</p>
+<p>$$ r^{smp}_t = \exp\left( -\frac{w_s}{|\mathbb K|} \sum_{i \in \mathbb K} \frac{\| \hat\epsilon_i - \epsilon_i \|^2}{\mu_i} \right), \qquad \hat\epsilon_i = f\left( \sqrt{\bar\alpha_i}\, \tilde x + \sqrt{1 - \bar\alpha_i}\, \epsilon_i ,\ c \right) $$</p>
+<p><strong>(3) 과제와 합치기.</strong> 과제 보상과 선형으로 더한 $r_t = w^{prior} r^{smp}_t + w^{g} r^{g}_t$(식 9)를 PPO로 최대화한다. diffusion 모델은 끝까지 고정한다.</p>
+<p><strong>(4) 생성 시작 상태.</strong> 기준 동작의 무작위 프레임에서 시작하는 RSI(reference state initialization, I.7) 대신 같은 diffusion 모델에서 뽑은 창으로 에피소드를 시작한다. 이것이 GSI(generative state initialization)다(§5.2). 그래서 사전을 만든 뒤에는 원 데이터를 버려도 된다.</p>
+<p><strong>점수가 보상이 되는 길.</strong> 아래 항등식과 그 읽기는 이 문서의 정리다(원문 식 (3)과 그림 3에서 바로 나온다). 식 (3)의 잡음 섞인 표본 $x^i$와, 예측 잡음으로 되돌린 깨끗한 동작 $\bar x^0_i = (x^i - \sqrt{1-\bar\alpha_i}\,\hat\epsilon_i)/\sqrt{\bar\alpha_i}$를 함께 쓰면 다음 항등식이 나온다.</p>
+<p>$$ \hat\epsilon_i - \epsilon_i = \sqrt{\frac{\bar\alpha_i}{1 - \bar\alpha_i}}\, \left( \tilde x - \bar x^0_i \right) $$</p>
+<p>$\bar x^0_i$는 고정한 모델이 에이전트 동작을 데이터 쪽으로 옮겨 내놓는 가짜 목표다(그림 3의 초록 원). 그래서 SMP 보상은 DeepMimic의 지수 추종 보상(I.7)과 같은 꼴이다. 다른 점은 추종 목표가 기준 동작의 프레임이 아니라, 고정한 모델이 매 스텝 새로 만든 동작이라는 것이다.
+계수 $\bar\alpha_i/(1-\bar\alpha_i)$는 신호 대 잡음비라 잡음이 작은 단계에서 크다. 그림 4에서도 잡음이 작은 단계일수록 오차가 크고, AdaNorm의 $\mu_i$가 이 크기 차이를 지운다.</p>
+<p><strong>SDS와 다른 점.</strong> DreamFusion(<a href="https://arxiv.org/abs/2209.14988">arXiv:2209.14988</a>)의 SDS는 잔차 벡터 $w(i)(\hat\epsilon - \epsilon)$를 미분 가능한 렌더러로 역전파해 3차원 장면의 파라미터를 고친다(식 5). SMP가 쓰는 물리 시뮬레이터(Isaac Gym)는 미분하지 않는다.
+SMP는 잔차의 크기만 보상으로 쓰고, 원문은 그 이유를 적지 않는다. 미분하지 않는 시뮬레이터에서는 잔차의 방향을 정책까지 전할 수 없으니, 그 크기를 줄이는 행동을 PPO가 표본으로 찾는다고 읽을 수 있다. 시각 분야의 SDS는 잡음 단계를 매번 무작위로 뽑는데, RL에서는 그 무작위가 보상 분산이 되어 가치와 이점 추정을 흔든다. 그래서 단계를 고정해 평균한다. 저자는 이를 ESM(ensemble score-matching)이라 부른다(§5.1).</p>
+<p><strong>판별기와 다른 점.</strong> 저자의 설명은 이렇다(§3.2, §4, §8.2). 판별기는 데이터와 그때의 정책 표본만 보고 배우므로, 고정해 새 정책에 쓰면 처음 보는 입력에 엉뚱한 보상을 준다. denoiser는 모든 잡음 수준에서 데이터만으로 배운다.
+잡음이 크면 섞인 분포가 공간 전체를 덮으므로, 데이터에서 먼 동작에도 믿을 만한 점수가 나온다는 것이다. 보상 모델이 정책을 따라 움직이지 않아 보상이 정상(stationary)이고, 저자는 표본 효율이 AMP보다 나은 이유의 일부를 여기서 찾는다(그림 7).</p>
+<p><strong>스타일 조정과 합성.</strong> 100STYLE(20시간 이상, §6.2. 데이터는 I.1)로 스타일 라벨을 조건으로 받는 모델 하나를 학습한다. 스타일 전용 사전은 CFG(classifier-free guidance, 배경 0.5)로 만든다. 식은 $f_{style} = f(x^i, \varnothing) + w_{cfg}\,(f(x^i, c) - f(x^i, \varnothing))$이다.
+저자는 $w_{cfg} = 1.0$이면 대개 충분하다고 적었다(§8.1). $w_{cfg} = 1$이면 이 식은 조건부 예측 $f(x^i, c)$ 그 자체다. 새 스타일은 두 스타일의 예측을 상체와 하체 특징 마스크로 잘라 붙여 만들고(부록 E), 같은 합성 사전이 GSI의 시작 상태도 만든다.</p>
+<p>$$ f_{comp} = M_{upper} \odot f(x^i, c_1) + M_{lower} \odot f(x^i, c_2) $$</p>
+<p><strong>결과.</strong> 수치와 그림 번호는 arXiv v3 기준이고, 표 2와 표 4의 값은 v1(2025-12-02)과 같다. 과제 수익은 0–1로 정규화했고, 캐릭터는 Isaac Gym의 시뮬레이션 휴머노이드다(부록 B). 한 클립 모방의 학습 곡선(그림 10)은 방법마다 seed 3개다.</p>
+<table>
+<thead>
+<tr>
+<th>과제 수익 (원문 표 2)</th>
+<th>사전 없음</th>
+<th>AMP</th>
+<th>판별기 고정 AMP</th>
+<th>SMP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>조향 (LAFAN1 달리기 사전)</td>
+<td>0.901 ± 0.006</td>
+<td>0.634 ± 0.019</td>
+<td>0.243 ± 0.008</td>
+<td>0.914 ± 0.006</td>
+</tr>
+<tr>
+<td>목표 위치 (같은 사전)</td>
+<td>0.615 ± 0.268</td>
+<td>0.737 ± 0.014</td>
+<td>0.101 ± 0.012</td>
+<td>0.793 ± 0.006</td>
+</tr>
+<tr>
+<td>피구 (같은 사전)</td>
+<td>0.277 ± 0.046</td>
+<td>0.233 ± 0.003</td>
+<td>0.204 ± 0.004</td>
+<td>0.733 ± 0.035</td>
+</tr>
+<tr>
+<td>목표 속도 (걷기·조깅·달리기 3초 사전)</td>
+<td>0.905 ± 0.013</td>
+<td>0.904 ± 0.002</td>
+<td>0.158 ± 0.021</td>
+<td>0.918 ± 0.002</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>목표 위치 과제, 100STYLE 12스타일 (원문 표 1)</th>
+<th>AMP (스타일마다 따로 학습)</th>
+<th>판별기 고정 AMP</th>
+<th>SMP (사전 하나 + CFG)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>과제 수익 평균</td>
+<td>0.874</td>
+<td>0.771</td>
+<td>0.879</td>
+</tr>
+<tr>
+<td>스타일 정확도 평균</td>
+<td>0.962</td>
+<td>0.205</td>
+<td>0.962</td>
+</tr>
+<tr>
+<td>스타일 정확도가 가장 낮은 스타일</td>
+<td>HandsBetweenLegs 0.690</td>
+<td>AeroPlane·HandsBetweenLegs 0.000</td>
+<td>Skip 0.646</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>한 클립 모방 위치 오차, m (원문 표 4)</th>
+<th>DeepMimic</th>
+<th>AMP</th>
+<th>판별기 고정 AMP</th>
+<th>SMILING</th>
+<th>SMP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>걷기</td>
+<td>0.010</td>
+<td>0.028</td>
+<td>0.044</td>
+<td>0.042</td>
+<td>0.030</td>
+</tr>
+<tr>
+<td>달리기</td>
+<td>0.013</td>
+<td>0.088</td>
+<td>0.129</td>
+<td>0.115</td>
+<td>0.067</td>
+</tr>
+<tr>
+<td>회전 발차기</td>
+<td>0.073</td>
+<td>0.049</td>
+<td>0.324</td>
+<td>0.088</td>
+<td>0.059</td>
+</tr>
+<tr>
+<td>옆돌기</td>
+<td>0.243</td>
+<td>0.043</td>
+<td>0.419</td>
+<td>0.104</td>
+<td>0.043</td>
+</tr>
+<tr>
+<td>뒤공중제비</td>
+<td>0.073</td>
+<td>0.058</td>
+<td>0.272</td>
+<td>0.144</td>
+<td>0.069</td>
+</tr>
+<tr>
+<td>기어가기</td>
+<td>0.006</td>
+<td>0.011</td>
+<td>0.285</td>
+<td>0.061</td>
+<td>0.011</td>
+</tr>
+<tr>
+<td>평균</td>
+<td>0.070</td>
+<td>0.046</td>
+<td>0.246</td>
+<td>0.092</td>
+<td>0.046</td>
+</tr>
+</tbody>
+</table>
+<p>물체 나르기는 과제 수익 0.909에 성공률 0.997이다. 일어나기는 0.897과 0.998이다(표 3, 비교군 없음). 스타일 정확도는 100STYLE로 학습한 스타일 분류기로 쟀다.
+표 2는 과제만 잰다. 사전 없이 학습한 정책도 조향 0.901, 목표 속도 0.905로 SMP와 가깝고, 동작이 자연스러운지는 그림과 영상으로만 보였다. 과제가 있는 실험에서 동작 품질을 수치로 잰 것은 표 1의 스타일 정확도뿐이다.
+피구에서 AMP는 사전 없는 정책보다도 낮았다. 저자는 기준 데이터(보행뿐)에서 먼 피하기 기술이 필요해 적대적 목적이 불안정해진 탓일 수 있다고 적었다(§8.2). AMP의 보상 가중은 0.5와 0.5로 고정했고, SMP의 가중은 과제마다 다르다(§8, 부록 D).
+판별기 고정 AMP에서는 학습이 진행될수록 판별기 정확도가 떨어졌다. 저자는 정책이 판별기의 오류를 파고든 것으로 읽는다(§8.1).
+표 4에서 SMP, AMP, SMILING은 DTW(dynamic time warping)로 시간을 맞춰 쟀고 DeepMimic은 자세 오차 종료를 끄고 학습했다. DeepMimic의 옆돌기 0.243 m는 종료를 끈 탓에 일부 학습이 나쁜 해로 갔기 때문이라고 저자가 적었다(§8.6).
+같은 AMP의 뒤공중제비 오차가 AMP 논문 표 3에서는 0.150 m(I.7)이고 이 표에서는 0.058 m다. 두 평가가 같은 정의와 구현인지는 확인하지 못했다.</p>
+<p><strong>한계.</strong> 저자가 밝힌 것(§11). 모드를 좇는(mode-seeking) 목적이라 SMP로 학습한 정책도 모드 붕괴에 빠지기 쉽다. 과제에 쓸 수 있는 행동 전체가 아니라 일부 기술로 수렴하고, 데이터가 클수록 심하다. 저자는 생성 정책이나 더 세밀한 조건을 대안으로 든다.
+GSI가 자기 충돌 같은 잘못된 동작을 만들어 시뮬레이션을 불안정하게 할 수 있다. 잡음 단계 선택에는 정밀함과 믿음성의 맞교환이 남는다(§10). 서로 먼 스타일을 합성하면 스타일이 묽어지고, 이를 줄이는 다단계 점수 계산은 비싸다(부록 E).
+그 밖에 원문 수치로 보이는 것. 학습이 AMP보다 오래 걸리고(§6.3), 실물 G1은 정성 결과뿐이다(§9).
+뒤 연구가 보고한 것. Context-Aware Motion Priors(<a href="https://arxiv.org/abs/2608.03234">arXiv:2608.03234</a>)는 과제와 무관한 사전을 학습 내내 똑같이 적용하는 것을 문제로 든다. 지금 상황에 맞지 않는 기준 동작이 감독을 흐리고, 기준 동작의 빈도가 치우치면 잦은 모드로 끌린다는 것이다(§1). MimicKit 저장소에 열린 SMP 보고 둘(이슈 #125, #115)은 I.19의 한계에 있다.</p>
+<p><strong>travplan에 주는 의미.</strong> SMP의 핵심은 시연으로 학습해 고정한 생성 모델이 지금 동작이 시연다운지를 채점하는 것이다. travplan에는 그런 모델이 이미 있다.
+Planner D의 DAgger 체크포인트(<code>planner_d_L0123_dagger.pt</code>)는 Guidance + MPPI 시연의 4초 twist 변화율 120개를, 지도 조각과 하위 목표를 조건으로 배운 flow matching 모델이다(딥러닝 L.11). 속도장에서 데이터 예측을 얻는 환율 $\hat x_1 = x + (1-t)\,v$는 TP-0137이 Playground의 diffusion 샘플러에 이미 썼다(Planner B.15.1). 그래서 SMP식 오차를 고정한 $t$ 몇 개에서 같은 망으로 잴 수 있다.
+쓸 자리는 RL 후학습(TP-0066)이다. 지금은 후보를 진행, cost, 치명, 부드러움으로 채점한다. 그리고 시연 데이터(<code>planner_d_data_L0123.pt</code>)에 모방 손실 λ = 0.5를 걸어 정책이 시연에서 멀어지지 않게 한다(Planner B.15.3). 고정한 DAgger 체크포인트의 SMP식 항이 손으로 짠 부드러움 항과 시연 데이터를 함께 대신할 수 있다. 가설이고 재지 않았다.
+옮길 때 지킬 것이 둘이다. 첫째, 이런 사전은 시연이 어떻게 생겼는지만 안다. 시연이 가까이 가지 않은 치명 셀은 벌을 받지 않는다(강화학습 R.17의 최대 엔트로피 역강화학습 그림). 그래서 치명 cost는 손으로 정한 항으로 남기고, 채택은 CLAUDE.md의 치명 실패 규칙으로 판정한다.
+둘째, 분포 맞춤은 잦은 모드로 끌린다. 급정지처럼 시연에 드문 행동일수록 사전 보상이 낮다. SMP가 물체 나르기에서 쓴 자르기 $\min(r^{smp}, \max(r^g, 0.3))$처럼 과제 보상이 사전 보상을 누르게 둔다. 이것도 가설이다.
+ESM의 교훈은 <code>TinyPolicy</code>의 진화 전략(ES, TP-0128, Controller E.12)에 걸린다. 무작위 단계 하나로 잰 SDS 오차의 분산은 1.140, 고정 단계 평균은 9.964×10⁻⁶이었다(§10). ES는 한 세대 안의 섭동 정책들의 수익 차이로 기울기를 잰다. 그러니 확률적 보상 항을 더한다면 한 세대 안에서는 잡음 단계와 잡음 표본을 같게 둬야 한다(공통 난수). 가설이고 재지 않았다.
+사람 주행 기록에서 비용을 배우게 되면(강화학습 R.17) 그 보상을 고정해 다시 쓰고 싶어진다. 그때의 꼴로는 판별기보다 여러 잡음 수준의 denoising 오차 쪽에 근거가 있다(표 1과 표 2의 판별기 고정 AMP). 원 데이터를 보관하지 않아도 된다는 장점은 travplan에서는 작다. 시연은 시뮬레이터에서 언제든 다시 만든다.</p>
+<details>
+<summary>자세히: SMP의 방법과 수식</summary>
+<p><strong>diffusion 모델(§6.2, 부록 A).</strong> Transformer 인코더 블록 2개, 머리 4개 × 64차원(내부 256차원), 파라미터 약 3M이다. 잡음 단계와 스타일 라벨은 적응 층 정규화로 넣는다. 잡음 단계는 50개이고 $\epsilon$을 예측하며, 가중치 EMA(exponential moving average)를 쓴다. 데이터에 따라 40만–80만 반복을 학습하고, RTX 4090 한 장에서 대개 5시간 안에 수렴한다.
+논문은 프레임 간격을 적지 않았다. MimicKit 설정(<code>control_freq: 30</code>)으로는 10프레임 창이 프레임 간격 9개, 곧 0.3초를 덮는다. §3.2는 DDPM(denoising diffusion probabilistic model)의 제곱 오차 목적을 소개한다. 공개 설정의 손실은 L1(<code>loss_type: 'l1'</code>)이다.
+공개 설정의 반복 수는 40만–80만이 아니라 20만(여러 클립)과 5만(한 클립)이다. 구조는 DiT(diffusion transformer)이고 잡음 일정은 코사인(<code>squaredcos_cap_v2</code>)이다.</p>
+<p><strong>정책과 RL(§6.3, 부록 A, 표 8).</strong> 정책은 은닉 [1024, 512]의 MLP(multilayer perceptron)이고 공분산을 고정한 가우스 분포를 낸다. 상태는 링크의 위치·6D 회전·선속도·각속도(국소 좌표)이고, 위상이나 기준 상태는 넣지 않는다. 행동은 관절 PD(proportional-derivative) 목표다(구면 관절은 3차원 지수 사상).
+버퍼는 1024 × 32, 미니배치는 1024 × 4다. 정책과 가치의 학습률은 1×10⁻⁴이고 γ = 0.99, SGD(stochastic gradient descent) 모멘텀은 0.9다. GAE(generalized advantage estimation)와 TD(temporal difference)의 λ는 0.95, PPO 자르기는 0.2다.
+Isaac Gym 환경 1,024개를 A100·H100·RTX 4090 가운데 한 장에서 돌렸고 대부분 12시간 안에 수렴했다(부록 B).</p>
+<p><strong>과제별 보상(부록 D).</strong></p>
+<table>
+<thead>
+<tr>
+<th>과제</th>
+<th>과제 보상 가중</th>
+<th>사전 보상 가중</th>
+<th><code>w_s</code></th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>목표 위치</td>
+<td>0.7</td>
+<td>0.9</td>
+<td>4</td>
+<td>목표까지 수평 거리의 지수 보상</td>
+</tr>
+<tr>
+<td>조향</td>
+<td>0.5</td>
+<td>0.5</td>
+<td>6</td>
+<td>이동 방향·속도 추종과 몸 방향</td>
+</tr>
+<tr>
+<td>피구</td>
+<td>0.6</td>
+<td>1.2</td>
+<td>4</td>
+<td>공은 8–10 m에서 20–25 m/s, 3초 창 안의 무작위 시각에 다시 쏜다. 맞으면 종료하고 남은 보상 0</td>
+</tr>
+<tr>
+<td>물체 나르기</td>
+<td>0.5</td>
+<td>0.5</td>
+<td>6</td>
+<td>사전 보상을 min(사전, max(과제, 0.3))으로 자른다(HumanVLA를 따름)</td>
+</tr>
+<tr>
+<td>일어나기</td>
+<td>0.2</td>
+<td>0.8</td>
+<td>8</td>
+<td>시작 상태의 90 %는 기준 일어나기 동작, 10 %는 넘어진 상태 증강</td>
+</tr>
+<tr>
+<td>계단</td>
+<td>0.5</td>
+<td>0.5</td>
+<td>8</td>
+<td>5단, 높이 0.175 m, 깊이 0.3 m, 폭 0.51 m, 목표 1.0 m/s</td>
+</tr>
+</tbody>
+</table>
+<p>일어나기는 시작 상태의 90 %를 기준 동작에서 뽑으므로 데이터 없이 학습한 과제가 아니다. 물체 나르기와 계단의 데이터는 저자들이 직접 모았다(부록 B).</p>
+<p><strong>절제(§10, 표 5–7).</strong> 값은 한 클립 모방의 위치 오차(m)다.</p>
+<table>
+<thead>
+<tr>
+<th>비교</th>
+<th>달리기</th>
+<th>옆돌기</th>
+<th>뒤공중제비</th>
+<th>회전 발차기</th>
+<th>평균</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>무작위 단계 하나 / ESM (표 5)</td>
+<td>0.062 / 0.067</td>
+<td>0.058 / 0.043</td>
+<td>0.195 / 0.069</td>
+<td>—</td>
+<td>0.105 / 0.060</td>
+</tr>
+<tr>
+<td>AdaNorm 없음 / 있음 (표 6)</td>
+<td>—</td>
+<td>0.177 / 0.043</td>
+<td>0.279 / 0.069</td>
+<td>0.073 / 0.059</td>
+<td>0.176 / 0.057</td>
+</tr>
+<tr>
+<td>단계 {15, 8, 1} / {43, 36, 29} / {22, 15, 8} (표 7)</td>
+<td>0.068 / 0.059 / 0.067</td>
+<td>0.055 / 0.172 / 0.043</td>
+<td>0.067 / 0.064 / 0.069</td>
+<td>—</td>
+<td>0.063 / 0.098 / 0.060</td>
+</tr>
+</tbody>
+</table>
+<p>무작위 단계 하나로 학습한 뒤공중제비 정책은 제자리에 서거나 뒤로 넘어지는 쪽으로 무너졌다. HighKnees 한 클립을 1,024번 쟀을 때 SDS 오차의 평균은 ESM 없이 1.309, ESM으로 1.339로 비슷했고 분산은 1.140에서 9.964×10⁻⁶으로 줄었다.
+표 6은 seed마다 따로 학습한 diffusion 모델을 썼고, AdaNorm이 없으면 같은 설정이 모델에 따라 크게 흔들렸다. 낮은 단계는 떨림에 예민하고 높은 단계는 정밀한 기술(옆돌기)을 이끌지 못한다(§5.1, §10).
+GSI는 목표 위치와 피구에서 RSI와 비슷한 표본 효율을 냈고 T 자세 시작보다 빨리 올랐다(그림 12). GSI 표본과 데이터의 FID(Fréchet inception distance)는 16차원 VAE(variational autoencoder) 잠재 공간에서 0.0922–0.1997이었다. Coverage@1은 89.3 % 이상이었다(스타일 셋에서 각 4,096개, §10, 부록 G).</p>
+<p><strong>계산(§6.2, §6.3, 부록 E).</strong> 사전 학습은 RTX 4090 한 장에서 대개 5시간 안에 수렴하고, 한 클립 정책(회전 발차기)은 같은 GPU로 약 30분이다. HighKnees 목표 위치 정책은 6억 표본에 11.5시간으로 AMP(6.2시간)보다 길다. 저자는 100STYLE 사전이 스타일 전용 판별기보다 큰 것을 이유로 든다.
+다단계 점수(MSM, multi-step score matching)로 만든 AeroPlane + HighKnees 정책은 약 16시간이 걸렸다. MSM은 DDIM(denoising diffusion implicit model)으로 보폭 2의 세 걸음을 되돌려 점수를 잰다. 실행 시간은 정책만 돌므로 AMP와 같다.</p>
+<p><strong>실물 G1(§9, 부록 F).</strong> 정책은 고유감각 67차원(뿌리 자세 6D, 뿌리 각속도 3, 관절 29개의 위치와 속도)만 본다. diffusion 모델은 §6.1의 동작 특징을, 비평가는 뿌리 높이·선속도·끝점 위치 같은 특권 정보를 본다(비대칭 actor–critic).
+무작위화는 마찰 U(0.1, 2)·질량 중심 ±0.1 m·PD 이득 0.8–1.25배·밀기 ±0.5 m/s·링크 질량 0.9–1.1배와 관측 잡음이다. 벌점은 행동 변화율 −0.04, 자기 접촉 −0.2다(표 9). 실물 정량 지표는 없다.</p>
+<p><strong>원문에서 걸리는 것.</strong> 부록 C의 위치 오차 식 (10)은 제곱 거리의 평균이라 단위가 m²인데, 표 4–7은 m로 적는다. 어느 쪽이 맞는지 확인하지 못했다. 표의 ± 값이 표준편차인지도 적혀 있지 않다.
+v1(2025-12)에는 실물 G1, 계단, 표 6–7이 없었다. 저자도 11명이었고 v3에서 Dun Yang이 더해졌다.</p>
+<p><strong>MimicKit 구현(I.19, 2026-04-27 추가).</strong> 공개 설정은 LAFAN1 사전의 세 과제(목표 위치, 조향, 피구)와 한 클립 모방뿐이다. 100STYLE 스타일 사전과 물체 나르기·일어나기·계단·G1 설정은 2026-10-29 기준 없다. 과제 기본 가중은 0.5와 0.5, <code>sds_loss_scale</code>은 6이다. README는 <code>smp_reward_weight</code>, <code>sds_loss_scale</code>, <code>diffusion_steps</code> 순서로 조정하라고 적는다.
+공개 피구 설정의 공 속도는 12–15 m/s로 논문(20–25 m/s)보다 느리다. 한 클립 설정은 GSI를 끄고 동작 파일에서 시작 상태를 뽑는다(README_SMP). 논문 표 4는 학습 중 기준 데이터가 필요 없다고 적지만, 공개 한 클립 설정은 시작 상태에 동작 파일을 쓴다.
+AdaNorm은 단계별 SDS 오차의 누적 평균으로 나누고, 과제 설정에서는 10⁸ 표본 뒤 고정한다. GSI는 DDPM 10걸음으로 창 4,096개를 만들고 50반복마다 1,024개를 새로 뽑는다. 생성한 10프레임 창은 AMP 환경에서 물려받은 판별기 관측 이력(<code>disc_obs</code>)에 그대로 채운다.</p>
+<div class="fig-grid"><figure class="fig"><a class="thumb" href="https://arxiv.org/html/2512.03028v3/figures/sds_loss.png" title="원본 보기"><img alt="SMP SDS 손실" src="assets/thumbs/bbe1dc30b384.webp" loading="lazy" width="1000" height="545"></a><figcaption>그림 — SMP (Fig. 4): 가로축은 잡음 단계(0–50), 세로축은 SDS 손실의 log10 값이다. 초록은 학습 데이터, 파랑은 에이전트 동작이고 단계마다 표본 1,024개의 평균이다. 잡음이 작은 단계일수록 손실이 크고 둘의 차이(주황 띠)도 크며, 단계 50 근처에서는 둘이 겹친다. 빨간 막대가 SMP가 고른 단계 8, 15, 22다. 출처: <a href="https://arxiv.org/abs/2512.03028">arXiv:2512.03028</a></figcaption></figure>
+<figure class="fig"><a class="thumb" href="https://arxiv.org/html/2512.03028v3/figures/task_return_curves/dodge.png" title="원본 보기"><img alt="SMP 피구 학습 곡선" src="assets/thumbs/68869282e1c4.webp" loading="lazy" width="1000" height="703"></a><figcaption>그림 — SMP (Fig. 7의 피구 칸): LAFAN1 사전으로 학습한 피구 정책의 정규화 과제 수익(세로)과 표본 수(가로, 최대 8×10⁸)다. 파랑은 SMP, 보라는 사전 없음, 초록은 AMP, 빨강은 판별기를 고정한 AMP다. 그림 파일에 범례가 없어 색을 여기 적는다. SMP만 2–4×10⁸ 표본 사이에 0.7 안팎으로 오르고 나머지는 0.2–0.3에 머문다. 출처: <a href="https://arxiv.org/abs/2512.03028">arXiv:2512.03028</a></figcaption></figure>
+<figure class="fig full wide"><a class="thumb" href="https://arxiv.org/html/2512.03028v3/robot_demo_spinkick.png" title="원본 보기"><img alt="SMP G1 회전 발차기" src="assets/thumbs/b378ccb2be2f.webp" loading="lazy" width="1000" height="271"></a><figcaption>그림 — SMP (Fig. 11c): SMP로 학습한 정책을 Unitree G1에 올려 실내에서 회전 발차기를 한다. 원문 그림에는 실외 트랙의 조향 주행(a)과 외란 뒤 회복(b)도 있다. 출처: <a href="https://arxiv.org/abs/2512.03028">arXiv:2512.03028</a></figcaption></figure>
+</div></details>
+<p><strong>이어진 연구.</strong> Context-Aware Motion Priors(<a href="https://arxiv.org/abs/2608.03234">arXiv:2608.03234</a>, 2026-08)는 AMP를 주 설정으로 두고 SMP로 넓혔다. SMP 판은 고정한 denoiser 위에 과제 상황을 조건으로 받는 작은 잔차 어댑터를 얹는다. 이점이 큰 롤아웃으로 상황과 기준 동작의 궁합을 배워 기준 동작에 가중을 준다. 어댑터는 정책 학습 중에 기준 동작 데이터로 배우므로, 이 판은 SMP와 달리 원 데이터를 버릴 수 없다.
+MimicKit이 배포하는 보행 기준 동작으로 잰 다섯 과제에서 SMP의 시험 수익이 목표 위치 376에서 437로, 피구 447에서 471로 올랐다. 오름폭은 다섯 과제 중 넷에서 AMP에 붙였을 때보다 작았다(표 1, seed 3개, 정규화하지 않은 수익). 목표 위치만 SMP 쪽 오름폭(+61)이 AMP 쪽(+59)보다 컸다.
+같은 표에서 바탕 SMP는 다섯 과제 중 넷에서 바탕 AMP보다 높았고(조향 496 대 299), 목표 위치만 376 대 408로 낮았다. 피구에서 둘의 차이(447 대 424)는 SMP 논문 표 2의 차이(0.733 대 0.233)보다 훨씬 작다. 두 표는 수익의 척도와 설정이 다르다. SMP 저자 밖에서 같은 틀로 잰 비교다.
+DSD(Diffusion Skill Discovery, <a href="https://arxiv.org/abs/2609.17682">arXiv:2609.17682</a>, Kim·Peng, 2026-09)는 diffusion 모델의 score matching으로 정책 상태 분포의 엔트로피 기울기를 어림해 다양한 기술을 찾는다. 보상은 SMP의 고정 단계 $\{8, 15, 22\}$에서 잰다(§5.4). 동작 사전으로는 AMP를 썼고 SMP로 바꿀 수 있다고 적었다(§6).
+PFM-HR(Pose Flow Matching for Humanoid Robots, <a href="https://arxiv.org/abs/2608.03227">arXiv:2608.03227</a>, 2026-08)은 순서 없는 자세 데이터로 학습한 flow matching 사전을 추종 과제 내내 고정해 추종 보상을 조절한다. 같은 사전에 SMP식 다중 잡음 재구성 보상(잡음 수준을 SMP의 신호 대 잡음비에 맞춤)을 붙인 변형보다 역동 동작에서 나았다고 보고했다(표 III).
+동작 사전의 계보는 I.15에 있다. 이 탭에서는 판별기 쪽 AMP가 I.16, 판별기 입력을 추종 오차로 바꾼 ADD가 I.17, SMP 구현이 들어 있는 MimicKit이 I.19다.</p>
+<h3>I.19 MimicKit: 동작 모방 일곱 방법을 한 틀에서 같은 설정 체계로 돌리는 기준 구현</h3>
+<p><strong>MimicKit — Peng 계열의 동작 모방 방법 다섯과 학습 기법 둘을 한 학습 틀에 다시 구현해, 설정 파일만 바꿔 방법·캐릭터·시뮬레이터를 갈아 끼운다</strong>(<a href="https://arxiv.org/abs/2510.13794">arXiv:2510.13794</a>, 원제 "MimicKit: A Reinforcement Learning Framework for Motion Imitation and Control", Xue Bin Peng 단독 저자, Simon Fraser University·NVIDIA, arXiv 안내서(v1 2025-10-15, v4 2026-01-18), <a href="https://github.com/xbpeng/MimicKit">코드</a> Apache-2.0, 별 2,406개(2026-10-29 확인)).</p>
+<p><strong>한 줄 요약.</strong> <mark>MimicKit은 동작 모방 방법 다섯과 학습 기법 둘을 같은 Agent·Model·Environment·Engine 틀에 다시 구현해, 설정 파일 세 개만 바꿔 방법과 캐릭터와 시뮬레이터를 갈아 끼우게 한 기준 구현이다.</mark>
+평지 위 캐릭터 모방에 맞춘 틀이라 지형, 도메인 무작위화, 실물 배포 단계가 없다(2026-10-29 기준). README는 자신을 의존성이 적은 가벼운 틀로 두고, 기능이 더 많은 모듈형 틀로는 ProtoMotions(Planner B.16.1)를 권한다.</p>
+<p><strong>무엇이 들어 있나.</strong> README가 꼽는 방법은 일곱이다. 에이전트도 시각화용 Dummy를 빼면 일곱이지만 두 목록이 조금 다르다(<code>mimickit/learning/agent_builder.py</code>).
+DeepMimic은 따로 된 에이전트가 아니라 PPO 에이전트에 deepmimic 환경을 붙인 조합이다. PPO는 README 목록에 없는 바탕 학습기이고, 안내서는 방법 대부분이 PPO 위에서 돈다고 적는다(§4).</p>
+<table>
+<thead>
+<tr>
+<th>방법</th>
+<th>논문(연·발표)</th>
+<th>보상·목적의 꼴</th>
+<th>MimicKit 문서</th>
+<th>이 문서의 절</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PPO</td>
+<td>Schulman 외, 2017 · arXiv</td>
+<td>확률비를 자른 대리 목적과 λ 가중 시간차(TD(λ)) 이점</td>
+<td>따로 없음(<code>ppo_agent.py</code>)</td>
+<td>강화학습 R.5</td>
+</tr>
+<tr>
+<td>DeepMimic</td>
+<td>Peng 외, 2018 · ACM TOG 37(4)(SIGGRAPH 2018)</td>
+<td>관절 회전, 관절 속도, 뿌리 자세, 뿌리 속도, 핵심 몸체 위치의 오차를 지수로 바꾼 다섯 항의 가중합(0.5, 0.1, 0.15, 0.1, 0.15)</td>
+<td><a href="https://github.com/xbpeng/MimicKit/blob/main/docs/README_DeepMimic.md">README_DeepMimic</a></td>
+<td>I.7</td>
+</tr>
+<tr>
+<td>AMP(adversarial motion priors)</td>
+<td>Peng 외, 2021 · ACM TOG 40(4)(SIGGRAPH 2021)</td>
+<td>판별기 출력으로 만든 스타일 보상과 과제 보상의 가중합. 기본 설정은 스타일 보상만 쓴다</td>
+<td><a href="https://github.com/xbpeng/MimicKit/blob/main/docs/README_AMP.md">README_AMP</a></td>
+<td>I.7, I.16</td>
+</tr>
+<tr>
+<td>ASE(adversarial skill embeddings)</td>
+<td>Peng 외, 2022 · ACM TOG 41(4)(SIGGRAPH 2022)</td>
+<td>판별기 보상과, 기술 잠재(64차원)를 되맞히는 인코더 보상을 반씩 더한다. 다양성 손실 가중 0.01</td>
+<td><a href="https://github.com/xbpeng/MimicKit/blob/main/docs/README_ASE.md">README_ASE</a></td>
+<td>Planner B.16.1</td>
+</tr>
+<tr>
+<td>ADD(adversarial differential discriminator)</td>
+<td>Zhang 외, 2025 · SIGGRAPH Asia 2025</td>
+<td>기준 동작과 캐릭터의 차이 벡터만 보는 판별기의 보상. 양성 표본은 영벡터다</td>
+<td><a href="https://github.com/xbpeng/MimicKit/blob/main/docs/README_ADD.md">README_ADD</a></td>
+<td>I.7, I.17</td>
+</tr>
+<tr>
+<td>SMP(score-matching motion priors)</td>
+<td>Mu 외, 2025 · ACM TOG(SIGGRAPH 2026)</td>
+<td>동작 창에 넣은 잡음을, 고정한 동작 diffusion 사전이 얼마나 맞히는지를 지수로 바꾼 보상</td>
+<td><a href="https://github.com/xbpeng/MimicKit/blob/main/docs/README_SMP.md">README_SMP</a></td>
+<td>I.7, I.18</td>
+</tr>
+<tr>
+<td>AWR(advantage-weighted regression)</td>
+<td>Peng 외, 2019 · arXiv 프리프린트</td>
+<td>이점의 지수로 가중한 행동 회귀. PPO 대신 쓰는 학습기</td>
+<td><a href="https://github.com/xbpeng/MimicKit/blob/main/docs/README_AWR.md">README_AWR</a></td>
+<td>강화학습 R.10, 아래</td>
+</tr>
+<tr>
+<td>LCP(Lipschitz-constrained policies)</td>
+<td>Chen 외, 2024 · IROS 2025</td>
+<td>PPO 목적에, 관측에 대한 로그 확률 기울기의 제곱 노름 벌점(가중 0.002)을 더한다</td>
+<td><a href="https://github.com/xbpeng/MimicKit/blob/main/docs/README_LCP.md">README_LCP</a></td>
+<td>아래</td>
+</tr>
+</tbody>
+</table>
+<p>계수는 <code>data/envs/</code>와 <code>data/agents/</code>의 휴머노이드 기본값이다(LCP는 G1 설정). 논문 구현과 다른 곳은 아래 토글에 모았다.</p>
+<p><strong>구조.</strong> 안내서 §3의 네 부품이 디렉터리 셋에 나뉘어 있다(그림 2). 코드는 <code>mimickit/</code> 아래 Python 약 1만 4,800줄(빈 줄 포함)이다.</p>
+<ul>
+<li><strong>Agent·Model</strong>(<code>mimickit/learning/</code>). 학습 알고리즘과 망이고, 에이전트마다 짝이 되는 모델이 있다. 기본 actor와 비평가는 은닉층 1024·512의 ReLU MLP(multilayer perceptron)다. SMP의 동작 사전은 2층 DiT(diffusion transformer)다(<code>learning/tinymdm/</code>).</li>
+<li><strong>Environment</strong>(<code>mimickit/envs/</code>). 12종이다. 동작 모방 다섯(deepmimic, amp, ase, add, smp), 과제 셋, 정적 물체(파쿠르 상자), 동작 보기, 관절 시험, 기본 캐릭터다. 과제 셋은 목표 위치(location), 조향(steering, 목표 방향·속도 추종), 피구(dodgeball, 날아오는 공 피하기)다.</li>
+<li><strong>Engine</strong>(<code>mimickit/engines/</code>). Isaac Gym, Isaac Lab, Newton이 같은 API를 구현하고, 환경은 이 API만 부른다. 기본은 PD(비례·미분) 위치 목표, 제어 30 Hz, 물리 120 Hz(Newton은 240 Hz)다(<code>data/engines/</code>).</li>
+<li><strong>캐릭터와 동작</strong>(<code>mimickit/anim/</code>). MJCF(MuJoCo의 XML 모델 형식)·URDF(unified robot description format)·USD(Universal Scene Description) 캐릭터 모델, 순기구학, 동작 라이브러리다.</li>
+</ul>
+<p><strong>설정.</strong> 한 번의 실행은 엔진, 환경, 에이전트의 YAML 파일 세 개로 정해진다. <code>args/</code>의 인자 파일 37개가 이 파일들을 묶는다. 동작 보기와 관절 시험의 7개는 에이전트 파일 없이 Dummy를 쓴다. 명령줄 인자가 인자 파일보다 앞선다(<code>util/arg_parser.py</code>, 안내서 §5.2). 환경 파일의 <code>engine:</code> 블록은 엔진 설정을 덮어쓴다. Go2의 지면 접촉 높이 0.15가 그 예다.</p>
+<p><strong>시뮬레이터.</strong> 고정한 판이 엔진마다 다르다. 엔진 자체의 배경은 시뮬레이션 S.1.1–S.1.3에 있다.</p>
+<ul>
+<li>Isaac Gym은 README가 판을 적지 않는다. NVIDIA는 더 지원하지 않는 레거시로 둔다(<a href="https://developer.nvidia.com/isaac-gym">Isaac Gym 페이지</a>, Controller F.6). 그래도 인자 파일 37개 가운데 34개의 기본 엔진이다.</li>
+<li>Isaac Lab은 2025-11-20의 main 커밋 <code>2ed331a</code>에서 시험했다(README). 날짜로는 v2.3.0과 v2.3.1 출시 사이이고, 두 출시 태그의 계보에는 들지 않는다. 저자는 MimicKit을 아직 Isaac Lab 3.0으로 올리지 않았고, 이 커밋이 Isaac Sim 5.1과 Python 3.11을 지원할 것이라고 답했다(이슈 #97, 2026-03-30).</li>
+<li>Newton은 v1.0.0에서 시험했다(README). 엔진은 Newton의 MuJoCo 솔버(MuJoCo Warp)를 부른다(<code>engines/newton_engine.py</code>). Newton은 2026-10-14에 v1.7.0이 나왔다.</li>
+</ul>
+<p><strong>캐릭터.</strong> 휴머노이드(관절 자유도 28), 칼·방패를 든 휴머노이드(31, ASE 논문의 캐릭터), SMPL 휴머노이드(69), Unitree G1(29), Unitree Go2(12), HighTorque Pi Plus(22, 외부 기여)다. 자유도는 각 환경 설정의 <code>init_pose</code> 길이에서 뿌리 6을 뺀 값이다.</p>
+<p><strong>동작 데이터와 도구.</strong> 동작 한 개는 pickle 파일이다. 프레임마다 뿌리 위치 3, 뿌리 회전 3(지수 사상), 관절 회전을 MJCF의 관절 순서대로 담는다(안내서 §6). 여러 동작은 가중치를 단 데이터셋 YAML로 묶는다(<code>data/datasets/</code>).
+변환 도구는 둘이다. <code>tools/gmr_to_mimickit/</code>은 GMR(General Motion Retargeting, I.4)의 출력을, <code>tools/smpl_to_mimickit/</code>은 AMASS의 SMPL 파일을 MimicKit 형식으로 바꾼다. 뒤의 것은 변환 논리 일부를 PHC에서 가져왔다. SMP 사전은 <code>tools/diffusion_model/</code>로 학습한다.</p>
+<p><strong>데이터와 공개 모델.</strong> 자산, 동작, 사전 학습 모델, 학습 기록은 저장소가 아니라 README가 가리키는 SFU OneDrive의 <code>MimicKit_Data.zip</code>(약 402 MB, 항목 602개)에 있다.
+압축 파일 목록 기준(2026-10-29)으로 동작 387개, 정책 19개, SMP 사전 3개(LAFAN1, 보행, 회전 발차기), 학습 기록 19개다. 동작은 휴머노이드 단일 클립 23, SIE(Sony Interactive Entertainment) 50, <code>parc</code> 폴더의 파쿠르 181, 긴 보행 11, Reallusion 칼·방패 87, SMPL 20, G1 7, Go2 7, Pi Plus 1개다.</p>
+<p><strong>언제 무엇이 들어왔나.</strong> 커밋 197개(2025-10-08부터 2026-10-17까지)의 기록이다.</p>
+<table>
+<thead>
+<tr>
+<th>날짜</th>
+<th>들어온 것</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2025-10-08</td>
+<td>첫 커밋. DeepMimic, AMP, ASE, ADD, AWR과 과제 둘(목표 위치, 조향). 휴머노이드, SMPL, G1, Go2. 엔진은 Isaac Gym 하나</td>
+</tr>
+<tr>
+<td>2025-10-18</td>
+<td>GMR 출력 변환기. 파쿠르 상자 넘기 환경이 뒤따랐다(10-22 휴머노이드, 11-07 G1)</td>
+</tr>
+<tr>
+<td>2025-11-02</td>
+<td>라이선스를 BSD-3-Clause에서 Apache-2.0으로 바꿈</td>
+</tr>
+<tr>
+<td>2025-11-22, 11-24</td>
+<td>HighTorque Pi Plus 설정, Isaac Lab 엔진</td>
+</tr>
+<tr>
+<td>2026-01-12</td>
+<td>Newton 엔진. 2026-03-30에 Newton v1.0.0으로 올림</td>
+</tr>
+<tr>
+<td>2026-02-02</td>
+<td>AMASS의 SMPL 변환기, URDF·USD 캐릭터 모델</td>
+</tr>
+<tr>
+<td>2026-02-26</td>
+<td>LCP. AWR 문서는 이틀 앞서 나왔고, AWR 에이전트는 첫 커밋부터 있었다</td>
+</tr>
+<tr>
+<td>2026-04-27</td>
+<td>SMP와 피구 과제</td>
+</tr>
+<tr>
+<td>2026-10-17</td>
+<td>마지막 push(wandb 실행 이름)</td>
+</tr>
+</tbody>
+</table>
+<div class="fig-grid"><figure class="fig full"><a class="thumb" href="https://arxiv.org/html/2510.13794v4/figures/overview.png" title="원본 보기"><img alt="MimicKit 구성 개요" src="assets/thumbs/384d38eadcde.webp" loading="lazy" width="941" height="668"></a><figcaption>그림 — MimicKit 안내서 (Fig. 2): 왼쪽 학습 쪽에서 Agent는 Model에 입력 x를 주고 출력 y를 받는다. Agent는 Environment에 행동 a를 보내고 관측 o, 보상 r, 끝남 표지 d를 받는다. 오른쪽 시뮬레이션 쪽에서 Environment는 행동을 명령 c로 바꿔 Engine에 넘기고 상태 s를 받는다. 출처: <a href="https://arxiv.org/abs/2510.13794">arXiv:2510.13794</a></figcaption></figure>
+<figure class="fig full wide"><a class="thumb" href="https://arxiv.org/html/2510.13794v4/figures/teaser.png" title="원본 보기"><img alt="MimicKit 캐릭터 셋의 회전 발차기" src="assets/thumbs/99d38c7b4c83.webp" loading="lazy" width="1000" height="373"></a><figcaption>그림 — MimicKit 안내서 (Fig. 1): 같은 회전 발차기(spinkick) 동작을 휴머노이드(위), SMPL 휴머노이드(가운데), Unitree G1(아래)이 따라 하는 장면을 10프레임씩 보인다. 출처: <a href="https://arxiv.org/abs/2510.13794">arXiv:2510.13794</a></figcaption></figure>
+</div><p><strong>돌려 보기.</strong> README의 설치는 세 단계다. 시뮬레이터 하나를 깔고, <code>requirements.txt</code>를 깔고, 자산·동작 압축 파일을 받아 <code>data/</code>에 푼다. 아래 명령은 README에서 그대로 옮겼다.</p>
+<pre><code class="language-bash">pip install -r requirements.txt
+
+# 학습: 엔진, 환경, 에이전트 설정을 직접 준다
+python mimickit/run.py --mode train --num_envs 4096 --engine_config data/engines/isaac_gym_engine.yaml --env_config data/envs/deepmimic_humanoid_env.yaml --agent_config data/agents/deepmimic_humanoid_ppo_agent.yaml --visualize true --out_dir output/
+# 같은 학습을 인자 파일로
+python mimickit/run.py --arg_file args/deepmimic_humanoid_ppo_args.txt --visualize true
+# 공개 모델 시험
+python mimickit/run.py --arg_file args/deepmimic_humanoid_ppo_args.txt --num_envs 4 --visualize true --mode test --model_file data/models/deepmimic_humanoid_spinkick_model.pt
+# 여러 GPU로 분산 학습
+python mimickit/run.py --arg_file args/deepmimic_humanoid_ppo_args.txt --devices cuda:0 cuda:1
+# 학습 기록 보기(TensorBoard 로거를 쓴 경우)
+tensorboard --logdir=output/ --port=6006 --samples_per_plugin scalars=999999
+# 동작 클립 보기
+python mimickit/run.py --mode test --arg_file args/view_motion_humanoid_args.txt --visualize true
+</code></pre>
+<p>README는 GPU 사양을 적지 않는다. 엔진은 명령줄에 <code>--engine_config data/engines/newton_engine.yaml</code>을 더해 바꾸고, 인자 파일은 고치지 않아도 된다.
+<code>--devices</code>에 장치를 여럿 주면 장치마다 프로세스를 띄우고 기울기를 평균한다(GPU는 NCCL(NVIDIA Collective Communications Library), CPU는 gloo, <code>util/mp_util.py</code>). 로거는 <code>--logger</code>로 텍스트(기본), TensorBoard, wandb 가운데 고르고, <code>--video true</code>는 화면 없이 영상을 기록한다. 빠르게 학습하려면 <code>--visualize false</code>로 그리기를 끈다.</p>
+<p><strong>AWR, LCP.</strong> MimicKit에 든 학습 기법 둘이다. AWR의 목적식과 유도는 강화학습 R.10에 있고, LCP는 travplan 문서에 아직 없다.</p>
+<p><strong>AWR — 가치 함수 회귀와 이점으로 가중한 행동 회귀, 지도학습 두 단계만으로 정책을 고치는 강화학습</strong>(<a href="https://arxiv.org/abs/1910.00177">arXiv:1910.00177</a>, 원제 "Advantage-Weighted Regression: Simple and Scalable Off-Policy Reinforcement Learning", Xue Bin Peng·Aviral Kumar·Grace Zhang·Sergey Levine, UC Berkeley, arXiv 프리프린트(v3 2019-10-07), <a href="https://xbpeng.github.io/projects/AWR/">프로젝트</a>, <a href="https://youtu.be/ROwJ_O2NINc">영상</a>, <a href="https://github.com/xbpeng/awr">코드</a> MIT).
+RWR(reward-weighted regression)의 수익 가중을 이점 가중으로 바꾸고, 재생 버퍼로 지난 정책들의 표본을 함께 쓴다(§3). 논문 설정은 반복마다 표본 약 2,000개를 최근 5만 개짜리 버퍼에 넣고, 가치 함수를 TD(λ) 수익에 200스텝, 정책을 가중 회귀로 1,000스텝 맞춘다. 온도 β는 0.05, 가중 상한은 20이다(§5, 부록 C).
+OpenAI Gym 최종 수익(표 1, seed 5개)에서 Hopper 3,405와 Walker2d 5,813은 비교한 일곱 방법 가운데 평균이 가장 높았다. Humanoid는 4,996으로 SAC(soft actor-critic)의 8,048에 크게 뒤졌다.
+동작 모방(표 2, 정규화 수익)에서는 DeepMimic의 PPO와 같거나 나았다. 휴머노이드 옆돌기 0.78 대 0.76, 회전 발차기 0.77 대 0.70, 개 캔터(canter) 0.86 대 0.76이다. RWR은 휴머노이드에서 0.03과 0.05에 그쳤다. 절제(그림 4)에서는 재생 버퍼나 기준선 $V(s)$를 빼면 크게 나빠졌다.
+MimicKit에서는 DeepMimic 과제에 PPO 대신 쓴다(<code>deepmimic_humanoid_awr_agent.yaml</code>). 구현이 논문과 가장 크게 다른 곳은 둘이다(나머지는 아래 토글). 반복마다 버퍼를 비워 이번 반복의 표본(32스텝 × 환경 4,096개 = 131,072개)만 쓰고, 이점을 배치에서 표준화한 뒤 온도 1로 가중한다(<code>awr_agent.py</code>). $\mu_A$와 $\sigma_A$는 배치의 이점 평균과 표준편차다.</p>
+<p>$$ w(s, a) = \min\left( \exp\left( \frac{A(s, a) - \mu_A}{\sigma_A} \right),\; 20 \right) $$</p>
+<p>공개 학습 기록에서 휴머노이드 회전 발차기의 시험 수익(상한 300)은 같은 3억 1,470만 표본에서 PPO 272.4, AWR 275.8이었다(각 1회, 아래 토글).</p>
+<p><strong>LCP — 정책의 로그 확률이 관측에 따라 바뀌는 크기에 기울기 벌점을 걸어, 부드러움 보상이나 저역 통과 필터 없이 매끄러운 보행 정책을 얻는다</strong>(<a href="https://arxiv.org/abs/2410.11825">arXiv:2410.11825</a>, 원제 "Learning Smooth Humanoid Locomotion through Lipschitz-Constrained Policies", Zixuan Chen·Xialin He·Yen-Jen Wang(공동 1저자)·Qiayuan Liao·Yanjie Ze·Zhongyu Li·S. Shankar Sastry·Jiajun Wu·Koushil Sreenath·Saurabh Gupta·Xue Bin Peng, SFU·UIUC·UC Berkeley·Stanford·NVIDIA, IROS 2025, <a href="https://lipschitz-constrained-policy.github.io">프로젝트</a>, <a href="https://youtu.be/4mJCFZ--0sc">영상</a>, <a href="https://github.com/zixuan417/smooth-humanoid-locomotion">코드</a> CC BY-NC 4.0).
+저자들의 출발점은 부드러움 보상과 저역 통과 필터가 미분할 수 없고, 로봇마다 조정이 많이 든다는 것이다(§I). 기울기가 유계인 함수는 Lipschitz 연속이므로, 정책의 기울기를 상수로 묶는 제약을 표본 기댓값의 벌점으로 바꾼다(식 4–7). GAN(generative adversarial network) 판별기에 쓰던 기울기 벌점(AMP와 ASE도 쓴다)을 정책에 건 것이라고 적는다(§II).</p>
+<p>$$ \max_\pi\; J(\pi) - \lambda_{gp}\, \mathbb E_{(s, a) \sim \mathcal D}\left[ \| \nabla_s \log \pi(a \mid s) \|^2 \right], \qquad \lambda_{gp} = 0.002 $$</p>
+<p>학습은 PPO와 ROA(regularized online adaptation)이고, 과제는 속도 명령을 따르는 걷기다(§V). 시뮬레이션 절제(표 I, seed 3개, 환경 1,000개 × 500스텝)에서 행동 떨림(action jitter, rad/s³)은 LCP 3.21, 부드러움 보상 5.74, 저역 통과 필터 7.86, 없음 42.19였다. 과제 수익은 차례로 26.03, 26.56, 24.98, 28.87이다.
+$\lambda_{gp}$를 0.01로 키우면 떨림은 0.17로 줄지만 과제 수익이 16.11로 떨어졌다. 벌점을 이력까지 포함한 관측 전체에 걸면 떨림이 3.21, 현재 관측에만 걸면 7.16이었다(표 I(c)). 실물은 Fourier GR1T1·GR1T2, Unitree H1, Berkeley Humanoid에 그대로 올렸다(표 III, 그림 7). 저자가 밝힌 한계는 기본 걷기만 보였고 달리기와 뛰기는 재지 않았다는 것이다(§VII).
+MimicKit의 <code>LCPAgent</code>는 PPO 에이전트를 감싸는 43줄짜리 클래스이고, 같은 벌점을 가중 0.002로 actor 손실에 더한다. 기본 설정은 속도 명령이 아니라 G1이 걷기 클립을 따라 하는 DeepMimic 과제에 건다(<code>lcp_g1_agent.yaml</code>). README는 이 가중을 과제와 동작마다 다시 맞춰야 할 가장 중요한 값으로 꼽는다. 원 저장소는 CC BY-NC 4.0이고, MimicKit의 구현은 MimicKit의 Apache-2.0을 따른다.</p>
+<p><strong>안내서에서 가져올 것.</strong> 안내서는 설치·실행 안내, 네 부품의 역할, 방법 고르는 법, 작은 비교 실험을 담고, 학습 시간과 GPU는 적지 않는다. v1은 엔진을 Isaac Gym 하나로, v4는 셋으로 적는다. LCP와 SMP는 v4 뒤에 저장소에 들어와 안내서에 없다.</p>
+<ul>
+<li><strong>끝남 표지 넷</strong>(§3.3). NULL은 진행 중, FAIL은 넘어짐 같은 실패, SUCC는 과제 성공, TIME은 시간 제한으로 자른 것이다. TIME만 가치 함수로 부트스트랩해 무한 지평을 흉내 낸다. 코드는 FAIL과 SUCC 다음 상태의 가치를 각각 $r_{fail}/(1-\gamma)$와 $r_{succ}/(1-\gamma)$로 고정하고, DeepMimic 환경은 두 보상을 모두 0으로 둔다. 동작 끝의 보상을 0으로 둔 이유를 코드 주석은 동작이 끝날 때까지 가만히 서 있는 국소 최솟값을 피하려는 것이라 적는다(<code>deepmimic_env.py</code>).</li>
+<li><strong>방법 고르는 법</strong>(§4). DeepMimic은 일반적이고 믿을 만해 먼저 시도할 방법이지만, 기준 동작에 묶인 유연하지 않은 정책이 된다. AMP는 동작을 조합해 새 과제에 쓰기 좋지만, 역동적인 동작에서 국소 최적에 더 잘 빠진다. ADD는 캐릭터와 동작마다 추종 보상을 설계하고 조정하는 수고를 던다. AWR은 표본을 많이 먹는 on-policy PPO의 off-policy 대안으로 넣었다.</li>
+<li><strong>비교 실험</strong>(§7, 표 1, 그림 5). 휴머노이드가 동작 클립 하나씩을 따라 하도록 세 방법을 Isaac Gym에서 학습했다. 조건을 맞추려고 자세 오차 종료를 끄고, 원치 않는 지면 접촉에서만 끝냈다. 위치 오차는 전역 뿌리 위치 오차와 뿌리 기준 관절 위치 오차를 관절 수 + 1로 평균한 값이다(식 2).</li>
+</ul>
+<p>표는 안내서 표 1의 위치 추종 오차(m, seed 5개의 평균 ± 표준편차, seed마다 시험 에피소드 4,096개)에서 동작 11개 가운데 7개를 옮겼다.</p>
+<table>
+<thead>
+<tr>
+<th>동작(길이)</th>
+<th>AMP</th>
+<th>DeepMimic</th>
+<th>ADD</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>달리기(0.80 s)</td>
+<td>0.163 ± 0.008</td>
+<td>0.013 ± 0.002</td>
+<td>0.165 ± 0.017</td>
+</tr>
+<tr>
+<td>옆 공중제비(2.44 s)</td>
+<td>0.387 ± 0.011</td>
+<td>0.138 ± 0.004</td>
+<td>0.145 ± 0.006</td>
+</tr>
+<tr>
+<td>구르기(2.00 s)</td>
+<td>0.141 ± 0.031</td>
+<td>0.115 ± 0.132</td>
+<td>0.152 ± 0.005</td>
+</tr>
+<tr>
+<td>회전 발차기(1.28 s)</td>
+<td>0.064 ± 0.010</td>
+<td>0.078 ± 0.062</td>
+<td>0.025 ± 0.000</td>
+</tr>
+<tr>
+<td>옆돌기(2.71 s)</td>
+<td>0.076 ± 0.006</td>
+<td>0.144 ± 0.153</td>
+<td>0.017 ± 0.000</td>
+</tr>
+<tr>
+<td>뒤공중제비(1.75 s)</td>
+<td>0.267 ± 0.015</td>
+<td>0.111 ± 0.054</td>
+<td>0.062 ± 0.001</td>
+</tr>
+<tr>
+<td>걷기(0.96 s)</td>
+<td>0.132 ± 0.021</td>
+<td>0.009 ± 0.001</td>
+<td>0.009 ± 0.001</td>
+</tr>
+</tbody>
+</table>
+<p>11개 전체에서 평균 오차가 가장 낮은 쪽은 DeepMimic 5개, ADD 5개이고 걷기는 같다. DeepMimic은 회전 발차기, 구르기, 옆돌기, 뒤공중제비에서 seed 1–2개가 높은 오차에 머물러 표준편차가 커졌다(그림 5의 해당 패널). ADD의 표준편차는 11개 모두 0.017 m 이하다.
+저자는 자세 오차 종료를 켜면 추종 방법의 정확도와 seed 사이 일관성이 크게 좋아지고, 그래서 기본 설정에서는 켠다고 적는다(§7.1). 이 표의 숫자는 ADD 논문 표 1의 같은 동작 행과 소수점까지 같으므로, MimicKit만의 새 실험으로 읽지 않는다(I.17).
+AMP 논문 표 3(I.7, I.16)은 뿌리 기준 관절 위치만으로, DTW(dynamic time warping)로 시간을 맞춘 뒤 오차를 쟀다. 안내서 식 2는 전역 뿌리 위치 오차를 더하고 시간 정렬을 적지 않는다. AMP 논문이 적듯이 위상으로 맞추지 않는 AMP는 박자만 어긋나도 오차가 커지므로, 두 표의 AMP 숫자는 섞어 비교하지 않는다.</p>
+<div class="fig-grid"><figure class="fig full"><a class="thumb" href="https://arxiv.org/html/2510.13794v4/figures/learning_curves/backflip_learning_curve.png" title="원본 보기"><img alt="MimicKit 학습 곡선 뒤공중제비" src="assets/thumbs/025f2b00fecd.webp" loading="lazy" width="1000" height="664"></a><figcaption>그림 — MimicKit 안내서 (Fig. 5 일부): 휴머노이드 뒤공중제비의 위치 추종 오차(m)를 학습 표본 수(가로축, 최대 약 7.5억)에 따라 그렸다. 방법마다 seed 5개이고 파랑은 DeepMimic, 주황은 AMP, 빨강은 ADD다. DeepMimic은 seed 셋이 약 0.07 m로 내려가고 둘은 0.17–0.19 m에 머문다. ADD 다섯은 2억에서 2.7억 표본 사이에 늦게 떨어진 뒤 모두 약 0.06 m에 모이고, AMP는 0.26–0.29 m에 남는다. 자세 오차 종료는 껐다. 출처: <a href="https://arxiv.org/abs/2510.13794">arXiv:2510.13794</a></figcaption></figure>
+</div><p><strong>travplan에 주는 의미.</strong> 코드째 들이지 않는다. MimicKit은 사람 동작 클립을 평지에서 따라 하는 캐릭터의 틀이고, travplan은 사람 동작 데이터가 없는 스워브 바퀴 로봇이다. 지금 코드째 들일 저장소가 없다는 Controller F.6의 결론이 여기에도 맞는다. 읽고 가져올 조각은 넷이다.</p>
+<ul>
+<li><strong>끝남 표지.</strong> travplan 에피소드는 도달, 치명 셀이나 넘어짐, 시간 초과로 끝나고, 이것이 SUCC, FAIL, TIME에 그대로 맞는다. 비평가가 없는 지금의 강화학습 후학습(TP-0066)에는 해당하지 않는다. 비평가를 둔 PPO로 옮길 때는 Controller F.6의 1이 꼽은 시간 초과 부트스트랩의 짧은 본보기가 <code>ppo_agent.py</code>의 <code>_build_train_data</code>다.</li>
+<li><strong>AWR 가중의 두 판.</strong> TP-0066은 한 상태의 후보 16개 안에서 보상을 표준화해 softmax(온도 1)로 가중하고, 그룹 평균이 기준선이다(<code>scripts/rl_finetune_planner_d.py</code>). MimicKit의 AWR은 비평가 $V(s)$와 TD(λ) 수익으로 이점을 만들고, 배치 전체에서 표준화한 지수 가중을 20에서 자른다. 강화학습 R.19가 빠진 것으로 꼽은 배운 비평가를 붙인 판의 282줄짜리 본보기다. 이 판이 TP-0066보다 나은지는 가설이고 재지 않았다.</li>
+<li><strong>LCP와 학습 Controller.</strong> <code>TinyPolicy</code>(가중치 1,675개, pure pursuit 회귀 뒤 진화 전략, Controller E.12)의 본학습인 진화 전략은 역전파를 쓰지 않아 LCP 벌점을 손실에 그대로 더할 수 없다. 역전파로 배우는 것은 시작점을 잡는 pure pursuit 회귀(<code>scripts/train_playground_policy.py</code>의 <code>warm_start</code>)뿐이다. 증류로 학습하게 되면(Controller F.6의 3, I.14의 MPPI 교사 DAgger) 증류 손실에 출력 $\mu(o)$를 관측으로 미분한 야코비안의 제곱 노름을 더하는 것이 LCP의 결정적 판이다. 잴 것은 스텝마다의 twist 변화량과 스워브 plant(<code>travplan/robot/plant.py</code>, TP-0034)의 모듈 조향 각 변화량이다. 가설이고 재지 않았다. 이력을 입력에 넣는다면 벌점도 이력까지 걸어야 한다는 표 I(c)의 결과를 함께 옮긴다.</li>
+<li><strong>Newton 경로.</strong> <code>newton_engine.py</code>(1,208줄)는 Isaac Sim 없이 Newton의 MuJoCo 솔버로 병렬 환경을 만들고, Isaac Gym·Isaac Lab과 같은 엔진 API 뒤에 둔다. 저자는 Isaac Gym이나 Isaac Lab에서 학습하고 Newton에서 돌려 보는 것을 sim2sim의 예로 든다(이슈 #93). travplan이 지형을 <code>sim/terrain.py</code> 한 곳에서 정의해 운동학 시뮬과 Isaac 내보내기가 나눠 쓰는 것과 같은 생각이고, Planner D 학습 루프를 kit-less Newton으로 옮기는 검토(TP-0042)의 읽을거리다.</li>
+</ul>
+<p><strong>데스크톱에서 먼저 해 볼 것.</strong> 데스크톱(RTX 5080 16 GB, 시뮬레이션 S.2.2)에서 Isaac Gym이 도는지는 확인하지 못했으니 Newton이나 Isaac Lab 엔진부터 쓴다. 비용이 작은 첫 실습은 휴머노이드 회전 발차기를 PPO와 AWR로 seed 여럿씩 돌려, 공개 기록의 1회 비교를 잡음 바닥과 함께 다시 재는 것이다.
+Playground 휴머노이드의 하체 지연 0.4 s는 가정이다(Controller E.13, TP-0135). MimicKit의 조향 정책(AMP, SMP)에 속도 계단 명령을 넣어 응답 시정수를 재면 근거 하나가 생긴다. G1이 아닌 캐릭터 휴머노이드(목표 속도 0.5–5.0 m/s)라는 한계가 있고, 가설이고 재지 않았다.</p>
+<p><strong>한계와 주의.</strong></p>
+<ul>
+<li><strong>실물과 지형이 없다.</strong> 지면은 마찰 1.0의 평면 하나이고 정적 상자만 놓을 수 있다. 높이 지도 관측, 도메인 무작위화, 관측 잡음, 교사–학생 증류, sim2real 단계가 없다(코드 기준). 저자는 MimicKit으로 학습한 정책을 G1에 내부적으로 올렸지만 무작위화와 sim2real 단계는 아직 공개하지 않았다고 답했다(이슈 #45, 2025-11-27; #106, 2026-05-08). 증류 계열은 ProtoMotions에 있다(Planner B.16.1).</li>
+<li><strong>판이 오래됐다.</strong> Isaac Gym은 지원이 끝난 레거시다. Isaac Lab은 3.0(2026-10-20 출시) 전의 커밋에, Newton은 v1.0.0에 머문다(2026-10-29 기준).</li>
+<li><strong>논문과 다른 구현.</strong> AMP는 논문의 최소제곱 판별기 대신 이진 교차 엔트로피 판별기와 $-\log(1 - D)$ 꼴 보상을 쓰고, 판별기가 최근 10프레임을 본다(I.7의 식과 비교). AWR은 재생 버퍼 없이 반복마다 새 표본만 쓴다. 논문 수치와 견주려면 이 차이부터 맞춘다(아래 토글).</li>
+<li><strong>데이터 라이선스.</strong> 코드와 압축 파일 최상위는 Apache-2.0이지만 폴더마다 다르다. SIE 동작은 CC BY-NC 4.0, Reallusion 동작과 칼·방패 자산은 연구·평가 전용 NVIDIA License, G1·Go2 자산은 Unitree의 BSD-3-Clause, SMPL 휴머노이드 자산은 BSD-3-Clause Clear다. Pi Plus 자산과 <code>parc</code> 동작 폴더에는 라이선스 파일이 없다.
+  AMASS를 옮겨 쓰면 AMASS와 SMPL의 비상업 조건을 진다(I.1). SMP의 LAFAN1 사전은 CC BY-NC-ND 4.0 데이터로 학습했고(I.1), 그 조건이 사전 가중치에 어떻게 미치는지 저장소는 적지 않는다.</li>
+<li><strong>pickle 파일.</strong> 동작 파일과 GMR 출력은 Python pickle이라, 출처를 모르는 파일을 열면 임의 코드가 실행될 수 있다.</li>
+<li><strong>문서 오류.</strong> 안내서 §5.4의 시험 명령은 <code>rl_forge/run.py</code>를 부르지만 실제 경로는 <code>mimickit/run.py</code>다. 안내서 §3.4의 <code>pd_1d</code> 제어 모드는 2025-11-24 커밋에서 빠졌고, 지금 코드에는 <code>pd_explicit</code>가 있다. GMR 변환기 README의 경로(<code>tools/data_format_conversion/</code>)도 실제 경로(<code>tools/gmr_to_mimickit/</code>)와 다르다.</li>
+<li><strong>열린 보고.</strong> SMP에는 부자연스러운 걸음새가 기준 동작 같은 걸음새보다 낮은 오차를 받는다는 보고(이슈 #125)와, 더 큰 LAFAN1 사전으로 학습한 G1 조향 정책이 이상하게 움직인다는 보고(#115)가 열려 있다(2026-10-29). 재현 여부는 확인하지 못했다.</li>
+</ul>
+<details>
+<summary>자세히: MimicKit의 기본 설정, 논문 구현과 다른 점, 공개 학습 기록</summary>
+<p><strong>PPO 기본값</strong>(<code>deepmimic_humanoid_ppo_agent.yaml</code>, <code>ppo_agent.py</code>).</p>
+<table>
+<thead>
+<tr>
+<th>부분</th>
+<th>설정</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>표집</td>
+<td>환경 4,096개 × 반복당 32스텝 = 131,072 표본. 관측 정규화는 처음 1억 표본까지 갱신</td>
+</tr>
+<tr>
+<td>망</td>
+<td>actor와 비평가 각각 MLP 1024·512(ReLU). 행동 분포의 표준편차는 정규화한 행동 공간에서 0.05로 고정</td>
+</tr>
+<tr>
+<td>최적화</td>
+<td>SGD(stochastic gradient descent, 모멘텀 0.9), 학습률 10⁻⁴. 비평가를 먼저 2에폭(미니배치 2 × 환경 수), 다음에 actor를 5에폭(4 × 환경 수)</td>
+</tr>
+<tr>
+<td>목적</td>
+<td>γ 0.99, λ 0.95, 자르기 0.2. 이점은 표준화한 뒤 ±4에서 자르고, 행동 한계 벌점 가중은 10</td>
+</tr>
+</tbody>
+</table>
+<p><strong>DeepMimic 환경</strong>(<code>deepmimic_env.py</code>, <code>deepmimic_humanoid_env.yaml</code>). 관측은 뿌리 높이, 뿌리 회전·속도·각속도, 관절 회전·속도, 핵심 몸체(머리, 두 손, 두 발) 위치에 기준 동작의 다음 세 제어 스텝(뿌리 위치·회전, 관절 회전, 핵심 몸체 위치)을 더한 것이다. 원 DeepMimic의 위상 입력은 기본으로 끈다.
+보상 척도는 관절 회전 0.25, 관절 속도 0.01, 뿌리 자세 5, 뿌리 속도 1, 핵심 몸체 10이고, 관절마다 오차 가중을 따로 둔다. 원 DeepMimic(회전 2, 속도 0.1, 끝점 40, 질량 중심 10, I.9)과는 항의 구성과 계수가 다르다. ADD 논문(부록 B.2, 표 7)은 같은 가중과 척도를 자세, 관절 속도, 뿌리 속도, 끝점, 질량 중심 항의 값으로 적는다(I.17).
+종료는 허용한 몸체(휴머노이드는 두 발) 밖의 지면 접촉(힘 0.1 초과), 그리고 몸체 위치 오차의 최댓값이 1.0 m(Go2 0.5, Pi Plus 0.7)를 넘을 때다. 에피소드는 기준 동작의 무작위 시점에서 시작한다(I.7의 RSI(reference state initialization)).</p>
+<p><strong>AMP 판별기</strong>(<code>amp_agent.py</code>, <code>amp_humanoid_agent.yaml</code>). 이진 교차 엔트로피 판별기에, 데이터와 정책 표본 양쪽의 기울기 벌점(가중 5)과 출력층 가중치 벌점(0.01)을 둔다. 스타일 보상은 $-2 \log \max(1 - D, 10^{-4})$다. 정책 표본은 20만 개짜리 재생 버퍼에 넣고, 버퍼가 찬 뒤에는 반복마다 1,000개씩 바꾼다. ADD도 같은 장치를 쓰지만 판별기 입력이 차이 벡터이고 기울기 벌점 가중이 2다.</p>
+<p><strong>AWR, 논문과 MimicKit.</strong></p>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>논문(§5, 부록 C)</th>
+<th>MimicKit(<code>deepmimic_humanoid_awr_agent.yaml</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>데이터</td>
+<td>반복마다 약 2,000 표본, 최근 5만 표본의 재생 버퍼</td>
+<td>반복마다 131,072 표본, 반복마다 버퍼를 비운다</td>
+</tr>
+<tr>
+<td>가중</td>
+<td>날 이점에 온도 0.05, 상한 20</td>
+<td>배치에서 표준화한 이점에 온도 1, 상한 20</td>
+</tr>
+<tr>
+<td>망</td>
+<td>MLP 128·64</td>
+<td>MLP 1024·512</td>
+</tr>
+<tr>
+<td>최적화</td>
+<td>SGD 모멘텀 0.9, 정책 5×10⁻⁵·가치 10⁻⁴, 반복마다 정책 1,000스텝·가치 200스텝(미니배치 256)</td>
+<td>SGD 모멘텀 0.9, 둘 다 10⁻⁴, 정책 5에폭·가치 2에폭</td>
+</tr>
+</tbody>
+</table>
+<p><strong>LCP 구현</strong>(<code>lcp_agent.py</code>). 정규화한 관측에 대한 $\log \pi(a \mid s)$의 기울기를 autograd로 구하고, 그 제곱 노름의 미니배치 평균에 0.002를 곱해 PPO actor 손실에 더한다. 논문도 관측을 누적 평균과 표준편차로 정규화해 넣는다(§V).</p>
+<p><strong>SMP 보상</strong>(<code>smp_agent.py</code>, 방법은 I.18). 2층·4헤드 DiT 사전의 잡음 단계 50 가운데 22, 15, 8에서 잡음 예측 오차를 재고, 정규화해 평균한 오차 $\bar e$로 보상 $\exp(-6 \bar e)$를 만든다. 과제 학습은 사전에서 뽑은 상태로 에피소드를 시작하고, README는 이때 동작 데이터를 쓰지 않는다고 적는다.</p>
+<p><strong>공개 학습 기록</strong>(<code>MimicKit_Data.zip</code>의 <code>logs/</code>).</p>
+<table>
+<thead>
+<tr>
+<th>모델</th>
+<th>반복</th>
+<th>표본</th>
+<th>벽시계</th>
+<th>시험 수익(상한 300)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>휴머노이드 회전 발차기, DeepMimic(PPO)</td>
+<td>2,400</td>
+<td>3억 1,470만</td>
+<td>1.96시간</td>
+<td>272.4</td>
+</tr>
+<tr>
+<td>같은 동작, AWR</td>
+<td>3,700</td>
+<td>4억 8,510만</td>
+<td>2.24시간</td>
+<td>279.1(3억 1,470만에서 275.8)</td>
+</tr>
+<tr>
+<td>G1 회전 발차기, DeepMimic</td>
+<td>2,200</td>
+<td>2억 8,850만</td>
+<td>3.24시간</td>
+<td>249.0</td>
+</tr>
+<tr>
+<td>Go2 측대보(pace), DeepMimic</td>
+<td>1,900</td>
+<td>2억 4,920만</td>
+<td>1.96시간</td>
+<td>270.8</td>
+</tr>
+<tr>
+<td>G1 걷기, LCP</td>
+<td>8,200</td>
+<td>10억 7,490만</td>
+<td>12.10시간</td>
+<td>288.7</td>
+</tr>
+</tbody>
+</table>
+<p>상한 300은 스텝 보상 상한 1에 에피소드 300스텝(10초 × 30 Hz)을 곱한 값이다. 모델마다 학습 1회이고, 기록에 GPU 종류가 없다. PPO와 AWR 기록은 날짜가 달라(2025-10, 2026-02) 같은 기계인지 확인하지 못했으므로 벽시계는 비교하지 않는다.</p>
+</details>
+<p><strong>이어진 연구.</strong> 방법 사이의 계보는 I.15에 있다. README가 권하는 기능형 틀은 NVIDIA의 ProtoMotions이고, PHC·MaskedMimic 계열의 증류가 거기 있다(Planner B.16.1). MimicKit 데이터의 <code>parc</code> 폴더와 이름이 같은 PARC(Xu·Shi·Yin·Peng, SIGGRAPH 2025)도 Planner B.16.1에 카드가 있다.
+로봇에 붙인 AMP는 AMP for hardware(Controller F.6, Planner B.16.2)와 Multi-AMP(Planner B.14.4)다. 2026-10-29 현재 열린 PR(pull request)로 FlashSAC 에이전트(#122), MuJoCo 엔진(#110), PhysX WebAssembly 브라우저 데모(#95)가 있다.</p></div><div class="card md subpanel" id="sub-research-d9-4" role="tabpanel" aria-labelledby="subbtn-research-d9-4" data-math="25"><h3>I.10 SONIC: 동작 추종을 데이터·모델·계산으로 키운다</h3>
 <p><strong>SONIC — 모션 캡처 약 700시간에서 거른 611시간, 42M 파라미터, GPU 128장 7일로 범용 전신 추종기를 키우고, 범용 토큰 하나로 원격조종·운동학 Planner·VLA를 받는다</strong>(<a href="https://arxiv.org/abs/2511.07820">arXiv:2511.07820</a>, Luo·Yuan·Wang·Li·Castañeda(공동 1저자) 외 23명(모두 28명), NVIDIA GEAR, Science Robotics 11(117) eaed4592, 2026, <a href="https://nvlabs.github.io/GEAR-SONIC/">프로젝트</a>, <a href="https://github.com/NVlabs/GR00T-WholeBodyControl">코드</a>).</p>
 <p><strong>한 줄 요약.</strong> <mark>동작 추종은 프레임마다 감독이 있어 키울수록 좋아진다. SONIC은 데이터·모델·계산 세 축을 함께 키워 처음 보는 동작의 성공률을 올렸고, 실물 G1에서 124개 중 123개를 따라 했다.</mark></p>
 <p><strong>데이터.</strong> 자체 모션 캡처 약 700시간을 GMR과 PyRoki로 G1에 옮기고, 계단·앉기처럼 할 수 없는 동작을 걸러 611시간(50 Hz로 1억 프레임 이상, 학습 클립 317,189개)을 썼다. 대분류 33개, 소분류 8,447개다.
@@ -43915,7 +45619,7 @@ Athena-WBC(<a href="https://arxiv.org/abs/2607.04837">arXiv:2607.04837</a>)는 �
 </div><p><strong>travplan에 주는 의미.</strong> 지형이 travplan이 사는 곳이다. PGMT의 "동작 조건 지형 엿보기"와 GRAIL의 11 × 11 높이 지도(Planner B.16.1)는, 다리 로봇을 쓸 때 TravMap을 추종기 입력으로 넣는 방법이 된다.
 다만 PGMT의 성적 가운데 지형 엿보기 자체의 몫은 가장 어려운 레벨에서 78.85에서 83.33 %로 4.5 %p다. 나머지는 학습 과정이 만든 것이다. 인식의 몫을 따로 재야 한다는 travplan의 원칙(인식 A.13)과 같은 교훈이다.
 PHP는 위 층 명령을 2차원 속도로만 두고, 디딜지 오를지 넘을지는 깊이 영상을 보는 정책이 고르게 했다. travplan의 Planner가 경로만 주고 Controller가 지형에 맞춰 국소적으로 피하는 분리와 같은 선택이다.
-TTCO는 "추종기는 그대로 두고 위 층 명령을 시뮬레이션 표본으로 고친다"는 방법이고, 이것은 travplan MPPI가 하위 정책 위에서 하는 일과 같다(Controller E.13). 관절 가속이 늘어난 대가도 같이 본다.</p></div><div class="card md subpanel" id="sub-research-d9-4" role="tabpanel" aria-labelledby="subbtn-research-d9-4"><h3>I.13 추종기 위의 인터페이스: 무엇을 넘기느냐가 성능을 정한다</h3>
+TTCO는 "추종기는 그대로 두고 위 층 명령을 시뮬레이션 표본으로 고친다"는 방법이고, 이것은 travplan MPPI가 하위 정책 위에서 하는 일과 같다(Controller E.13). 관절 가속이 늘어난 대가도 같이 본다.</p></div><div class="card md subpanel" id="sub-research-d9-5" role="tabpanel" aria-labelledby="subbtn-research-d9-5"><h3>I.13 추종기 위의 인터페이스: 무엇을 넘기느냐가 성능을 정한다</h3>
 <p><strong>한 줄로.</strong> <mark>범용 추종기 위에는 원격조종, 운동학 Planner, 생성 모델, VLA가 앉는다. 같은 위 층도 추종기에 넘기는 표현(자세, 핵심점, 토큰)에 따라 성공률이 두 배 넘게 갈린다.</mark></p>
 <table>
 <thead>
@@ -43991,7 +45695,7 @@ Beyond Retargeting(<a href="https://arxiv.org/abs/2610.07891">arXiv:2610.07891</
 OmniClone(<a href="https://arxiv.org/abs/2603.14327">arXiv:2603.14327</a>, <a href="https://github.com/yixxuan-li/OmniClone">코드</a> MIT)은 원격조종 추종기를 동작 범주별로 쟀다. 낮은 자세의 이동 조작에서 성공 100 %, 관절 위치 오차(MPJPE) 51.3 mm로 GMT(95 %, 180.5 mm)와 TWIST2(65 %, 210.5 mm)보다 나았다. 역동 동작만으로 학습하면 이동 조작 범주가 10–30 %(낮은 자세 10 %)로 떨어졌다. 범주마다 약 20회라 표본이 작다.</p>
 <div class="fig-grid"><figure class="fig full wide"><a class="thumb" href="https://arxiv.org/html/2602.07439v1/method-v4-clip.png" title="원본 보기"><img alt="TextOp Fig. 2" src="assets/thumbs/5d289429e14e.webp" loading="lazy" width="1000" height="495"></a><figcaption>그림 — TextOp (Fig. 2): 로봇 골격 동작으로 VAE와 글 조건 잠재 diffusion 생성기를 학습하고, 생성한 동작으로 데이터를 늘려 추종기를 학습한다. 배포 때는 사용자가 친 글을 생성기(6.25 Hz)가 기준 동작으로 바꾸고 추종기(50 Hz)가 따른다. 출처: <a href="https://arxiv.org/abs/2602.07439">arXiv:2602.07439</a></figcaption></figure>
 </div><p><strong>travplan에 주는 의미.</strong> travplan은 Planner가 경로나 시간 인덱스 궤적을 넘긴다(<code>PlanResult</code>). 같은 시간 인덱스 궤적도 Controller가 어떤 비용으로 따르느냐에 따라 8/12와 12/12로 갈렸다. MPPI 시간 참조 모드에 진행 항이 없어 멈춘 것이었다(ARCHITECTURE §4).
-SONIC의 토큰처럼 위 층과 아래 층을 함께 학습한 잠재 인터페이스는 travplan에서는 Planner D와 학습 Controller를 함께 학습할 때의 선택지다. 지금은 해석 가능한 궤적 인터페이스가 Guidance 폴백과 MPPI 비교를 가능하게 하므로 바꿀 이유가 없다.</p></div><div class="card md subpanel" id="sub-research-d9-5" role="tabpanel" aria-labelledby="subbtn-research-d9-5" data-math="4"><h3>I.14 travplan에 주는 것, 실습, 스스로 확인할 질문</h3>
+SONIC의 토큰처럼 위 층과 아래 층을 함께 학습한 잠재 인터페이스는 travplan에서는 Planner D와 학습 Controller를 함께 학습할 때의 선택지다. 지금은 해석 가능한 궤적 인터페이스가 Guidance 폴백과 MPPI 비교를 가능하게 하므로 바꿀 이유가 없다.</p></div><div class="card md subpanel" id="sub-research-d9-6" role="tabpanel" aria-labelledby="subbtn-research-d9-6" data-math="4"><h3>I.14 travplan에 주는 것, 실습, 스스로 확인할 질문</h3>
 <p><strong>한 줄로.</strong> <mark>travplan이 옮길 것은 휴머노이드 정책이 아니라 절차다. 데이터 품질의 몫을 따로 재는 실험 설계, 어려운 구간 적응 표집, 교사–학생 증류, 그리고 끊지 않는 종료와 짧은 지평 끝의 가치 함수다.</mark></p>
 <table>
 <thead>
@@ -44028,6 +45732,21 @@ SONIC의 토큰처럼 위 층과 아래 층을 함께 학습한 잠재 인터페
 <td>일부 있음</td>
 </tr>
 <tr>
+<td>시연다움을 보상으로(AMP 판별기, ADD 오차 벡터)</td>
+<td>RL 후학습(TP-0066)의 부드러움 항(0.02) 자리에 판별기 점수를 둔다. ADD식이면 진행 부족분·국소 cost·제어 변화율만 오차 벡터로 모은다. 치명은 고정 벌점과 종료로 남긴다</td>
+<td>가설. 재지 않았다(I.16, I.17)</td>
+</tr>
+<tr>
+<td>한 번 배워 고정해 다시 쓰는 사전(SMP)</td>
+<td>고정한 Planner D DAgger 체크포인트(flow matching)로 SMP식 오차를 재, 부드러움 항과 모방 손실을 함께 대신한다</td>
+<td>가설. 재지 않았다(I.18)</td>
+</tr>
+<tr>
+<td>정책 기울기 벌점으로 매끄럽게(LCP)</td>
+<td><code>TinyPolicy</code>를 MPPI 교사 증류로 학습하게 되면, 증류 손실에 출력의 관측 야코비안 제곱 노름을 더하고 twist 변화량과 스워브 모듈 조향 각 변화량(TP-0034)을 잰다. 지금의 진화 전략 본학습에는 그대로 넣을 수 없다</td>
+<td>가설. 재지 않았다(I.19)</td>
+</tr>
+<tr>
 <td>운동학 Planner + 추종기(SONIC)</td>
 <td>Planner(Guidance·Planner D) + Controller(MPPI·NMPC)</td>
 <td>있음</td>
@@ -44059,6 +45778,8 @@ SONIC의 토큰처럼 위 층과 아래 층을 함께 학습한 잠재 인터페
 <li><strong>축척을 바꿔 본다.</strong> <code>PYTHONPATH=. python -m scripts.make_mimic_figures --only retarget</code>을 돌린 뒤 <code>fig_retarget</code>의 로봇 다리를 0.34 + 0.34 m(사람과 같은 비율)로 바꿔 다시 돌린다. B의 디딤 중 발 속도가 얼마가 될지 먼저 예측한다. 확인한 뒤에는 그림 파일을 <code>git checkout</code>으로 되돌리고 커밋하지 않는다.</li>
 <li><strong>기울기 편향의 원인을 가른다.</strong> <code>fig_apg</code>의 <code>_sim_step</code>에서 <code>np.sign(v)</code>를 <code>np.tanh(v / 0.05)</code>로 바꿔 마찰의 뜀만 없앤다. (b)의 세 선이 어떻게 바뀌는지 본다. 마찰을 0으로 두면 모델 오차와 뜀이 함께 사라져 둘을 가르지 못한다.</li>
 <li><strong>추종기를 직접 돌린다.</strong> <a href="https://github.com/HybridRobotics/whole_body_tracking">whole_body_tracking</a> README대로 LAFAN1 동작 하나를 G1로 학습한다. 동작은 LAFAN1 BVH를 GMR로 직접 옮겨 쓴다(Unitree 조직 계정 사본은 2026-10-22에 내려받을 수 없었고, README가 가리키는 개인 계정 사본도 원 LAFAN1 라이선스를 따른다. I.1). 다른 리타기팅으로 옮긴 같은 동작과 성공률을 비교한다. GPU가 필요하다(데스크톱).</li>
+<li><strong>MimicKit을 돌려 본다.</strong> README의 설치 세 단계(시뮬레이터 하나, <code>requirements.txt</code>, 자산·동작 압축 파일)를 마친 뒤 공개 모델부터 시험한다. 명령은 <code>python mimickit/run.py --arg_file args/deepmimic_humanoid_ppo_args.txt --num_envs 4 --visualize true --mode test --model_file data/models/deepmimic_humanoid_spinkick_model.pt</code>다(I.19). 데스크톱에서 Isaac Gym이 도는지는 확인하지 못했으니 <code>--engine_config data/engines/newton_engine.yaml</code>을 더한다.
+   다음으로 이 인자 파일과 <code>args/deepmimic_humanoid_awr_args.txt</code>로 회전 발차기를 <code>--rand_seed</code>만 바꿔 여러 번 학습한다. 학습 때는 <code>--visualize false</code>로 그리기를 끈다. 공개 기록의 1회 비교(PPO 272.4, AWR 275.8)가 seed 사이의 퍼짐보다 큰지 본다. NVIDIA GPU가 필요하다(데스크톱).</li>
 </ol>
 <p><strong>스스로 확인할 질문.</strong> 답은 아래 토글에 있다.</p>
 <ol>
@@ -44071,6 +45792,8 @@ SONIC의 토큰처럼 위 층과 아래 층을 함께 학습한 잠재 인터페
 <li>SuperMimic의 "179 대 25 실패"를 일반화 성능으로 읽으면 안 되는 이유는?</li>
 <li>실습 1의 답: 사람과 같은 비율의 다리에서 B의 미끄러짐은 얼마인가?</li>
 <li>OmniH2O와 YAHMP에서는 관측 이력이 중요했는데, ZEST에서는 이력을 빼고 다음 한 스텝 기준만 보는 것이 가장 나았다. 무엇이 달라서일 수 있나?</li>
+<li>판별기를 고정한 AMP는 새 정책에서 왜 무너지고, SMP의 고정한 diffusion 모델은 왜 버티나?</li>
+<li>Guidance + MPPI 시연으로 판별기나 SMP식 사전을 만들면, 그 보상은 무엇을 배우고 무엇을 모르나?</li>
 </ol>
 <details>
 <summary>답</summary>
@@ -44087,6 +45810,10 @@ SONIC의 토큰처럼 위 층과 아래 층을 함께 학습한 잠재 인터페
 <li>0이다. 사람과 같은 비율이면 같은 관절각의 순기구학이 사람 발 위치를 정확히 다리 길이 비로 줄인 것이 되어, B가 C와 같아진다. A는 그대로 뜨고 미끄러진다.</li>
 <li>논문들은 원인을 가르지 않았다. ZEST 저자는 창이 길면 입력 차원과 중복이 늘어 보상을 어느 행동에 돌릴지 가리기(credit assignment)가 어려워지고, 같은 학습 시간 안에 수렴이 늦어진다고 보았다. 그리고 자기 MLP 설정에 한정될 수 있다고 적었다.
    비교 조건도 다르다. ZEST는 다음 한 스텝의 촘촘한 기준(관절각·뿌리 속도)을 보고 정해진 시간 안의 학습 속도를 쟀고, OmniH2O는 머리·두 손 세 점만 보는 학생의 최종 오차를 쟀다. 그래서 "관측이 희소할수록 이력이 필요하다"는 가설로만 읽는다.</li>
+<li>판별기는 데이터와 그때 정책의 표본만 보고 배운다. 고정해 새 정책에 쓰면 처음 보는 입력에 엉뚱한 점수를 주고, 정책이 그 오류를 파고든다. 판별기를 고정한 AMP는 조향 0.243(다시 학습한 AMP 0.634), 목표 위치 0.101(0.737)이었다(I.18의 표 2).
+    denoiser는 모든 잡음 수준에서 데이터만으로 배운다. 저자의 설명으로는 잡음이 크면 섞인 분포가 공간 전체를 덮어, 데이터에서 먼 동작에도 믿을 만한 점수가 나온다. 보상 모델이 정책을 따라 움직이지 않으므로 보상도 정상(stationary)이다.</li>
+<li>MPPI가 낸 twist의 모양을 배운다. 사람다운 주행은 아니고, 그것을 바라면 사람이 조종한 로그(Planner B.6d의 MIMIC)가 먼저 있어야 한다(I.16).
+    모르는 것은 시연이 가지 않은 곳이다. 시연이 가까이 가지 않은 치명 셀은 벌을 받지 않고(강화학습 R.17의 그림), 시연에 드문 급정지는 사전 보상이 낮다(I.18). 그래서 치명 cost는 손으로 정한 항과 종료로 남기고, 채택은 치명 실패 규칙으로 판정한다.</li>
 </ol>
 </details></div></div><div class="docpanel subpanel" id="sub-research-d-10" role="tabpanel" aria-labelledby="subbtn-research-d-10"><p class="note">▶ 이 문서를 슬라이드로: <a href="slides/research-rl/">슬라이드 보기</a> (137장) · <a href="slides/research-rl/research-rl.pptx" download>PPTX 내려받기</a>(글자·표 편집 가능) · 발표 덱: <a href="slides/talk-rl/">travplan 챕터 발표 — 강화학습</a> (48장, <a href="slides/talk-rl/talk-rl.pptx" download>PPTX</a>)</p>
 <nav class="subtabs" role="tablist" data-group="research-d10"><button role="tab" id="subbtn-research-d10-0" aria-controls="sub-research-d10-0" aria-selected="true" tabindex="0" data-sub="research-d10-0" class="active">개요</button><button role="tab" id="subbtn-research-d10-1" aria-controls="sub-research-d10-1" aria-selected="false" tabindex="-1" data-sub="research-d10-1">문제 설정·모방</button><button role="tab" id="subbtn-research-d10-2" aria-controls="sub-research-d10-2" aria-selected="false" tabindex="-1" data-sub="research-d10-2">정책 기울기</button><button role="tab" id="subbtn-research-d10-3" aria-controls="sub-research-d10-3" aria-selected="false" tabindex="-1" data-sub="research-d10-3">가치 기반</button><button role="tab" id="subbtn-research-d10-4" aria-controls="sub-research-d10-4" aria-selected="false" tabindex="-1" data-sub="research-d10-4">추론으로서의 제어</button><button role="tab" id="subbtn-research-d10-5" aria-controls="sub-research-d10-5" aria-selected="false" tabindex="-1" data-sub="research-d10-5">모델 기반</button><button role="tab" id="subbtn-research-d10-6" aria-controls="sub-research-d10-6" aria-selected="false" tabindex="-1" data-sub="research-d10-6">오프라인·탐색</button><button role="tab" id="subbtn-research-d10-7" aria-controls="sub-research-d10-7" aria-selected="false" tabindex="-1" data-sub="research-d10-7">LLM·생성 정책·안전</button><button role="tab" id="subbtn-research-d10-8" aria-controls="sub-research-d10-8" aria-selected="false" tabindex="-1" data-sub="research-d10-8">이론·다과제</button><button role="tab" id="subbtn-research-d10-9" aria-controls="sub-research-d10-9" aria-selected="false" tabindex="-1" data-sub="research-d10-9">최근 연구 비교</button><button role="tab" id="subbtn-research-d10-10" aria-controls="sub-research-d10-10" aria-selected="false" tabindex="-1" data-sub="research-d10-10">travplan에서</button></nav><div class="card md subpanel active" id="sub-research-d10-0" role="tabpanel" aria-labelledby="subbtn-research-d10-0" data-math="11"><!-- doc: 강화학습 | 5 -->
@@ -46561,7 +48288,7 @@ travplan의 Planner D(flow 행동 복제 뒤 AWR 후학습)는 이 흐름의 앞
 </tr>
 </tbody>
 </table>
-<p><strong>과목 자료.</strong> 숙제는 모방학습, 정책 기울기, Q-learning과 actor-critic, 언어 모델 RL, 오프라인 RL의 다섯 개이고, 과목 홈페이지에 있다.</p></div></div><div class="docpanel subpanel" id="sub-research-d-11" role="tabpanel" aria-labelledby="subbtn-research-d-11"><p class="note">▶ 이 문서를 슬라이드로: <a href="slides/research-references/">슬라이드 보기</a> (109장) · <a href="slides/research-references/research-references.pptx" download>PPTX 내려받기</a>(글자·표 편집 가능)</p>
+<p><strong>과목 자료.</strong> 숙제는 모방학습, 정책 기울기, Q-learning과 actor-critic, 언어 모델 RL, 오프라인 RL의 다섯 개이고, 과목 홈페이지에 있다.</p></div></div><div class="docpanel subpanel" id="sub-research-d-11" role="tabpanel" aria-labelledby="subbtn-research-d-11"><p class="note">▶ 이 문서를 슬라이드로: <a href="slides/research-references/">슬라이드 보기</a> (112장) · <a href="slides/research-references/research-references.pptx" download>PPTX 내려받기</a>(글자·표 편집 가능)</p>
 <nav class="subtabs" role="tablist" data-group="research-d11"><button role="tab" id="subbtn-research-d11-0" aria-controls="sub-research-d11-0" aria-selected="true" tabindex="0" data-sub="research-d11-0" class="active">개요</button><button role="tab" id="subbtn-research-d11-1" aria-controls="sub-research-d11-1" aria-selected="false" tabindex="-1" data-sub="research-d11-1">인식</button><button role="tab" id="subbtn-research-d11-2" aria-controls="sub-research-d11-2" aria-selected="false" tabindex="-1" data-sub="research-d11-2">Planner</button><button role="tab" id="subbtn-research-d11-3" aria-controls="sub-research-d11-3" aria-selected="false" tabindex="-1" data-sub="research-d11-3">Controller·안전</button><button role="tab" id="subbtn-research-d11-4" aria-controls="sub-research-d11-4" aria-selected="false" tabindex="-1" data-sub="research-d11-4">강화학습</button><button role="tab" id="subbtn-research-d11-5" aria-controls="sub-research-d11-5" aria-selected="false" tabindex="-1" data-sub="research-d11-5">모방</button><button role="tab" id="subbtn-research-d11-6" aria-controls="sub-research-d11-6" aria-selected="false" tabindex="-1" data-sub="research-d11-6">연구 그룹</button><button role="tab" id="subbtn-research-d11-7" aria-controls="sub-research-d11-7" aria-selected="false" tabindex="-1" data-sub="research-d11-7">로코모션·데이터·산업</button></nav><div class="card md subpanel active" id="sub-research-d11-0" role="tabpanel" aria-labelledby="subbtn-research-d11-0"><!-- doc: 참고문헌 | 6 -->
 <h1>참고문헌 (§D)</h1>
 <h2>D. 참고문헌</h2>
@@ -48665,7 +50392,7 @@ arXiv가 없어 DOI로 링크했다.</p>
 <td>Diffusion Policy</td>
 <td>2023.03 · RSS 2023</td>
 <td>관측 조건 행동 열 확산, receding horizon</td>
-<td>B.8.0</td>
+<td>B.8.0, I.18</td>
 <td><a href="https://arxiv.org/abs/2303.04137">논문</a> · <a href="https://github.com/real-stanford/diffusion_policy">코드</a></td>
 </tr>
 <tr>
@@ -50426,7 +52153,7 @@ TEB, Smac, iPlanner, ViPlanner, X-Mobility, COMPASS, legged_gym, autonomy_stack_
 <td>GAIL</td>
 <td>2016.06 · NeurIPS 2016</td>
 <td>판별기를 보상으로 쓰는 적대적 모방</td>
-<td>R.17</td>
+<td>R.17, I.15, I.16, I.17, I.18</td>
 <td><a href="https://arxiv.org/abs/1606.03476">논문</a></td>
 </tr>
 <tr>
@@ -50524,7 +52251,7 @@ TEB, Smac, iPlanner, ViPlanner, X-Mobility, COMPASS, legged_gym, autonomy_stack_
 <td>PPO</td>
 <td>2017.07</td>
 <td>비율을 자르는 정책 기울기. 보행·조작·언어 모델의 표준</td>
-<td>R.5</td>
+<td>R.5, I.19</td>
 <td><a href="https://arxiv.org/abs/1707.06347">논문</a></td>
 </tr>
 <tr>
@@ -50545,7 +52272,7 @@ TEB, Smac, iPlanner, ViPlanner, X-Mobility, COMPASS, legged_gym, autonomy_stack_
 <td>SAC</td>
 <td>2018.01 · ICML 2018</td>
 <td>최대 엔트로피 off-policy actor-critic</td>
-<td>R.8</td>
+<td>R.8, I.19</td>
 <td><a href="https://arxiv.org/abs/1801.01290">논문</a></td>
 </tr>
 <tr>
@@ -50712,9 +52439,9 @@ TEB, Smac, iPlanner, ViPlanner, X-Mobility, COMPASS, legged_gym, autonomy_stack_
 <tr>
 <td>AWR</td>
 <td>2019.10</td>
-<td>이점의 지수로 가중한 회귀. TP-0066의 갱신</td>
-<td>R.10</td>
-<td><a href="https://arxiv.org/abs/1910.00177">논문</a></td>
+<td>이점의 지수로 가중한 회귀. TP-0066의 갱신. MimicKit에 PPO 대신 쓰는 판이 있다</td>
+<td>R.10, I.14, I.15, I.19</td>
+<td><a href="https://arxiv.org/abs/1910.00177">논문</a> · <a href="https://xbpeng.github.io/projects/AWR/">프로젝트</a> · <a href="https://github.com/xbpeng/awr">코드</a></td>
 </tr>
 <tr>
 <td>MuZero</td>
@@ -51317,14 +53044,14 @@ flow matching 원논문·Flow Matching Guide·Diffusion Policy·π0·OpenVLA(D.5
 <td>DDPM</td>
 <td>2020.06 · NeurIPS 2020</td>
 <td>잡음 예측 제곱 오차로 학습하는 diffusion</td>
-<td>L.10, 0.5</td>
+<td>L.10, 0.5, I.18</td>
 <td><a href="https://arxiv.org/abs/2006.11239">논문</a></td>
 </tr>
 <tr>
 <td>DDIM</td>
 <td>2020.10 · ICLR 2021</td>
 <td>학습은 그대로, 결정적 샘플러로 걸음을 줄인다</td>
-<td>L.10</td>
+<td>L.10, I.18</td>
 <td><a href="https://arxiv.org/abs/2010.02502">논문</a></td>
 </tr>
 <tr>
@@ -51553,8 +53280,8 @@ flow matching 원논문·Flow Matching Guide·Diffusion Policy·π0·OpenVLA(D.5
 </tr>
 </tbody>
 </table></div><div class="card md subpanel" id="sub-research-d11-5" role="tabpanel" aria-labelledby="subbtn-research-d11-5"><h3>D.16 모방 (§I)</h3>
-<p>모방 문서(I.0–I.14)에서 다룬 연구다. 데이터·리타기팅, 동작 추종, 범용 추종기와 그 후속, 해석적 정책 기울기의 선행 연구 순서이고, 묶음 안에서는 arXiv 첫 게재 순이다.
-AMP for hardware·Multi-AMP·ASE·PHC·MaskedMimic·ProtoMotions·SONIC·RWM·H2O·OmniH2O·HumanPlus·ExBody·ExBody2·GMT·BeyondMimic·ZEST·Imitate and Repurpose·PARC·MaskedManipulator(D.8), HOVER·ASAP(D.5c), VideoMimic·DreamerV3(D.14)는 각 절에 있다.
+<p>모방 문서(I.0–I.19)에서 다룬 연구다. 데이터·리타기팅, 동작 추종, 범용 추종기와 그 후속, 해석적 정책 기울기의 선행 연구, 동작 사전의 선행·후속 연구 순서이고, 묶음 안에서는 arXiv 첫 게재 순이다. 동작 사전 카드(I.16–I.19)의 대상인 AMP·ADD·MimicKit·SMP는 동작 추종 묶음에 있다.
+AMP for hardware·Multi-AMP·ASE·CALM·PHC·MaskedMimic·ProtoMotions·SONIC·RWM·H2O·OmniH2O·HumanPlus·ExBody·ExBody2·GMT·BeyondMimic·ZEST·Imitate and Repurpose·PARC·MaskedManipulator·Trace and Pace·Learning to Walk in Minutes(D.8), HOVER·ASAP(D.5c), Diffusion Policy(D.5b), VideoMimic·DreamerV3·GAIL·PPO·SAC·AWR(D.14), DDPM·DDIM(D.15)는 각 절에 있다.
 Athena-WBC(<a href="https://arxiv.org/abs/2607.04837">arXiv:2607.04837</a>)는 저자가 철회해 싣지 않았다.</p>
 <table>
 <thead>
@@ -51634,7 +53361,7 @@ Athena-WBC(<a href="https://arxiv.org/abs/2607.04837">arXiv:2607.04837</a>)는 �
 <td>AMASS</td>
 <td>2019.04 · ICCV 2019</td>
 <td>광학 모션 캡처 15개를 SMPL로 묶음, 346명·동작 11,451개·2,488분. 비상업</td>
-<td>I.1</td>
+<td>I.1, I.17, I.19</td>
 <td><a href="https://arxiv.org/abs/1904.03278">논문</a> · <a href="https://amass.is.tue.mpg.de">데이터</a></td>
 </tr>
 <tr>
@@ -51662,14 +53389,14 @@ Athena-WBC(<a href="https://arxiv.org/abs/2607.04837">arXiv:2607.04837</a>)는 �
 <td>LAFAN1 (Robust Motion In-betweening)</td>
 <td>2021.02 · SIGGRAPH 2020 (ACM TOG 39(4))</td>
 <td>5명·77시퀀스·30 fps 약 4.6시간 BVH, CC BY-NC-ND 4.0</td>
-<td>I.1</td>
+<td>I.1, I.15, I.17, I.18, I.19</td>
 <td><a href="https://arxiv.org/abs/2102.04942">논문</a> · <a href="https://github.com/ubisoft/ubisoft-laforge-animation-dataset">데이터</a></td>
 </tr>
 <tr>
 <td>100STYLE</td>
 <td>2022 · I3D 2022 (PACMCGIT)</td>
 <td>보행 스타일 100가지, 60 fps 400만 프레임 이상, BVH, CC BY 4.0</td>
-<td>I.1</td>
+<td>I.1, I.18</td>
 <td><a href="https://www.ianxmason.com/100style/">데이터</a></td>
 </tr>
 <tr>
@@ -51739,7 +53466,7 @@ Athena-WBC(<a href="https://arxiv.org/abs/2607.04837">arXiv:2607.04837</a>)는 �
 <td>GMR (Retargeting Matters)</td>
 <td>2025.10 · arXiv</td>
 <td>비균일 국소 축척과 2단계 미분 IK. 추종기를 고정하고 리타기팅만 바꿔 성공률이 0–100 %로 갈림을 보임</td>
-<td>I.4</td>
+<td>I.4, I.19</td>
 <td><a href="https://arxiv.org/abs/2510.02252">논문</a> · <a href="https://github.com/YanjieZe/GMR">코드</a></td>
 </tr>
 <tr>
@@ -51844,21 +53571,21 @@ Athena-WBC(<a href="https://arxiv.org/abs/2607.04837">arXiv:2607.04837</a>)는 �
 <td>DeepMimic</td>
 <td>2018.04 · SIGGRAPH 2018</td>
 <td>지수 추종 보상, 기준 상태 초기화(RSI), 조기 종료(ET)로 물리 캐릭터가 모션 캡처를 따라 함</td>
-<td>I.7</td>
+<td>I.7, I.14, I.15, I.16, I.17, I.18, I.19</td>
 <td><a href="https://arxiv.org/abs/1804.02717">논문</a> · <a href="https://github.com/xbpeng/DeepMimic">코드</a></td>
 </tr>
 <tr>
 <td>NPMP (Neural Probabilistic Motor Primitives)</td>
 <td>2018.11 · ICLR 2019</td>
 <td>조각별 전문가 2,707개를 60차원 잠재 조건 학생으로 증류하고 디코더를 위 층 행동 공간으로 재사용</td>
-<td>I.7</td>
+<td>I.7, I.16</td>
 <td><a href="https://arxiv.org/abs/1811.11711">논문</a></td>
 </tr>
 <tr>
 <td>DReCon</td>
 <td>2019 · SIGGRAPH Asia 2019 (ACM TOG 38(6))</td>
 <td>모션 매칭이 고른 자세에 RL 정책이 PD 목표 오프셋을 더함. 운동학 Planner + 추종기 분리의 원형</td>
-<td>I.7, I.13</td>
+<td>I.7, I.13, I.16</td>
 <td><a href="https://doi.org/10.1145/3355089.3356536">DOI</a></td>
 </tr>
 <tr>
@@ -51877,10 +53604,10 @@ Athena-WBC(<a href="https://arxiv.org/abs/2607.04837">arXiv:2607.04837</a>)는 �
 </tr>
 <tr>
 <td>AMP (Adversarial Motion Priors)</td>
-<td>2021.04 · SIGGRAPH 2021</td>
-<td>상태 전이 판별기를 스타일 보상으로, 정리되지 않은 데이터에 쓴다</td>
-<td>I.7</td>
-<td><a href="https://arxiv.org/abs/2104.02180">논문</a></td>
+<td>2021.04 · SIGGRAPH 2021 (ACM TOG 40(4))</td>
+<td>상태 전이 판별기를 스타일 보상으로, 정리되지 않은 데이터에 쓴다. 원 구현은 DeepMimic 저장소(TensorFlow)에 있고 MimicKit이 다시 구현했다</td>
+<td>I.7, I.14, I.15, I.16, I.17, I.18, I.19</td>
+<td><a href="https://arxiv.org/abs/2104.02180">논문</a> · <a href="https://xbpeng.github.io/projects/AMP/index.html">프로젝트</a> · <a href="https://github.com/xbpeng/DeepMimic">코드</a></td>
 </tr>
 <tr>
 <td>UHC (Dynamics-Regulated Kinematic Policy for Egocentric Pose Estimation)</td>
@@ -51904,6 +53631,13 @@ Athena-WBC(<a href="https://arxiv.org/abs/2607.04837">arXiv:2607.04837</a>)는 �
 <td><a href="https://arxiv.org/abs/2310.04582">논문</a> · <a href="https://github.com/ZhengyiLuo/PULSE">코드</a></td>
 </tr>
 <tr>
+<td>CLoSD (Closing the Loop between Simulation and Diffusion)</td>
+<td>2024.10 · ICLR 2025</td>
+<td>글과 목표 위치로 조건을 거는 자기회귀 diffusion Planner(DiP)와 동작 추종기를 폐루프로 묶어, 목표 지점 가기·치기·앉기·일어나기를 이어서 한다</td>
+<td>I.13, I.18</td>
+<td><a href="https://arxiv.org/abs/2410.03441">논문</a> · <a href="https://guytevet.github.io/CLoSD-page/">프로젝트</a> · <a href="https://github.com/GuyTevet/CLoSD">코드</a></td>
+</tr>
+<tr>
 <td>InterMimic</td>
 <td>2025.02 · CVPR 2025</td>
 <td>피험자별 교사를 RL과 DAgger로 학생 하나에 증류해 사람–물체 상호작용 추종</td>
@@ -51919,16 +53653,16 @@ Athena-WBC(<a href="https://arxiv.org/abs/2607.04837">arXiv:2607.04837</a>)는 �
 </tr>
 <tr>
 <td>ADD (Adversarial Differential Discriminators)</td>
-<td>2025.05 · SIGGRAPH Asia 2025</td>
+<td>2025.05 · SIGGRAPH Asia 2025 (Conference Papers)</td>
 <td>손으로 가중한 추종 보상 대신 오차 벡터만 보는 판별기</td>
-<td>I.7</td>
-<td><a href="https://arxiv.org/abs/2505.04961">논문</a></td>
+<td>I.7, I.14, I.15, I.16, I.17, I.18, I.19</td>
+<td><a href="https://arxiv.org/abs/2505.04961">논문</a> · <a href="https://doi.org/10.1145/3757377.3763819">DOI</a> · <a href="https://add-moo.github.io/">프로젝트</a> · <a href="https://github.com/xbpeng/MimicKit">코드</a></td>
 </tr>
 <tr>
 <td>MimicKit</td>
 <td>2025.10 · arXiv(안내서)</td>
-<td>DeepMimic·AMP·ASE·ADD·SMP를 Isaac Gym·Isaac Lab·Newton 위에 다시 구현한 틀</td>
-<td>I.0, I.7</td>
+<td>DeepMimic·AMP·ASE·ADD·SMP와 AWR·LCP를 Isaac Gym·Isaac Lab·Newton 위에 다시 구현한 틀</td>
+<td>I.0, I.7, I.14, I.15, I.16, I.17, I.18, I.19</td>
 <td><a href="https://arxiv.org/abs/2510.13794">논문</a> · <a href="https://github.com/xbpeng/MimicKit">코드</a></td>
 </tr>
 <tr>
@@ -51940,10 +53674,10 @@ Athena-WBC(<a href="https://arxiv.org/abs/2607.04837">arXiv:2607.04837</a>)는 �
 </tr>
 <tr>
 <td>SMP (Score-Matching Motion Priors)</td>
-<td>2025.12 · ACM TOG·SIGGRAPH 2026</td>
+<td>2025.12 · ACM TOG 45(4)·SIGGRAPH 2026</td>
 <td>고정한 동작 diffusion 모델의 점수를 보상으로 쓰는 재사용 가능한 동작 사전</td>
-<td>I.7</td>
-<td><a href="https://arxiv.org/abs/2512.03028">논문</a></td>
+<td>I.7, I.14, I.15, I.16, I.17, I.18, I.19</td>
+<td><a href="https://arxiv.org/abs/2512.03028">논문</a> · <a href="https://doi.org/10.1145/3811282">DOI</a> · <a href="https://yxmu.foo/smp-page/">프로젝트</a> · <a href="https://github.com/xbpeng/MimicKit/blob/main/docs/README_SMP.md">코드</a></td>
 </tr>
 <tr>
 <td>GPC (Generative Pretraining for Transferable Motor Control)</td>
@@ -52068,7 +53802,7 @@ Athena-WBC(<a href="https://arxiv.org/abs/2607.04837">arXiv:2607.04837</a>)는 �
 <td>PHP (Perceptive Humanoid Parkour)</td>
 <td>2026.02 · RSS 2026</td>
 <td>모션 매칭으로 이은 파쿠르 기술의 교사들을 깊이 영상 학생 하나로 증류</td>
-<td>I.12</td>
+<td>I.12, I.15, I.16</td>
 <td><a href="https://arxiv.org/abs/2602.15827">논문</a> · <a href="https://github.com/amazon-far/php_parkour">코드</a></td>
 </tr>
 <tr>
@@ -52247,18 +53981,18 @@ Athena-WBC(<a href="https://arxiv.org/abs/2607.04837">arXiv:2607.04837</a>)는 �
 <td><a href="https://arxiv.org/abs/2005.08068">논문</a></td>
 </tr>
 <tr>
-<td>SHAC</td>
-<td>2022.04 · ICLR 2022</td>
-<td>병렬 미분 가능 시뮬레이터, 짧은 지평 + 가치 함수 actor–critic</td>
-<td>I.11</td>
-<td><a href="https://arxiv.org/abs/2204.07137">논문</a> · <a href="https://github.com/NVlabs/DiffRL">코드</a></td>
-</tr>
-<tr>
 <td>Do Differentiable Simulators Give Better Policy Gradients? (Suh 외)</td>
 <td>2022.02 · ICML 2022</td>
 <td>접촉 같은 불연속에서 1차 기울기가 편향되고, 뻣뻣한 동역학에서 분산이 커짐을 분석</td>
 <td>I.11</td>
 <td><a href="https://arxiv.org/abs/2202.00817">논문</a></td>
+</tr>
+<tr>
+<td>SHAC</td>
+<td>2022.04 · ICLR 2022</td>
+<td>병렬 미분 가능 시뮬레이터, 짧은 지평 + 가치 함수 actor–critic</td>
+<td>I.11, I.17</td>
+<td><a href="https://arxiv.org/abs/2204.07137">논문</a> · <a href="https://github.com/NVlabs/DiffRL">코드</a></td>
 </tr>
 <tr>
 <td>ControlVAE</td>
@@ -52268,18 +54002,18 @@ Athena-WBC(<a href="https://arxiv.org/abs/2607.04837">arXiv:2607.04837</a>)는 �
 <td><a href="https://arxiv.org/abs/2210.06063">논문</a></td>
 </tr>
 <tr>
-<td>MoConVQ</td>
-<td>2023.10 · ACM TOG 2024</td>
-<td>학습 동역학 위의 이산 동작 표현으로 물리 기반 동작 제어를 묶음</td>
-<td>I.11</td>
-<td><a href="https://arxiv.org/abs/2310.10198">논문</a></td>
-</tr>
-<tr>
 <td>DiffMimic</td>
 <td>2023.04 · ICLR 2023</td>
 <td>미분 가능 물리로 동작 모방, 뒤공중제비를 10분에 학습</td>
 <td>I.11</td>
 <td><a href="https://arxiv.org/abs/2304.03274">논문</a> · <a href="https://github.com/jiawei-ren/diffmimic">코드</a></td>
+</tr>
+<tr>
+<td>MoConVQ</td>
+<td>2023.10 · ACM TOG 2024</td>
+<td>학습 동역학 위의 이산 동작 표현으로 물리 기반 동작 제어를 묶음</td>
+<td>I.11</td>
+<td><a href="https://arxiv.org/abs/2310.10198">논문</a></td>
 </tr>
 <tr>
 <td>Learning Quadruped Locomotion Using Differentiable Simulation</td>
@@ -52308,6 +54042,216 @@ Athena-WBC(<a href="https://arxiv.org/abs/2607.04837">arXiv:2607.04837</a>)는 �
 <td>시뮬레이터로 굴리고 학습 모델로 미분(분리), Go2 실물</td>
 <td>I.11</td>
 <td><a href="https://arxiv.org/abs/2509.00215">논문</a></td>
+</tr>
+<tr>
+<td>RWR (Reward-Weighted Regression)</td>
+<td>2007 · ICML 2007</td>
+<td>수익의 지수로 가중한 행동 회귀. AWR이 이점 가중과 재생 버퍼로 고친 바탕</td>
+<td>I.19</td>
+<td><a href="https://doi.org/10.1145/1273496.1273590">DOI</a></td>
+</tr>
+<tr>
+<td>LSGAN (Least Squares Generative Adversarial Networks)</td>
+<td>2016.11 · ICCV 2017</td>
+<td>교차 엔트로피 대신 최소제곱 손실을 쓰는 판별기. AMP가 시그모이드 포화의 기울기 소실을 피하려고 따랐다</td>
+<td>I.16</td>
+<td><a href="https://arxiv.org/abs/1611.04076">논문</a></td>
+</tr>
+<tr>
+<td>Learning Human Behaviors from Motion Capture by Adversarial Imitation (Merel 외)</td>
+<td>2017.07 · arXiv</td>
+<td>모션 캡처로 휴머노이드 행동을 적대적으로 모방. AMP 저자는 학습이 불안정하고 동작 품질이 추종에 못 미쳤다고 본다</td>
+<td>I.16</td>
+<td><a href="https://arxiv.org/abs/1707.02201">논문</a></td>
+</tr>
+<tr>
+<td>Robust Imitation of Diverse Behaviors (Wang 외)</td>
+<td>2017.07 · NeurIPS 2017</td>
+<td>다양한 시연 행동의 적대적 모방. AMP가 Merel 외와 함께 꼽은 앞선 적대적 모방</td>
+<td>I.16</td>
+<td><a href="https://arxiv.org/abs/1707.02747">논문</a></td>
+</tr>
+<tr>
+<td>DeepLoco</td>
+<td>2017 · SIGGRAPH 2017 (ACM TOG 36(4))</td>
+<td>계층형 심층 RL로 배운 역동 보행 기술. AMP가 꼽은, 따라 할 동작을 고르는 장치를 따로 둔 방법</td>
+<td>I.16</td>
+<td><a href="https://doi.org/10.1145/3072959.3073602">DOI</a></td>
+</tr>
+<tr>
+<td>HMR (End-to-end Recovery of Human Shape and Pose)</td>
+<td>2017.12 · CVPR 2018</td>
+<td>영상 한 장에서 사람 몸의 모양과 자세를 끝에서 끝으로 복원하고 적대적 자세 사전을 쓴다. SFV의 3D 자세 추정이고 AMP 이름의 출처</td>
+<td>I.2, I.16</td>
+<td><a href="https://arxiv.org/abs/1712.06584">논문</a> · <a href="https://akanazawa.github.io/hmr/">프로젝트</a></td>
+</tr>
+<tr>
+<td>DeepMind Control Suite</td>
+<td>2018.01 · arXiv</td>
+<td>MuJoCo 위 연속 제어 과제 묶음. ADD의 Walker 과제 출처</td>
+<td>I.17</td>
+<td><a href="https://arxiv.org/abs/1801.00690">논문</a></td>
+</tr>
+<tr>
+<td>Which Training Methods for GANs do actually Converge? (Mescheder 외)</td>
+<td>2018.01 · ICML 2018</td>
+<td>데이터 위에서 판별기 기울기가 0이 아니면 학습이 진동한다는 분석. AMP가 데이터 표본에 거는 기울기 벌점의 근거</td>
+<td>I.16</td>
+<td><a href="https://arxiv.org/abs/1801.04406">논문</a></td>
+</tr>
+<tr>
+<td>GAIfO (Generative Adversarial Imitation from Observation)</td>
+<td>2018.07 · arXiv</td>
+<td>행동 없이 상태 전이만 보는 판별기의 적대적 모방. AMP의 판별기가 따른 꼴</td>
+<td>I.16</td>
+<td><a href="https://arxiv.org/abs/1807.06158">논문</a></td>
+</tr>
+<tr>
+<td>VDB (Variational Discriminator Bottleneck)</td>
+<td>2018.10 · ICLR 2019</td>
+<td>판별기에 정보 병목을 걸어 적대적 모방의 품질을 올렸다. 위상으로 기준과 시간을 맞춰 정책 하나가 동작 하나를 배운다</td>
+<td>I.16</td>
+<td><a href="https://arxiv.org/abs/1810.00821">논문</a></td>
+</tr>
+<tr>
+<td>MCP (Multiplicative Compositional Policies)</td>
+<td>2019.05 · NeurIPS 2019</td>
+<td>기본 단위 정책을 곱으로 섞는 계층 제어. UHC의 정책 구조이고 AMP가 꼽은 잠재 공간 모델</td>
+<td>I.7, I.16</td>
+<td><a href="https://arxiv.org/abs/1905.09808">논문</a></td>
+</tr>
+<tr>
+<td>Learning Predict-and-Simulate Policies from Unorganized Human Motion Data (Park 외)</td>
+<td>2019 · SIGGRAPH Asia 2019 (ACM TOG 38(6))</td>
+<td>정리되지 않은 사람 동작 데이터로 물리 캐릭터 정책을 학습. AMP가 DeepLoco·DReCon과 함께 꼽은, 따라 할 동작을 고르는 장치를 따로 둔 방법</td>
+<td>I.16</td>
+<td><a href="https://doi.org/10.1145/3355089.3356501">DOI</a></td>
+</tr>
+<tr>
+<td>DreamFusion</td>
+<td>2022.09 · ICLR 2023</td>
+<td>글에서 3D를 만드는 SDS(score distillation sampling). 2D diffusion 모델의 잡음 예측 잔차를 렌더러로 역전파해 3D 장면을 고친다. SMP가 보상으로 바꾼 손실의 출처</td>
+<td>I.18</td>
+<td><a href="https://arxiv.org/abs/2209.14988">논문</a> · <a href="https://dreamfusion3d.github.io/">프로젝트</a></td>
+</tr>
+<tr>
+<td>Deep Whole-Body Control</td>
+<td>2022.10 · CoRL 2022</td>
+<td>사족 몸체와 팔을 정책 하나로 함께 제어. 환경 값 추정에 쓰는 ROA(regularized online adaptation)의 출처이고, LCP가 같은 학습을 썼다</td>
+<td>F.6.2, I.19</td>
+<td><a href="https://arxiv.org/abs/2210.10044">논문</a> · <a href="https://maniploco.github.io">프로젝트</a></td>
+</tr>
+<tr>
+<td>ProlificDreamer</td>
+<td>2023.05 · NeurIPS 2023</td>
+<td>변분 점수 증류(VSD)로 글에서 3D를 만든다. SMILING의 목적이 이와 닮았다</td>
+<td>I.18</td>
+<td><a href="https://arxiv.org/abs/2305.16213">논문</a></td>
+</tr>
+<tr>
+<td>DiffAIL</td>
+<td>2023.12 · AAAI 2024</td>
+<td>diffusion 모델을 적대적 모방의 판별기 자리에 넣는다</td>
+<td>I.18</td>
+<td><a href="https://arxiv.org/abs/2312.06348">논문</a></td>
+</tr>
+<tr>
+<td>DRAIL (Diffusion-Reward Adversarial Imitation Learning)</td>
+<td>2024.05 · NeurIPS 2024</td>
+<td>diffusion 모델을 GAIL의 판별기 자리에 넣은 적대적 모방</td>
+<td>I.18</td>
+<td><a href="https://arxiv.org/abs/2405.16194">논문</a> · <a href="https://nturobotlearninglab.github.io/DRAIL/">프로젝트</a></td>
+</tr>
+<tr>
+<td>HumanVLA</td>
+<td>2024.06 · NeurIPS 2024</td>
+<td>시각–언어 지시로 물체를 옮기는 물리 휴머노이드. SMP의 물체 나르기가 이 논문의 사전 보상 자르기를 따랐다</td>
+<td>I.18</td>
+<td><a href="https://arxiv.org/abs/2406.19972">논문</a></td>
+</tr>
+<tr>
+<td>Text-Aware Diffusion for Policy Learning</td>
+<td>2024.07 · NeurIPS 2024</td>
+<td>글 조건 이미지·영상 diffusion 모델로 정책을 이끈다. SMP 저자는 그 동작이 자주 부자연스러웠다고 적는다</td>
+<td>I.18</td>
+<td><a href="https://arxiv.org/abs/2407.01903">논문</a></td>
+</tr>
+<tr>
+<td>DIFO (Diffusion Imitation from Observation)</td>
+<td>2024.10 · NeurIPS 2024</td>
+<td>관찰만으로 하는 적대적 모방에 diffusion 모델을 쓴다. DiffAIL·DRAIL과 같은 갈래</td>
+<td>I.18</td>
+<td><a href="https://arxiv.org/abs/2410.05429">논문</a> · <a href="https://nturobotlearninglab.github.io/DIFO">프로젝트</a></td>
+</tr>
+<tr>
+<td>LCP (Lipschitz-Constrained Policies)</td>
+<td>2024.10 · IROS 2025</td>
+<td>관측에 대한 정책 로그 확률 기울기의 제곱 노름 벌점으로, 부드러움 보상이나 저역 통과 필터 없이 매끄러운 휴머노이드 보행. MimicKit에 구현이 있다. 원 코드는 CC BY-NC 4.0</td>
+<td>I.14, I.15, I.19</td>
+<td><a href="https://arxiv.org/abs/2410.11825">논문</a> · <a href="https://lipschitz-constrained-policy.github.io">프로젝트</a> · <a href="https://github.com/zixuan417/smooth-humanoid-locomotion">코드</a></td>
+</tr>
+<tr>
+<td>SMILING (Diffusing States and Matching Scores)</td>
+<td>2024.10 · ICLR 2025</td>
+<td>상태를 diffusion 모델로 배우고 score matching으로 모방한다. 과제마다 diffusion 모델을 학습한다. SMP와 가장 닮은 선행 연구</td>
+<td>I.15, I.18</td>
+<td><a href="https://arxiv.org/abs/2410.13855">논문</a></td>
+</tr>
+<tr>
+<td>HumanX</td>
+<td>2026.02 · CoRL 2026</td>
+<td>휴대폰 영상 한 편에서 로봇–물체 상호작용 궤적을 합성해 G1이 농구·축구·물건 집기·대련을 배운다. 몸 추종 항에 AMP 항을 넣었다</td>
+<td>B.16.6, I.15, I.16</td>
+<td><a href="https://arxiv.org/abs/2602.02473">논문</a> · <a href="https://wyhuai.github.io/human-x/">프로젝트</a> · <a href="https://github.com/wyhuai/HumanX">코드</a></td>
+</tr>
+<tr>
+<td>PDF-HR (Pose Distance Fields for Humanoid Robots)</td>
+<td>2026.02 · arXiv</td>
+<td>자세 거리장 사전의 보상을 ADD에 더한다. MimicKit 기본 설정의 ADD는 G1 뒤공중제비·이중 콩에서 실패했다</td>
+<td>I.15, I.17</td>
+<td><a href="https://arxiv.org/abs/2602.04851">논문</a> · <a href="https://gaoyukang33.github.io/PDF-HR/">프로젝트</a></td>
+</tr>
+<tr>
+<td>Scaling Whole-Body Human Musculoskeletal Behavior Emulation for Specificity and Diversity (Wei 외)</td>
+<td>2026.03 · arXiv</td>
+<td>근골격 사람 모델의 전신 동작 재현에서 추종 보상을 ADD로 바꿨다</td>
+<td>I.17</td>
+<td><a href="https://arxiv.org/abs/2603.29332">논문</a></td>
+</tr>
+<tr>
+<td>PFM-HR (Pose Flow Matching for Humanoid Robots)</td>
+<td>2026.08 · arXiv</td>
+<td>순서 없는 자세 데이터로 학습한 flow matching 사전을 고정해 추종 보상을 조절한다. ADD와 BeyondMimic에 붙였고, 실물 G1은 BeyondMimic 쪽이다</td>
+<td>I.15, I.17, I.18</td>
+<td><a href="https://arxiv.org/abs/2608.03227">논문</a></td>
+</tr>
+<tr>
+<td>Learning Context-Aware Motion Priors for Humanoid Control</td>
+<td>2026.08 · arXiv</td>
+<td>AMP(주 설정)나 고정한 SMP denoiser에 과제 상황을 받는 잔차 어댑터를 얹어 기준 동작에 가중을 준다. 어댑터는 과제 학습 중에 기준 동작 데이터로 배운다. 코드는 공개 예정</td>
+<td>I.15, I.18</td>
+<td><a href="https://arxiv.org/abs/2608.03234">논문</a></td>
+</tr>
+<tr>
+<td>DSD (Diffusion Skill Discovery)</td>
+<td>2026.09 · arXiv</td>
+<td>diffusion 모델의 score matching으로 정책 상태 분포의 엔트로피 기울기를 어림해 다양한 기술을 찾는다. 보상은 SMP의 고정 잡음 단계에서 잰다</td>
+<td>I.18</td>
+<td><a href="https://arxiv.org/abs/2609.17682">논문</a></td>
+</tr>
+<tr>
+<td>BCG (Bundled Contact Gradients)</td>
+<td>2026.09 · arXiv</td>
+<td>ADD 보상을 SHAC식 1차 정책 학습의 목적으로 쓰고, 뻣뻣한 접촉에서 섭동 롤아웃 묶음의 기울기를 평균한다. 실물 G1에 영 샷으로 올렸다</td>
+<td>I.15, I.17</td>
+<td><a href="https://arxiv.org/abs/2609.30951">논문</a> · <a href="https://bundledcontactgradients.github.io/">프로젝트</a></td>
+</tr>
+<tr>
+<td>Bringing Physics-Based Controller Policies to Virtual Reality (Llobera 외)</td>
+<td>2026.10 · arXiv</td>
+<td>DeepMimic·AMP·ADD를 JAX와 MuJoCo-MJX로 다시 구현. ADD 판별기가 2천만 스텝 안에 포화해 과제 보상 5–15 %를 섞었다</td>
+<td>I.15, I.17</td>
+<td><a href="https://arxiv.org/abs/2610.26278">논문</a></td>
 </tr>
 </tbody>
 </table></div><div class="card md subpanel" id="sub-research-d11-6" role="tabpanel" aria-labelledby="subbtn-research-d11-6"><h3>D.13 연구 그룹과 사람 — 누구를 따라갈 것인가</h3>
@@ -53101,7 +55045,7 @@ TP-0036에 바로 들어간다)다.</p>
 <td>Learning to Walk in Minutes</td>
 <td>2021.09 · CoRL 2021</td>
 <td>게임식 지형 커리큘럼, 병렬 강화학습</td>
-<td>S.5.1, B.12.2, B.14.1</td>
+<td>S.5.1, B.12.2, B.14.1, I.17</td>
 <td><a href="https://arxiv.org/abs/2109.11978">arXiv:2109.11978</a> · <a href="https://github.com/leggedrobotics/legged_gym">코드(legged_gym)</a></td>
 </tr>
 <tr>
@@ -53464,7 +55408,7 @@ TP-0036에 바로 들어간다)다.</p>
 <td>AMP for hardware</td>
 <td>2022.03 · IROS 2022</td>
 <td>모션 캡처 몇 초(저장소 기준 4.5초)로 배운 판별기 스타일 보상이 손으로 짠 규제 보상 항을 대신하고, 속도 추종 과업 보상과 더해진다. 실물 A1. 코드는 legged_gym 기반(BSD-3)이고 escontra 계정으로 옮겨졌다</td>
-<td>F.6, B.16.2</td>
+<td>F.6, B.16.2, I.15, I.16, I.19</td>
 <td><a href="https://arxiv.org/abs/2203.15103">논문</a> · <a href="https://github.com/escontra/AMP_for_hardware">코드</a></td>
 </tr>
 <tr>
@@ -53478,7 +55422,7 @@ TP-0036에 바로 들어간다)다.</p>
 <td>Learning to Walk in Minutes</td>
 <td>2021.09 · CoRL 2021(PMLR 164, 2022-01 발행)</td>
 <td>GPU 대규모 병렬 + 게임식 지형 커리큘럼</td>
-<td>F.1, B.14.1</td>
+<td>F.1, B.14.1, I.17</td>
 <td><a href="https://arxiv.org/abs/2109.11978">논문</a></td>
 </tr>
 <tr>
@@ -53527,7 +55471,7 @@ TP-0036에 바로 들어간다)다.</p>
 <td>Multi-AMP</td>
 <td>2022.03 · ICRA 2023</td>
 <td>스타일마다 판별기를 둔 AMP, 바퀴·다리 로봇의 두 바퀴 서기</td>
-<td>B.14.4</td>
+<td>B.14.4, I.15, I.16, I.17</td>
 <td><a href="https://arxiv.org/abs/2203.14912">논문</a></td>
 </tr>
 <tr>
@@ -53772,21 +55716,21 @@ TP-0036에 바로 들어간다)다.</p>
 <td>ASE</td>
 <td>2022.05 · SIGGRAPH 2022 (ACM TOG 41(4))</td>
 <td>AMP 판별기에 기술 잠재 변수를 더한 재사용 저수준 정책, 시뮬레이션 약 10년 분량 사전학습. 코드 NVIDIA License(비상업)</td>
-<td>B.16.1, I.7</td>
+<td>B.16.1, I.7, I.15, I.16, I.19</td>
 <td><a href="https://arxiv.org/abs/2205.01906">논문</a> · <a href="https://github.com/nv-tlabs/ASE">코드</a></td>
 </tr>
 <tr>
 <td>CALM</td>
 <td>2023.05 · SIGGRAPH 2023</td>
 <td>동작 인코더를 함께 배워 방향을 줄 수 있는 적대적 잠재 기술, ASE의 후속. 코드 NVIDIA License(비상업)</td>
-<td>B.16.1</td>
+<td>B.16.1, I.15, I.16</td>
 <td><a href="https://arxiv.org/abs/2305.02195">논문</a> · <a href="https://github.com/NVlabs/CALM">코드</a></td>
 </tr>
 <tr>
 <td>PHC (Perpetual Humanoid Control)</td>
 <td>2023.05 · ICCV 2023</td>
 <td>추종 보상과 AMP 판별기 보상을 반씩 쓴 추종 정책, AMASS 학습 셋 98.9%를 외력 없이 모방(CMU·Meta)</td>
-<td>B.16.1, I.3, I.7</td>
+<td>B.16.1, I.3, I.7, I.15, I.16, I.19</td>
 <td><a href="https://arxiv.org/abs/2305.06456">논문</a> · <a href="https://github.com/ZhengyiLuo/PHC">코드</a></td>
 </tr>
 <tr>
@@ -53800,21 +55744,21 @@ TP-0036에 바로 들어간다)다.</p>
 <td>ProtoMotions 3</td>
 <td>2024.09 · GitHub</td>
 <td>물리 시뮬레이션 휴머노이드 학습 틀(Isaac Gym·Isaac Lab·Newton·MuJoCo), BONES-SEED 추종 정책을 G1에 zero-shot 배포</td>
-<td>B.16.1, I.4</td>
+<td>B.16.1, I.4, I.19</td>
 <td><a href="https://github.com/NVlabs/ProtoMotions">코드</a></td>
 </tr>
 <tr>
 <td>Trace and Pace</td>
 <td>2023.04 · CVPR 2023</td>
 <td>확산 보행자 궤적(TRACE)과 높이 지도를 보는 물리 기반 보행자(PACER), 가치 함수 guidance. NavIsaacLab(S.3.4)이 이 틀 위에 군중을 만들었다. 코드 비상업</td>
-<td>B.16.1</td>
+<td>B.16.1, I.16</td>
 <td><a href="https://arxiv.org/abs/2304.01893">논문</a> · <a href="https://github.com/nv-tlabs/trace">TRACE</a> · <a href="https://github.com/nv-tlabs/pacer">PACER</a></td>
 </tr>
 <tr>
 <td>PARC</td>
 <td>2025.05 · SIGGRAPH 2025</td>
 <td>높이 지도·목표 방향 조건 확산 동작 생성기와 물리 추종기를 번갈아 키우는 데이터 증강, 추종 성공률 27%에서 68%로. Planner D·Controller·DAgger와 같은 구조</td>
-<td>B.16.1</td>
+<td>B.16.1, I.18, I.19</td>
 <td><a href="https://arxiv.org/abs/2505.04002">논문</a> · <a href="https://github.com/mshoe/PARC">코드</a></td>
 </tr>
 <tr>
@@ -54493,7 +56437,7 @@ TP-0036에 바로 들어간다)다.</p>
 <td>ExBody</td>
 <td>2024.02 · RSS 2024</td>
 <td>상체만 동작 모방, 하체는 몸통 속도 목표, 기준 상태 초기화(RSI)가 결정적</td>
-<td>B.16.6, I.8</td>
+<td>B.16.6, I.8, I.15, I.16</td>
 <td><a href="https://arxiv.org/abs/2402.16796">논문</a> · <a href="https://github.com/chengxuxin/expressive-humanoid">코드</a></td>
 </tr>
 <tr>

@@ -13,6 +13,7 @@
 * { box-sizing:border-box; }
 html, body { margin:0; height:100%; background:var(--bg); color:var(--fg); font-family:'IBM Plex Sans KR', Arial, sans-serif; }
 #stage { position:fixed; inset:0 0 56px 0; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+#stage:focus { outline:none; }
 #frame { width:1920px; height:1080px; flex:none; transform-origin:center center; box-shadow:0 8px 40px rgba(0,0,0,.5); }
 #frame > section:not(.on) { display:none !important; }
 body.all #frame > section:not(.on) { display:block !important; }
@@ -27,10 +28,13 @@ section .katex-display { margin:0; text-align:left; }
 section .katex-display > .katex { text-align:left; }
 x-shape { display:block; flex:none; }
 x-shape[kind="arrow-right"] { clip-path:polygon(0 32%,58% 32%,58% 0,100% 50%,58% 100%,58% 68%,0 68%); }
+figure.video a.yt { display:block; width:fit-content; max-width:100%; line-height:0; cursor:pointer; }
+figure.video a.yt.off { display:none; }
+figure.video iframe { display:block; border:0; border-radius:8px; background:#000; }
 #bar { position:fixed; left:0; right:0; bottom:0; height:56px; background:var(--bar); display:flex; align-items:center; gap:12px; padding:0 16px; font-size:15px; }
-#bar button, #bar a { background:none; border:1px solid #3A4A6B; color:var(--fg); border-radius:8px; padding:6px 12px; font:inherit; cursor:pointer; text-decoration:none; }
+#bar button, #bar a { background:none; border:1px solid #3A4A6B; color:var(--fg); border-radius:8px; padding:6px 12px; font:inherit; cursor:pointer; text-decoration:none; white-space:nowrap; flex:none; }
 #bar button:hover, #bar a:hover { border-color:var(--accent); }
-#count { min-width:72px; text-align:center; color:var(--muted); }
+#count { min-width:72px; text-align:center; color:var(--muted); white-space:nowrap; flex:none; }
 #ttl { flex:1; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; color:var(--muted); }
 #notes { position:fixed; right:16px; bottom:72px; width:min(560px, calc(100% - 32px)); max-height:45vh; overflow:auto; background:#FFFDF8; color:#16213A; border-radius:12px; padding:16px 20px; font-size:16px; line-height:1.6; box-shadow:0 8px 30px rgba(0,0,0,.4); display:none; }
 #notes.show { display:block; }
@@ -38,7 +42,15 @@ x-shape[kind="arrow-right"] { clip-path:polygon(0 32%,58% 32%,58% 0,100% 50%,58%
 body.shot #bar, body.shot #notes { display:none; }
 body.shot #stage { inset:0; }
 body.shot #frame { box-shadow:none; transform:none !important; }
-@media (max-width:640px) { #ttl { display:none; } }
+@media (max-width:640px) {
+  #ttl { display:none; }
+  #bar { gap:6px; padding:0 8px; overflow-x:auto; }
+  #bar button, #bar a { padding:6px 8px; }
+  #count { min-width:56px; }
+}
+/* 폰 세로 화면에서는 막대에 버튼이 다 들어가지 않는다. 전체 화면 버튼을 뺀다. 세로에서는 장 배율이 화면 폭으로 정해져 전체 화면으로도
+   장이 커지지 않는다(가로로 돌리면 다시 보인다). 그래도 넘치면 막대를 옆으로 민다. */
+@media (max-width:480px) { #fs { display:none; } }
 </style>
 </head>
 <body>
@@ -90,8 +102,8 @@ section.r.divider .body p { break-inside:avoid; margin:0 0 6px; }
 section.r.divider .body p.h2 { color:#F59E5B; font-weight:600; margin-top:10px; }
 section.r.details .kicker::after { content:'  ·  논문 상세(토글 요약)'; }
 </style>
-<section class="r cover"><div class="kicker">travplan 리서치 · 개요</div><div class="big">리서치 개요 (2026-09)</div><div class="lead"><p>개요 문서 · 탭 2개</p><p>개요 · 학회 수확 (IROS 2026)</p></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>1 / 37</span></div><aside>원본 docs/research-overview.md. 대시보드 리서치 탭의 &#x27;개요&#x27; 문서를 장으로 옮겼다.</aside></section>
-<section class="r content"><div class="kicker">개요 · 개요</div><h2 class="ttl">리서치 개요 (2026-09)<small>1/3</small></h2><div class="body"><p><strong>travplan의 리서치는 이 개요와, 파이프라인 순서의 네 주제 문서, 두 보조 문서로 나뉜다.</strong> 주제 문서는 인식, Planner,
+<section class="r cover"><div class="kicker">travplan 리서치 · 개요</div><div class="big">리서치 개요 (2026-09)</div><div class="lead"><p>개요 문서 · 탭 2개</p><p>개요 · 학회 수확 (IROS 2026)</p></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>1 / 38</span></div><aside>원본 docs/research-overview.md. 대시보드 리서치 탭의 &#x27;개요&#x27; 문서를 장으로 옮겼다.</aside></section>
+<section class="r content"><div class="kicker">개요 · 개요</div><h2 class="ttl">리서치 개요 (2026-09)<small>1/4</small></h2><div class="body"><p><strong>travplan의 리서치는 이 개요와, 파이프라인 순서의 네 주제 문서, 두 보조 문서로 나뉜다.</strong> 주제 문서는 인식, Planner,
 Controller·안전, 시뮬레이션이고, 보조 문서는 여러 논문이 함께 쓰는 수식(배경·수식)과 전체 목록(참고문헌)이다. 각 주제 문서의 첫 탭은 그 분야의
 <strong>계보</strong>다. 분야를 연 마일스톤에서 2026년 최신(SOTA)까지 한 표로 보여 주고, 공개 모델(HuggingFace)과 코드(GitHub) 현황을 함께 둔다.
 그다음 탭들이 세부 주제별 설명이다.</p><p>각 방식은 같은 순서로 소개한다. <strong>한 줄 요약</strong>으로 무엇인지 말하고, <strong>동작 방식</strong>을 설명하고, <strong>travplan에 주는 의미</strong>로 마무리한다.
@@ -107,7 +119,7 @@ Controller·안전, 시뮬레이션이고, 보조 문서는 여러 논문이 함
  └──────────────────┘
           시뮬레이션 (§S): 운동학 시뮬 · Isaac Sim · 보도 장면 · sim-to-real 로 위 전체를 검증
 </code></pre><p><strong>문서 지도.</strong> 문서마다 첫 탭이 개요(분야 계보, 공개 코드·모델 현황, travplan의 위치)이고, 그 뒤가 주제별 탭이다. 절 번호는 문서를 옮겨도
-그대로 둔다(인식 A, Planner B, Controller E와 안전 필터 C, 시뮬레이션 S, 배경 0, 강화학습 R, 딥러닝 L, 모방 I, 참고문헌 D).</p><table style="table-layout:fixed"><colgroup><col style="width:126.9px"><col style="width:784.0px"><col style="width:504.7px"><col style="width:311.4px"></colgroup><thead>
+그대로 둔다(인식 A, Planner B, Controller E와 안전 필터 C, 보행 갤러리 G, 시뮬레이션 S, 배경 0, 강화학습 R, 딥러닝 L, 모방 I, 참고문헌 D).</p><table style="table-layout:fixed"><colgroup><col style="width:124.7px"><col style="width:716.3px"><col style="width:537.3px"><col style="width:348.8px"></colgroup><thead>
 <tr>
 <th>문서</th>
 <th>탭과 절</th>
@@ -119,8 +131,8 @@ Controller·안전, 시뮬레이션이고, 보조 문서는 여러 논문이 함
 <td>지형 지도·Occupancy(A.1–A.5), Traversability(A.10), 시각 기반 모델(A.11), 동적 장애물(A.12), 예측·World model(A.6), 보행 로봇(A.7–A.9)</td>
 <td>센서에서 TravMap과 동적 장애물까지</td>
 <td>elevation mapping(P2.1), TravNet(TP-0010), 검출·추적 PoC(TP-0011)</td>
-</tr></tbody></table></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>2 / 37</span></div><aside>docs/research-overview.md 머리말</aside></section>
-<section class="r content"><div class="kicker">개요 · 개요</div><h2 class="ttl">리서치 개요 (2026-09)<small>2/3</small></h2><div class="body"><table style="table-layout:fixed"><colgroup><col style="width:126.9px"><col style="width:784.0px"><col style="width:504.7px"><col style="width:311.4px"></colgroup><thead>
+</tr></tbody></table></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>2 / 38</span></div><aside>docs/research-overview.md 머리말</aside></section>
+<section class="r content"><div class="kicker">개요 · 개요</div><h2 class="ttl">리서치 개요 (2026-09)<small>2/4</small></h2><div class="body"><table style="table-layout:fixed"><colgroup><col style="width:124.7px"><col style="width:716.3px"><col style="width:537.3px"><col style="width:348.8px"></colgroup><thead>
 <tr>
 <th>문서</th>
 <th>탭과 절</th>
@@ -158,10 +170,23 @@ Controller·안전, 시뮬레이션이고, 보조 문서는 여러 논문이 함
 <td>교재 Understanding Deep Learning과 MIT 6.S184·Stanford CS336을 뼈대로 한 딥러닝 개념. 장난감 문제를 실제로 풀어 그린 그림</td>
 <td>Planner D(flow matching), Joint Planner(DiT식 transformer), TravNet, TinyPolicy의 구조와 학습</td>
 </tr><tr>
+<td>보행 갤러리 (§G)</td>
+<td>사족보행(G.1–G.10), 휴머노이드(G.11–G.16), 다몸체(G.17), travplan에서(G.18)</td>
+<td>사족·휴머노이드 보행의 마일스톤 논문 17편을 한 편에 카드 하나로. 초록 전문 번역, 원문 그림 번역 설명, 방법·결과 표, 왜 마일스톤인가</td>
+<td>스워브 plant 지연(TP-0150), 교사–학생 DAgger(TP-0075·0055), belief 지도의 sigma, Planner·Controller 경계, sim-to-real 프로토콜(TP-0043)</td>
+</tr></tbody></table></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>3 / 38</span></div><aside>docs/research-overview.md 머리말</aside></section>
+<section class="r content"><div class="kicker">개요 · 개요</div><h2 class="ttl">리서치 개요 (2026-09)<small>3/4</small></h2><div class="body"><table style="table-layout:fixed"><colgroup><col style="width:124.7px"><col style="width:716.3px"><col style="width:537.3px"><col style="width:348.8px"></colgroup><thead>
+<tr>
+<th>문서</th>
+<th>탭과 절</th>
+<th>무엇을 보나</th>
+<th>travplan에서</th>
+</tr>
+</thead><tbody><tr>
 <td>모방 (§I)</td>
-<td>개요(I.0), 데이터·리타기팅(I.1–I.6), 동작 추종(I.7–I.9), 범용 추종기(I.10–I.12), 위 층(I.13), travplan에서(I.14)</td>
-<td>사람 동작 데이터와 라이선스, 리타기팅(로봇 쪽 고전, GMR·OmniRetarget), 동작 추종(SAMCON·DeepMimic에서 BeyondMimic까지의 계보), 범용 추종기(SONIC, SuperMimic)와 2026년 후속, 공개 코드. 장난감 문제를 풀어 그린 그림</td>
-<td>학습 절차(적응 표집, 교사–학생, world model을 통한 정책 기울기), Planner·Controller 분리, Playground 휴머노이드</td>
+<td>개요(I.0), 데이터·리타기팅(I.1–I.6), 동작 추종(I.7–I.9), 동작 사전(I.15–I.19), 범용 추종기(I.10–I.12), 위 층(I.13), travplan에서(I.14)</td>
+<td>사람 동작 데이터와 라이선스, 리타기팅(로봇 쪽 고전, GMR·OmniRetarget), 동작 추종(SAMCON·DeepMimic에서 BeyondMimic까지의 계보), 동작 사전(AMP·ADD·SMP와 기준 구현 MimicKit), 범용 추종기(SONIC, SuperMimic)와 2026년 후속, 공개 코드. 장난감 문제를 풀어 그린 그림</td>
+<td>학습 절차(적응 표집, 교사–학생, world model을 통한 정책 기울기), RL 후학습 보상에 동작 사전을 넣는 가설, Planner·Controller 분리, Playground 휴머노이드</td>
 </tr><tr>
 <td>참고문헌 (§D)</td>
 <td>인식(D.1–D.3b), Planner(D.0–D.5b), Controller·안전(D.6–D.7b), 강화학습(D.14), 딥러닝(D.15), 모방(D.16), 연구 그룹(D.13), 로코모션·데이터·산업(D.8–D.12)</td>
@@ -169,9 +194,7 @@ Controller·안전, 시뮬레이션이고, 보조 문서는 여러 논문이 함
 <td>—</td>
 </tr></tbody></table><p><strong>전체 연표.</strong> 분야마다 흐름을 바꾼 연구를 한 표에 놓았다. 2023년 전후로 네 분야가 함께 "큰 사전학습 모델 + 생성형 출력"으로
 옮겨 갔다. 인식은 시각 기반 모델로, Planner는 diffusion과 flow matching으로, Controller는 학습 world model로, 시뮬레이션은 GPU 병렬
-학습과 사진 같은 렌더링으로 갔다. 각 이름의 설명은 해당 문서의 개요 탭과 본문에 있다.</p></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>3 / 37</span></div><aside>docs/research-overview.md 머리말</aside></section>
-<section class="r content"><div class="kicker">개요 · 개요</div><h2 class="ttl">리서치 개요 (2026-09)<small>3/3</small></h2><div class="body"><table>
-<thead>
+학습과 사진 같은 렌더링으로 갔다. 각 이름의 설명은 해당 문서의 개요 탭과 본문에 있다.</p><table style="table-layout:fixed"><colgroup><col style="width:95.1px"><col style="width:432.0px"><col style="width:444.8px"><col style="width:388.1px"><col style="width:367.0px"></colgroup><thead>
 <tr>
 <th>연도</th>
 <th>인식</th>
@@ -179,79 +202,76 @@ Controller·안전, 시뮬레이션이고, 보조 문서는 여러 논문이 함
 <th>Controller·안전</th>
 <th>시뮬레이션</th>
 </tr>
-</thead>
-<tbody>
-<tr>
+</thead><tbody><tr>
 <td>1959–1997</td>
 <td>—</td>
 <td>Dijkstra, A*, DWA</td>
 <td>—</td>
 <td>—</td>
-</tr>
-<tr>
+</tr><tr>
 <td>2008–2014</td>
 <td>Robot-centric elevation mapping</td>
 <td>Hybrid A*, TEB</td>
 <td>—</td>
 <td>—</td>
-</tr>
-<tr>
+</tr><tr>
 <td>2015–2018</td>
 <td>Social GAN</td>
 <td>Apollo EM planner</td>
 <td>MPPI, 정보이론적 MPC, CBF-QP, HJ 도달 가능성, PETS, 예측 안전 필터</td>
 <td>Sorour 등, Domain Randomization, Dynamics Randomization</td>
-</tr>
-<tr>
+</tr><tr>
 <td>2019–2020</td>
 <td>Lift-Splat-Shoot, RELLIS-3D, BADGR, 등속 모델, Trajectron++</td>
 <td>Nav2</td>
 <td>CBF 튜토리얼, 이산 CBF + MPC</td>
 <td>Actuator net, ADR, Sim2Real Predictivity</td>
-</tr>
-<tr>
+</tr><tr>
 <td>2021–2022</td>
 <td>BEVFormer, BEVFusion, MonoScene, elevation_mapping_cupy, ByteTrack, BoT-SORT</td>
 <td>Diffuser, GNM, FAR Planner, PUTN</td>
 <td>Robust MPPI, IKD, RMA, log-MPPI, SMPPI</td>
 <td>Learning to Walk in Minutes, ART/ATK</td>
-</tr>
-<tr>
+</tr><tr>
 <td>2023</td>
 <td>DINOv2, Grounding DINO, Occ3D, WVN, RT-DETR</td>
 <td>iPlanner, ViNT, NoMaD, Diffusion Policy, MPD, UniAD, VAD, PDM-Closed, ArtPlanner</td>
 <td>TD-MPC2, 안전 필터 통합 관점</td>
 <td>HuNavSim, Gazebo Harmonic</td>
-</tr>
+</tr></tbody></table></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>4 / 38</span></div><aside>docs/research-overview.md 머리말</aside></section>
+<section class="r content"><div class="kicker">개요 · 개요</div><h2 class="ttl">리서치 개요 (2026-09)<small>4/4</small></h2><div class="body"><table style="table-layout:fixed"><colgroup><col style="width:95.1px"><col style="width:432.0px"><col style="width:444.8px"><col style="width:388.1px"><col style="width:367.0px"></colgroup><thead>
 <tr>
+<th>연도</th>
+<th>인식</th>
+<th>Planner</th>
+<th>Controller·안전</th>
+<th>시뮬레이션</th>
+</tr>
+</thead><tbody><tr>
 <td>2024</td>
 <td>Depth Anything V2, SAM 2, V-STRONG, RoadRunner, YOLOv10, D-FINE</td>
 <td>ViPlanner, OpenVLA, π0, NaVILA, CityWalker, DiffusionDrive, NAVSIM, Hydra-MDP</td>
 <td>MPPI-Generic</td>
 <td>MetaUrban, Arena 4.0, X-Mobility, Navigation World Models</td>
-</tr>
-<tr>
+</tr><tr>
 <td>2025</td>
 <td>DINOv3, Depth Anything 3, SAM 3, RF-DETR, MoFlow</td>
 <td>Diffusion Planner, GoalFlow, NavDP, CaRL, Alpamayo, MolmoAct, VAMOS, FPO</td>
 <td>CVaR-BF, DRA-MPPI</td>
 <td>Isaac Lab, MuJoCo Playground, URBAN-SIM, UrbanVerse, COMPASS, Cosmos</td>
-</tr>
-<tr>
+</tr><tr>
 <td>2026</td>
 <td>WalkOCC, ViTA, CATNAV, PIVOT, RayOcc, 4D panoptic occupancy tracking, EgoHTR</td>
 <td>AgniNav, MILER, PC-Diffuser, JPPD, GRACE, Can VFMs Navigate?, Click-and-Traverse, TNT, DYNA-2.1</td>
 <td>ProxPI, Predictive Semantic Safety, HDVIO2.0, OGM-CBF, Safe Score Matching, PolyStep</td>
 <td>Isaac Sim 6.x, Newton, SidewalkBench, NavIsaacLab</td>
-</tr>
-</tbody>
-</table></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>4 / 37</span></div><aside>docs/research-overview.md 머리말</aside></section>
-<section class="r divider"><div class="kicker">개요 · 탭</div><h2 class="ttl">개요</h2><div class="body"><p class="h2">ROS/ROS2 costmap의 한계 — travplan이 TravMap을 쓰는 이유</p><p class="h3">다섯 가지 한계</p><p class="h3">업스트림도 같은 결론을 적어 두었다</p><p class="h3">TravMap의 여덟 채널이 어느 한계에 답하나</p><p class="h3">그래도 costmap을 버리지는 않는다</p></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>5 / 37</span></div><aside>docs/research-overview.md · 탭 &#x27;개요&#x27;</aside></section>
+</tr></tbody></table></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>5 / 38</span></div><aside>docs/research-overview.md 머리말</aside></section>
+<section class="r divider"><div class="kicker">개요 · 탭</div><h2 class="ttl">개요</h2><div class="body"><p class="h2">ROS/ROS2 costmap의 한계 — travplan이 TravMap을 쓰는 이유</p><p class="h3">다섯 가지 한계</p><p class="h3">업스트림도 같은 결론을 적어 두었다</p><p class="h3">TravMap의 여덟 채널이 어느 한계에 답하나</p><p class="h3">그래도 costmap을 버리지는 않는다</p></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>6 / 38</span></div><aside>docs/research-overview.md · 탭 &#x27;개요&#x27;</aside></section>
 <section class="r content"><div class="kicker">개요 · 개요</div><h2 class="ttl">ROS/ROS2 costmap의 한계 — travplan이 TravMap을 쓰는 이유</h2><div class="body"><p><strong>travplan은 지금도 ROS 2 위에서 돌고 Nav2 생태계를 쓴다.</strong> 그런데 공통 표현만은 <code>costmap_2d</code>가 아니라
 <code>TravMap[8,H,W]</code>다. 왜 갈라섰는지를 여기에 적는다. <mark>결론부터: costmap은 "여기 무언가 있나"를 답하는 자료구조이고,
 보도 주행이 물어야 하는 것은 "여기를 지날 수 있나"다.</mark></p><p><strong>먼저 costmap이 무엇인지.</strong> <code>nav2_costmap_2d</code>는 2D 격자에 레이어를 쌓는다. static(정적 지도), obstacle(센서로
 mark/clear), voxel(3D로 쌓았다가 2D로 투영), inflation(장애물 주위를 로봇 반지름만큼 부풀림)이다. 각 셀은
-0–255의 비용 하나를 갖는다.</p></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>6 / 37</span></div><aside>docs/research-overview.md · ROS/ROS2 costmap의 한계 — travplan이 TravMap을 쓰는 이유</aside></section>
+0–255의 비용 하나를 갖는다.</p></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>7 / 38</span></div><aside>docs/research-overview.md · ROS/ROS2 costmap의 한계 — travplan이 TravMap을 쓰는 이유</aside></section>
 <section class="r content"><div class="kicker">개요 · 개요 · ROS/ROS2 costmap의 한계 — travplan이 TravMap을 쓰는 이유</div><h2 class="ttl">다섯 가지 한계</h2><div class="body"><p><strong>① 점유/비점유의 이분법.</strong> 셀은 "비었다 / 찼다 / 모른다"와 inflation 비용을 갖는다. <mark><strong>"지날 수는 있지만 비싼 곳"</strong>을
 표현할 자리가 없다.</mark> 경사 8°의 램프와 평지가 같은 값이고, 자갈과 아스팔트가 같은 값이다. 경사·거칠기를 넣으려면
 직접 레이어를 만들어야 하는데, 그러면 그 레이어의 의미는 더 이상 표준이 아니다.</p><p><strong>② 2D 투영이 높이를 무너뜨린다.</strong> 이것이 보도에서 가장 아프다. 세 가지가 함께 무너진다.</p><ul>
@@ -267,7 +287,7 @@ TravMap의 <code>SIGMA</code> 채널이 이 자리다.</p><p><strong>④ inflati
 Controller 문서 F.5의 4족 확률 제약 MPC가 <strong>"손으로 맞춘 제약 조이기"를 이겼다</strong>고 보고하는데, costmap의 inflation이
 바로 그 손으로 맞춘 조이기의 전형이다. travplan의 TP-0069가 겨냥하는 것도 같다.</p><p><strong>⑤ 지면 평면을 가정한다.</strong> 투영 기준면이 평평하다고 보므로, 경사면에서는 <strong>지면 자체가 장애물로 마킹된다.</strong> 실외
 적용에서 흔한 실패이고, 농업 쪽 보고에서는 로봇이 밟고 지나갈 수 있는 키 큰 풀이 장애물로 찍혀 경로가 길어지거나
-주행이 중단됐다(<a href="https://arxiv.org/abs/2407.18535">arXiv:2407.18535</a>).</p></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>7 / 37</span></div><aside>docs/research-overview.md · 다섯 가지 한계</aside></section>
+주행이 중단됐다(<a href="https://arxiv.org/abs/2407.18535">arXiv:2407.18535</a>).</p></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>8 / 38</span></div><aside>docs/research-overview.md · 다섯 가지 한계</aside></section>
 <section class="r content"><div class="kicker">개요 · 개요 · ROS/ROS2 costmap의 한계 — travplan이 TravMap을 쓰는 이유</div><h2 class="ttl">업스트림도 같은 결론을 적어 두었다</h2><div class="body"><p>이것은 바깥의 비판이 아니다. Nav2 저장소의 이슈
 <a href="https://github.com/ros-navigation/navigation2/issues/1278">#1278 <em>Redesign Environmental Representation</em></a>에서
 메인테이너가 2019년에 이렇게 썼고, 그 이슈는 지금도 <strong>열려 있다.</strong></p><blockquote>
@@ -275,7 +295,7 @@ Controller 문서 F.5의 4족 확률 제약 MPC가 <strong>"손으로 맞춘 제
 (…) 경사를 3D로 다루면 램프나 언덕, <strong>내려가는 계단이나 낙차</strong>를 표현할 수 있다. (…)
 <mark>비었나 찼나를 따지는 대신 이제 이렇게 생각하자 — <strong>여기를 지날 수 있나.</strong></mark></p>
 </blockquote><p>travplan의 <code>TravMap</code>은 그 제안을 실제로 구현한 형태에 가깝다. 제안된 "gradient map"이 <code>GRAD_X</code>·<code>GRAD_Y</code>·<code>SLOPE</code>이고,
-"지날 수 있나"가 <code>COST</code>다.</p></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>8 / 37</span></div><aside>docs/research-overview.md · 업스트림도 같은 결론을 적어 두었다</aside></section>
+"지날 수 있나"가 <code>COST</code>다.</p></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>9 / 38</span></div><aside>docs/research-overview.md · 업스트림도 같은 결론을 적어 두었다</aside></section>
 <section class="r content"><div class="kicker">개요 · 개요 · ROS/ROS2 costmap의 한계 — travplan이 TravMap을 쓰는 이유</div><h2 class="ttl">TravMap의 여덟 채널이 어느 한계에 답하나</h2><div class="body"><table>
 <thead>
 <tr>
@@ -309,11 +329,11 @@ Controller 문서 F.5의 4족 확률 제약 MPC가 <strong>"손으로 맞춘 제
 <td>③ 얼마나 확신하는지</td>
 </tr>
 </tbody>
-</table></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>9 / 37</span></div><aside>docs/research-overview.md · TravMap의 여덟 채널이 어느 한계에 답하나</aside></section>
+</table></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>10 / 38</span></div><aside>docs/research-overview.md · TravMap의 여덟 채널이 어느 한계에 답하나</aside></section>
 <section class="r content"><div class="kicker">개요 · 개요 · ROS/ROS2 costmap의 한계 — travplan이 TravMap을 쓰는 이유</div><h2 class="ttl">그래도 costmap을 버리지는 않는다</h2><div class="body"><p><mark>표현을 바꾼 것이지 생태계를 버린 것이 아니다.</mark> Nav2의 행동 트리, 복구 행동, 전역 플래너(Smac), 그리고 실물
 배포의 안전 장치는 그대로 값이 있다. travplan이 Nav2와 겹치는 지점과 비교 기준은 Planner 문서 B.12.4에 정리해 두었다.
-실물 배달로봇 스택(AntBot)도 Nav2 위에 있다. <strong>바뀌는 것은 "무엇을 공통 표현으로 쓰는가" 하나다.</strong></p></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>10 / 37</span></div><aside>docs/research-overview.md · 그래도 costmap을 버리지는 않는다</aside></section>
-<section class="r divider"><div class="kicker">개요 · 탭</div><h2 class="ttl">학회 수확 (IROS 2026)</h2><div class="body"><p class="h2">학회 수확 — IROS 2026 (피츠버그)</p><p class="h3">왜 이 다섯 편인가</p><p class="h3">골라 볼 다섯 편</p><p class="h3">다섯 편을 합쳐 보면</p></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>11 / 37</span></div><aside>docs/research-overview.md · 탭 &#x27;학회 수확 (IROS 2026)&#x27;</aside></section>
+실물 배달로봇 스택(AntBot)도 Nav2 위에 있다. <strong>바뀌는 것은 "무엇을 공통 표현으로 쓰는가" 하나다.</strong></p></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>11 / 38</span></div><aside>docs/research-overview.md · 그래도 costmap을 버리지는 않는다</aside></section>
+<section class="r divider"><div class="kicker">개요 · 탭</div><h2 class="ttl">학회 수확 (IROS 2026)</h2><div class="body"><p class="h2">학회 수확 — IROS 2026 (피츠버그)</p><p class="h3">왜 이 다섯 편인가</p><p class="h3">골라 볼 다섯 편</p><p class="h3">다섯 편을 합쳐 보면</p></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>12 / 38</span></div><aside>docs/research-overview.md · 탭 &#x27;학회 수확 (IROS 2026)&#x27;</aside></section>
 <section class="r content"><div class="kicker">개요 · 학회 수확 (IROS 2026)</div><h2 class="ttl">학회 수확 — IROS 2026 (피츠버그)</h2><div class="body"><p><strong>채택 논문 1,929편을 제목으로 훑어 travplan의 열린 질문에 걸리는 것만 골랐다</strong>(<a href="https://2026.ieee-iros.org/program/paper-index/">논문 색인</a>).
 세부는 각 주제 문서에 들어가고, 여기서는 지도와 자세히 볼 다섯 편을 둔다.</p><p><mark>제목에 "sidewalk"가 들어간 논문이 한 편도 없다.</mark> 보도 배달로봇이라는 자리는 여전히 비어 있다. 가장 가까운 것은 험지(off-road)와
 다리 로봇이고, 그 방법을 보도 규모로 옮기는 일은 travplan의 몫으로 남는다. 키워드별 편수는 terrain 41, traversability 9, off-road 8,
@@ -352,7 +372,7 @@ elevation map 7, occupancy 11, MPPI 9, sidewalk 0이다.</p><table>
 <td>인식 A.2</td>
 </tr>
 </tbody>
-</table></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>12 / 37</span></div><aside>docs/research-overview.md · 학회 수확 — IROS 2026 (피츠버그)</aside></section>
+</table></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>13 / 38</span></div><aside>docs/research-overview.md · 학회 수확 — IROS 2026 (피츠버그)</aside></section>
 <section class="r content"><div class="kicker">개요 · 학회 수확 (IROS 2026) · 학회 수확 — IROS 2026 (피츠버그)</div><h2 class="ttl">왜 이 다섯 편인가</h2><div class="body"><p><strong>다섯 편은 위 표의 질문에서, 파이프라인의 층이 겹치지 않게, 우리 결정과 반대쪽 근거가 되는 것을 골랐다.</strong> 1,929편을 다 읽을 수는 없다.
 그래서 2026-09-28에 제목·저자·세션으로 위 표를 먼저 만들고, 그 표에서 자세히 볼 것을 골랐다. 기준은 셋이다.</p><ol>
 <li><strong>열린 질문에 바로 걸린다.</strong> 표의 줄마다 travplan의 TP가 있다. 분야가 가까워도 우리 결정을 바꿀 수 없는 논문은 표에만 남겼다.</li>
@@ -411,7 +431,7 @@ OccTrack360(못 본 칸을 평가 범위에)이 다른 층에서 다룬다. 두 
 <li>MSC의 로봇은 비동축 스워브가 아니라 수동 캐스터를 단 차동구동 AMR이다. 캐스터의 오프셋도 구름 방향이라, 바퀴 축 방향인 AntBot과 다르다.</li>
 <li>TNT의 "50 %, 26.7 %, 9.2 %"는 한 코스 10회에서 TNT 없는 MPPI 대비 상대값이다.</li>
 <li>SGE는 Best Paper·Best Student Paper 결선 10편 중 하나다. OccTrack360의 어안 카메라는 측면 2대다.</li>
-</ul><p>POLT는 본문이 공개되면 다시 본다. 카드는 원문, 한 줄 요약, 동작 방식, 결과, travplan에 주는 의미 순서다. 방법과 수식은 카드 끝의 <strong>"자세히"</strong> 토글에 있다.</p></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>13 / 37</span></div><aside>docs/research-overview.md · 왜 이 다섯 편인가</aside></section>
+</ul><p>POLT는 본문이 공개되면 다시 본다. 카드는 원문, 한 줄 요약, 동작 방식, 결과, travplan에 주는 의미 순서다. 방법과 수식은 카드 끝의 <strong>"자세히"</strong> 토글에 있다.</p></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>14 / 38</span></div><aside>docs/research-overview.md · 왜 이 다섯 편인가</aside></section>
 <section class="r content"><div class="kicker">개요 · 학회 수확 (IROS 2026) · 학회 수확 — IROS 2026 (피츠버그)</div><h2 class="ttl">골라 볼 다섯 편<small>1/3</small></h2><div class="body"><h4>TNT — 못 갈 것처럼 보이는 바위를 주행 기록으로 다시 매긴다(508)</h4><p><strong>원문.</strong> Chenhui Pan·Aniket Datar(공동 1저자)·Anuj Pokhrel·Matthew Choulas·Mohammad Nazeri·Xuesu Xiao, George Mason University.
 <a href="https://arxiv.org/abs/2409.17479">arXiv:2409.17479</a>(2024-09, CC BY 4.0), <a href="https://www.youtube.com/watch?v=Shcalb8sGcA">영상</a>.
 코드는 없다. 로봇 플랫폼만 <code>RobotiXX/Verti-Wheelers</code> 저장소로 공개돼 있다.</p><p><strong>한 줄 요약.</strong> <mark>기존 추정기가 "못 간다"로 자르는 바위 지형을, 그 패치가 지난 주행에서 차를 얼마나 기울이고 명령과 실제를 얼마나 어긋나게 했는지로 다시 매긴다.</mark>
@@ -427,7 +447,7 @@ MPPI는 TAL로 rollout하면서 이 지도로 분명히 못 가는 곳을 먼저
   9.2 %는 roll과 pitch 크기의 평균이 준 비율이다. 9.2 %는 본문에 식이 없어 표로 계산했다.</li>
 <li>pitch 크기 하나만 보면 MPPI+TAL(6.9°)이 TNT(8.2°)보다 작다.</li>
 <li>시뮬레이션 실험은 없다. 실외는 정성 시연뿐이다.</li>
-</ul><p><strong>travplan에 주는 의미.</strong></p></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>14 / 37</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편</aside></section>
+</ul><p><strong>travplan에 주는 의미.</strong></p></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>15 / 38</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편</aside></section>
 <section class="r content"><div class="kicker">개요 · 학회 수확 (IROS 2026) · 학회 수확 — IROS 2026 (피츠버그)</div><h2 class="ttl">골라 볼 다섯 편<small>2/3</small></h2><div class="body"><ul>
 <li><strong>우리 게이트로는 아직 근거가 아니다.</strong> 한 코스 10회 한 판이고, 9/10 대 6/10의 정확 검정 p는 0.30이다. 실패를 전복과 갇힘으로 나누지 않아
   치명 실패 수를 셀 수 없다. 치명은 p와 무관하게 늘면 안 된다는 travplan 게이트로는 판정할 수 없다.</li>
@@ -439,8 +459,8 @@ MPPI는 TAL로 rollout하면서 이 지도로 분명히 못 가는 곳을 먼저
 <li><strong>TP-0057의 결정은 그대로 둔다.</strong> 2026-10-03에 "잔차는 cost를 올리는 쪽만"을 기본으로 정했다. TNT는 낮추는 쪽의 근거로 읽히지만, 위의 이유로 결정을 바꾸지 못한다.
   낮추는 실험을 한다면 TNT식 라벨로 하되 치명 수를 짝 비교로 잰다.</li>
 <li><strong>수치는 옮기지 않는다.</strong> 크롤러는 디퍼렌셜 잠금으로 0.6 m 바위판을 지난다. travplan 로봇이 넘는 턱은 0.08 m까지다.</li>
-</ul></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>15 / 37</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편</aside></section>
-<section class="r content"><div class="kicker">개요 · 학회 수확 (IROS 2026) · 학회 수확 — IROS 2026 (피츠버그)</div><h2 class="ttl">골라 볼 다섯 편<small>3/3</small></h2><div class="body"><div class="figrow"><figure style="width:560px"><a href="https://arxiv.org/html/2409.17479v1/figure/Main_fig.jpg"><img src="../../assets/thumbs/e045f5e3f179.webp" width="504" height="420" alt="TNT 개요"></a><figcaption>그림 — TNT 개요 (Fig. 1): 위는 흑백 고도 지도에서 TNT 없는 MPPI의 표본이 흰 바위 쪽으로 몰리는 장면이고, 아래는 TNT 지도(파랑 쉬움, 빨강 어려움)에서 표본이 파란 통로로 모이는 장면이다. 오른쪽은 1/10 크롤러 V4W다. 출처: arXiv:2409.17479</figcaption></figure><figure style="width:560px"><a href="https://arxiv.org/html/2409.17479v1/traversability-compressed.png"><img src="../../assets/thumbs/bdf77e4f992f.webp" width="550" height="420" alt="TNT 라벨 만들기"></a><figcaption>그림 — TNT 라벨 만들기 (Fig. 2): 패치 p에서 roll·pitch 2장, 속도 어긋남의 평균·분산 4장, 자세 예측 오차의 평균·분산 8장을 만들고 w1–w3로 더한다. 재구성망이 고도 지도 한 장에서 이 지도를 바로 낸다. 출처: arXiv:2409.17479</figcaption></figure><figure style="width:560px"><a href="https://arxiv.org/html/2409.17479v1/figure/tnt_experiments.jpg"><img src="../../assets/thumbs/8c9deb42e8c2.webp" width="560" height="213" alt="TNT 실물 시험"></a><figcaption>그림 — TNT 실물 시험 (Fig. 5): 왼쪽은 Table I을 잰 실내 바위판이고, 오른쪽은 자갈·바위가 섞인 실외 정성 시연이다. 출처: arXiv:2409.17479</figcaption></figure></div></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>16 / 37</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편</aside></section>
+</ul></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>16 / 38</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편</aside></section>
+<section class="r content"><div class="kicker">개요 · 학회 수확 (IROS 2026) · 학회 수확 — IROS 2026 (피츠버그)</div><h2 class="ttl">골라 볼 다섯 편<small>3/3</small></h2><div class="body"><div class="figrow"><figure style="width:560px"><a href="https://arxiv.org/html/2409.17479v1/figure/Main_fig.jpg"><img src="../../assets/thumbs/e045f5e3f179.webp" width="504" height="420" alt="TNT 개요"></a><figcaption>그림 — TNT 개요 (Fig. 1): 위는 흑백 고도 지도에서 TNT 없는 MPPI의 표본이 흰 바위 쪽으로 몰리는 장면이고, 아래는 TNT 지도(파랑 쉬움, 빨강 어려움)에서 표본이 파란 통로로 모이는 장면이다. 오른쪽은 1/10 크롤러 V4W다. 출처: arXiv:2409.17479</figcaption></figure><figure style="width:560px"><a href="https://arxiv.org/html/2409.17479v1/traversability-compressed.png"><img src="../../assets/thumbs/bdf77e4f992f.webp" width="550" height="420" alt="TNT 라벨 만들기"></a><figcaption>그림 — TNT 라벨 만들기 (Fig. 2): 패치 p에서 roll·pitch 2장, 속도 어긋남의 평균·분산 4장, 자세 예측 오차의 평균·분산 8장을 만들고 w1–w3로 더한다. 재구성망이 고도 지도 한 장에서 이 지도를 바로 낸다. 출처: arXiv:2409.17479</figcaption></figure><figure style="width:560px"><a href="https://arxiv.org/html/2409.17479v1/figure/tnt_experiments.jpg"><img src="../../assets/thumbs/8c9deb42e8c2.webp" width="560" height="213" alt="TNT 실물 시험"></a><figcaption>그림 — TNT 실물 시험 (Fig. 5): 왼쪽은 Table I을 잰 실내 바위판이고, 오른쪽은 자갈·바위가 섞인 실외 정성 시연이다. 출처: arXiv:2409.17479</figcaption></figure></div></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>17 / 38</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편</aside></section>
 <section class="r details"><div class="kicker">개요 · 학회 수확 (IROS 2026) · 학회 수확 — IROS 2026 (피츠버그)</div><h2 class="ttl">골라 볼 다섯 편<small>자세히: TNT의 방법과 수식</small></h2><div class="body"><p><strong>정적 roll·pitch.</strong> 바퀴 $i$ 아래 칸의 높이를 $h_i$, 두 바퀴 사이 거리를 $d_{i,j}$라 하면 아래와 같다.</p><p class="mathp">$$\text{roll},\ \text{pitch} = \tfrac12 \Big\lVert \sum_{(i,j)\in\mathcal I} \arctan\frac{h_i-h_j}{d_{i,j}} \Big\rVert$$</p><p>바퀴 번호는 앞왼쪽 1, 뒤왼쪽 2, 뒤오른쪽 3, 앞오른쪽 4다. roll은 $\mathcal I=\{(1,4),(2,3)\}$, pitch는 $\{(1,2),(4,3)\}$이다.
 이 식은 정적 기울기만 준다. 바퀴 반경과 턱 높이로 정해지는 "오를 수 있나"는 이 식에 없고, 아래의 속도 어긋남이 데이터로 잡는다.</p><p><strong>속도 어긋남과 자세 예측 오차.</strong> $\Delta\mathbf v=\mathbf v_{\text{cmd}}-\mathbf v_{\text{actual}}$이고 $\mathbf v=(v,\omega)$다. 같은 패치라도 차의 상태에 따라 값이 달라서 분포로 배운다.
 7층 CNN과 FC 3층이 패치 $p$에서 $(\mu^{\Delta\mathbf v},\sigma^{\Delta\mathbf v})$를 내고, 손실은 가우시안 NLL이다.</p><p class="mathp">$$\mathcal L=\sum_i \tfrac12\Big(\log\sigma^2(p_i)+\frac{(\mu(p_i)-\Delta\mathbf v_i)^2}{\sigma^2(p_i)}\Big)$$</p><p>자세 쪽 $\Delta\mathbf q=\mathbf q_{\text{pred}}-\mathbf q_{\text{actual}}$는 TAL의 25스텝 예측과 실제의 차다. 성분은 x, y, roll, pitch다. yaw는 x·y와 겹치고 z는 정보가 적어 뺐다.
@@ -448,7 +468,7 @@ MPPI는 TAL로 rollout하면서 이 지도로 분명히 못 가는 곳을 먼저
 재구성망(잔차 연결이 있는 4층 CNN 인코더와 conv-transpose 3층)은 고도 지도에서 14채널 320 × 260 지도를 낸다(roll·pitch 2, 속도 4, 자세 8).
 최종 지도는 14채널의 가중합이고, 가중치는 상황에 따라 바꿀 수 있다고 쓴다. 입력 고도 지도는 Azure Kinect 깊이에 elevation_mapping_cupy를 돌린 것이다.
 칸 크기와 패치 크기는 적혀 있지 않다.</p><p><strong>Planner와의 연결.</strong> MPPI가 TAL로 SE(3) rollout할 때 이 지도로 표본 분포를 치우치게 하고, 못 가는 곳을 먼저 걸러, 더 짧은 horizon으로 계획한다고 쓴다.
-비용 항으로 넣는지 표본 분포를 바꾸는지는 식이 없다. A*에서는 지도를 평균 합성곱으로 31 × 25로 줄여 traversability 비용과 거리를 함께 최소화하고, DWA나 PID가 경로를 따른다.</p><p class="more">… 이 토글의 나머지 블록 4개(문단·식·그림)는 대시보드 리서치 탭의 "자세히: TNT의 방법과 수식" 토글에 있다.</p></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>17 / 37</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편 · 토글 &#x27;자세히: TNT의 방법과 수식&#x27;</aside></section>
+비용 항으로 넣는지 표본 분포를 바꾸는지는 식이 없다. A*에서는 지도를 평균 합성곱으로 31 × 25로 줄여 traversability 비용과 거리를 함께 최소화하고, DWA나 PID가 경로를 따른다.</p><p class="more">… 이 토글의 나머지 블록 4개(문단·식·그림)는 대시보드 리서치 탭의 "자세히: TNT의 방법과 수식" 토글에 있다.</p></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>18 / 38</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편 · 토글 &#x27;자세히: TNT의 방법과 수식&#x27;</aside></section>
 <section class="r content"><div class="kicker">개요 · 학회 수확 (IROS 2026) · 학회 수확 — IROS 2026 (피츠버그)</div><h2 class="ttl">골라 볼 다섯 편<small>1/2</small></h2><div class="body"><h4>Remember Your Driving Feel(POLT) — 바퀴가 느낀 것으로 주행 중에 배운다(1304)</h4><p><strong>원문.</strong> <em>Remember Your Driving Feel: Proprioception Based Online Learning for UGV Traversability across Complex Terrains</em>.
 Zikang Xie·Binhan Du·Kexin Fei·Jian Li·Zhenping Sun·Shucheng Li·Xiaohui Li·Dewen Hu, 중국 국방과기대(NUDT).
 <strong>2026-10-26 현재 본문이 공개되지 않았다.</strong> arXiv·Google Scholar·OpenAlex·GitHub에서 찾지 못했다. 아래는 IROS 프로그램에 실린 초록만으로 쓴 것이다.</p><p><strong>한 줄 요약.</strong> <mark>빙판과 물 고인 길은 평평해도 미끄럽고, 풀 덤불은 장애물처럼 보여도 지나갈 수 있다.</mark> 기하와 고정된 의미 라벨로는 지형의 역학적 성질을
@@ -463,8 +483,8 @@ Zikang Xie·Binhan Du·Kexin Fei·Jian Li·Zhenping Sun·Shucheng Li·Xiaohui Li
 <li><strong>빙판은 travplan의 빈칸이다.</strong> 기하 cost는 평평한 빙판을 0으로 본다. TravMap에는 마찰을 담는 채널이 없다.
   TP-0059(Isaac 마찰 패치 + 슬립 proxy)가 이 빈칸을 시뮬레이션에서 먼저 재 보려는 항목이다.</li>
 <li><strong>온라인 갱신은 안전 문제를 함께 가져온다.</strong> 주행 중에 cost를 낮추면 TP-0057의 "올리는 쪽만" 원칙과 부딪힌다. 본문이 나오면 메모리가 cost를 낮추는 쪽으로도 움직이는지부터 본다.</li>
-</ul></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>18 / 37</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편</aside></section>
-<section class="r content"><div class="kicker">개요 · 학회 수확 (IROS 2026) · 학회 수확 — IROS 2026 (피츠버그)</div><h2 class="ttl">골라 볼 다섯 편<small>2/2</small></h2><div class="body"><div class="figrow"><figure style="width:1282px"><a href="https://arxiv.org/html/2504.12109v1/picture/Inference.jpg"><img src="../../assets/thumbs/7cecbc30dade.webp" width="1282" height="700" alt="NUDT 그룹의 앞선 온라인 적응"></a><figcaption>그림 — 같은 그룹의 앞선 연구, 온라인 프로토타입 갱신 (arXiv:2504.12109 Fig. 4): POLT 본문이 없어 공저자 둘(Zhenping Sun, Xiaohui Li)이 겹치는 NUDT의 2025년 연구를 싣는다. BEV 특징 지도에서 지나간 칸의 특징을 온라인 군집으로 묶어 프로토타입을 갱신하고, 특징 지도와의 유사도로 traversability 지도를 낸다. 고유 감각을 쓰는 POLT와는 입력이 다르다. 출처: arXiv:2504.12109</figcaption></figure></div></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>19 / 37</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편</aside></section>
+</ul></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>19 / 38</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편</aside></section>
+<section class="r content"><div class="kicker">개요 · 학회 수확 (IROS 2026) · 학회 수확 — IROS 2026 (피츠버그)</div><h2 class="ttl">골라 볼 다섯 편<small>2/2</small></h2><div class="body"><div class="figrow"><figure style="width:1282px"><a href="https://arxiv.org/html/2504.12109v1/picture/Inference.jpg"><img src="../../assets/thumbs/7cecbc30dade.webp" width="1282" height="700" alt="NUDT 그룹의 앞선 온라인 적응"></a><figcaption>그림 — 같은 그룹의 앞선 연구, 온라인 프로토타입 갱신 (arXiv:2504.12109 Fig. 4): POLT 본문이 없어 공저자 둘(Zhenping Sun, Xiaohui Li)이 겹치는 NUDT의 2025년 연구를 싣는다. BEV 특징 지도에서 지나간 칸의 특징을 온라인 군집으로 묶어 프로토타입을 갱신하고, 특징 지도와의 유사도로 traversability 지도를 낸다. 고유 감각을 쓰는 POLT와는 입력이 다르다. 출처: arXiv:2504.12109</figcaption></figure></div></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>20 / 38</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편</aside></section>
 <section class="r details"><div class="kicker">개요 · 학회 수확 (IROS 2026) · 학회 수확 — IROS 2026 (피츠버그)</div><h2 class="ttl">골라 볼 다섯 편<small>자세히: 본문이 나오면 확인할 것과 같은 그룹의 앞선 연구</small></h2><div class="body"><p><strong>본문에서 확인할 것.</strong></p><ol>
 <li>고유 감각 신호의 종류와 라벨을 만드는 식. 초록이 바퀴 슬립을 실패 예로 들어 슬립 계열일 가능성이 크지만 확인되지 않았다.</li>
 <li>"Physics-Informed"가 손실에 넣은 물리 관계인지, 망 구조에 넣은 것인지.</li>
@@ -478,7 +498,7 @@ Zikang Xie·Binhan Du·Kexin Fei·Jian Li·Zhenping Sun·Shucheng Li·Xiaohui Li
 <li>주행 중에는 지나간 칸의 특징을 온라인 군집으로 묶어 프로토타입을 갱신하고, 특징 지도와의 유사도로 traversability를 낸다.</li>
 <li>실차에서 10 Hz로 돌았고 5.5 km를 자율주행했다.</li>
 </ul><p>POLT가 비교한 "온라인 학습 기반 기준선"이 이 연구인지는 본문이 나와야 안다.</p><p><strong>travplan에 주는 것.</strong> 프로토타입 갱신은 망 가중치를 고정한 채 판정 기준만 주행 중에 바꾼다. 무엇이 바뀌었는지 검사하기 쉬워서,
-TravNet에 온라인 갱신을 넣는다면 이쪽부터 시험한다. 바뀐 기준이 cost를 낮추는 쪽이면 TP-0057의 원칙대로 막는다.</p></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>20 / 37</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편 · 토글 &#x27;자세히: 본문이 나오면 확인할 것과 같은 그룹의 앞선 연구&#x27;</aside></section>
+TravNet에 온라인 갱신을 넣는다면 이쪽부터 시험한다. 바뀐 기준이 cost를 낮추는 쪽이면 TP-0057의 원칙대로 막는다.</p></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>21 / 38</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편 · 토글 &#x27;자세히: 본문이 나오면 확인할 것과 같은 그룹의 앞선 연구&#x27;</aside></section>
 <section class="r content"><div class="kicker">개요 · 학회 수확 (IROS 2026) · 학회 수확 — IROS 2026 (피츠버그)</div><h2 class="ttl">골라 볼 다섯 편<small>1/5</small></h2><div class="body"><h4>Observation-Conditioned Rollout Allocation(OCRA) — 잘 보이는 방향에 rollout을 더 준다(3312)</h4><p><strong>원문.</strong> <em>Observation-Conditioned Rollout Allocation for Sampling Model Predictive Control on Myopic Egocentric Elevation Maps</em>.
 Luis Miguel Diaz-Pichardo·Anthony Mandow·Ricardo Vázquez-Martín, 말라가 대학 IMECH.UMA. arXiv에는 없고 대학 저장소
 <a href="https://hdl.handle.net/10630/48147">RIUMA</a>에 IROS 원고 PDF가 있다(CC BY-NC-ND 4.0). <a href="https://youtu.be/4zNUPtkI_Qs">영상</a>. 코드는 없다.</p><p><strong>한 줄 요약.</strong> 로봇 중심 고도 지도가 좁고 못 본 칸이 많으면 여러 진행 방향이 다 그럴듯해 보인다. 그러면 균일하게 뿌린 rollout이 모호한 방향에 낭비되고,
@@ -492,7 +512,7 @@ Luis Miguel Diaz-Pichardo·Anthony Mandow·Ricardo Vázquez-Martín, 말라가 �
   점수가 모두 같으면 균일 샘플링으로 돌아간다.</li>
 <li><strong>선택.</strong> MPC(TAV-MPC)는 유효하지 않거나 못 본 칸에 들어가는 rollout을 버리고, 남은 것 중 비용이 가장 낮은 하나의 첫 제어를 낸다.
   저자는 MPPI식이라고 부르지만, 지수 가중 평균이 아니라 최솟값 선택이다.</li>
-</ul></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>21 / 37</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편</aside></section>
+</ul></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>22 / 38</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편</aside></section>
 <section class="r content"><div class="kicker">개요 · 학회 수확 (IROS 2026) · 학회 수확 — IROS 2026 (피츠버그)</div><h2 class="ttl">골라 볼 다섯 편<small>2/5</small></h2><div class="body"><div class="figrow"><figure style="width:852px"><a href="../../assets/figs/ocra_fig1.webp"><img src="../../assets/figs/ocra_fig1.webp" width="471" height="420" alt="OCRA 구조"></a><figcaption>그림 — OCRA 구조 (Fig. 1): 스테레오 깊이로 만든 고도 지도에서 다채널 패치를 잘라, 세 고리 구획과 OCRA(rollout 배분, 상위 K개 subpoint)를 거쳐 TAV-MPC가 속도 명령 (v, ω)를 낸다. 출처: Diaz-Pichardo 등, IROS 2026 원고(RIUMA, CC BY-NC-ND 4.0, 형식만 WebP로 바꿨다)</figcaption></figure><figure style="width:852px"><a href="../../assets/figs/ocra_fig2.webp"><img src="../../assets/figs/ocra_fig2.webp" width="418" height="420" alt="OCRA 한 제어 주기"></a><figcaption>그림 — 한 제어 주기 (Fig. 2 위, 코스 A의 13→14 구간): 검은 칸은 못 봤거나 범위 밖인 칸, 빨간 점은 OCRA의 subpoint, 회색은 뿌린 rollout, 초록은 고른 rollout이다. 못 본 칸에 들어가는 rollout은 검사에서 버려져 실행 후보가 되지 못한다. 출처: 같은 원고(CC BY-NC-ND 4.0)</figcaption></figure></div><p><strong>결과.</strong> 8륜 skid-steer UGV(2.53 × 1.54 m, 스테레오 깊이, ROS 2)로 쟀다. 시험장을 점군으로 다시 만든 Unity 지형의 두 코스(코스마다 10회)와 실제 코스 하나다.
 같은 MPC에서 배분만 균일로 바꾼 판과 비교한다. 칸마다 앞이 OCRA, 뒤가 균일 배분이다.</p><table>
 <thead>
@@ -527,15 +547,15 @@ Luis Miguel Diaz-Pichardo·Anthony Mandow·Ricardo Vázquez-Martín, 말라가 �
 <td>12.7 / 15.4 대 13.5 / 17.2</td>
 </tr>
 </tbody>
-</table></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>22 / 37</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편</aside></section>
+</table></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>23 / 38</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편</aside></section>
 <section class="r content"><div class="kicker">개요 · 학회 수확 (IROS 2026) · 학회 수확 — IROS 2026 (피츠버그)</div><h2 class="ttl">골라 볼 다섯 편<small>3/5</small></h2><div class="body"><ul>
 <li>위반은 충돌이나 운용자 안전 정지가 일어난 횟수다.</li>
 <li>OCRA의 몫은 시뮬 주행 거리 12–16 % 감소, 위반 밀도 20–49 % 감소다. 실제 코스는 짧아서 적은 사건 수로도 위반 밀도가 크게 바뀐다고 저자가 적었다.</li>
 <li>목표 쪽으로 표본을 치우친 Biased-MPPI(같은 지도)는 코스 A에서 18.3분, 451.3 m, 위반 17.73이었다. 코스 B는 10회 모두 완주하지 못했고,
   9회는 첫 오르막 뒤에 아래층으로 떨어졌다. 이 큰 차이는 배분보다 못 본 칸을 버리는 검사에서 온 몫이 크다.</li>
 <li>표에는 평균만 있고 분산이 없다.</li>
-</ul></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>23 / 37</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편</aside></section>
-<section class="r content"><div class="kicker">개요 · 학회 수확 (IROS 2026) · 학회 수확 — IROS 2026 (피츠버그)</div><h2 class="ttl">골라 볼 다섯 편<small>4/5</small></h2><div class="body"><div class="figrow"><figure style="width:1118px"><a href="../../assets/figs/ocra_fig4a.webp"><img src="../../assets/figs/ocra_fig4a.webp" width="1118" height="700" alt="OCRA 코스 A 궤적"></a><figcaption>그림 — 코스 A 궤적 (Fig. 4 위, Unity): 흰색이 OCRA, 빨강이 균일 배분, 노랑이 Biased-MPPI다. 8번 뒤 관측 근거가 약해지는 구간에서 빨강이 흔들리고, 노랑은 크게 돌아간다. 출처: 같은 원고(CC BY-NC-ND 4.0)</figcaption></figure></div></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>24 / 37</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편</aside></section>
+</ul></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>24 / 38</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편</aside></section>
+<section class="r content"><div class="kicker">개요 · 학회 수확 (IROS 2026) · 학회 수확 — IROS 2026 (피츠버그)</div><h2 class="ttl">골라 볼 다섯 편<small>4/5</small></h2><div class="body"><div class="figrow"><figure style="width:1118px"><a href="../../assets/figs/ocra_fig4a.webp"><img src="../../assets/figs/ocra_fig4a.webp" width="1118" height="700" alt="OCRA 코스 A 궤적"></a><figcaption>그림 — 코스 A 궤적 (Fig. 4 위, Unity): 흰색이 OCRA, 빨강이 균일 배분, 노랑이 Biased-MPPI다. 8번 뒤 관측 근거가 약해지는 구간에서 빨강이 흔들리고, 노랑은 크게 돌아간다. 출처: 같은 원고(CC BY-NC-ND 4.0)</figcaption></figure></div></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>25 / 38</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편</aside></section>
 <section class="r content"><div class="kicker">개요 · 학회 수확 (IROS 2026) · 학회 수확 — IROS 2026 (피츠버그)</div><h2 class="ttl">골라 볼 다섯 편<small>5/5</small></h2><div class="body"><p><strong>travplan에 주는 의미.</strong></p><ul>
 <li><strong>설정이 같다.</strong> travplan Controller도 로봇 중심 belief TravMap 위에서 MPPI를 돌리고, 가림(TP-0031)으로 못 본 칸이 생긴다.
   우리는 못 본 칸을 비용으로만 다룬다(미관측 cost 0.5, <code>--unknown-near 1.5</code>, 그림자 상한). OCRA는 같은 정보를 "어디에 표본을 더 쓸지"에도 쓴다.</li>
@@ -546,11 +566,11 @@ Luis Miguel Diaz-Pichardo·Anthony Mandow·Ricardo Vázquez-Martín, 말라가 �
 <li><strong>짝 비교를 짜기 쉽다.</strong> 점수가 같으면 균일 샘플링이므로, 같은 MPPI에서 배분만 바꾼 두 팔이 된다. 혼돈 조건에서는 seed 10 × 오프셋 3의 짝 비교로 잰다.</li>
 <li><strong>먼저 쓸 곳.</strong> TP-0151은 plant 레벨 3 멈춤의 원인 후보로 표본 탐색을 올렸고, 경사로는 설계 한계로 정리했다.
   경사로를 뺀 시간 초과(random_mix 20, bumps_potholes 11)에서 배분이 멈춤을 줄이는지 볼 수 있다.</li>
-</ul></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>25 / 37</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편</aside></section>
+</ul></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>26 / 38</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편</aside></section>
 <section class="r details"><div class="kicker">개요 · 학회 수확 (IROS 2026) · 학회 수확 — IROS 2026 (피츠버그)</div><h2 class="ttl">골라 볼 다섯 편<small>자세히: OCRA의 방법과 수식</small></h2><div class="body"><p><strong>관측.</strong> 관측은 지도 텐서와 목표 인코딩의 쌍 $o_t=(\mathcal L_t, g_t)$다. 지도 텐서는 $\mathcal L_t=[\mathcal E_t,\mathcal S_t,\mathcal Q_t,\mathcal R_t,H_t,M_t]$로,
 차례로 고도, 경사, 턱 높이, 거칠기, 정보 위험, 유효 마스크다. $M_t$는 관측 근거를 문턱으로 자른 0/1 마스크이고, 못 봤거나 범위 밖인 칸은 0이다.
 $H_t$와 관측 근거의 식은 논문에 없다.</p><p><strong>subpoint.</strong> 유효 칸 집합 $\mathcal V$ 위의 masked softmax에서 상위 $K_p$개 칸을 고른다.</p><p class="mathp">$$P(i,j)=\frac{\exp(-\beta J(i,j))}{\sum_{(u,v)\in\mathcal V}\exp(-\beta J(u,v))}$$</p><p><strong>seed 가중치.</strong> seed $i$의 방향 $\theta_i$에 대해 아래와 같다.</p><p class="mathp">$$w_{t,i}=g_{near}\big(s_{near}(\theta_i)\big)\,\big(\epsilon+s_{mid}(\theta_i)\big)^p\,e^{\alpha_{far}(s_{far}(\theta_i)-0.5)}\Big(1+\alpha_b\max_j e^{-\Delta\theta(\theta_i,\theta^{pref}_j)^2/2\sigma_b^2}\Big)$$</p><p>$g_{near}$는 위험하거나 근거가 약한 방향을 거르는 문이다. 마지막 괄호는 subpoint 방향 $\theta^{pref}_j=\operatorname{atan2}(y_j,x_j)$ 가까이의 seed를 키운다.</p><p><strong>배분.</strong> $\pi(i\mid o_t)=\operatorname{softmax}_i(\log w_{t,i})$로 두고 아래처럼 나눈다.</p><p class="mathp">$$n_{t,i}=N_{min}+\big\lfloor (N-KN_{min})\,\pi(i\mid o_t)\big\rfloor$$</p><p>내림으로 남은 rollout은 소수부가 큰 seed에 준다. 그래서 $\sum_i n_{t,i}=N$이 늘 성립한다. 실험값은 $N=192$, $K=24$이고, seed는 $[0,2\pi)$의 균일 섹터다.</p><p><strong>seed별 표본.</strong> 선속도는 $v\sim\mathcal N(v_i^{prior},\sigma_v^2)$다. 각속도는 OU 과정 $\omega_{t+1}=\omega_t+\beta(\omega_i^{prior}-\omega_t)+\sigma_\omega\xi_t$로 시간 상관을 준다.
-prior 값을 어떻게 정하는지는 적혀 있지 않다. 기호 $\beta$를 subpoint의 온도와 OU 계수에 겹쳐 쓴다.</p><p><strong>비용.</strong> $J(\tau)=\sum_t\big(w_g\ell_g+w_u\ell_u+w_\Delta\ell_\Delta+w_{terr}\ell_{terr}\big)+w_T\ell_T$이고, 지형 항은 아래와 같다.</p><p class="mathp">$$\ell_{terr}=w_s\rho_s(\mathcal S)+w_{st}\rho_{st}(\mathcal Q)+w_r\rho_r(\mathcal R)+w_hH_t+w_m(1-M_t)$$</p><p class="more">… 이 토글의 나머지 블록 4개(문단·식·그림)는 대시보드 리서치 탭의 "자세히: OCRA의 방법과 수식" 토글에 있다.</p></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>26 / 37</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편 · 토글 &#x27;자세히: OCRA의 방법과 수식&#x27;</aside></section>
+prior 값을 어떻게 정하는지는 적혀 있지 않다. 기호 $\beta$를 subpoint의 온도와 OU 계수에 겹쳐 쓴다.</p><p><strong>비용.</strong> $J(\tau)=\sum_t\big(w_g\ell_g+w_u\ell_u+w_\Delta\ell_\Delta+w_{terr}\ell_{terr}\big)+w_T\ell_T$이고, 지형 항은 아래와 같다.</p><p class="mathp">$$\ell_{terr}=w_s\rho_s(\mathcal S)+w_{st}\rho_{st}(\mathcal Q)+w_r\rho_r(\mathcal R)+w_hH_t+w_m(1-M_t)$$</p><p class="more">… 이 토글의 나머지 블록 4개(문단·식·그림)는 대시보드 리서치 탭의 "자세히: OCRA의 방법과 수식" 토글에 있다.</p></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>27 / 38</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편 · 토글 &#x27;자세히: OCRA의 방법과 수식&#x27;</aside></section>
 <section class="r content"><div class="kicker">개요 · 학회 수확 (IROS 2026) · 학회 수확 — IROS 2026 (피츠버그)</div><h2 class="ttl">골라 볼 다섯 편<small>1/3</small></h2><div class="body"><h4>MSC — 수동 캐스터가 어긋나는 순간을 아는 두 층 제어(3480)</h4><p><strong>원문.</strong> <em>MSC: Multi-Stage Caster-aware Control Framework with Uncertainty-Aware NMPC and RL-based Execution Layer</em>.
 Jinho Park·Jeongtae Lee·Jeonghyeok Lim(공동 1저자)·Keun Ha Choi·Kyung-Soo Kim, KAIST 기계공학과.
 <a href="https://arxiv.org/abs/2610.16199">arXiv:2610.16199</a>(2026-10-12, CC BY 4.0). 코드와 영상은 없다.</p><p><strong>처음 요약을 고친다.</strong> 2026-09-28에는 제목만 보고 비동축 스워브와 같은 문제라고 적었다. 원문의 로봇은 차동구동 AMR이고, 캐스터는 자유롭게 도는 수동 캐스터 둘이다.
@@ -568,7 +588,7 @@ B2는 같은 상위 층 + concurrent-learning 실행 층이다.</p><ul>
 <li><strong>실기 경로 오차</strong>는 0.199 m(B1)가 0.116 m가 됐다. B2(0.117 m)와는 거의 같다.</li>
 <li><strong>대가가 있다.</strong> 시뮬 평균 토크가 B1의 1.5–2배이고, 실기 평균 전류는 1.2배다.</li>
 <li>상위 층만의 효과를 가르는 분해 실험은 없다. 반복 횟수와 분산도 적혀 있지 않다.</li>
-</ul></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>27 / 37</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편</aside></section>
+</ul></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>28 / 38</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편</aside></section>
 <section class="r content"><div class="kicker">개요 · 학회 수확 (IROS 2026) · 학회 수확 — IROS 2026 (피츠버그)</div><h2 class="ttl">골라 볼 다섯 편<small>2/3</small></h2><div class="body"><p><strong>travplan에 주는 의미.</strong></p><ul>
 <li><strong>오프셋의 방향이 다르다.</strong> MSC의 캐스터는 접지점이 구름 방향으로 떨어진 트레일링 캐스터다(시뮬레이션 문서 S.5.3b의 (i)).
   AntBot의 오프셋 55.5 mm는 바퀴 축 방향이라(같은 절의 (ii)) 옆 방향 구속은 동축 스워브와 같고, 조향하면 타이어가 끌린다.
@@ -580,12 +600,12 @@ B2는 같은 상위 층 + concurrent-learning 실행 층이다.</p><ul>
   답은 다르다. MSC는 하위 학습과 상위의 가중치 조정으로 흡수하고, <code>mppi_plant_lag</code>(TP-0150)는 rollout에 지연을 직접 넣는다. 두 방식을 겨룬 결과는 없다.</li>
 <li><strong>가중치 식은 옮길 수 있다.</strong> 불확실하면 정렬 항을 낮추고 평활 항을 키우는 식은 MPPI <code>CostTerm</code>으로 쓸 수 있다. 불확실성에는 잔차 GP(<code>control/acados_mpc/gp.py</code>)의 분산을 쓸 수 있다.
   다만 NMPC 갈래의 GP 분산 튜브는 측정되는 효과가 없었다(STATE.md). 이 판도 같은 짝 비교로 잰다.</li>
-</ul></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>28 / 37</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편</aside></section>
-<section class="r content"><div class="kicker">개요 · 학회 수확 (IROS 2026) · 학회 수확 — IROS 2026 (피츠버그)</div><h2 class="ttl">골라 볼 다섯 편<small>3/3</small></h2><div class="body"><div class="figrow"><figure style="width:560px"><a href="https://arxiv.org/html/2610.16199v1/image/problem_fig.png"><img src="../../assets/thumbs/44f2c7aceb83.webp" width="416" height="420" alt="MSC가 푸는 문제"></a><figcaption>그림 — MSC가 푸는 문제 (Fig. 1): 위는 리프트형 차동구동 AMR과 수동 캐스터다. 회전 명령을 주면 진행 방향과 캐스터 방향이 어긋나 반력과 반토크가 생긴다. 아래는 실기 궤적(빨강)과 기준(검정)이다. 출처: arXiv:2610.16199</figcaption></figure><figure style="width:560px"><a href="https://arxiv.org/html/2610.16199v1/image/CU_MPC_OPT_result.png"><img src="../../assets/thumbs/aecec7595c56.webp" width="429" height="420" alt="MSC 제자리 회전"></a><figcaption>그림 — 제자리 저속 회전 (Fig. 4): (a) 캐스터 각의 정답(파랑), 기구학 추정(초록), 학습 추정(빨강), 예측 ±1σ(띠)다. 18.5–19.9 s에는 선회 저항 토크로 캐스터가 멈췄다가 갑자기 돈다. 그 순간은 두 추정기 모두 놓친다. (b) 예측 분산이 커지자 정렬 가중치가 내려가고 평활 가중치가 올라간다. 출처: arXiv:2610.16199</figcaption></figure><figure style="width:560px"><a href="https://arxiv.org/html/2610.16199v1/image/framework.png"><img src="../../assets/thumbs/e2d8ec8b54d1.webp" width="560" height="251" alt="MSC 구조"></a><figcaption>그림 — MSC 구조 (Fig. 2): 상위 CU-MPC(iLQR)가 선속도·각속도 기준을 내고, 하위의 GRU가 관측 이력에서 캐스터 상태 추정과 예측 분포를 낸다. Actor가 바퀴 목표 각속도를 내고 PI 제어기가 토크로 바꾼다. 점선은 시뮬에서만 쓰는 정답과 critic이다. 출처: arXiv:2610.16199</figcaption></figure></div></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>29 / 37</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편</aside></section>
+</ul></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>29 / 38</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편</aside></section>
+<section class="r content"><div class="kicker">개요 · 학회 수확 (IROS 2026) · 학회 수확 — IROS 2026 (피츠버그)</div><h2 class="ttl">골라 볼 다섯 편<small>3/3</small></h2><div class="body"><div class="figrow"><figure style="width:560px"><a href="https://arxiv.org/html/2610.16199v1/image/problem_fig.png"><img src="../../assets/thumbs/44f2c7aceb83.webp" width="416" height="420" alt="MSC가 푸는 문제"></a><figcaption>그림 — MSC가 푸는 문제 (Fig. 1): 위는 리프트형 차동구동 AMR과 수동 캐스터다. 회전 명령을 주면 진행 방향과 캐스터 방향이 어긋나 반력과 반토크가 생긴다. 아래는 실기 궤적(빨강)과 기준(검정)이다. 출처: arXiv:2610.16199</figcaption></figure><figure style="width:560px"><a href="https://arxiv.org/html/2610.16199v1/image/CU_MPC_OPT_result.png"><img src="../../assets/thumbs/aecec7595c56.webp" width="429" height="420" alt="MSC 제자리 회전"></a><figcaption>그림 — 제자리 저속 회전 (Fig. 4): (a) 캐스터 각의 정답(파랑), 기구학 추정(초록), 학습 추정(빨강), 예측 ±1σ(띠)다. 18.5–19.9 s에는 선회 저항 토크로 캐스터가 멈췄다가 갑자기 돈다. 그 순간은 두 추정기 모두 놓친다. (b) 예측 분산이 커지자 정렬 가중치가 내려가고 평활 가중치가 올라간다. 출처: arXiv:2610.16199</figcaption></figure><figure style="width:560px"><a href="https://arxiv.org/html/2610.16199v1/image/framework.png"><img src="../../assets/thumbs/e2d8ec8b54d1.webp" width="560" height="251" alt="MSC 구조"></a><figcaption>그림 — MSC 구조 (Fig. 2): 상위 CU-MPC(iLQR)가 선속도·각속도 기준을 내고, 하위의 GRU가 관측 이력에서 캐스터 상태 추정과 예측 분포를 낸다. Actor가 바퀴 목표 각속도를 내고 PI 제어기가 토크로 바꾼다. 점선은 시뮬에서만 쓰는 정답과 critic이다. 출처: arXiv:2610.16199</figcaption></figure></div></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>30 / 38</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편</aside></section>
 <section class="r details"><div class="kicker">개요 · 학회 수확 (IROS 2026) · 학회 수확 — IROS 2026 (피츠버그)</div><h2 class="ttl">골라 볼 다섯 편<small>자세히: MSC의 방법과 수식</small></h2><div class="body"><p><strong>선행 연구의 캐스터 기구학</strong>(Arrizabalaga 등). 트레일을 $l_{tr}$, 캐스터 힌지 위치를 $(\Delta x_{cw},\Delta y_{cw})$, 캐스터 선회각을 $\varphi$라 하자. 접촉점의 속도는 아래와 같다.</p><p class="mathp">$${}^b\mathbf v_C=\begin{bmatrix}v-\omega\Delta y_{cw}+\dot\varphi\sin\varphi\,l_{tr}\\ \omega\Delta x_{cw}-\dot\varphi\cos\varphi\,l_{tr}\end{bmatrix}$$</p><p>수동 캐스터는 옆미끄럼이 없으므로 선회각이 아래 식을 따라 끌려간다.</p><p class="mathp">$$\dot\varphi=-\frac{1}{l_{tr}}\big[(v-\omega\Delta y_{cw})\sin\varphi-\omega\Delta x_{cw}\cos\varphi\big]$$</p><p>정상 상태 각은 $\varphi_{ss}=\operatorname{atan}\frac{\omega\Delta x_{cw}}{v-\omega\Delta y_{cw}}$이고, 해가 π만큼 떨어진 둘이다. MSC는 이 확장 상태와 비용의 기본형을 따른다고 쓰고,
 동역학 식과 트레일 값은 적지 않았다.</p><p><strong>비용.</strong> $J_t=\sum_{k=0}^{N-1}(\ell_{trk}+\ell_{ctrl}+\ell_{cw})+\ell_f$이고, 상태·입력·충돌 회피 제약이 붙는다. $\ell_{cw}$가 이상 정렬과 추정 캐스터 상태의 차다.</p><p><strong>불확실성으로 가중치 바꾸기.</strong> 예측 분산으로 위험값 $\rho_{t+k|t}=\sigma^2_{\varphi,t+k|t}+\eta\,\sigma^2_{\dot\gamma,t+k|t}$를 만들고, $k=1,\dots,\min(N,H_p)$에서 아래처럼 둔다.</p><p class="mathp">$$w_{cw}(t+k)=w^0_{cw}\big[g_{\min}+(1-g_{\min})e^{-\beta\rho_{t+k|t}}\big],\qquad w_{ctrl}(t+k)=w^0_{ctrl}(1+\alpha\rho_{t+k|t})$$</p><p>값은 $g_{\min}=0.15$, $\beta=1.0$, $\alpha=1.4$다. 예측 길이 $H_p=8$이라 63스텝 가운데 앞 8스텝만 바뀐다. 나머지 스텝의 처리는 적혀 있지 않다.</p><p><strong>실행 층.</strong> 관측은 $\mathbf o_t=[\hat{\dot\varphi}_L,\hat{\dot\varphi}_R,v,\omega,u_{L,t-1},u_{R,t-1},v^{ref},\omega^{ref}]$이고, 이력 16개를 stride 2로 뽑는다.
 GRU 잠재 상태는 48차원이다. 예측 헤드는 $p(\mathbf x^{cw}_{t+k}\mid\mathbf z_t)=\mathcal N(\boldsymbol\mu_{t+k},\operatorname{diag}\boldsymbol\sigma^2_{t+k})$를 낸다. 손실은 아래와 같다.</p><p class="mathp">$$\mathcal L=\lVert\hat{\mathbf x}^{cw}_t-\mathbf x^{cw}_t\rVert^2+\lambda_r\lVert\mathbf z_t\rVert_1+\lambda_\pi\mathcal L_\pi+\lambda_V\mathcal L_V+\lambda_{pred}\mathcal L_{NLL}$$</p><p>무작위화 범위는 바퀴 마찰 0.2–0.9, 캐스터 선회 마찰과 감쇠 각각 0–0.1, 구동 관절 감쇠 10–40이다. 보상 함수, 병렬 환경 수, 학습 스텝, 실행 층의 주기는 적혀 있지 않다.</p><p><strong>실험 장비.</strong> Lattepanda Sigma, IMU MTi-630R, 2D LiDAR, ROS 2 Humble·Nav2다. 캐스터 선회축에 엔코더를 달아 정답으로 쓴다.
-캐스터 트레일, 질량, 하중은 적혀 있지 않다.</p><p class="more">… 이 토글의 나머지 블록 2개(문단·식·그림)는 대시보드 리서치 탭의 "자세히: MSC의 방법과 수식" 토글에 있다.</p></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>30 / 37</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편 · 토글 &#x27;자세히: MSC의 방법과 수식&#x27;</aside></section>
+캐스터 트레일, 질량, 하중은 적혀 있지 않다.</p><p class="more">… 이 토글의 나머지 블록 2개(문단·식·그림)는 대시보드 리서치 탭의 "자세히: MSC의 방법과 수식" 토글에 있다.</p></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>31 / 38</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편 · 토글 &#x27;자세히: MSC의 방법과 수식&#x27;</aside></section>
 <section class="r content"><div class="kicker">개요 · 학회 수확 (IROS 2026) · 학회 수확 — IROS 2026 (피츠버그)</div><h2 class="ttl">골라 볼 다섯 편<small>1/5</small></h2><div class="body"><h4>Streaming Gaussian Encoding(SGE)과 OccTrack360 — 가려진 곳을 기억하는 점유 추적, 못 본 칸을 빼고 매기는 규약(2962, 1298)</h4><p><strong>원문.</strong></p><ul>
 <li><strong>SGE.</strong> <em>Streaming Gaussian Encoding for 4D Panoptic Occupancy Tracking</em>. Maximilian Luz(Freiburg)·Thomas Nürnberg(Bosch Research)·Yakov Miron(Bosch Research, Haifa)·Abhinav Valada(Freiburg).
   <a href="https://arxiv.org/abs/2606.30754">arXiv:2606.30754</a>(2026-06), <a href="https://sge.cs.uni-freiburg.de">프로젝트</a>. 코드는 <code>robot-learning-freiburg/LaGS</code> 저장소의 <code>sge/v1.0</code> 태그다(AGPL-3.0, 가중치는 CC BY-NC-SA 4.0).
@@ -600,8 +620,8 @@ OccTrack360은 어안 카메라용 벤치마크를 내고, 학습과 평가를 �
 <li>가우시안마다 신뢰도를 쌓는다. 시야 안에 있고, 가깝고, 불투명할수록 크게 쌓인다. 한 번도 보지 못한 곳의 가우시안은 가지치기되고, 예전에 잘 봤다가 지금 가려진 구조는 남는다.
   동적 클래스는 매 프레임 신뢰도에 0.9를 곱해 깎는다.</li>
 <li>불투명도는 LiDAR 깊이로 학습한다. 그래서 불투명도가 가시성의 대리값이 되고, 가리는 차 뒤에 "그림자"가 생긴다. 입력은 카메라뿐이고 LiDAR는 이 감독에만 쓴다.</li>
-</ul></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>31 / 37</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편</aside></section>
-<section class="r content"><div class="kicker">개요 · 학회 수확 (IROS 2026) · 학회 수확 — IROS 2026 (피츠버그)</div><h2 class="ttl">골라 볼 다섯 편<small>2/5</small></h2><div class="body"><div class="figrow"><figure style="width:1115px"><a href="https://arxiv.org/html/2606.30754v1/figures/teaser/teaser.jpg"><img src="../../assets/thumbs/e4a90d930ee7.webp" width="1115" height="700" alt="SGE 장면 상태"></a><figcaption>그림 — SGE의 장면 상태 (Fig. 1): latent 가우시안을 PCA 색의 타원체로 그렸다. 어두운 곳은 불투명도가 낮은 곳(가시성 대리값)이라 가리는 차 뒤에 그림자가 생긴다. 한 번도 못 본 곳(왼쪽 위)은 신뢰도 거르기로 비어 있다. 궤적의 굵기가 신뢰도이고, 검은 차가 자차다. 출처: arXiv:2606.30754</figcaption></figure></div></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>32 / 37</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편</aside></section>
+</ul></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>32 / 38</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편</aside></section>
+<section class="r content"><div class="kicker">개요 · 학회 수확 (IROS 2026) · 학회 수확 — IROS 2026 (피츠버그)</div><h2 class="ttl">골라 볼 다섯 편<small>2/5</small></h2><div class="body"><div class="figrow"><figure style="width:1115px"><a href="https://arxiv.org/html/2606.30754v1/figures/teaser/teaser.jpg"><img src="../../assets/thumbs/e4a90d930ee7.webp" width="1115" height="700" alt="SGE 장면 상태"></a><figcaption>그림 — SGE의 장면 상태 (Fig. 1): latent 가우시안을 PCA 색의 타원체로 그렸다. 어두운 곳은 불투명도가 낮은 곳(가시성 대리값)이라 가리는 차 뒤에 그림자가 생긴다. 한 번도 못 본 곳(왼쪽 위)은 신뢰도 거르기로 비어 있다. 궤적의 굵기가 신뢰도이고, 검은 차가 자차다. 출처: arXiv:2606.30754</figcaption></figure></div></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>33 / 38</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편</aside></section>
 <section class="r content"><div class="kicker">개요 · 학회 수확 (IROS 2026) · 학회 수확 — IROS 2026 (피츠버그)</div><h2 class="ttl">골라 볼 다섯 편<small>3/5</small></h2><div class="body"><p><strong>동작 방식 — OccTrack360.</strong></p><ul>
 <li>KITTI-360의 측면 어안 2대(전방 핀홀 2대 포함)로 만든 실세계 4D 점유 추적 벤치마크다. 시퀀스는 174–2234프레임이고, 건물·기둥 같은 정적 요소에도 개체 번호를 준다.</li>
 <li>라벨은 시간에 걸쳐 쌓아 가려진 부분까지 채운다. 그 위에 가림 마스크와 어안 시야 마스크를 AND로 씌워, 관측 가능한 칸만 학습 손실과 평가에 넣는다.</li>
@@ -621,14 +641,14 @@ OccTrack360은 어안 카메라용 벤치마크를 내고, 학습과 평가를 �
 <li><strong>평가 규약은 우리가 한 걸음 더 간다.</strong> 두 논문은 관측 가능한 칸만 채점하고, 위험 클래스의 재현율 같은 안전 지표가 없다.
   travplan의 지도 평가(TP-0053, <code>eval/map_quality.py</code>)도 cost 오차는 관측 칸에서만 잰다. 그러나 치명 재현율은 못 본 치명 칸도 놓친 것으로 센다.
   못 본 칸을 평가에서 빼면 지도가 좋아 보이고, 그 칸이 위험했다는 사실은 폐루프의 치명 실패로만 드러난다.</li>
-</ul></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>33 / 37</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편</aside></section>
-<section class="r content"><div class="kicker">개요 · 학회 수확 (IROS 2026) · 학회 수확 — IROS 2026 (피츠버그)</div><h2 class="ttl">골라 볼 다섯 편<small>4/5</small></h2><div class="body"><div class="figrow"><figure style="width:560px"><a href="https://arxiv.org/html/2606.30754v1/figures/qualitative/nusc_scene_13_frame_15_lags.jpg"><img src="../../assets/thumbs/0b15953e8420.webp" width="420" height="420" alt="LaGS 예측"></a><figcaption>그림 — LaGS의 예측 (Fig. 3, Occ3D-nuScenes): 갈라지는 옆길이 가려지자 길의 범위와 교통섬을 잃는다. 출처: arXiv:2606.30754</figcaption></figure><figure style="width:560px"><a href="https://arxiv.org/html/2606.30754v1/figures/qualitative/nusc_scene_13_frame_15_sge.jpg"><img src="../../assets/thumbs/1ac9ad055dbd.webp" width="420" height="420" alt="SGE 예측"></a><figcaption>그림 — SGE의 예측 (Fig. 3, 같은 장면): 가려진 뒤에도 옆길과 교통섬의 형상 대부분을 지킨다. 출처: arXiv:2606.30754</figcaption></figure><figure style="width:560px"><a href="https://arxiv.org/html/2603.08521v3/benchmark_pipe.png"><img src="../../assets/thumbs/cbe341e9dd90.webp" width="560" height="160" alt="OccTrack360 라벨 만들기"></a><figcaption>그림 — OccTrack360 라벨 만들기 (Fig. 3): 카메라 내·외부 파라미터, 의미 점유, 3D 박스에서 4D 라벨을 만들고(전방 라벨링, 후방 완성), 시야 마스크와 가림 마스크를 AND로 묶어 걸러 학습·추론용 &quot;보이는 4D 점유&quot;를 얻는다. 출처: arXiv:2603.08521</figcaption></figure></div></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>34 / 37</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편</aside></section>
-<section class="r content"><div class="kicker">개요 · 학회 수확 (IROS 2026) · 학회 수확 — IROS 2026 (피츠버그)</div><h2 class="ttl">골라 볼 다섯 편<small>5/5</small></h2><div class="body"><div class="figrow"><figure style="width:1224px"><a href="https://arxiv.org/html/2603.08521v3/Limitation_of_the_occlusion_mask.png"><img src="../../assets/thumbs/9c940fe410dc.webp" width="1224" height="470" alt="OccTrack360 가림 마스크의 한계"></a><figcaption>그림 — 가림 마스크의 한계 (Fig. 5, Occ3D-Waymo): 왼쪽이 정답, 오른쪽이 마스크 없이 본 예측이다. 학습 때 감독에서 빠진 위쪽 방향에 점유 칸이 떠 있다. 출처: arXiv:2603.08521</figcaption></figure></div></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>35 / 37</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편</aside></section>
+</ul></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>34 / 38</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편</aside></section>
+<section class="r content"><div class="kicker">개요 · 학회 수확 (IROS 2026) · 학회 수확 — IROS 2026 (피츠버그)</div><h2 class="ttl">골라 볼 다섯 편<small>4/5</small></h2><div class="body"><div class="figrow"><figure style="width:560px"><a href="https://arxiv.org/html/2606.30754v1/figures/qualitative/nusc_scene_13_frame_15_lags.jpg"><img src="../../assets/thumbs/0b15953e8420.webp" width="420" height="420" alt="LaGS 예측"></a><figcaption>그림 — LaGS의 예측 (Fig. 3, Occ3D-nuScenes): 갈라지는 옆길이 가려지자 길의 범위와 교통섬을 잃는다. 출처: arXiv:2606.30754</figcaption></figure><figure style="width:560px"><a href="https://arxiv.org/html/2606.30754v1/figures/qualitative/nusc_scene_13_frame_15_sge.jpg"><img src="../../assets/thumbs/1ac9ad055dbd.webp" width="420" height="420" alt="SGE 예측"></a><figcaption>그림 — SGE의 예측 (Fig. 3, 같은 장면): 가려진 뒤에도 옆길과 교통섬의 형상 대부분을 지킨다. 출처: arXiv:2606.30754</figcaption></figure><figure style="width:560px"><a href="https://arxiv.org/html/2603.08521v3/benchmark_pipe.png"><img src="../../assets/thumbs/cbe341e9dd90.webp" width="560" height="160" alt="OccTrack360 라벨 만들기"></a><figcaption>그림 — OccTrack360 라벨 만들기 (Fig. 3): 카메라 내·외부 파라미터, 의미 점유, 3D 박스에서 4D 라벨을 만들고(전방 라벨링, 후방 완성), 시야 마스크와 가림 마스크를 AND로 묶어 걸러 학습·추론용 &quot;보이는 4D 점유&quot;를 얻는다. 출처: arXiv:2603.08521</figcaption></figure></div></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>35 / 38</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편</aside></section>
+<section class="r content"><div class="kicker">개요 · 학회 수확 (IROS 2026) · 학회 수확 — IROS 2026 (피츠버그)</div><h2 class="ttl">골라 볼 다섯 편<small>5/5</small></h2><div class="body"><div class="figrow"><figure style="width:1224px"><a href="https://arxiv.org/html/2603.08521v3/Limitation_of_the_occlusion_mask.png"><img src="../../assets/thumbs/9c940fe410dc.webp" width="1224" height="470" alt="OccTrack360 가림 마스크의 한계"></a><figcaption>그림 — 가림 마스크의 한계 (Fig. 5, Occ3D-Waymo): 왼쪽이 정답, 오른쪽이 마스크 없이 본 예측이다. 학습 때 감독에서 빠진 위쪽 방향에 점유 칸이 떠 있다. 출처: arXiv:2603.08521</figcaption></figure></div></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>36 / 38</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편</aside></section>
 <section class="r details"><div class="kicker">개요 · 학회 수확 (IROS 2026) · 학회 수확 — IROS 2026 (피츠버그)</div><h2 class="ttl">골라 볼 다섯 편<small>자세히: SGE와 OccTrack360의 방법과 수식</small></h2><div class="body"><p><strong>SGE의 상태.</strong> latent query $q_k$와 참조 위치 $p_k$를 $K=8192$개 들고 간다(새 query는 최소 2,048개). 각 query는 중심 $\mu_k=p_k+\delta_k$, 공분산, 불투명도 $\alpha_k$,
 임베딩, 클래스 logit을 가진 가우시안으로 풀린다. 자차 운동 $T$만큼 $p_k^{(t)}=T\mu_k^{(t-1)}$로 옮기고, 특징은 이동량과 회전각으로 만든 FiLM으로 고친다.</p><p><strong>신뢰도.</strong> 관측 점수와 누적은 아래와 같다($\lambda=0.8$, $\lambda_{dist}=20$ m).</p><p class="mathp">$$o_k=\alpha_k\,d_k\,\mathbf 1_{FoV}(\mu_k),\quad d_k=\frac{1}{1+\lVert\mu_k\rVert/\lambda_{dist}},\qquad \rho_k^{(t)}=\rho_k^{(t-1)}+\lambda\,o_k^{(t)}\big(1-\rho_k^{(t-1)}\big)$$</p><p>동적 클래스로 예측된 가우시안은 매 프레임 $\rho$에 0.9를 곱한다. 자차 운동 보상은 물체의 움직임을 맞추지 못하기 때문이다.
 $\rho$나 $\alpha$가 0.01 이상이고 관심 영역 안인 query를 남긴다. 넘치면 $\rho$와 $\alpha$의 순위 중 큰 쪽에 비례해 뽑는다. 빈 자리는 현재 프레임 특징의 크기에 비례한 위치로 새로 채운다.
 분해 실험에서 신뢰도 없이 불투명도만으로 가지치면 성능이 떨어졌다. 가장 큰 기여는 자차 운동 보상이었다(STQ1 35.8 → 37.9).</p><p><strong>깊이 감독.</strong> 가우시안을 영상에 alpha 합성해 깊이를 그리고, 희소 LiDAR 깊이와 L1로 맞춘다. $\Omega$는 LiDAR가 맞은 픽셀이다.</p><p class="mathp">$$\mathcal L_{depth}=\frac{1}{|\Omega|}\sum_{u\in\Omega}\big|\hat D(u)-D(u)\big|$$</p><p>그래서 가려진 곳의 불투명도가 낮아진다. 출력 격자는 ±40 m, 0.4 m 칸이다. 학습은 8프레임 시퀀스로 하고, 앞 프레임은 손실 없이 상태만 채운다(warmup).</p><p><strong>SGE의 평가 범위.</strong> 학습 손실은 Occ3D의 카메라 마스크 안에서만 계산하고, 지표도 기본 설정으로 카메라에 보인 칸만 채점한다(코드 <code>sge/v1.0</code> 설정).
-그래서 핵심 장점인 "가려진 정적 구조 유지"는 지금 가려진 칸이 채점에서 빠져, 주로 정성 그림으로 보인다.</p><p><strong>OccTrack360 라벨.</strong> 범위는 ±25.6 m, 높이 −2.0–4.4 m, 0.2 m 칸, 2 Hz, 18 클래스다. 실험은 GPU 메모리 때문에 ±12.8 m로 줄였다.</p><p class="more">… 이 토글의 나머지 블록 3개(문단·식·그림)는 대시보드 리서치 탭의 "자세히: SGE와 OccTrack360의 방법과 수식" 토글에 있다.</p></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>36 / 37</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편 · 토글 &#x27;자세히: SGE와 OccTrack360의 방법과 수식&#x27;</aside></section>
+그래서 핵심 장점인 "가려진 정적 구조 유지"는 지금 가려진 칸이 채점에서 빠져, 주로 정성 그림으로 보인다.</p><p><strong>OccTrack360 라벨.</strong> 범위는 ±25.6 m, 높이 −2.0–4.4 m, 0.2 m 칸, 2 Hz, 18 클래스다. 실험은 GPU 메모리 때문에 ±12.8 m로 줄였다.</p><p class="more">… 이 토글의 나머지 블록 3개(문단·식·그림)는 대시보드 리서치 탭의 "자세히: SGE와 OccTrack360의 방법과 수식" 토글에 있다.</p></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>37 / 38</span></div><aside>docs/research-overview.md · 골라 볼 다섯 편 · 토글 &#x27;자세히: SGE와 OccTrack360의 방법과 수식&#x27;</aside></section>
 <section class="r content"><div class="kicker">개요 · 학회 수확 (IROS 2026) · 학회 수확 — IROS 2026 (피츠버그)</div><h2 class="ttl">다섯 편을 합쳐 보면</h2><div class="body"><p><mark>험지 연구는 "보수적으로 막는 것"에서 "실제로 넘을 수 있는지 데이터로 가르는 것"으로 옮겨 가고 있다.</mark> TNT와 POLT가 그 방향이다.
 다만 원문을 읽어 보면 근거는 아직 약하다. TNT는 한 코스 10회이고, POLT는 본문이 없다. travplan은 보수적인 최댓값 규칙을 쓴다.
 안전 쪽으로는 옳지만, 0.07 m 턱을 막는 오탐(TP-0048, TP-0067)의 뿌리이기도 하다. 두 흐름을 어떻게 화해시킬지가 TP-0057의 결정 사항이었다.
@@ -668,7 +688,7 @@ $\rho$나 $\alpha$가 0.01 이상이고 관심 영역 안인 query를 남긴다.
 <td>잔차 GP 분산으로, plant 조건의 짝 비교</td>
 </tr>
 </tbody>
-</table></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>37 / 37</span></div><aside>docs/research-overview.md · 다섯 편을 합쳐 보면</aside></section>
+</table></div><div class="foot" data-foot><span>travplan 리서치 · 개요 (docs/research-overview.md)</span><span>38 / 38</span></div><aside>docs/research-overview.md · 다섯 편을 합쳐 보면</aside></section>
 <script>
 // ?layout=1: 장마다 요소 위치를 적는다. PPTX가 이 좌표에 글상자·표·그림을 놓는다.
 (function () {
@@ -721,13 +741,45 @@ $\rho$나 $\alpha$가 0.01 이상이고 관심 영역 안인 query를 남긴다.
   var want = parseInt(location.hash.slice(1), 10) - 1;
   if (isNaN(want)) want = 0;
   var i = 0;
+  function scaleNow() {
+    var st = document.getElementById('stage');
+    return Math.min(st.clientWidth / 1920, st.clientHeight / 1080);
+  }
   function fit() {
     if (shot) return;
-    var st = document.getElementById('stage');
-    var s = Math.min(st.clientWidth / 1920, st.clientHeight / 1080);
-    frame.style.transform = 'scale(' + s + ')';
+    frame.style.transform = 'scale(' + scaleNow() + ')';
   }
+  // ▶ 영상(figure.video): 썸네일 a.yt를 누르면 그 자리에 YouTube(nocookie) iframe을 넣고, 장을 넘기면 썸네일로 되돌린다.
+  // 캡처·검사(?shot, ?check)에서는 누르지 않으므로 썸네일만 찍힌다. PPTX는 그림에 하이퍼링크를 단다.
+  function ytId(href) {
+    var m = /[?&]v=([\w-]{11})/.exec(href) || /youtu\.be\/([\w-]{11})/.exec(href);
+    return m ? m[1] : null;
+  }
+  function stopVideos() {
+    Array.prototype.forEach.call(frame.querySelectorAll('figure.video iframe'), function (f) { f.remove(); });
+    Array.prototype.forEach.call(frame.querySelectorAll('figure.video a.yt.off'), function (a) { a.classList.remove('off'); });
+  }
+  // 장을 크게 줄여 보여 주는 작은 화면(폰 등, 배율 0.45 미만)에서는 줄어든 플레이어의 단추가 너무 작다. 그때는 YouTube를 새 탭으로 연다.
+  var SMALL = 0.45;
+  frame.addEventListener('click', function (e) {
+    var a = e.target.closest ? e.target.closest('figure.video a.yt') : null;
+    if (!a || shot) return;
+    var id = ytId(a.href), img = a.querySelector('img');
+    if (!id || !img) return;
+    e.preventDefault();
+    // 'noopener'를 주면 열려도 null이 돌아와 막힘과 구분되지 않는다. 그래서 열린 창의 opener를 직접 끊는다. 막히면 그 자리에서 재생한다.
+    if (scaleNow() < SMALL) {
+      var w = window.open(a.href, '_blank');
+      if (w) { try { w.opener = null; } catch (err) {} return; }
+    }
+    var f = document.createElement('iframe');
+    f.width = img.clientWidth; f.height = img.clientHeight;
+    f.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0';
+    f.allow = 'autoplay; fullscreen; picture-in-picture'; f.allowFullscreen = true; f.title = img.alt || 'YouTube';
+    a.classList.add('off'); a.parentNode.insertBefore(f, a);
+  });
   function show(n) {
+    stopVideos();
     i = Math.max(0, Math.min(slides.length - 1, n));
     slides.forEach(function (el, k) { el.classList.toggle('on', k === i); });
     document.getElementById('count').textContent = (i + 1) + ' / ' + slides.length;
@@ -745,10 +797,15 @@ $\rho$나 $\alpha$가 0.01 이상이고 관심 영역 안인 query를 남긴다.
   window.withAllFonts = withAllFonts;
   // 넘침 검사: 본문 요소가 장 밖으로 나가거나 각주 띠를 덮으면 적는다.
   function check() {
-    var bad = [];
+    var bad = [], yt = [];
     slides.forEach(function (sec, k) {
       show(k);
       var box = sec.getBoundingClientRect();
+      // 영상 썸네일(img)의 자리. 캡처 PPTX(make_pptx)가 그 위에 보이지 않는 하이퍼링크 상자를 놓는다.
+      Array.prototype.forEach.call(sec.querySelectorAll('figure.video a.yt'), function (a) {
+        var r = (a.querySelector('img') || a).getBoundingClientRect();
+        yt.push({ slide: k + 1, href: a.href, r: [r.left - box.left, r.top - box.top, r.width, r.height] });
+      });
       Array.prototype.forEach.call(sec.querySelectorAll('.katex-error'), function (el) {
         bad.push({ slide: k + 1, id: sec.id, tag: 'TeX', text: (el.getAttribute('title') || el.textContent).slice(0, 60), over: 0 });
       });
@@ -757,7 +814,7 @@ $\rho$나 $\alpha$가 0.01 이상이고 관심 영역 안인 query를 남긴다.
       });
       var foot = sec.querySelector('[data-foot]');
       var limit = foot ? foot.getBoundingClientRect().top - 4 : box.bottom - 24;
-      Array.prototype.forEach.call(sec.querySelectorAll('p, h1, h2, h3, img, td, th, li, .katex-display, [data-box]'), function (el) {
+      Array.prototype.forEach.call(sec.querySelectorAll('p, h1, h2, h3, img, figcaption, td, th, li, .katex-display, [data-box]'), function (el) {
         if (foot && foot.contains(el)) return;
         if (el.closest('aside')) return;
         var r = el.getBoundingClientRect();
@@ -768,7 +825,7 @@ $\rho$나 $\alpha$가 0.01 이상이고 관심 영역 안인 query를 남긴다.
       });
     });
     var rep = document.getElementById('report');
-    rep.textContent = JSON.stringify(bad);
+    rep.textContent = JSON.stringify({ bad: bad, yt: yt });
     rep.setAttribute('data-done', '1');
   }
   function start() {
@@ -800,6 +857,28 @@ $\rho$나 $\alpha$가 0.01 이상이고 관심 영역 안인 query를 남긴다.
     else if (e.key === 'End') show(slides.length - 1);
     else if (e.key === 'n' || e.key === 'N') notes.classList.toggle('show');
     else if (e.key === 'f' || e.key === 'F') document.getElementById('fs').click();
+  });
+  // 재생 중인 영상 안을 누르면(정지, 되감기 등) 키보드 포커스가 YouTube iframe으로 넘어가 ←/→와 발표용 클리커가 먹지 않는다.
+  // 그때 포커스를 곧바로 장으로 되돌린다. 누른 동작은 영상에 그대로 전달되고, 그 뒤의 키는 Space까지 장을 넘긴다.
+  // 포커스를 영상에 두는 때는 둘이다. Tab으로 플레이어에 들어간 때와 YouTube 전체 화면일 때다. 전체 화면이 끝나면 장으로 되돌린다.
+  // Chrome은 전체 화면 요소 밖으로 포커스를 옮기지 않지만, 옮기는 브라우저를 위해 전체 화면 iframe은 되돌리지 않는다.
+  // 전체 화면 API는 F 키처럼 접두어 없는 것만 쓴다(Safari 16.4 이상).
+  var stage = document.getElementById('stage'), lastTab = -1e9, fsVideo = null;
+  stage.tabIndex = -1;
+  function isVideo(el) { return !!el && el.tagName === 'IFRAME' && !!el.closest('figure.video'); }
+  document.addEventListener('keydown', function (e) { if (e.key === 'Tab') lastTab = performance.now(); }, true);
+  window.addEventListener('blur', function () {
+    // Tab으로 들어갈 때 blur는 Tab 뒤 25 ms 안에 온다(CPU 20배 감속에서 잼). 150 ms로 좁혀 Tab 직후의 클릭은 되돌린다.
+    if (shot || performance.now() - lastTab < 150) return;
+    setTimeout(function () {
+      var el = document.activeElement;
+      if (isVideo(el) && el !== document.fullscreenElement) stage.focus({ preventScroll: true });
+    }, 0);
+  });
+  document.addEventListener('fullscreenchange', function () {
+    var f = document.fullscreenElement;
+    if (isVideo(f)) { fsVideo = f; f.focus(); }
+    else if (fsVideo) { fsVideo = null; stage.focus({ preventScroll: true }); }
   });
   var x0 = null;
   document.getElementById('stage').addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });

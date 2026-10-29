@@ -349,7 +349,7 @@ arXiv가 없어 DOI로 링크했다.
 | Can Vision Foundation Models Navigate? | 2026.03 | 시각 내비 기반 모델 다섯 개의 실제 환경 평가, 잦은 충돌 | B.6b | [논문](https://arxiv.org/abs/2603.25937) |
 | InternNav | GitHub | 내비 기반 모델을 만드는 공개 플랫폼 | B.0 | [코드](https://github.com/InternRobotics/InternNav) |
 | Diffuser | 2022.05 · ICML 2022 | 궤적 전체를 확산으로 생성하는 계획 | B.8.0 | [논문](https://arxiv.org/abs/2205.09991) · [코드](https://github.com/jannerm/diffuser) |
-| Diffusion Policy | 2023.03 · RSS 2023 | 관측 조건 행동 열 확산, receding horizon | B.8.0 | [논문](https://arxiv.org/abs/2303.04137) · [코드](https://github.com/real-stanford/diffusion_policy) |
+| Diffusion Policy | 2023.03 · RSS 2023 | 관측 조건 행동 열 확산, receding horizon | B.8.0, I.18 | [논문](https://arxiv.org/abs/2303.04137) · [코드](https://github.com/real-stanford/diffusion_policy) |
 | Diffusion ReRoll | 2026.07 · CoRL 2026 | 다듬던 구간 일부를 다시 잡음으로 되돌려 앞뒤가 서로 고치는 확산 샘플러. LIBERO-10 Diffusion Policy 대비 상대 +56.5 %, Jackal 시각 내비 | B.8.0 | [논문](https://arxiv.org/abs/2607.19919) · [프로젝트](https://seonsoo-p1.github.io/DiffusionReRoll/) |
 | MPD | 2023.08 | 확산 prior와 비용 likelihood의 사후 분포 샘플 | B.8.0 | [논문](https://arxiv.org/abs/2308.01557) · [코드](https://github.com/joaoamcarvalho/mpd-public) |
 | GoalFlow | 2025.03 · CVPR 2025 | 목표점 선택 + flow matching 한 스텝, NAVSIM PDMS 90.3 | B.8.0 | [논문](https://arxiv.org/abs/2503.05689) · [코드](https://github.com/YvanYin/GoalFlow) |
@@ -636,7 +636,7 @@ E.1(MPPI 계보), E.2(학습 동역학·적응 마일스톤), C.4(안전 필터 
 | NVIDIA 끝에서 끝 주행 | 2016.04 | 카메라 영상에서 조향을 행동 복제. 좌우 카메라로 복구 자료를 만든다 | R.2 | [논문](https://arxiv.org/abs/1604.07316) |
 | VIME | 2016.05 · NeurIPS 2016 | 베이즈 동역학 모델의 정보 이득을 탐색 보너스로 | R.11 | [논문](https://arxiv.org/abs/1605.09674) |
 | 의사 횟수 | 2016.06 · NeurIPS 2016 | 밀도 모델로 방문 횟수를 추정해 탐색 보너스로 | R.11 | [논문](https://arxiv.org/abs/1606.01868) |
-| GAIL | 2016.06 · NeurIPS 2016 | 판별기를 보상으로 쓰는 적대적 모방 | R.17 | [논문](https://arxiv.org/abs/1606.03476) |
+| GAIL | 2016.06 · NeurIPS 2016 | 판별기를 보상으로 쓰는 적대적 모방 | R.17, I.15, I.16, I.17, I.18 | [논문](https://arxiv.org/abs/1606.03476) |
 | 후속 특징 | 2016.06 · NeurIPS 2017 | 특징의 할인 누적으로 새 보상의 Q를 곧바로 얻고, 여러 정책 가운데 상태마다 고른다 | R.15 | [논문](https://arxiv.org/abs/1606.05312) |
 | Watch This | 2016.07 | 사람 주행 시연으로 도시 경로 계획의 비용 함수를 학습 | R.17 | [논문](https://arxiv.org/abs/1607.02329) |
 | Option-Critic | 2016.09 · AAAI 2017 | 옵션과 종료 조건을 정책 기울기로 끝에서 끝 학습 | R.15 | [논문](https://arxiv.org/abs/1609.05140) |
@@ -650,10 +650,10 @@ E.1(MPPI 계보), E.2(학습 동역학·적응 마일스톤), C.4(안전 필터 
 | EX2 | 2017.03 · NeurIPS 2017 | 새 상태를 지난 상태와 가리는 분류기로 새로움을 잰다 | R.11 | [논문](https://arxiv.org/abs/1703.01260) |
 | MAML | 2017.03 · ICML 2017 | 기울기 몇 번으로 적응하는 초기값을 메타 학습 | R.15 | [논문](https://arxiv.org/abs/1703.03400) |
 | ICM(호기심) | 2017.05 · ICML 2017 | 학습한 특징 공간에서 다음 상태 예측 오차를 보상으로 | R.11 | [논문](https://arxiv.org/abs/1705.05363) |
-| PPO | 2017.07 | 비율을 자르는 정책 기울기. 보행·조작·언어 모델의 표준 | R.5 | [논문](https://arxiv.org/abs/1707.06347) |
+| PPO | 2017.07 | 비율을 자르는 정책 기울기. 보행·조작·언어 모델의 표준 | R.5, I.19 | [논문](https://arxiv.org/abs/1707.06347) |
 | HER | 2017.07 · NeurIPS 2017 | 실패 궤적을 실제로 간 곳을 목표로 다시 라벨링 | R.15 | [논문](https://arxiv.org/abs/1707.01495) |
 | GCG | 2017.09 · ICRA 2018 | 영상과 행동열로 충돌 같은 사건을 예측하는 계산 그래프. RC카가 스스로 배운다 | R.9 | [논문](https://arxiv.org/abs/1709.10489) |
-| SAC | 2018.01 · ICML 2018 | 최대 엔트로피 off-policy actor-critic | R.8 | [논문](https://arxiv.org/abs/1801.01290) |
+| SAC | 2018.01 · ICML 2018 | 최대 엔트로피 off-policy actor-critic | R.8, I.19 | [논문](https://arxiv.org/abs/1801.01290) |
 | DIAYN | 2018.02 · ICLR 2019 | 보상 없이 서로 구별되는 기술을 배운다 | R.11 | [논문](https://arxiv.org/abs/1802.06070) |
 | TD3 | 2018.02 · ICML 2018 | 두 critic의 작은 값과 지연 갱신으로 과대평가를 줄인다 | R.6 | [논문](https://arxiv.org/abs/1802.09477) |
 | IMPALA | 2018.02 · ICML 2018 | 행위자와 학습자를 나누고 V-trace로 정책 지연을 보정 | R.15 | [논문](https://arxiv.org/abs/1802.01561) |
@@ -677,7 +677,7 @@ E.1(MPPI 계보), E.2(학습 동역학·적응 마일스톤), C.4(안전 필터 
 | 상태 주변 분포 맞추기 | 2019.06 | 정책의 상태 분포를 목표 분포에 맞추는 탐색 | R.11 | [논문](https://arxiv.org/abs/1906.05274) |
 | 시연과 선호로 보상 학습 | 2019.06 · RSS 2019 | 시연으로 보상의 사전분포를 잡고 선호 질문으로 좁힌다 | R.12 | [논문](https://arxiv.org/abs/1906.08928) |
 | PDDM | 2019.09 · CoRL 2019 | 앙상블 모델과 보상 가중 MPC로 손 조작 | R.9 | [논문](https://arxiv.org/abs/1909.11652) |
-| AWR | 2019.10 | 이점의 지수로 가중한 회귀. TP-0066의 갱신 | R.10 | [논문](https://arxiv.org/abs/1910.00177) |
+| AWR | 2019.10 | 이점의 지수로 가중한 회귀. TP-0066의 갱신. MimicKit에 PPO 대신 쓰는 판이 있다 | R.10, I.14, I.15, I.19 | [논문](https://arxiv.org/abs/1910.00177) · [프로젝트](https://xbpeng.github.io/projects/AWR/) · [코드](https://github.com/xbpeng/awr) |
 | MuZero | 2019.11 · Nature 2020 | 학습한 잠재 모델 안의 MCTS | R.18 | [논문](https://arxiv.org/abs/1911.08265) |
 | 목표 조건 정책으로 계획 | 2019.11 · NeurIPS 2019 | 목표 조건 가치로 중간 목표를 골라 계획 | R.15 | [논문](https://arxiv.org/abs/1911.08453) |
 | BRAC | 2019.11 | 보상이나 가치에 행동 정책과의 발산을 벌점으로 넣는다 | R.10 | [논문](https://arxiv.org/abs/1911.11361) |
@@ -769,8 +769,8 @@ flow matching 원논문·Flow Matching Guide·Diffusion Policy·π0·OpenVLA(D.5
 | Kaplan 규모의 법칙 | 2020.01 | 손실이 크기·자료·계산의 거듭제곱 법칙을 따른다 | L.16 | [논문](https://arxiv.org/abs/2001.08361) |
 | SimCLR | 2020.02 · ICML 2020 | 두 증강을 가깝게 하는 대조 학습 | L.14 | [논문](https://arxiv.org/abs/2002.05709) |
 | GPT-3 | 2020.05 · NeurIPS 2020 | 크기를 키워 생긴 몇 예시 학습 | L.13 | [논문](https://arxiv.org/abs/2005.14165) |
-| DDPM | 2020.06 · NeurIPS 2020 | 잡음 예측 제곱 오차로 학습하는 diffusion | L.10, 0.5 | [논문](https://arxiv.org/abs/2006.11239) |
-| DDIM | 2020.10 · ICLR 2021 | 학습은 그대로, 결정적 샘플러로 걸음을 줄인다 | L.10 | [논문](https://arxiv.org/abs/2010.02502) |
+| DDPM | 2020.06 · NeurIPS 2020 | 잡음 예측 제곱 오차로 학습하는 diffusion | L.10, 0.5, I.18 | [논문](https://arxiv.org/abs/2006.11239) |
+| DDIM | 2020.10 · ICLR 2021 | 학습은 그대로, 결정적 샘플러로 걸음을 줄인다 | L.10, I.18 | [논문](https://arxiv.org/abs/2010.02502) |
 | ViT | 2020.10 · ICLR 2021 | 16×16 패치를 토큰으로 쓰는 영상 transformer | L.5 | [논문](https://arxiv.org/abs/2010.11929) |
 | Score SDE | 2020.11 · ICLR 2021 | 잡음 예측 = 점수, 확률 흐름 ODE | L.10 | [논문](https://arxiv.org/abs/2011.13456) |
 | Switch Transformer | 2021.01 · JMLR 2022 | 전문가 하나만 고르는 단순한 MoE | L.8 | [논문](https://arxiv.org/abs/2101.03961) |
@@ -808,8 +808,8 @@ flow matching 원논문·Flow Matching Guide·Diffusion Policy·π0·OpenVLA(D.5
 
 ### D.16 모방 (§I)
 
-모방 문서(I.0–I.14)에서 다룬 연구다. 데이터·리타기팅, 동작 추종, 범용 추종기와 그 후속, 해석적 정책 기울기의 선행 연구 순서이고, 묶음 안에서는 arXiv 첫 게재 순이다.
-AMP for hardware·Multi-AMP·ASE·PHC·MaskedMimic·ProtoMotions·SONIC·RWM·H2O·OmniH2O·HumanPlus·ExBody·ExBody2·GMT·BeyondMimic·ZEST·Imitate and Repurpose·PARC·MaskedManipulator(D.8), HOVER·ASAP(D.5c), VideoMimic·DreamerV3(D.14)는 각 절에 있다.
+모방 문서(I.0–I.19)에서 다룬 연구다. 데이터·리타기팅, 동작 추종, 범용 추종기와 그 후속, 해석적 정책 기울기의 선행 연구, 동작 사전의 선행·후속 연구 순서이고, 묶음 안에서는 arXiv 첫 게재 순이다. 동작 사전 카드(I.16–I.19)의 대상인 AMP·ADD·MimicKit·SMP는 동작 추종 묶음에 있다.
+AMP for hardware·Multi-AMP·ASE·CALM·PHC·MaskedMimic·ProtoMotions·SONIC·RWM·H2O·OmniH2O·HumanPlus·ExBody·ExBody2·GMT·BeyondMimic·ZEST·Imitate and Repurpose·PARC·MaskedManipulator·Trace and Pace·Learning to Walk in Minutes(D.8), HOVER·ASAP(D.5c), Diffusion Policy(D.5b), VideoMimic·DreamerV3·GAIL·PPO·SAC·AWR(D.14), DDPM·DDIM(D.15)는 각 절에 있다.
 Athena-WBC([arXiv:2607.04837](https://arxiv.org/abs/2607.04837))는 저자가 철회해 싣지 않았다.
 
 | 이름 | 연·발표 | 요약 | 본문 | 링크 |
@@ -823,12 +823,12 @@ Athena-WBC([arXiv:2607.04837](https://arxiv.org/abs/2607.04837))는 저자가 �
 | Motion Retargeting for Humanoid Robots Based on Simultaneous Morphing Parameter Identification and Motion Optimization (Ayusawa·Yoshida) | 2017 · IEEE T-RO 33(6) | 사람→로봇 변형 파라미터 추정, 동작 계획, 모션 캡처 IK를 함께 풂(HRP-4) | I.3 | [DOI](https://doi.org/10.1109/TRO.2017.2752711) |
 | NKN (Neural Kinematic Networks for Unsupervised Motion Retargetting) | 2018.04 · CVPR 2018 | 순기구학 층과 순환 일관 적대 학습으로 짝 데이터 없이 캐릭터 사이 리타기팅 | I.6 | [논문](https://arxiv.org/abs/1804.05653) |
 | SFV (Reinforcement Learning of Physical Skills from Videos) | 2018.10 · SIGGRAPH Asia 2018 | 영상 자세 추정 → 동작 복원 → 동작 추종 RL을 3D 자세 추정과 심층 RL로 이음, 적응 시작 상태 분포(ASI) | I.2 | [논문](https://arxiv.org/abs/1810.03599) |
-| AMASS | 2019.04 · ICCV 2019 | 광학 모션 캡처 15개를 SMPL로 묶음, 346명·동작 11,451개·2,488분. 비상업 | I.1 | [논문](https://arxiv.org/abs/1904.03278) · [데이터](https://amass.is.tue.mpg.de) |
+| AMASS | 2019.04 · ICCV 2019 | 광학 모션 캡처 15개를 SMPL로 묶음, 346명·동작 11,451개·2,488분. 비상업 | I.1, I.17, I.19 | [논문](https://arxiv.org/abs/1904.03278) · [데이터](https://amass.is.tue.mpg.de) |
 | Learning Agile Robotic Locomotion Skills by Imitating Animals | 2020.04 · RSS 2020 | 개 모션 캡처를 핵심점 IK로 Laikago에 옮기고 동작 추종 RL과 적응으로 실물에 | I.3 | [논문](https://arxiv.org/abs/2004.00784) |
 | Skeleton-Aware Networks for Deep Motion Retargeting | 2020.05 · SIGGRAPH 2020 | 골격 풀링으로 관절 구조가 다른 골격을 공통 원시 골격에 모아 짝 없이 리타기팅 | I.6 | [논문](https://arxiv.org/abs/2005.05732) · [코드](https://github.com/DeepMotionEditing/deep-motion-editing) |
 | AIST++ (AI Choreographer) | 2021.01 · ICCV 2021 | 춤 5.2시간·시퀀스 1,408개·10개 장르, 주석 CC BY 4.0(원 영상은 학술 전용) | I.1 | [논문](https://arxiv.org/abs/2101.08779) · [데이터](https://google.github.io/aistplusplus_dataset/) |
-| LAFAN1 (Robust Motion In-betweening) | 2021.02 · SIGGRAPH 2020 (ACM TOG 39(4)) | 5명·77시퀀스·30 fps 약 4.6시간 BVH, CC BY-NC-ND 4.0 | I.1 | [논문](https://arxiv.org/abs/2102.04942) · [데이터](https://github.com/ubisoft/ubisoft-laforge-animation-dataset) |
-| 100STYLE | 2022 · I3D 2022 (PACMCGIT) | 보행 스타일 100가지, 60 fps 400만 프레임 이상, BVH, CC BY 4.0 | I.1 | [데이터](https://www.ianxmason.com/100style/) |
+| LAFAN1 (Robust Motion In-betweening) | 2021.02 · SIGGRAPH 2020 (ACM TOG 39(4)) | 5명·77시퀀스·30 fps 약 4.6시간 BVH, CC BY-NC-ND 4.0 | I.1, I.15, I.17, I.18, I.19 | [논문](https://arxiv.org/abs/2102.04942) · [데이터](https://github.com/ubisoft/ubisoft-laforge-animation-dataset) |
+| 100STYLE | 2022 · I3D 2022 (PACMCGIT) | 보행 스타일 100가지, 60 fps 400만 프레임 이상, BVH, CC BY 4.0 | I.1, I.18 | [데이터](https://www.ianxmason.com/100style/) |
 | Motion-X / Motion-X++ | 2023.07 · NeurIPS 2023 D&B / 2025.01 · arXiv | 글 설명이 붙은 SMPL-X 전신 동작 81,084 / 120,462 클립(144.2 / 180.9시간) | I.1 | [Motion-X](https://arxiv.org/abs/2307.00818) · [Motion-X++](https://arxiv.org/abs/2501.05098) |
 | OMOMO | 2023.09 · SIGGRAPH Asia 2023 | 사람–물체 상호작용 약 10시간, 물체 15개·17명. OmniRetarget·HOI-Retarget의 원천 | I.1, I.5 | [논문](https://arxiv.org/abs/2309.16237) · [코드](https://github.com/lijiaman/omomo_release) |
 | ImitationNet | 2023.09 · Humanoids 2023 | 짝 데이터 없이 대조 학습 잠재 공간으로 사람 자세를 로봇 상체로 옮김, 1.5 kHz | I.6 | [논문](https://arxiv.org/abs/2309.05310) |
@@ -838,7 +838,7 @@ Athena-WBC([arXiv:2607.04837](https://arxiv.org/abs/2607.04837))는 저자가 �
 | Humanoid-X / UH-1 | 2024.12 · arXiv | 인터넷 영상에서 약 16만 쌍(약 240시간)의 휴머노이드 동작 | I.1 | [논문](https://arxiv.org/abs/2412.14172) |
 | PyRoki | 2025.05 · arXiv | JAX Levenberg–Marquardt 기구학 최적화, 블록 희소 야코비안. VideoMimic·SONIC·ProtoMotions 3의 리타기팅 | I.2, I.4 | [논문](https://arxiv.org/abs/2505.03728) · [코드](https://github.com/chungmin99/pyroki) |
 | OmniRetarget | 2025.09 · ICRA 2026(프로젝트 페이지 표기, 최우수 논문상) | 상호작용 메시 비용 + 충돌·관절·속도·디딤 발 hard 제약의 순차 SOCP, 물체·지형 증강. 로봇–지형 추종 94.73 % | I.5 | [논문](https://arxiv.org/abs/2509.26633) · [코드](https://github.com/amazon-far/holosoma) |
-| GMR (Retargeting Matters) | 2025.10 · arXiv | 비균일 국소 축척과 2단계 미분 IK. 추종기를 고정하고 리타기팅만 바꿔 성공률이 0–100 %로 갈림을 보임 | I.4 | [논문](https://arxiv.org/abs/2510.02252) · [코드](https://github.com/YanjieZe/GMR) |
+| GMR (Retargeting Matters) | 2025.10 · arXiv | 비균일 국소 축척과 2단계 미분 IK. 추종기를 고정하고 리타기팅만 바꿔 성공률이 0–100 %로 갈림을 보임 | I.4, I.19 | [논문](https://arxiv.org/abs/2510.02252) · [코드](https://github.com/YanjieZe/GMR) |
 | PHUMA | 2025.10 · CoRL 2026 | Humanoid-X를 물리 기준으로 거르고 LAFAN1·LocoMuJoCo·자체 영상을 더해, 접지·미끄러짐 손실의 PhySINK로 옮긴 73.0시간(클립 7.6만 개) | I.1, I.6 | [논문](https://arxiv.org/abs/2510.26236) · [코드](https://github.com/DAVIAN-Robotics/PHUMA) |
 | SPIDER | 2025.11 · arXiv | MPPI 꼴 표본 궤적 최적화로 물리적으로 가능한 리타기팅, 로봇 9종·시뮬레이터 3개 | I.6 | [논문](https://arxiv.org/abs/2511.09484) · [코드](https://github.com/facebookresearch/spider) |
 | KDMR | 2026.03 · arXiv | 사람 지면 반력을 쓰는 전신 동역학 다접촉 궤적 최적화 리타기팅 | I.6 | [논문](https://arxiv.org/abs/2603.09956) |
@@ -853,21 +853,22 @@ Athena-WBC([arXiv:2607.04837](https://arxiv.org/abs/2607.04837))는 저자가 �
 | BONES-SEED | 2026.03 · Hugging Face | 동작 142,220개(약 288시간, 배우 522명), SOMA와 G1 리타기팅, 신청형 라이선스 | I.1, I.11 | [데이터](https://huggingface.co/datasets/bones-studio/seed) |
 | soma-retargeter | GitHub (NVIDIA) | Newton·Warp 기반 SOMA BVH → 휴머노이드 리타기팅, Apache-2.0 | I.6 | [코드](https://github.com/NVIDIA/soma-retargeter) |
 | SAMCON (Sampling-based Contact-rich Motion Control) | 2010 · SIGGRAPH 2010 (ACM TOG 29(4)) | PD 목표 변위를 표본으로 뽑아 시뮬레이션으로 걸러 모션 캡처를 추종, 미분이 필요 없음 | I.6, I.7 | [DOI](https://doi.org/10.1145/1778765.1778865) · [논문 페이지](https://www.cs.ubc.ca/~van/papers/2010-TOG-sampControl/) |
-| DeepMimic | 2018.04 · SIGGRAPH 2018 | 지수 추종 보상, 기준 상태 초기화(RSI), 조기 종료(ET)로 물리 캐릭터가 모션 캡처를 따라 함 | I.7 | [논문](https://arxiv.org/abs/1804.02717) · [코드](https://github.com/xbpeng/DeepMimic) |
-| NPMP (Neural Probabilistic Motor Primitives) | 2018.11 · ICLR 2019 | 조각별 전문가 2,707개를 60차원 잠재 조건 학생으로 증류하고 디코더를 위 층 행동 공간으로 재사용 | I.7 | [논문](https://arxiv.org/abs/1811.11711) |
-| DReCon | 2019 · SIGGRAPH Asia 2019 (ACM TOG 38(6)) | 모션 매칭이 고른 자세에 RL 정책이 PD 목표 오프셋을 더함. 운동학 Planner + 추종기 분리의 원형 | I.7, I.13 | [DOI](https://doi.org/10.1145/3355089.3356536) |
+| DeepMimic | 2018.04 · SIGGRAPH 2018 | 지수 추종 보상, 기준 상태 초기화(RSI), 조기 종료(ET)로 물리 캐릭터가 모션 캡처를 따라 함 | I.7, I.14, I.15, I.16, I.17, I.18, I.19 | [논문](https://arxiv.org/abs/1804.02717) · [코드](https://github.com/xbpeng/DeepMimic) |
+| NPMP (Neural Probabilistic Motor Primitives) | 2018.11 · ICLR 2019 | 조각별 전문가 2,707개를 60차원 잠재 조건 학생으로 증류하고 디코더를 위 층 행동 공간으로 재사용 | I.7, I.16 | [논문](https://arxiv.org/abs/1811.11711) |
+| DReCon | 2019 · SIGGRAPH Asia 2019 (ACM TOG 38(6)) | 모션 매칭이 고른 자세에 RL 정책이 PD 목표 오프셋을 더함. 운동학 Planner + 추종기 분리의 원형 | I.7, I.13, I.16 | [DOI](https://doi.org/10.1145/3355089.3356536) |
 | CoMic | 2020 · ICML 2020 | 증류 없이 V-MPO 정책 하나가 CMU 최대 3.5시간을 추종, dm_control `reference_pose` 환경 | I.7 | [PMLR](https://proceedings.mlr.press/v119/hasenclever20a.html) |
 | ScaDiver | 2020 · SIGGRAPH 2020 (ACM TOG 39(4)) | 군집 8개의 전문가와 softmax 게이트로 묶은 범용 추종기, 군집 균등 표집 | I.7 | [DOI](https://doi.org/10.1145/3386569.3392381) · [코드](https://github.com/facebookresearch/ScaDiver) |
-| AMP (Adversarial Motion Priors) | 2021.04 · SIGGRAPH 2021 | 상태 전이 판별기를 스타일 보상으로, 정리되지 않은 데이터에 쓴다 | I.7 | [논문](https://arxiv.org/abs/2104.02180) |
+| AMP (Adversarial Motion Priors) | 2021.04 · SIGGRAPH 2021 (ACM TOG 40(4)) | 상태 전이 판별기를 스타일 보상으로, 정리되지 않은 데이터에 쓴다. 원 구현은 DeepMimic 저장소(TensorFlow)에 있고 MimicKit이 다시 구현했다 | I.7, I.14, I.15, I.16, I.17, I.18, I.19 | [논문](https://arxiv.org/abs/2104.02180) · [프로젝트](https://xbpeng.github.io/projects/AMP/index.html) · [코드](https://github.com/xbpeng/DeepMimic) |
 | UHC (Dynamics-Regulated Kinematic Policy for Egocentric Pose Estimation) | 2021.06 · NeurIPS 2021 | SMPL 휴머노이드 범용 추종기, AMASS 학습 동작 성공 97.0 %. 0.5 m 종료(코드)와 어려운 프레임 표집을 PHC가 이어받음. 잔차 힘은 RFC([arXiv:2006.07364](https://arxiv.org/abs/2006.07364)) | I.7 | [논문](https://arxiv.org/abs/2106.05969) · [코드](https://github.com/ZhengyiLuo/UHC) |
 | MoCapAct | 2022.08 · NeurIPS 2022 D&B | CMU 조각 전문가 2,589개와 롤아웃 데이터, 증류 정책 공개 | I.7 | [논문](https://arxiv.org/abs/2208.07363) · [코드](https://github.com/microsoft/MoCapAct) |
 | PULSE | 2023.10 · ICLR 2024 | PHC+를 잠재 공간으로 증류해 위 층 RL의 행동 공간으로, VR 세 점 93.4 % | I.7 | [논문](https://arxiv.org/abs/2310.04582) · [코드](https://github.com/ZhengyiLuo/PULSE) |
+| CLoSD (Closing the Loop between Simulation and Diffusion) | 2024.10 · ICLR 2025 | 글과 목표 위치로 조건을 거는 자기회귀 diffusion Planner(DiP)와 동작 추종기를 폐루프로 묶어, 목표 지점 가기·치기·앉기·일어나기를 이어서 한다 | I.13, I.18 | [논문](https://arxiv.org/abs/2410.03441) · [프로젝트](https://guytevet.github.io/CLoSD-page/) · [코드](https://github.com/GuyTevet/CLoSD) |
 | InterMimic | 2025.02 · CVPR 2025 | 피험자별 교사를 RL과 DAgger로 학생 하나에 증류해 사람–물체 상호작용 추종 | I.7 | [논문](https://arxiv.org/abs/2502.20390) · [코드](https://github.com/Sirui-Xu/InterMimic) |
 | Meta Motivo (Zero-Shot Whole-Body Humanoid Control via Behavioral Foundation Models) | 2025.04 · ICLR 2025 | 비지도 RL(FB-CPR)로 만든 휴머노이드 행동 기반 모델, 보상·목표 자세·추종을 영 샷으로 | I.7 | [논문](https://arxiv.org/abs/2504.11054) |
-| ADD (Adversarial Differential Discriminators) | 2025.05 · SIGGRAPH Asia 2025 | 손으로 가중한 추종 보상 대신 오차 벡터만 보는 판별기 | I.7 | [논문](https://arxiv.org/abs/2505.04961) |
-| MimicKit | 2025.10 · arXiv(안내서) | DeepMimic·AMP·ASE·ADD·SMP를 Isaac Gym·Isaac Lab·Newton 위에 다시 구현한 틀 | I.0, I.7 | [논문](https://arxiv.org/abs/2510.13794) · [코드](https://github.com/xbpeng/MimicKit) |
+| ADD (Adversarial Differential Discriminators) | 2025.05 · SIGGRAPH Asia 2025 (Conference Papers) | 손으로 가중한 추종 보상 대신 오차 벡터만 보는 판별기 | I.7, I.14, I.15, I.16, I.17, I.18, I.19 | [논문](https://arxiv.org/abs/2505.04961) · [DOI](https://doi.org/10.1145/3757377.3763819) · [프로젝트](https://add-moo.github.io/) · [코드](https://github.com/xbpeng/MimicKit) |
+| MimicKit | 2025.10 · arXiv(안내서) | DeepMimic·AMP·ASE·ADD·SMP와 AWR·LCP를 Isaac Gym·Isaac Lab·Newton 위에 다시 구현한 틀 | I.0, I.7, I.14, I.15, I.16, I.17, I.18, I.19 | [논문](https://arxiv.org/abs/2510.13794) · [코드](https://github.com/xbpeng/MimicKit) |
 | BFM-Zero | 2025.11 · ICLR 2026 | 비지도 RL로 학습한 프롬프트형 휴머노이드 행동 기반 모델 | I.7 | [논문](https://arxiv.org/abs/2511.04131) · [코드](https://github.com/LeCAR-Lab/BFM-Zero) |
-| SMP (Score-Matching Motion Priors) | 2025.12 · ACM TOG·SIGGRAPH 2026 | 고정한 동작 diffusion 모델의 점수를 보상으로 쓰는 재사용 가능한 동작 사전 | I.7 | [논문](https://arxiv.org/abs/2512.03028) |
+| SMP (Score-Matching Motion Priors) | 2025.12 · ACM TOG 45(4)·SIGGRAPH 2026 | 고정한 동작 diffusion 모델의 점수를 보상으로 쓰는 재사용 가능한 동작 사전 | I.7, I.14, I.15, I.16, I.17, I.18, I.19 | [논문](https://arxiv.org/abs/2512.03028) · [DOI](https://doi.org/10.1145/3811282) · [프로젝트](https://yxmu.foo/smp-page/) · [코드](https://github.com/xbpeng/MimicKit/blob/main/docs/README_SMP.md) |
 | GPC (Generative Pretraining for Transferable Motor Control) | 2026.06 · SIGGRAPH 2026 | RL로 끝까지 학습한 이산 토큰 추종기 위에 GPT식 생성 제어기 | I.7 | [논문](https://arxiv.org/abs/2606.29148) |
 | TWIST | 2025.05 · CoRL 2025 | OptiTrack을 GMR로 실시간 리타기팅, RL + 행동 복제 학생으로 G1 전신 원격조종 | I.8 | [논문](https://arxiv.org/abs/2505.02833) · [코드](https://github.com/YanjieZe/TWIST) |
 | HuB | 2025.05 · CoRL 2025 | 기준 동작 다듬기와 균형 학습으로 극단적 균형 동작을 실물 G1에 | I.8 | [논문](https://arxiv.org/abs/2505.07294) |
@@ -885,7 +886,7 @@ Athena-WBC([arXiv:2607.04837](https://arxiv.org/abs/2607.04837))는 저자가 �
 | AMS (Agility Meets Stability) | 2025.11 · ICRA 2026 | 사람 동작과 생성한 균형 동작의 이질 데이터로 역동 추종과 극단 균형을 정책 하나에 | I.8 | [논문](https://arxiv.org/abs/2511.17373) · [코드](https://github.com/OpenDriveLab/AMS) |
 | Deep Whole-body Parkour | 2026.01 · arXiv | 깊이 영상을 보는 동작 추종과 시작 위치 무작위화 | I.12 | [논문](https://arxiv.org/abs/2601.07701) |
 | TextOp | 2026.02 · arXiv | 글 조건 잠재 diffusion 생성기(6.25 Hz)와 추종기(50 Hz)로 실시간 글 명령 | I.13 | [논문](https://arxiv.org/abs/2602.07439) · [코드](https://github.com/TeleHuman/TextOp) |
-| PHP (Perceptive Humanoid Parkour) | 2026.02 · RSS 2026 | 모션 매칭으로 이은 파쿠르 기술의 교사들을 깊이 영상 학생 하나로 증류 | I.12 | [논문](https://arxiv.org/abs/2602.15827) · [코드](https://github.com/amazon-far/php_parkour) |
+| PHP (Perceptive Humanoid Parkour) | 2026.02 · RSS 2026 | 모션 매칭으로 이은 파쿠르 기술의 교사들을 깊이 영상 학생 하나로 증류 | I.12, I.15, I.16 | [논문](https://arxiv.org/abs/2602.15827) · [코드](https://github.com/amazon-far/php_parkour) |
 | OmniXtreme | 2026.02 · RSS 2026 | 동작별 전문가를 flow matching 정책으로 증류하고 구동기 한계를 잔차 RL로 | I.12 | [논문](https://arxiv.org/abs/2602.23843) · [체크포인트](https://github.com/Perkins729/OmniXtreme) |
 | OmniClone | 2026.03 · arXiv | 동작 범주별 벤치마크로 잰 전신 원격조종 시스템 | I.13 | [논문](https://arxiv.org/abs/2603.14327) · [코드](https://github.com/yixxuan-li/OmniClone) |
 | HoloMotion-1 | 2026.05 · arXiv(기술 보고서) | 영상 복원 동작 2,000시간 이상, 희소 MoE Transformer 범용 추종기 | I.9, I.12 | [논문](https://arxiv.org/abs/2605.15336) · [코드](https://github.com/HorizonRobotics/HoloMotion) |
@@ -911,15 +912,45 @@ Athena-WBC([arXiv:2607.04837](https://arxiv.org/abs/2607.04837))는 저자가 �
 | SuperMimic | 2026.10 · CoRL 2026(구두) | 학습 world model 하나를 통한 해석적 정책 기울기. 자기 벤치마크(학습 동작 129,514개)에서 H100 한 장 3시간에 SONIC 공개 체크포인트의 수익을 넘음. 공식 코드 없음(2026-10-22) | I.11 | [논문](https://arxiv.org/abs/2610.28480) · [프로젝트](https://supermimic.github.io/) |
 | HuMiT | 2026.10 · arXiv | 현재 프레임의 간결한 기준만 보는 추종기로 원격조종 지연 65 ms | I.9, I.13 | [논문](https://arxiv.org/abs/2610.29903) |
 | MAAC (Model-Augmented Actor-Critic) | 2020.05 · ICLR 2020 | 학습 모델을 통한 경로 미분과 끝 가치 함수 | I.11 | [논문](https://arxiv.org/abs/2005.08068) |
-| SHAC | 2022.04 · ICLR 2022 | 병렬 미분 가능 시뮬레이터, 짧은 지평 + 가치 함수 actor–critic | I.11 | [논문](https://arxiv.org/abs/2204.07137) · [코드](https://github.com/NVlabs/DiffRL) |
 | Do Differentiable Simulators Give Better Policy Gradients? (Suh 외) | 2022.02 · ICML 2022 | 접촉 같은 불연속에서 1차 기울기가 편향되고, 뻣뻣한 동역학에서 분산이 커짐을 분석 | I.11 | [논문](https://arxiv.org/abs/2202.00817) |
+| SHAC | 2022.04 · ICLR 2022 | 병렬 미분 가능 시뮬레이터, 짧은 지평 + 가치 함수 actor–critic | I.11, I.17 | [논문](https://arxiv.org/abs/2204.07137) · [코드](https://github.com/NVlabs/DiffRL) |
 | ControlVAE | 2022.10 · SIGGRAPH Asia 2022 | 학습 world model로 캐릭터 기술 VAE를 학습 | I.11 | [논문](https://arxiv.org/abs/2210.06063) |
-| MoConVQ | 2023.10 · ACM TOG 2024 | 학습 동역학 위의 이산 동작 표현으로 물리 기반 동작 제어를 묶음 | I.11 | [논문](https://arxiv.org/abs/2310.10198) |
 | DiffMimic | 2023.04 · ICLR 2023 | 미분 가능 물리로 동작 모방, 뒤공중제비를 10분에 학습 | I.11 | [논문](https://arxiv.org/abs/2304.03274) · [코드](https://github.com/jiawei-ren/diffmimic) |
+| MoConVQ | 2023.10 · ACM TOG 2024 | 학습 동역학 위의 이산 동작 표현으로 물리 기반 동작 제어를 묶음 | I.11 | [논문](https://arxiv.org/abs/2310.10198) |
 | Learning Quadruped Locomotion Using Differentiable Simulation | 2024.03 · CoRL 2024 | 정밀 시뮬레이터로 굴리고 단순 대리 모델로 미분, 몇 분 만에 보행 | I.11 | [논문](https://arxiv.org/abs/2403.14864) |
 | AHAC | 2024.05 · ICML 2024 | 뻣뻣한 접촉을 피하도록 지평을 바꾸는 1차 기울기 actor–critic | I.11 | [논문](https://arxiv.org/abs/2405.17784) |
 | PWM | 2024.07 · ICLR 2025 | 미리 학습한 world model에서 1차 기울기로 정책, 행동 152차원까지 | I.11 | [논문](https://arxiv.org/abs/2407.02466) |
 | DMO | 2025.09 · CoRL 2025 | 시뮬레이터로 굴리고 학습 모델로 미분(분리), Go2 실물 | I.11 | [논문](https://arxiv.org/abs/2509.00215) |
+| RWR (Reward-Weighted Regression) | 2007 · ICML 2007 | 수익의 지수로 가중한 행동 회귀. AWR이 이점 가중과 재생 버퍼로 고친 바탕 | I.19 | [DOI](https://doi.org/10.1145/1273496.1273590) |
+| LSGAN (Least Squares Generative Adversarial Networks) | 2016.11 · ICCV 2017 | 교차 엔트로피 대신 최소제곱 손실을 쓰는 판별기. AMP가 시그모이드 포화의 기울기 소실을 피하려고 따랐다 | I.16 | [논문](https://arxiv.org/abs/1611.04076) |
+| Learning Human Behaviors from Motion Capture by Adversarial Imitation (Merel 외) | 2017.07 · arXiv | 모션 캡처로 휴머노이드 행동을 적대적으로 모방. AMP 저자는 학습이 불안정하고 동작 품질이 추종에 못 미쳤다고 본다 | I.16 | [논문](https://arxiv.org/abs/1707.02201) |
+| Robust Imitation of Diverse Behaviors (Wang 외) | 2017.07 · NeurIPS 2017 | 다양한 시연 행동의 적대적 모방. AMP가 Merel 외와 함께 꼽은 앞선 적대적 모방 | I.16 | [논문](https://arxiv.org/abs/1707.02747) |
+| DeepLoco | 2017 · SIGGRAPH 2017 (ACM TOG 36(4)) | 계층형 심층 RL로 배운 역동 보행 기술. AMP가 꼽은, 따라 할 동작을 고르는 장치를 따로 둔 방법 | I.16 | [DOI](https://doi.org/10.1145/3072959.3073602) |
+| HMR (End-to-end Recovery of Human Shape and Pose) | 2017.12 · CVPR 2018 | 영상 한 장에서 사람 몸의 모양과 자세를 끝에서 끝으로 복원하고 적대적 자세 사전을 쓴다. SFV의 3D 자세 추정이고 AMP 이름의 출처 | I.2, I.16 | [논문](https://arxiv.org/abs/1712.06584) · [프로젝트](https://akanazawa.github.io/hmr/) |
+| DeepMind Control Suite | 2018.01 · arXiv | MuJoCo 위 연속 제어 과제 묶음. ADD의 Walker 과제 출처 | I.17 | [논문](https://arxiv.org/abs/1801.00690) |
+| Which Training Methods for GANs do actually Converge? (Mescheder 외) | 2018.01 · ICML 2018 | 데이터 위에서 판별기 기울기가 0이 아니면 학습이 진동한다는 분석. AMP가 데이터 표본에 거는 기울기 벌점의 근거 | I.16 | [논문](https://arxiv.org/abs/1801.04406) |
+| GAIfO (Generative Adversarial Imitation from Observation) | 2018.07 · arXiv | 행동 없이 상태 전이만 보는 판별기의 적대적 모방. AMP의 판별기가 따른 꼴 | I.16 | [논문](https://arxiv.org/abs/1807.06158) |
+| VDB (Variational Discriminator Bottleneck) | 2018.10 · ICLR 2019 | 판별기에 정보 병목을 걸어 적대적 모방의 품질을 올렸다. 위상으로 기준과 시간을 맞춰 정책 하나가 동작 하나를 배운다 | I.16 | [논문](https://arxiv.org/abs/1810.00821) |
+| MCP (Multiplicative Compositional Policies) | 2019.05 · NeurIPS 2019 | 기본 단위 정책을 곱으로 섞는 계층 제어. UHC의 정책 구조이고 AMP가 꼽은 잠재 공간 모델 | I.7, I.16 | [논문](https://arxiv.org/abs/1905.09808) |
+| Learning Predict-and-Simulate Policies from Unorganized Human Motion Data (Park 외) | 2019 · SIGGRAPH Asia 2019 (ACM TOG 38(6)) | 정리되지 않은 사람 동작 데이터로 물리 캐릭터 정책을 학습. AMP가 DeepLoco·DReCon과 함께 꼽은, 따라 할 동작을 고르는 장치를 따로 둔 방법 | I.16 | [DOI](https://doi.org/10.1145/3355089.3356501) |
+| DreamFusion | 2022.09 · ICLR 2023 | 글에서 3D를 만드는 SDS(score distillation sampling). 2D diffusion 모델의 잡음 예측 잔차를 렌더러로 역전파해 3D 장면을 고친다. SMP가 보상으로 바꾼 손실의 출처 | I.18 | [논문](https://arxiv.org/abs/2209.14988) · [프로젝트](https://dreamfusion3d.github.io/) |
+| Deep Whole-Body Control | 2022.10 · CoRL 2022 | 사족 몸체와 팔을 정책 하나로 함께 제어. 환경 값 추정에 쓰는 ROA(regularized online adaptation)의 출처이고, LCP가 같은 학습을 썼다 | F.6.2, I.19 | [논문](https://arxiv.org/abs/2210.10044) · [프로젝트](https://maniploco.github.io) |
+| ProlificDreamer | 2023.05 · NeurIPS 2023 | 변분 점수 증류(VSD)로 글에서 3D를 만든다. SMILING의 목적이 이와 닮았다 | I.18 | [논문](https://arxiv.org/abs/2305.16213) |
+| DiffAIL | 2023.12 · AAAI 2024 | diffusion 모델을 적대적 모방의 판별기 자리에 넣는다 | I.18 | [논문](https://arxiv.org/abs/2312.06348) |
+| DRAIL (Diffusion-Reward Adversarial Imitation Learning) | 2024.05 · NeurIPS 2024 | diffusion 모델을 GAIL의 판별기 자리에 넣은 적대적 모방 | I.18 | [논문](https://arxiv.org/abs/2405.16194) · [프로젝트](https://nturobotlearninglab.github.io/DRAIL/) |
+| HumanVLA | 2024.06 · NeurIPS 2024 | 시각–언어 지시로 물체를 옮기는 물리 휴머노이드. SMP의 물체 나르기가 이 논문의 사전 보상 자르기를 따랐다 | I.18 | [논문](https://arxiv.org/abs/2406.19972) |
+| Text-Aware Diffusion for Policy Learning | 2024.07 · NeurIPS 2024 | 글 조건 이미지·영상 diffusion 모델로 정책을 이끈다. SMP 저자는 그 동작이 자주 부자연스러웠다고 적는다 | I.18 | [논문](https://arxiv.org/abs/2407.01903) |
+| DIFO (Diffusion Imitation from Observation) | 2024.10 · NeurIPS 2024 | 관찰만으로 하는 적대적 모방에 diffusion 모델을 쓴다. DiffAIL·DRAIL과 같은 갈래 | I.18 | [논문](https://arxiv.org/abs/2410.05429) · [프로젝트](https://nturobotlearninglab.github.io/DIFO) |
+| LCP (Lipschitz-Constrained Policies) | 2024.10 · IROS 2025 | 관측에 대한 정책 로그 확률 기울기의 제곱 노름 벌점으로, 부드러움 보상이나 저역 통과 필터 없이 매끄러운 휴머노이드 보행. MimicKit에 구현이 있다. 원 코드는 CC BY-NC 4.0 | I.14, I.15, I.19 | [논문](https://arxiv.org/abs/2410.11825) · [프로젝트](https://lipschitz-constrained-policy.github.io) · [코드](https://github.com/zixuan417/smooth-humanoid-locomotion) |
+| SMILING (Diffusing States and Matching Scores) | 2024.10 · ICLR 2025 | 상태를 diffusion 모델로 배우고 score matching으로 모방한다. 과제마다 diffusion 모델을 학습한다. SMP와 가장 닮은 선행 연구 | I.15, I.18 | [논문](https://arxiv.org/abs/2410.13855) |
+| HumanX | 2026.02 · CoRL 2026 | 휴대폰 영상 한 편에서 로봇–물체 상호작용 궤적을 합성해 G1이 농구·축구·물건 집기·대련을 배운다. 몸 추종 항에 AMP 항을 넣었다 | B.16.6, I.15, I.16 | [논문](https://arxiv.org/abs/2602.02473) · [프로젝트](https://wyhuai.github.io/human-x/) · [코드](https://github.com/wyhuai/HumanX) |
+| PDF-HR (Pose Distance Fields for Humanoid Robots) | 2026.02 · arXiv | 자세 거리장 사전의 보상을 ADD에 더한다. MimicKit 기본 설정의 ADD는 G1 뒤공중제비·이중 콩에서 실패했다 | I.15, I.17 | [논문](https://arxiv.org/abs/2602.04851) · [프로젝트](https://gaoyukang33.github.io/PDF-HR/) |
+| Scaling Whole-Body Human Musculoskeletal Behavior Emulation for Specificity and Diversity (Wei 외) | 2026.03 · arXiv | 근골격 사람 모델의 전신 동작 재현에서 추종 보상을 ADD로 바꿨다 | I.17 | [논문](https://arxiv.org/abs/2603.29332) |
+| PFM-HR (Pose Flow Matching for Humanoid Robots) | 2026.08 · arXiv | 순서 없는 자세 데이터로 학습한 flow matching 사전을 고정해 추종 보상을 조절한다. ADD와 BeyondMimic에 붙였고, 실물 G1은 BeyondMimic 쪽이다 | I.15, I.17, I.18 | [논문](https://arxiv.org/abs/2608.03227) |
+| Learning Context-Aware Motion Priors for Humanoid Control | 2026.08 · arXiv | AMP(주 설정)나 고정한 SMP denoiser에 과제 상황을 받는 잔차 어댑터를 얹어 기준 동작에 가중을 준다. 어댑터는 과제 학습 중에 기준 동작 데이터로 배운다. 코드는 공개 예정 | I.15, I.18 | [논문](https://arxiv.org/abs/2608.03234) |
+| DSD (Diffusion Skill Discovery) | 2026.09 · arXiv | diffusion 모델의 score matching으로 정책 상태 분포의 엔트로피 기울기를 어림해 다양한 기술을 찾는다. 보상은 SMP의 고정 잡음 단계에서 잰다 | I.18 | [논문](https://arxiv.org/abs/2609.17682) |
+| BCG (Bundled Contact Gradients) | 2026.09 · arXiv | ADD 보상을 SHAC식 1차 정책 학습의 목적으로 쓰고, 뻣뻣한 접촉에서 섭동 롤아웃 묶음의 기울기를 평균한다. 실물 G1에 영 샷으로 올렸다 | I.15, I.17 | [논문](https://arxiv.org/abs/2609.30951) · [프로젝트](https://bundledcontactgradients.github.io/) |
+| Bringing Physics-Based Controller Policies to Virtual Reality (Llobera 외) | 2026.10 · arXiv | DeepMimic·AMP·ADD를 JAX와 MuJoCo-MJX로 다시 구현. ADD 판별기가 2천만 스텝 안에 포화해 과제 보상 5–15 %를 섞었다 | I.15, I.17 | [논문](https://arxiv.org/abs/2610.26278) |
 
 <!-- tab: 연구 그룹 -->
 
@@ -1098,7 +1129,7 @@ TP-0036에 바로 들어간다)다.
 
 | 이름 | 연도 | 한 줄 요약 | 절 | 링크 |
 |---|---|---|---|---|
-| Learning to Walk in Minutes | 2021.09 · CoRL 2021 | 게임식 지형 커리큘럼, 병렬 강화학습 | S.5.1, B.12.2, B.14.1 | [arXiv:2109.11978](https://arxiv.org/abs/2109.11978) · [코드(legged_gym)](https://github.com/leggedrobotics/legged_gym) |
+| Learning to Walk in Minutes | 2021.09 · CoRL 2021 | 게임식 지형 커리큘럼, 병렬 강화학습 | S.5.1, B.12.2, B.14.1, I.17 | [arXiv:2109.11978](https://arxiv.org/abs/2109.11978) · [코드(legged_gym)](https://github.com/leggedrobotics/legged_gym) |
 | Wheeled Lab | 2025.02 | Isaac Lab RC카 sim-to-real 생태계 | S.5.2 | [arXiv:2502.07380](https://arxiv.org/abs/2502.07380) |
 | TIAGo Omni in Isaac Sim | 2025.10 | 메카넘 정밀·경량 두 모델, 학습 보정 | S.5.2 | [arXiv:2510.10273](https://arxiv.org/abs/2510.10273) |
 | Isaac Lab 바퀴 토론 | 2024–2025 | GPU PhysX 바퀴 근사와 원기둥 지원 | S.5.2 | [#1043](https://github.com/isaac-sim/IsaacLab/discussions/1043) |
@@ -1157,16 +1188,16 @@ TP-0036에 바로 들어간다)다.
 | rl_sar | 2024.03 · GitHub | 학습 정책의 sim2sim(Gazebo·MuJoCo)과 실물 배포를 맡는 C++ 틀(Apache-2.0). ROS Noetic·ROS 2, 정책 16개 동봉(Go2W 포함). 내려받는 로봇 모델 저장소 rl_sar_zoo에는 라이선스가 없다 | F.6 | [코드](https://github.com/fan-ziqi/rl_sar) |
 | unitree_mujoco | 2021.11 · GitHub | Unitree 로봇의 MuJoCo 모델과 시뮬레이터(BSD-3). Go2W MJCF와 높이장 장면이 있고, unitree_rl_lab의 sim2sim이 쓴다 | F.6 | [코드](https://github.com/unitreerobotics/unitree_mujoco) |
 | HIMLoco (Hybrid Internal Model) | 2023.12 · ICLR 2024 | 고유수용 이력에서 속도와 대조 학습 잠재를 추정하는 4족 보행(A1·Aliengo·Go1), RTX 4090 한 장에서 1시간 학습. 코드는 CC BY-NC-SA 4.0(비상업)이고 배포 안내는 공개되지 않았다 | F.6, B.16.5 | [논문](https://arxiv.org/abs/2312.11460) · [코드](https://github.com/InternRobotics/HIMLoco) |
-| AMP for hardware | 2022.03 · IROS 2022 | 모션 캡처 몇 초(저장소 기준 4.5초)로 배운 판별기 스타일 보상이 손으로 짠 규제 보상 항을 대신하고, 속도 추종 과업 보상과 더해진다. 실물 A1. 코드는 legged_gym 기반(BSD-3)이고 escontra 계정으로 옮겨졌다 | F.6, B.16.2 | [논문](https://arxiv.org/abs/2203.15103) · [코드](https://github.com/escontra/AMP_for_hardware) |
+| AMP for hardware | 2022.03 · IROS 2022 | 모션 캡처 몇 초(저장소 기준 4.5초)로 배운 판별기 스타일 보상이 손으로 짠 규제 보상 항을 대신하고, 속도 추종 과업 보상과 더해진다. 실물 A1. 코드는 legged_gym 기반(BSD-3)이고 escontra 계정으로 옮겨졌다 | F.6, B.16.2, I.15, I.16, I.19 | [논문](https://arxiv.org/abs/2203.15103) · [코드](https://github.com/escontra/AMP_for_hardware) |
 | LP-ACRL (자동 커리큘럼 RL) | 2026.01 | 학습 진척으로 과제 표집 분포를 자동 조절, 600과제에서 1,500 iter에 80%. ANYmal D 평지 3.0 m/s·험지 2.5 m/s | F.2 | [논문](https://arxiv.org/abs/2601.17428) |
-| Learning to Walk in Minutes | 2021.09 · CoRL 2021(PMLR 164, 2022-01 발행) | GPU 대규모 병렬 + 게임식 지형 커리큘럼 | F.1, B.14.1 | [논문](https://arxiv.org/abs/2109.11978) |
+| Learning to Walk in Minutes | 2021.09 · CoRL 2021(PMLR 164, 2022-01 발행) | GPU 대규모 병렬 + 게임식 지형 커리큘럼 | F.1, B.14.1, I.17 | [논문](https://arxiv.org/abs/2109.11978) |
 | Learning Quadrupedal Locomotion over Challenging Terrain | 2020.10 · Science Robotics | 특권 교사 → 고유수용 학생 증류 | F.1, B.14.1 | [논문](https://arxiv.org/abs/2010.11251) |
 | ANYmal Parkour | 2023.06 · Science Robotics 9(88) 2024 | 기술별 정책 + 항법, 지각 기반 민첩 주행 | F.1, B.14.2 | [논문](https://arxiv.org/abs/2306.14874) |
 | Keep Rollin' (바퀴 ANYmal) | 2018.09 · RA-L 2019 | 토크 제어 바퀴와 구름 구속을 넣은 ZMP 계획 + 계층형 전신 제어, 평지 4 m/s | B.14.4 | [논문](https://arxiv.org/abs/1809.03557) |
 | Rolling in the Deep | 2019.09 · RA-L 2020 | 바퀴·몸통 궤적 분해 최적화로 걸으면서 구르기, DARPA SubT 터널 서킷 | B.14.4 | [논문](https://arxiv.org/abs/1909.07193) |
 | 바퀴·다리 전신 MPC | 2020.10 · IROS 2021 | 몸통과 바퀴를 한 MPC(SLQ)로, 기구학 효용으로 걸음 순서 생성 | B.14.4 | [논문](https://arxiv.org/abs/2010.06322) |
 | 오프라인 모션 라이브러리 + 온라인 MPC | 2022.06 · IJRR 41(9–10) | 오프라인 궤적을 MPC 비용으로 추종, 실물 동작 89개(CC BY 4.0) | B.14.4 | [논문](https://doi.org/10.1177/02783649221102473) · [PDF](https://doi.org/10.3929/ethz-b-000551315) |
-| Multi-AMP | 2022.03 · ICRA 2023 | 스타일마다 판별기를 둔 AMP, 바퀴·다리 로봇의 두 바퀴 서기 | B.14.4 | [논문](https://arxiv.org/abs/2203.14912) |
+| Multi-AMP | 2022.03 · ICRA 2023 | 스타일마다 판별기를 둔 AMP, 바퀴·다리 로봇의 두 바퀴 서기 | B.14.4, I.15, I.16, I.17 | [논문](https://arxiv.org/abs/2203.14912) |
 | Bjelonic 박사 논문 | 2021 · Diss. ETH 27527 | 바퀴·다리 ANYmal 다섯 편(2018–2022)과 바퀴 하드웨어 세대 | B.14.4 | [논문](https://doi.org/10.3929/ethz-b-000515694) |
 | TAMOLS | 2022.06 · T-RO 38(6) 2022 | 높이 지도 위 발 디딤·몸통 자세 동시 최적화, DTC의 기준 동작 | B.14.2 | [논문](https://arxiv.org/abs/2206.14049) |
 | 인식 기반 보행 NMPC (Grandia 외) | 2022.08 · T-RO 39(5) 2023 | 평면 분할·SDF 지형 모델 위 NMPC, DTC의 baseline-to-2 | B.14.2 | [논문](https://arxiv.org/abs/2208.08373) · [코드(OCS2)](https://github.com/leggedrobotics/ocs2) |
@@ -1201,13 +1232,13 @@ TP-0036에 바로 들어간다)다.
 | Eureka | 2023.10 · ICLR 2024 | 코딩 LLM이 보상 코드를 쓰고 보상 반성으로 고친다. 29과제 중 83%에서 사람 보상 이상, ANYmal 속도 추종은 사람과 같음(1.02). 모두 시뮬레이션 | B.16.1 | [논문](https://arxiv.org/abs/2310.12931) · [코드](https://github.com/eureka-research/Eureka) |
 | DrEureka | 2024.06 · RSS 2024 | 안전 지시 보상, 보상 인지 물리 prior(RAPP), LLM 도메인 랜덤화. Go1 실물 2 m/s 과제 최고 1.83 m/s(사람 설계 1.32), 요가볼 걷기 | B.16.1 | [논문](https://arxiv.org/abs/2406.01967) · [코드](https://github.com/eureka-research/DrEureka) |
 | Eurekaverse | 2024.11 · CoRL 2024 | LLM이 장애물 코스 지형 코드를 진화시키는 커리큘럼, Extreme Parkour 시뮬레이션 틀 위 Go1 파쿠르의 실물 이전(UPenn, NVIDIA 공저 없음) | B.16.1 | [논문](https://arxiv.org/abs/2411.01775) · [코드](https://github.com/eureka-research/eurekaverse) |
-| ASE | 2022.05 · SIGGRAPH 2022 (ACM TOG 41(4)) | AMP 판별기에 기술 잠재 변수를 더한 재사용 저수준 정책, 시뮬레이션 약 10년 분량 사전학습. 코드 NVIDIA License(비상업) | B.16.1, I.7 | [논문](https://arxiv.org/abs/2205.01906) · [코드](https://github.com/nv-tlabs/ASE) |
-| CALM | 2023.05 · SIGGRAPH 2023 | 동작 인코더를 함께 배워 방향을 줄 수 있는 적대적 잠재 기술, ASE의 후속. 코드 NVIDIA License(비상업) | B.16.1 | [논문](https://arxiv.org/abs/2305.02195) · [코드](https://github.com/NVlabs/CALM) |
-| PHC (Perpetual Humanoid Control) | 2023.05 · ICCV 2023 | 추종 보상과 AMP 판별기 보상을 반씩 쓴 추종 정책, AMASS 학습 셋 98.9%를 외력 없이 모방(CMU·Meta) | B.16.1, I.3, I.7 | [논문](https://arxiv.org/abs/2305.06456) · [코드](https://github.com/ZhengyiLuo/PHC) |
+| ASE | 2022.05 · SIGGRAPH 2022 (ACM TOG 41(4)) | AMP 판별기에 기술 잠재 변수를 더한 재사용 저수준 정책, 시뮬레이션 약 10년 분량 사전학습. 코드 NVIDIA License(비상업) | B.16.1, I.7, I.15, I.16, I.19 | [논문](https://arxiv.org/abs/2205.01906) · [코드](https://github.com/nv-tlabs/ASE) |
+| CALM | 2023.05 · SIGGRAPH 2023 | 동작 인코더를 함께 배워 방향을 줄 수 있는 적대적 잠재 기술, ASE의 후속. 코드 NVIDIA License(비상업) | B.16.1, I.15, I.16 | [논문](https://arxiv.org/abs/2305.02195) · [코드](https://github.com/NVlabs/CALM) |
+| PHC (Perpetual Humanoid Control) | 2023.05 · ICCV 2023 | 추종 보상과 AMP 판별기 보상을 반씩 쓴 추종 정책, AMASS 학습 셋 98.9%를 외력 없이 모방(CMU·Meta) | B.16.1, I.3, I.7, I.15, I.16, I.19 | [논문](https://arxiv.org/abs/2305.06456) · [코드](https://github.com/ZhengyiLuo/PHC) |
 | MaskedMimic | 2024.09 · SIGGRAPH Asia 2024 | 전신 추종기를 부분 목표(머리·손·글·물체)만 보는 학생으로 증류, 지형 높이 지도 관측 | B.16.1, I.7 | [논문](https://arxiv.org/abs/2409.14393) · [프로젝트](https://research.nvidia.com/labs/par/maskedmimic/) |
-| ProtoMotions 3 | 2024.09 · GitHub | 물리 시뮬레이션 휴머노이드 학습 틀(Isaac Gym·Isaac Lab·Newton·MuJoCo), BONES-SEED 추종 정책을 G1에 zero-shot 배포 | B.16.1, I.4 | [코드](https://github.com/NVlabs/ProtoMotions) |
-| Trace and Pace | 2023.04 · CVPR 2023 | 확산 보행자 궤적(TRACE)과 높이 지도를 보는 물리 기반 보행자(PACER), 가치 함수 guidance. NavIsaacLab(S.3.4)이 이 틀 위에 군중을 만들었다. 코드 비상업 | B.16.1 | [논문](https://arxiv.org/abs/2304.01893) · [TRACE](https://github.com/nv-tlabs/trace) · [PACER](https://github.com/nv-tlabs/pacer) |
-| PARC | 2025.05 · SIGGRAPH 2025 | 높이 지도·목표 방향 조건 확산 동작 생성기와 물리 추종기를 번갈아 키우는 데이터 증강, 추종 성공률 27%에서 68%로. Planner D·Controller·DAgger와 같은 구조 | B.16.1 | [논문](https://arxiv.org/abs/2505.04002) · [코드](https://github.com/mshoe/PARC) |
+| ProtoMotions 3 | 2024.09 · GitHub | 물리 시뮬레이션 휴머노이드 학습 틀(Isaac Gym·Isaac Lab·Newton·MuJoCo), BONES-SEED 추종 정책을 G1에 zero-shot 배포 | B.16.1, I.4, I.19 | [코드](https://github.com/NVlabs/ProtoMotions) |
+| Trace and Pace | 2023.04 · CVPR 2023 | 확산 보행자 궤적(TRACE)과 높이 지도를 보는 물리 기반 보행자(PACER), 가치 함수 guidance. NavIsaacLab(S.3.4)이 이 틀 위에 군중을 만들었다. 코드 비상업 | B.16.1, I.16 | [논문](https://arxiv.org/abs/2304.01893) · [TRACE](https://github.com/nv-tlabs/trace) · [PACER](https://github.com/nv-tlabs/pacer) |
+| PARC | 2025.05 · SIGGRAPH 2025 | 높이 지도·목표 방향 조건 확산 동작 생성기와 물리 추종기를 번갈아 키우는 데이터 증강, 추종 성공률 27%에서 68%로. Planner D·Controller·DAgger와 같은 구조 | B.16.1, I.18, I.19 | [논문](https://arxiv.org/abs/2505.04002) · [코드](https://github.com/mshoe/PARC) |
 | MaskedManipulator | 2025.05 · SIGGRAPH Asia 2025 | MaskedMimic의 증류를 전신 물체 조작으로 넓힌 생성 제어 정책 | B.16.1 | [논문](https://arxiv.org/abs/2505.19086) · [프로젝트](https://research.nvidia.com/labs/par/maskedmanipulator/) |
 | PDC | 2025.05 · CVPR 2025 Humanoid Agents 워크숍(최우수 논문) | 1인칭 시각 RL만으로 찾기·집기를 하는 시뮬레이션 휴머노이드, 실물 실험 없음 | B.16.1 | [논문](https://arxiv.org/abs/2505.12278) · [프로젝트](https://zhengyiluo.github.io/PDC) |
 | NeRD | 2025.08 · CoRL 2025 | 로봇별 학습 동역학이 시뮬레이터의 동역학·접촉 풀이를 대신하는 신경 시뮬레이터, ANYmal 포함 여섯 시스템, 실물 데이터 미세조정 | B.16.1 | [논문](https://arxiv.org/abs/2508.15755) · [프로젝트](https://research.nvidia.com/publication/2025-09_neural-robot-dynamics) |
@@ -1304,7 +1335,7 @@ TP-0036에 바로 들어간다)다.
 | Blind Bipedal Stair Traversal(Siekmann 외) | 2021.05 · RSS 2021 | 보상은 그대로 두고 계단 모양 지형 무작위화만 더해 고유감각만으로 실제 계단(Cassie). 1저자 소속에 Agility 병기 | B.16.6 | [논문](https://arxiv.org/abs/2105.08328) |
 | Real-World Humanoid Locomotion(HT, Radosavovic 외) | 2023.03 · Science Robotics 9(89) 2024 | 고유감각 이력 causal transformer, 교사 KL 가중을 0으로 줄여 가는 RL, Digit 실외 일주일 무낙상. v1 제목은 Learning Humanoid Locomotion with Transformers | B.16.6 | [논문](https://arxiv.org/abs/2303.03381) · [프로젝트](https://learning-humanoid-locomotion.github.io) |
 | Versatile Bipedal Locomotion(Cassie, Li 외) | 2024.01 · IJRR 44(5) 2025 | 짧은·긴 입출력 이력(dual history), 과제 무작위화, 400 m 2분 34초·1.4 m 멀리뛰기 | B.16.6 | [논문](https://arxiv.org/abs/2401.16889) · [코드](https://github.com/HybridRobotics/cassie_rl_walking) |
-| ExBody | 2024.02 · RSS 2024 | 상체만 동작 모방, 하체는 몸통 속도 목표, 기준 상태 초기화(RSI)가 결정적 | B.16.6, I.8 | [논문](https://arxiv.org/abs/2402.16796) · [코드](https://github.com/chengxuxin/expressive-humanoid) |
+| ExBody | 2024.02 · RSS 2024 | 상체만 동작 모방, 하체는 몸통 속도 목표, 기준 상태 초기화(RSI)가 결정적 | B.16.6, I.8, I.15, I.16 | [논문](https://arxiv.org/abs/2402.16796) · [코드](https://github.com/chengxuxin/expressive-humanoid) |
 | Humanoid Locomotion as Next Token Prediction(NTP) | 2024.02 · NeurIPS 2024 | 행동 없는 기록을 mask 토큰으로 섞은 다음 토큰 예측, 예측 오차와 추종 오차의 상관 r = 0.87 | B.16.6 | [논문](https://arxiv.org/abs/2402.19469) · [프로젝트](https://humanoid-next-token-prediction.github.io) |
 | Denoising World Model Learning(DWL) | 2024.08 · RSS 2024(최우수 논문상 최종 후보) | 잡음 섞은 고유수용 관측 이력에서 특권 상태 184차원을 복원하는 손실을 PPO와 한 손실로 학습, XBot-S·L이 눈길·10 cm 계단·요철을 망 하나로 | 보행 갤러리 G.14 | [논문](https://arxiv.org/abs/2408.14472) · [Humanoid-Gym](https://github.com/roboterax/humanoid-gym) |
 | H2O | 2024.03 · IROS 2024 | RGB 카메라 실시간 전신 원격조종, 특권 모방 정책으로 실행할 수 없는 동작을 거르는 sim-to-data | B.16.6, I.3, I.6, I.8 | [논문](https://arxiv.org/abs/2403.04436) · [코드](https://github.com/LeCAR-Lab/human2humanoid) |
